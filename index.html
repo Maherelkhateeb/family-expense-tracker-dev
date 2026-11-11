@@ -13191,6 +13191,151 @@
     body.light-theme .task-datetime-input {
       color-scheme: light;
     }
+    .task-picker-month-heading {
+      direction: ltr;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+    .task-picker-month-heading button,
+    .task-picker-stepper button,
+    .task-picker-mode button {
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #e2e8f0;
+      background: rgba(255,255,255,0.07);
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+    }
+    .task-picker-month-heading button {
+      width: 34px;
+      height: 32px;
+      font-size: 1.1rem;
+    }
+    .task-picker-weekdays,
+    .task-picker-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 4px;
+    }
+    .task-picker-weekdays span {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 4px 0;
+    }
+    .task-picker-calendar-grid button,
+    .task-picker-calendar-grid span {
+      min-width: 0;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.76rem;
+    }
+    .task-picker-calendar-grid button {
+      color: #e2e8f0;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .task-picker-calendar-grid button:hover,
+    .task-picker-calendar-grid button.is-today {
+      border-color: rgba(56,189,248,0.55);
+      color: #7dd3fc;
+    }
+    .task-picker-calendar-grid button.is-selected {
+      background: #38bdf8;
+      border-color: #38bdf8;
+      color: #082f49;
+      font-weight: 950;
+      box-shadow: 0 3px 12px rgba(56,189,248,0.28);
+    }
+    .task-picker-time-wheels {
+      direction: ltr;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(46px, 1fr)) auto;
+      align-items: center;
+      gap: 8px;
+      max-width: 330px;
+      margin: 0 auto;
+    }
+    .task-picker-stepper {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+    }
+    .task-picker-stepper button {
+      width: 34px;
+      height: 25px;
+      color: #7dd3fc;
+      line-height: 1;
+    }
+    .task-picker-stepper output {
+      min-width: 40px;
+      text-align: center;
+      color: #f8fafc;
+      font-size: 1.08rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+    .task-picker-time-wheels.is-disabled .task-picker-stepper {
+      opacity: 0.35;
+    }
+    .task-picker-time-wheels.is-disabled .task-picker-stepper button {
+      pointer-events: none;
+    }
+    .task-picker-period {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .task-picker-period button,
+    .task-picker-mode button {
+      min-width: 38px;
+      height: 27px;
+      padding: 0 7px;
+      font-size: 0.68rem;
+      font-weight: 850;
+    }
+    .task-picker-period button.is-active,
+    .task-picker-mode button.is-active {
+      color: #fff;
+      background: #0369a1;
+      border-color: #38bdf8;
+    }
+    #taskPickerNoTimeButton.is-active {
+      color: #fff !important;
+      background: #9f1239 !important;
+      border-color: #fb7185 !important;
+    }
+    .task-picker-mode {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .task-picker-appointment-button {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid rgba(168,85,247,0.48);
+      border-radius: 9px;
+      padding: 7px 10px;
+      color: #e9d5ff;
+      background: rgba(168,85,247,0.13);
+      font: inherit;
+      font-size: 0.76rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    @media (max-width: 420px) {
+      .task-picker-time-wheels { grid-template-columns: repeat(3, minmax(42px, 1fr)) auto; gap: 4px; }
+      .task-picker-calendar-grid button, .task-picker-calendar-grid span { height: 31px; }
+    }
     /* نسق تدفق المبالغ والعملة: علامة الزائد والناقص يمين الرقم ورمز العملة يسار الرقم */
     .amount-flow-cluster {
       display: inline-flex !important;
@@ -16406,7 +16551,7 @@
                   <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
                 </div>
                 <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
-                <input type="date" id="inlineTaskDueDate" style="height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box; width: 100%;" onchange="onInlineDateCustomChange(this.value)">
+                <input type="date" id="inlineTaskDueDate" hidden onchange="onInlineDateCustomChange(this.value)">
               </div>
 
               <!-- عمود الساعة / الوقت -->
@@ -16421,9 +16566,12 @@
                   <button type="button" class="btn-inline-dt-preset" data-time="" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
                 </div>
                 <!-- حقل إدخال الساعة المباشر من نفس الشاشة -->
-                <input type="time" id="inlineTaskDueTime" style="height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box; width: 100%;" onchange="onInlineTimeCustomChange(this.value)">
+                <input type="time" id="inlineTaskDueTime" hidden onchange="onInlineTimeCustomChange(this.value)">
               </div>
             </div>
+            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('inline')">🗓️ فتح التقويم واختيار الوقت</button>
+            <input type="hidden" id="inlineTaskDueSecond" value="00">
+            <input type="hidden" id="inlineTaskDueTimezone">
           </div>
 
           <!-- 4. المسؤول + خياري إضافة الصورة (تصوير بالكاميرا أو اختيار من الاستوديو) للمهمة الرئيسية -->
@@ -29742,40 +29890,218 @@ function formatTimeReadable(timeStr) {
   return `${h12}:${m < 10 ? '0' + m : m} ${isPm ? 'مساءً' : 'صباحاً'}`;
 }
 
-function updateTaskDateTimeSummary() {
-  const summaryEl = document.getElementById('taskDateTimeSummaryBadge');
-  if (!summaryEl) return;
-  const now = new Date();
-  const todayIso = now.toISOString().slice(0, 10);
-  const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  const tomorrowIso = tomorrow.toISOString().slice(0, 10);
-
-  let dateName = window.taskSelectedDateVal || todayIso;
-  if (window.taskSelectedDateVal === todayIso) dateName = 'اليوم';
-  else if (window.taskSelectedDateVal === tomorrowIso) dateName = 'غداً';
-
-  const timeText = formatTimeReadable(window.taskSelectedTimeVal);
-  summaryEl.textContent = `الموعد: ${dateName} ${timeText ? '• الساعة ' + timeText : ''}`;
+function getDefaultTaskTimezone() {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; }
+  catch (e) { return 'UTC'; }
 }
 
-function openTaskDateTimePickerModal() {
+function isValidTaskTimezone(zone) {
+  try { new Intl.DateTimeFormat('en-US', { timeZone: zone }); return true; }
+  catch (e) { return false; }
+}
+
+function parseTaskIsoDate(value) {
+  const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3])) : null;
+}
+
+function getTaskDateInTimezone(zone, date = new Date()) {
+  const safeZone = isValidTaskTimezone(zone) ? zone : getDefaultTaskTimezone();
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: safeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+    const values = Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, p.value]));
+    return `${values.year}-${values.month}-${values.day}`;
+  } catch (e) { return getLocalDateStr(date); }
+}
+
+function isTaskOverdueByDate(task) {
+  return !!(task && !task.completed && task.dueDate && task.dueDate < getTaskDateInTimezone(task.dueTimeZone || getDefaultTaskTimezone()));
+}
+
+function isTaskDueTodayByDate(task) {
+  return !!(task && task.dueDate && task.dueDate === getTaskDateInTimezone(task.dueTimeZone || getDefaultTaskTimezone()));
+}
+
+function formatTaskTimeDisplay(task) {
+  if (!task || !task.dueTime) return '';
+  const parts = String(task.dueTime).split(':');
+  const hour = String(parts[0] || '00').padStart(2, '0');
+  const minute = String(parts[1] || '00').padStart(2, '0');
+  const second = String(task.dueSecond || parts[2] || '00').padStart(2, '0');
+  return `${hour}:${minute}:${second}`;
+}
+
+function getTaskTimezoneBadge(task) {
+  if (!task || !task.dueTimeZone || !task.dueTime) return '';
+  return getTaskTimeZoneOffsetText(task.dueTimeZone, task.dueDate, task.dueTime, task.dueSecond);
+}
+
+function addDaysToTaskIsoDate(value, count) {
+  const date = parseTaskIsoDate(value) || new Date();
+  date.setDate(date.getDate() + Number(count || 0));
+  return getLocalDateStr(date);
+}
+
+function getTaskTimeZoneOffsetText(zone, dateValue, timeValue, secondValue) {
+  const safeZone = isValidTaskTimezone(zone) ? zone : getDefaultTaskTimezone();
+  const date = parseTaskIsoDate(dateValue) || new Date();
+  const time = String(timeValue || '12:00').split(':').map(Number);
+  const resolved = resolveTaskDateTimeInTimezone(dateValue || getLocalDateStr(date), timeValue || '12:00', secondValue || '00', safeZone);
+  const instant = resolved ? new Date(resolved) : new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), time[0] || 0, time[1] || 0, Number(secondValue) || 0));
+  try {
+    const part = new Intl.DateTimeFormat('en-US', { timeZone: safeZone, timeZoneName: 'longOffset' }).formatToParts(instant).find(p => p.type === 'timeZoneName');
+    return (part && part.value ? part.value.replace(/^GMT/, 'UTC') : 'UTC');
+  } catch (e) { return 'UTC'; }
+}
+
+function formatTaskPickerDate(value, options = {}) {
+  const date = parseTaskIsoDate(value);
+  if (!date) return 'اختر التاريخ';
+  return new Intl.DateTimeFormat('ar-SA-u-ca-gregory', { day: 'numeric', month: options.short ? 'short' : 'long', year: options.year === false ? undefined : 'numeric' }).format(date);
+}
+
+function getTaskDateTimeTargetFields(target) {
+  if (target === 'drawer') return {
+    dateTime: document.getElementById('drawerNewTaskDateTimeInput'),
+    second: document.getElementById('drawerNewTaskDueSecond'),
+    timezone: document.getElementById('drawerNewTaskDueTimezone'),
+    button: document.getElementById('btnDrawerTaskDateTimePicker')
+  };
+  if (target === 'quick') return {
+    dateTime: document.getElementById('newTaskDateTimeInput'),
+    second: document.getElementById('newTaskDueSecond'),
+    timezone: document.getElementById('newTaskDueTimezone'),
+    button: document.getElementById('btnQuickTaskDateTimePicker')
+  };
+  return {
+    date: document.getElementById('inlineTaskDueDate'),
+    time: document.getElementById('inlineTaskDueTime'),
+    second: document.getElementById('inlineTaskDueSecond'),
+    timezone: document.getElementById('inlineTaskDueTimezone'),
+    button: document.getElementById('btnInlineTaskDateTimePicker')
+  };
+}
+
+function getTaskPickerTargetDateTime(target) {
+  const fields = getTaskDateTimeTargetFields(target);
+  if (fields.dateTime && fields.dateTime.value) {
+    const parts = fields.dateTime.value.split('T');
+    return { date: parts[0] || '', time: (parts[1] || '').slice(0, 5), second: (parts[1] || '').slice(6, 8) || (fields.second && fields.second.value) || '00' };
+  }
+  return {
+    date: fields.date && fields.date.value || '',
+    time: fields.time && fields.time.value || '',
+    second: fields.second && fields.second.value || '00'
+  };
+}
+
+function formatTaskPickerTimeLabel(timeValue, secondValue, use24Hour = false) {
+  if (!timeValue) return 'بدون وقت';
+  const [rawHour, rawMinute] = String(timeValue).split(':').map(Number);
+  const hour = Number.isFinite(rawHour) ? rawHour : 0;
+  const minute = Number.isFinite(rawMinute) ? rawMinute : 0;
+  const second = String(Number(secondValue) || 0).padStart(2, '0');
+  if (use24Hour) return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${second}`;
+  const period = hour >= 12 ? 'PM' : 'AM';
+  return `${String(hour % 12 || 12).padStart(2, '0')}:${String(minute).padStart(2, '0')}:${second} ${period}`;
+}
+
+function updateTaskDateTimeSummary() {
+  const dateValue = window.taskSelectedDateVal || '';
+  const timeValue = window.taskSelectedTimeVal || '';
+  const secondValue = window.taskSelectedSecondVal || '00';
+  const zone = window.taskSelectedTimezoneVal || getDefaultTaskTimezone();
+  const today = getTaskDateInTimezone(zone);
+  const tomorrow = addDaysToTaskIsoDate(today, 1);
+  let dateText = formatTaskPickerDate(dateValue, { short: true });
+  if (dateValue === today) dateText = 'اليوم';
+  else if (dateValue === tomorrow) dateText = 'غداً';
+  const timeText = formatTaskPickerTimeLabel(timeValue, secondValue, window.taskPickerHourMode === 24);
+  const offset = getTaskTimeZoneOffsetText(zone, dateValue, timeValue, secondValue);
+  const summary = document.getElementById('taskDateTimeSummaryBadge');
+  const dateReadout = document.getElementById('taskPickerDateReadout');
+  const zoneReadout = document.getElementById('taskPickerZoneReadout');
+  if (summary) summary.textContent = dateValue ? `الموعد: ${formatTaskPickerDate(dateValue)}${timeValue ? ` • ${timeText}` : ''} • ${offset} (${zone})` : 'لم يتم تحديد موعد';
+  if (dateReadout) dateReadout.textContent = dateValue ? `${formatTaskPickerDate(dateValue)}${timeValue ? ` • ${timeText}` : ''}` : 'اختر التاريخ والوقت';
+  if (zoneReadout) zoneReadout.textContent = `${offset} · ${zone}`;
+  const dateInput = document.getElementById('taskCustomPickerDate');
+  const timeInput = document.getElementById('taskCustomPickerTime');
+  const secondInput = document.getElementById('taskCustomPickerSecond');
+  if (dateInput) dateInput.value = dateValue;
+  if (timeInput) timeInput.value = timeValue;
+  if (secondInput) secondInput.value = secondValue;
+  const inlineLabel = document.getElementById('lblUnifiedTaskDateTimeDisplay');
+  if (inlineLabel && window.taskDateTimePickerTarget === 'inline') inlineLabel.textContent = `${dateText}${timeValue ? ` • ${timeText}` : ''}`;
+  updateTaskPickerControls();
+}
+
+function updateTaskDateTimeTargetDisplay(target) {
+  const fields = getTaskDateTimeTargetFields(target);
+  if (!fields.button) return;
+  const values = getTaskPickerTargetDateTime(target);
+  const zone = fields.timezone && fields.timezone.value || window.taskSelectedTimezoneVal || getDefaultTaskTimezone();
+  if (!values.date) {
+    fields.button.textContent = target === 'quick' ? '🗓️ الموعد' : (target === 'drawer' ? '🗓️ اختيار تاريخ ووقت التنبيه' : '🗓️ فتح التقويم واختيار الوقت');
+    return;
+  }
+  const today = getTaskDateInTimezone(zone);
+  const tomorrow = addDaysToTaskIsoDate(today, 1);
+  const dateText = values.date === today ? 'اليوم' : (values.date === tomorrow ? 'غداً' : formatTaskPickerDate(values.date, { short: true }));
+  const timeText = formatTaskPickerTimeLabel(values.time, values.second, false);
+  const offset = getTaskTimeZoneOffsetText(zone, values.date, values.time, values.second);
+  fields.button.textContent = target === 'quick' ? `📅 ${dateText}${values.time ? ` · ${timeText}` : ''}` : `📅 ${dateText}${values.time ? ` • ${timeText}` : ''} · ${offset}`;
+  fields.button.title = `${formatTaskPickerDate(values.date)}${values.time ? ` ${timeText}` : ''} · ${zone}`;
+}
+
+function populateTaskTimezoneSelect(selectedZone) {
+  const select = document.getElementById('taskPickerTimezoneSelect');
+  if (!select) return;
+  const safeSelected = isValidTaskTimezone(selectedZone) ? selectedZone : getDefaultTaskTimezone();
+  if (select.dataset.populated !== 'true') {
+    let zones = [];
+    try { zones = typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : []; } catch (e) {}
+    if (!zones.length) zones = ['UTC', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Kuwait', 'Asia/Cairo', 'Europe/London', 'Europe/Paris', 'America/New_York', 'America/Los_Angeles', 'Asia/Tokyo', 'Australia/Sydney'];
+    const favorites = [safeSelected, 'UTC', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Kuwait', 'Asia/Cairo'];
+    const allZones = [...new Set([...favorites, ...zones].filter(isValidTaskTimezone))];
+    const sorted = [...new Set(allZones)].sort((a, b) => a.localeCompare(b));
+    select.innerHTML = sorted.map(zone => `<option value="${escapeHtml(zone)}">${escapeHtml(zone.replace(/_/g, ' '))}</option>`).join('');
+    select.dataset.populated = 'true';
+  }
+  if (!Array.from(select.options).some(option => option.value === safeSelected)) {
+    const option = document.createElement('option');
+    option.value = safeSelected;
+    option.textContent = safeSelected;
+    select.prepend(option);
+  }
+  select.value = safeSelected;
+}
+
+function openTaskDateTimePickerModal(target = 'inline') {
   const modal = document.getElementById('taskDateTimePickerModal');
   if (!modal) return;
-  modal.style.display = 'flex';
-  modal.classList.add('open', 'active');
-  modal.style.setProperty('z-index', '2000050', 'important'); modal.style.position = 'fixed'; modal.style.inset = '0'; modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center';
-
-  const dateInp = document.getElementById('taskCustomPickerDate');
-  const timeInp = document.getElementById('taskCustomPickerTime');
-  const now = new Date();
-  const todayIso = now.toISOString().slice(0, 10);
-
-  if (!window.taskSelectedDateVal) window.taskSelectedDateVal = todayIso;
-  if (dateInp) dateInp.value = window.taskSelectedDateVal;
-  if (timeInp) timeInp.value = window.taskSelectedTimeVal || '10:00';
-
+  const safeTarget = ['inline', 'drawer', 'quick'].includes(target) ? target : 'inline';
+  window.taskDateTimePickerTarget = safeTarget;
+  const fields = getTaskDateTimeTargetFields(safeTarget);
+  const values = getTaskPickerTargetDateTime(safeTarget);
+  const timezone = fields.timezone && fields.timezone.value || window._selectedTaskTimezone || getDefaultTaskTimezone();
+  window.taskSelectedTimezoneVal = isValidTaskTimezone(timezone) ? timezone : getDefaultTaskTimezone();
+  window._selectedTaskTimezone = window.taskSelectedTimezoneVal;
+  window.taskSelectedDateVal = values.date || getTaskDateInTimezone(window.taskSelectedTimezoneVal);
+  window.taskSelectedTimeVal = values.time || '10:00';
+  window.taskSelectedSecondVal = String(Number(values.second) || 0).padStart(2, '0');
+  if (window.taskPickerHourMode !== 12 && window.taskPickerHourMode !== 24) window.taskPickerHourMode = 12;
+  const pickedDate = parseTaskIsoDate(window.taskSelectedDateVal) || new Date();
+  window.taskPickerCalendarMonth = new Date(pickedDate.getFullYear(), pickedDate.getMonth(), 1);
+  populateTaskTimezoneSelect(window.taskSelectedTimezoneVal);
+  renderTaskPickerCalendar();
   updateTaskDateTimeSummary();
+  modal.style.setProperty('z-index', '2000050', 'important');
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.classList.add('open', 'active');
 }
 
 function closeTaskDateTimePickerModal() {
@@ -29785,115 +30111,200 @@ function closeTaskDateTimePickerModal() {
   modal.style.display = 'none';
 }
 
-function selectTaskDatePreset(preset, btn) {
-  document.querySelectorAll('#taskModalDateChips .task-dt-chip').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'transparent';
-    b.style.color = '#94a3b8';
-    b.style.borderColor = 'rgba(255,255,255,0.12)';
-  });
-  if (btn) {
-    btn.classList.add('active');
-    btn.style.background = 'rgba(56, 189, 248, 0.22)';
-    btn.style.color = '#38bdf8';
-    btn.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+function renderTaskPickerCalendar() {
+  const grid = document.getElementById('taskPickerCalendarGrid');
+  const monthLabel = document.getElementById('taskPickerMonthLabel');
+  if (!grid) return;
+  const monthDate = window.taskPickerCalendarMonth || new Date();
+  const year = monthDate.getFullYear();
+  const month = monthDate.getMonth();
+  if (monthLabel) monthLabel.textContent = `${arabicMonths[month]} ${year}`;
+  const firstWeekday = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = getTaskDateInTimezone(window.taskSelectedTimezoneVal || getDefaultTaskTimezone());
+  grid.innerHTML = '';
+  for (let index = 0; index < 42; index++) {
+    const day = index - firstWeekday + 1;
+    if (day < 1 || day > daysInMonth) {
+      const blank = document.createElement('span');
+      blank.setAttribute('aria-hidden', 'true');
+      grid.appendChild(blank);
+      continue;
+    }
+    const dateValue = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = String(day);
+    button.setAttribute('role', 'gridcell');
+    button.setAttribute('aria-label', formatTaskPickerDate(dateValue));
+    button.setAttribute('aria-pressed', String(dateValue === window.taskSelectedDateVal));
+    if (dateValue === today) button.classList.add('is-today');
+    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-selected');
+    button.onclick = () => selectTaskPickerDay(dateValue);
+    grid.appendChild(button);
   }
+}
 
-  const now = new Date();
-  let targetDate = new Date(now);
+function changeTaskPickerMonth(amount) {
+  const date = window.taskPickerCalendarMonth || new Date();
+  window.taskPickerCalendarMonth = new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  renderTaskPickerCalendar();
+}
 
-  if (preset === 'today') {
-    // today
-  } else if (preset === 'tomorrow') {
-    targetDate.setDate(now.getDate() + 1);
-  } else if (preset === 'after2days') {
-    targetDate.setDate(now.getDate() + 2);
-  } else if (preset === 'friday') {
-    const day = now.getDay();
-    const diff = (5 - day + 7) % 7 || 7;
-    targetDate.setDate(now.getDate() + diff);
-  } else if (preset === 'nextweek') {
-    targetDate.setDate(now.getDate() + 7);
-  }
-
-  window.taskSelectedDateVal = targetDate.toISOString().slice(0, 10);
-  const dateInp = document.getElementById('taskCustomPickerDate');
-  if (dateInp) dateInp.value = window.taskSelectedDateVal;
-
+function selectTaskPickerDay(dateValue) {
+  window.taskSelectedDateVal = dateValue;
+  renderTaskPickerCalendar();
   updateTaskDateTimeSummary();
 }
 
-function onTaskCustomDateChange(val) {
-  window.taskSelectedDateVal = val;
-  document.querySelectorAll('#taskModalDateChips .task-dt-chip').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'transparent';
-    b.style.color = '#94a3b8';
-  });
+function getTaskPickerTimeParts() {
+  const [hour, minute] = String(window.taskSelectedTimeVal || '10:00').split(':').map(Number);
+  return { hour: Number.isFinite(hour) ? hour : 10, minute: Number.isFinite(minute) ? minute : 0, second: Number(window.taskSelectedSecondVal) || 0 };
+}
+
+function updateTaskPickerControls() {
+  const parts = getTaskPickerTimeParts();
+  const mode = window.taskPickerHourMode === 24 ? 24 : 12;
+  const hourValue = document.getElementById('taskPickerHourValue');
+  const minuteValue = document.getElementById('taskPickerMinuteValue');
+  const secondValue = document.getElementById('taskPickerSecondValue');
+  const wheel = document.getElementById('taskPickerTimeWheels');
+  const period = document.getElementById('taskPickerPeriodControls');
+  const noTime = document.getElementById('taskPickerNoTimeButton');
+  const am = document.getElementById('taskPickerAmButton');
+  const pm = document.getElementById('taskPickerPmButton');
+  const button12 = document.getElementById('taskPicker12HourButton');
+  const button24 = document.getElementById('taskPicker24HourButton');
+  const hourDisplay = mode === 24 ? parts.hour : (parts.hour % 12 || 12);
+  if (hourValue) hourValue.textContent = String(hourDisplay).padStart(2, '0');
+  if (minuteValue) minuteValue.textContent = String(parts.minute).padStart(2, '0');
+  if (secondValue) secondValue.textContent = String(parts.second).padStart(2, '0');
+  if (period) period.style.display = mode === 24 ? 'none' : 'flex';
+  if (wheel) wheel.classList.toggle('is-disabled', !window.taskSelectedTimeVal);
+  if (noTime) noTime.classList.toggle('is-active', !window.taskSelectedTimeVal);
+  if (noTime) noTime.setAttribute('aria-pressed', String(!window.taskSelectedTimeVal));
+  if (am) { am.classList.toggle('is-active', parts.hour < 12); am.setAttribute('aria-pressed', String(parts.hour < 12)); }
+  if (pm) { pm.classList.toggle('is-active', parts.hour >= 12); pm.setAttribute('aria-pressed', String(parts.hour >= 12)); }
+  if (button12) { button12.classList.toggle('is-active', mode === 12); button12.setAttribute('aria-pressed', String(mode === 12)); }
+  if (button24) { button24.classList.toggle('is-active', mode === 24); button24.setAttribute('aria-pressed', String(mode === 24)); }
+}
+
+function setTaskPickerHourMode(mode) {
+  window.taskPickerHourMode = Number(mode) === 24 ? 24 : 12;
+  updateTaskDateTimeSummary();
+}
+
+function updateTaskPickerTime(hour, minute, second) {
+  window.taskSelectedTimeVal = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  window.taskSelectedSecondVal = String(second).padStart(2, '0');
+  updateTaskDateTimeSummary();
+}
+
+function adjustTaskPickerTime(part, amount) {
+  let { hour, minute, second } = getTaskPickerTimeParts();
+  if (part === 'hour') {
+    hour = (hour + amount + 24) % 24;
+  } else if (part === 'minute') minute = (minute + amount + 60) % 60;
+  else second = (second + amount + 60) % 60;
+  updateTaskPickerTime(hour, minute, second);
+}
+
+function setTaskPickerPeriod(periodValue) {
+  let { hour, minute, second } = getTaskPickerTimeParts();
+  const hour12 = hour % 12;
+  hour = hour12 + (periodValue === 'PM' ? 12 : 0);
+  updateTaskPickerTime(hour, minute, second);
+}
+
+function toggleTaskPickerNoTime() {
+  if (window.taskSelectedTimeVal) window.taskSelectedTimeVal = '';
+  else window.taskSelectedTimeVal = '10:00';
+  window.taskSelectedSecondVal = '00';
+  updateTaskDateTimeSummary();
+}
+
+function onTaskPickerTimezoneChange(value) {
+  if (!isValidTaskTimezone(value)) return;
+  window.taskSelectedTimezoneVal = value;
+  window._selectedTaskTimezone = value;
+  renderTaskPickerCalendar();
+  updateTaskDateTimeSummary();
+}
+
+function selectTaskDatePreset(preset, btn) {
+  const zone = window.taskSelectedTimezoneVal || getDefaultTaskTimezone();
+  let dateValue = getTaskDateInTimezone(zone);
+  if (preset === 'tomorrow') dateValue = addDaysToTaskIsoDate(dateValue, 1);
+  else if (preset === 'after2days') dateValue = addDaysToTaskIsoDate(dateValue, 2);
+  else if (preset === 'friday') {
+    const date = parseTaskIsoDate(dateValue) || new Date();
+    dateValue = addDaysToTaskIsoDate(dateValue, ((5 - date.getDay() + 7) % 7) || 7);
+  } else if (preset === 'nextweek') dateValue = addDaysToTaskIsoDate(dateValue, 7);
+  window.taskSelectedDateVal = dateValue;
+  if (btn) btn.classList.add('active');
+  renderTaskPickerCalendar();
+  updateTaskDateTimeSummary();
+}
+
+function onTaskCustomDateChange(value) {
+  window.taskSelectedDateVal = value;
+  renderTaskPickerCalendar();
   updateTaskDateTimeSummary();
 }
 
 function selectTaskTimePreset(timeStr, btn) {
-  document.querySelectorAll('#taskModalTimeChips .task-time-chip').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'transparent';
-    b.style.color = '#94a3b8';
-    b.style.borderColor = 'rgba(255,255,255,0.12)';
-  });
-  if (btn) {
-    btn.classList.add('active');
-    btn.style.background = 'rgba(168, 85, 247, 0.22)';
-    btn.style.color = '#c084fc';
-    btn.style.borderColor = 'rgba(168, 85, 247, 0.45)';
-  }
-
-  window.taskSelectedTimeVal = timeStr;
-  const timeInp = document.getElementById('taskCustomPickerTime');
-  if (timeInp) timeInp.value = timeStr;
-
+  window.taskSelectedTimeVal = timeStr || '';
+  window.taskSelectedSecondVal = '00';
+  if (btn) btn.classList.add('active');
   updateTaskDateTimeSummary();
 }
 
-function onTaskCustomTimeChange(val) {
-  window.taskSelectedTimeVal = val;
-  document.querySelectorAll('#taskModalTimeChips .task-time-chip').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = 'transparent';
-    b.style.color = '#94a3b8';
-  });
+function onTaskCustomTimeChange(value) {
+  window.taskSelectedTimeVal = value || '';
   updateTaskDateTimeSummary();
+}
+
+function resolveTaskDateTimeInTimezone(dateValue, timeValue, secondValue, zone) {
+  const date = parseTaskIsoDate(dateValue);
+  if (!date || !timeValue || !isValidTaskTimezone(zone)) return '';
+  const [hour, minute] = timeValue.split(':').map(Number);
+  const wanted = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), hour || 0, minute || 0, Number(secondValue) || 0);
+  let candidate = wanted;
+  try {
+    const formatter = new Intl.DateTimeFormat('en-US', { timeZone: zone, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' });
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const parts = Object.fromEntries(formatter.formatToParts(new Date(candidate)).filter(p => p.type !== 'literal').map(p => [p.type, Number(p.value)]));
+      const represented = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+      const delta = wanted - represented;
+      if (!delta) break;
+      candidate += delta;
+    }
+    return new Date(candidate).toISOString();
+  } catch (e) { return ''; }
+}
+
+function writeTaskPickerSelectionToTarget(target) {
+  const fields = getTaskDateTimeTargetFields(target);
+  const dateValue = window.taskSelectedDateVal || '';
+  const timeValue = window.taskSelectedTimeVal || '';
+  const secondValue = timeValue ? String(Number(window.taskSelectedSecondVal) || 0).padStart(2, '0') : '00';
+  const timezone = window.taskSelectedTimezoneVal || getDefaultTaskTimezone();
+  if (fields.dateTime) fields.dateTime.value = dateValue && timeValue ? `${dateValue}T${timeValue}` : '';
+  if (fields.date) fields.date.value = dateValue;
+  if (fields.time) fields.time.value = timeValue;
+  if (fields.second) fields.second.value = secondValue;
+  if (fields.timezone) fields.timezone.value = timezone;
+  updateTaskDateTimeTargetDisplay(target);
+  if (target === 'inline') updateUnifiedTaskDateTimeLabel();
 }
 
 function confirmTaskDateTimePicker() {
-  const lbl = document.getElementById('lblQuickTaskDateTimeTrigger');
-  const btn = document.getElementById('btnQuickTaskDateTimeTrigger');
-  if (!window.taskSelectedDateVal) {
-    window.taskSelectedDateVal = new Date().toISOString().slice(0, 10);
-  }
-
-  const now = new Date();
-  const todayIso = now.toISOString().slice(0, 10);
-  const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  const tomorrowIso = tomorrow.toISOString().slice(0, 10);
-
-  let dateName = window.taskSelectedDateVal;
-  if (window.taskSelectedDateVal === todayIso) dateName = 'اليوم';
-  else if (window.taskSelectedDateVal === tomorrowIso) dateName = 'غداً';
-
-  const timeText = formatTimeReadable(window.taskSelectedTimeVal);
-  const fullLabel = `📅 ${dateName} ${timeText ? '(' + timeText + ')' : ''}`;
-
-  if (lbl) lbl.textContent = fullLabel;
-  if (btn) {
-    btn.style.background = 'rgba(168, 85, 247, 0.35)';
-    btn.style.borderColor = '#c084fc';
-    btn.style.color = '#ffffff';
-  }
-
+  if (!window.taskSelectedDateVal) window.taskSelectedDateVal = getTaskDateInTimezone(window.taskSelectedTimezoneVal || getDefaultTaskTimezone());
+  const target = window.taskDateTimePickerTarget || 'inline';
   window._activeQuickTaskDate = window.taskSelectedDateVal;
-  window._activeQuickTaskTime = window.taskSelectedTimeVal;
-
+  window._activeQuickTaskTime = window.taskSelectedTimeVal || '';
+  writeTaskPickerSelectionToTarget(target);
+  const fullLabel = `${formatTaskPickerDate(window.taskSelectedDateVal)}${window.taskSelectedTimeVal ? ` • ${formatTaskPickerTimeLabel(window.taskSelectedTimeVal, window.taskSelectedSecondVal, false)}` : ''} • ${getTaskTimeZoneOffsetText(window.taskSelectedTimezoneVal, window.taskSelectedDateVal, window.taskSelectedTimeVal, window.taskSelectedSecondVal)}`;
   closeTaskDateTimePickerModal();
   if (typeof showToast === 'function') showToast(`✅ تم تحديد موعد المهمة: ${fullLabel}`);
 }
@@ -29901,18 +30312,10 @@ function confirmTaskDateTimePicker() {
 function clearTaskDateTimePicker() {
   window.taskSelectedDateVal = '';
   window.taskSelectedTimeVal = '';
+  window.taskSelectedSecondVal = '00';
   window._activeQuickTaskDate = '';
   window._activeQuickTaskTime = '';
-
-  const lbl = document.getElementById('lblQuickTaskDateTimeTrigger');
-  const btn = document.getElementById('btnQuickTaskDateTimeTrigger');
-  if (lbl) lbl.textContent = '📅 تحديد التاريخ والساعة معاً';
-  if (btn) {
-    btn.style.background = 'rgba(168, 85, 247, 0.22)';
-    btn.style.borderColor = 'rgba(168, 85, 247, 0.55)';
-    btn.style.color = '#e9d5ff';
-  }
-
+  writeTaskPickerSelectionToTarget(window.taskDateTimePickerTarget || 'inline');
   closeTaskDateTimePickerModal();
   if (typeof showToast === 'function') showToast('تم مسح موعد المهمة');
 }
@@ -29927,7 +30330,7 @@ function getTodoTasks() {
   } catch (e) {
     console.warn('Error reading tasks:', e);
   }
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getTaskDateInTimezone(getDefaultTaskTimezone());
   const sample = [
     {
       id: 'task_' + Date.now() + '_1',
@@ -29986,7 +30389,8 @@ window.openNewTaskDrawerModal = openNewTaskDrawerModal;
 function openTasksFullScreenModal() {
   const inlineDate = document.getElementById('inlineTaskDueDate');
   if (inlineDate && !inlineDate.value) {
-    inlineDate.value = new Date().toISOString().slice(0, 10);
+    inlineDate.value = getTaskDateInTimezone(document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone());
+    updateUnifiedTaskDateTimeLabel();
   }
   const modal = document.getElementById('tasksFullScreenModal');
   if (modal) {
@@ -30151,7 +30555,7 @@ function selectTaskInlineTag(tagKey, element) {
   };
   if (badge) badge.textContent = tagLabels[tagKey] || tagKey;
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayStr = getTaskDateInTimezone(document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone());
   const dateInp = document.getElementById('inlineTaskDueDate');
 
   if (tagKey === 'my_day') {
@@ -30160,9 +30564,7 @@ function selectTaskInlineTag(tagKey, element) {
     if (todayBtn) selectInlineDatePreset('today', todayBtn);
   } else if (tagKey === 'planned') {
     if (dateInp && dateInp.value === todayStr) {
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+      const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
       dateInp.value = tomorrowStr;
       const tmrwBtn = document.querySelector('#inlineDatePresetGroup [data-preset="tomorrow"]');
       if (tmrwBtn) selectInlineDatePreset('tomorrow', tmrwBtn);
@@ -30181,19 +30583,15 @@ function selectInlineDatePreset(preset, element) {
   chips.forEach(c => c.classList.remove('active'));
   if (element) element.classList.add('active');
 
-  const now = new Date();
-  let targetStr = now.toISOString().slice(0, 10);
-
-  if (preset === 'tomorrow') {
-    now.setDate(now.getDate() + 1);
-    targetStr = now.toISOString().slice(0, 10);
-  } else if (preset === 'after_two_days') {
-    now.setDate(now.getDate() + 2);
-    targetStr = now.toISOString().slice(0, 10);
-  }
+  const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
+  let targetStr = getTaskDateInTimezone(zone);
+  if (preset === 'tomorrow') targetStr = addDaysToTaskIsoDate(targetStr, 1);
+  else if (preset === 'after_two_days') targetStr = addDaysToTaskIsoDate(targetStr, 2);
 
   const dateInp = document.getElementById('inlineTaskDueDate');
   if (dateInp) dateInp.value = targetStr;
+  const pickerDate = document.getElementById('taskCustomPickerDate');
+  if (pickerDate) pickerDate.value = targetStr;
 
   updateUnifiedTaskDateTimeLabel();
 }
@@ -30202,10 +30600,9 @@ function onInlineDateCustomChange(val) {
   const chips = document.querySelectorAll('#inlineDatePresetGroup .btn-inline-dt-preset');
   chips.forEach(c => c.classList.remove('active'));
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+  const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
+  const todayStr = getTaskDateInTimezone(zone);
+  const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
 
   if (val === todayStr) {
     const b = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
@@ -30225,6 +30622,8 @@ function selectInlineTimePreset(timeStr, element) {
 
   const timeInp = document.getElementById('inlineTaskDueTime');
   if (timeInp) timeInp.value = timeStr;
+  const secondInp = document.getElementById('inlineTaskDueSecond');
+  if (secondInp) secondInp.value = '00';
 
   updateUnifiedTaskDateTimeLabel();
 }
@@ -30247,22 +30646,25 @@ function updateUnifiedTaskDateTimeLabel() {
 
   const dateVal = dateInp ? dateInp.value : '';
   const timeVal = timeInp ? timeInp.value : '';
+  if (!dateVal) {
+    lbl.textContent = 'بدون موعد';
+    updateTaskDateTimeTargetDisplay('inline');
+    return;
+  }
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+  const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
+  const todayStr = getTaskDateInTimezone(zone);
+  const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
 
   let dateText = dateVal;
   if (dateVal === todayStr) dateText = 'اليوم';
   else if (dateVal === tomorrowStr) dateText = 'غداً';
 
-  let timeText = '';
-  if (timeVal) {
-    timeText = ' • ' + formatTime12hArabic(timeVal);
-  }
-
-  lbl.textContent = `${dateText || 'اليوم'}${timeText}`;
+  const secondVal = document.getElementById('inlineTaskDueSecond')?.value || '00';
+  const timeText = timeVal ? ` • ${formatTaskPickerTimeLabel(timeVal, secondVal, false)}` : '';
+  const offsetText = dateVal ? ` · ${getTaskTimeZoneOffsetText(zone, dateVal, timeVal, secondVal)}` : '';
+  lbl.textContent = `${dateText || 'اليوم'}${timeText}${offsetText}`;
+  updateTaskDateTimeTargetDisplay('inline');
 }
 
 function formatTime12hArabic(val) {
@@ -30515,9 +30917,12 @@ function handleQuickTaskAdd() {
   const now = new Date();
   const dateInp = document.getElementById('inlineTaskDueDate');
   const timeInp = document.getElementById('inlineTaskDueTime');
-
-  const dueDate = (dateInp && dateInp.value) ? dateInp.value : now.toISOString().slice(0, 10);
+  const timezoneInp = document.getElementById('inlineTaskDueTimezone');
+  const secondInp = document.getElementById('inlineTaskDueSecond');
+  const dueTimezone = timezoneInp && timezoneInp.value || window._selectedTaskTimezone || getDefaultTaskTimezone();
+  const dueDate = (dateInp && dateInp.value) ? dateInp.value : getTaskDateInTimezone(dueTimezone, now);
   const dueTime = (timeInp && timeInp.value) ? timeInp.value : '';
+  const dueSecond = dueTime && secondInp ? String(Number(secondInp.value) || 0).padStart(2, '0') : '00';
 
   const tag = window._selectedTaskTag || 'general';
   const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
@@ -30528,6 +30933,9 @@ function handleQuickTaskAdd() {
     title: title,
     dueDate: dueDate,
     dueTime: dueTime,
+    dueSecond: dueSecond,
+    dueTimeZone: dueTimezone,
+    dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, dueTimezone) || null,
     tag: tag,
     category: tag, // Ensures seamless matching with category filters
     assignedMember: member,
@@ -30555,8 +30963,7 @@ function updateTasksProductivityKPIs() {
   const tasks = getTodoTasks();
   const total = tasks.length;
   const done = tasks.filter(t => t.completed).length;
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const overdue = tasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr).length;
+  const overdue = tasks.filter(isTaskOverdueByDate).length;
   const pending = total - done;
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
@@ -30765,11 +31172,9 @@ function renderTasksProList() {
   const query = searchInp ? searchInp.value.trim().toLowerCase() : '';
 
   let tasks = getTodoTasks();
-  const todayStr = new Date().toISOString().slice(0, 10);
-
   // Apply Section Filter
   if (window.currentTaskSectionFilter === 'my_day') {
-    tasks = tasks.filter(t => t.dueDate === todayStr);
+    tasks = tasks.filter(isTaskDueTodayByDate);
   } else if (window.currentTaskSectionFilter === 'important') {
     tasks = tasks.filter(t => t.priority === 'high');
   } else if (window.currentTaskSectionFilter === 'planned') {
@@ -30777,7 +31182,7 @@ function renderTasksProList() {
   } else if (window.currentTaskSectionFilter === 'shopping') {
     tasks = tasks.filter(t => t.category === 'shopping');
   } else if (window.currentTaskSectionFilter === 'overdue') {
-    tasks = tasks.filter(t => !t.completed && t.dueDate && t.dueDate < todayStr);
+    tasks = tasks.filter(isTaskOverdueByDate);
   } else if (window.currentTaskSectionFilter === 'completed') {
     tasks = tasks.filter(t => t.completed);
   }
@@ -30814,8 +31219,8 @@ function renderTasksProList() {
 
   container.innerHTML = '';
   tasks.forEach(t => {
-    const isOverdue = !t.completed && t.dueDate && t.dueDate < todayStr;
-    const isDueToday = t.dueDate === todayStr;
+    const isOverdue = isTaskOverdueByDate(t);
+    const isDueToday = isTaskDueTodayByDate(t);
     const subtasks = t.subtasks || [];
     const doneSubs = subtasks.filter(s => s.completed).length;
 
@@ -30846,7 +31251,8 @@ function renderTasksProList() {
             <div style="font-size: 0.66rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; margin-top: 1px; flex-wrap: wrap;">
               ${renderTaskTagBadge(t)}
               ${t.dueDate ? `<span style="color: ${isOverdue ? '#f43f5e' : (isDueToday ? '#38bdf8' : '#94a3b8')}; font-weight: 800;">📅 ${t.dueDate}</span>` : ''}
-              ${t.dueTime ? `<span>⏰ ${t.dueTime}</span>` : ''}
+              ${t.dueTime ? `<span>⏰ ${escapeHtml(formatTaskTimeDisplay(t))}</span>` : ''}
+              ${t.dueTimeZone && t.dueTime ? `<span title="${escapeHtml(t.dueTimeZone)}" style="color:#7dd3fc; font-size:0.60rem; font-weight:800;">${escapeHtml(getTaskTimezoneBadge(t))}</span>` : ''}
               ${t.photo ? `<span style="color: #38bdf8; font-weight: 800;"><i class="fa-solid fa-image"></i> مرفق صورة</span>` : ''}
               ${subtasks.length > 0 ? `<span style="color: #34d399; font-weight: 800;">(${doneSubs}/${subtasks.length} خطوات)</span>` : ''}
             </div>
@@ -31083,7 +31489,8 @@ function selectTasksCalendarDay(dateStr) {
             <span style="background: ${tagBg}; color: ${tagColor}; padding: 1px 7px; border-radius: 6px; font-weight: 850; border: 1px solid ${tagColor}40;">
               ${tagText}
             </span>
-            ${t.dueTime ? `<span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-regular fa-clock" style="font-size: 0.62rem;"></i> ${t.dueTime}</span>` : ''}
+            ${t.dueTime ? `<span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-regular fa-clock" style="font-size: 0.62rem;"></i> ${escapeHtml(formatTaskTimeDisplay(t))}</span>` : ''}
+            ${t.dueTimeZone && t.dueTime ? `<span title="${escapeHtml(t.dueTimeZone)}" style="background:rgba(56,189,248,0.10); padding:1px 6px; border-radius:5px; color:#7dd3fc; font-weight:750;">${escapeHtml(getTaskTimezoneBadge(t))}</span>` : ''}
             <span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-solid fa-user" style="font-size: 0.62rem;"></i> ${escapeHtml(t.assignedMember || 'البيت')}</span>
             ${subtasks.length > 0 ? `<span style="background: rgba(168,85,247,0.15); color: #c084fc; padding: 1px 6px; border-radius: 5px; font-weight: 750;"><i class="fa-solid fa-list-check" style="font-size: 0.62rem;"></i> ${subDoneCount}/${subtasks.length} فرعية</span>` : ''}
             ${t.photo ? `
@@ -32318,16 +32725,87 @@ function handleTaskPhotoUpload(event) { handlePrimaryTaskPhotoChosen(event); }
 window.handleTaskPhotoUpload = handleTaskPhotoUpload;
 
 function setTaskDateTimePreset(preset) {
-  if (typeof selectTaskDatePreset === 'function') {
-    selectTaskDatePreset(preset);
+  const target = 'drawer';
+  const fields = getTaskDateTimeTargetFields(target);
+  const zone = fields.timezone && fields.timezone.value || getDefaultTaskTimezone();
+  if (preset === 'clear') {
+    if (fields.dateTime) fields.dateTime.value = '';
+    if (fields.second) fields.second.value = '00';
+    if (fields.timezone) fields.timezone.value = '';
+    updateTaskDateTimeTargetDisplay(target);
+    return;
   }
+  let dateValue = getTaskDateInTimezone(zone);
+  let timeValue = '10:00';
+  if (preset === 'today_evening') timeValue = '20:00';
+  else if (preset === 'tomorrow_morning') { dateValue = addDaysToTaskIsoDate(dateValue, 1); timeValue = '10:00'; }
+  else if (preset === 'after_two_days') dateValue = addDaysToTaskIsoDate(dateValue, 2);
+  else if (preset === 'weekend') {
+    const date = parseTaskIsoDate(dateValue) || new Date();
+    dateValue = addDaysToTaskIsoDate(dateValue, ((5 - date.getDay() + 7) % 7) || 7);
+  }
+  if (fields.dateTime) fields.dateTime.value = `${dateValue}T${timeValue}`;
+  if (fields.second) fields.second.value = '00';
+  if (fields.timezone) fields.timezone.value = zone;
+  updateTaskDateTimeTargetDisplay(target);
 }
 window.setTaskDateTimePreset = setTaskDateTimePreset;
 
-function handleDrawerAddNewTask() { handleQuickTaskAdd(); }
+function createTaskFromDateTimeForm(titleId, target) {
+  const titleInput = document.getElementById(titleId);
+  const title = titleInput && titleInput.value ? titleInput.value.trim() : '';
+  if (!title) return false;
+  const fields = getTaskDateTimeTargetFields(target);
+  const values = getTaskPickerTargetDateTime(target);
+  const timezone = fields.timezone && fields.timezone.value || getDefaultTaskTimezone();
+  const dueDate = values.date || getTaskDateInTimezone(timezone);
+  const dueTime = values.time || '';
+  const dueSecond = dueTime ? String(Number(values.second) || 0).padStart(2, '0') : '00';
+  const tagSelect = target === 'drawer' ? document.getElementById('drawerNewTaskTag') : null;
+  const prioritySelect = target === 'drawer' ? document.getElementById('drawerNewTaskPriority') : null;
+  const tag = tagSelect && tagSelect.value || 'general';
+  const photo = window.currentQuickTaskPhoto || null;
+  const task = {
+    id: 'task_' + Date.now(),
+    title,
+    dueDate,
+    dueTime,
+    dueSecond,
+    dueTimeZone: timezone,
+    dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, timezone) || null,
+    tag,
+    category: tag,
+    assignedMember: 'البيت',
+    priority: prioritySelect && prioritySelect.value || 'normal',
+    completed: false,
+    photo,
+    createdAt: new Date().toISOString(),
+    subtasks: []
+  };
+  const tasks = getTodoTasks();
+  tasks.unshift(task);
+  saveTodoTasks(tasks);
+  titleInput.value = '';
+  if (fields.dateTime) fields.dateTime.value = '';
+  if (fields.second) fields.second.value = '00';
+  if (fields.timezone) fields.timezone.value = '';
+  updateTaskDateTimeTargetDisplay(target);
+  if (typeof clearTaskPendingPhoto === 'function') clearTaskPendingPhoto();
+  renderTasksProList();
+  updateTasksProductivityKPIs();
+  if (target === 'drawer') closeModal('newTaskDrawerModal');
+  if (typeof showToast === 'function') showToast('تمت إضافة المهمة بنجاح ✓');
+  return true;
+}
+
+function handleDrawerAddNewTask() {
+  if (!createTaskFromDateTimeForm('drawerNewTaskTitleInput', 'drawer')) handleQuickTaskAdd();
+}
 window.handleDrawerAddNewTask = handleDrawerAddNewTask;
 
-function handleAddNewTask() { handleQuickTaskAdd(); }
+function handleAddNewTask() {
+  if (!createTaskFromDateTimeForm('newTaskTitleInput', 'quick')) handleQuickTaskAdd();
+}
 window.handleAddNewTask = handleAddNewTask;
 
 // 8. GOOGLE DRIVE SYNC & BACKUPS
@@ -33589,7 +34067,10 @@ window.filterArchiveType = filterArchiveType;
           <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: #a855f7; pointer-events: none;">
             <i class="fa-regular fa-clock"></i>
           </span>
-          <input type="datetime-local" id="drawerNewTaskDateTimeInput" class="task-datetime-input" style="width: 100%; height: 42px; border-radius: 10px; background: rgba(30, 41, 59, 0.85); border: 1.2px solid rgba(168, 85, 247, 0.35); color: #cbd5e1; font-size: 0.80rem; font-weight: 700; padding: 0 36px 0 10px; outline: none; box-sizing: border-box;">
+          <input type="datetime-local" id="drawerNewTaskDateTimeInput" class="task-datetime-input" hidden>
+          <button type="button" id="btnDrawerTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('drawer')">🗓️ اختيار تاريخ ووقت التنبيه</button>
+          <input type="hidden" id="drawerNewTaskDueSecond" value="00">
+          <input type="hidden" id="drawerNewTaskDueTimezone">
         </div>
 
         <!-- أزرار الاختصارات الذكية للموعد -->
@@ -33701,7 +34182,10 @@ window.filterArchiveType = filterArchiveType;
       <!-- إدخال مهمة جديدة سريعة -->
       <form onsubmit="event.preventDefault(); handleAddNewTask();" style="display: flex; gap: 6px; margin-bottom: 10px;">
         <input type="text" id="newTaskTitleInput" class="form-input-custom" placeholder="+ إضافة مهمة جديدة... (اضغط Enter)" required style="flex: 1; height: 38px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 10px; padding: 0 10px; color: #f8fafc; font-size: 0.78rem; font-weight: 700; outline: none;">
-        <input type="datetime-local" id="newTaskDateTimeInput" class="task-datetime-input" title="تحديد التاريخ والوقت في نفس الاختيار" style="width: 145px; height: 38px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 10px; padding: 0 6px; color: #c084fc; font-size: 0.70rem; outline: none;">
+        <input type="datetime-local" id="newTaskDateTimeInput" class="task-datetime-input" hidden>
+        <button type="button" id="btnQuickTaskDateTimePicker" class="task-picker-appointment-button" style="width: 145px; min-height: 38px; padding: 4px; font-size: 0.68rem;" onclick="openTaskDateTimePickerModal('quick')">🗓️ الموعد</button>
+        <input type="hidden" id="newTaskDueSecond" value="00">
+        <input type="hidden" id="newTaskDueTimezone">
         <button type="submit" style="background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; width: 40px; height: 38px; border-radius: 10px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
           <i class="fa-solid fa-plus"></i>
         </button>
@@ -33794,70 +34278,69 @@ window.filterArchiveType = filterArchiveType;
     <!-- =========================================================================
          نافذة منتقي الوقت والتاريخ المتطورة للمهام (Touch-Friendly Task Date & Time Picker Modal)
          ========================================================================= -->
-    <div class="modal-overlay modal-overlay-custom" id="taskDateTimePickerModal" style="position: fixed; inset: 0; z-index: 2000000 !important; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.75);">
-      <div class="modal-content-card" style="max-width: 440px; border-radius: 18px; padding: 16px 18px; background: #0c1429; border: 1.2px solid rgba(168, 85, 247, 0.45); box-shadow: 0 12px 40px rgba(0,0,0,0.85);">
-        
-        <!-- الرأس -->
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(168,85,247,0.22); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 1rem;">
-              <i class="fa-regular fa-clock"></i>
-            </div>
-            <div>
-              <div style="font-weight: 900; color: #f8fafc; font-size: 0.94rem;">تحديد موعد وتوقيت المهمة</div>
-              <div style="font-size: 0.65rem; color: #94a3b8;">اختر اليوم والوقت بلمسة واحدة بدون تداخل</div>
-            </div>
+    <div class="modal-overlay modal-overlay-custom" id="taskDateTimePickerModal" style="position: fixed; inset: 0; z-index: 2000000 !important; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.75); padding: 12px; box-sizing: border-box;">
+      <div class="modal-content-card" style="width: min(100%, 360px); max-height: calc(100vh - 24px); overflow-y: auto; border-radius: 14px; padding: 14px; background: #0c1429; border: 1.2px solid rgba(56,189,248,0.48); box-shadow: 0 12px 40px rgba(0,0,0,0.85);">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;">
+          <div style="min-width:0;">
+            <div id="taskPickerDateReadout" style="font-weight:900; color:#f8fafc; font-size:0.88rem;">اختر التاريخ والوقت</div>
+            <div id="taskPickerZoneReadout" style="font-size:0.66rem; color:#94a3b8; margin-top:3px; direction:ltr; text-align:right;">UTC · المنطقة الزمنية</div>
           </div>
-          <button type="button" class="btn-close-drawer" onclick="closeTaskDateTimePickerModal()">&times;</button>
+          <button type="button" class="btn-close-drawer" onclick="closeTaskDateTimePickerModal()" aria-label="إغلاق">&times;</button>
         </div>
 
-        <!-- 1. اختيار اليوم (رقائق سريعة + تقويم واضح) -->
-        <div style="margin-bottom: 12px;">
-          <div style="font-size: 0.76rem; font-weight: 850; color: #cbd5e1; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-regular fa-calendar" style="color: #38bdf8;"></i>
-            <span>اليوم المستهدف:</span>
-          </div>
-          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;" id="taskModalDateChips">
-            <button type="button" class="task-dt-chip active" id="chipModalDateToday" onclick="selectTaskDatePreset('today', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: rgba(56, 189, 248, 0.22); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.45); cursor: pointer;">☀️ اليوم</button>
-            <button type="button" class="task-dt-chip" id="chipModalDateTomorrow" onclick="selectTaskDatePreset('tomorrow', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">🌅 غداً</button>
-            <button type="button" class="task-dt-chip" id="chipModalDateAfter2" onclick="selectTaskDatePreset('after2days', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">📅 بعد يومين</button>
-            <button type="button" class="task-dt-chip" id="chipModalDateFriday" onclick="selectTaskDatePreset('friday', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">🕌 الجمعة</button>
-            <button type="button" class="task-dt-chip" id="chipModalDateNextWeek" onclick="selectTaskDatePreset('nextweek', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">🗓️ الأسبوع القادم</button>
-          </div>
-          <!-- حقل تاريخ واضح ومنفصل -->
-          <input type="date" id="taskCustomPickerDate" class="form-input-custom" onchange="onTaskCustomDateChange(this.value)" style="width: 100%; height: 38px; border-radius: 9px; font-size: 0.85rem; font-weight: 800; background: rgba(15,23,42,0.9); color: #f8fafc; border: 1.2px solid rgba(255,255,255,0.15); padding: 0 10px; box-sizing: border-box;">
+        <div class="task-picker-month-heading">
+          <button type="button" onclick="changeTaskPickerMonth(-1)" aria-label="الشهر السابق">‹</button>
+          <strong id="taskPickerMonthLabel" style="color:#e2e8f0; font-size:0.82rem;"></strong>
+          <button type="button" onclick="changeTaskPickerMonth(1)" aria-label="الشهر التالي">›</button>
+        </div>
+        <div class="task-picker-weekdays" aria-hidden="true">
+          <span>أحد</span><span>إثن</span><span>ثلا</span><span>أرب</span><span>خمي</span><span>جمع</span><span>سبت</span>
+        </div>
+        <div id="taskPickerCalendarGrid" class="task-picker-calendar-grid" role="grid" aria-label="تقويم اختيار موعد المهمة"></div>
+
+        <div style="margin:12px 0 8px;">
+          <label for="taskPickerTimezoneSelect" style="display:block; color:#cbd5e1; font-size:0.70rem; font-weight:850; margin-bottom:5px;">المنطقة الزمنية</label>
+          <select id="taskPickerTimezoneSelect" onchange="onTaskPickerTimezoneChange(this.value)" style="width:100%; height:34px; border-radius:8px; background:#101b32; color:#e2e8f0; border:1px solid rgba(255,255,255,0.16); padding:0 8px; font-size:0.68rem; direction:ltr;" aria-label="المنطقة الزمنية"></select>
         </div>
 
-        <!-- 2. اختيار الساعة والتوقيت (رقائق سريعة + وقت واضح) -->
-        <div style="margin-bottom: 14px;">
-          <div style="font-size: 0.76rem; font-weight: 850; color: #cbd5e1; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-regular fa-clock" style="color: #c084fc;"></i>
-            <span>الساعة والتوقيت:</span>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin:10px 0 7px;">
+          <span style="color:#cbd5e1; font-size:0.72rem; font-weight:850;">الساعة والدقائق والثواني</span>
+          <button type="button" id="taskPickerNoTimeButton" onclick="toggleTaskPickerNoTime()" style="border:1px solid rgba(255,255,255,0.14); border-radius:7px; background:rgba(255,255,255,0.06); color:#cbd5e1; padding:4px 8px; font-size:0.64rem; font-weight:800; cursor:pointer;">بدون وقت</button>
+        </div>
+        <div id="taskPickerTimeWheels" class="task-picker-time-wheels">
+          <div class="task-picker-stepper">
+            <button type="button" onclick="adjustTaskPickerTime('hour',1)" aria-label="زيادة الساعة">⌃</button>
+            <output id="taskPickerHourValue">10</output>
+            <button type="button" onclick="adjustTaskPickerTime('hour',-1)" aria-label="إنقاص الساعة">⌄</button>
           </div>
-          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px;" id="taskModalTimeChips">
-            <button type="button" class="task-time-chip active" onclick="selectTaskTimePreset('10:00', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: rgba(168, 85, 247, 0.22); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.45); cursor: pointer;">☀️ 10:00 ص (الصباح)</button>
-            <button type="button" class="task-time-chip" onclick="selectTaskTimePreset('14:00', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">⛅ 02:00 م (الظهيرة)</button>
-            <button type="button" class="task-time-chip" onclick="selectTaskTimePreset('18:00', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">🌙 06:00 م (المساء)</button>
-            <button type="button" class="task-time-chip" onclick="selectTaskTimePreset('21:00', this)" style="padding: 5px 9px; border-radius: 7px; font-size: 0.72rem; font-weight: 800; background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer;">🌃 09:00 م (الليل)</button>
+          <div class="task-picker-stepper">
+            <button type="button" onclick="adjustTaskPickerTime('minute',1)" aria-label="زيادة الدقائق">⌃</button>
+            <output id="taskPickerMinuteValue">00</output>
+            <button type="button" onclick="adjustTaskPickerTime('minute',-1)" aria-label="إنقاص الدقائق">⌄</button>
           </div>
-          <!-- حقل وقت واضح ومنفصل -->
-          <input type="time" id="taskCustomPickerTime" class="form-input-custom" onchange="onTaskCustomTimeChange(this.value)" value="10:00" style="width: 100%; height: 38px; border-radius: 9px; font-size: 0.85rem; font-weight: 800; background: rgba(15,23,42,0.9); color: #f8fafc; border: 1.2px solid rgba(255,255,255,0.15); padding: 0 10px; box-sizing: border-box;">
+          <div class="task-picker-stepper">
+            <button type="button" onclick="adjustTaskPickerTime('second',1)" aria-label="زيادة الثواني">⌃</button>
+            <output id="taskPickerSecondValue">00</output>
+            <button type="button" onclick="adjustTaskPickerTime('second',-1)" aria-label="إنقاص الثواني">⌄</button>
+          </div>
+          <div class="task-picker-period" id="taskPickerPeriodControls">
+            <button type="button" id="taskPickerAmButton" onclick="setTaskPickerPeriod('AM')">AM</button>
+            <button type="button" id="taskPickerPmButton" onclick="setTaskPickerPeriod('PM')">PM</button>
+          </div>
+        </div>
+        <div class="task-picker-mode">
+          <button type="button" id="taskPicker12HourButton" onclick="setTaskPickerHourMode(12)">12 ساعة</button>
+          <button type="button" id="taskPicker24HourButton" onclick="setTaskPickerHourMode(24)">24 ساعة</button>
         </div>
 
-        <!-- ملخص الموعد المختار بوضوح تام -->
-        <div id="taskDateTimeSummaryBadge" style="background: rgba(168,85,247,0.14); border: 1px solid rgba(168,85,247,0.35); border-radius: 10px; padding: 9px 12px; font-size: 0.80rem; font-weight: 850; color: #e9d5ff; text-align: center; margin-bottom: 14px;">
-          الموعد: اليوم، الساعة 10:00 صباحاً
-        </div>
+        <input type="date" id="taskCustomPickerDate" hidden onchange="onTaskCustomDateChange(this.value)">
+        <input type="time" id="taskCustomPickerTime" hidden onchange="onTaskCustomTimeChange(this.value)">
+        <input type="hidden" id="taskCustomPickerSecond" value="00">
 
-        <!-- أزرار الإجراء: تأكيد أو مسح -->
-        <div style="display: flex; gap: 8px;">
-          <button type="button" onclick="confirmTaskDateTimePicker()" style="flex: 1; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #a855f7, #6366f1); border: none; color: #fff; font-weight: 900; font-size: 0.84rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 12px rgba(168,85,247,0.35);">
-            <i class="fa-solid fa-check"></i>
-            <span>تأكيد موعد المهمة</span>
-          </button>
-          <button type="button" onclick="clearTaskDateTimePicker()" style="height: 40px; padding: 0 14px; border-radius: 10px; background: rgba(244,63,94,0.15); border: 1.2px solid rgba(244,63,94,0.4); color: #f43f5e; font-weight: 850; font-size: 0.78rem; cursor: pointer;">
-            مسح الموعد
-          </button>
+        <div id="taskDateTimeSummaryBadge" style="background:rgba(56,189,248,0.10); border:1px solid rgba(56,189,248,0.30); border-radius:9px; padding:8px 10px; font-size:0.72rem; font-weight:850; color:#bae6fd; text-align:center; margin:11px 0;">الموعد</div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="confirmTaskDateTimePicker()" style="flex:1; height:38px; border-radius:9px; background:linear-gradient(135deg,#0ea5e9,#2563eb); border:none; color:#fff; font-weight:900; font-size:0.78rem; cursor:pointer;">تأكيد الموعد</button>
+          <button type="button" onclick="clearTaskDateTimePicker()" style="height:38px; padding:0 12px; border-radius:9px; background:rgba(244,63,94,0.12); border:1px solid rgba(244,63,94,0.4); color:#fb7185; font-weight:850; font-size:0.72rem; cursor:pointer;">مسح</button>
         </div>
       </div>
     </div>
