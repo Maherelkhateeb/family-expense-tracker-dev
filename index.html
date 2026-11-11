@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.10';
-    var APP_BUILD_ID = 202611111807;
+    var APP_VERSION = 'v5.3.11';
+    var APP_BUILD_ID = 202611111828;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5221,6 +5221,9 @@
       gap: 8px;
       direction: ltr;
     }
+    .custom-date-modal-overlay.is-single-date .range-date-summary { grid-template-columns: 1fr; }
+    .custom-date-modal-overlay.is-single-date #customRangeEndCard { display: none; }
+    .custom-calendar-input { cursor: pointer; }
     .range-date-value {
       min-width: 0;
       display: flex;
@@ -13315,6 +13318,36 @@
       font-weight: 950;
       box-shadow: 0 3px 12px rgba(56,189,248,0.28);
     }
+    .task-picker-calendar-grid button.range-calendar-day {
+      position: relative;
+      isolation: isolate;
+      height: 34px;
+      min-height: 34px;
+      border: 0;
+      border-radius: 0;
+      color: #e2e8f0;
+      background: transparent;
+      font: inherit;
+      font-size: 0.76rem;
+    }
+    .task-picker-calendar-grid button.range-calendar-day::before { inset: 4px 0; }
+    .task-picker-calendar-grid button.range-calendar-day::after {
+      width: 29px;
+      height: 29px;
+      background: #5b5bd6;
+    }
+    .task-picker-calendar-grid button.range-calendar-day.is-range-start.is-range-end {
+      color: #ffffff;
+      font-weight: 900;
+      box-shadow: none;
+    }
+    .task-picker-calendar-grid button.range-calendar-day.is-today:not(.is-range-start):not(.is-range-end) {
+      color: #c4b5fd;
+      font-weight: 900;
+    }
+    .task-picker-calendar-grid button.range-calendar-day:hover:not(.is-range-start):not(.is-range-end) {
+      color: #c4b5fd;
+    }
     .task-picker-time-wheels {
       direction: ltr;
       display: grid;
@@ -14092,6 +14125,74 @@
     html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%) !important; border: 1px solid #dbe5f1 !important; border-radius: 12px !important; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 
   </style>
+  <style id="gold-market-refresh-styles">
+    #goldDrawerPanel .gold-market-topbar {
+      background: radial-gradient(circle at 90% 0%, rgba(245,158,11,.19), transparent 34%), linear-gradient(135deg,#172033,#0b1220) !important;
+      border-bottom: 1px solid rgba(251,191,36,.35) !important;
+    }
+    #goldDrawerPanel .gold-market-toolbar { gap: 10px; align-items: flex-start !important; }
+    #goldDrawerPanel .gold-market-source-chips { gap: 6px !important; }
+    #goldDrawerPanel .market-source-pill {
+      display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 3px 8px !important;
+      border-radius: 999px !important; font-size: .62rem !important; line-height: 1.15; white-space: nowrap;
+    }
+    #goldDrawerPanel .market-source-pill-official { background: rgba(16,185,129,.15) !important; color: #6ee7b7 !important; border: 1px solid rgba(52,211,153,.28) !important; }
+    #goldDrawerPanel .market-source-pill-chart { background: rgba(56,189,248,.10) !important; color: #7dd3fc !important; border: 1px solid rgba(56,189,248,.24) !important; }
+    #goldDrawerPanel .market-update-status {
+      display: inline-flex !important; align-items: center; gap: 5px !important; min-height: 22px; padding: 3px 8px;
+      border-radius: 999px; font-size: .61rem !important; line-height: 1.2; background: rgba(148,163,184,.09);
+    }
+    #goldDrawerPanel .market-update-status[data-status="fresh"] { color: #86efac !important; background: rgba(34,197,94,.10); }
+    #goldDrawerPanel .market-update-status[data-status="estimated"] { color: #fcd34d !important; background: rgba(245,158,11,.11); }
+    #goldDrawerPanel .market-update-status[data-status="stale"] { color: #fca5a5 !important; background: rgba(239,68,68,.10); }
+    #goldDrawerPanel .gold-refresh-btn {
+      flex: 0 0 auto; min-height: 32px; padding: 5px 11px !important; border-radius: 9px !important;
+      background: linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08)) !important;
+      border: 1px solid rgba(251,191,36,.45) !important; color: #fde68a !important;
+      font-size: .68rem !important; font-weight: 850 !important; transition: .18s ease;
+    }
+    #goldDrawerPanel .gold-refresh-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(245,158,11,.15); }
+    #goldDrawerPanel .gold-refresh-btn:disabled { opacity: .7; cursor: wait; }
+    #goldDrawerPanel .gold-refresh-btn.is-loading i { animation: goldRefreshSpin .8s linear infinite; }
+    @keyframes goldRefreshSpin { to { transform: rotate(360deg); } }
+    #goldDrawerPanel .gold-market-content { gap: 11px !important; padding: 10px 12px 28px !important; }
+    #goldDrawerPanel .gold-market-section {
+      border-radius: 16px !important; padding: 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,.16);
+    }
+    #goldDrawerPanel .gold-rates-section { border-color: rgba(251,191,36,.34) !important; background: linear-gradient(145deg,rgba(33,39,54,.98),rgba(15,23,42,.96)) !important; }
+    #goldDrawerPanel .fx-market-section { border-color: rgba(52,211,153,.28) !important; background: linear-gradient(145deg,rgba(28,42,52,.96),rgba(15,23,42,.96)) !important; }
+    #goldDrawerPanel .market-section-heading { font-size: .78rem !important; letter-spacing: .01em; }
+    #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 8px !important; }
+    #goldDrawerPanel .market-box {
+      min-width: 0; position: relative; overflow: hidden; border-radius: 12px !important; padding: 9px 10px !important;
+      background: linear-gradient(145deg,rgba(35,47,67,.94),rgba(20,29,45,.96)) !important;
+      border: 1px solid rgba(148,163,184,.17) !important; box-shadow: inset 0 1px rgba(255,255,255,.035),0 4px 10px rgba(0,0,0,.12);
+    }
+    #goldDrawerPanel .market-box::after { content: ''; position: absolute; top: 0; inset-inline: 12px; height: 2px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg,transparent,rgba(251,191,36,.7),transparent); opacity: .65; }
+    #goldDrawerPanel .fx-market-section .market-box::after { background: linear-gradient(90deg,transparent,rgba(52,211,153,.7),transparent); }
+    #goldDrawerPanel .market-box-title { min-height: 18px; font-size: .69rem !important; }
+    #goldDrawerPanel .market-box-val { font-size: 1.04rem !important; line-height: 1.35; font-variant-numeric: tabular-nums; }
+    #goldDrawerPanel .market-box-sub { gap: 5px; align-items: center; }
+    #goldDrawerPanel .gold-calculator-section { border-radius: 16px !important; box-shadow: 0 8px 22px rgba(0,0,0,.22) !important; }
+    #goldDrawerPanel .gold-calc-summary { border-radius: 14px !important; background: radial-gradient(circle at 95% 0%,rgba(251,191,36,.15),transparent 45%),linear-gradient(135deg,rgba(245,158,11,.20),rgba(15,23,42,.96)) !important; }
+    #goldDrawerPanel .gold-calc-breakdown { border-radius: 12px !important; }
+    #goldDrawerPanel .gold-calc-presets { gap: 6px !important; margin-top: 8px; }
+    #goldDrawerPanel .gold-calc-presets button { min-height: 32px; border-radius: 9px !important; transition: .16s ease; }
+    #goldDrawerPanel .gold-calc-presets button:hover { border-color: rgba(251,191,36,.5) !important; color: #fde68a !important; }
+    #goldDrawerPanel .gold-chart-section { border-radius: 16px !important; overflow: hidden; }
+    #goldDrawerPanel #tvChartContainer { border: 1px solid rgba(148,163,184,.16); }
+    #goldDrawerPanel .gold-valuation-section { border-radius: 14px !important; }
+    @media (max-width: 440px) {
+      #goldDrawerPanel .gold-market-toolbar { align-items: flex-start !important; }
+      #goldDrawerPanel .gold-market-source-chips { flex: 1 1 100%; }
+      #goldDrawerPanel .market-update-status { flex-basis: 100%; order: 2; }
+      #goldDrawerPanel .gold-refresh-btn { min-height: 31px; padding-inline: 9px !important; }
+      #goldDrawerPanel .gold-market-content { padding-inline: 9px !important; }
+      #goldDrawerPanel .gold-market-section { padding: 10px !important; }
+      #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 6px !important; }
+      #goldDrawerPanel .market-box { padding: 8px !important; }
+    }
+  </style>
 </head>
 <body>
 
@@ -14228,18 +14329,18 @@
     <!-- بطاقة منبثقة أنيقة ومتناسقة لتحديد تاريخ مخصص -->
     <!-- نافذة منبثقة سفلية ذكية ومبسطة للجوال لتحديد فترة مخصصة -->
     <div class="custom-date-modal-overlay" id="customDatePickerDrawer" style="display: none;" aria-hidden="true">
-      <div class="custom-date-sheet-card" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
+      <div class="custom-date-sheet-card" id="customDatePickerDialog" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
         <div class="custom-date-sheet-head">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i class="fa-regular fa-calendar-check" style="color: #38bdf8; font-size: 1.1rem;"></i>
-            <span style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
+            <span id="customDatePickerTitle" style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
           </div>
           <button type="button" class="btn-modal-close" onclick="toggleCustomDatePicker(false)" aria-label="إغلاق">&times;</button>
         </div>
 
         <div class="range-date-summary" aria-live="polite">
           <div class="range-date-value" id="customRangeStartCard">
-            <span class="range-date-value-label">من</span>
+            <span class="range-date-value-label" id="customRangeStartLabel">من</span>
             <output id="customRangeStartDisplay">اختر تاريخ البداية</output>
           </div>
           <div class="range-date-value is-pending" id="customRangeEndCard">
@@ -14258,8 +14359,8 @@
         <div class="range-date-hint" id="customRangeHint" aria-live="polite">اختر تاريخ البداية ثم تاريخ النهاية</div>
 
         <div class="custom-date-sheet-actions">
-          <button type="button" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
-          <button type="button" class="btn-reset-period-sub" onclick="resetDateFilter()">
+          <button type="button" id="customDatePickerConfirmButton" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
+          <button type="button" id="customDatePickerResetButton" class="btn-reset-period-sub" onclick="resetCustomDatePickerSelection()">
             العودة للشهر الحالي
           </button>
         </div>
@@ -15982,7 +16083,7 @@
     <div class="side-drawer-panel" id="goldDrawerPanel" style="max-height: 98vh; height: 98vh; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: -10px 0 35px rgba(0,0,0,0.7);">
       
       <!-- ترويسة البورصة العلوية المدمجة الموحدة (Zero-Scroll Header) -->
-      <div class="drawer-top-bar" style="padding: 10px 14px 8px; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1.5px solid var(--gold); flex-shrink: 0;">
+      <div class="drawer-top-bar gold-market-topbar" style="padding: 10px 14px 8px; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1.5px solid var(--gold); flex-shrink: 0;">
         <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center;">
           <div class="drawer-main-title" style="font-size: 0.92rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 7px;">
             <i class="fa-solid fa-coins"></i>
@@ -15990,34 +16091,34 @@
           </div>
           <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" style="font-size: 1.2rem; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer;">&times;</button>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: #cbd5e1; margin-top: 5px;">
-          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <span style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 2px 7px; border-radius: 6px; font-weight: 800; font-size: 0.63rem;">
+        <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: #cbd5e1; margin-top: 5px;">
+          <div class="gold-market-source-chips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <span id="marketLocalSourcePill" class="market-source-pill market-source-pill-official" title="أسعار السوق المحلي من بنك مصر ومصادر الذهب المصرية" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 2px 7px; border-radius: 6px; font-weight: 800; font-size: 0.63rem;">
               <i class="fa-solid fa-building-columns"></i> تعويم (بنك مصر & الصاغة)
             </span>
-            <span style="background: rgba(41, 98, 255, 0.2); color: #38bdf8; border: 1px solid rgba(41, 98, 255, 0.4); padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.61rem;">
+            <span class="market-source-pill market-source-pill-chart" style="background: rgba(41, 98, 255, 0.2); color: #38bdf8; border: 1px solid rgba(41, 98, 255, 0.4); padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.61rem;">
               <i class="fa-solid fa-chart-line"></i> TradingView للمطابقة
             </span>
-            <span id="tvUpdateTime" style="color: #34d399; font-weight: 700; font-size: 0.66rem; display: flex; align-items: center; gap: 4px;">
+            <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite" style="color: #cbd5e1; font-weight: 700; font-size: 0.66rem; display: flex; align-items: center; gap: 4px;">
               <i class="fa-solid fa-circle" style="font-size: 0.40rem;"></i> أسعار رسمية حية
             </span>
           </div>
-          <button class="period-btn active" id="btnRefreshTv" onclick="fetchTradingViewRates()" style="font-size: 0.68rem; padding: 2px 10px; border-radius: 7px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; cursor: pointer;">
+          <button type="button" class="period-btn active gold-refresh-btn" id="btnRefreshTv" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار المتاحة" style="font-size: 0.68rem; padding: 2px 10px; border-radius: 7px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; cursor: pointer;">
             <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
           </button>
         </div>
       </div>
 
       <!-- جسم البورصة الموحد في شاشة واحدة متكاملة بدون تبويبات وبدون أي تمرير أفقي -->
-      <div class="drawer-view-container" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 12px 30px; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;">
+      <div class="drawer-view-container gold-market-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 12px 30px; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;">
         
         <!-- القسم 1: أسعار الذهب في الصاغة (مصر) -->
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div style="font-size: 0.78rem; font-weight: 800; color: #fde047; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
-            <span style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-gem" style="color: var(--gold);"></i> أسعار الذهب الرسمية (مركز المعلومات IDSC & تعويم)</span>
-            <span style="font-size: 0.65rem; color: #94a3b8;"><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> تحديث لحظي</span>
+        <div class="gold-market-section gold-rates-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
+          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #fde047; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
+            <span id="goldRatesSectionTitle" style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-gem" style="color: var(--gold);"></i> أسعار الذهب المحلية (مركز المعلومات IDSC & تعويم)</span>
+            <span id="goldRatesFreshnessHint" style="font-size: 0.65rem; color: #94a3b8;"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> تحقق دوري</span>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <div class="gold-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
             <!-- عيار 21 -->
             <div class="market-box gold-21-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.75); border: 1.4px solid rgba(245, 158, 11, 0.5);">
               <div class="market-box-title" style="font-size: 0.70rem; color: #fbbf24; font-weight: 800; display: flex; align-items: center; gap: 3px;">
@@ -16066,11 +16167,11 @@
         </div>
 
         <!-- القسم 2: أسعار العملات الفورية (TradingView FX) -->
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div style="font-size: 0.78rem; font-weight: 800; color: #34d399; margin-bottom: 7px; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> أسعار صرف العملات الرسمية (بنك مصر & تعويم)
+        <div class="gold-market-section fx-market-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
+          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #34d399; margin-bottom: 7px; display: flex; align-items: center; gap: 5px;">
+            <i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> <span id="fxRatesSectionTitle">أسعار صرف العملات المحلية (بنك مصر & تعويم)</span>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+          <div class="fx-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
             <!-- دولار -->
             <div class="market-box" style="padding: 6px 9px; border-radius: 9px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(16, 185, 129, 0.3);">
               <div class="market-box-title" style="font-size: 0.68rem; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 3px;">
@@ -16098,14 +16199,14 @@
         </div>
 
         <!-- القسم 3: حاسبة الصاغة والمصنعية التقديرية بالسوق المصري -->
-        <div style="background: rgba(15, 23, 42, 0.9); border: 1.4px solid rgba(245, 158, 11, 0.5); border-radius: 14px; padding: 12px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+        <div class="gold-market-section gold-calculator-section" style="background: rgba(15, 23, 42, 0.9); border: 1.4px solid rgba(245, 158, 11, 0.5); border-radius: 14px; padding: 12px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
           <div style="font-size: 0.82rem; font-weight: 800; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
             <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
             <span style="font-size: 0.64rem; color: #38bdf8;"><i class="fa-solid fa-circle-info"></i> مصنعية سوق الصاغة</span>
           </div>
 
           <!-- مربع إجمالي التكلفة الشاملة البارز -->
-          <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: center;">
+          <div class="gold-calc-summary" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: center;">
             <div style="font-size: 0.68rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي التكلفة التقديرية للشراء بالصاغة (شامل المصنعية):</div>
             <div id="calcFinalTotal" style="font-size: 1.35rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">64,950.00 ج.م</div>
           </div>
@@ -16138,7 +16239,7 @@
           </div>
 
           <!-- تفاصيل الحسبة المحاسبية: خام الذهب، المصنعية، الكاش باك -->
-          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;">
+          <div class="gold-calc-breakdown" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
               <span>قيمة الذهب الخام الصافي:</span>
               <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">63,950.00 ج.م</span>
@@ -16158,7 +16259,7 @@
           </div>
 
           <!-- أزرار الاختيارات السريعة للوزن والمصنعية -->
-          <div style="display: flex; gap: 4px;">
+          <div class="gold-calc-presets" style="display: flex; gap: 4px;">
             <button type="button" onclick="applyGoldPreset('gold21_jewelry', 5, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">5جم 21</button>
             <button type="button" onclick="applyGoldPreset('gold21_jewelry', 10, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">10جم 21</button>
             <button type="button" onclick="applyGoldPreset('gold24_bar_small', 10, 70)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">سبيكة 10ج</button>
@@ -16167,7 +16268,7 @@
         </div>
 
         <!-- القسم 4: الشارت الحي للذهب TradingView Live -->
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
+        <div class="gold-market-section gold-chart-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <span style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
               <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView - للمطابقة والتحليل)
@@ -16180,14 +16281,14 @@
         </div>
 
         <!-- القسم 5: تقويم الرصيد الفعلي الحالي بالذهب -->
-        <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+        <div class="gold-market-section gold-valuation-section" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
           <div>
             <div style="font-size: 0.70rem; color: #fbbf24; font-weight: 800;"><i class="fa-solid fa-scale-balanced"></i> تقويم الرصيد الفعلي الحالي بالذهب</div>
             <div style="font-size: 0.62rem; color: #94a3b8; margin-top: 2px;">ما يعادله رصيد المحافظ بالجرامات:</div>
           </div>
           <div style="text-align: left;">
             <div id="goldValuationText" style="font-size: 1.05rem; font-weight: 900; color: #fde047; direction: rtl;">0.00 جم ذهب 21</div>
-            <div style="font-size: 0.60rem; color: #34d399; font-weight: 700;">عيار 21 مباشر</div>
+            <div id="goldValuationSourceText" style="font-size: 0.60rem; color: #34d399; font-weight: 700;">بحسب السعر المتاح</div>
           </div>
         </div>
       </div>
@@ -17551,7 +17652,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.9 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.11 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18146,8 +18247,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.10';
-      const APP_BUILD_ID = 202611111807;
+      const APP_VERSION = 'v5.3.11';
+      const APP_BUILD_ID = 202611111828;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -18313,7 +18414,7 @@
       safeEvent('btnOpenGold', 'click', openGoldDrawer);
       safeEvent('btnCloseDrawer', 'click', closeGoldDrawer);
       safeEvent('goldDrawerBackdrop', 'click', closeGoldDrawer);
-      safeEvent('btnRefreshTv', 'click', fetchTradingViewRates);
+      safeEvent('btnRefreshTv', 'click', () => fetchTradingViewRates(true));
 
       // حاسبة الذهب
       safeEvent('calcQty', 'input', updateCalcDisplay);
@@ -20953,6 +21054,15 @@
     let customRangePickerDraft = { from: '', to: '' };
     let customRangePickerCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let customRangePickerDraftReady = false;
+    let customRangePickerContext = { mode: 'app' };
+    const CUSTOM_RANGE_DATE_FIELD_PAIRS = {
+      inpAnalyticsDateFrom: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
+      inpAnalyticsDateTo: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
+      auditDateFrom: ['auditDateFrom', 'auditDateTo'],
+      auditDateTo: ['auditDateFrom', 'auditDateTo'],
+      summaryCustomDateFrom: ['summaryCustomDateFrom', 'summaryCustomDateTo'],
+      summaryCustomDateTo: ['summaryCustomDateFrom', 'summaryCustomDateTo']
+    };
 
     function formatCustomRangeDate(dateStr) {
       if (!dateStr) return '';
@@ -20962,6 +21072,77 @@
       return new Intl.DateTimeFormat('ar-EG-u-ca-gregory-nu-latn', {
         day: 'numeric', month: 'short', year: 'numeric'
       }).format(date);
+    }
+
+    function setCustomRangePickerDraft(from, to = '') {
+      if (from && to && from > to) [from, to] = [to, from];
+      customRangePickerDraft = { from: from || '', to: to || '' };
+      const cursorValue = from || to || (typeof getLocalDateStr === 'function'
+        ? getLocalDateStr(new Date())
+        : new Date().toISOString().split('T')[0]);
+      const parts = cursorValue.split('-').map(Number);
+      customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
+        ? new Date(parts[0], parts[1] - 1, 1)
+        : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      customRangePickerDraftReady = true;
+    }
+
+    function dispatchCustomDatePickerChange(input) {
+      if (!input) return;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function openCustomDatePickerForRange(fromInput, toInput) {
+      if (!fromInput || !toInput) return;
+      customRangePickerContext = { mode: 'range', fromInput, toInput };
+      setCustomRangePickerDraft(fromInput.value, toInput.value);
+      toggleCustomDatePicker(true);
+    }
+
+    function openCustomDatePickerForSingle(input) {
+      if (!input) return;
+      customRangePickerContext = { mode: 'single', input };
+      setCustomRangePickerDraft(input.value, '');
+      toggleCustomDatePicker(true);
+    }
+
+    function openUnifiedDatePickerFromInput(input) {
+      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
+      input.classList.add('custom-calendar-input');
+      input.setAttribute('aria-haspopup', 'dialog');
+      input.setAttribute('aria-controls', 'customDatePickerDrawer');
+      const rangeIds = CUSTOM_RANGE_DATE_FIELD_PAIRS[input.id];
+      if (rangeIds) {
+        openCustomDatePickerForRange(
+          document.getElementById(rangeIds[0]),
+          document.getElementById(rangeIds[1])
+        );
+        return;
+      }
+      openCustomDatePickerForSingle(input);
+    }
+
+    function configureCustomDatePickerUi() {
+      const drawer = document.getElementById('customDatePickerDrawer');
+      const dialog = document.getElementById('customDatePickerDialog');
+      const title = document.getElementById('customDatePickerTitle');
+      const startLabel = document.getElementById('customRangeStartLabel');
+      const confirmButton = document.getElementById('customDatePickerConfirmButton');
+      const resetButton = document.getElementById('customDatePickerResetButton');
+      const mode = customRangePickerContext.mode || 'app';
+      const isSingle = mode === 'single';
+
+      if (drawer) drawer.classList.toggle('is-single-date', isSingle);
+      if (dialog) dialog.setAttribute('aria-label', isSingle ? 'اختيار التاريخ' : 'اختيار فترة التاريخ');
+      if (title) title.textContent = isSingle ? '📅 اختيار التاريخ' : '📅 اختيار فترة التاريخ';
+      if (startLabel) startLabel.textContent = isSingle ? 'التاريخ' : 'من';
+      if (confirmButton) confirmButton.textContent = isSingle ? 'تأكيد التاريخ' : 'تأكيد الفترة';
+      if (resetButton) {
+        resetButton.textContent = mode === 'app'
+          ? 'العودة للشهر الحالي'
+          : (isSingle ? 'مسح التاريخ' : 'مسح الفترة');
+      }
     }
 
     function renderCustomRangeCalendarMonth(year, month) {
@@ -20980,7 +21161,10 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isStart = dateStr === customRangePickerDraft.from;
-        const isEnd = dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
+        const isSingle = customRangePickerContext.mode === 'single';
+        const isEnd = isSingle
+          ? isStart
+          : dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
         const hasRange = !!(customRangePickerDraft.from && customRangePickerDraft.to);
         const isBetween = hasRange && dateStr > customRangePickerDraft.from && dateStr < customRangePickerDraft.to;
         const classes = ['range-calendar-day'];
@@ -21010,16 +21194,19 @@
       const endDisplay = document.getElementById('customRangeEndDisplay');
       const endCard = document.getElementById('customRangeEndCard');
       const hint = document.getElementById('customRangeHint');
+      const isSingle = customRangePickerContext.mode === 'single';
 
       if (startDisplay) startDisplay.textContent = customRangePickerDraft.from
-        ? formatCustomRangeDate(customRangePickerDraft.from) : 'اختر تاريخ البداية';
+        ? formatCustomRangeDate(customRangePickerDraft.from) : (isSingle ? 'اختر التاريخ' : 'اختر تاريخ البداية');
       if (endDisplay) endDisplay.textContent = customRangePickerDraft.to
         ? formatCustomRangeDate(customRangePickerDraft.to) : 'اختر تاريخ النهاية';
       if (endCard) endCard.classList.toggle('is-pending', !customRangePickerDraft.to);
       if (hint) {
-        hint.textContent = customRangePickerDraft.from && !customRangePickerDraft.to
-          ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
-          : 'اختر تاريخ البداية ثم تاريخ النهاية';
+        hint.textContent = isSingle
+          ? (customRangePickerDraft.from ? 'تم تحديد اليوم، ويمكن تغييره قبل التأكيد' : 'اختر التاريخ المطلوب')
+          : (customRangePickerDraft.from && !customRangePickerDraft.to
+            ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
+            : 'اختر تاريخ البداية ثم تاريخ النهاية');
       }
 
       calendar.innerHTML = Array.from({ length: 2 }, (_, index) => {
@@ -21039,7 +21226,9 @@
     }
 
     function selectCustomRangeDate(dateStr) {
-      if (!customRangePickerDraft.from || customRangePickerDraft.to) {
+      if (customRangePickerContext.mode === 'single') {
+        customRangePickerDraft = { from: dateStr, to: '' };
+      } else if (!customRangePickerDraft.from || customRangePickerDraft.to) {
         customRangePickerDraft = { from: dateStr, to: '' };
       } else if (dateStr < customRangePickerDraft.from) {
         customRangePickerDraft = { from: dateStr, to: customRangePickerDraft.from };
@@ -21054,29 +21243,45 @@
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
       if (open) {
-        drawer.style.display = 'flex';
-        drawer.setAttribute('aria-hidden', 'false');
-        if (!customRangePickerDraftReady) {
+        if (customRangePickerContext.mode === 'app' && !customRangePickerDraftReady) {
           const today = typeof getLocalDateStr === 'function'
             ? getLocalDateStr(new Date())
             : new Date().toISOString().split('T')[0];
           const from = state.customDateRange?.from || today;
           const to = state.customDateRange?.to || from;
-          customRangePickerDraft = { from, to };
-          const parts = from.split('-').map(Number);
-          customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
-            ? new Date(parts[0], parts[1] - 1, 1)
-            : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-          customRangePickerDraftReady = true;
+          setCustomRangePickerDraft(from, to);
         }
+        configureCustomDatePickerUi();
+        drawer.style.display = 'flex';
+        drawer.setAttribute('aria-hidden', 'false');
         renderCustomDateRangePicker();
         if (typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
       } else {
         drawer.style.display = 'none';
         drawer.setAttribute('aria-hidden', 'true');
         if (typeof popModalState === 'function') popModalState('customDatePickerDrawer');
+        if (customRangePickerContext.mode !== 'app') customRangePickerDraftReady = false;
+        customRangePickerContext = { mode: 'app' };
+        drawer.classList.remove('is-single-date');
       }
     }
+
+    document.addEventListener('click', event => {
+      const input = event.target instanceof Element ? event.target.closest('input[type="date"]') : null;
+      if (!input || input.hidden || input.closest('[hidden]')) return;
+      event.preventDefault();
+      event.stopPropagation();
+      openUnifiedDatePickerFromInput(input);
+    }, true);
+
+    document.addEventListener('keydown', event => {
+      const input = event.target instanceof HTMLInputElement ? event.target : null;
+      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      event.stopPropagation();
+      openUnifiedDatePickerFromInput(input);
+    }, true);
 
     function applyPresetPeriod(preset) {
       const now = new Date();
@@ -21115,6 +21320,7 @@
     function applyDateRange() {
       const from = customRangePickerDraft.from;
       const to = customRangePickerDraft.to || from;
+      const context = customRangePickerContext;
 
       if (!from && !to) {
         showToast('⚠️ يرجى تحديد تاريخ البداية أو النهاية');
@@ -21125,9 +21331,43 @@
         return;
       }
 
+      if (context.mode === 'single') {
+        context.input.value = from || to;
+        dispatchCustomDatePickerChange(context.input);
+        toggleCustomDatePicker(false);
+        return;
+      }
+
+      if (context.mode === 'range') {
+        context.fromInput.value = from || to;
+        context.toInput.value = to || from;
+        dispatchCustomDatePickerChange(context.fromInput);
+        dispatchCustomDatePickerChange(context.toInput);
+        toggleCustomDatePicker(false);
+        return;
+      }
+
       state.customDateRange = { from: from || to, to: to || from };
       toggleCustomDatePicker(false);
       setAppPeriod('custom');
+    }
+
+    function resetCustomDatePickerSelection() {
+      const context = customRangePickerContext;
+      if (context.mode === 'app') {
+        resetDateFilter();
+        return;
+      }
+      if (context.mode === 'single') {
+        context.input.value = '';
+        dispatchCustomDatePickerChange(context.input);
+      } else if (context.mode === 'range') {
+        context.fromInput.value = '';
+        context.toInput.value = '';
+        dispatchCustomDatePickerChange(context.fromInput);
+        dispatchCustomDatePickerChange(context.toInput);
+      }
+      toggleCustomDatePicker(false);
     }
 
     function resetDateFilter() {
@@ -26372,6 +26612,9 @@ function openSettingsModal(targetSection = '') {
       }
     }, { passive: true });
 
+    let marketRatesRefreshPromise = null;
+    let goldMarketAutoRefreshTimer = null;
+
     function openGoldDrawer() {
       const backdrop = document.getElementById('goldDrawerBackdrop');
       const panel = document.getElementById('goldDrawerPanel');
@@ -26380,7 +26623,13 @@ function openSettingsModal(targetSection = '') {
       pushModalState('goldDrawer');
       try {
         if (typeof recalcGoldTotal === 'function') recalcGoldTotal();
-        if (typeof fetchTradingViewRates === 'function') fetchTradingViewRates();
+        if (typeof fetchTradingViewRates === 'function') fetchTradingViewRates(false);
+        if (!goldMarketAutoRefreshTimer) {
+          goldMarketAutoRefreshTimer = setInterval(() => {
+            const drawer = document.getElementById('goldDrawerPanel');
+            if (document.visibilityState === 'visible' && drawer && drawer.classList.contains('open')) fetchTradingViewRates(true);
+          }, 15 * 60 * 1000);
+        }
         // تقويم الرصيد الفعلي الحالي بالذهب عيار 21
         const g21 = (state.market && state.market.gold21) || 6375;
         const totalBal = (typeof computeTotalEffectiveBalance === 'function') ? computeTotalEffectiveBalance() : (state.balance || 0);
@@ -26395,6 +26644,10 @@ function openSettingsModal(targetSection = '') {
       const panel = document.getElementById('goldDrawerPanel');
       if (backdrop) backdrop.classList.remove('open');
       if (panel) panel.classList.remove('open');
+      if (goldMarketAutoRefreshTimer) {
+        clearInterval(goldMarketAutoRefreshTimer);
+        goldMarketAutoRefreshTimer = null;
+      }
       popModalState('goldDrawer');
       if (!fromPopState) {
         if (window.history.state && window.history.state.modalId === 'goldDrawer') {
@@ -26403,43 +26656,72 @@ function openSettingsModal(targetSection = '') {
       }
     }
 
-    async function fetchTradingViewRates(forceLive = false) {
+    function fetchTradingViewRates(forceLive = false) {
+      if (marketRatesRefreshPromise) return marketRatesRefreshPromise;
+      const refreshButton = document.getElementById('btnRefreshTv');
+      if (refreshButton) {
+        refreshButton.disabled = true;
+        refreshButton.classList.add('is-loading');
+      }
+      marketRatesRefreshPromise = fetchAndApplyMarketRates(Boolean(forceLive)).finally(() => {
+        marketRatesRefreshPromise = null;
+        if (refreshButton) {
+          refreshButton.disabled = false;
+          refreshButton.classList.remove('is-loading');
+        }
+      });
+      return marketRatesRefreshPromise;
+    }
+
+    async function fetchAndApplyMarketRates(forceLive = false) {
       const spin = document.getElementById('iconSpin');
       const goldBadgeIcon = document.querySelector('#btnOpenGold i');
+      const statusEl = document.getElementById('tvUpdateTime');
       if (spin) spin.classList.add('fa-spin');
       if (goldBadgeIcon) goldBadgeIcon.classList.add('fa-spin');
 
       let marketData = null;
       let isFresh = false;
+      let sourceAgeMinutes = Infinity;
+      let usedEstimate = false;
+      let refreshedGoldSpot = false;
 
-      // 1. استيراد أسعار تعويم الرسمية الفورية من market_rates.json (إذا كانت حديثة وأقل من 90 دقيقة)
-      if (!forceLive) {
+      // أحدث نسخة من المصدر المحلي ثم نسخة التطبيق الاحتياطية.
+      const feedUrls = [
+        'https://raw.githubusercontent.com/Maherelkhateeb/family-expense-tracker-dev/market-rates/market_rates.json?_t=' + Date.now(),
+        'market_rates.json?_t=' + Date.now()
+      ];
+      const feedResults = await Promise.allSettled(feedUrls.map(async (url) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 9000);
         try {
-          const resp = await fetch('market_rates.json?_t=' + Date.now(), { cache: 'no-store' });
-          if (resp.ok) {
-            const json = await resp.json();
-            if (json && json.currencies && json.gold) {
-              const updatedTime = json.updatedAt ? new Date(json.updatedAt).getTime() : 0;
-              const ageMinutes = (Date.now() - updatedTime) / (1000 * 60);
-              if (ageMinutes < 90) {
-                marketData = json;
-                isFresh = true;
-              }
-            }
-          }
-        } catch (e) {
-          console.warn('Local market_rates.json notice:', e);
+          const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+          if (!response.ok) throw new Error('Market feed returned ' + response.status);
+          const json = await response.json();
+          if (!json || !json.currencies || !json.gold) throw new Error('Market feed schema is incomplete');
+          const verifiedAt = json.checkedAt || json.updatedAt;
+          const stamp = verifiedAt ? new Date(verifiedAt).getTime() : 0;
+          const ageMinutes = stamp > 0 ? Math.max(0, (Date.now() - stamp) / 60000) : Infinity;
+          return { json, ageMinutes };
+        } finally {
+          clearTimeout(timeoutId);
         }
+      }));
+      const validFeeds = feedResults.filter(item => item.status === 'fulfilled').map(item => item.value).sort((a, b) => a.ageMinutes - b.ageMinutes);
+      if (validFeeds.length) {
+        marketData = validFeeds[0].json;
+        sourceAgeMinutes = validFeeds[0].ageMinutes;
+        isFresh = sourceAgeMinutes <= 90;
       }
 
-      // 2. المحرك المالي اللحظي المباشر عبر المتصفح (Direct Live Fallback Engine)
-      // ينشط تلقائياً إذا كان الملف المحلي قديماً، أو تعذر الوصول إليه، أو طلب المستخدم تحديثاً يدوياً فورياً
-      if (!marketData || !isFresh || forceLive) {
+      // عند غياب المصدر المحلي أو تقادمه، اعرض تقديراً عالمياً موسوماً بوضوح.
+      if (!marketData || !isFresh) {
         try {
           let liveUsd = 0;
           let liveSar = 0;
           let liveEur = 0;
           let liveAed = 0;
+          let liveFxUpdatedAt = '';
 
           // جلب أسعار العملات الفورية الحية
           const fxUrls = [
@@ -26456,6 +26738,7 @@ function openSettingsModal(targetSection = '') {
                   liveSar = liveUsd / (Number(fxData.rates.SAR) || 3.75);
                   liveEur = liveUsd / (Number(fxData.rates.EUR) || 0.92);
                   liveAed = liveUsd / (Number(fxData.rates.AED) || 3.6725);
+                  liveFxUpdatedAt = fxData.time_last_update_utc || fxData.time_last_update || '';
                   break;
                 }
               }
@@ -26483,6 +26766,13 @@ function openSettingsModal(targetSection = '') {
 
             marketData = {
               updatedAt: new Date().toISOString(),
+              checkedAt: new Date().toISOString(),
+              lastUpdateHuman: new Date().toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }),
+              rateMode: 'estimated',
+              provider: 'تقدير عالمي غير رسمي (سعر صرف مرجعي يومي + أونصة فورية)',
+              fxProvider: 'Global FX (مرجعي يومي)',
+              goldProvider: 'XAU Spot (تقدير عالمي)',
+              fxUpdatedAt: liveFxUpdatedAt,
               currencies: {
                 USD: { sell: Number(liveUsd.toFixed(2)), buy: Number((liveUsd - 0.10).toFixed(2)), chg: '0%' },
                 SAR: { sell: Number(liveSar.toFixed(2)), buy: Number((liveSar - 0.05).toFixed(2)), chg: '0%' },
@@ -26497,9 +26787,27 @@ function openSettingsModal(targetSection = '') {
                 goldOunceUSD: liveGoldOunce
               }
             };
+            sourceAgeMinutes = 0;
+            isFresh = true;
+            usedEstimate = true;
           }
         } catch(netErr) {
           console.warn('Direct live financial engine notice:', netErr);
+        }
+      } else if (forceLive) {
+        // عند التحديث اليدوي، تبقى الأسعار المحلية كما هي ونحدّث الأونصة العالمية فقط.
+        try {
+          const goldResp = await fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' });
+          if (goldResp.ok) {
+            const gData = await goldResp.json();
+            const liveGoldOunce = Number(gData && gData.price);
+            if (liveGoldOunce > 1000) {
+              marketData = { ...marketData, gold: { ...marketData.gold, goldOunceUSD: liveGoldOunce }, globalGoldUpdatedAt: new Date().toISOString() };
+              refreshedGoldSpot = true;
+            }
+          }
+        } catch(spotErr) {
+          console.warn('Global gold spot refresh notice:', spotErr);
         }
       }
 
@@ -26602,7 +26910,12 @@ function openSettingsModal(targetSection = '') {
         gold18: g18Sell, gold18Buy: g18Buy, gold18Chg: g18Chg,
         goldPound: gPoundSell, goldPoundBuy: gPoundBuy, goldPoundChg: gPoundChg,
         goldOunce: goldOunce,
-        updatedAt: (marketData && marketData.updatedAt) ? marketData.updatedAt : new Date().toISOString()
+        updatedAt: (marketData && marketData.updatedAt) ? marketData.updatedAt : (cached && cached.updatedAt ? cached.updatedAt : null),
+        checkedAt: marketData && marketData.checkedAt ? marketData.checkedAt : (cached && cached.checkedAt ? cached.checkedAt : null),
+        lastUpdateHuman: marketData && marketData.lastUpdateHuman ? marketData.lastUpdateHuman : (cached && cached.lastUpdateHuman ? cached.lastUpdateHuman : null),
+        rateMode: marketData && marketData.rateMode ? marketData.rateMode : (cached && cached.rateMode ? cached.rateMode : 'estimated'),
+        fxProvider: marketData && marketData.fxProvider ? marketData.fxProvider : (cached && cached.fxProvider ? cached.fxProvider : null),
+        goldProvider: marketData && marketData.goldProvider ? marketData.goldProvider : (cached && cached.goldProvider ? cached.goldProvider : null)
       };
 
       // نسب التحويل المحاسبي الدقيق
@@ -26631,8 +26944,6 @@ function openSettingsModal(targetSection = '') {
         }
       };
 
-      const nowTimeStr = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-
       setElText('tvGold21Val', Math.round(g21Sell).toLocaleString('ar-EG') + ' ج.م');
       setChgTag('tvGold21Chg', g21Chg);
       setElText('tvGold24Val', Math.round(g24Sell).toLocaleString('ar-EG') + ' ج.م');
@@ -26648,10 +26959,65 @@ function openSettingsModal(targetSection = '') {
 
       setElText('tvSummaryText', `دولار: ${usdSell.toFixed(2)} ج.م | ريال: ${sarSell.toFixed(2)} ج.م | ذهب 21: ${Math.round(g21Sell).toLocaleString('ar-EG')} ج.م`);
 
-      const displayTime = (marketData && marketData.lastUpdateHuman) 
-        ? marketData.lastUpdateHuman 
-        : ('اليوم ' + nowTimeStr);
-      setElText('tvUpdateTime', 'مباشر: ' + displayTime);
+      const verificationStamp = state.market.checkedAt || state.market.updatedAt;
+      const verificationDate = verificationStamp ? new Date(verificationStamp) : null;
+      const verificationAge = verificationDate && !Number.isNaN(verificationDate.getTime())
+        ? Math.max(0, (Date.now() - verificationDate.getTime()) / 60000)
+        : Infinity;
+      const statusIsFresh = isFresh && verificationAge <= 90;
+      const verificationLabel = verificationDate && !Number.isNaN(verificationDate.getTime())
+        ? verificationDate.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' })
+        : 'وقت التحقق غير متاح';
+      const inferredProvider = String(state.market.source || '');
+      const fxProvider = String((marketData && marketData.fxProvider) || (marketData && marketData.currencies && marketData.currencies.USD && marketData.currencies.USD.bank) || state.market.fxProvider || '');
+      const goldProvider = String((marketData && marketData.goldProvider) || (marketData && marketData.gold && marketData.gold.gold21 && marketData.gold.gold21.source) || state.market.goldProvider || '');
+      const localFx = /ta3weem|تعويم|banque misr|بنك مصر/i.test(fxProvider);
+      const localGold = /ta3weem|تعويم|IDSC|مركز المعلومات/i.test(goldProvider);
+      const inferredMode = localFx && localGold ? 'official' : ((localFx || localGold) ? 'mixed' : 'estimated');
+      const effectiveMode = (marketData && marketData.rateMode) || (inferredMode !== 'estimated' ? inferredMode : (/ta3weem|تعويم|IDSC|مركز المعلومات/i.test(inferredProvider) ? 'mixed' : 'estimated'));
+      const isEstimated = usedEstimate || effectiveMode === 'estimated';
+      let statusText;
+      let statusKind;
+      if (!statusIsFresh) {
+        statusText = `آخر أسعار محفوظة · ${verificationLabel}`;
+        statusKind = 'stale';
+      } else if (isEstimated) {
+        statusText = `تقدير عالمي غير رسمي · ${verificationLabel}`;
+        statusKind = 'estimated';
+      } else {
+        statusText = `${effectiveMode === 'official' ? 'أسعار محلية' : 'أسعار محلية ومرجعية'} · تحقق ${verificationLabel}${refreshedGoldSpot ? ' · الأونصة الآن' : ''}`;
+        statusKind = 'fresh';
+      }
+      if (statusEl) {
+        statusEl.dataset.status = statusKind;
+        statusEl.title = `${state.market.source || 'مصدر الأسعار'}${fxProvider ? ` · العملات: ${fxProvider}` : ''}${goldProvider ? ` · الذهب: ${goldProvider}` : ''}`;
+        const icon = document.createElement('i');
+        icon.className = statusKind === 'fresh' ? 'fa-solid fa-circle-check' : (statusKind === 'estimated' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-clock');
+        statusEl.replaceChildren(icon, document.createTextNode(' ' + statusText));
+      }
+      const goldTitle = document.getElementById('goldRatesSectionTitle');
+      const fxTitle = document.getElementById('fxRatesSectionTitle');
+      const freshnessHint = document.getElementById('goldRatesFreshnessHint');
+      const sourcePill = document.getElementById('marketLocalSourcePill');
+      const goldLabel = isEstimated ? 'تقدير الذهب العالمي (غير رسمي)' : (effectiveMode === 'official' ? 'أسعار الذهب المحلية (مركز المعلومات IDSC & تعويم)' : 'أسعار الذهب المحلية والمرجعية');
+      const fxLabel = isEstimated ? 'سعر صرف مرجعي يومي (غير رسمي)' : (effectiveMode === 'official' ? 'أسعار الصرف المحلية (بنك مصر & تعويم)' : 'أسعار الصرف المحلية والمرجعية');
+      if (goldTitle) {
+        const gem = Object.assign(document.createElement('i'), { className: 'fa-solid fa-gem' });
+        gem.style.color = 'var(--gold)';
+        goldTitle.replaceChildren(gem, document.createTextNode(' ' + goldLabel));
+      }
+      if (fxTitle) fxTitle.textContent = fxLabel;
+      if (freshnessHint) freshnessHint.textContent = statusIsFresh ? 'تحقق كل 30 دقيقة' : 'استخدم زر التحديث لإعادة المحاولة';
+      if (sourcePill) {
+        sourcePill.title = `${fxProvider || 'مرجع العملات غير متاح'} · ${goldProvider || 'مرجع الذهب غير متاح'}`;
+        const sourceLabel = !statusIsFresh ? 'بيانات محفوظة' : (isEstimated ? 'تقدير عالمي' : (effectiveMode === 'official' ? 'مصدر محلي' : 'محلي + مرجعي'));
+        sourcePill.replaceChildren(
+          Object.assign(document.createElement('i'), { className: isEstimated || !statusIsFresh ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-building-columns' }),
+          document.createTextNode(' ' + sourceLabel)
+        );
+      }
+      const valuationSource = document.getElementById('goldValuationSourceText');
+      if (valuationSource) valuationSource.textContent = !statusIsFresh ? 'بحسب آخر سعر محفوظ' : (isEstimated ? 'بحسب تقدير عالمي غير رسمي' : 'بحسب سعر عيار 21 من المصدر');
 
       if (typeof updateCalcDisplay === 'function') updateCalcDisplay();
       if (typeof renderUI === 'function') renderUI();
@@ -28709,8 +29075,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111807);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.10');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111828);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.11');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -31169,8 +31535,9 @@ function renderTaskPickerCalendar() {
     button.setAttribute('role', 'gridcell');
     button.setAttribute('aria-label', formatTaskPickerDate(dateValue));
     button.setAttribute('aria-pressed', String(dateValue === window.taskSelectedDateVal));
+    button.classList.add('range-calendar-day');
     if (dateValue === today) button.classList.add('is-today');
-    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-selected');
+    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-range-start', 'is-range-end');
     button.onclick = () => selectTaskPickerDay(dateValue);
     grid.appendChild(button);
   }
@@ -32863,7 +33230,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.9)</span>
+          <span>النظام جاهز ومحدث (v5.3.11)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.

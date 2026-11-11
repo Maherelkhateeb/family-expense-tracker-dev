@@ -25,13 +25,13 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'ar,en-US;q=0.9,en;q=0.8',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
 }
 
 def fetch_url(url, timeout=12):
@@ -43,7 +43,7 @@ def fetch_url(url, timeout=12):
         return None
 
 def fetch_curl(url, timeout=15):
-    cmd = ['curl', '-sL', '--compressed', '-H', f'User-Agent: {HEADERS["User-Agent"]}', '--max-time', str(timeout), url]
+    cmd = ['curl', '-sL', '--compressed', '-H', f'User-Agent: {HEADERS["User-Agent"]}', '-H', 'Cache-Control: no-cache', '--max-time', str(timeout), url]
     try:
         res = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout+5)
         if res.returncode == 0 and len(res.stdout) > 200:
@@ -178,7 +178,18 @@ def main():
 
     # 2. Tier 2: Global live fallback if Ta3weem is incomplete or blocked
     live_fx = fetch_live_global_fx()
-    live_gold_xau = fetch_live_global_gold() or base_gold.get('goldOunceUSD', 4072.10)
+    live_gold_xau = fetch_live_global_gold()
+
+    # Never rewrite the feed timestamp when every network source is unavailable.
+    # That previously made an old cached price look freshly updated.
+    has_fx_source = bool(live_fx) or bool(c_map.get('usd') and c_map.get('sar'))
+    has_gold_source = bool(live_gold_xau) or bool(g_map.get('gold21'))
+    if not has_fx_source or not has_gold_source:
+        missing = []
+        if not has_fx_source: missing.append('أسعار العملات')
+        if not has_gold_source: missing.append('أسعار الذهب')
+        print('ERROR: لم يصل مصدر حديث لـ ' + ' و'.join(missing) + '. تم الاحتفاظ بآخر ملف ناجح دون تغيير.')
+        raise SystemExit(1)
 
     # Resolve Currencies
     def get_c(key, code, name, default_buy, default_sell, default_chg):
@@ -225,12 +236,22 @@ def main():
 
     # Resolve Gold
     usd_rate = final_currencies['USD']['sell']
-    # Formula: 1 Troy Ounce = 31.1034768 grams 24k
-    # Standard Egyptian local retail market premium over spot: ~1.012
-    computed_24k = round(((live_gold_xau * usd_rate) / 31.1034768) * 1.012, 1)
-    computed_21k = round(computed_24k * (21.0 / 24.0), 1)
-    computed_18k = round(computed_24k * (18.0 / 24.0), 1)
-    computed_pound = round(computed_21k * 8.0, 1)
+    # Formula: 1 Troy Ounce = 31.1034768 grams 24k.
+    # Use fresh XAU spot when available; otherwise derive missing karats from a current Ta3weem 21k quote.
+    if live_gold_xau:
+        computed_24k = round(((live_gold_xau * usd_rate) / 31.1034768) * 1.012, 1)
+        computed_21k = round(computed_24k * (21.0 / 24.0), 1)
+        computed_18k = round(computed_24k * (18.0 / 24.0), 1)
+        computed_pound = round(computed_21k * 8.0, 1)
+    else:
+        current_gold21 = g_map['gold21'].get('sell')
+        if not current_gold21:
+            print('ERROR: لا يتوفر سعر أونصة حديث أو سعر محلي حديث لعيار 21. لم يتم تحديث الملف.')
+            raise SystemExit(1)
+        computed_21k = float(current_gold21)
+        computed_24k = round(float(g_map.get('gold24', {}).get('sell') or (computed_21k * 24.0 / 21.0)), 1)
+        computed_18k = round(float(g_map.get('gold18', {}).get('sell') or (computed_21k * 18.0 / 21.0)), 1)
+        computed_pound = round(float(g_map.get('goldPound', {}).get('sell') or (computed_21k * 8.0)), 1)
 
     def get_g(key, karat, name, comp_val, default_buy, default_sell):
         t_data = g_map.get(key)
@@ -276,17 +297,27 @@ def main():
             'chg': g_map.get('goldPound', {}).get('sell_chg') or '0%',
             'source': 'مركز المعلومات IDSC / الصاغة'
         },
-        'goldOunceUSD': round(live_gold_xau, 2)
+        'goldOunceUSD': round(float(live_gold_xau or base_gold.get('goldOunceUSD') or 0), 2)
     }
 
     # Timezones: Cairo / KSA (UTC+2 / UTC+3)
     now_utc = datetime.now(timezone.utc)
     now_cairo = now_utc + timedelta(hours=2)
 
+    official_fx = bool(c_map.get('usd') and c_map.get('sar'))
+    official_gold = bool(g_map.get('gold21'))
+    rate_mode = 'official' if official_fx and official_gold else ('mixed' if official_fx or official_gold else 'estimated')
+    fx_provider = 'Ta3weem / بنك مصر' if official_fx else 'Global FX (مرجعي يومي)'
+    gold_provider = 'Ta3weem / مركز المعلومات IDSC' if official_gold else 'XAU Spot (تقدير عالمي)'
     market_data = {
         'updatedAt': now_utc.isoformat(),
+        'checkedAt': now_utc.isoformat(),
         'lastUpdateHuman': now_cairo.strftime('%Y-%m-%d %I:%M %p بتوقيت القاهرة'),
-        'provider': 'نظام أسعار الصرف والذهب الهجين متعدد المصادر (Banque Misr + Global FX + XAU Spot)',
+        'lastCheckedHuman': now_cairo.strftime('%Y-%m-%d %I:%M %p بتوقيت القاهرة'),
+        'provider': 'Ta3weem / بنك مصر / مركز المعلومات IDSC' if rate_mode == 'official' else 'أسعار مختلطة: مصدر محلي + مرجع عالمي' if rate_mode == 'mixed' else 'تقدير عالمي (Global FX + XAU Spot)',
+        'rateMode': rate_mode,
+        'fxProvider': fx_provider,
+        'goldProvider': gold_provider,
         'currencies': final_currencies,
         'gold': final_gold
     }
@@ -296,6 +327,7 @@ def main():
 
     print(f"\n[OK] Successfully updated {out_path}")
     print(f"Timestamp: {market_data['lastUpdateHuman']}")
+    print(f"Verified at: {market_data['lastCheckedHuman']}")
     print(f"USD: Buy={final_currencies['USD']['buy']} | Sell={final_currencies['USD']['sell']} EGP")
     print(f"SAR: Buy={final_currencies['SAR']['buy']} | Sell={final_currencies['SAR']['sell']} EGP")
     print(f"EUR: Buy={final_currencies['EUR']['buy']} | Sell={final_currencies['EUR']['sell']} EGP")
