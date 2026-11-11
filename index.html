@@ -13504,7 +13504,7 @@
     #viewExpenses .cockpit-flow-pill.inflow,
     #viewExpenses .cockpit-flow-pill.outflow {
       display: grid !important;
-      grid-template-columns: minmax(0, 1fr) max-content !important;
+      grid-template-columns: max-content minmax(0, 1fr) !important;
       align-items: center !important;
       gap: 8px !important;
       width: 100% !important;
@@ -13519,10 +13519,24 @@
     }
     #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
       min-width: 0 !important;
+      max-width: 62px !important;
+      gap: 3px !important;
+      flex-shrink: 1 !important;
+      overflow: hidden !important;
+    }
+    #viewExpenses .cockpit-flow-pill .flow-title {
+      min-width: 0 !important;
+      font-size: 0.62rem !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
     }
     #viewExpenses .cockpit-flow-pill .flow-amount {
       min-width: 0 !important;
+      max-width: 100% !important;
+      font-size: clamp(0.88rem, 2.5vw, 0.98rem) !important;
       white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
     }
     #viewExpenses .cockpit-flow-pill.outflow {
       position: relative !important;
