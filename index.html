@@ -13495,18 +13495,22 @@
       font-weight: 1000 !important;
       -webkit-text-stroke: 0.25px rgba(186, 230, 253, 0.65) !important;
       text-shadow: 0 0 7px rgba(56, 189, 248, 0.62), 0 2px 24px rgba(56, 189, 248, 0.88) !important;
+      transform: scaleX(0.90) scaleY(1.12) !important;
+      transform-origin: right center !important;
+      line-height: 1.20 !important;
     }
     #viewExpenses .cockpit-flow-side {
       align-items: stretch !important;
       box-sizing: border-box !important;
       margin-inline: -6px !important;
+      gap: 5px !important;
     }
     #viewExpenses .cockpit-flow-pill.inflow,
     #viewExpenses .cockpit-flow-pill.outflow {
       display: grid !important;
       grid-template-columns: max-content minmax(0, 1fr) !important;
       align-items: center !important;
-      gap: 8px !important;
+      gap: 6px !important;
       width: 100% !important;
       min-width: 0 !important;
       height: 38px !important;
@@ -13520,13 +13524,16 @@
     #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
       min-width: 0 !important;
       max-width: 62px !important;
-      gap: 3px !important;
+      gap: 4px !important;
       flex-shrink: 1 !important;
       overflow: hidden !important;
     }
     #viewExpenses .cockpit-flow-pill .flow-title {
       min-width: 0 !important;
       font-size: 0.62rem !important;
+      font-weight: 850 !important;
+      line-height: 1.1 !important;
+      white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
     }
@@ -13534,6 +13541,12 @@
       min-width: 0 !important;
       max-width: 100% !important;
       font-size: clamp(0.88rem, 2.5vw, 0.98rem) !important;
+      font-variant-numeric: tabular-nums lining-nums !important;
+      font-weight: 950 !important;
+      line-height: 1 !important;
+      letter-spacing: 0 !important;
+      justify-self: start !important;
+      text-align: left !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
