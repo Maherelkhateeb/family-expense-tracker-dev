@@ -146,7 +146,7 @@
 
     var currentEditTxReceiptDataUri = null;
     var APP_VERSION = 'v5.3.10';
-    var APP_BUILD_ID = 202611111750;
+    var APP_BUILD_ID = 202611111807;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5221,9 +5221,6 @@
       gap: 8px;
       direction: ltr;
     }
-    .custom-date-modal-overlay.is-single-date .range-date-summary { grid-template-columns: 1fr; }
-    .custom-date-modal-overlay.is-single-date #customRangeEndCard { display: none; }
-    .custom-calendar-input { cursor: pointer; }
     .range-date-value {
       min-width: 0;
       display: flex;
@@ -9930,6 +9927,66 @@
     /* تنسيقات لوحة إضافة وتسجيل المهام الموحدة والشاملة من نفس الشاشة */
     .tasks-unified-creator-card {
       box-sizing: border-box;
+      padding: 10px 12px !important;
+      gap: 9px !important;
+      border-radius: 15px !important;
+    }
+    .task-creator-fields {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.44fr);
+      gap: 8px;
+    }
+    .task-creator-field {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .task-creator-field-label {
+      color: #aebdd0;
+      font-size: 0.66rem;
+      font-weight: 850;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .task-creator-control {
+      width: 100%;
+      height: 38px;
+      min-width: 0;
+      box-sizing: border-box;
+      border-radius: 9px;
+      padding: 0 10px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(168, 85, 247, 0.34);
+      color: #f8fafc;
+      font-size: 0.78rem;
+      font-weight: 750;
+      outline: none;
+    }
+    .task-creator-control:focus {
+      border-color: #c084fc;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+    }
+    .tasks-productivity-card {
+      position: relative;
+      z-index: 40;
+      background: rgba(15, 23, 42, 0.94) !important;
+      padding: 8px 12px !important;
+      border-radius: 13px !important;
+      margin-bottom: 0 !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    #tasksFullScreenModal.calendar-mode #tasksProductivityPinnedCard {
+      position: sticky;
+      top: 58px;
+      z-index: 90;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.48) !important;
+    }
+    @media (max-width: 600px) {
+      .task-creator-fields { grid-template-columns: minmax(0, 1fr); }
+      #tasksFullScreenModal.calendar-mode #tasksProductivityPinnedCard { top: 54px; }
     }
     .btn-unified-tag-chip {
       padding: 5px 12px;
@@ -13258,36 +13315,6 @@
       font-weight: 950;
       box-shadow: 0 3px 12px rgba(56,189,248,0.28);
     }
-    .task-picker-calendar-grid button.range-calendar-day {
-      position: relative;
-      isolation: isolate;
-      height: 34px;
-      min-height: 34px;
-      border: 0;
-      border-radius: 0;
-      color: #e2e8f0;
-      background: transparent;
-      font: inherit;
-      font-size: 0.76rem;
-    }
-    .task-picker-calendar-grid button.range-calendar-day::before { inset: 4px 0; }
-    .task-picker-calendar-grid button.range-calendar-day::after {
-      width: 29px;
-      height: 29px;
-      background: #5b5bd6;
-    }
-    .task-picker-calendar-grid button.range-calendar-day.is-range-start.is-range-end {
-      color: #ffffff;
-      font-weight: 900;
-      box-shadow: none;
-    }
-    .task-picker-calendar-grid button.range-calendar-day.is-today:not(.is-range-start):not(.is-range-end) {
-      color: #c4b5fd;
-      font-weight: 900;
-    }
-    .task-picker-calendar-grid button.range-calendar-day:hover:not(.is-range-start):not(.is-range-end) {
-      color: #c4b5fd;
-    }
     .task-picker-time-wheels {
       direction: ltr;
       display: grid;
@@ -13534,22 +13561,18 @@
       font-weight: 1000 !important;
       -webkit-text-stroke: 0.25px rgba(186, 230, 253, 0.65) !important;
       text-shadow: 0 0 7px rgba(56, 189, 248, 0.62), 0 2px 24px rgba(56, 189, 248, 0.88) !important;
-      transform: scaleX(0.90) scaleY(1.12) !important;
-      transform-origin: right center !important;
-      line-height: 1.20 !important;
     }
     #viewExpenses .cockpit-flow-side {
       align-items: stretch !important;
       box-sizing: border-box !important;
       margin-inline: -6px !important;
-      gap: 5px !important;
     }
     #viewExpenses .cockpit-flow-pill.inflow,
     #viewExpenses .cockpit-flow-pill.outflow {
       display: grid !important;
       grid-template-columns: max-content minmax(0, 1fr) !important;
       align-items: center !important;
-      gap: 6px !important;
+      gap: 8px !important;
       width: 100% !important;
       min-width: 0 !important;
       height: 38px !important;
@@ -13563,16 +13586,13 @@
     #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
       min-width: 0 !important;
       max-width: 62px !important;
-      gap: 4px !important;
+      gap: 3px !important;
       flex-shrink: 1 !important;
       overflow: hidden !important;
     }
     #viewExpenses .cockpit-flow-pill .flow-title {
       min-width: 0 !important;
       font-size: 0.62rem !important;
-      font-weight: 850 !important;
-      line-height: 1.1 !important;
-      white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
     }
@@ -13580,12 +13600,6 @@
       min-width: 0 !important;
       max-width: 100% !important;
       font-size: clamp(0.88rem, 2.5vw, 0.98rem) !important;
-      font-variant-numeric: tabular-nums lining-nums !important;
-      font-weight: 950 !important;
-      line-height: 1 !important;
-      letter-spacing: 0 !important;
-      justify-self: start !important;
-      text-align: left !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
@@ -14210,18 +14224,18 @@
     <!-- بطاقة منبثقة أنيقة ومتناسقة لتحديد تاريخ مخصص -->
     <!-- نافذة منبثقة سفلية ذكية ومبسطة للجوال لتحديد فترة مخصصة -->
     <div class="custom-date-modal-overlay" id="customDatePickerDrawer" style="display: none;" aria-hidden="true">
-      <div class="custom-date-sheet-card" id="customDatePickerDialog" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
+      <div class="custom-date-sheet-card" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
         <div class="custom-date-sheet-head">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i class="fa-regular fa-calendar-check" style="color: #38bdf8; font-size: 1.1rem;"></i>
-            <span id="customDatePickerTitle" style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
+            <span style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
           </div>
           <button type="button" class="btn-modal-close" onclick="toggleCustomDatePicker(false)" aria-label="إغلاق">&times;</button>
         </div>
 
         <div class="range-date-summary" aria-live="polite">
           <div class="range-date-value" id="customRangeStartCard">
-            <span class="range-date-value-label" id="customRangeStartLabel">من</span>
+            <span class="range-date-value-label">من</span>
             <output id="customRangeStartDisplay">اختر تاريخ البداية</output>
           </div>
           <div class="range-date-value is-pending" id="customRangeEndCard">
@@ -14240,8 +14254,8 @@
         <div class="range-date-hint" id="customRangeHint" aria-live="polite">اختر تاريخ البداية ثم تاريخ النهاية</div>
 
         <div class="custom-date-sheet-actions">
-          <button type="button" id="customDatePickerConfirmButton" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
-          <button type="button" id="customDatePickerResetButton" class="btn-reset-period-sub" onclick="resetCustomDatePickerSelection()">
+          <button type="button" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
+          <button type="button" class="btn-reset-period-sub" onclick="resetDateFilter()">
             العودة للشهر الحالي
           </button>
         </div>
@@ -17035,7 +17049,7 @@
       <div id="tasksTabListView" style="display: flex; flex-direction: column; gap: 10px;">
         
         <!-- كارت مؤشرات الإنتاجية والإنجاز: منسق وفخم وبجانبه زر إضافة مهمة صريح -->
-        <div id="tasksProductivityPinnedCard" style="background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
+        <div id="tasksProductivityPinnedCard" class="tasks-productivity-card" style="background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.82rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
@@ -17090,7 +17104,7 @@
         </button>
 
         <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (مخفية افتراضياً وتظهر فقط عند الضغط على زر إضافة مهمة) -->
-        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 14px 16px; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 10px 12px; flex-direction: column; gap: 9px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
           
           <!-- هيدر كارت الإضافة مع زر إغلاق / إلغاء واضح للعودة للقائمة النظيفة -->
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
@@ -17109,29 +17123,28 @@
             </button>
           </div>
 
-          <!-- 1. بيان المهمة (عنوان / تفاصيل) -->
-          <div style="display: flex; flex-direction: column; gap: 5px;">
-            <label for="quickTaskTitleInput" style="font-size: 0.75rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-align-right" style="color: #a855f7;"></i>
-              <span>بيان المهمة / التفاصيل:</span>
+          <!-- عنوان المهمة والمشروع المرتبط بها -->
+          <div class="task-creator-fields">
+            <label class="task-creator-field">
+              <span class="task-creator-field-label"><i class="fa-solid fa-align-right" style="color: #a855f7;"></i> المهمة</span>
+              <input type="text" id="quickTaskTitleInput" class="task-creator-control" placeholder="اكتب عنوان المهمة أو الإجراء المطلوب" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
             </label>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <input type="text" id="quickTaskTitleInput" placeholder="اكتب بيان المهمة هنا... (مثال: سداد فاتورة الكهرباء والإنترنت)" style="flex: 1; height: 42px; border-radius: 11px; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); color: #fff; font-size: 0.86rem; font-weight: 800; padding: 0 14px; outline: none; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#c084fc'" onblur="this.style.borderColor='rgba(168, 85, 247, 0.4)'" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
-              <button type="button" onclick="handleQuickTaskAdd()" style="height: 42px; padding: 0 16px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.84rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(16, 185, 129, 0.45); flex-shrink: 0; transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
-                <i class="fa-solid fa-check"></i>
-                <span>حفظ</span>
-              </button>
-            </div>
+            <label class="task-creator-field">
+              <span class="task-creator-field-label"><i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> المشروع</span>
+              <select id="quickTaskProjectSelect" class="task-creator-control" onchange="handleTxProjectSelection(this)" aria-label="مشروع المهمة">
+                <option value="">بدون مشروع</option>
+                <option value="__new_project__">＋ إنشاء مشروع جديد</option>
+              </select>
+            </label>
           </div>
 
           <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
           <div style="display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.74rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 0.70rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
                 <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
-                <span>اختر التاج / الوسم:</span>
+                <span>التصنيف</span>
               </span>
-              <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">(اضغط للتبديل الفوري)</span>
             </div>
             <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
               <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
@@ -17147,11 +17160,11 @@
           </div>
 
           <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
-          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
-                <span>تحديد موعد المهمة (التاريخ والساعة معاً من نفس الشاشة):</span>
+                <span>الموعد</span>
               </span>
               <span id="lblUnifiedTaskDateTimeDisplay" style="font-size: 0.68rem; font-weight: 850; color: #38bdf8;">اليوم</span>
             </div>
@@ -17186,7 +17199,7 @@
                 <input type="time" id="inlineTaskDueTime" hidden onchange="onInlineTimeCustomChange(this.value)">
               </div>
             </div>
-            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('inline')">🗓️ فتح التقويم واختيار الوقت</button>
+            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('inline')">🗓️ موعد مخصص</button>
             <input type="hidden" id="inlineTaskDueSecond" value="00">
             <input type="hidden" id="inlineTaskDueTimezone">
           </div>
@@ -17220,13 +17233,13 @@
             </div>
           </div>
 
-          <!-- 5. زرا الحفظ والإلغاء النهائيين -->
+          <!-- حفظ واحد واضح بدل تكرار زر الحفظ داخل حقل العنوان -->
           <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 42px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.86rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
+            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.82rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
               <i class="fa-solid fa-check-double"></i>
-              <span>✨ حفظ وإضافة المهمة</span>
+              <span>حفظ المهمة</span>
             </button>
-            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 42px; padding: 0 14px; border-radius: 11px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 38px; padding: 0 14px; border-radius: 10px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.74rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
               <i class="fa-solid fa-xmark"></i>
               <span>إلغاء</span>
             </button>
@@ -17534,7 +17547,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.10 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.9 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18130,7 +18143,7 @@
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
       const APP_VERSION = 'v5.3.10';
-      const APP_BUILD_ID = 202611111750;
+      const APP_BUILD_ID = 202611111807;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -20936,15 +20949,6 @@
     let customRangePickerDraft = { from: '', to: '' };
     let customRangePickerCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let customRangePickerDraftReady = false;
-    let customRangePickerContext = { mode: 'app' };
-    const CUSTOM_RANGE_DATE_FIELD_PAIRS = {
-      inpAnalyticsDateFrom: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
-      inpAnalyticsDateTo: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
-      auditDateFrom: ['auditDateFrom', 'auditDateTo'],
-      auditDateTo: ['auditDateFrom', 'auditDateTo'],
-      summaryCustomDateFrom: ['summaryCustomDateFrom', 'summaryCustomDateTo'],
-      summaryCustomDateTo: ['summaryCustomDateFrom', 'summaryCustomDateTo']
-    };
 
     function formatCustomRangeDate(dateStr) {
       if (!dateStr) return '';
@@ -20954,77 +20958,6 @@
       return new Intl.DateTimeFormat('ar-EG-u-ca-gregory-nu-latn', {
         day: 'numeric', month: 'short', year: 'numeric'
       }).format(date);
-    }
-
-    function setCustomRangePickerDraft(from, to = '') {
-      if (from && to && from > to) [from, to] = [to, from];
-      customRangePickerDraft = { from: from || '', to: to || '' };
-      const cursorValue = from || to || (typeof getLocalDateStr === 'function'
-        ? getLocalDateStr(new Date())
-        : new Date().toISOString().split('T')[0]);
-      const parts = cursorValue.split('-').map(Number);
-      customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
-        ? new Date(parts[0], parts[1] - 1, 1)
-        : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-      customRangePickerDraftReady = true;
-    }
-
-    function dispatchCustomDatePickerChange(input) {
-      if (!input) return;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    function openCustomDatePickerForRange(fromInput, toInput) {
-      if (!fromInput || !toInput) return;
-      customRangePickerContext = { mode: 'range', fromInput, toInput };
-      setCustomRangePickerDraft(fromInput.value, toInput.value);
-      toggleCustomDatePicker(true);
-    }
-
-    function openCustomDatePickerForSingle(input) {
-      if (!input) return;
-      customRangePickerContext = { mode: 'single', input };
-      setCustomRangePickerDraft(input.value, '');
-      toggleCustomDatePicker(true);
-    }
-
-    function openUnifiedDatePickerFromInput(input) {
-      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
-      input.classList.add('custom-calendar-input');
-      input.setAttribute('aria-haspopup', 'dialog');
-      input.setAttribute('aria-controls', 'customDatePickerDrawer');
-      const rangeIds = CUSTOM_RANGE_DATE_FIELD_PAIRS[input.id];
-      if (rangeIds) {
-        openCustomDatePickerForRange(
-          document.getElementById(rangeIds[0]),
-          document.getElementById(rangeIds[1])
-        );
-        return;
-      }
-      openCustomDatePickerForSingle(input);
-    }
-
-    function configureCustomDatePickerUi() {
-      const drawer = document.getElementById('customDatePickerDrawer');
-      const dialog = document.getElementById('customDatePickerDialog');
-      const title = document.getElementById('customDatePickerTitle');
-      const startLabel = document.getElementById('customRangeStartLabel');
-      const confirmButton = document.getElementById('customDatePickerConfirmButton');
-      const resetButton = document.getElementById('customDatePickerResetButton');
-      const mode = customRangePickerContext.mode || 'app';
-      const isSingle = mode === 'single';
-
-      if (drawer) drawer.classList.toggle('is-single-date', isSingle);
-      if (dialog) dialog.setAttribute('aria-label', isSingle ? 'اختيار التاريخ' : 'اختيار فترة التاريخ');
-      if (title) title.textContent = isSingle ? '📅 اختيار التاريخ' : '📅 اختيار فترة التاريخ';
-      if (startLabel) startLabel.textContent = isSingle ? 'التاريخ' : 'من';
-      if (confirmButton) confirmButton.textContent = isSingle ? 'تأكيد التاريخ' : 'تأكيد الفترة';
-      if (resetButton) {
-        resetButton.textContent = mode === 'app'
-          ? 'العودة للشهر الحالي'
-          : (isSingle ? 'مسح التاريخ' : 'مسح الفترة');
-      }
     }
 
     function renderCustomRangeCalendarMonth(year, month) {
@@ -21043,10 +20976,7 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isStart = dateStr === customRangePickerDraft.from;
-        const isSingle = customRangePickerContext.mode === 'single';
-        const isEnd = isSingle
-          ? isStart
-          : dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
+        const isEnd = dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
         const hasRange = !!(customRangePickerDraft.from && customRangePickerDraft.to);
         const isBetween = hasRange && dateStr > customRangePickerDraft.from && dateStr < customRangePickerDraft.to;
         const classes = ['range-calendar-day'];
@@ -21076,19 +21006,16 @@
       const endDisplay = document.getElementById('customRangeEndDisplay');
       const endCard = document.getElementById('customRangeEndCard');
       const hint = document.getElementById('customRangeHint');
-      const isSingle = customRangePickerContext.mode === 'single';
 
       if (startDisplay) startDisplay.textContent = customRangePickerDraft.from
-        ? formatCustomRangeDate(customRangePickerDraft.from) : (isSingle ? 'اختر التاريخ' : 'اختر تاريخ البداية');
+        ? formatCustomRangeDate(customRangePickerDraft.from) : 'اختر تاريخ البداية';
       if (endDisplay) endDisplay.textContent = customRangePickerDraft.to
         ? formatCustomRangeDate(customRangePickerDraft.to) : 'اختر تاريخ النهاية';
       if (endCard) endCard.classList.toggle('is-pending', !customRangePickerDraft.to);
       if (hint) {
-        hint.textContent = isSingle
-          ? (customRangePickerDraft.from ? 'تم تحديد اليوم، ويمكن تغييره قبل التأكيد' : 'اختر التاريخ المطلوب')
-          : (customRangePickerDraft.from && !customRangePickerDraft.to
-            ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
-            : 'اختر تاريخ البداية ثم تاريخ النهاية');
+        hint.textContent = customRangePickerDraft.from && !customRangePickerDraft.to
+          ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
+          : 'اختر تاريخ البداية ثم تاريخ النهاية';
       }
 
       calendar.innerHTML = Array.from({ length: 2 }, (_, index) => {
@@ -21108,9 +21035,7 @@
     }
 
     function selectCustomRangeDate(dateStr) {
-      if (customRangePickerContext.mode === 'single') {
-        customRangePickerDraft = { from: dateStr, to: '' };
-      } else if (!customRangePickerDraft.from || customRangePickerDraft.to) {
+      if (!customRangePickerDraft.from || customRangePickerDraft.to) {
         customRangePickerDraft = { from: dateStr, to: '' };
       } else if (dateStr < customRangePickerDraft.from) {
         customRangePickerDraft = { from: dateStr, to: customRangePickerDraft.from };
@@ -21125,45 +21050,29 @@
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
       if (open) {
-        if (customRangePickerContext.mode === 'app' && !customRangePickerDraftReady) {
+        drawer.style.display = 'flex';
+        drawer.setAttribute('aria-hidden', 'false');
+        if (!customRangePickerDraftReady) {
           const today = typeof getLocalDateStr === 'function'
             ? getLocalDateStr(new Date())
             : new Date().toISOString().split('T')[0];
           const from = state.customDateRange?.from || today;
           const to = state.customDateRange?.to || from;
-          setCustomRangePickerDraft(from, to);
+          customRangePickerDraft = { from, to };
+          const parts = from.split('-').map(Number);
+          customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
+            ? new Date(parts[0], parts[1] - 1, 1)
+            : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+          customRangePickerDraftReady = true;
         }
-        configureCustomDatePickerUi();
-        drawer.style.display = 'flex';
-        drawer.setAttribute('aria-hidden', 'false');
         renderCustomDateRangePicker();
         if (typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
       } else {
         drawer.style.display = 'none';
         drawer.setAttribute('aria-hidden', 'true');
         if (typeof popModalState === 'function') popModalState('customDatePickerDrawer');
-        if (customRangePickerContext.mode !== 'app') customRangePickerDraftReady = false;
-        customRangePickerContext = { mode: 'app' };
-        drawer.classList.remove('is-single-date');
       }
     }
-
-    document.addEventListener('click', event => {
-      const input = event.target instanceof Element ? event.target.closest('input[type="date"]') : null;
-      if (!input || input.hidden || input.closest('[hidden]')) return;
-      event.preventDefault();
-      event.stopPropagation();
-      openUnifiedDatePickerFromInput(input);
-    }, true);
-
-    document.addEventListener('keydown', event => {
-      const input = event.target instanceof HTMLInputElement ? event.target : null;
-      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      event.stopPropagation();
-      openUnifiedDatePickerFromInput(input);
-    }, true);
 
     function applyPresetPeriod(preset) {
       const now = new Date();
@@ -21202,7 +21111,6 @@
     function applyDateRange() {
       const from = customRangePickerDraft.from;
       const to = customRangePickerDraft.to || from;
-      const context = customRangePickerContext;
 
       if (!from && !to) {
         showToast('⚠️ يرجى تحديد تاريخ البداية أو النهاية');
@@ -21213,43 +21121,9 @@
         return;
       }
 
-      if (context.mode === 'single') {
-        context.input.value = from || to;
-        dispatchCustomDatePickerChange(context.input);
-        toggleCustomDatePicker(false);
-        return;
-      }
-
-      if (context.mode === 'range') {
-        context.fromInput.value = from || to;
-        context.toInput.value = to || from;
-        dispatchCustomDatePickerChange(context.fromInput);
-        dispatchCustomDatePickerChange(context.toInput);
-        toggleCustomDatePicker(false);
-        return;
-      }
-
       state.customDateRange = { from: from || to, to: to || from };
       toggleCustomDatePicker(false);
       setAppPeriod('custom');
-    }
-
-    function resetCustomDatePickerSelection() {
-      const context = customRangePickerContext;
-      if (context.mode === 'app') {
-        resetDateFilter();
-        return;
-      }
-      if (context.mode === 'single') {
-        context.input.value = '';
-        dispatchCustomDatePickerChange(context.input);
-      } else if (context.mode === 'range') {
-        context.fromInput.value = '';
-        context.toInput.value = '';
-        dispatchCustomDatePickerChange(context.fromInput);
-        dispatchCustomDatePickerChange(context.toInput);
-      }
-      toggleCustomDatePicker(false);
     }
 
     function resetDateFilter() {
@@ -23470,12 +23344,19 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
 
     function getKnownProjects() {
       const namesByKey = new Map();
-      (state.transactions || []).forEach(tx => {
-        const name = getTransactionProjectName(tx);
+      const addProjectName = value => {
+        const name = String(value || '').trim();
         if (!name) return;
         const key = name.toLocaleLowerCase();
         if (!namesByKey.has(key)) namesByKey.set(key, name);
+      };
+      (state.transactions || []).forEach(tx => {
+        addProjectName(getTransactionProjectName(tx));
       });
+      try {
+        const savedTasks = JSON.parse(localStorage.getItem('family_monefy_tasks') || '[]');
+        if (Array.isArray(savedTasks)) savedTasks.forEach(task => addProjectName(task && task.project));
+      } catch (e) {}
       return Array.from(namesByKey.values()).sort((a, b) => a.localeCompare(b, 'ar'));
     }
 
@@ -23507,6 +23388,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       const projects = getKnownProjects();
       replaceProjectOptions(document.getElementById('inpTxProject'), projects, { create: true });
       replaceProjectOptions(document.getElementById('editTxProject'), projects, { create: true });
+      replaceProjectOptions(document.getElementById('quickTaskProjectSelect'), projects, { create: true });
       replaceProjectOptions(document.getElementById('opsFilterProject'), projects, { filter: true });
       replaceProjectOptions(document.getElementById('analyticsProjectFilter'), projects, { filter: true, allLabel: 'كل المشاريع للمقارنة' });
     }
@@ -28823,7 +28705,7 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111750);
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111807);
           const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.10');
 
           const isNewer = remoteBuild && (
@@ -31283,9 +31165,8 @@ function renderTaskPickerCalendar() {
     button.setAttribute('role', 'gridcell');
     button.setAttribute('aria-label', formatTaskPickerDate(dateValue));
     button.setAttribute('aria-pressed', String(dateValue === window.taskSelectedDateVal));
-    button.classList.add('range-calendar-day');
     if (dateValue === today) button.classList.add('is-today');
-    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-range-start', 'is-range-end');
+    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-selected');
     button.onclick = () => selectTaskPickerDay(dateValue);
     grid.appendChild(button);
   }
@@ -31568,6 +31449,14 @@ function switchTasksViewMode(mode) {
   const btnCal = document.getElementById('btnTaskTabCalendar');
   const viewList = document.getElementById('tasksTabListView');
   const viewCal = document.getElementById('tasksTabCalendarView');
+  const modal = document.getElementById('tasksFullScreenModal');
+  const productivityCard = document.getElementById('tasksProductivityPinnedCard');
+  if (modal) modal.classList.toggle('calendar-mode', mode === 'calendar');
+  if (mode === 'calendar' && viewCal && productivityCard && productivityCard.parentElement !== viewCal) {
+    viewCal.insertBefore(productivityCard, viewCal.firstChild);
+  } else if (mode !== 'calendar' && viewList && productivityCard && productivityCard.parentElement !== viewList) {
+    viewList.insertBefore(productivityCard, viewList.firstChild);
+  }
 
   if (mode === 'calendar') {
     if (btnList) {
@@ -31847,6 +31736,11 @@ function openNewTaskDrawerModal() {
 function resetUnifiedTaskForm() {
   const titleInp = document.getElementById('quickTaskTitleInput');
   if (titleInp) titleInp.value = '';
+  const projectSelect = document.getElementById('quickTaskProjectSelect');
+  if (projectSelect) {
+    projectSelect.value = '';
+    projectSelect.dataset.lastValue = '';
+  }
 
   const defaultTagBtn = document.querySelector('#unifiedTaskTagChipsList [data-tag="general"]');
   if (defaultTagBtn) selectTaskInlineTag('general', defaultTagBtn);
@@ -31901,6 +31795,7 @@ window._pendingSubtaskPhotos = {};
 window._activeSubtaskTaskId = null;
 
 function showUnifiedTaskCreator() {
+  if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
   const card = document.getElementById('tasksUnifiedCreatorCard');
   const heroBtn = document.getElementById('btnHeroAddTaskBar');
   if (heroBtn) heroBtn.style.display = 'none';
@@ -32073,6 +31968,8 @@ function handleQuickTaskAdd() {
   const tag = window._selectedTaskTag || 'general';
   const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
   const priority = tag === 'important' ? 'high' : (window._selectedTaskPriority || 'medium');
+  const projectSelect = document.getElementById('quickTaskProjectSelect');
+  const project = String(projectSelect && projectSelect.value || '').trim();
 
   const newTask = {
     id: 'task_' + Date.now(),
@@ -32084,6 +31981,7 @@ function handleQuickTaskAdd() {
     dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, dueTimezone) || null,
     tag: tag,
     category: tag, // Ensures seamless matching with category filters
+    project: project,
     assignedMember: member,
     priority: priority,
     completed: false,
@@ -32095,6 +31993,7 @@ function handleQuickTaskAdd() {
   const tasks = getTodoTasks();
   tasks.unshift(newTask);
   saveTodoTasks(tasks);
+  if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
 
   if (titleInp) titleInp.value = '';
   clearTaskPendingPhoto();
@@ -32348,7 +32247,8 @@ function renderTasksProList() {
     tasks = tasks.filter(t => {
       const matchTitle = (t.title || '').toLowerCase().includes(query);
       const matchSubs = (t.subtasks || []).some(s => (s.title || '').toLowerCase().includes(query));
-      return matchTitle || matchSubs;
+      const matchProject = (t.project || '').toLowerCase().includes(query);
+      return matchTitle || matchSubs || matchProject;
     });
   }
 
@@ -32396,6 +32296,7 @@ function renderTasksProList() {
             </div>
             <div style="font-size: 0.66rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; margin-top: 1px; flex-wrap: wrap;">
               ${renderTaskTagBadge(t)}
+              ${t.project ? `<span style="color:#7dd3fc; background:rgba(56,189,248,0.10); border:1px solid rgba(56,189,248,0.22); padding:1px 6px; border-radius:6px; font-weight:800;">📌 ${escapeHtml(t.project)}</span>` : ''}
               ${t.dueDate ? `<span style="color: ${isOverdue ? '#f43f5e' : (isDueToday ? '#38bdf8' : '#94a3b8')}; font-weight: 800;">📅 ${t.dueDate}</span>` : ''}
               ${t.dueTime ? `<span>⏰ ${escapeHtml(formatTaskTimeDisplay(t))}</span>` : ''}
               ${t.dueTimeZone && t.dueTime ? `<span title="${escapeHtml(t.dueTimeZone)}" style="color:#7dd3fc; font-size:0.60rem; font-weight:800;">${escapeHtml(getTaskTimezoneBadge(t))}</span>` : ''}
@@ -32635,6 +32536,7 @@ function selectTasksCalendarDay(dateStr) {
             <span style="background: ${tagBg}; color: ${tagColor}; padding: 1px 7px; border-radius: 6px; font-weight: 850; border: 1px solid ${tagColor}40;">
               ${tagText}
             </span>
+            ${t.project ? `<span style="background:rgba(56,189,248,0.10); color:#7dd3fc; padding:1px 6px; border-radius:6px; font-weight:800; border:1px solid rgba(56,189,248,0.22);">📌 ${escapeHtml(t.project)}</span>` : ''}
             ${t.dueTime ? `<span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-regular fa-clock" style="font-size: 0.62rem;"></i> ${escapeHtml(formatTaskTimeDisplay(t))}</span>` : ''}
             ${t.dueTimeZone && t.dueTime ? `<span title="${escapeHtml(t.dueTimeZone)}" style="background:rgba(56,189,248,0.10); padding:1px 6px; border-radius:5px; color:#7dd3fc; font-weight:750;">${escapeHtml(getTaskTimezoneBadge(t))}</span>` : ''}
             <span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-solid fa-user" style="font-size: 0.62rem;"></i> ${escapeHtml(t.assignedMember || 'البيت')}</span>
@@ -32957,7 +32859,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.10)</span>
+          <span>النظام جاهز ومحدث (v5.3.9)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
