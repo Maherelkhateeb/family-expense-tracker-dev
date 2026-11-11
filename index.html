@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.5';
-    var APP_BUILD_ID = 202611111450;
+    var APP_VERSION = 'v5.3.6';
+    var APP_BUILD_ID = 202611111517;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16475,7 +16475,7 @@
             <div>
               <h3 class="modal-title-custom" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>مركز الضبط الموحد والمزامنة</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.5 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.6 • متزامن</span>
               </h3>
             </div>
           </div>
@@ -17037,8 +17037,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.5';
-      const APP_BUILD_ID = 202611111450;
+      const APP_VERSION = 'v5.3.6';
+      const APP_BUILD_ID = 202611111517;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -26381,10 +26381,11 @@ function openSettingsModal(targetSection = '') {
       const t = currentSelectedActivityItem.type || '';
       if (t.includes('expected')) {
         switchAppPage('expected');
-        switchExpectedMainTab('commitments');
+        switchExpectedTopSection('bills_and_debts');
       } else if (t.includes('budget')) {
         switchAppPage('expected');
-        switchExpectedMainTab('monthly_budget');
+        switchExpectedTopSection('budgets');
+        switchBudgetSubTab('current');
       } else if (t.includes('request')) {
         switchAppPage('requests');
       } else {
@@ -27136,8 +27137,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111450);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.5');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111517);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.6');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -28121,7 +28122,16 @@ function openSettingsModal(targetSection = '') {
     // =========================================================================
     // دوال التحكم الثنائية لصفحة الالتزامات: [ الفواتير والديون ] | [ الميزانيات ]
     // =========================================================================
-    let activeExpectedTopSection = 'bills_and_debts'; // 'bills_and_debts' | 'budgets'
+    let activeExpectedTopSection = (() => {
+      try {
+        return localStorage.getItem('family_monefy_expected_top_section') === 'budgets'
+          ? 'budgets'
+          : 'bills_and_debts';
+      } catch (e) {
+        return 'bills_and_debts';
+      }
+    })(); // 'bills_and_debts' | 'budgets'
+    window.activeExpectedTopSection = activeExpectedTopSection;
     let activeCommitmentSubFilter = 'all'; // 'all' | 'bills' | 'debts_on_us' | 'debts_for_us' | 'settled'
     let activeBudgetSubTab = 'current'; // 'current' | 'history'
 
@@ -29021,8 +29031,23 @@ function initMonthlyBudgetUI() {
     }
 
     function restoreBudgetForView(budgetId) {
-      state.activeBudgetId = budgetId;
-      switchExpectedMainTab('monthly_budget');
+      const selectedPlan = (state.monthlyBudgets || []).find(b => String(b.id) === String(budgetId));
+      if (!selectedPlan) {
+        showToast('تعذر العثور على هذه الميزانية في السجل.');
+        renderBudgetHistory();
+        return;
+      }
+
+      state.activeBudgetId = selectedPlan.id;
+      currentBudgetMonthData = selectedPlan;
+      activeBudgetSubTab = 'current';
+      try {
+        localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets || []));
+      } catch (e) {}
+
+      // افتح محرر الخطة المختارة حتى لو كان المستخدم داخل قسم الفواتير أو الأرشيف.
+      switchExpectedTopSection('budgets');
+      switchBudgetSubTab('current');
     }
 
     function deleteBudgetFromHistory(budgetId) {
@@ -29123,7 +29148,9 @@ function switchCategoryChartFormat(format, btnEl) {
 
 
     function switchExpectedTopSection(sec) {
+      sec = sec === 'budgets' ? 'budgets' : 'bills_and_debts';
       activeExpectedTopSection = sec;
+      window.activeExpectedTopSection = sec;
       try { localStorage.setItem('family_monefy_expected_top_section', sec); } catch(e) {}
 
       const btnBillsDebts = document.getElementById('tabExpectedBillsAndDebts');
@@ -29138,10 +29165,26 @@ function switchCategoryChartFormat(format, btnEl) {
       const headerSub = document.getElementById('txtExpectedPageSubHeader');
       const topAddBtnLbl = document.getElementById('lblTopAddCommitmentAction');
 
-      if (sec === 'bills_and_debts') {
-        if (btnBillsDebts) btnBillsDebts.classList.add('active');
-        if (btnBudgets) btnBudgets.classList.remove('active');
+      const setTopButtonState = (button, isActive, colors) => {
+        if (!button) return;
+        button.classList.toggle('active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+        button.style.color = isActive ? '#fff' : '#94a3b8';
+        button.style.background = isActive
+          ? `linear-gradient(135deg, ${colors.start}, ${colors.end})`
+          : 'transparent';
+        button.style.borderColor = isActive ? colors.border : 'transparent';
+        button.style.boxShadow = isActive ? `0 3px 12px ${colors.shadow}` : 'none';
+      };
 
+      setTopButtonState(btnBillsDebts, sec === 'bills_and_debts', {
+        start: '#0284c7', end: '#0369a1', border: 'rgba(56, 189, 248, 0.5)', shadow: 'rgba(2, 132, 199, 0.4)'
+      });
+      setTopButtonState(btnBudgets, sec === 'budgets', {
+        start: '#10b981', end: '#047857', border: 'rgba(52, 211, 153, 0.55)', shadow: 'rgba(16, 185, 129, 0.35)'
+      });
+
+      if (sec === 'bills_and_debts') {
         if (secBillsDebts) secBillsDebts.style.display = 'block';
         if (secBudgetsCurrent) secBudgetsCurrent.style.display = 'none';
         if (secBudgetsHistory) secBudgetsHistory.style.display = 'none';
@@ -29154,9 +29197,6 @@ function switchCategoryChartFormat(format, btnEl) {
         renderCommitmentsPageUI();
       } else {
         // sec === 'budgets'
-        if (btnBudgets) btnBudgets.classList.add('active');
-        if (btnBillsDebts) btnBillsDebts.classList.remove('active');
-
         if (secBillsDebts) secBillsDebts.style.display = 'none';
         if (budgetSubTabs) budgetSubTabs.style.display = 'flex';
 
@@ -29190,6 +29230,7 @@ function switchCategoryChartFormat(format, btnEl) {
     };
 
     function switchBudgetSubTab(tab) {
+      tab = tab === 'history' ? 'history' : 'current';
       activeBudgetSubTab = tab;
       const bCurr = document.getElementById('btnBudgetSubCurrent');
       const bHist = document.getElementById('btnBudgetSubHistory');
@@ -29198,11 +29239,15 @@ function switchCategoryChartFormat(format, btnEl) {
 
       if (tab === 'current') {
         if (bCurr) {
+          bCurr.classList.add('active');
+          bCurr.setAttribute('aria-pressed', 'true');
           bCurr.style.background = 'linear-gradient(135deg, #10b981, #059669)';
           bCurr.style.color = '#fff';
           bCurr.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.35)';
         }
         if (bHist) {
+          bHist.classList.remove('active');
+          bHist.setAttribute('aria-pressed', 'false');
           bHist.style.background = 'transparent';
           bHist.style.color = '#94a3b8';
           bHist.style.boxShadow = 'none';
@@ -29213,11 +29258,15 @@ function switchCategoryChartFormat(format, btnEl) {
         if (typeof renderMonthlyBudgetPlan === 'function') renderMonthlyBudgetPlan();
       } else {
         if (bHist) {
+          bHist.classList.add('active');
+          bHist.setAttribute('aria-pressed', 'true');
           bHist.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
           bHist.style.color = '#fff';
           bHist.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.35)';
         }
         if (bCurr) {
+          bCurr.classList.remove('active');
+          bCurr.setAttribute('aria-pressed', 'false');
           bCurr.style.background = 'transparent';
           bCurr.style.color = '#94a3b8';
           bCurr.style.boxShadow = 'none';
@@ -30950,7 +30999,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.5)</span>
+          <span>النظام جاهز ومحدث (v5.3.6)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
