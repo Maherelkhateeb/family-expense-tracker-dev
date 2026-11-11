@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-11-11T15:53:52.975146+00:00",
-  "checkedAt": "2026-11-11T15:53:52.975146+00:00",
-  "lastUpdateHuman": "2026-11-11 05:53 PM بتوقيت القاهرة",
-  "lastCheckedHuman": "2026-11-11 05:53 PM بتوقيت القاهرة",
+  "updatedAt": "2026-11-11T22:36:25.513380+00:00",
+  "checkedAt": "2026-11-11T22:36:25.513380+00:00",
+  "lastUpdateHuman": "2026-11-12 12:36 AM بتوقيت القاهرة",
+  "lastCheckedHuman": "2026-11-12 12:36 AM بتوقيت القاهرة",
   "provider": "Ta3weem / بنك مصر / مركز المعلومات IDSC",
   "rateMode": "official",
   "fxProvider": "Ta3weem / بنك مصر",
@@ -83,6 +83,6 @@
       "chg": "0.725%",
       "source": "مركز المعلومات IDSC / الصاغة"
     },
-    "goldOunceUSD": 4002.2
+    "goldOunceUSD": 3989.0
   }
 }
