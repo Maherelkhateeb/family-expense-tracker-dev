@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.9';
-    var APP_BUILD_ID = 202611111732;
+    var APP_VERSION = 'v5.3.10';
+    var APP_BUILD_ID = 202611111750;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5221,6 +5221,9 @@
       gap: 8px;
       direction: ltr;
     }
+    .custom-date-modal-overlay.is-single-date .range-date-summary { grid-template-columns: 1fr; }
+    .custom-date-modal-overlay.is-single-date #customRangeEndCard { display: none; }
+    .custom-calendar-input { cursor: pointer; }
     .range-date-value {
       min-width: 0;
       display: flex;
@@ -13255,6 +13258,36 @@
       font-weight: 950;
       box-shadow: 0 3px 12px rgba(56,189,248,0.28);
     }
+    .task-picker-calendar-grid button.range-calendar-day {
+      position: relative;
+      isolation: isolate;
+      height: 34px;
+      min-height: 34px;
+      border: 0;
+      border-radius: 0;
+      color: #e2e8f0;
+      background: transparent;
+      font: inherit;
+      font-size: 0.76rem;
+    }
+    .task-picker-calendar-grid button.range-calendar-day::before { inset: 4px 0; }
+    .task-picker-calendar-grid button.range-calendar-day::after {
+      width: 29px;
+      height: 29px;
+      background: #5b5bd6;
+    }
+    .task-picker-calendar-grid button.range-calendar-day.is-range-start.is-range-end {
+      color: #ffffff;
+      font-weight: 900;
+      box-shadow: none;
+    }
+    .task-picker-calendar-grid button.range-calendar-day.is-today:not(.is-range-start):not(.is-range-end) {
+      color: #c4b5fd;
+      font-weight: 900;
+    }
+    .task-picker-calendar-grid button.range-calendar-day:hover:not(.is-range-start):not(.is-range-end) {
+      color: #c4b5fd;
+    }
     .task-picker-time-wheels {
       direction: ltr;
       display: grid;
@@ -14171,18 +14204,18 @@
     <!-- بطاقة منبثقة أنيقة ومتناسقة لتحديد تاريخ مخصص -->
     <!-- نافذة منبثقة سفلية ذكية ومبسطة للجوال لتحديد فترة مخصصة -->
     <div class="custom-date-modal-overlay" id="customDatePickerDrawer" style="display: none;" aria-hidden="true">
-      <div class="custom-date-sheet-card" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
+      <div class="custom-date-sheet-card" id="customDatePickerDialog" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
         <div class="custom-date-sheet-head">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i class="fa-regular fa-calendar-check" style="color: #38bdf8; font-size: 1.1rem;"></i>
-            <span style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
+            <span id="customDatePickerTitle" style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
           </div>
           <button type="button" class="btn-modal-close" onclick="toggleCustomDatePicker(false)" aria-label="إغلاق">&times;</button>
         </div>
 
         <div class="range-date-summary" aria-live="polite">
           <div class="range-date-value" id="customRangeStartCard">
-            <span class="range-date-value-label">من</span>
+            <span class="range-date-value-label" id="customRangeStartLabel">من</span>
             <output id="customRangeStartDisplay">اختر تاريخ البداية</output>
           </div>
           <div class="range-date-value is-pending" id="customRangeEndCard">
@@ -14201,8 +14234,8 @@
         <div class="range-date-hint" id="customRangeHint" aria-live="polite">اختر تاريخ البداية ثم تاريخ النهاية</div>
 
         <div class="custom-date-sheet-actions">
-          <button type="button" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
-          <button type="button" class="btn-reset-period-sub" onclick="resetDateFilter()">
+          <button type="button" id="customDatePickerConfirmButton" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
+          <button type="button" id="customDatePickerResetButton" class="btn-reset-period-sub" onclick="resetCustomDatePickerSelection()">
             العودة للشهر الحالي
           </button>
         </div>
@@ -17495,7 +17528,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.9 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.10 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18090,8 +18123,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.9';
-      const APP_BUILD_ID = 202611111732;
+      const APP_VERSION = 'v5.3.10';
+      const APP_BUILD_ID = 202611111750;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -20897,6 +20930,15 @@
     let customRangePickerDraft = { from: '', to: '' };
     let customRangePickerCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let customRangePickerDraftReady = false;
+    let customRangePickerContext = { mode: 'app' };
+    const CUSTOM_RANGE_DATE_FIELD_PAIRS = {
+      inpAnalyticsDateFrom: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
+      inpAnalyticsDateTo: ['inpAnalyticsDateFrom', 'inpAnalyticsDateTo'],
+      auditDateFrom: ['auditDateFrom', 'auditDateTo'],
+      auditDateTo: ['auditDateFrom', 'auditDateTo'],
+      summaryCustomDateFrom: ['summaryCustomDateFrom', 'summaryCustomDateTo'],
+      summaryCustomDateTo: ['summaryCustomDateFrom', 'summaryCustomDateTo']
+    };
 
     function formatCustomRangeDate(dateStr) {
       if (!dateStr) return '';
@@ -20906,6 +20948,77 @@
       return new Intl.DateTimeFormat('ar-EG-u-ca-gregory-nu-latn', {
         day: 'numeric', month: 'short', year: 'numeric'
       }).format(date);
+    }
+
+    function setCustomRangePickerDraft(from, to = '') {
+      if (from && to && from > to) [from, to] = [to, from];
+      customRangePickerDraft = { from: from || '', to: to || '' };
+      const cursorValue = from || to || (typeof getLocalDateStr === 'function'
+        ? getLocalDateStr(new Date())
+        : new Date().toISOString().split('T')[0]);
+      const parts = cursorValue.split('-').map(Number);
+      customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
+        ? new Date(parts[0], parts[1] - 1, 1)
+        : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      customRangePickerDraftReady = true;
+    }
+
+    function dispatchCustomDatePickerChange(input) {
+      if (!input) return;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function openCustomDatePickerForRange(fromInput, toInput) {
+      if (!fromInput || !toInput) return;
+      customRangePickerContext = { mode: 'range', fromInput, toInput };
+      setCustomRangePickerDraft(fromInput.value, toInput.value);
+      toggleCustomDatePicker(true);
+    }
+
+    function openCustomDatePickerForSingle(input) {
+      if (!input) return;
+      customRangePickerContext = { mode: 'single', input };
+      setCustomRangePickerDraft(input.value, '');
+      toggleCustomDatePicker(true);
+    }
+
+    function openUnifiedDatePickerFromInput(input) {
+      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
+      input.classList.add('custom-calendar-input');
+      input.setAttribute('aria-haspopup', 'dialog');
+      input.setAttribute('aria-controls', 'customDatePickerDrawer');
+      const rangeIds = CUSTOM_RANGE_DATE_FIELD_PAIRS[input.id];
+      if (rangeIds) {
+        openCustomDatePickerForRange(
+          document.getElementById(rangeIds[0]),
+          document.getElementById(rangeIds[1])
+        );
+        return;
+      }
+      openCustomDatePickerForSingle(input);
+    }
+
+    function configureCustomDatePickerUi() {
+      const drawer = document.getElementById('customDatePickerDrawer');
+      const dialog = document.getElementById('customDatePickerDialog');
+      const title = document.getElementById('customDatePickerTitle');
+      const startLabel = document.getElementById('customRangeStartLabel');
+      const confirmButton = document.getElementById('customDatePickerConfirmButton');
+      const resetButton = document.getElementById('customDatePickerResetButton');
+      const mode = customRangePickerContext.mode || 'app';
+      const isSingle = mode === 'single';
+
+      if (drawer) drawer.classList.toggle('is-single-date', isSingle);
+      if (dialog) dialog.setAttribute('aria-label', isSingle ? 'اختيار التاريخ' : 'اختيار فترة التاريخ');
+      if (title) title.textContent = isSingle ? '📅 اختيار التاريخ' : '📅 اختيار فترة التاريخ';
+      if (startLabel) startLabel.textContent = isSingle ? 'التاريخ' : 'من';
+      if (confirmButton) confirmButton.textContent = isSingle ? 'تأكيد التاريخ' : 'تأكيد الفترة';
+      if (resetButton) {
+        resetButton.textContent = mode === 'app'
+          ? 'العودة للشهر الحالي'
+          : (isSingle ? 'مسح التاريخ' : 'مسح الفترة');
+      }
     }
 
     function renderCustomRangeCalendarMonth(year, month) {
@@ -20924,7 +21037,10 @@
       for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const isStart = dateStr === customRangePickerDraft.from;
-        const isEnd = dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
+        const isSingle = customRangePickerContext.mode === 'single';
+        const isEnd = isSingle
+          ? isStart
+          : dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
         const hasRange = !!(customRangePickerDraft.from && customRangePickerDraft.to);
         const isBetween = hasRange && dateStr > customRangePickerDraft.from && dateStr < customRangePickerDraft.to;
         const classes = ['range-calendar-day'];
@@ -20954,16 +21070,19 @@
       const endDisplay = document.getElementById('customRangeEndDisplay');
       const endCard = document.getElementById('customRangeEndCard');
       const hint = document.getElementById('customRangeHint');
+      const isSingle = customRangePickerContext.mode === 'single';
 
       if (startDisplay) startDisplay.textContent = customRangePickerDraft.from
-        ? formatCustomRangeDate(customRangePickerDraft.from) : 'اختر تاريخ البداية';
+        ? formatCustomRangeDate(customRangePickerDraft.from) : (isSingle ? 'اختر التاريخ' : 'اختر تاريخ البداية');
       if (endDisplay) endDisplay.textContent = customRangePickerDraft.to
         ? formatCustomRangeDate(customRangePickerDraft.to) : 'اختر تاريخ النهاية';
       if (endCard) endCard.classList.toggle('is-pending', !customRangePickerDraft.to);
       if (hint) {
-        hint.textContent = customRangePickerDraft.from && !customRangePickerDraft.to
-          ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
-          : 'اختر تاريخ البداية ثم تاريخ النهاية';
+        hint.textContent = isSingle
+          ? (customRangePickerDraft.from ? 'تم تحديد اليوم، ويمكن تغييره قبل التأكيد' : 'اختر التاريخ المطلوب')
+          : (customRangePickerDraft.from && !customRangePickerDraft.to
+            ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
+            : 'اختر تاريخ البداية ثم تاريخ النهاية');
       }
 
       calendar.innerHTML = Array.from({ length: 2 }, (_, index) => {
@@ -20983,7 +21102,9 @@
     }
 
     function selectCustomRangeDate(dateStr) {
-      if (!customRangePickerDraft.from || customRangePickerDraft.to) {
+      if (customRangePickerContext.mode === 'single') {
+        customRangePickerDraft = { from: dateStr, to: '' };
+      } else if (!customRangePickerDraft.from || customRangePickerDraft.to) {
         customRangePickerDraft = { from: dateStr, to: '' };
       } else if (dateStr < customRangePickerDraft.from) {
         customRangePickerDraft = { from: dateStr, to: customRangePickerDraft.from };
@@ -20998,29 +21119,45 @@
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
       if (open) {
-        drawer.style.display = 'flex';
-        drawer.setAttribute('aria-hidden', 'false');
-        if (!customRangePickerDraftReady) {
+        if (customRangePickerContext.mode === 'app' && !customRangePickerDraftReady) {
           const today = typeof getLocalDateStr === 'function'
             ? getLocalDateStr(new Date())
             : new Date().toISOString().split('T')[0];
           const from = state.customDateRange?.from || today;
           const to = state.customDateRange?.to || from;
-          customRangePickerDraft = { from, to };
-          const parts = from.split('-').map(Number);
-          customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
-            ? new Date(parts[0], parts[1] - 1, 1)
-            : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-          customRangePickerDraftReady = true;
+          setCustomRangePickerDraft(from, to);
         }
+        configureCustomDatePickerUi();
+        drawer.style.display = 'flex';
+        drawer.setAttribute('aria-hidden', 'false');
         renderCustomDateRangePicker();
         if (typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
       } else {
         drawer.style.display = 'none';
         drawer.setAttribute('aria-hidden', 'true');
         if (typeof popModalState === 'function') popModalState('customDatePickerDrawer');
+        if (customRangePickerContext.mode !== 'app') customRangePickerDraftReady = false;
+        customRangePickerContext = { mode: 'app' };
+        drawer.classList.remove('is-single-date');
       }
     }
+
+    document.addEventListener('click', event => {
+      const input = event.target instanceof Element ? event.target.closest('input[type="date"]') : null;
+      if (!input || input.hidden || input.closest('[hidden]')) return;
+      event.preventDefault();
+      event.stopPropagation();
+      openUnifiedDatePickerFromInput(input);
+    }, true);
+
+    document.addEventListener('keydown', event => {
+      const input = event.target instanceof HTMLInputElement ? event.target : null;
+      if (!input || input.type !== 'date' || input.hidden || input.closest('[hidden]')) return;
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      event.stopPropagation();
+      openUnifiedDatePickerFromInput(input);
+    }, true);
 
     function applyPresetPeriod(preset) {
       const now = new Date();
@@ -21059,6 +21196,7 @@
     function applyDateRange() {
       const from = customRangePickerDraft.from;
       const to = customRangePickerDraft.to || from;
+      const context = customRangePickerContext;
 
       if (!from && !to) {
         showToast('⚠️ يرجى تحديد تاريخ البداية أو النهاية');
@@ -21069,9 +21207,43 @@
         return;
       }
 
+      if (context.mode === 'single') {
+        context.input.value = from || to;
+        dispatchCustomDatePickerChange(context.input);
+        toggleCustomDatePicker(false);
+        return;
+      }
+
+      if (context.mode === 'range') {
+        context.fromInput.value = from || to;
+        context.toInput.value = to || from;
+        dispatchCustomDatePickerChange(context.fromInput);
+        dispatchCustomDatePickerChange(context.toInput);
+        toggleCustomDatePicker(false);
+        return;
+      }
+
       state.customDateRange = { from: from || to, to: to || from };
       toggleCustomDatePicker(false);
       setAppPeriod('custom');
+    }
+
+    function resetCustomDatePickerSelection() {
+      const context = customRangePickerContext;
+      if (context.mode === 'app') {
+        resetDateFilter();
+        return;
+      }
+      if (context.mode === 'single') {
+        context.input.value = '';
+        dispatchCustomDatePickerChange(context.input);
+      } else if (context.mode === 'range') {
+        context.fromInput.value = '';
+        context.toInput.value = '';
+        dispatchCustomDatePickerChange(context.fromInput);
+        dispatchCustomDatePickerChange(context.toInput);
+      }
+      toggleCustomDatePicker(false);
     }
 
     function resetDateFilter() {
@@ -28645,8 +28817,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111732);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.9');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111750);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.10');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -31105,8 +31277,9 @@ function renderTaskPickerCalendar() {
     button.setAttribute('role', 'gridcell');
     button.setAttribute('aria-label', formatTaskPickerDate(dateValue));
     button.setAttribute('aria-pressed', String(dateValue === window.taskSelectedDateVal));
+    button.classList.add('range-calendar-day');
     if (dateValue === today) button.classList.add('is-today');
-    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-selected');
+    if (dateValue === window.taskSelectedDateVal) button.classList.add('is-range-start', 'is-range-end');
     button.onclick = () => selectTaskPickerDay(dateValue);
     grid.appendChild(button);
   }
@@ -32778,7 +32951,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.9)</span>
+          <span>النظام جاهز ومحدث (v5.3.10)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
