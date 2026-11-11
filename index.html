@@ -9991,318 +9991,6 @@
       font-weight: 900;
     }
 
-    /* لوحة إنشاء المهام: تسلسل أوضح ومساحات مريحة للشاشات المختلفة */
-    .tasks-creator-panel,
-    .tasks-creator-panel * { box-sizing: border-box; }
-    .tasks-creator-panel {
-      width: min(100%, 920px);
-      margin-inline: auto;
-      padding: clamp(14px, 2vw, 22px) !important;
-      gap: 16px !important;
-      border: 1px solid rgba(52, 211, 153, 0.34) !important;
-      border-radius: 20px !important;
-      background: radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.10), transparent 34%),
-                  linear-gradient(145deg, rgba(25, 38, 58, 0.98), rgba(10, 19, 38, 0.99)) !important;
-      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
-    }
-    .tasks-creator-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
-    }
-    .tasks-creator-heading {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-    }
-    .tasks-creator-heading-icon {
-      flex: 0 0 42px;
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      border-radius: 13px;
-      color: #6ee7b7;
-      background: linear-gradient(145deg, rgba(16, 185, 129, 0.24), rgba(5, 150, 105, 0.10));
-      font-size: 1rem;
-    }
-    .tasks-creator-heading-copy { min-width: 0; display: grid; gap: 3px; }
-    .tasks-creator-heading h2 {
-      margin: 0;
-      color: #f8fafc;
-      font-size: 0.98rem;
-      font-weight: 900;
-      line-height: 1.35;
-    }
-    .tasks-creator-heading p {
-      margin: 0;
-      color: #94a3b8;
-      font-size: 0.70rem;
-      font-weight: 650;
-    }
-    #unifiedCreatorActiveTagBadge {
-      margin-inline-start: 2px;
-      padding: 4px 9px !important;
-      border-radius: 999px !important;
-      white-space: nowrap;
-      font-size: 0.68rem !important;
-    }
-    .tasks-creator-close {
-      flex: 0 0 auto;
-      min-height: 36px;
-      padding: 0 11px !important;
-      border-radius: 10px !important;
-      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
-    }
-    .tasks-creator-close:hover { background: rgba(244, 63, 94, 0.24) !important; }
-    .tasks-creator-field { min-width: 0; display: grid; gap: 8px; }
-    .tasks-creator-label {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      color: #e2e8f0;
-      font-size: 0.78rem;
-      font-weight: 850;
-    }
-    .tasks-creator-label i { color: #6ee7b7; }
-    .tasks-creator-title-input {
-      width: 100%;
-      min-width: 0;
-      height: 48px;
-      padding: 0 14px;
-      border: 1px solid rgba(148, 163, 184, 0.24);
-      border-radius: 12px;
-      outline: none;
-      color: #f8fafc;
-      background: rgba(7, 15, 31, 0.74);
-      font: inherit;
-      font-size: 0.86rem;
-      font-weight: 700;
-      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    }
-    .tasks-creator-title-input::placeholder { color: #74839a; font-weight: 550; }
-    .tasks-creator-title-input:focus {
-      border-color: rgba(52, 211, 153, 0.72) !important;
-      background: rgba(7, 15, 31, 0.94);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
-    }
-    .tasks-creator-tag-head,
-    .tasks-creator-schedule-head,
-    .tasks-creator-details-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .tasks-creator-tag-help,
-    .tasks-creator-schedule-help {
-      margin: 3px 0 0;
-      color: #8493a9;
-      font-size: 0.66rem;
-      font-weight: 600;
-    }
-    .tasks-creator-tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px !important;
-      overflow: visible !important;
-      padding: 0 !important;
-    }
-    .tasks-creator-panel .btn-unified-tag-chip {
-      min-height: 35px;
-      padding: 6px 11px;
-      border-radius: 10px;
-      border-color: rgba(148, 163, 184, 0.18);
-      background: rgba(30, 41, 59, 0.62);
-      font-size: 0.72rem;
-    }
-    .tasks-creator-panel .btn-unified-tag-chip.active {
-      box-shadow: 0 5px 14px rgba(124, 58, 237, 0.24);
-    }
-    .tasks-creator-schedule {
-      display: grid;
-      gap: 13px;
-      padding: 15px;
-      border: 1px solid rgba(56, 189, 248, 0.20);
-      border-radius: 16px;
-      background: linear-gradient(145deg, rgba(10, 22, 42, 0.78), rgba(13, 24, 43, 0.56));
-    }
-    .tasks-creator-schedule-title {
-      display: block;
-      color: #f1f5f9;
-      font-size: 0.82rem;
-      font-weight: 900;
-    }
-    .tasks-creator-date-summary {
-      max-width: 56%;
-      padding: 6px 10px;
-      border: 1px solid rgba(168, 85, 247, 0.35);
-      border-radius: 999px;
-      color: #ddd6fe !important;
-      background: rgba(109, 40, 217, 0.14);
-      font-size: 0.68rem !important;
-      font-weight: 850 !important;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .tasks-creator-schedule-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .tasks-creator-date-group,
-    .tasks-creator-time-group { min-width: 0; display: grid; align-content: start; gap: 8px; }
-    .tasks-creator-group-label {
-      color: #aab8ca;
-      font-size: 0.70rem;
-      font-weight: 850;
-    }
-    .tasks-creator-date-presets,
-    .tasks-creator-time-presets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px !important;
-      overflow: visible !important;
-      padding: 0 !important;
-    }
-    .tasks-creator-panel .btn-inline-dt-preset {
-      min-height: 34px;
-      padding: 6px 10px !important;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      border-radius: 9px !important;
-      background: rgba(30, 41, 59, 0.72);
-      font-size: 0.70rem !important;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-    .tasks-creator-panel .btn-inline-dt-preset.active {
-      border-color: rgba(168, 85, 247, 0.7) !important;
-      background: rgba(124, 58, 237, 0.24) !important;
-      color: #e9d5ff !important;
-      box-shadow: 0 3px 10px rgba(124, 58, 237, 0.16);
-    }
-    .tasks-creator-picker-button {
-      min-height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border-color: rgba(56, 189, 248, 0.34);
-      border-radius: 11px;
-      color: #e0f2fe;
-      background: linear-gradient(100deg, rgba(124, 58, 237, 0.22), rgba(14, 165, 233, 0.13));
-      font-size: 0.76rem;
-      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
-    }
-    .tasks-creator-picker-button:hover {
-      border-color: rgba(56, 189, 248, 0.68);
-      background: linear-gradient(100deg, rgba(124, 58, 237, 0.30), rgba(14, 165, 233, 0.20));
-    }
-    .tasks-creator-timezone-note {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #8294ad;
-      font-size: 0.64rem;
-      font-weight: 650;
-    }
-    .tasks-creator-timezone-note i { color: #38bdf8; }
-    .tasks-creator-details {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-      gap: 12px;
-      padding-top: 2px;
-    }
-    .tasks-creator-member-group { min-width: 0; display: grid; gap: 7px; }
-    .tasks-creator-member-list { display: flex; flex-wrap: wrap; gap: 6px !important; }
-    .tasks-creator-panel .btn-inline-member-chip {
-      min-height: 32px;
-      padding: 5px 10px;
-      border-radius: 9px;
-      border-color: rgba(148, 163, 184, 0.18);
-      color: #cbd5e1;
-      background: rgba(30, 41, 59, 0.62);
-      font-size: 0.69rem;
-    }
-    .tasks-creator-panel .btn-inline-member-chip.active {
-      background: rgba(14, 165, 233, 0.16) !important;
-      border-color: rgba(56, 189, 248, 0.62) !important;
-      color: #7dd3fc !important;
-    }
-    .tasks-creator-attachments { display: flex; align-items: center; justify-content: flex-end; gap: 7px; flex-wrap: wrap; }
-    .tasks-creator-attachments-label { width: 100%; color: #9aabc0; font-size: 0.66rem; font-weight: 750; text-align: right; }
-    .tasks-creator-attachment-button {
-      min-height: 34px !important;
-      padding: 0 11px !important;
-      border-radius: 9px !important;
-      font-size: 0.70rem !important;
-      transition: transform 0.16s ease, background 0.16s ease;
-    }
-    .tasks-creator-attachment-button:hover { transform: translateY(-1px); }
-    .tasks-creator-photo-preview { max-width: 100%; flex-wrap: wrap; }
-    .tasks-creator-actions {
-      display: grid !important;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 9px !important;
-      padding-top: 13px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .tasks-creator-submit,
-    .tasks-creator-cancel {
-      min-height: 46px !important;
-      border-radius: 11px !important;
-      font-size: 0.80rem !important;
-      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-    }
-    .tasks-creator-submit:hover { box-shadow: 0 8px 20px rgba(16, 185, 129, 0.22) !important; }
-    .tasks-creator-submit:active,
-    .tasks-creator-cancel:active { transform: scale(0.985); }
-    .tasks-creator-panel button:focus-visible,
-    .tasks-creator-title-input:focus-visible {
-      outline: 2px solid rgba(125, 211, 252, 0.86);
-      outline-offset: 2px;
-    }
-    #tasksCalendarProductivityPinnedCard {
-      position: sticky !important;
-      top: calc(58px + env(safe-area-inset-top, 0px)) !important;
-      z-index: 95 !important;
-      align-self: stretch;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    @media (max-width: 640px) {
-      .tasks-creator-panel { padding: 14px !important; gap: 14px !important; }
-      .tasks-creator-header { align-items: flex-start; }
-      .tasks-creator-heading-icon { flex-basis: 38px; width: 38px; height: 38px; }
-      .tasks-creator-heading h2 { font-size: 0.90rem; }
-      .tasks-creator-schedule-grid { grid-template-columns: minmax(0, 1fr); }
-      .tasks-creator-date-presets,
-      .tasks-creator-time-presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); }
-      .tasks-creator-panel .btn-inline-dt-preset { width: 100%; }
-      .tasks-creator-details { grid-template-columns: minmax(0, 1fr); }
-      .tasks-creator-attachments { justify-content: flex-start; }
-      .tasks-creator-attachments-label { text-align: right; }
-      #tasksCalendarProductivityPinnedCard { top: calc(56px + env(safe-area-inset-top, 0px)) !important; }
-    }
-    @media (max-width: 420px) {
-      .tasks-creator-header { gap: 8px; }
-      .tasks-creator-heading { gap: 8px; }
-      .tasks-creator-heading p { font-size: 0.64rem; }
-      .tasks-creator-date-summary { max-width: 52%; font-size: 0.62rem !important; }
-      .tasks-creator-actions { grid-template-columns: minmax(0, 1fr); }
-      .tasks-creator-cancel { justify-content: center; }
-      #tasksCalendarProductivityPinnedCard { padding: 8px 9px !important; }
-      #tasksCalendarProductivityPinnedCard > div:nth-child(2) { gap: 4px !important; }
-    }
-
     /* مقبضا الشاشات الجانبية يمين ويسار */
     .side-screen-edge-handle {
       position: fixed;
@@ -13836,6 +13524,485 @@
       min-width: 0 !important;
       white-space: nowrap !important;
     }
+    }
+  </style>
+  <style id="settings-refresh-styles">
+    body[data-app-theme="facebook"] {
+      --primary: #0866ff !important;
+      --primary-dark: #075ce5 !important;
+      --accent: #0866ff !important;
+      --accent-light: #1877f2 !important;
+      --bg-app: #f0f2f5 !important;
+      --bg-card: #ffffff !important;
+      --bg-card-sub: #f7f8fa !important;
+      --bg-input: #f0f2f5 !important;
+      --text-main: #1c1e21 !important;
+      --text-muted: #65676b !important;
+      --border: #dfe3e8 !important;
+      --header-bg: #ffffff !important;
+      --nav-bg: #ffffff !important;
+      --body-bg: #f0f2f5 !important;
+      color: #1c1e21 !important;
+      background: #f0f2f5 !important;
+    }
+    body[data-app-theme="facebook"] .mobile-frame,
+    body[data-app-theme="facebook"] #appFrame,
+    body[data-app-theme="facebook"] .page-view,
+    body[data-app-theme="facebook"] .app-scroll-body {
+      background: #f0f2f5 !important;
+      color: #1c1e21 !important;
+    }
+    body[data-app-theme="facebook"] .app-header,
+    body[data-app-theme="facebook"] .app-bottom-nav,
+    body[data-app-theme="facebook"] .bottom-dock-nav {
+      background: #ffffff !important;
+      color: #1c1e21 !important;
+      border-color: #dfe3e8 !important;
+      box-shadow: 0 1px 2px rgba(28, 30, 33, 0.08) !important;
+    }
+    body[data-app-theme="facebook"] .brand-title,
+    body[data-app-theme="facebook"] .summary-title,
+    body[data-app-theme="facebook"] .cat-title-text,
+    body[data-app-theme="facebook"] .chart-block-title,
+    body[data-app-theme="facebook"] .tx-label-name,
+    body[data-app-theme="facebook"] .chart-main-heading,
+    body[data-app-theme="facebook"] .settings-unified-section,
+    body[data-app-theme="facebook"] .modal-content-card {
+      color: #1c1e21 !important;
+    }
+    body[data-app-theme="facebook"] .app-card-panel,
+    body[data-app-theme="facebook"] .modal-content-card,
+    body[data-app-theme="facebook"] .settings-unified-section,
+    body[data-app-theme="facebook"] .monefy-central-card,
+    body[data-app-theme="facebook"] .history-card,
+    body[data-app-theme="facebook"] .chart-block,
+    body[data-app-theme="facebook"] .tx-row,
+    body[data-app-theme="facebook"] .summary-card {
+      background: #ffffff !important;
+      border-color: #dfe3e8 !important;
+      box-shadow: 0 1px 3px rgba(28, 30, 33, 0.08) !important;
+    }
+    body[data-app-theme="facebook"] .period-btn.active,
+    body[data-app-theme="facebook"] .chart-mode-pill.active,
+    body[data-app-theme="facebook"] .analytics-sec-btn.active {
+      background: #e7f3ff !important;
+      border-color: rgba(8, 102, 255, 0.28) !important;
+      color: #0866ff !important;
+      box-shadow: none !important;
+    }
+    body[data-app-theme="facebook"] .btn-primary-custom,
+    body[data-app-theme="facebook"] .settings-tab-btn.active {
+      background: #0866ff !important;
+      border-color: #0866ff !important;
+      color: #ffffff !important;
+    }
+    body[data-app-theme="facebook"] .search-input-field,
+    body[data-app-theme="facebook"] .form-control-input,
+    body[data-app-theme="facebook"] .modal-select,
+    body[data-app-theme="facebook"] .date-picker-control {
+      background: #f0f2f5 !important;
+      border-color: #dfe3e8 !important;
+      color: #1c1e21 !important;
+    }
+    body[data-app-theme="facebook"] .search-input-field:focus,
+    body[data-app-theme="facebook"] .form-control-input:focus,
+    body[data-app-theme="facebook"] .modal-select:focus {
+      border-color: #0866ff !important;
+      box-shadow: 0 0 0 3px rgba(8, 102, 255, 0.14) !important;
+    }
+
+    body[data-card-style="clear"] .app-card-panel,
+    body[data-card-style="clear"] .modal-content-card,
+    body[data-card-style="clear"] .ops-tx-card-lux,
+    body[data-card-style="clear"] .exp-cockpit-card,
+    body[data-card-style="clear"] .settings-unified-section,
+    body[data-card-style="clear"] .history-card,
+    body[data-card-style="clear"] .monefy-central-card,
+    body[data-card-style="clear"] .chart-block {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.28)) !important;
+      border-radius: 14px !important;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.10) !important;
+    }
+    body[data-app-theme="facebook"][data-card-style="clear"] .app-card-panel,
+    body[data-app-theme="facebook"][data-card-style="clear"] .modal-content-card,
+    body[data-app-theme="facebook"][data-card-style="clear"] .settings-unified-section {
+      box-shadow: 0 1px 3px rgba(28, 30, 33, 0.08) !important;
+    }
+
+    #settingsModal .settings-modal-shell {
+      width: min(560px, 96vw) !important;
+      max-height: min(92vh, 920px) !important;
+      color: var(--text-main, #f8fafc) !important;
+      background: var(--bg-app, #0f172a) !important;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+      border-radius: 22px !important;
+      box-shadow: 0 22px 60px rgba(2, 6, 23, 0.28) !important;
+    }
+    #settingsModal .settings-modal-head {
+      padding: 14px 18px !important;
+      gap: 12px !important;
+      background: var(--header-bg, #111827) !important;
+      color: var(--text-main, #f8fafc) !important;
+      border-bottom: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+    }
+    #settingsModal .settings-modal-head h3,
+    #settingsModal .settings-modal-head .modal-title-custom {
+      color: var(--text-main, #f8fafc) !important;
+      font-size: 1rem !important;
+    }
+    #settingsModal .settings-modal-subtitle {
+      color: var(--text-muted, #94a3b8);
+      font-size: 0.75rem;
+      margin-top: 3px;
+    }
+    #settingsModal .settings-modal-scroll {
+      gap: 12px !important;
+      padding: 12px 14px !important;
+      background: var(--bg-app, #0f172a);
+      scrollbar-width: thin;
+    }
+    #settingsModal .settings-tabs-strip {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18));
+      border-radius: 14px;
+      background: var(--bg-card-sub, #1e293b);
+    }
+    #settingsModal .settings-tab-btn {
+      min-height: 44px;
+      flex-direction: row !important;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      background: transparent !important;
+      color: var(--text-muted, #94a3b8) !important;
+      font-size: 0.8rem;
+    }
+    #settingsModal .settings-tab-btn.active {
+      background: var(--accent, #38bdf8) !important;
+      border-color: var(--accent, #38bdf8) !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(2, 132, 199, 0.20) !important;
+    }
+    #settingsModal .settings-pane {
+      display: flex !important;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+    #settingsModal .settings-pane[hidden] {
+      display: none !important;
+    }
+    #settingsModal .settings-user-card,
+    #settingsModal .settings-unified-section,
+    #settingsModal .settings-control-tile {
+      background: var(--bg-card, #1e293b) !important;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+      border-radius: 16px !important;
+      color: var(--text-main, #f8fafc) !important;
+    }
+    #settingsModal .settings-user-card {
+      padding: 10px 12px !important;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #settingsModal .settings-unified-section {
+      padding: 14px !important;
+      gap: 16px !important;
+    }
+    #settingsModal .settings-size-style-grid {
+      gap: 10px !important;
+    }
+    #settingsModal .settings-control-tile {
+      padding: 11px !important;
+      background: var(--bg-card-sub, #1e293b) !important;
+      border-radius: 13px !important;
+    }
+    #settingsModal .theme-color-palette {
+      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)) !important;
+      gap: 8px !important;
+    }
+    #settingsModal .theme-pill-option {
+      display: flex !important;
+      min-height: 64px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 8px 5px !important;
+      border-radius: 12px !important;
+      color: var(--text-main, #f8fafc) !important;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    #settingsModal .theme-pill-option > div:last-child {
+      color: var(--text-main, #f8fafc) !important;
+      font-size: 0.73rem !important;
+      line-height: 1.25;
+      font-weight: 800 !important;
+    }
+    body[data-app-theme="facebook"] #settingsModal .theme-pill-option:not(#themeOptLight):not(#themeOptFacebook) > div:last-child {
+      color: #f8fafc !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+    }
+    body[data-app-theme="facebook"] #settingsModal #themeOptLight > div:last-child,
+    body[data-app-theme="facebook"] #settingsModal #themeOptFacebook > div:last-child {
+      color: #1c1e21 !important;
+      text-shadow: none;
+    }
+    #settingsModal .theme-color-dot {
+      width: 18px !important;
+      height: 18px !important;
+      margin: 0 auto !important;
+    }
+    #settingsModal .theme-pill-option.active {
+      outline: 2px solid var(--accent, #38bdf8);
+      outline-offset: 2px;
+      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.18) !important;
+      transform: translateY(-1px) !important;
+    }
+    #settingsModal .settings-live-preview {
+      display: grid;
+      gap: 7px;
+      margin: 8px 0 10px;
+      padding: 10px;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18));
+      border-radius: 14px;
+      background: var(--bg-card-sub, #1e293b);
+      color: var(--text-main, #f8fafc);
+    }
+    #settingsModal .settings-live-preview-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted, #94a3b8);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+    #settingsModal .settings-live-preview-label i,
+    #settingsModal .settings-live-preview-icon {
+      color: var(--accent, #38bdf8);
+    }
+    #settingsModal .settings-live-preview-card {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 10px;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18));
+      border-radius: 12px;
+      background: var(--bg-card, #1e293b);
+      color: var(--text-main, #f8fafc);
+    }
+    #settingsModal .settings-live-preview-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--accent, #38bdf8) 14%, transparent);
+    }
+    #settingsModal .settings-live-preview-copy {
+      display: grid;
+      flex: 1;
+      gap: 2px;
+      min-width: 0;
+    }
+    #settingsModal .settings-live-preview-copy strong {
+      font-size: 0.78rem;
+    }
+    #settingsModal .settings-live-preview-copy small {
+      color: var(--text-muted, #94a3b8);
+      font-size: 0.68rem;
+    }
+    #settingsModal .settings-live-preview-value {
+      color: var(--accent, #38bdf8);
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    #settingsModal .settings-font-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 7px !important;
+    }
+    #settingsModal .font-choice-pill {
+      display: grid;
+      min-height: 42px;
+      place-items: center;
+      padding: 7px 4px !important;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+      border-radius: 10px !important;
+      background: var(--bg-card-sub, #1e293b) !important;
+      color: var(--text-main, #f8fafc) !important;
+      font-size: 0.74rem !important;
+      line-height: 1.2;
+    }
+    #settingsModal .font-choice-pill.active {
+      background: color-mix(in srgb, var(--accent, #38bdf8) 14%, var(--bg-card, #1e293b)) !important;
+      border-color: var(--accent, #38bdf8) !important;
+      color: var(--accent, #38bdf8) !important;
+      box-shadow: 0 0 0 1px var(--accent, #38bdf8) inset !important;
+    }
+    #settingsModal .settings-font-preview {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18));
+      border-radius: 12px;
+      background: var(--bg-card-sub, #1e293b);
+      color: var(--text-main, #f8fafc);
+    }
+    #settingsModal .settings-font-preview-label {
+      color: var(--text-muted, #94a3b8);
+      font-size: 0.69rem;
+      white-space: nowrap;
+    }
+    #settingsModal .settings-font-preview-sample {
+      color: var(--text-main, #f8fafc);
+      font-family: var(--font-family, inherit) !important;
+      font-size: 0.92rem;
+      font-weight: 800;
+      text-align: left;
+    }
+    #settingsModal #cardStyleButtonsContainer {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+    }
+    #settingsModal #cardStyleButtonsContainer button,
+    #settingsModal .font-size-pill {
+      min-height: 34px;
+      padding: 6px !important;
+      border: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+      border-radius: 9px !important;
+      background: var(--bg-app, #0f172a) !important;
+      color: var(--text-main, #f8fafc) !important;
+      font-size: 0.72rem !important;
+    }
+    #settingsModal #cardStyleButtonsContainer button.active,
+    #settingsModal .font-size-pill.active {
+      background: color-mix(in srgb, var(--accent, #38bdf8) 14%, var(--bg-card, #1e293b)) !important;
+      border-color: var(--accent, #38bdf8) !important;
+      color: var(--accent, #38bdf8) !important;
+    }
+    #settingsModal .settings-modal-shell > div:last-child {
+      padding: 10px 16px !important;
+      background: var(--header-bg, #111827) !important;
+      border-top: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
+      color: var(--text-muted, #94a3b8) !important;
+    }
+    #settingsModal .settings-modal-shell > div:last-child > span {
+      color: var(--text-muted, #94a3b8) !important;
+    }
+    #settingsModal :is(button, [role="button"], [role="tab"]):focus-visible {
+      outline: 3px solid var(--accent, #38bdf8) !important;
+      outline-offset: 2px !important;
+    }
+    #themeDrawerModal .theme-facebook-option {
+      border-color: rgba(8, 102, 255, 0.45) !important;
+    }
+    @media (max-width: 420px) {
+      #settingsModal .settings-modal-head {
+        padding: 12px 14px !important;
+      }
+      #settingsModal .settings-modal-subtitle {
+        font-size: 0.7rem;
+      }
+      #settingsModal .settings-modal-scroll {
+        padding: 10px !important;
+      }
+      #settingsModal .settings-unified-section {
+        padding: 11px !important;
+      }
+      #settingsModal .settings-size-style-grid {
+        grid-template-columns: 1fr !important;
+      }
+      #settingsModal .settings-font-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+      #settingsModal .theme-color-palette {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+    }
+
+
+    /* light-theme cockpit card-style harmony: keep dashboard surfaces aligned with light and Facebook themes. */
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme #topKpiThreeStrip,
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit,
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme #topKpiThreeStrip {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%) !important;
+      border-color: #d6e2f1 !important;
+      color: #334155 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme .cockpit-hero-label, html[data-app-theme="light"][data-card-style="glass"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="light"][data-card-style="glass"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="light"][data-card-style="glass"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.86)) !important; border: 1px solid #bfdbfe !important; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important; backdrop-filter: blur(18px) saturate(150%) !important; -webkit-backdrop-filter: blur(18px) saturate(150%) !important; }
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .cockpit-hero-label, html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="light"][data-card-style="minimal"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="light"][data-card-style="minimal"] body.light-theme #topKpiThreeStrip { border-radius: 10px !important; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important; }
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .cockpit-hero-label, html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="light"][data-card-style="neumorphic"] body.light-theme #topKpiThreeStrip { border-radius: 14px !important; box-shadow: 4px 4px 12px rgba(148, 163, 184, 0.20), -3px -3px 10px rgba(255, 255, 255, 0.95) !important; }
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme .cockpit-hero-label, html[data-app-theme="light"][data-card-style="neon"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="light"][data-card-style="neon"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="light"][data-card-style="neon"] body.light-theme #topKpiThreeStrip { border-radius: 14px !important; border-color: rgba(8, 102, 255, 0.42) !important; box-shadow: 0 4px 16px rgba(8, 102, 255, 0.10) !important; }
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme .cockpit-hero-label, html[data-app-theme="light"][data-card-style="clear"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="light"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="light"][data-card-style="clear"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%) !important; border: 1px solid #dbe5f1 !important; border-radius: 12px !important; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .cockpit-hero-label, html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="glass"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.86)) !important; border: 1px solid #bfdbfe !important; border-radius: 16px !important; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important; backdrop-filter: blur(18px) saturate(150%) !important; -webkit-backdrop-filter: blur(18px) saturate(150%) !important; }
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .cockpit-hero-label, html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="minimal"] body.light-theme #topKpiThreeStrip { border-radius: 10px !important; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important; }
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .cockpit-hero-label, html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="neumorphic"] body.light-theme #topKpiThreeStrip { border-radius: 14px !important; box-shadow: 4px 4px 12px rgba(148, 163, 184, 0.20), -3px -3px 10px rgba(255, 255, 255, 0.95) !important; }
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .cockpit-hero-label, html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="neon"] body.light-theme #topKpiThreeStrip { border-radius: 14px !important; border-color: rgba(8, 102, 255, 0.42) !important; box-shadow: 0 4px 16px rgba(8, 102, 255, 0.10) !important; }
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .cockpit-hero-label, html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .hero-title-text { color: #334155 !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .cockpit-hero-value { color: #0866ff !important; text-shadow: none !important; }
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
+    html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%) !important; border: 1px solid #dbe5f1 !important; border-radius: 12px !important; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
   </style>
 </head>
 <body>
@@ -16820,92 +16987,114 @@
           </div>
         </button>
 
-        <!-- لوحة إضافة مهمة منظمة بإجراءات واضحة -->
-        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card tasks-creator-panel" role="region" aria-labelledby="tasksCreatorHeading" style="display: none; flex-direction: column;">
-          <div class="tasks-creator-header">
-            <div class="tasks-creator-heading">
-              <div class="tasks-creator-heading-icon" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></div>
-              <div class="tasks-creator-heading-copy">
-                <h2 id="tasksCreatorHeading">إضافة مهمة جديدة</h2>
-                <p>أدخل التفاصيل، ثم اختر التصنيف والموعد المناسب.</p>
+        <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (مخفية افتراضياً وتظهر فقط عند الضغط على زر إضافة مهمة) -->
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 14px 16px; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
+          
+          <!-- هيدر كارت الإضافة مع زر إغلاق / إلغاء واضح للعودة للقائمة النظيفة -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);">
+                <i class="fa-solid fa-pen-to-square"></i>
               </div>
-              <span id="unifiedCreatorActiveTagBadge">🌐 عامة</span>
+              <span style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
+              <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
             </div>
-            <button type="button" class="tasks-creator-close" onclick="hideUnifiedTaskCreator()" aria-label="إغلاق نموذج إضافة المهمة">
-              <i class="fa-solid fa-xmark" aria-hidden="true"></i><span>إغلاق</span>
+            
+            <!-- زر إغلاق النموذج -->
+            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 28px; padding: 0 10px; border-radius: 7px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #f43f5e; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <i class="fa-solid fa-xmark"></i>
+              <span>إلغاء</span>
             </button>
           </div>
 
-          <section class="tasks-creator-field" aria-labelledby="quickTaskTitleLabel">
-            <label id="quickTaskTitleLabel" class="tasks-creator-label" for="quickTaskTitleInput"><i class="fa-solid fa-align-right" aria-hidden="true"></i> تفاصيل المهمة</label>
-            <input type="text" id="quickTaskTitleInput" class="tasks-creator-title-input" placeholder="مثال: سداد فاتورة الكهرباء والإنترنت" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickTaskAdd()}">
-          </section>
-
-          <section class="tasks-creator-field tasks-creator-tag-section" aria-labelledby="tasksCreatorTagLabel">
-            <div class="tasks-creator-tag-head">
-              <div>
-                <span id="tasksCreatorTagLabel" class="tasks-creator-label"><i class="fa-solid fa-tags" aria-hidden="true"></i> تصنيف المهمة</span>
-                <p class="tasks-creator-tag-help">اختر وسمًا واحدًا لتنظيم المهمة.</p>
-              </div>
+          <!-- 1. بيان المهمة (عنوان / تفاصيل) -->
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="quickTaskTitleInput" style="font-size: 0.75rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-align-right" style="color: #a855f7;"></i>
+              <span>بيان المهمة / التفاصيل:</span>
+            </label>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <input type="text" id="quickTaskTitleInput" placeholder="اكتب بيان المهمة هنا... (مثال: سداد فاتورة الكهرباء والإنترنت)" style="flex: 1; height: 42px; border-radius: 11px; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); color: #fff; font-size: 0.86rem; font-weight: 800; padding: 0 14px; outline: none; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#c084fc'" onblur="this.style.borderColor='rgba(168, 85, 247, 0.4)'" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
+              <button type="button" onclick="handleQuickTaskAdd()" style="height: 42px; padding: 0 16px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.84rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(16, 185, 129, 0.45); flex-shrink: 0; transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
+                <i class="fa-solid fa-check"></i>
+                <span>حفظ</span>
+              </button>
             </div>
-            <div id="unifiedTaskTagChipsList" class="custom-scrollbar tasks-creator-tag-list" role="group" aria-label="تصنيف المهمة">
+          </div>
+
+          <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.74rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
+                <span>اختر التاج / الوسم:</span>
+              </span>
+              <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">(اضغط للتبديل الفوري)</span>
+            </div>
+            <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
               <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
               <button type="button" class="btn-unified-tag-chip active" data-tag="general" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="planned" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)">⭐ هامة / عاجلة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="shopping" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="home" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="bills" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="health" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="work" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
             </div>
-          </section>
+          </div>
 
-          <section class="tasks-creator-schedule" aria-labelledby="tasksCreatorScheduleLabel">
-            <div class="tasks-creator-schedule-head">
-              <div>
-                <span id="tasksCreatorScheduleLabel" class="tasks-creator-schedule-title"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> موعد المهمة</span>
-                <p class="tasks-creator-schedule-help">حدد التاريخ والوقت، أو اترك الوقت دون تحديد.</p>
-              </div>
-              <span id="lblUnifiedTaskDateTimeDisplay" class="tasks-creator-date-summary">اليوم</span>
+          <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
+                <span>تحديد موعد المهمة (التاريخ والساعة معاً من نفس الشاشة):</span>
+              </span>
+              <span id="lblUnifiedTaskDateTimeDisplay" style="font-size: 0.68rem; font-weight: 850; color: #38bdf8;">اليوم</span>
             </div>
 
-            <div class="tasks-creator-schedule-grid">
-              <div class="tasks-creator-date-group">
-                <span class="tasks-creator-group-label"><i class="fa-regular fa-calendar" aria-hidden="true"></i> التاريخ</span>
-                <div class="tasks-creator-date-presets" id="inlineDatePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)">اليوم</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)">غدًا</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)">بعد يومين</button>
+            <!-- شبكة التاريخ والساعة -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <!-- عمود التاريخ -->
+              <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">📅 التاريخ:</label>
+                <!-- اختصارات سريعة للأيام -->
+                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
                 </div>
+                <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
                 <input type="date" id="inlineTaskDueDate" hidden onchange="onInlineDateCustomChange(this.value)">
               </div>
 
-              <div class="tasks-creator-time-group">
-                <span class="tasks-creator-group-label"><i class="fa-regular fa-clock" aria-hidden="true"></i> الوقت</span>
-                <div class="tasks-creator-time-presets custom-scrollbar" id="inlineTimePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)">09:00 ص</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)">01:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)">05:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)">09:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset tasks-creator-no-time" data-time="" onclick="selectInlineTimePreset('', this)" title="إزالة الوقت">بدون وقت</button>
+              <!-- عمود الساعة / الوقت -->
+              <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">⏰ التوقيت (الساعة):</label>
+                <!-- اختصارات سريعة للساعات -->
+                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 ص</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">01:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">05:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
                 </div>
+                <!-- حقل إدخال الساعة المباشر من نفس الشاشة -->
                 <input type="time" id="inlineTaskDueTime" hidden onchange="onInlineTimeCustomChange(this.value)">
               </div>
             </div>
-
-            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button tasks-creator-picker-button" onclick="openTaskDateTimePickerModal('inline')">
-              تخصيص التاريخ والوقت والمنطقة الزمنية
-            </button>
-            <div class="tasks-creator-timezone-note"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i><span>يمكنك اختيار المنطقة الزمنية من شاشة تخصيص الموعد.</span></div>
+            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('inline')">🗓️ فتح التقويم واختيار الوقت</button>
             <input type="hidden" id="inlineTaskDueSecond" value="00">
             <input type="hidden" id="inlineTaskDueTimezone">
-          </section>
+          </div>
 
-          <section class="tasks-creator-details" aria-label="المسؤول والمرفقات">
-            <div class="tasks-creator-member-group">
-              <span class="tasks-creator-label"><i class="fa-solid fa-user-check" aria-hidden="true"></i> المسؤول عن المهمة</span>
-              <div class="tasks-creator-member-list" id="inlineTaskMemberGroup" role="group" aria-label="اختيار المسؤول">
+          <!-- 4. المسؤول + خياري إضافة الصورة (تصوير بالكاميرا أو اختيار من الاستوديو) للمهمة الرئيسية -->
+          <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <!-- اختيار فرد العائلة المسؤول -->
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1;">👤 المسؤول:</span>
+              <div style="display: flex; gap: 3px;" id="inlineTaskMemberGroup">
                 <button type="button" class="btn-inline-member-chip active" data-member="البيت" onclick="selectInlineTaskMember('البيت', this)">البيت</button>
                 <button type="button" class="btn-inline-member-chip" data-member="ماهر" onclick="selectInlineTaskMember('ماهر', this)">ماهر</button>
                 <button type="button" class="btn-inline-member-chip" data-member="آية" onclick="selectInlineTaskMember('آية', this)">آية</button>
@@ -16914,24 +17103,30 @@
               </div>
             </div>
 
-            <div class="tasks-creator-attachments">
-              <span class="tasks-creator-attachments-label">مرفق صورة (اختياري)</span>
-              <button type="button" class="tasks-creator-attachment-button" onclick="triggerMainTaskCamera()" style="background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.38); color: #7dd3fc; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-camera" aria-hidden="true"></i><span>التقاط صورة</span>
+            <!-- خيارا إضافة الصورة للمهمة الرئيسية: تصوير أو استوديو -->
+            <div style="display: flex; gap: 5px; align-items: center;">
+              <button type="button" onclick="triggerMainTaskCamera()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(56, 189, 248, 0.16); border: 1.2px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-camera"></i>
+                <span>تصوير</span>
               </button>
-              <button type="button" class="tasks-creator-attachment-button" onclick="triggerMainTaskGallery()" style="background: rgba(16,185,129,0.11); border: 1px solid rgba(16,185,129,0.34); color: #6ee7b7; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-regular fa-image" aria-hidden="true"></i><span>اختيار صورة</span>
+              <button type="button" onclick="triggerMainTaskGallery()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.16); border: 1.2px solid rgba(16, 185, 129, 0.5); color: #34d399; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-image"></i>
+                <span>استوديو</span>
               </button>
-              <div id="quickTaskPhotoPreviewBar" class="tasks-creator-photo-preview" style="display: none; align-items: center; gap: 6px;"></div>
+              <!-- شريط معاينة صورة المهمة الرئيسية -->
+              <div id="quickTaskPhotoPreviewBar" style="display: none; align-items: center; gap: 6px;"></div>
             </div>
-          </section>
+          </div>
 
-          <div class="tasks-creator-actions">
-            <button type="button" id="btnSubmitUnifiedTask" class="tasks-creator-submit" onclick="handleQuickTaskAdd()">
-              <i class="fa-solid fa-check" aria-hidden="true"></i><span>حفظ وإضافة المهمة</span>
+          <!-- 5. زرا الحفظ والإلغاء النهائيين -->
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 42px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.86rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
+              <i class="fa-solid fa-check-double"></i>
+              <span>✨ حفظ وإضافة المهمة</span>
             </button>
-            <button type="button" class="tasks-creator-cancel" onclick="hideUnifiedTaskCreator()">
-              <i class="fa-solid fa-xmark" aria-hidden="true"></i><span>إلغاء</span>
+            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 42px; padding: 0 14px; border-radius: 11px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-xmark"></i>
+              <span>إلغاء</span>
             </button>
           </div>
 
@@ -16979,38 +17174,6 @@
            2. التبويب الثاني: شاشة التقويم الشهري التفاعلي (tasksTabCalendarView)
            ========================================================== -->
       <div id="tasksTabCalendarView" style="display: none; flex-direction: column; gap: 12px;">
-        <!-- مؤشرات الإنجاز مثبتة أعلى التقويم أسفل الشريط العلوي -->
-        <div id="tasksCalendarProductivityPinnedCard" class="tasks-calendar-metrics-sticky" style=" background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div style="font-size: 0.82rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
-              <span>مؤشرات الإنتاجية والإنجاز:</span>
-            </div>
-            <span id="tasksCalendarCompletionRateBadge" style="font-size: 0.72rem; font-weight: 950; color: #34d399; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 8px;">0%</span>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; margin-bottom: 6px;">
-            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">إجمالي المهام</div>
-              <div id="tasksCalendarTotalCount" style="font-size: 0.86rem; font-weight: 900; color: #38bdf8;">0</div>
-            </div>
-            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المكتملة ✅</div>
-              <div id="tasksCalendarDoneCount" style="font-size: 0.86rem; font-weight: 900; color: #34d399;">0</div>
-            </div>
-            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المتبقية ⏳</div>
-              <div id="tasksCalendarPendingCount" style="font-size: 0.86rem; font-weight: 900; color: #fbbf24;">0</div>
-            </div>
-            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
-              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المتأخرة ⚠️</div>
-              <div id="tasksCalendarOverdueCount" style="font-size: 0.86rem; font-weight: 900; color: #f43f5e;">0</div>
-            </div>
-          </div>
-          <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
-            <div id="tasksCalendarProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #10b981); transition: width 0.3s ease;"></div>
-          </div>
-        </div>
-
         <!-- بطاقة التقويم الشهري التفاعلي -->
         <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1.2px solid rgba(168, 85, 247, 0.35); border-radius: 16px; padding: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
           <!-- شريط تصفح الشهر -->
@@ -17234,6 +17397,13 @@
             </div>
             <div style="font-size: 0.65rem; color: #475569;">مظهر نهاري أبيض ساطع ونقي وفائق الوضوح للرؤية تحت الشمس</div>
           </div>
+          <div class="theme-card-box theme-facebook-option" onclick="selectThemeAndApply('facebook')" style="grid-column: span 2; cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(8, 102, 255, 0.4); background: linear-gradient(135deg, #ffffff, #eaf2ff); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(8, 102, 255, 0.10);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <span style="font-size: 0.84rem; font-weight: 900; color: #1c1e21;">🔵 أزرق وأبيض — بطاقات واضحة</span>
+              <span class="theme-check-dot" data-theme="facebook" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #0866ff; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #0866ff;"></span>
+            </div>
+            <div style="font-size: 0.68rem; color: #65676b;">مظهر نهاري نظيف مع أزرق واضح وخلفية رمادية فاتحة</div>
+          </div>
 
         </div>
 
@@ -17250,20 +17420,21 @@
         <!-- ==============================================================
          نافذة مركز الضبط الموحد والمزامنة (Unified Settings Modal)
          ============================================================== -->
-    <div class="modal-overlay modal-overlay-custom" id="settingsModal">
-      <div class="modal-content-card" style="max-width: 500px; width: 95%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65); margin: auto;">
+    <div class="modal-overlay modal-overlay-custom" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="modal-content-card settings-modal-shell" style="max-width: 500px; width: 95%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65); margin: auto;">
         
         <!-- الرأس الفاخر للنافذة -->
-        <div class="modal-head" style="padding: 10px 14px; margin: 0; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+        <div class="modal-head settings-modal-head" style="padding: 10px 14px; margin: 0; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)); border: 1.2px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: #38bdf8;">
               <i class="fa-solid fa-sliders"></i>
             </div>
             <div>
-              <h3 class="modal-title-custom" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
-                <span>مركز الضبط الموحد والمزامنة</span>
+              <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
+                <span>إعدادات التطبيق</span>
                 <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.8 • متزامن</span>
               </h3>
+              <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
           </div>
           <!-- زر الإغلاق المدمج داخل رأس النافذة -->
@@ -17271,10 +17442,21 @@
         </div>
 
         <!-- محتوى الضبط الموحد الشامل -->
-        <div style="padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="custom-scrollbar">
+        <div style="padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="settings-modal-scroll custom-scrollbar">
+
+          <nav class="settings-tabs-strip" role="tablist" aria-label="أقسام الإعدادات">
+            <button type="button" class="settings-tab-btn active" id="settingsTabAppearance" role="tab" aria-selected="true" aria-controls="settingsPane_appearance" data-tab="appearance" onclick="switchSettingsTab('appearance')">
+              <i class="fa-solid fa-palette" aria-hidden="true"></i><span>المظهر</span>
+            </button>
+            <button type="button" class="settings-tab-btn" id="settingsTabData" role="tab" aria-selected="false" aria-controls="settingsPane_data" data-tab="data" tabindex="-1" onclick="switchSettingsTab('data')">
+              <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><span>البيانات والمزامنة</span>
+            </button>
+          </nav>
+
+          <section class="settings-pane" id="settingsPane_appearance" role="tabpanel" aria-labelledby="settingsTabAppearance">
 
           <!-- زر عرض المستخدم وتبديله (يفتح فقط عند الضغط عليه ويغلق الضبط أولاً) -->
-          <div style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
+          <div class="settings-user-card" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <img id="settingsCurrentMemberImg" src="" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; border: 1.5px solid #38bdf8;">
               <div style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;">المستخدم النشط:</div>
@@ -17288,16 +17470,24 @@
           </div>
 
           <!-- القسم 1: المظهر والتخصيص البصري -->
-          <div class="settings-unified-section" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
+          <div class="settings-unified-section" id="settingsSec_appearance" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
             
-            <!-- 1. سمة وألوان التطبيق (15 خلفية ولون ملكي فاخر) -->
+            <!-- 1. سمات وألوان التطبيق -->
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                 <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-palette" style="color: #a855f7; font-size: 0.88rem;"></i>
-                  <span>خلفيات وألوان التطبيق (15 سمة):</span>
+                  <span>لون التطبيق ونمطه (16 سمة):</span>
                 </div>
                 <span id="activeThemeBadge" style="font-size: 0.63rem; color: #38bdf8; font-weight: 800; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 7px; border-radius: 5px;">كحلي ملكي</span>
+              </div>
+              <div class="settings-live-preview" id="settingsThemePreview" aria-live="polite">
+                <div class="settings-live-preview-label"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>معاينة مباشرة</span></div>
+                <div class="settings-live-preview-card">
+                  <span class="settings-live-preview-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
+                  <span class="settings-live-preview-copy"><strong>مصروفات العائلة</strong><small>الرصيد المتبقي</small></span>
+                  <strong class="settings-live-preview-value" dir="ltr">1,250 ج.م</strong>
+                </div>
               </div>
               <div class="theme-color-palette" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
                 <div class="theme-pill-option active" id="themeOptNavy" onclick="setAppTheme('navy')" style="background: rgba(12, 23, 46, 0.95); border: 1.5px solid #0284c7; border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
@@ -17336,6 +17526,10 @@
                   <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #94a3b8; margin: 0 auto 3px; background: #f8fafc;"></div>
                   <div style="font-size: 0.65rem; font-weight: 850; color: #0f172a;">أبيض نهار</div>
                 </div>
+                <div class="theme-pill-option" id="themeOptFacebook" onclick="setAppTheme('facebook')" style="background: linear-gradient(135deg, #ffffff, #eaf2ff); border: 1.5px solid #0866ff; border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
+                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #dbeafe; margin: 0 auto 3px; background: #0866ff;"></div>
+                  <div style="font-size: 0.65rem; font-weight: 850; color: #1c1e21;">أزرق وأبيض</div>
+                </div>
                 <!-- 6 ألوان وخلفيات ملكية إضافية -->
                 <div class="theme-pill-option" id="themeOptCrimson" onclick="setAppTheme('crimson')" style="background: rgba(42, 10, 20, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
                   <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #f43f5e;"></div>
@@ -17363,6 +17557,7 @@
                 </div>
               </div>
             </div>
+
             <!-- 2. أنماط وألوان الأيقونات (12 نمط باليت متناسق) -->
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -17434,7 +17629,7 @@
                 </div>
                 <span id="activeFontBadge" style="font-size: 0.63rem; color: #34d399; font-weight: 800; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); padding: 1px 7px; border-radius: 5px;">تاجوال (افتراضي)</span>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
+              <div class="settings-font-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
                 <button type="button" class="analytics-sec-btn font-choice-pill active" id="fontChoiceTajawal" onclick="setAppFont('tajawal')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Tajawal', sans-serif !important; border-radius: 8px;">
                   ✨ تاجوال
                 </button>
@@ -17454,12 +17649,16 @@
                   🏛️ الإسكندرية
                 </button>
               </div>
+              <div class="settings-font-preview" id="settingsFontPreview" aria-live="polite">
+                <span class="settings-font-preview-label">معاينة الخط</span>
+                <span class="settings-font-preview-sample" id="settingsFontPreviewSample">مصروفات الأسرة ١٬٢٣٤٫٥٠ ج.م</span>
+              </div>
             </div>
 
             <!-- 4. حجم الخط ونمط الكروت -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+            <div class="settings-size-style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
               <!-- الحجم -->
-              <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
+              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                   <span style="font-size: 0.70rem; font-weight: 850; color: #cbd5e1;"><i class="fa-solid fa-text-height" style="color: #38bdf8;"></i> حجم الخط:</span>
                   <span id="activeFontSizeBadge" style="font-size: 0.58rem; color: #38bdf8; font-weight: 800;">وسط</span>
@@ -17471,22 +17670,25 @@
                 </div>
               </div>
               <!-- النمط -->
-              <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
+              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
                 <div style="margin-bottom: 5px; font-size: 0.70rem; font-weight: 850; color: #cbd5e1;">
                   <i class="fa-solid fa-shapes" style="color: #38bdf8;"></i> نمط الكروت:
                 </div>
                 <div id="cardStyleButtonsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">
                   <button type="button" class="analytics-sec-btn active" id="designStyleGlass" onclick="setAppDesignStyle('glass')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">✨ زجاجي</button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleMin" onclick="setAppDesignStyle('minimal')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">📐 مدمج</button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleMin" onclick="setAppDesignStyle('minimal')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">📐 بسيط</button>
                   <button type="button" class="analytics-sec-btn" id="designStyleNeu" onclick="setAppDesignStyle('neumorphic')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">🔲 مجسم 3D</button>
                   <button type="button" class="analytics-sec-btn" id="designStyleNeon" onclick="setAppDesignStyle('neon')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">⚡ نيون</button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleClear" onclick="setAppDesignStyle('clear')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">▣ بطاقات واضحة</button>
                 </div>
               </div>
             </div>
 
           </div>
+          </section>
 
           <!-- القسم 2: إدارة المحافظ والنسخ الاحتياطي والمزامنة السحابية -->
+          <section class="settings-pane" id="settingsPane_data" role="tabpanel" aria-labelledby="settingsTabData" hidden style="display: none;">
           <div class="settings-unified-section" id="settingsSec_data" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
@@ -17525,6 +17727,7 @@
               </button>
             </div>
           </div>
+          </section>
 
         </div>
 
@@ -21833,6 +22036,13 @@ function generateRichDemoTransactions() {
           border: (c) => `${c}dd`,
           shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}44`
         },
+        facebook: {
+          bgGrad: (c) => 'linear-gradient(160deg, ' + c + '20 0%, #eaf2ff 42%, #ffffff 100%)',
+          lowerZero: 'rgba(240, 242, 245, 0.98)',
+          lowerSpent: 'rgba(220, 38, 38, 0.13)',
+          border: (c) => c,
+          shadow: (c) => '0 3px 10px rgba(8, 102, 255, 0.10), 0 0 0 1px ' + c + '15'
+        },
         light: {
           bgGrad: (c) => `linear-gradient(160deg, ${c}25 0%, rgba(241, 245, 249, 0.70) 40%, #ffffff 100%)`,
           lowerZero: 'rgba(241, 245, 249, 0.95)',
@@ -22049,12 +22259,11 @@ function generateRichDemoTransactions() {
           }
 
           // مزامنة الألوان الحية للبطاقة وبالون الأيقونة
-          card.style.background = pal.bgGrad(cardAccent);
-          card.style.borderColor = pal.border(cardAccent);
-          card.style.boxShadow = pal.shadow(cardAccent);
-
+          card.style.setProperty('background', pal.bgGrad(curIconPal ? curIconPal.accent : theme.accent), 'important');
+          card.style.setProperty('border-color', pal.border(curIconPal ? curIconPal.accent : theme.accent), 'important');
+          card.style.setProperty('box-shadow', pal.shadow(curIconPal ? curIconPal.accent : theme.accent), 'important');
           const topHalf = card.querySelector('.cat-card-top-half');
-          if (topHalf) topHalf.style.background = getCardTopBackground(cardAccent);
+          if (topHalf) topHalf.style.background = getCardTopBackground(curIconPal ? curIconPal.accent : theme.accent);
 
           const bubble = card.querySelector('.cat-icon-bubble');
           if (bubble) {
@@ -24383,16 +24592,54 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
     }
 
     function switchSettingsTab(tabKey) {
-      document.querySelectorAll('.settings-tab-btn').forEach(btn => {
-        if (btn.getAttribute('data-tab') === tabKey) btn.classList.add('active');
-        else btn.classList.remove('active');
+      const validTabs = ['appearance', 'data'];
+      const activeTab = validTabs.includes(tabKey) ? tabKey : 'appearance';
+      document.querySelectorAll('#settingsModal .settings-tab-btn').forEach(btn => {
+        const selected = btn.getAttribute('data-tab') === activeTab;
+        btn.classList.toggle('active', selected);
+        btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+        btn.tabIndex = selected ? 0 : -1;
       });
-      const panes = ['sync', 'appearance', 'data'];
-      panes.forEach(p => {
-        const pane = document.getElementById('settingsPane_' + p);
-        if (pane) pane.style.display = (p === tabKey) ? 'block' : 'none';
+      validTabs.forEach(tab => {
+        const pane = document.getElementById('settingsPane_' + tab);
+        if (!pane) return;
+        const selected = tab === activeTab;
+        pane.hidden = !selected;
+        pane.style.display = selected ? 'flex' : 'none';
       });
     }
+
+    function initializeSettingsControlAccessibility() {
+      document.querySelectorAll('.theme-pill-option, .icon-theme-pill, .theme-card-box').forEach(option => {
+        option.setAttribute('role', 'button');
+        option.tabIndex = 0;
+        const selected = option.classList.contains('active') ||
+          (option.querySelector('.theme-check-dot') && option.querySelector('.theme-check-dot').innerHTML.trim() !== '');
+        option.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        const label = (option.textContent || '').replace(/\s+/g, ' ').trim();
+        if (label) option.setAttribute('aria-label', label);
+      });
+      if (typeof updateThemeCheckDots === 'function') updateThemeCheckDots();
+    }
+    initializeSettingsControlAccessibility();
+    document.addEventListener('keydown', event => {
+      const option = event.target && event.target.closest
+        ? event.target.closest('.theme-pill-option, .icon-theme-pill, .theme-card-box')
+        : null;
+      if (!option || (event.key !== 'Enter' && event.key !== ' ')) return;
+      event.preventDefault();
+      option.click();
+    });
+    document.querySelectorAll('#settingsModal .settings-tab-btn').forEach((tab, index, tabs) => {
+      tab.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        const direction = event.key === 'ArrowLeft' ? 1 : -1;
+        const next = tabs[(index + direction + tabs.length) % tabs.length];
+        next.focus();
+        switchSettingsTab(next.getAttribute('data-tab'));
+      });
+    });
 
 function openSettingsModal(targetSection = '') {
       updateSettingsModalDisplay();
@@ -24809,7 +25056,7 @@ function openSettingsModal(targetSection = '') {
     function setAppTheme(theme, persist = true) {
       const validThemes = [
         'navy', 'black', 'emerald', 'purple', 'rose', 'ocean', 'gold', 'slate', 'light',
-        'crimson', 'amber', 'midnight', 'forest', 'carbon', 'sapphire'
+        'facebook', 'crimson', 'amber', 'midnight', 'forest', 'carbon', 'sapphire'
       ];
       if (!validThemes.includes(theme)) theme = 'navy';
 
@@ -24817,7 +25064,7 @@ function openSettingsModal(targetSection = '') {
       document.documentElement.setAttribute('data-app-theme', theme);
       document.body.setAttribute('data-app-theme', theme);
 
-      if (theme === 'light') {
+      if (theme === 'light' || theme === 'facebook') {
         document.body.classList.add('light-theme');
       } else {
         document.body.classList.remove('light-theme');
@@ -24878,6 +25125,12 @@ function openSettingsModal(targetSection = '') {
           frame: 'transparent',
           card: '#ffffff',
           accent: '#0284c7'
+        },
+        'facebook': {
+          body: 'linear-gradient(180deg, #ffffff 0%, #f0f2f5 58%, #eaf0f8 100%)',
+          frame: 'transparent',
+          card: '#ffffff',
+          accent: '#0866ff'
         },
         'crimson': {
           body: 'radial-gradient(circle at 50% 0%, #9f1239 0%, #831843 35%, #4c0519 75%, #24030d 100%)',
@@ -24945,6 +25198,7 @@ function openSettingsModal(targetSection = '') {
         { key: 'Gold', theme: 'gold', color: '#fbbf24', bg: 'rgba(34, 22, 10, 0.95)', name: 'موكا وبرونزي' },
         { key: 'Slate', theme: 'slate', color: '#94a3b8', bg: 'rgba(22, 28, 38, 0.95)', name: 'تيتانيوم رمادي' },
         { key: 'Light', theme: 'light', color: '#0284c7', bg: '#ffffff', name: 'أبيض نهار' },
+        { key: 'Facebook', theme: 'facebook', color: '#0866ff', bg: '#ffffff', name: 'أزرق وأبيض' },
         { key: 'Crimson', theme: 'crimson', color: '#f43f5e', bg: 'rgba(42, 10, 20, 0.95)', name: 'قرمزي روبي' },
         { key: 'Amber', theme: 'amber', color: '#d97706', bg: 'rgba(44, 22, 6, 0.95)', name: 'عنبر ملكي' },
         { key: 'Midnight', theme: 'midnight', color: '#6366f1', bg: 'rgba(16, 20, 52, 0.95)', name: 'أزرق ليلي' },
@@ -24958,6 +25212,10 @@ function openSettingsModal(targetSection = '') {
         if (!el) return;
         const isMatch = (tm.theme === theme);
         const dot = el.querySelector('.theme-color-dot');
+        el.setAttribute('role', 'button');
+        el.tabIndex = 0;
+        el.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
+        el.setAttribute('aria-label', 'تطبيق سمة ' + tm.name);
 
         if (isMatch) {
           el.classList.add('active');
@@ -24993,6 +25251,7 @@ function openSettingsModal(targetSection = '') {
         'gold': 'موكا وبرونزي',
         'slate': 'تيتانيوم رمادي',
         'light': 'أبيض نهار',
+        'facebook': 'أزرق فيسبوك وأبيض',
         'crimson': 'قرمزي روبي ناري',
         'amber': 'عنبر وذهب إمبراطوري',
         'midnight': 'أزرق ليلي عميق',
@@ -25036,6 +25295,7 @@ function openSettingsModal(targetSection = '') {
         'gold': '#fbbf24',
         'slate': '#94a3b8',
         'light': '#0284c7',
+        'facebook': '#0866ff',
         'crimson': '#f43f5e',
         'amber': '#d97706',
         'midnight': '#6366f1',
@@ -25046,6 +25306,12 @@ function openSettingsModal(targetSection = '') {
       const curColor = themeColorsMap[cur] || '#38bdf8';
       document.querySelectorAll('.theme-check-dot').forEach(dot => {
         const t = dot.getAttribute('data-theme');
+        const tile = dot.closest('.theme-card-box');
+        if (tile) {
+          tile.setAttribute('role', 'button');
+          tile.tabIndex = 0;
+          tile.setAttribute('aria-pressed', t === cur ? 'true' : 'false');
+        }
         if (t === cur) {
           dot.innerHTML = `<i class="fa-solid fa-check" style="font-size: 0.72rem; font-weight:900; color:${cur === 'light' ? '#000' : '#fff'};"></i>`;
           dot.style.setProperty('background', curColor, 'important');
@@ -25116,6 +25382,9 @@ function openSettingsModal(targetSection = '') {
         if (el) {
           const optKey = o.toLowerCase();
           const optColor = paletteColors[optKey] || '#38bdf8';
+          el.setAttribute('role', 'button');
+          el.tabIndex = 0;
+          el.setAttribute('aria-pressed', optKey === iconTheme ? 'true' : 'false');
           if (optKey === iconTheme) {
             el.classList.add('active');
             el.style.setProperty('border', `2px solid ${optColor}`, 'important');
@@ -25193,12 +25462,18 @@ function openSettingsModal(targetSection = '') {
       }
 
       // تحديث حالة الأزرار في الإعدادات
-      document.querySelectorAll('.font-size-pill').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.font-size-pill').forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
       const activeBtn = document.getElementById(
         size === 'small' ? 'fontSizeSmall' : 
         (size === 'large' ? 'fontSizeLarge' : 'fontSizeMedium')
       );
-      if (activeBtn) activeBtn.classList.add('active');
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-pressed', 'true');
+      }
 
       const badge = document.getElementById('activeFontSizeBadge');
       const labels = { small: 'صغير (مدمج)', medium: 'وسط (الافتراضي)', large: 'كبير (واضح وبارز)' };
@@ -25255,6 +25530,7 @@ function openSettingsModal(targetSection = '') {
       // تحديث حالة الأزرار في نافذة الإعدادات
       document.querySelectorAll('.font-choice-pill').forEach(btn => {
         btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
       });
       const btnMap = {
         tajawal: 'fontChoiceTajawal',
@@ -25265,7 +25541,10 @@ function openSettingsModal(targetSection = '') {
         alexandria: 'fontChoiceAlexandria'
       };
       const activeBtn = document.getElementById(btnMap[fontKey] || 'fontChoiceTajawal');
-      if (activeBtn) activeBtn.classList.add('active');
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-pressed', 'true');
+      }
 
       const badge = document.getElementById('activeFontBadge');
       if (badge) badge.textContent = selected.name;
@@ -25288,7 +25567,7 @@ function openSettingsModal(targetSection = '') {
     }
 
     function setAppDesignStyle(style, notify = true) {
-      const validStyles = ['glass', 'minimal', 'neumorphic', 'neon'];
+      const validStyles = ['glass', 'minimal', 'neumorphic', 'neon', 'clear'];
       const targetStyle = validStyles.includes(style) ? style : 'glass';
 
       document.documentElement.setAttribute('data-card-style', targetStyle);
@@ -25299,13 +25578,15 @@ function openSettingsModal(targetSection = '') {
         glass: document.getElementById('designStyleGlass'),
         minimal: document.getElementById('designStyleMin'),
         neumorphic: document.getElementById('designStyleNeu'),
-        neon: document.getElementById('designStyleNeon')
+        neon: document.getElementById('designStyleNeon'),
+        clear: document.getElementById('designStyleClear')
       };
 
       Object.keys(btnMap).forEach(k => {
         if (btnMap[k]) {
-          if (k === targetStyle) btnMap[k].classList.add('active');
-          else btnMap[k].classList.remove('active');
+          const selected = k === targetStyle;
+          btnMap[k].classList.toggle('active', selected);
+          btnMap[k].setAttribute('aria-pressed', selected ? 'true' : 'false');
         }
       });
 
@@ -25327,7 +25608,8 @@ function openSettingsModal(targetSection = '') {
           glass: '✨ تم تفعيل النمط الزجاجي الفخم (شفافية ولمعان)',
           minimal: '📐 تم تفعيل النمط العصري المدمج (مصمت ورشيق)',
           neumorphic: '🌟 تم تفعيل النمط الكلاسيكي المجسم 3D',
-          neon: '💎 تم تفعيل نمط النيون المتوهج السيبراني'
+          neon: '💎 تم تفعيل نمط النيون المتوهج السيبراني',
+          clear: '▣ تم تفعيل البطاقات الواضحة ذات الحدود الهادئة'
         };
         showToast(labels[targetStyle] || 'تم تغيير نمط الكروت بنجاح');
       }
@@ -30801,7 +31083,6 @@ function switchTasksViewMode(mode) {
     if (viewList) viewList.style.display = 'none';
     if (viewCal) viewCal.style.display = 'flex';
     renderTasksCalendar();
-    updateTasksProductivityKPIs();
   } else {
     if (btnList) {
       btnList.classList.add('active');
@@ -31334,12 +31615,6 @@ function updateTasksProductivityKPIs() {
   const elOverdue = document.getElementById('pinnedTasksOverdueCount');
   const elBadge = document.getElementById('pinnedTasksCompletionRateBadge');
   const elBar = document.getElementById('pinnedTasksProgressBar');
-  const calendarElTotal = document.getElementById('tasksCalendarTotalCount');
-  const calendarElPending = document.getElementById('tasksCalendarPendingCount');
-  const calendarElDone = document.getElementById('tasksCalendarDoneCount');
-  const calendarElOverdue = document.getElementById('tasksCalendarOverdueCount');
-  const calendarElBadge = document.getElementById('tasksCalendarCompletionRateBadge');
-  const calendarElBar = document.getElementById('tasksCalendarProgressBar');
 
   if (elTotal) elTotal.textContent = total;
   if (elPending) elPending.textContent = pending;
@@ -31347,12 +31622,6 @@ function updateTasksProductivityKPIs() {
   if (elOverdue) elOverdue.textContent = overdue;
   if (elBadge) elBadge.textContent = `${pct}%`;
   if (elBar) elBar.style.width = `${pct}%`;
-  if (calendarElTotal) calendarElTotal.textContent = total;
-  if (calendarElPending) calendarElPending.textContent = pending;
-  if (calendarElDone) calendarElDone.textContent = done;
-  if (calendarElOverdue) calendarElOverdue.textContent = overdue;
-  if (calendarElBadge) calendarElBadge.textContent = `${pct}%`;
-  if (calendarElBar) calendarElBar.style.width = `${pct}%`;
 
   const catCounts = { all: total, shopping: 0, bills: 0, health: 0, home: 0, work: 0 };
   tasks.forEach(t => {
