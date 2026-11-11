@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.6';
-    var APP_BUILD_ID = 202611111517;
+    var APP_VERSION = 'v5.3.7';
+    var APP_BUILD_ID = 202611111551;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5184,6 +5184,239 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
+    }
+
+    /* منتقي نطاق التاريخ: تقويم واحد وتظليل متصل بين اليومين */
+    .custom-date-modal-overlay {
+      align-items: flex-end;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+    .custom-date-sheet-card {
+      width: min(100%, 440px);
+      max-height: calc(100vh - 24px);
+      max-height: calc(100dvh - 24px);
+      overflow: hidden;
+      gap: 10px;
+      padding: 16px 16px max(16px, env(safe-area-inset-bottom));
+      color: #111827;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 22px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+    .custom-date-sheet-head {
+      padding: 0 0 8px;
+      color: #111827;
+      border-bottom: 1px solid #eef0f4;
+    }
+    .custom-date-sheet-head .btn-modal-close {
+      color: #64748b;
+      border-color: #e5e7eb;
+      background: #f8fafc;
+    }
+    .range-date-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 8px;
+      direction: ltr;
+    }
+    .range-date-value {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 10px;
+      border: 1px solid #e5e7eb;
+      border-radius: 9px;
+      background: #ffffff;
+      direction: rtl;
+      text-align: right;
+    }
+    .range-date-value-label {
+      color: #7b8190;
+      font-size: 0.62rem;
+      font-weight: 800;
+    }
+    .range-date-value output {
+      overflow: hidden;
+      color: #1f2937;
+      font-size: 0.79rem;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .range-date-value.is-pending output { color: #94a3b8; }
+    .range-calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      direction: ltr;
+      margin-top: 1px;
+    }
+    .range-calendar-nav button {
+      flex: 0 0 32px;
+      width: 32px;
+      height: 30px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      color: #334155;
+      background: #ffffff;
+      font: inherit;
+      font-size: 1.12rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .range-calendar-nav button:hover { background: #f1f5f9; }
+    .range-calendar-nav-label {
+      color: #858b98;
+      font-size: 0.64rem;
+      font-weight: 800;
+      direction: rtl;
+    }
+    .range-calendar-months {
+      min-height: 0;
+      max-height: min(47vh, 390px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd5e1 transparent;
+      padding: 0 1px 2px;
+    }
+    .range-calendar-month { padding: 2px 0 8px; }
+    .range-calendar-month + .range-calendar-month {
+      margin-top: 6px;
+      border-top: 1px solid #f1f2f5;
+      padding-top: 8px;
+    }
+    .range-calendar-month-title {
+      margin: 0 0 5px;
+      color: #4b5563;
+      font-size: 0.74rem;
+      font-weight: 850;
+      direction: rtl;
+    }
+    .range-calendar-weekdays,
+    .range-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      direction: ltr;
+    }
+    .range-calendar-weekdays { margin-bottom: 2px; }
+    .range-calendar-weekdays span {
+      min-width: 0;
+      padding: 3px 0;
+      color: #8a909c;
+      text-align: center;
+      font-size: 0.58rem;
+      font-weight: 800;
+    }
+    .range-calendar-grid { grid-auto-rows: 36px; }
+    .range-calendar-grid .range-calendar-empty {
+      min-width: 0;
+      min-height: 36px;
+    }
+    .range-calendar-day {
+      position: relative;
+      isolation: isolate;
+      min-width: 0;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      color: #273244;
+      background: transparent;
+      font: inherit;
+      font-size: 0.73rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .range-calendar-day::before {
+      content: "";
+      position: absolute;
+      z-index: -2;
+      inset: 4px 0;
+      background: transparent;
+    }
+    .range-calendar-day::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #5b5bd6;
+      opacity: 0;
+    }
+    .range-calendar-day.is-range-between::before { background: #e9e9fb; }
+    .range-calendar-day.is-range-start:not(.is-range-end)::before {
+      left: 50%;
+      background: #e9e9fb;
+    }
+    .range-calendar-day.is-range-end:not(.is-range-start)::before {
+      right: 50%;
+      background: #e9e9fb;
+    }
+    .range-calendar-day.is-range-start::after,
+    .range-calendar-day.is-range-end::after { opacity: 1; }
+    .range-calendar-day.is-range-start.is-range-end::before { background: transparent; }
+    .range-calendar-day.is-range-start,
+    .range-calendar-day.is-range-end { color: #ffffff; font-weight: 900; }
+    .range-calendar-day.is-today:not(.is-range-start):not(.is-range-end) {
+      color: #4f46c8;
+      font-weight: 900;
+    }
+    .range-calendar-day:hover:not(.is-range-start):not(.is-range-end) { color: #4f46c8; }
+    .range-calendar-day:focus-visible,
+    .range-calendar-nav button:focus-visible,
+    .btn-apply-period-main:focus-visible,
+    .btn-reset-period-sub:focus-visible {
+      outline: 2px solid #7775e8;
+      outline-offset: 2px;
+    }
+    .range-date-hint {
+      min-height: 14px;
+      color: #818795;
+      text-align: center;
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+    .custom-date-sheet-actions { gap: 5px; margin-top: 0; }
+    .custom-date-sheet-actions .btn-apply-period-main {
+      min-height: 38px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: #ffffff;
+      background: #11131f;
+      box-shadow: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.02em;
+    }
+    .custom-date-sheet-actions .btn-reset-period-sub {
+      min-height: 28px;
+      padding: 4px 8px;
+      border: 0;
+      color: #7b8190;
+      font-size: 0.65rem;
+    }
+    @media (min-width: 600px) {
+      .custom-date-modal-overlay { align-items: center; }
+      .custom-date-sheet-card { max-height: min(820px, calc(100vh - 48px)); }
+    }
+    @media (max-width: 360px) {
+      .custom-date-modal-overlay { padding: 6px; }
+      .custom-date-sheet-card { padding: 12px 11px max(12px, env(safe-area-inset-bottom)); }
+      .range-calendar-grid,
+      .range-calendar-grid .range-calendar-empty { grid-auto-rows: 33px; min-height: 33px; }
+      .range-calendar-day { min-height: 33px; }
+      .range-calendar-day::after { width: 29px; height: 29px; }
     }
 
     /* تحسين شبكة بطاقات المصروفات لتناسب الجوال دون أي تمرير أفقي */
@@ -13190,42 +13423,40 @@
 
     <!-- بطاقة منبثقة أنيقة ومتناسقة لتحديد تاريخ مخصص -->
     <!-- نافذة منبثقة سفلية ذكية ومبسطة للجوال لتحديد فترة مخصصة -->
-    <div class="custom-date-modal-overlay" id="customDatePickerDrawer" style="display: none;">
-      <div class="custom-date-sheet-card">
+    <div class="custom-date-modal-overlay" id="customDatePickerDrawer" style="display: none;" aria-hidden="true">
+      <div class="custom-date-sheet-card" role="dialog" aria-modal="true" aria-label="اختيار فترة التاريخ">
         <div class="custom-date-sheet-head">
           <div style="display: flex; align-items: center; gap: 8px;">
             <i class="fa-regular fa-calendar-check" style="color: #38bdf8; font-size: 1.1rem;"></i>
-            <span style="font-weight: 800; font-size: 0.95rem; color: var(--text-main);">📅 تحديد فترة زمنية مخصصة</span>
+            <span style="font-weight: 900; font-size: 0.88rem; color: #111827;">📅 اختيار فترة التاريخ</span>
           </div>
           <button type="button" class="btn-modal-close" onclick="toggleCustomDatePicker(false)" aria-label="إغلاق">&times;</button>
         </div>
 
-        <!-- كبسولات الاختيار السريع للفترات بنقرة واحدة -->
-        <div class="date-quick-presets-row">
-          <button type="button" class="preset-chip" onclick="applyPresetPeriod('today')">اليوم</button>
-          <button type="button" class="preset-chip" onclick="applyPresetPeriod('yesterday')">الأمس</button>
-          <button type="button" class="preset-chip" onclick="applyPresetPeriod('last7')">آخر 7 أيام</button>
-          <button type="button" class="preset-chip" onclick="applyPresetPeriod('this_month')">الشهر الحالي</button>
-          <button type="button" class="preset-chip" onclick="applyPresetPeriod('last_month')">الشهر السابق</button>
+        <div class="range-date-summary" aria-live="polite">
+          <div class="range-date-value" id="customRangeStartCard">
+            <span class="range-date-value-label">من</span>
+            <output id="customRangeStartDisplay">اختر تاريخ البداية</output>
+          </div>
+          <div class="range-date-value is-pending" id="customRangeEndCard">
+            <span class="range-date-value-label">إلى</span>
+            <output id="customRangeEndDisplay">اختر تاريخ النهاية</output>
+          </div>
         </div>
 
-        <div class="date-pickers-block">
-          <div class="date-field-group">
-            <label><i class="fa-regular fa-calendar-plus" style="color: #10b981;"></i> من تاريخ:</label>
-            <input type="date" id="inpRangeFrom" class="modern-mobile-date-inp">
-          </div>
-          <div class="date-field-group">
-            <label><i class="fa-regular fa-calendar-minus" style="color: #ef4444;"></i> إلى تاريخ:</label>
-            <input type="date" id="inpRangeTo" class="modern-mobile-date-inp">
-          </div>
+        <div class="range-calendar-nav" aria-label="التنقل بين الأشهر">
+          <button type="button" onclick="shiftCustomRangeCalendar(-1)" aria-label="الشهر السابق">‹</button>
+          <span class="range-calendar-nav-label">تقويم ميلادي</span>
+          <button type="button" onclick="shiftCustomRangeCalendar(1)" aria-label="الشهر التالي">›</button>
         </div>
+
+        <div class="range-calendar-months" id="customRangeCalendarMonths" role="region" aria-label="تقويم اختيار الفترة"></div>
+        <div class="range-date-hint" id="customRangeHint" aria-live="polite">اختر تاريخ البداية ثم تاريخ النهاية</div>
 
         <div class="custom-date-sheet-actions">
-          <button type="button" class="btn-apply-period-main" onclick="applyDateRange()">
-            <i class="fa-solid fa-check"></i> تطبيق الفترة المختارة
-          </button>
+          <button type="button" class="btn-apply-period-main" onclick="applyDateRange()">تأكيد الفترة</button>
           <button type="button" class="btn-reset-period-sub" onclick="resetDateFilter()">
-            <i class="fa-solid fa-rotate-left"></i> إلغاء والعودة للشهر الحالي
+            العودة للشهر الحالي
           </button>
         </div>
       </div>
@@ -16475,7 +16706,7 @@
             <div>
               <h3 class="modal-title-custom" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>مركز الضبط الموحد والمزامنة</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.6 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.7 • متزامن</span>
               </h3>
             </div>
           </div>
@@ -17037,8 +17268,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.6';
-      const APP_BUILD_ID = 202611111517;
+      const APP_VERSION = 'v5.3.7';
+      const APP_BUILD_ID = 202611111551;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -19719,23 +19950,130 @@
     // =========================================================================
     // وظائف النافذة المنبثقة لتحديد فترة زمنية مخصصة
     // =========================================================================
+    let customRangePickerDraft = { from: '', to: '' };
+    let customRangePickerCursor = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    let customRangePickerDraftReady = false;
+
+    function formatCustomRangeDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-').map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return dateStr;
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+      return new Intl.DateTimeFormat('ar-EG-u-ca-gregory-nu-latn', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      }).format(date);
+    }
+
+    function renderCustomRangeCalendarMonth(year, month) {
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const weekdays = ['أح', 'إث', 'ث', 'أر', 'خ', 'ج', 'س'];
+      const today = typeof getLocalDateStr === 'function'
+        ? getLocalDateStr(new Date())
+        : new Date().toISOString().split('T')[0];
+      let cells = '';
+
+      for (let blank = 0; blank < firstDay; blank++) {
+        cells += '<span class="range-calendar-empty" aria-hidden="true"></span>';
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const isStart = dateStr === customRangePickerDraft.from;
+        const isEnd = dateStr === customRangePickerDraft.to && !!customRangePickerDraft.to;
+        const hasRange = !!(customRangePickerDraft.from && customRangePickerDraft.to);
+        const isBetween = hasRange && dateStr > customRangePickerDraft.from && dateStr < customRangePickerDraft.to;
+        const classes = ['range-calendar-day'];
+        if (isStart) classes.push('is-range-start');
+        if (isEnd) classes.push('is-range-end');
+        if (isBetween) classes.push('is-range-between');
+        if (dateStr === today) classes.push('is-today');
+        const dateLabel = formatCustomRangeDate(dateStr);
+        cells += `<button type="button" class="${classes.join(' ')}" aria-label="${dateLabel}" aria-pressed="${isStart || isEnd}" onclick="selectCustomRangeDate('${dateStr}')"><span>${day}</span></button>`;
+      }
+
+      const monthLabel = new Intl.DateTimeFormat('ar-EG-u-ca-gregory-nu-latn', {
+        month: 'long', year: 'numeric'
+      }).format(new Date(year, month, 1));
+      return `<section class="range-calendar-month" aria-label="${monthLabel}">
+        <h3 class="range-calendar-month-title">${monthLabel}</h3>
+        <div class="range-calendar-weekdays" aria-hidden="true">${weekdays.map(day => `<span>${day}</span>`).join('')}</div>
+        <div class="range-calendar-grid" role="group" aria-label="${monthLabel}">${cells}</div>
+      </section>`;
+    }
+
+    function renderCustomDateRangePicker() {
+      const calendar = document.getElementById('customRangeCalendarMonths');
+      if (!calendar) return;
+      const scrollTop = calendar.scrollTop;
+      const startDisplay = document.getElementById('customRangeStartDisplay');
+      const endDisplay = document.getElementById('customRangeEndDisplay');
+      const endCard = document.getElementById('customRangeEndCard');
+      const hint = document.getElementById('customRangeHint');
+
+      if (startDisplay) startDisplay.textContent = customRangePickerDraft.from
+        ? formatCustomRangeDate(customRangePickerDraft.from) : 'اختر تاريخ البداية';
+      if (endDisplay) endDisplay.textContent = customRangePickerDraft.to
+        ? formatCustomRangeDate(customRangePickerDraft.to) : 'اختر تاريخ النهاية';
+      if (endCard) endCard.classList.toggle('is-pending', !customRangePickerDraft.to);
+      if (hint) {
+        hint.textContent = customRangePickerDraft.from && !customRangePickerDraft.to
+          ? 'اختر تاريخ النهاية — أو أكد لاختيار يوم واحد'
+          : 'اختر تاريخ البداية ثم تاريخ النهاية';
+      }
+
+      calendar.innerHTML = Array.from({ length: 2 }, (_, index) => {
+        const monthDate = new Date(customRangePickerCursor.getFullYear(), customRangePickerCursor.getMonth() + index, 1);
+        return renderCustomRangeCalendarMonth(monthDate.getFullYear(), monthDate.getMonth());
+      }).join('');
+      calendar.scrollTop = scrollTop;
+    }
+
+    function shiftCustomRangeCalendar(months) {
+      customRangePickerCursor = new Date(
+        customRangePickerCursor.getFullYear(), customRangePickerCursor.getMonth() + months, 1
+      );
+      renderCustomDateRangePicker();
+      const calendar = document.getElementById('customRangeCalendarMonths');
+      if (calendar) calendar.scrollTop = 0;
+    }
+
+    function selectCustomRangeDate(dateStr) {
+      if (!customRangePickerDraft.from || customRangePickerDraft.to) {
+        customRangePickerDraft = { from: dateStr, to: '' };
+      } else if (dateStr < customRangePickerDraft.from) {
+        customRangePickerDraft = { from: dateStr, to: customRangePickerDraft.from };
+      } else {
+        customRangePickerDraft = { from: customRangePickerDraft.from, to: dateStr };
+      }
+      customRangePickerDraftReady = true;
+      renderCustomDateRangePicker();
+    }
+
     function toggleCustomDatePicker(open = true) {
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
       if (open) {
         drawer.style.display = 'flex';
-        const inpFrom = document.getElementById('inpRangeFrom');
-        const inpTo = document.getElementById('inpRangeTo');
-        const today = typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0];
-        if (inpFrom && !inpFrom.value) {
-          inpFrom.value = state.customDateRange?.from || today;
+        drawer.setAttribute('aria-hidden', 'false');
+        if (!customRangePickerDraftReady) {
+          const today = typeof getLocalDateStr === 'function'
+            ? getLocalDateStr(new Date())
+            : new Date().toISOString().split('T')[0];
+          const from = state.customDateRange?.from || today;
+          const to = state.customDateRange?.to || from;
+          customRangePickerDraft = { from, to };
+          const parts = from.split('-').map(Number);
+          customRangePickerCursor = parts.length === 3 && parts.every(Number.isFinite)
+            ? new Date(parts[0], parts[1] - 1, 1)
+            : new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+          customRangePickerDraftReady = true;
         }
-        if (inpTo && !inpTo.value) {
-          inpTo.value = state.customDateRange?.to || today;
-        }
+        renderCustomDateRangePicker();
         if (typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
       } else {
         drawer.style.display = 'none';
+        drawer.setAttribute('aria-hidden', 'true');
         if (typeof popModalState === 'function') popModalState('customDatePickerDrawer');
       }
     }
@@ -19743,8 +20081,6 @@
     function applyPresetPeriod(preset) {
       const now = new Date();
       const todayStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(now) : now.toISOString().split('T')[0];
-      const inpFrom = document.getElementById('inpRangeFrom');
-      const inpTo = document.getElementById('inpRangeTo');
       let from = todayStr, to = todayStr;
 
       if (preset === 'today') {
@@ -19770,15 +20106,15 @@
         to = typeof getLocalDateStr === 'function' ? getLocalDateStr(endPrev) : endPrev.toISOString().split('T')[0];
       }
 
-      if (inpFrom) inpFrom.value = from;
-      if (inpTo) inpTo.value = to;
+      customRangePickerDraft = { from, to };
+      customRangePickerCursor = new Date(Number(from.slice(0, 4)), Number(from.slice(5, 7)) - 1, 1);
+      customRangePickerDraftReady = true;
+      renderCustomDateRangePicker();
     }
 
     function applyDateRange() {
-      const inpFrom = document.getElementById('inpRangeFrom');
-      const inpTo = document.getElementById('inpRangeTo');
-      const from = inpFrom ? inpFrom.value : '';
-      const to = inpTo ? inpTo.value : '';
+      const from = customRangePickerDraft.from;
+      const to = customRangePickerDraft.to || from;
 
       if (!from && !to) {
         showToast('⚠️ يرجى تحديد تاريخ البداية أو النهاية');
@@ -19796,6 +20132,7 @@
 
     function resetDateFilter() {
       state.customDateRange = null;
+      customRangePickerDraftReady = false;
       toggleCustomDatePicker(false);
       setAppPeriod('month');
     }
@@ -27137,8 +27474,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111517);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.6');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111551);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.7');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -30999,7 +31336,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.6)</span>
+          <span>النظام جاهز ومحدث (v5.3.7)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
