@@ -1,0 +1,33 @@
+rplus))}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function restoreBudgetForView(budgetId) {
+      state.activeBudgetId = budgetId;
+      switchExpectedMainTab('monthly_budget');
+    }
+
+    function deleteBudgetFromHistory(budgetId) {
+      if ((state.monthlyBudgets || []).length <= 1) {
+        showToast('⚠️ لا يمكن حذف الخطة الوحيدة المتبقية في النظام');
+        return;
+      }
+      if (confirm('هل أنت متأكد من حذف هذه الخطة من السجل؟')) {
+        state.monthlyBudgets = state.monthlyBudgets.filter(b => b.id !== budgetId);
+        if (state.activeBudgetId === budgetId) {
+          state.activeBudgetId = state.monthlyBudgets[0].id;
+        }
+        try {
+          localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+        } catch(e) {}
+        renderBudgetHistory();
+        showToast('🗑️ تم حذف الخطة من السجل');
+      }
+    }
+
+    function getProratedBudgetForPeriod(periodStr) {
+  

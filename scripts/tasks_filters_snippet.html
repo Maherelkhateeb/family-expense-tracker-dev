@@ -1,0 +1,30 @@
+x-wrap: wrap;">
+          <!-- الفلاتر السريعة للمهام -->
+          <div style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 2px;" class="custom-scrollbar" id="tasksSmartListTabs">
+            <button type="button" class="btn-export-tool active exp-filter-pill" id="btnFullTodoMyDay" onclick="switchTodoSection('my_day')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap;">☀️ يومي</button>
+            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoImportant" onclick="switchTodoSection('important')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #fde047;">⭐ الهامة</button>
+            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoPlanned" onclick="switchTodoSection('planned')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #38bdf8;">📅 المجدولة</button>
+            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoShopping" onclick="switchTodoSection('shopping')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #34d399;">🛒 مشتريات</button>
+            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoOverdue" onclick="switchTodoSection('overdue')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #f87171;">⚠️ متأخرة</button>
+            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoCompleted" onclick="switchTodoSection('completed')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #10b981;">✅ المكتملة</button>
+          </div>
+
+          <!-- فلتر أفراد العائلة -->
+          <div style="display: flex; gap: 3px; align-items: center; overflow-x: auto;" id="tasksMemberFilterPills">
+            <button type="button" class="btn-export-tool active" onclick="setTasksMemberFilter('all', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">👥 الكل</button>
+            <button type="button" class="btn-export-tool" onclick="setTasksMemberFilter('ماهر', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">ماهر</button>
+            <button type="button" class="btn-export-tool" onclick="setTasksMemberFilter('آية', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">آية</button>
+            <button type="button" class="btn-export-tool" onclick="setTasksMemberFilter('محمد', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">محمد</button>
+            <button type="button" class="btn-export-tool" onclick="setTasksMemberFilter('مريم', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">مريم</button>
+            <button type="button" class="btn-export-tool" onclick="setTasksMemberFilter('البيت', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800;">البيت</button>
+          </div>
+        </div>
+
+        <!-- حقل البحث السريع -->
+        <div style="position: relative;">
+          <input type="text" id="tasksSearchInput" placeholder="🔍 بحث في نصوص المهام والخطوات..." oninput="renderTasksProList()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); color: #cbd5e1; font-size: 0.74rem; font-weight: 700; padding: 0 32px 0 10px; outline: none; box-sizing: border-box;">
+        </div>
+
+        <!-- حاوية عرض كروت المهام التفاعلية -->
+        <div id="tasksFullScreenContainerList" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- تتولد كروت المهام التفاعلية ديناميكيا

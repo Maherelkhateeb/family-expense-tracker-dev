@@ -1,0 +1,9 @@
+backups/
+.env
+.env.*
+!.env.example
+node_modules/
+__pycache__/
+.pytest_cache/
+playwright-report/
+test-results/

@@ -1,0 +1,24 @@
+يسي: [ الفواتير والديون ] | [ الميزانيات ] -->
+          <div class="expected-dual-master-tabs" id="commitmentsTopTwoTabsStrip" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15, 23, 42, 0.95); padding: 5px; border-radius: 13px; border: 1.2px solid rgba(56, 189, 248, 0.25); box-shadow: 0 4px 16px rgba(0,0,0,0.35);">
+            <!-- الزر العلوي 1: الفواتير والديون -->
+            <button type="button" id="tabExpectedBillsAndDebts" onclick="switchExpectedTopSection('bills_and_debts')" class="exp-dual-top-btn active" style="padding: 10px 8px; border-radius: 10px; font-weight: 900; font-size: 0.85rem; color: #fff; background: linear-gradient(135deg, #0284c7, #0369a1); border: 1px solid rgba(56, 189, 248, 0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 3px 12px rgba(2, 132, 199, 0.4); transition: all 0.25s ease;">
+              <i class="fa-solid fa-file-invoice-dollar" style="font-size: 1rem; color: #38bdf8;"></i>
+              <span>الفواتير والديون</span>
+              <span id="badgeCountBillsAndDebts" style="background: rgba(255,255,255,0.25); font-size: 0.68rem; padding: 2px 7px; border-radius: 10px; font-weight: 900;">0</span>
+            </button>
+            
+            <!-- الزر العلوي 2: الميزانيات -->
+            <button type="button" id="tabExpectedBudgets" onclick="switchExpectedTopSection('budgets')" class="exp-dual-top-btn" style="padding: 10px 8px; border-radius: 10px; font-weight: 900; font-size: 0.85rem; color: #94a3b8; background: transparent; border: 1px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.25s ease;">
+              <i class="fa-solid fa-chart-pie" style="font-size: 1rem; color: #34d399;"></i>
+              <span>الميزانيات</span>
+              <span id="badgeCountBudgets" style="background: rgba(255,255,255,0.12); font-size: 0.68rem; padding: 2px 7px; border-radius: 10px; font-weight: 900;">الشهر</span>
+            </button>
+          </div>
+        </div>
+
+<div id="subViewCommitments">
+          
+          <!-- بطاقة المؤشرات والمركز المالي الذكية (تتكيف تلقائياً بحسب التبويب: فواتير أو ديون) -->
+          <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
+          <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: rgba(15, 23, 42, 0.88); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+            <!-

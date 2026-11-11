@@ -1,0 +1,38 @@
+d fa-wallet"></i>
+              </div>
+              <span class="hero-title-text">الرصيد الفعلي الحالي</span>
+              <button type="button" class="cockpit-privacy-btn" id="btnToggleBalancePrivacy" onclick="event.stopPropagation(); toggleBalancePrivacy();" title="إخفاء / إظهار الرصيد">
+                <i class="fa-solid fa-eye" id="iconBalancePrivacy"></i>
+              </button>
+            </div>
+            <div class="cockpit-hero-value" id="topCardBalance" style="font-size: clamp(1.15rem, 3.8vw, 1.60rem); font-weight: 950; letter-spacing: -0.3px; text-shadow: 0 2px 18px rgba(56, 189, 248, 0.65); margin: auto 0; color: #38bdf8; max-width: 100%; overflow: visible;">+ 0.00 ج.م</div>
+            <div class="hero-liquidity-subtitle" style="font-size: clamp(0.58rem, 1.8vw, 0.66rem); color: #94a3b8; display: flex; align-items: center; gap: 4px; margin-top: 1px;">
+              <i class="fa-solid fa-shield-halved" style="color: #34d399; font-size: 0.72rem;"></i>
+              <span>صافي السيولة المعتمدة للمحافظ</span>
+            </div>
+          </div>
+
+          <!-- الفاصل الرأسي الزجاجي الفاخر المتوهج -->
+          <div class="cockpit-divider"></div>
+
+          <!-- الجانب الأيسر: كبسولات التدفقات النقدية التوأم (إيداعات + مصروفات) -->
+          <div class="cockpit-flow-side">
+            <!-- كبسولة إجمالي الإيداعات -->
+            <div class="cockpit-flow-pill inflow" onclick="openModal('incomeChoiceModal')" title="الإيداعات والدخل" style="cursor: pointer;">
+              <div class="flow-pill-left-group">
+                <div class="flow-icon-badge inflow-badge">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="8 12 12 16 16 12"></polyline>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                  </svg>
+                </div>
+                <span class="flow-title inflow-color">إيداعات</span>
+              </div>
+              <span class="flow-amount inflow-color" id="topCardIncome">+ 0.00 ج.م</span>
+            </div>
+
+            <!-- كبسولة إجمالي المصروفات -->
+            <div class="cockpit-flow-pill outflow" onclick="openOperationsFiltered({ type: 'expense' })" title="المصروفات والسحوبات" style="cursor: pointer;">
+              <div class="flow-pill-left-group">
+              

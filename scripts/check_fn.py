@@ -1,0 +1,11 @@
+import sys
+import re
+
+sys.stdout.reconfigure(encoding='utf-8')
+with open('index.html', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+idx = content.find('function executeMasterUnifiedSyncAndRefresh')
+if idx != -1:
+    print('Found declaration at:', idx)
+    print(content[idx-30:idx+80])

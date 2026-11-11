@@ -1,0 +1,12 @@
+Line 12300: <div class="page-view" id="viewAnalytics" style="display: none;">
+Line 13610: <button class="nav-tab-item active" id="navTabExpenses" onclick="switchAppPage('expenses')" title="صفحة المصاريف الرئيسية">
+Line 13618: <button class="nav-tab-item" id="navTabOperations" onclick="switchAppPage('operations')" title="سجل كافة العمليات والمعاملات">
+Line 13627: <button class="nav-tab-item" id="navTabRequests" onclick="switchAppPage('requests')" title="إنشاء وإدارة طلبات المبالغ">
+Line 13635: <button class="nav-tab-item" id="navTabExpected" onclick="switchAppPage('expected')" title="الالتزامات والمصروفات القادمة">
+Line 13648: <button class="nav-tab-item" id="navTabAnalytics" onclick="switchAppPage('analytics')" title="المؤشرات والرسوم البيانية">
+Line 18145: 'analytics': 'viewAnalytics',
+Line 22678: if (typeof renderAnalyticsUI === 'function') {
+Line 22679: renderAnalyticsUI();
+Line 22744: if (typeof renderAnalyticsUI === 'function') {
+Line 22745: renderAnalyticsUI();
+Line 24260: if (typeof renderAnalyticsRankings === 'function') renderAnalyticsRankings();

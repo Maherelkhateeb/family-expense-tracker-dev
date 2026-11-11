@@ -1,0 +1,66 @@
+=== MATCH AT 15911 ===
+', Roboto, sans-serif;
+      --font-numbers: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
+    }
+
+    /* ==============================================================
+       المظهر الفاتح الشامل والمكتمل (Complete Modern Light Theme)
+       ============================================================== */
+    body.light-theme {
+      --bg-app: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-s
+
+=== MATCH AT 584639 ===
+e="font-size: 0.58rem; background: rgba(2, 132, 199, 0.22); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800; display: inline-block;">0 مكتمل</span>
+                </div>
+                <div id="kpiCapSettledAmount" style="font-size: clamp(0.72rem, 2.2vw, 0.88rem); font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); 
+
+=== MATCH AT 782773 ===
+lor: #38bdf8;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 4px; border-radius: 7px;">
+              <div style="font-size: 0.60rem; color: #94a3b8;">مكتمل</div>
+              <div id="pinnedTasksDoneCount" style="font-size: 0.82rem; font-weight: 900; color: #34d399;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0
+
+=== MATCH AT 799967 ===
+" id="btnFullTodoCompleted" onclick="switchTodoSection('completed', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #10b981;">✅ المكتملة</button>
+          </div>
+
+          <!-- فلتر أفراد العائلة -->
+          <div style="display: flex; gap: 3px; align-items: center; overflow-x: auto;" id="tasksMemberFilterPills">
+            
+
+=== MATCH AT 809455 ===
+23, 42, 0.7); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 8px 4px; text-align: center;">
+              <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 800;">المكتملة</div>
+              <div id="kpiTasksDoneFull" style="font-size: 1.05rem; font-weight: 950; color: #34d399; margin-top: 2px;">0</div>
+            </div>
+          </div>
+        </div>
+      </
+
+=== MATCH AT 1720367 ===
+);
+
+      const c4Cnt = document.getElementById('kpiCapSettledCount');
+      const c4Amt = document.getElementById('kpiCapSettledAmount');
+      if (c4Cnt) c4Cnt.textContent = `${settledItems.length} مكتمل`;
+      if (c4Amt) c4Amt.textContent = formatMoneyVal(sumSettled);
+
+      // تمييز الكارت النشط بحلقة توهج فخمة وتدرج لوني
+      const cardBills = document.getElementById('cardComBills');
+      
+
+=== MATCH AT 1910344 ===
+800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
+          <i class="fa-solid fa-circle-check"></i> المكتملة
+        </button>
+      </div>
+
+      <!-- إدخال مهمة جديدة سريعة -->
+      <form onsubmit="event.preventDefault(); handleAddNewTask();" style="display: flex; gap: 6px; margin-bottom: 10px;">
+ 
+

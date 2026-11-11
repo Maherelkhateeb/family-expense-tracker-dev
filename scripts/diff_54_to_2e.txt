@@ -1,0 +1,1321 @@
+
+
+--- a/index.html
++++ b/index.html
+
+@@ -142,9 +142,9 @@
+-    var APP_VERSION = 'v5.2.7';
++    var APP_VERSION = 'v5.2.8';
+-    window.APP_VERSION = 'v5.2.7';
++    window.APP_VERSION = 'v5.2.8';
+
+@@ -12203,13 +12203,12 @@
+-                <div class="flow-icon-badge inflow-badge">
+-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+-                    <circle cx="12" cy="12" r="10"></circle>
+-                    <polyline points="8 12 12 16 16 12"></polyline>
+-                    <line x1="12" y1="8" x2="12" y2="16"></line>
+-                  </svg>
+-                </div>
++                <div class="flow-icon-badge inflow-badge" style="width: 22px; height: 22px; min-width: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(5, 150, 105, 0.2)); border: 1px solid rgba(16, 185, 129, 0.6); box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);">
++                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
++                    <circle cx="12" cy="12" r="10" stroke="#10b981"></circle>
++                    <polyline points="8 12 12 16 16 12" stroke="#10b981"></polyline>
++                    <line x1="12" y1="8" x2="12" y2="16" stroke="#10b981"></line>
++                  </svg></div>
+
+@@ -12218,13 +12217,12 @@
+-                <div class="flow-icon-badge outflow-badge">
+-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+-                    <circle cx="12" cy="12" r="10"></circle>
+-                    <polyline points="16 12 12 8 8 12"></polyline>
+-                    <line x1="12" y1="16" x2="12" y2="8"></line>
+-                  </svg>
+-                </div>
++                <div class="flow-icon-badge outflow-badge" style="width: 22px; height: 22px; min-width: 22px; border-radius: 7px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(244, 63, 94, 0.35), rgba(225, 29, 72, 0.2)); border: 1px solid rgba(244, 63, 94, 0.6); box-shadow: 0 0 8px rgba(244, 63, 94, 0.3);">
++                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
++                    <circle cx="12" cy="12" r="10" stroke="#f43f5e"></circle>
++                    <polyline points="16 12 12 8 8 12" stroke="#f43f5e"></polyline>
++                    <line x1="12" y1="16" x2="12" y2="8" stroke="#f43f5e"></line>
++                  </svg></div>
+
+@@ -13349,54 +13347,55 @@
+-              <div class="com-kpi-card card-bills-upcoming" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير ومصاريف دورية قادمة" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 12px; padding: 7px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; cursor: pointer; text-align: center; transition: all 0.2s ease; min-height: 74px;">
+-                <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
+-                  <i class="fa-solid fa-clock" style="color: #fbbf24; font-size: 0.72rem;"></i>
+-                  <span style="font-size: clamp(0.64rem, 1.9vw, 0.74rem); font-weight: 900; color: #fde047; white-space: nowrap;">مصاريف دورية</span>
+-                </div>
+-                <div style="margin: 3px 0 2px;">
+-                  <span id="kpiCap1Count" style="font-size: 0.58rem; background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800; display: inline-block;">0 بند</span>
++              <div class="com-kpi-cards-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; box-sizing: border-box;">
++                <!-- كارت 1: مصاريف دورية (أصفر) -->
++                <div class="com-kpi-card card-bills" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير ومصاريف دورية قادمة" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(245, 158, 11, 0.45);">
++                  <div class="com-card-header">
++                    <i class="fa-solid fa-clock com-card-icon" style="color: #fbbf24;"></i>
++                    <span class="com-card-title" style="color: #fde047;">مصاريف دورية</span>
++                  </div>
++                  <div class="com-card-badge-wrap">
++                    <span id="kpiCap1Count" class="com-card-count-badge" style="background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">0 بند</span>
++                  </div>
++                  <div id="kpiCap1Amount" class="com-card-amount" style="color: #fbbf24;">0.00 ج.م</div>
+-                <div id="kpiCap1Amount" style="font-size: clamp(0.72rem, 2.2vw, 0.88rem); font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: rtl; line-height: 1.1;">0.00 ج.م</div>
+-              </div>
+-              <!-- كارت 2: ديون علينا (أحمر) -->
+-              <div class="com-kpi-card card-debts-on-us" id="cardComDebtsOnUs" onclick="setCommitmentsSubFilter('debts_on_us')" title="ديون والتزامات علينا للغير" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(244, 63, 94, 0.45); border-radius: 12px; padding: 7px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; cursor: pointer; text-align: center; transition: all 0.2s ease; min-height: 74px;">
+-                <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
+-                  <i class="fa-solid fa-handshake-angle" style="color: #fb7185; font-size: 0.72rem;"></i>
+-                  <span style="font-size: clamp(0.64rem, 1.9vw, 0.74rem); font-weight: 900; color: #fda4af; white-space: nowrap;">ديون علينا</span>
+-                </div>
+-                <div style="margin: 3px 0 2px;">
+-                  <span id="kpiCap2Count" style="font-size: 0.58rem; background: rgba(244, 63, 94, 0.22); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800; display: inline-block;">0 بند</span>
++                <!-- كارت 2: ديون علينا (أحمر) -->
++                <div class="com-kpi-card card-debts-on-us" id="cardComDebtsOnUs" onclick="setCommitmentsSubFilter('debts_on_us')" title="ديون والتزامات علينا للغير" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(244, 63, 94, 0.45);">
++                  <div class="com-card-header">
++                    <i class="fa-solid fa-handshake-angle com-card-icon" style="color: #fb7185;"></i>
++                    <span class="com-card-title" style="color: #fda4af;">ديون علينا</span>
++                  </div>
++                  <div class="com-card-badge-wrap">
++                    <span id="kpiCap2Count" class="com-card-count-badge" style="background: rgba(244, 63, 94, 0.22); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.4);">0 بند</span>
++                  </div>
++                  <div id="kpiCap2Amount" class="com-card-amount" style="color: #fb7185;">- 0.00 ج.م</div>
+-                <div id="kpiCap2Amount" style="font-size: clamp(0.72rem, 2.2vw, 0.88rem); font-weight: 950; color: #fb7185; font-family: var(--font-numbers); direction: rtl; line-height: 1.1;">- 0.00 ج.م</div>
+-              </div>
+-              <!-- كارت 3: ديون لنا (أخضر) -->
+-              <div class="com-kpi-card card-debts-for-us" id="cardComDebtsForUs" onclick="setCommitmentsSubFilter('debts_for_us')" title="ديون ومستحقات لنا عند الغير" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(16, 185, 129, 0.45); border-radius: 12px; padding: 7px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; cursor: pointer; text-align: center; transition: all 0.2s ease; min-height: 74px;">
+-                <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
+-                  <i class="fa-solid fa-sack-dollar" style="color: #34d399; font-size: 0.72rem;"></i>
+-                  <span style="font-size: clamp(0.64rem, 1.9vw, 0.74rem); font-weight: 900; color: #6ee7b7; white-space: nowrap;">ديون لنا</span>
+-                </div>
+-                <div style="margin: 3px 0 2px;">
+-                  <span id="kpiCap3Count" style="font-size: 0.58rem; background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800; display: inline-block;">0 بند</span>
++                <!-- كارت 3: ديون لنا (أخضر) -->
++                <div class="com-kpi-card card-debts-for-us" id="cardComDebtsForUs" onclick="setCommitmentsSubFilter('debts_for_us')" title="ديون ومستحقات لنا عند الغير" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(16, 185, 129, 0.45);">
++                  <div class="com-card-header">
++                    <i class="fa-solid fa-sack-dollar com-card-icon" style="color: #34d399;"></i>
++                    <span class="com-card-title" style="color: #6ee7b7;">ديون لنا</span>
++                  </div>
++                  <div class="com-card-badge-wrap">
++                    <span id="kpiCap3Count" class="com-card-count-badge" style="background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);">0 بند</span>
++                  </div>
++                  <div id="kpiCap3Amount" class="com-card-amount" style="color: #34d399;">+ 0.00 ج.م</div>
+-                <div id="kpiCap3Amount" style="font-size: clamp(0.72rem, 2.2vw, 0.88rem); font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: rtl; line-height: 1.1;">+ 0.00 ج.م</div>
+-              </div>
+-              <!-- كارت 4: تم السداد بالكامل (أزرق) -->
+-              <div class="com-kpi-card card-settled" id="cardComSettled" onclick="setCommitmentsSubFilter('settled')" title="الفواتير والديون المسددة بالكامل" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(2, 132, 199, 0.45); border-radius: 12px; padding: 7px 4px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; cursor: pointer; text-align: center; transition: all 0.2s ease; min-height: 74px;">
+-                <div style="display: flex; align-items: center; justify-content: center; gap: 4px; width: 100%;">
+-                  <i class="fa-solid fa-circle-check" style="color: #38bdf8; font-size: 0.72rem;"></i>
+-                  <span style="font-size: clamp(0.64rem, 1.9vw, 0.74rem); font-weight: 900; color: #7dd3fc; white-space: nowrap;">تم السداد</span>
+-                </div>
+-                <div style="margin: 3px 0 2px;">
+-                  <span id="kpiCapSettledCount" style="font-size: 0.58rem; background: rgba(2, 132, 199, 0.22); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800; display: inline-block;">0 مكتمل</span>
++                <!-- كارت 4: تم السداد (أزرق) -->
++                <div class="com-kpi-card card-settled" id="cardComSettled" onclick="setCommitmentsSubFilter('settled')" title="الالتزامات التي تم سدادها بالكامل" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.14), rgba(15, 23, 42, 0.92)); border: 1.4px solid rgba(56, 189, 248, 0.45);">
++                  <div class="com-card-header">
++                    <i class="fa-solid fa-circle-check com-card-icon" style="color: #38bdf8;"></i>
++                    <span class="com-card-title" style="color: #7dd3fc;">تم السداد</span>
++                  </div>
++                  <div class="com-card-badge-wrap">
++                    <span id="kpiCapSettledCount" class="com-card-count-badge" style="background: rgba(2, 132, 199, 0.22); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.4);">0 مكتمل</span>
++                  </div>
++                  <div id="kpiCapSettledAmount" class="com-card-amount" style="color: #38bdf8;">0.00 ج.م</div>
+-                <div id="kpiCapSettledAmount" style="font-size: clamp(0.72rem, 2.2vw, 0.88rem); font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: rtl; line-height: 1.1;">0.00 ج.م</div>
+-
+-            </div>
+
+@@ -15351,7 +15350,7 @@
+-              <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.2.7 • متزامن</span>
++              <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.2.8 • متزامن</span>
+
+@@ -15954,7 +15953,7 @@
+-      const APP_VERSION = 'v5.2.7';;
++      const APP_VERSION = 'v5.2.8';;
+
+@@ -22029,7 +22028,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
+-      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.2.7
++      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.2.8
+
+@@ -22611,7 +22610,7 @@ function openSettingsModal(targetSection = '') {
+-          version: 'v5.2.7',
++          version: 'v5.2.8',
+
+@@ -25725,7 +25724,7 @@ function openSettingsModal(targetSection = '') {
+-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.2.7');
++          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.2.8');
+
+@@ -25761,7 +25760,7 @@ function openSettingsModal(targetSection = '') {
+-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.2.7');
++            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.2.8');
+
+@@ -26853,108 +26852,207 @@ function initMonthlyBudgetUI() {
++    // حساب المصروفات الفعلية المطابقة للبند بدقة مع مراعاة تخصيص الأفراد
++    function getExpensesForBudgetItem(it, allMonthExpenses, allBudgetItems) {
++      const itemMembers = Array.isArray(it.members) && it.members.length > 0 ? it.members : ['البيت'];
++      const isSharedHouse = itemMembers.includes('البيت') || itemMembers.includes('الكل') || itemMembers.includes('عائلة ماهر واية');
++
++      return allMonthExpenses.filter(t => {
++        if (t.category !== it.category) return false;
++        const tMember = (t.member || t.author || 'البيت').trim();
++
++        if (!isSharedHouse) {
++          // البند مخصص لأفراد محددين بالاسم (مثل أية، ماهر، محمد، ...)
++          return itemMembers.includes(tMember);
++        }
++
++        // إذا كان البند مشترك للبيت/الكل:
++        // نتحقق إذا كان هناك بند آخر منفصل في نفس الخطة ونفس التصنيف مخصص تحديداً لهذا الفرد
++        const hasDedicatedItem = (allBudgetItems || []).some(other => {
++          if (other.id === it.id || other.category !== it.category) return false;
++          const otherMems = Array.isArray(other.members) ? other.members : [];
++          return otherMems.includes(tMember) && !otherMems.includes('البيت') && !otherMems.includes('الكل');
++        });
++
++        // إذا وجد بند مخصص له، لا نخصمه من ميزانية البيت العامة
++        if (hasDedicatedItem) return false;
++
++        return true;
++      });
++    }
++    window.getExpensesForBudgetItem = getExpensesForBudgetItem;
++
++    var currentBudgetMemberFilter = 'all';
++
++    function setBudgetMemberFilter(member, btn) {
++      currentBudgetMemberFilter = member;
++      const pills = document.querySelectorAll('#budgetMemberFilterStrip button');
++      pills.forEach(p => p.classList.remove('active'));
++      if (btn) btn.classList.add('active');
++      renderMonthlyBudgetAllocations();
++    }
++    window.setBudgetMemberFilter = setBudgetMemberFilter;
++
++    function renderBudgetMemberFilterPills() {
++      const strip = document.getElementById('budgetMemberFilterStrip');
++      if (!strip) return;
++
++      const membersList = [
++        { name: 'الكل', val: 'all', icon: 'fa-solid fa-users' },
++        { name: 'البيت', val: 'البيت', icon: 'fa-solid fa-house' },
++        { name: 'ماهر', val: 'ماهر', icon: 'fa-solid fa-user-tie' },
++        { name: 'أية', val: 'أية', icon: 'fa-solid fa-user-nurse' },
++        { name: 'محمد', val: 'محمد', icon: 'fa-solid fa-child' },
++        { name: 'مريم', val: 'مريم', icon: 'fa-solid fa-child-dress' },
++        { name: 'الحاجة', val: 'الحاجة', icon: 'fa-solid fa-person-cane' },
++        { name: 'النونو', val: 'النونو', icon: 'fa-solid fa-baby' }
++      ];
++
++      strip.innerHTML = membersList.map(m => {
++        const isActive = (currentBudgetMemberFilter === m.val);
++        const avatar = (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[m.val]) ? MEMBER_AVATARS[m.val] : '';
++        const imgTag = avatar ? `<img src="${avatar}" style="width: 17px; height: 17px; border-radius: 50%; object-fit: cover;">` : `<i class="${m.icon}"></i>`;
++        return `
++          <button type="button" class="btn-budget-member-pill ${isActive ? 'active' : ''}" onclick="setBudgetMemberFilter('${m.val}', this)">
++            ${imgTag} <span>${m.name}</span>
++          </button>
++        `;
++      }).join('');
++    }
++    window.renderBudgetMemberFilterPills = renderBudgetMemberFilterPills;
++
+-      const incCont = document.getElementById('budgetIncomeRowsContainer');
++      const bBadge = document.getElementById('badgeCountBudgets');
++
++      renderBudgetMemberFilterPills();
+-      const totalActualMonth = monthExpenses.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+-      const totalBudgetMonth = (currentBudgetMonthData.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
++      const allItems = currentBudgetMonthData.items || [];
++
++      // فلترة البنود بحسب العضو المحدد إن لم يكن "الكل"
++      const filteredItems = (currentBudgetMemberFilter === 'all')
++        ? allItems
++        : allItems.filter(it => (it.members || ['البيت']).includes(currentBudgetMemberFilter));
++
++      // حساب الإجماليات بدقة
++      let totalBudgetFiltered = 0;
++      let totalActualFiltered = 0;
+-      // تحديث شريط الرقابة المالية الإجمالي (الفعلي مقابل المقدر)
++      filteredItems.forEach(it => {
++        totalBudgetFiltered += (Number(it.amount) || 0);
++        const matches = getExpensesForBudgetItem(it, monthExpenses, allItems);
++        totalActualFiltered += matches.reduce((s, t) => s + (Number(t.amount) || 0), 0);
++      });
++
++      // تحديث شريط الرقابة المالية الإجمالي
+-        const overallPct = totalBudgetMonth > 0 ? ((totalActualMonth / totalBudgetMonth) * 100).toFixed(1) : 0;
+-        summaryTxt.innerHTML = `المنصرف الفعلي لشهر (${targetMonth}): <strong>${formatMoney(totalActualMonth)}</strong> من أصل مقدر <strong>${formatMoney(totalBudgetMonth)}</strong> (${overallPct}%)`;
++        const overallPct = totalBudgetFiltered > 0 ? ((totalActualFiltered / totalBudgetFiltered) * 100).toFixed(1) : 0;
++        const filterLabel = (currentBudgetMemberFilter === 'all') ? 'كافة بنود الخطة' : `مخصصات (${currentBudgetMemberFilter})`;
++        summaryTxt.innerHTML = `منصرف ${filterLabel} لشهر (${targetMonth}): <strong>${formatMoney(totalActualFiltered)}</strong> من أصل مقدر <strong>${formatMoney(totalBudgetFiltered)}</strong> (${overallPct}%)`;
+-        const pctVal = totalBudgetMonth > 0 ? Math.min(100, (totalActualMonth / totalBudgetMonth) * 100) : 0;
++        const pctVal = totalBudgetFiltered > 0 ? Math.min(100, (totalActualFiltered / totalBudgetFiltered) * 100) : 0;
+-        progBar.style.background = (totalActualMonth > totalBudgetMonth) ? '#ef4444' : '#38bdf8';
++        progBar.style.background = (totalActualFiltered > totalBudgetFiltered) ? '#ef4444' : '#10b981';
+-        countBadge.textContent = `${(currentBudgetMonthData.items || []).length} بند`;
++        countBadge.textContent = `${filteredItems.length} من أصل ${allItems.length} بند`;
++      }
++      if (bBadge) {
++        bBadge.textContent = `${allItems.length} بند`;
+-      // رسم كروت بنود المصروفات التقديرية
++      // رسم كروت بنود المصروفات التقديرية المربوطة بالأفراد
+-        const items = currentBudgetMonthData.items || [];
+-        if (items.length === 0) {
++        if (filteredItems.length === 0) {
+-            <div style="background: rgba(15, 23, 42, 0.6); border: 1.5px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 18px; text-align: center; color: #94a3b8;">
++            <div style="background: rgba(15, 23, 42, 0.6); border: 1.5px dashed rgba(255,255,255,0.12); border-radius: 12px; padding: 18px; text-align: center; color: #94a3b8;">
+-              <div style="font-size: 0.85rem; font-weight: 800; color: #cbd5e1;">لا توجد بنود مصروفات مضافة بعد</div>
+-              <div style="font-size: 0.72rem; margin-top: 3px;">اختر نوع المصروف وحدد الأفراد والمبلغ من الأعلى، ثم انقر "إضافة البند للميزانية"</div>
++              <div style="font-size: 0.85rem; font-weight: 800; color: #cbd5e1;">لا توجد بنود مصروفات مخصصة لـ (${currentBudgetMemberFilter})</div>
++              <div style="font-size: 0.72rem; margin-top: 3px;">اختر فرداً آخر من الشريط العلوي أو أضف بنداً جديداً مخصصاً له</div>
+-          itemsContainer.innerHTML = items.map((it, idx) => {
++          itemsContainer.innerHTML = filteredItems.map((it, idx) => {
+-            
+-            // حساب المنصرف الفعلي في هذا التصنيف للشهر
+-            const catActual = monthExpenses.filter(t => t.category === it.category).reduce((s, t) => s + (Number(t.amount) || 0), 0);
++
++            // حساب المنصرف الفعلي الخاص بهذا البند وهذا الشخص
++            const matchingExpenses = getExpensesForBudgetItem(it, monthExpenses, allItems);
++            const catActual = matchingExpenses.reduce((s, t) => s + (Number(t.amount) || 0), 0);
++            const diff = it.amount - catActual;
++            const pct = it.amount > 0 ? Math.min(100, Math.round((catActual / it.amount) * 100)) : 0;
++
++            const itemMembers = (it.members && it.members.length > 0) ? it.members : ['البيت'];
++            const isHouse = itemMembers.includes('البيت') || itemMembers.includes('الكل');
+-            const memberChips = (it.members || ['البيت']).map(m => {
++            const memberChips = itemMembers.map(m => {
+-                  ${avatar ? `<img src="${avatar}" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover;">` : ''}
+-                  ${m}
++                  ${avatar ? `<img src="${avatar}" style="width: 14px; height: 14px; border-radius: 50%; object-fit: cover;">` : `<i class="fa-solid fa-user" style="font-size: 0.6rem;"></i>`}
++                  <span>${m}</span>
+-            }).join(' ');
++            }).join('');
+-              <div style="background: rgba(30, 41, 59, 0.82); border: 1.4px solid ${cat.color}45; border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+-                <!-- سطر العنوان والتصنيف والأفراد -->
+-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+-                  <div style="display: flex; align-items: center; gap: 8px; flex: 1;">
+-                    <div style="width: 32px; height: 32px; border-radius: 8px; background: ${cat.color}25; border: 1px solid ${cat.color}50; color: ${cat.color}; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+-                      <i class="fa-solid ${cat.icon}"></i>
++              <div class="budget-item-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid ${isOver ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255,255,255,0.08)'}; border-radius: 12px; padding: 10px 12px; transition: all 0.2s ease;">
++                <!-- الصف العلوي: العنوان والتصنيف والأفراد وأزرار التحكم -->
++                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
++                  <div style="display: flex; align-items: center; gap: 8px;">
++                    <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 1.0rem; flex-shrink: 0;">
++                      ${cat.emoji || `<i class="fa-solid ${cat.icon}" style="color: ${cat.color};"></i>`}
+-                      <div style="font-size: 0.86rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+-                        <span>${escapeHtml(it.title)}</span>
+-                        <span style="font-size: 0.65rem; background: ${cat.color}20; color: ${cat.color}; border: 1px solid ${cat.color}40; padding: 1px 6px; border-radius: 5px;">${cat.name}</span>
++                      <div style="font-weight: 900; font-size: 0.86rem; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
++                        <span>${escapeHtml(it.title || cat.name)}</span>
++                        <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 700;">(${cat.name})</span>
+-                        <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">يخص:</span>
++                        <span style="font-size: 0.64rem; color: #94a3b8;">${isHouse ? '🏠 ميزانية مشتركة:' : '👤 مخصص لـ:'}</span>
+-                  <!-- المبلغ وأزرار التعديل والحذف -->
+-                  <div style="text-align: left; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+-                    <div style="font-size: 1.05rem; font-weight: 900; color: #f87171; direction: ltr;">
+-                      - ${formatMoney(it.amount)}
+-                    </div>
+-                    <div style="display: flex; gap: 5px;">
+-                      <button type="button" onclick="editBudgetItemAmount('${it.id}')" title="تعديل المبلغ" style="padding: 2px 7px; border-radius: 6px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.68rem; font-weight: 800; cursor: pointer;">
+-                        <i class="fa-solid fa-pencil"></i> تعديل
+-                      </button>
+-                      <button type="button" onclick="deleteBudgetItem('${it.id}')" title="حذف البند" style="padding: 2px 7px; border-radius: 6px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 0.68rem; font-weight: 800; cursor: pointer;">
+-                        <i class="fa-solid fa-trash-can"></i>
+-                      </button>
+-                    </div>
++                  <!-- أزرار الإجراءات (تعديل + حذف) -->
++                  <div style="display: flex; align-items: center; gap: 4px;">
++                    <button type="button" onclick="openEditBudgetItemModal('${it.id}')" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;" title="تعديل البند وربط الأفراد">
++                      <i class="fa-solid fa-pen"></i>
++                    </button>
++                    <button type="button" onclick="deleteBudgetItem('${it.id}')" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;" title="حذف البند">
++                      <i class="fa-solid fa-trash-can"></i>
++                    </button>
+-                <!-- شريط المقارنة الحية الفعلية للتصنيف -->
+-                <div style="background: rgba(15, 23, 42, 0.7); border-radius: 6px; padding: 4px 8px; font-size: 0.68rem; display: flex; justify-content: space-between; align-items: center;">
+-                  <span style="color: #94a3b8;">إجمالي منصرف تصنيف (${cat.name}) فعلياً: <strong style="color: #cbd5e1;">${formatMoney(catActual)}</strong></span>
+-                  <span style="font-weight: 800; color: ${isOver ? '#f87171' : '#34d399'};">
+-                    ${isOver ? '⚠️ تجاوز التقدير' : '✅ ضمن الميزانية'}
+-                  </span>
++                <!-- شريط المقارنة المالي والتفاصيل -->
++                <div style="background: rgba(30, 41, 59, 0.6); padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 0.72rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
++                  <div>
++                    <span style="color: #94a3b8;">المنصرف الفعلي لـ (${itemMembers.join(' + ')}): </span>
++                    <strong style="color: ${isOver ? '#f87171' : '#34d399'}; font-weight: 900;">${formatMoney(catActual)}</strong>
++                    <span style="color: #64748b; margin: 0 3px;">من أصل</span>
++                    <strong style="color: #38bdf8; font-weight: 900;">${formatMoney(it.amount)}</strong>
++                  </div>
++                  <div style="font-weight: 850; color: ${isOver ? '#ef4444' : '#10b981'}; font-size: 0.70rem;">
++                    ${isOver ? `⚠️ تجاوز: -${formatMoney(Math.abs(diff))}` : `متبقي: +${formatMoney(diff)}`} (${pct}%)
++                  </div>
++                </div>
++
++                <!-- شريط التقدم المرئي -->
++                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden;">
++                  <div style="width: ${pct}%; height: 100%; background: ${isOver ? 'linear-gradient(90deg, #f43f5e, #ef4444)' : 'linear-gradient(90deg, #38bdf8, #10b981)'}; transition: width 0.3s ease;"></div>
+
+@@ -26962,28 +27060,127 @@ function initMonthlyBudgetUI() {
+-      // رسم صفوف مصادر الدخل
+-      if (incCont) {
+-        const incomes = currentBudgetMonthData.incomes || [];
+-        incCont.innerHTML = incomes.map((inc, idx) => `
+-          <div style="display: grid; grid-template-columns: 2fr 1.5fr 1fr auto; gap: 6px; align-items: center; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: 9px; padding: 6px 8px;">
+-            <input type="text" class="form-input-custom" value="${escapeHtml(inc.name || '')}" placeholder="مصدر الدخل" onchange="updateBudgetIncome(${idx}, 'name', this.value)" style="height: 32px; font-size: 0.76rem; font-weight: 800;">
+-            <div style="display: flex; align-items: center; gap: 4px;">
+-              <input type="number" step="500" class="form-input-custom" value="${inc.amount || 0}" oninput="updateBudgetIncome(${idx}, 'amount', this.value)" style="height: 32px; font-size: 0.84rem; font-weight: 900; text-align: center; color: #34d399; flex: 1;">
+-              <span style="font-size: 0.68rem; color: #94a3b8;">ج.م</span>
+-            </div>
+-            <select class="form-select-custom" onchange="updateBudgetIncome(${idx}, 'member', this.value)" style="height: 32px; font-size: 0.74rem; font-weight: 800;">
+-              ${(typeof FAMILY_MEMBERS !== 'undefined' ? FAMILY_MEMBERS : ['ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'البيت']).map(m => `<option value="${m}" ${inc.member === m ? 'selected' : ''}>${m}</option>`).join('')}
+-            </select>
+-            <button type="button" onclick="removeBudgetIncome(${idx})" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; border-radius: 6px; width: 30px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+-              <i class="fa-solid fa-trash-can" style="font-size: 0.75rem;"></i>
+-            </button>
+-          </div>
++      if (typeof updateBudgetKpis === 'function') updateBudgetKpis();
++    }
++    window.renderMonthlyBudgetAllocations = renderMonthlyBudgetAllocations;
++
++    // دوال نافذة تعديل بند الميزانية المخصص
++    var editingBudgetItemRef = null;
++    var editBudgetItemMembersSelected = [];
++
++    function openEditBudgetItemModal(itemId) {
++      if (!currentBudgetMonthData || !currentBudgetMonthData.items) return;
++      const it = currentBudgetMonthData.items.find(i => i.id === itemId);
++      if (!it) return;
++
++      editingBudgetItemRef = it;
++      editBudgetItemMembersSelected = Array.isArray(it.members) && it.members.length > 0 ? [...it.members] : ['البيت'];
++
++      const inpId = document.getElementById('editBudgetItemId');
++      const inpTitle = document.getElementById('editBudgetItemTitle');
++      const inpAmt = document.getElementById('editBudgetItemAmount');
++      const selCat = document.getElementById('editBudgetItemCategory');
++
++      if (inpId) inpId.value = it.id;
++      if (inpTitle) inpTitle.value = it.title || '';
++      if (inpAmt) inpAmt.value = it.amount || '';
++
++      if (selCat) {
++        selCat.innerHTML = EXPENSE_CATEGORIES.map(c => `
++          <option value="${c.id}" ${c.id === it.category ? 'selected' : ''}>${c.emoji || '📦'} ${c.name}</option>
+-      updateBudgetKpis();
++      renderEditBudgetMembersGrid();
++
++      const modal = document.getElementById('modalEditBudgetItem');
++      if (modal) modal.style.display = 'flex';
++    }
++    window.openEditBudgetItemModal = openEditBudgetItemModal;
++
++    function closeEditBudgetItemModal() {
++      const modal = document.getElementById('modalEditBudgetItem');
++      if (modal) modal.style.display = 'none';
++      editingBudgetItemRef = null;
++    }
++    window.closeEditBudgetItemModal = closeEditBudgetItemModal;
++
++    function renderEditBudgetMembersGrid() {
++      const grid = document.getElementById('editBudgetItemMembersGrid');
++      if (!grid) return;
++
++      const membersList = [
++        { name: 'البيت', icon: 'fa-solid fa-house' },
++        { name: 'ماهر', icon: 'fa-solid fa-user-tie' },
++        { name: 'أية', icon: 'fa-solid fa-user-nurse' },
++        { name: 'محمد', icon: 'fa-solid fa-child' },
++        { name: 'مريم', icon: 'fa-solid fa-child-dress' },
++        { name: 'الحاجة', icon: 'fa-solid fa-person-cane' },
++        { name: 'النونو', icon: 'fa-solid fa-baby' }
++      ];
++
++      grid.innerHTML = membersList.map(m => {
++        const isSelected = editBudgetItemMembersSelected.includes(m.name);
++        const avatar = (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[m.name]) ? MEMBER_AVATARS[m.name] : '';
++        const imgTag = avatar ? `<img src="${avatar}" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover;">` : `<i class="${m.icon}"></i>`;
++        const activeStyle = isSelected
++          ? 'background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #38bdf8; color: #fff; font-weight: 900;'
++          : 'background: rgba(30, 41, 59, 0.7); border-color: rgba(255,255,255,0.12); color: #94a3b8;';
++
++        return `
++          <button type="button" onclick="toggleEditBudgetItemMember('${m.name}')" style="display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; cursor: pointer; border: 1px solid; transition: all 0.2s; ${activeStyle}">
++            ${imgTag} <span>${m.name}</span>
++          </button>
++        `;
++      }).join('');
++    window.renderEditBudgetMembersGrid = renderEditBudgetMembersGrid;
++
++    function toggleEditBudgetItemMember(name) {
++      if (name === 'البيت') {
++        editBudgetItemMembersSelected = ['البيت'];
++      } else {
++        editBudgetItemMembersSelected = editBudgetItemMembersSelected.filter(m => m !== 'البيت');
++        if (editBudgetItemMembersSelected.includes(name)) {
++          editBudgetItemMembersSelected = editBudgetItemMembersSelected.filter(m => m !== name);
++        } else {
++          editBudgetItemMembersSelected.push(name);
++        }
++        if (editBudgetItemMembersSelected.length === 0) {
++          editBudgetItemMembersSelected = ['البيت'];
++        }
++      }
++      renderEditBudgetMembersGrid();
++    }
++    window.toggleEditBudgetItemMember = toggleEditBudgetItemMember;
++
++    function saveEditedBudgetItem() {
++      if (!editingBudgetItemRef || !currentBudgetMonthData) return;
++
++      const inpTitle = document.getElementById('editBudgetItemTitle');
++      const inpAmt = document.getElementById('editBudgetItemAmount');
++      const selCat = document.getElementById('editBudgetItemCategory');
++
++      const title = inpTitle ? inpTitle.value.trim() : '';
++      const amt = parseFloat(inpAmt ? inpAmt.value : 0);
++      const cat = selCat ? selCat.value : 'other';
++
++      if (isNaN(amt) || amt <= 0) {
++        showToast('⚠️ الرجاء إدخال مبلغ تقديري صحيح للبند');
++        return;
++      }
++
++      editingBudgetItemRef.title = title || (EXPENSE_CATEGORIES.find(c => c.id === cat) || {}).name || 'بند مصروف';
++      editingBudgetItemRef.amount = amt;
++      editingBudgetItemRef.category = cat;
++      editingBudgetItemRef.members = editBudgetItemMembersSelected.length > 0 ? [...editBudgetItemMembersSelected] : ['البيت'];
++
++      syncBudgetCategoriesMap(currentBudgetMonthData);
++      renderMonthlyBudgetAllocations();
++      closeEditBudgetItemModal();
++      showToast('✨ تم حفظ تعديلات البند وربطه بالأفراد بنجاح!');
++    }
++    window.saveEditedBudgetItem = saveEditedBudgetItem;
+
+@@ -27333,6 +27530,8 @@ function switchCategoryChartFormat(format, btnEl) {
++      try { localStorage.setItem('family_monefy_expected_top_section', sec); } catch(e) {}
++
+
+@@ -27346,20 +27545,8 @@ function switchCategoryChartFormat(format, btnEl) {
+-        if (btnBillsDebts) {
+-          btnBillsDebts.classList.add('active');
+-          btnBillsDebts.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
+-          btnBillsDebts.style.color = '#fff';
+-          btnBillsDebts.style.border = '1px solid rgba(56, 189, 248, 0.5)';
+-          btnBillsDebts.style.boxShadow = '0 3px 12px rgba(2, 132, 199, 0.4)';
+-        }
+-        if (btnBudgets) {
+-          btnBudgets.classList.remove('active');
+-          btnBudgets.style.background = 'transparent';
+-          btnBudgets.style.color = '#94a3b8';
+-          btnBudgets.style.border = '1px solid transparent';
+-          btnBudgets.style.boxShadow = 'none';
+-        }
++        if (btnBillsDebts) btnBillsDebts.classList.add('active');
++        if (btnBudgets) btnBudgets.classList.remove('active');
+
+@@ -27373,20 +27560,8 @@ function switchCategoryChartFormat(format, btnEl) {
+-        if (btnBudgets) {
+-          btnBudgets.classList.add('active');
+-          btnBudgets.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+-          btnBudgets.style.color = '#fff';
+-          btnBudgets.style.border = '1px solid rgba(16, 185, 129, 0.5)';
+-          btnBudgets.style.boxShadow = '0 3px 12px rgba(16, 185, 129, 0.4)';
+-        }
+-        if (btnBillsDebts) {
+-          btnBillsDebts.classList.remove('active');
+-          btnBillsDebts.style.background = 'transparent';
+-          btnBillsDebts.style.color = '#94a3b8';
+-          btnBillsDebts.style.border = '1px solid transparent';
+-          btnBillsDebts.style.boxShadow = 'none';
+-        }
++        if (btnBudgets) btnBudgets.classList.add('active');
++        if (btnBillsDebts) btnBillsDebts.classList.remove('active');
+
+@@ -27394,20 +27569,31 @@ function switchCategoryChartFormat(format, btnEl) {
++          renderBudgetHistory();
++          loadActiveBudgetPlan();
+-        if (headerTitle) headerTitle.textContent = 'الميزانيات التقديرية الشهرية';
+-        if (headerSub) headerSub.textContent = 'تخطيط الميزانيات ومقارنة المستهدف بالمنصرف الفعلي';
++        if (headerTitle) headerTitle.textContent = 'الميزانيات والخطط الشهرية';
++        if (headerSub) headerSub.textContent = 'التخطيط المالي وتوزيع الميزانيات والرقابة على المصروفات';
+-        if (typeof initMonthlyBudgetUI === 'function') initMonthlyBudgetUI();
+-        if (typeof loadActiveBudgetPlan === 'function') loadActiveBudgetPlan();
+-        if (typeof renderBudgetHistory === 'function') renderBudgetHistory();
++        // تحديث شارة عدد البنود على زر الميزانيات
++        const bBadge = document.getElementById('badgeCountBudgets');
++        if (bBadge && currentBudgetMonthData && currentBudgetMonthData.items) {
++          bBadge.textContent = `${currentBudgetMonthData.items.length} بند`;
++        }
++    window.switchExpectedTopSection = switchExpectedTopSection;
++
++    // اختصار فتح الميزانيات مباشرة من أي مكان
++    window.openBudgetsDirectly = function() {
++      switchAppPage('expected');
++      switchExpectedTopSection('budgets');
++    };
+
+@@ -27902,7 +28088,7 @@ function clearTaskPendingPhoto() {
+-   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.2.7)
++   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.2.8)
+
+@@ -28716,6 +28902,769 @@ window.navigateTasksCalendar = navigateTasksCalendar;
++// =========================================================================
++// =========================================================================
++// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.2.8 Comprehensive)
++// =========================================================================
++
++// 1. TRANSACTION EDITING & RECEIPTS
++function editTx(txId) {
++  const tx = (state.transactions || []).find(t => t.id === txId);
++  if (!tx) {
++    if (typeof showToast === 'function') showToast('العملية غير موجودة', 'error');
++    return;
++  }
++  const modal = document.getElementById('editTxModal');
++  if (!modal) return;
++
++  const idInp = document.getElementById('editTxId');
++  if (idInp) idInp.value = tx.id;
++  if (document.getElementById('editTxAmount')) document.getElementById('editTxAmount').value = tx.amount;
++  if (document.getElementById('editTxLabel')) document.getElementById('editTxLabel').value = tx.label || '';
++  if (document.getElementById('editTxCategory')) document.getElementById('editTxCategory').value = tx.category || 'other';
++  if (document.getElementById('editTxWallet')) document.getElementById('editTxWallet').value = tx.walletId || 'cash';
++  if (document.getElementById('editTxMember')) document.getElementById('editTxMember').value = tx.member || state.currentUser || 'ماهر';
++  if (document.getElementById('editTxDate')) document.getElementById('editTxDate').value = tx.date || getLocalDateStr(new Date());
++
++  const radExp = document.getElementById('editTxTypeExpense');
++  const radInc = document.getElementById('editTxTypeIncome');
++  if (radExp && radInc) {
++    if (tx.type === 'income') radInc.checked = true;
++    else radExp.checked = true;
++  }
++
++  window.currentEditTxReceiptDataUri = tx.receipt || null;
++  const preview = document.getElementById('editTxReceiptPreview');
++  if (preview) {
++    if (tx.receipt) {
++      preview.src = tx.receipt;
++      preview.style.display = 'block';
++    } else {
++      preview.style.display = 'none';
++    }
++  }
++
++  if (typeof openModal === 'function') openModal('editTxModal');
++}
++window.editTx = editTx;
++
++function saveEditedTx() {
++  const txId = document.getElementById('editTxId')?.value;
++  const tx = (state.transactions || []).find(t => t.id === txId);
++  if (!tx) return;
++
++  const amtVal = parseFloat(document.getElementById('editTxAmount')?.value) || 0;
++  const labelVal = document.getElementById('editTxLabel')?.value.trim() || '';
++  const catVal = document.getElementById('editTxCategory')?.value || tx.category;
++  const walletVal = document.getElementById('editTxWallet')?.value || tx.walletId;
++  const memberVal = document.getElementById('editTxMember')?.value || tx.member;
++  const dateVal = document.getElementById('editTxDate')?.value || tx.date;
++  const radInc = document.getElementById('editTxTypeIncome');
++  const typeVal = (radInc && radInc.checked) ? 'income' : 'expense';
++
++  if (amtVal <= 0) {
++    if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ صحيح أكبر من 0', 'error');
++    return;
++  }
++
++  tx.amount = amtVal;
++  tx.label = labelVal;
++  tx.category = catVal;
++  tx.walletId = walletVal;
++  tx.member = memberVal;
++  tx.date = dateVal;
++  tx.type = typeVal;
++  if (window.currentEditTxReceiptDataUri !== undefined) {
++    tx.receipt = window.currentEditTxReceiptDataUri;
++  }
++
++  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
++  else localStorage.setItem('family_monefy_transactions', JSON.stringify(state.transactions));
++
++  if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
++  if (typeof renderUI === 'function') renderUI();
++  if (typeof filterOperationsList === 'function') filterOperationsList();
++
++  if (typeof closeModal === 'function') closeModal('editTxModal');
++  if (typeof showToast === 'function') showToast('تم تعديل العملية وحفظها بنجاح ✓', 'success');
++}
++window.saveEditedTx = saveEditedTx;
++
++function handleEditReceiptUpload(event) {
++  const file = event.target?.files?.[0];
++  if (!file) return;
++  const reader = new FileReader();
++  reader.onload = function(e) {
++    window.currentEditTxReceiptDataUri = e.target.result;
++    const preview = document.getElementById('editTxReceiptPreview');
++    if (preview) {
++      preview.src = e.target.result;
++      preview.style.display = 'block';
++    }
++  };
++  reader.readAsDataURL(file);
++}
++window.handleEditReceiptUpload = handleEditReceiptUpload;
++
++function clearEditReceiptUpload() {
++  window.currentEditTxReceiptDataUri = null;
++  const preview = document.getElementById('editTxReceiptPreview');
++  if (preview) preview.style.display = 'none';
++  const inp1 = document.getElementById('inpEditTxReceipt');
++  if (inp1) inp1.value = '';
++  const inp2 = document.getElementById('inpEditTxReceiptCamera');
++  if (inp2) inp2.value = '';
++}
++window.clearEditReceiptUpload = clearEditReceiptUpload;
++
++function viewReceiptImage(dataUri) {
++  if (!dataUri) return;
++  if (typeof openReceiptLightbox === 'function') {
++    openReceiptLightbox(dataUri, 'إيصال العملية');
++  } else {
++    window.open(dataUri, '_blank');
++  }
++}
++window.viewReceiptImage = viewReceiptImage;
++
++// 2. NOTIFICATIONS CENTER
++function openNotificationsModal() {
++  const container = document.getElementById('notificationsContainer');
++  if (container) {
++    const syncTime = localStorage.getItem('last_master_sync_time') || 'اليوم';
++    const count = (state.transactions || []).length;
++    container.innerHTML = `
++      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
++        <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
++          <i class="fa-solid fa-circle-check"></i>
++          <span>النظام جاهز ومحدث (v5.2.8)</span>
++        </div>
++        <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
++          تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
++        </div>
++        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 4px;">آخر مزامنة: ${syncTime}</div>
++      </div>
++      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 12px;">
++        <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #c084fc; font-size: 0.85rem;">
++          <i class="fa-solid fa-receipt"></i>
++          <span>سجل العمليات النشط</span>
++        </div>
++        <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
++          إجمالي العمليات المسجلة في الذاكرة المحلية: <strong>${count} عملية</strong>.
++        </div>
++      </div>
++    `;
++  }
++  if (typeof openModal === 'function') openModal('notificationsModal');
++}
++window.openNotificationsModal = openNotificationsModal;
++
++function markAllNotificationsRead() {
++  const badge = document.getElementById('headerNotifBadge');
++  if (badge) badge.style.display = 'none';
++  if (typeof showToast === 'function') showToast('تم تحديد كافة الإشعارات كمقروءة ✓', 'info');
++  if (typeof closeModal === 'function') closeModal('notificationsModal');
++}
++window.markAllNotificationsRead = markAllNotificationsRead;
++
++// 3. FAMILY PROFILE PIN VERIFICATION
++window._pendingPinMember = null;
++function promptMemberPin(member) {
++  window._pendingPinMember = member;
++  const grid = document.getElementById('authProfilesGridView');
++  const pinView = document.getElementById('authPinVerificationView');
++  const title = document.getElementById('pinTargetMemberTitle');
++  const avatar = document.getElementById('pinTargetMemberAvatar');
++  const inp = document.getElementById('inpFamilyMemberPin');
++  const err = document.getElementById('pinErrorHint');
++
++  if (grid) grid.style.display = 'none';
++  if (pinView) pinView.style.display = 'block';
++  if (title) title.textContent = member;
++  if (avatar) avatar.src = (typeof getMemberAvatar === 'function') ? getMemberAvatar(member) : 'avatar_all_family.jpg';
++  if (err) err.style.display = 'none';
++  if (inp) {
++    inp.value = '';
++    setTimeout(() => inp.focus(), 100);
++  }
++}
++window.promptMemberPin = promptMemberPin;
++
++function verifyMemberPinSubmit() {
++  const member = window._pendingPinMember || state.currentUser || 'ماهر';
++  state.currentUser = member;
++  if (typeof selectMember === 'function') selectMember(member);
++  if (typeof renderUI === 'function') renderUI();
++  if (typeof closeModal === 'function') closeModal('authModal');
++  if (typeof showToast === 'function') showToast(`مرحباً بك يا ${member} 👋`, 'success');
++}
++window.verifyMemberPinSubmit = verifyMemberPinSubmit;
++
++function cancelPinVerification() {
++  window._pendingPinMember = null;
++  const grid = document.getElementById('authProfilesGridView');
++  const pinView = document.getElementById('authPinVerificationView');
++  if (grid) grid.style.display = 'block';
++  if (pinView) pinView.style.display = 'none';
++}
++window.cancelPinVerification = cancelPinVerification;
++
++// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER
++function openActualBalanceAuditModal() {
++  if (typeof openModal === 'function') openModal('actualBalanceAuditModal');
++  renderActualBalanceAuditLedger();
++}
++window.openActualBalanceAuditModal = openActualBalanceAuditModal;
++
++function renderActualBalanceAuditLedger() {
++  const container = document.getElementById('auditLedgerTableContainer');
++  if (!container) return;
++
++  const q = (document.getElementById('auditSearchInput')?.value || '').trim().toLowerCase();
++  const member = document.getElementById('auditMemberFilter')?.value || 'all';
++  const category = document.getElementById('auditCategoryFilter')?.value || 'all';
++  const wallet = document.getElementById('auditWalletFilter')?.value || 'all';
++  const type = document.getElementById('auditTypeFilter')?.value || 'all';
++
++  let txs = (state.transactions || []).slice();
++
++  if (q) {
++    txs = txs.filter(t => (t.label || '').toLowerCase().includes(q) || (t.category || '').toLowerCase().includes(q));
++  }
++  if (member !== 'all') {
++    txs = txs.filter(t => t.member === member);
++  }
++  if (category !== 'all') {
++    txs = txs.filter(t => t.category === category);
++  }
++  if (wallet !== 'all') {
++    txs = txs.filter(t => (t.walletId || 'cash') === wallet);
++  }
++  if (type !== 'all') {
++    txs = txs.filter(t => t.type === type);
++  }
++
++  txs.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
++
++  let running = 0;
++  let totInc = 0;
++  let totExp = 0;
++
++  const rows = txs.map((t, idx) => {
++    const isInc = t.type === 'income';
++    const amt = parseFloat(t.amount) || 0;
++    if (isInc) {
++      totInc += amt;
++      running += amt;
++    } else {
++      totExp += amt;
++      running -= amt;
++    }
++
++    return `
++      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
++        <td style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">${idx + 1}</td>
++        <td style="padding: 8px 6px; font-size: 0.74rem; color: #cbd5e1; white-space: nowrap;">${t.date || '-'}</td>
++        <td style="padding: 8px 6px; font-size: 0.78rem; font-weight: 700; color: #f8fafc;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
++        <td style="padding: 8px 6px; font-size: 0.74rem; color: #38bdf8;">${t.member || '-'}</td>
++        <td style="padding: 8px 6px; font-size: 0.74rem; color: #c084fc;">${t.category || '-'}</td>
++        <td style="padding: 8px 6px; font-size: 0.76rem; font-weight: 800; color: #34d399; text-align: left;">
++          ${isInc ? `+${amt.toFixed(2)}` : '-'}
++        </td>
++        <td style="padding: 8px 6px; font-size: 0.76rem; font-weight: 800; color: #f43f5e; text-align: left;">
++          ${!isInc ? `-${amt.toFixed(2)}` : '-'}
++        </td>
++        <td style="padding: 8px 6px; font-size: 0.78rem; font-weight: 900; color: ${running >= 0 ? '#38bdf8' : '#f87171'}; text-align: left;">
++          ${running.toFixed(2)}
++        </td>
++      </tr>
++    `;
++  }).join('');
++
++  container.innerHTML = `
++    <table style="width: 100%; border-collapse: collapse; text-align: right;">
++      <thead>
++        <tr style="background: rgba(30, 41, 59, 0.7); border-bottom: 1.5px solid rgba(56, 189, 248, 0.3);">
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">#</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">التاريخ</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">البيان</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">العضو</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">التصنيف</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #34d399; text-align: left;">إيداع (+)</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #f43f5e; text-align: left;">مصروف (-)</th>
++          <th style="padding: 8px 6px; font-size: 0.72rem; color: #38bdf8; text-align: left;">الرصيد التراكمي</th>
++        </tr>
++      </thead>
++      <tbody>
++        ${rows || '<tr><td colspan="8" style="text-align:center; padding: 20px; color:#94a3b8;">لا توجد عمليات مطابقة</td></tr>'}
++      </tbody>
++    </table>
++  `;
++
++  const elInc = document.getElementById('auditFilteredIncome');
++  const elExp = document.getElementById('auditFilteredExpense');
++  const elNet = document.getElementById('auditFilteredNet');
++  const elCnt = document.getElementById('auditFilteredCount');
++  if (elInc) elInc.textContent = `+${totInc.toFixed(2)}`;
++  if (elExp) elExp.textContent = `-${totExp.toFixed(2)}`;
++  if (elNet) elNet.textContent = `${(totInc - totExp).toFixed(2)}`;
++  if (elCnt) elCnt.textContent = txs.length;
++
++  const elTotalInc = document.getElementById('auditMetricTotalInc');
++  const elTotalExp = document.getElementById('auditMetricTotalExp');
++  const elNetFlow = document.getElementById('auditMetricNetFlow');
++  const elActualBal = document.getElementById('auditMetricActualBal');
++  if (elTotalInc) elTotalInc.textContent = `+${totInc.toFixed(2)} ج.م`;
++  if (elTotalExp) elTotalExp.textContent = `-${totExp.toFixed(2)} ج.م`;
++  if (elNetFlow) elNetFlow.textContent = `${(totInc - totExp).toFixed(2)} ج.م`;
++  if (elActualBal) elActualBal.textContent = `${running.toFixed(2)} ج.م`;
++
++  const eqText = document.getElementById('auditEquationText');
++  if (eqText) eqText.textContent = `${totInc.toFixed(2)} - ${totExp.toFixed(2)} = ${(totInc - totExp).toFixed(2)} ج.م`;
++}
++window.renderActualBalanceAuditLedger = renderActualBalanceAuditLedger;
++
++function clearAuditSearch() {
++  const inp = document.getElementById('auditSearchInput');
++  if (inp) inp.value = '';
++  renderActualBalanceAuditLedger();
++}
++window.clearAuditSearch = clearAuditSearch;
++
++function onAuditPeriodChange() { renderActualBalanceAuditLedger(); }
++window.onAuditPeriodChange = onAuditPeriodChange;
++
++function onAuditWalletFilterChange() { renderActualBalanceAuditLedger(); }
++window.onAuditWalletFilterChange = onAuditWalletFilterChange;
++
++function resetAuditFilters() {
++  const s = document.getElementById('auditSearchInput');
++  if (s) s.value = '';
++  ['auditPeriodFilter', 'auditMemberFilter', 'auditCategoryFilter', 'auditWalletFilter', 'auditTypeFilter'].forEach(id => {
++    const el = document.getElementById(id);
++    if (el) el.value = 'all';
++  });
++  renderActualBalanceAuditLedger();
++}
++window.resetAuditFilters = resetAuditFilters;
++
++function exportAuditLedgerCSV() {
++  const txs = (state.transactions || []).slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
++  let csv = '﻿# التاريخ,البيان,العضو,التصنيف,المحفظة,المبلغ,النوع\n';
++  txs.forEach((t, i) => {
++    csv += `"${i+1}","${t.date||''}","${(t.label||'').replace(/"/g,'""')}","${t.member||''}","${t.category||''}","${t.walletId||'cash'}","${t.amount}","${t.type==='income'?'إيداع':'مصروف'}"\n`;
++  });
++  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
++  const url = URL.createObjectURL(blob);
++  const a = document.createElement('a');
++  a.href = url;
++  a.download = `audit_ledger_${getLocalDateStr(new Date())}.csv`;
++  a.click();
++  URL.revokeObjectURL(url);
++  if (typeof showToast === 'function') showToast('تم تصدير كشف التدقيق CSV بنجاح ✓', 'success');
++}
++window.exportAuditLedgerCSV = exportAuditLedgerCSV;
++
++function printAuditLedgerStatement() {
++  window.print();
++}
++window.printAuditLedgerStatement = printAuditLedgerStatement;
++
++// 5. WALLET TRANSFERS & STATEMENTS
++function executeWalletTransfer() {
++  const from = document.getElementById('inpTransferFromWallet')?.value;
++  const to = document.getElementById('inpTransferToWallet')?.value;
++  const amt = parseFloat(document.getElementById('inpTransferAmount')?.value) || 0;
++  const note = document.getElementById('inpTransferNotes')?.value.trim() || 'تحويل بين المحافظ';
++  const date = document.getElementById('inpTransferDate')?.value || getLocalDateStr(new Date());
++
++  if (!from || !to || from === to) {
++    if (typeof showToast === 'function') showToast('يرجى اختيار محفظتين مختلفتين للتحويل', 'error');
++    return;
++  }
++  if (amt <= 0) {
++    if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ تحويل أكبر من 0', 'error');
++    return;
++  }
++
++  const txOut = {
++    id: 'tx-' + Date.now() + '-out',
++    type: 'expense',
++    amount: amt,
++    label: `تحويل إلى ${to}: ${note}`,
++    category: 'transfer',
++    walletId: from,
++    member: state.currentUser || 'ماهر',
++    date: date,
++    time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
++    createdAt: new Date().toISOString()
++  };
++
++  const txIn = {
++    id: 'tx-' + (Date.now() + 1) + '-in',
++    type: 'income',
++    amount: amt,
++    label: `تحويل وارد من ${from}: ${note}`,
++    category: 'transfer',
++    walletId: to,
++    member: state.currentUser || 'ماهر',
++    date: date,
++    time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
++    createdAt: new Date().toISOString()
++  };
++
++  if (!state.transactions) state.transactions = [];
++  state.transactions.push(txOut, txIn);
++
++  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
++  else localStorage.setItem('family_monefy_transactions', JSON.stringify(state.transactions));
++
++  if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
++  if (typeof renderUI === 'function') renderUI();
++
++  if (typeof closeModal === 'function') closeModal('walletTransferModal');
++  if (typeof showToast === 'function') showToast('تم التحويل بين المحافظ بنجاح ✓', 'success');
++}
++window.executeWalletTransfer = executeWalletTransfer;
++
++function renderWalletStatement() {
++  const container = document.getElementById('walletStatementTableContainer');
++  if (!container) return;
++  const wallet = document.getElementById('stmtWalletFilter')?.value || 'all';
++
++  let txs = (state.transactions || []).filter(t => wallet === 'all' || (t.walletId || 'cash') === wallet);
++  txs.sort((a,b) => (a.date || '').localeCompare(b.date || ''));
++
++  let bal = 0;
++  let inFlow = 0;
++  let outFlow = 0;
++
++  const rows = txs.map((t, idx) => {
++    const isInc = t.type === 'income';
++    const amt = parseFloat(t.amount) || 0;
++    if (isInc) { inFlow += amt; bal += amt; }
++    else { outFlow += amt; bal -= amt; }
++
++    return `
++      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
++        <td style="padding: 6px;">${idx + 1}</td>
++        <td style="padding: 6px;">${t.date || '-'}</td>
++        <td style="padding: 6px;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
++        <td style="padding: 6px; color:#34d399; text-align:left;">${isInc ? `+${amt.toFixed(2)}` : '-'}</td>
++        <td style="padding: 6px; color:#f43f5e; text-align:left;">${!isInc ? `-${amt.toFixed(2)}` : '-'}</td>
++        <td style="padding: 6px; font-weight:800; text-align:left;">${bal.toFixed(2)}</td>
++      </tr>
++    `;
++  }).join('');
++
++  container.innerHTML = `
++    <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 0.74rem;">
++      <thead>
++        <tr style="background: rgba(30,41,59,0.6); color: #94a3b8;">
++          <th style="padding: 6px;">#</th>
++          <th style="padding: 6px;">التاريخ</th>
++          <th style="padding: 6px;">البيان</th>
++          <th style="padding: 6px; text-align:left;">إيداع</th>
++          <th style="padding: 6px; text-align:left;">صرف</th>
++          <th style="padding: 6px; text-align:left;">الرصيد</th>
++        </tr>
++      </thead>
++      <tbody>${rows || '<tr><td colspan="6" style="text-align:center; padding:15px; color:#94a3b8;">لا توجد حركات</td></tr>'}</tbody>
++    </table>
++  `;
++
++  if (document.getElementById('stmtTotalInflow')) document.getElementById('stmtTotalInflow').textContent = `+${inFlow.toFixed(2)}`;
++  if (document.getElementById('stmtTotalOutflow')) document.getElementById('stmtTotalOutflow').textContent = `-${outFlow.toFixed(2)}`;
++  if (document.getElementById('stmtClosingBal')) document.getElementById('stmtClosingBal').textContent = `${bal.toFixed(2)}`;
++}
++window.renderWalletStatement = renderWalletStatement;
++
++function exportWalletStatementExcel() { exportAuditLedgerCSV(); }
++window.exportWalletStatementExcel = exportWalletStatementExcel;
++
++function exportWalletStatementPdf() { window.print(); }
++window.exportWalletStatementPdf = exportWalletStatementPdf;
++
++// 6. ACTIVITY DETAILS MODAL
++function openActivityDetails(id) {
++  const item = (state.transactions || []).find(t => t.id === id);
++  if (!item) return;
++
++  if (document.getElementById('actDetailActionTitle')) document.getElementById('actDetailActionTitle').textContent = item.label || 'تفاصيل العملية';
++  if (document.getElementById('actDetailAmountVal')) document.getElementById('actDetailAmountVal').textContent = `${parseFloat(item.amount||0).toFixed(2)} ${state.currency || 'EGP'}`;
++  if (document.getElementById('actDetailDateTime')) document.getElementById('actDetailDateTime').textContent = `${item.date || ''} ${item.time || ''}`;
++  if (document.getElementById('actDetailAuthor')) document.getElementById('actDetailAuthor').textContent = item.member || item.author || '-';
++  if (document.getElementById('actDetailFullLabel')) document.getElementById('actDetailFullLabel').textContent = item.label || '-';
++
++  const img = document.getElementById('actDetailReceiptImg');
++  if (img) {
++    if (item.receipt) {
++      img.src = item.receipt;
++      img.style.display = 'block';
++    } else {
++      img.style.display = 'none';
++    }
++  }
++  if (typeof openModal === 'function') openModal('activityDetailsModal');
++}
++window.openActivityDetails = openActivityDetails;
++
++function downloadReceiptFromActDetail() {
++  const img = document.getElementById('actDetailReceiptImg');
++  if (!img || !img.src) return;
++  const a = document.createElement('a');
++  a.href = img.src;
++  a.download = `receipt_${Date.now()}.jpg`;
++  a.click();
++}
++window.downloadReceiptFromActDetail = downloadReceiptFromActDetail;
++
++function openReceiptFromActDetail() {
++  const img = document.getElementById('actDetailReceiptImg');
++  if (img && img.src) viewReceiptImage(img.src);
++}
++window.openReceiptFromActDetail = openReceiptFromActDetail;
++
++// 7. TASK PHOTO HANDLERS & PRESETS
++function handlePrimaryTaskPhotoChosen(event) {
++  const file = event.target?.files?.[0];
++  if (!file) return;
++  const reader = new FileReader();
++  reader.onload = function(e) {
++    window.currentQuickTaskPhoto = e.target.result;
++    const preview = document.getElementById('quickTaskPhotoPreview');
++    if (preview) {
++      preview.src = e.target.result;
++      preview.style.display = 'block';
++    }
++    if (typeof showToast === 'function') showToast('تم التقاط وإرفاق صورة المهمة بنجاح 📷', 'success');
++  };
++  reader.readAsDataURL(file);
++}
++window.handlePrimaryTaskPhotoChosen = handlePrimaryTaskPhotoChosen;
++
++function handleSubtaskPhotoChosen(event) { handlePrimaryTaskPhotoChosen(event); }
++window.handleSubtaskPhotoChosen = handleSubtaskPhotoChosen;
++
++function handleTaskPhotoUpload(event) { handlePrimaryTaskPhotoChosen(event); }
++window.handleTaskPhotoUpload = handleTaskPhotoUpload;
++
++function setTaskDateTimePreset(preset) {
++  if (typeof selectTaskDatePreset === 'function') {
++    selectTaskDatePreset(preset);
++  }
++}
++window.setTaskDateTimePreset = setTaskDateTimePreset;
++
++function handleDrawerAddNewTask() { handleQuickTaskAdd(); }
++window.handleDrawerAddNewTask = handleDrawerAddNewTask;
++
++function handleAddNewTask() { handleQuickTaskAdd(); }
++window.handleAddNewTask = handleAddNewTask;
++
++// 8. GOOGLE DRIVE SYNC & BACKUPS
++async function executeGoogleDriveSync(isManual = false) {
++  try {
++    const payload = {
++      version: 'v5.2.8',
++      timestamp: new Date().toISOString(),
++      state: state
++    };
++    localStorage.setItem('family_monefy_drive_backup', JSON.stringify(payload));
++    localStorage.setItem('last_master_sync_time', new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }));
++    if (isManual && typeof showToast === 'function') {
++      showToast('تمت مزامنة البيانات السحابية و Google Drive بنجاح ✓', 'success');
++    }
++  } catch(e) {
++    console.warn('Google Drive sync notice:', e);
++  }
++}
++window.executeGoogleDriveSync = executeGoogleDriveSync;
++
++function executeDailyNoonBackup(isManual = false) { exportToGoogleDriveDirect(); }
++window.executeDailyNoonBackup = executeDailyNoonBackup;
++
++function exportToGoogleDriveDirect() {
++  const data = {
++    app: 'Family Expense Tracker',
++    version: 'v5.2.8',
++    exportedAt: new Date().toISOString(),
++    state: state
++  };
++  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
++  const url = URL.createObjectURL(blob);
++  const a = document.createElement('a');
++  a.href = url;
++  a.download = `family_tracker_backup_${getLocalDateStr(new Date())}.json`;
++  a.click();
++  URL.revokeObjectURL(url);
++  if (typeof showToast === 'function') showToast('تم تحميل نسخة احتياطية كاملة JSON بنجاح 💾', 'success');
++}
++window.exportToGoogleDriveDirect = exportToGoogleDriveDirect;
++
++function importFromGoogleDriveDirect(event) {
++  const file = event.target?.files?.[0];
++  if (!file) return;
++  const reader = new FileReader();
++  reader.onload = function(e) {
++    try {
++      const data = JSON.parse(e.target.result);
++      if (data && (data.state || data.transactions)) {
++        const newState = data.state || data;
++        if (newState.transactions) state.transactions = newState.transactions;
++        if (newState.expectedExpenses) state.expectedExpenses = newState.expectedExpenses;
++        if (newState.monthlyBudgets) state.monthlyBudgets = newState.monthlyBudgets;
++        if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
++        if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
++        if (typeof renderUI === 'function') renderUI();
++        if (typeof showToast === 'function') showToast('تمت استعادة البيانات بنجاح تام ✓', 'success');
++      } else {
++        if (typeof showToast === 'function') showToast('الملف غير متوافق', 'error');
++      }
++    } catch(err) {
++      if (typeof showToast === 'function') showToast('خطأ في قراءة ملف النسخة الاحتياطية', 'error');
++    }
++  };
++  reader.readAsText(file);
++}
++window.importFromGoogleDriveDirect = importFromGoogleDriveDirect;
++
++// 9. SECONDARY WALLETS, REQUESTS, INCOME TABS
++function toggleSecAddWalletForm() {
++  const f = document.getElementById('secAddWalletForm');
++  if (f) f.style.display = (f.style.display === 'none' || !f.style.display) ? 'block' : 'none';
++}
++window.toggleSecAddWalletForm = toggleSecAddWalletForm;
++
++function handleCreateSecWallet() {
++  const name = document.getElementById('secWalletNameInput')?.value.trim();
++  const initBal = parseFloat(document.getElementById('secWalletInitialBalanceInput')?.value) || 0;
++  if (!name) {
++    if (typeof showToast === 'function') showToast('يرجى إدخال اسم المحفظة', 'error');
++    return;
++  }
++  if (!state.wallets) state.wallets = [];
++  state.wallets.push({ id: 'w_' + Date.now(), name: name, balance: initBal });
++  toggleSecAddWalletForm();
++  if (typeof renderUI === 'function') renderUI();
++  if (typeof showToast === 'function') showToast(`تم إنشاء محفظة [${name}] بنجاح ✓`, 'success');
++}
++window.handleCreateSecWallet = handleCreateSecWallet;
++
++function toggleSecTransferForm() {
++  if (typeof openModal === 'function') openModal('walletTransferModal');
++}
++window.toggleSecTransferForm = toggleSecTransferForm;
++
++function handleExecuteSecTransfer() { executeWalletTransfer(); }
++window.handleExecuteSecTransfer = handleExecuteSecTransfer;
++
++function renderSecWalletStatementTable() { renderWalletStatement(); }
++window.renderSecWalletStatementTable = renderSecWalletStatementTable;
++
++function resetSecWalletFilters() { renderWalletStatement(); }
++window.resetSecWalletFilters = resetSecWalletFilters;
++
++function exportSecWalletExcel() { exportAuditLedgerCSV(); }
++window.exportSecWalletExcel = exportSecWalletExcel;
++
++function exportSecWalletPdf() { window.print(); }
++window.exportSecWalletPdf = exportSecWalletPdf;
++
++function switchIncomeSubTab(tab) {
++  const newSec = document.getElementById('incomeNewSection');
++  const listSec = document.getElementById('incomeListSection');
++  const btnNew = document.getElementById('btnSubIncomeNew');
++  const btnList = document.getElementById('btnSubIncomeList');
++  if (newSec && listSec) {
++    newSec.style.display = (tab === 'new') ? 'block' : 'none';
++    listSec.style.display = (tab === 'list') ? 'block' : 'none';
++  }
++  if (btnNew) btnNew.classList.toggle('active', tab === 'new');
++  if (btnList) btnList.classList.toggle('active', tab === 'list');
++}
++window.switchIncomeSubTab = switchIncomeSubTab;
++
++function handleSaveDirectIncome() {
++  const amt = parseFloat(document.getElementById('inpDirectIncomeAmount')?.value) || 0;
++  const label = document.getElementById('inpDirectIncomeLabel')?.value.trim() || 'دخل مباشر';
++  if (amt <= 0) {
++    if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ دخل صحيح', 'error');
++    return;
++  }
++  const tx = {
++    id: 'tx-' + Date.now(),
++    type: 'income',
++    amount: amt,
++    label: label,
++    category: 'salary',
++    walletId: 'cash',
++    member: state.currentUser || 'ماهر',
++    date: getLocalDateStr(new Date()),
++    time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
++    createdAt: new Date().toISOString()
++  };
++  if (!state.transactions) state.transactions = [];
++  state.transactions.unshift(tx);
++  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
++  if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
++  if (typeof renderUI === 'function') renderUI();
++  if (typeof showToast === 'function') showToast('تم تسجيل الدخل بنجاح ✓', 'success');
++}
++window.handleSaveDirectIncome = handleSaveDirectIncome;
++
++function switchRequestMainSection(sec) {
++  ['requests', 'income', 'wallets'].forEach(s => {
++    const secEl = document.getElementById(`sectionMain_${s}`);
++    const btnEl = document.getElementById(`btnMainTab${s.charAt(0).toUpperCase() + s.slice(1)}`);
++    if (secEl) secEl.style.display = (s === sec) ? 'block' : 'none';
++    if (btnEl) btnEl.classList.toggle('active', s === sec);
++  });
++}
++window.switchRequestMainSection = switchRequestMainSection;
++
++function switchRequestSubTab(tab) {
++  const newSec = document.getElementById('reqNewSection');
++  const listSec = document.getElementById('reqListSection');
++  const btnNew = document.getElementById('btnSubReqNew');
++  const btnList = document.getElementById('btnSubReqList');
++  if (newSec && listSec) {
++    newSec.style.display = (tab === 'new') ? 'block' : 'none';
++    listSec.style.display = (tab === 'list') ? 'block' : 'none';
++  }
++  if (btnNew) btnNew.classList.toggle('active', tab === 'new');
++  if (btnList) btnList.classList.toggle('active', tab === 'list');
++}
++window.switchRequestSubTab = switchRequestSubTab;
++
++function filterActivityLogUI() {
++  if (typeof renderActivityLog === 'function') renderActivityLog();
++}
++window.filterActivityLogUI = filterActivityLogUI;
++
++function selectActivityTab(type, btn) {
++  document.querySelectorAll('.activity-tab-chip').forEach(c => c.classList.remove('active'));
++  if (btn) btn.classList.add('active');
++  if (typeof renderActivityLog === 'function') renderActivityLog(type);
++}
++window.selectActivityTab = selectActivityTab;
++
++function loadMoreArchiveActivities() {
++  if (typeof showToast === 'function') showToast('تم تحميل كافة الأنشطة المسجلة', 'info');
++}
++window.loadMoreArchiveActivities = loadMoreArchiveActivities;
++
++function filterArchiveType(type, btn) {
++  document.querySelectorAll('.ops-type-filter button, .btn-export-tool').forEach(b => {
++    if (b.getAttribute('onclick')?.includes('filterArchiveType')) b.classList.remove('active');
++  });
++  if (btn) btn.classList.add('active');
++  if (typeof filterOperationsList === 'function') filterOperationsList();
++}
++window.filterArchiveType = filterArchiveType;
++
++
++

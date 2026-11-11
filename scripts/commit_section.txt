@@ -1,0 +1,110 @@
+   <div id="secWalletKpiTotalOut" style="font-size: 0.76rem; font-weight: 900; color: #f87171; direction: rtl;">- 0.00</div>
+              </div>
+              <div style="background: rgba(2, 132, 199, 0.15); border: 1.2px solid rgba(56, 189, 248, 0.5); border-radius: 10px; padding: 6px 4px; text-align: center;">
+                <div style="font-size: 0.60rem; color: #38bdf8; font-weight: 800;">الرصيد الفعلي</div>
+                <div id="secWalletKpiBalance" style="font-size: 0.78rem; font-weight: 900; color: #38bdf8; direction: rtl;">0.00</div>
+              </div>
+            </div>
+
+            <!-- جدول كشف حساب المحفظة المفصل -->
+            <div style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 23, 42, 0.75); overflow: hidden;">
+              <div style="max-height: 48vh; overflow-y: auto; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.74rem; text-align: right;">
+                  <thead>
+                    <tr style="background: rgba(30, 41, 59, 0.9); color: #94a3b8; border-bottom: 1.5px solid rgba(255,255,255,0.1); font-size: 0.68rem;">
+                      <th style="padding: 7px 6px;">التاريخ</th>
+                      <th style="padding: 7px 6px;">البيان</th>
+                      <th style="padding: 7px 6px;">الفرد</th>
+                      <th style="padding: 7px 6px;">البند</th>
+                      <th style="padding: 7px 6px;">منفذ العملية</th>
+                      <th style="padding: 7px 6px;">المبلغ</th>
+                      <th style="padding: 7px 6px;">الرصيد</th>
+                    </tr>
+                  </thead>
+                  <tbody id="secWalletTableBody">
+                    <!-- تتولد السطور تلقائياً -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+            <!-- ==========================================================
+           صفحة التخطيط المالي والالتزامات والميزانيات التقديرية (viewExpected)
+           ========================================================== -->
+      <div class="page-view" id="viewExpected" style="display: none;">
+        
+        <!-- ========================================================
+             الهيدر الاستراتيجي والشريط الثلاثي المتناسق
+             ======================================================== -->
+        <div class="expected-top-hero" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: nowrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)); border: 1.2px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #38bdf8;">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <div>
+                <h2 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>التخطيط المالي والالتزامات والميزانية</span>
+                </h2>
+                
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" onclick="switchExpectedTab('bills')" class="btn-wallet-action-pill" style="height: 32px; font-size: 0.72rem; padding: 0 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; font-weight: 900; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); flex-shrink: 0;">
+                <i class="fa-solid fa-file-invoice"></i> <span>فواتير</span>
+              </button>
+              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 32px; font-size: 0.72rem; padding: 0 10px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-weight: 800; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35); flex-shrink: 0;">
+                <i class="fa-solid fa-book-open"></i> <span>الملاحظات</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط التبويب الرئيسي الثلاثي الفاخر والمستقل تماماً -->
+          <div class="expected-main-tabs-strip" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: rgba(15, 23, 42, 0.92); padding: 5px; border-radius: 14px; border: 1.2px solid rgba(255, 255, 255, 0.08);">
+            <button type="button" id="tabExpectedCommitments" onclick="switchExpectedMainTab('commitments')" class="exp-main-tab-btn active" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
+              <i class="fa-solid fa-thumbtack"></i> <span>الالتزامات والديون</span>
+            </button>
+            <button type="button" id="tabExpectedMonthlyBudget" onclick="switchExpectedMainTab('monthly_budget')" class="exp-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: rgba(255, 255, 255, 0.03); color: #94a3b8;">
+              <i class="fa-solid fa-calculator"></i> <span>الميزانية التقديرية</span>
+            </button>
+            <button type="button" id="tabExpectedBudgetHistory" onclick="switchExpectedMainTab('budget_history')" class="exp-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: rgba(255, 255, 255, 0.03); color: #94a3b8;">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span>سجل الميزانيات</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             1. قسم الالتزامات والديون والمصاريف القادمة (subViewCommitments)
+             ========================================================== -->
+        <div id="subViewCommitments">
+          <!-- كروت المؤشرات المالية الأربعة للالتزامات (في صف واحد فائق الرشاقة والتنسيق) -->
+          <!-- كروت المؤشرات الأربعة في صف واحد فائق الدقة والتناسق (الالتزامات والديون) -->
+          <div class="expected-kpi-cockpit" id="expectedKpiCockpit">
+            <!-- 1. مصاريف قادمة -->
+            <div class="exp-kpi-card exp-card-amber" id="cardExpUpcoming" onclick="toggleExpectedFilter('upcoming_bill')" title="فواتير قادمة" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #fbbf24;"><i class="fa-solid fa-clock"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #fde047; white-space: nowrap;">مصاريف قادمة</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountUpcoming" style="font-size: 0.62rem; background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 بند</span>
+              </div>
+              <div class="exp-kpi-val" id="expectedTotalUpcoming" style="font-size: clamp(0.86rem, 2.6vw, 1.05rem); font-weight: 950; color: #fbbf24; line-height: 1.2; font-variant-numeric: tabular-nums; text-align: center; margin: 2px auto 0; direction: rtl;">0.00 ج.م</div>
+            </div>
+
+            <!-- 2. ديون علينا للغير -->
+            <div class="exp-kpi-card exp-card-rose" id="cardExpDebtsOnUs" onclick="toggleExpectedFilter('debt_on_us')" title="ديون علينا" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #f43f5e;"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #fca5a5; white-space: nowrap;">ديون علينا</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountDebtsOnUs" style="font-size: 0.62rem; background: rgba(244, 63, 94, 0.25); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 بند</span>
+              </div>
+              <div class="exp-kpi-val" id="exp

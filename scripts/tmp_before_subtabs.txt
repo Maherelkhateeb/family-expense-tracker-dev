@@ -1,0 +1,17 @@
+4px 9px; font-size: 0.70rem; border-radius: 7px; color: #34d399;">ديون لنا 🟢</button>
+                <button type="button" class="btn-export-tool" onclick="setDebtsStatusFilter('paid', this)" style="padding: 4px 9px; font-size: 0.70rem; border-radius: 7px; color: #94a3b8;">مسددة بالكامل 🎯</button>
+              </div>
+              <div style="font-size: 0.68rem; color: #94a3b8; font-weight: 750;" id="debtsTotalSubheaderTxt">0 ديون مسجلة</div>
+            </div>
+
+            <!-- قائمة الديون -->
+            <div id="debtsListContentContainer">
+              <!-- تتولد الديون برمجياً -->
+            </div>
+          </div>
+
+        </div></div> <!-- إغلاق subViewCommitments -->
+
+        
+        <!-- شريط تبويب داخلي منسق لقسم الميزانيات -->
+        <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 6px; background: rgba(15, 23, 42, 0.85); padding: 4px

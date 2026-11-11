@@ -1,0 +1,12 @@
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
+
+filepath = 'C:/Users/96656/.gemini/antigravity/scratch/family_expense_tracker_monefy/index.html'
+with open(filepath, 'r', encoding='utf-8') as f:
+    content = f.read()
+
+idx = content.find('<nav class="app-bottom-nav"')
+if idx == -1:
+    idx = content.find('class="app-bottom-nav"')
+print("Found at:", idx)
+print(content[idx:idx+2500])
