@@ -13488,6 +13488,39 @@
       word-break: normal !important;
       text-wrap: balance;
     }
+
+    /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة */
+    #viewExpenses .cockpit-hero-value {
+      font-size: clamp(1.95rem, 5.9vw, 2.50rem) !important;
+      font-weight: 1000 !important;
+      text-shadow: 0 2px 22px rgba(56, 189, 248, 0.76) !important;
+    }
+    #viewExpenses .cockpit-flow-side {
+      align-items: stretch !important;
+      box-sizing: border-box !important;
+    }
+    #viewExpenses .cockpit-flow-pill.inflow,
+    #viewExpenses .cockpit-flow-pill.outflow {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) max-content !important;
+      align-items: center !important;
+      gap: 8px !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      max-height: 38px !important;
+      margin: 0 !important;
+      padding-inline: 8px !important;
+      box-sizing: border-box !important;
+    }
+    #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
+      min-width: 0 !important;
+    }
+    #viewExpenses .cockpit-flow-pill .flow-amount {
+      min-width: 0 !important;
+      white-space: nowrap !important;
+    }
   </style>
 </head>
 <body>
