@@ -13491,13 +13491,15 @@
 
     /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة */
     #viewExpenses .cockpit-hero-value {
-      font-size: clamp(1.95rem, 5.9vw, 2.50rem) !important;
+      font-size: clamp(2.20rem, 6.8vw, 2.95rem) !important;
       font-weight: 1000 !important;
-      text-shadow: 0 2px 22px rgba(56, 189, 248, 0.76) !important;
+      -webkit-text-stroke: 0.25px rgba(186, 230, 253, 0.65) !important;
+      text-shadow: 0 0 7px rgba(56, 189, 248, 0.62), 0 2px 24px rgba(56, 189, 248, 0.88) !important;
     }
     #viewExpenses .cockpit-flow-side {
       align-items: stretch !important;
       box-sizing: border-box !important;
+      margin-inline: -6px !important;
     }
     #viewExpenses .cockpit-flow-pill.inflow,
     #viewExpenses .cockpit-flow-pill.outflow {
@@ -13512,6 +13514,7 @@
       max-height: 38px !important;
       margin: 0 !important;
       padding-inline: 8px !important;
+      border-radius: 13px !important;
       box-sizing: border-box !important;
     }
     #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
