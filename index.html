@@ -145,10 +145,10 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.4';
-    var APP_BUILD_ID = 202611091255;
-    window.APP_VERSION = 'v5.3.4';
-    window.APP_BUILD_ID = 202611091255;
+    var APP_VERSION = 'v5.3.5';
+    var APP_BUILD_ID = 202611111450;
+    window.APP_VERSION = APP_VERSION;
+    window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
       try {
         var t = localStorage.getItem('family_monefy_theme') || 'navy';
@@ -13885,21 +13885,21 @@
         <!-- ============================================================
              شريط الأزرار الثلاثة الرئيسية المنفصلة لصفحة طلب
              ============================================================ -->
-        <div class="requests-view-switcher" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 2px 0 10px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 14px; border: 1.2px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);">
+        <div class="requests-view-switcher" role="tablist" aria-label="أقسام الطلبات والدخل والمحافظ" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); min-width: 0; gap: 6px; margin: 2px 0 10px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 14px; border: 1.2px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);">
           <!-- الزر الأول: طلب وسجل الطلبات -->
-          <button type="button" id="btnMainTabRequests" onclick="switchRequestMainSection('requests')" class="req-main-tab-btn active" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; box-shadow: 0 3px 10px rgba(236, 72, 153, 0.35);">
+          <button type="button" role="tab" aria-controls="secReqRequests" aria-selected="true" id="btnMainTabRequests" onclick="switchRequestMainSection('requests')" class="req-main-tab-btn active" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; box-shadow: 0 3px 10px rgba(236, 72, 153, 0.35);">
             <i class="fa-solid fa-hand-holding-dollar"></i>
             <span>الطلبات والسجل</span>
           </button>
 
           <!-- الزر الثاني: تسجيل الدخل وعرض التسجيلات السابقة -->
-          <button type="button" id="btnMainTabIncome" onclick="switchRequestMainSection('income')" class="req-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
+          <button type="button" role="tab" aria-controls="secReqIncome" aria-selected="false" id="btnMainTabIncome" onclick="switchRequestMainSection('income')" class="req-main-tab-btn" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
             <i class="fa-solid fa-circle-dollar-to-slot" style="color: #10b981;"></i>
             <span>تسجيل الدخل</span>
           </button>
 
           <!-- الزر الثالث: المحافظ والحركات والتحليل والتصدير -->
-          <button type="button" id="btnMainTabWallets" onclick="switchRequestMainSection('wallets')" class="req-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
+          <button type="button" role="tab" aria-controls="secReqWallets" aria-selected="false" id="btnMainTabWallets" onclick="switchRequestMainSection('wallets')" class="req-main-tab-btn" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
             <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
             <span>المحافظ والحركات</span>
           </button>
@@ -13909,15 +13909,15 @@
         <!-- ============================================================
              القسم الأول: الطلبات وسجل الطلبات (#secReqRequests)
              ============================================================ -->
-        <div id="secReqRequests" style="display: block;">
+        <div id="secReqRequests" role="tabpanel" aria-labelledby="btnMainTabRequests" style="display: block;">
           
           <!-- شريط التبديل الفرعي بين إنشاء طلب وسجل الطلبات -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-            <button type="button" id="btnSubReqNew" onclick="switchRequestSubTab('new')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <div role="tablist" aria-label="إنشاء طلب أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+            <button type="button" role="tab" aria-controls="panelReqNewForm" aria-selected="true" id="btnSubReqNew" onclick="switchRequestSubTab('new')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-file-circle-plus"></i>
               <span>إنشاء طلب مصروف جديد</span>
             </button>
-            <button type="button" id="btnSubReqList" onclick="switchRequestSubTab('list')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: transparent; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <button type="button" role="tab" aria-controls="panelReqListContainer" aria-selected="false" id="btnSubReqList" onclick="switchRequestSubTab('list')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: transparent; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-clock-rotate-left"></i>
               <span>سجل متابعة الطلبات</span>
               <span class="badge" id="reqPendingCountBadge" style="background: rgba(236, 72, 153, 0.25); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); padding: 1px 6px; border-radius: 8px; font-size: 0.64rem;">0 معلق</span>
@@ -13925,7 +13925,7 @@
           </div>
 
           <!-- لوحة نموذج إنشاء طلب جديد -->
-          <div id="panelReqNewForm" class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(236, 72, 153, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+          <div id="panelReqNewForm" role="tabpanel" aria-labelledby="btnSubReqNew" class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(236, 72, 153, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-hand-holding-dollar"></i>
@@ -14064,7 +14064,7 @@
           </div>
 
           <!-- لوحة سجل ومتابعة الطلبات السابقة -->
-          <div id="panelReqListContainer" class="app-card-panel" style="display: none; padding: 12px 14px; border-radius: 16px; margin: 0;">
+          <div id="panelReqListContainer" role="tabpanel" aria-labelledby="btnSubReqList" class="app-card-panel" style="display: none; padding: 12px 14px; border-radius: 16px; margin: 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
               <div style="font-size: 0.86rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-clock-rotate-left"></i>
@@ -14081,15 +14081,15 @@
         <!-- ============================================================
              القسم الثاني: تسجيل الدخل وعرض التسجيلات السابقة (#secReqIncome)
              ============================================================ -->
-        <div id="secReqIncome" style="display: none;">
+        <div id="secReqIncome" role="tabpanel" aria-labelledby="btnMainTabIncome" style="display: none;">
           
           <!-- شريط التبديل الفرعي بين تسجيل دخل جديد وسجل الإيداعات -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-            <button type="button" id="btnSubIncomeNew" onclick="switchIncomeSubTab('new')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <div role="tablist" aria-label="تسجيل دخل أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+            <button type="button" role="tab" aria-controls="panelIncomeNewForm" aria-selected="true" id="btnSubIncomeNew" onclick="switchIncomeSubTab('new')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-circle-dollar-to-slot"></i>
               <span>تسجيل دخل / إيداع جديد</span>
             </button>
-            <button type="button" id="btnSubIncomeList" onclick="switchIncomeSubTab('list')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: transparent; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <button type="button" role="tab" aria-controls="panelIncomeHistoryContainer" aria-selected="false" id="btnSubIncomeList" onclick="switchIncomeSubTab('list')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: transparent; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-clock-rotate-left"></i>
               <span>سجل التسجيلات السابقة</span>
               <span class="badge" id="incomeBadgeCount" style="background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 1px 6px; border-radius: 8px; font-size: 0.64rem;">0</span>
@@ -14097,7 +14097,7 @@
           </div>
 
           <!-- لوحة 1: نموذج تسجيل دخل / إيداع جديد فوري -->
-          <div id="panelIncomeNewForm" class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(16, 185, 129, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+          <div id="panelIncomeNewForm" role="tabpanel" aria-labelledby="btnSubIncomeNew" class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(16, 185, 129, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
             <div style="font-size: 0.88rem; font-weight: 800; color: #34d399; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-money-bill-trend-up"></i>
               <span>تسجيل عملية دخل أو إيداع مالي جديد</span>
@@ -14157,7 +14157,7 @@
           </div>
 
           <!-- لوحة 2: سجل التسجيلات السابقة للدخل -->
-          <div id="panelIncomeHistoryContainer" class="app-card-panel" style="display: none; padding: 12px 14px; border-radius: 16px; margin: 0;">
+          <div id="panelIncomeHistoryContainer" role="tabpanel" aria-labelledby="btnSubIncomeList" class="app-card-panel" style="display: none; padding: 12px 14px; border-radius: 16px; margin: 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
               <div style="font-size: 0.86rem; font-weight: 800; color: #34d399; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-list-check"></i>
@@ -14176,7 +14176,7 @@
         <!-- ============================================================
              القسم الثالث: المحافظ والحركات بينها وإنشاءها والتحليل والتصدير (#secReqWallets)
              ============================================================ -->
-        <div id="secReqWallets" style="display: none;">
+        <div id="secReqWallets" role="tabpanel" aria-labelledby="btnMainTabWallets" style="display: none;">
           
           <div class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35); box-sizing: border-box;">
             
@@ -16475,7 +16475,7 @@
             <div>
               <h3 class="modal-title-custom" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>مركز الضبط الموحد والمزامنة</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.4 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.5 • متزامن</span>
               </h3>
             </div>
           </div>
@@ -16983,7 +16983,11 @@
       // تعيين التاريخ الافتراضي لطلب المصروف إلى اليوم
       const reqDateInp = document.getElementById('inpReqDate');
       if (reqDateInp && !reqDateInp.value) {
-        reqDateInp.value = new Date().toISOString().split('T')[0];
+        reqDateInp.value = getLocalDateStr(new Date());
+      }
+      const directIncomeDateInp = document.getElementById('inpDirectIncomeDate');
+      if (directIncomeDateInp && !directIncomeDateInp.value) {
+        directIncomeDateInp.value = typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0];
       }
 
       // 1. فحص الرابط الذكي لتحديد هوية الفرد تلقائياً أو استعادة الجلسة
@@ -17013,22 +17017,16 @@
 
       // 2. تحميل المحافظ وترقيتها للمحافظ الأربعة المعتمدة (كاش البيت، المبلغ الإحتياطى، فودافون كاش، أخرى)
       const storedWallets = localStorage.getItem('family_monefy_wallets');
-      if (storedWallets) {
+      if (storedWallets !== null) {
         try {
           const parsed = JSON.parse(storedWallets);
-          if (Array.isArray(parsed) && parsed.length === 4 && parsed.some(w => w.id === 'wallet-reserve')) {
-            state.wallets = parsed;
-          } else {
-            // ترقية المحافظ القديمة للمحافظ الأربعة الرسمية
-            state.wallets = [
-              { id: 'wallet-cash-safe', name: 'كاش البيت', type: 'cash', balance: 25000, initialBalance: 25000, icon: 'fa-money-bill-1-wave', color: '#06b6d4', isDefault: true },
-              { id: 'wallet-reserve', name: 'المبلغ الإحتياطى', type: 'reserve', balance: 115000, initialBalance: 100000, icon: 'fa-vault', color: '#f59e0b' },
-              { id: 'wallet-vodafone', name: 'فودافون كاش', type: 'wallet', balance: 8500, initialBalance: 8500, icon: 'fa-mobile-screen', color: '#ef4444' },
-              { id: 'wallet-other', name: 'أخرى', type: 'other', balance: 18000, initialBalance: 15000, icon: 'fa-wallet', color: '#8b5cf6' }
-            ];
-            localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
+          if (Array.isArray(parsed)) {
+            const validWallets = parsed.filter(w => w && typeof w === 'object' && typeof w.id === 'string' && typeof w.name === 'string');
+            if (validWallets.length) state.wallets = validWallets;
           }
-        } catch(e) {}
+        } catch(e) {
+          console.warn('تعذر قراءة المحافظ المحفوظة؛ تم الاحتفاظ بالنسخة الأصلية دون استبدالها.');
+        }
       }
 
       
@@ -17038,87 +17036,34 @@
 
     
 
-      // 3. إدارة إصدار التطبيق والتحديث التلقائي (مع الحفاظ التام على بيانات ومصروفات المستخدم)
-      const APP_VERSION = 'v5.3.4';;
-      const APP_BUILD_ID = 202611091255;;
-      const DATA_SEED_VERSION = 'v4.0_clean_1000';
-      const storedVer = localStorage.getItem('family_monefy_version');
-      const storedSeed = localStorage.getItem('family_monefy_seed_version');
+      // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
+      const APP_VERSION = 'v5.3.5';
+      const APP_BUILD_ID = 202611111450;
+      localStorage.setItem('family_monefy_version', APP_VERSION);
 
-      // تهيئة البيانات الأولية بأمان تام وبدون مساس بأي بيانات موجودة للمستخدم
-      const hasAnyExistingData = !!(
-        localStorage.getItem('family_monefy_transactions') ||
-        localStorage.getItem('family_monefy_v2_tx') ||
-        localStorage.getItem('family_monefy_monthly_budgets') ||
-        localStorage.getItem('family_monefy_expected') ||
-        localStorage.getItem('family_monefy_wallets') ||
-        localStorage.getItem('family_monefy_requests') ||
-        localStorage.getItem('family_monefy_tasks')
-      );
-      if (!hasAnyExistingData && storedSeed !== DATA_SEED_VERSION) {
-        localStorage.setItem('family_monefy_version', APP_VERSION);
-        localStorage.setItem('family_monefy_seed_version', DATA_SEED_VERSION);
-
-        // المحافظ الأربعة الرسمية بأرصدة افتتاحية قوية
-        state.wallets = [
-          { id: 'wallet-cash-safe', name: 'كاش البيت', type: 'cash', balance: 35000, initialBalance: 35000, icon: 'fa-money-bill-1-wave', color: '#06b6d4', isDefault: true },
-          { id: 'wallet-reserve', name: 'المبلغ الإحتياطى', type: 'reserve', balance: 120000, initialBalance: 120000, icon: 'fa-vault', color: '#f59e0b' },
-          { id: 'wallet-vodafone', name: 'فودافون كاش', type: 'wallet', balance: 20000, initialBalance: 20000, icon: 'fa-mobile-screen', color: '#ef4444' },
-          { id: 'wallet-other', name: 'أخرى', type: 'other', balance: 15000, initialBalance: 15000, icon: 'fa-wallet', color: '#8b5cf6' }
-        ];
-        localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
-
-        // توليد الـ 1000 حركة الجديدة
-        state.transactions = generateRichDemoTransactions();
-        saveTx();
-
-        // توليد طلبات الصرف الموزعة بنسبة 100%
-        state.moneyRequests = generateRichDemoRequests();
-        localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
-
-        // توليد الموازنات التقديرية للأشهر الحالية والسابقة
-        state.monthlyBudgets = generateRichDemoBudgets();
-        localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
-
-        // توليد الالتزامات والديون والمصاريف القادمة
-        state.expectedExpenses = generateRichDemoCommitments();
-        localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-
-        if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
-      } else {
-        const storedTx = localStorage.getItem('family_monefy_v2_tx') || localStorage.getItem('family_monefy_txs');
-        let parsedTx = null;
-        if (storedTx !== null) {
-          try { 
-            parsedTx = JSON.parse(storedTx); 
+      const readStoredArray = (keys) => {
+        for (const key of keys) {
+          const raw = localStorage.getItem(key);
+          if (raw === null) continue;
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) return parsed;
           } catch(e) {
-            parsedTx = null;
+            console.warn(`تعذر قراءة البيانات المحفوظة في ${key}؛ لم يتم استبدالها.`);
           }
         }
-        if (parsedTx !== null && Array.isArray(parsedTx)) {
-          // بيانات المستخدم الحقيقية محترمة ومحفوظة حتى لو كانت فارغة 0 حركات
-          state.transactions = parsedTx;
-        } else if (localStorage.getItem('family_monefy_user_cleared') === 'true') {
-          // قام المستخدم بمسح البيانات سابقاً فلن يتم فرض بيانات تجريبية عليه
-          state.transactions = [];
-        } else {
-          // أول زيارة إطلاقاً للتطبيق على متصفح جديد تماماً
-          state.transactions = generateRichDemoTransactions();
-          saveTx();
-        }
+        return [];
+      };
 
-        try {
-          const storedBudgets = localStorage.getItem('family_monefy_monthly_budgets');
-          if (storedBudgets) state.monthlyBudgets = JSON.parse(storedBudgets);
-          else state.monthlyBudgets = generateRichDemoBudgets();
-        } catch(e) { state.monthlyBudgets = generateRichDemoBudgets(); }
-
-        try {
-          const storedExp = localStorage.getItem('family_monefy_expected');
-          if (storedExp) state.expectedExpenses = JSON.parse(storedExp);
-          else state.expectedExpenses = generateRichDemoCommitments();
-        } catch(e) { state.expectedExpenses = generateRichDemoCommitments(); }
-      }
+      state.transactions = readStoredArray([
+        'family_monefy_v2_tx',
+        'family_monefy_txs',
+        'family_monefy_transactions'
+      ]);
+      state.monthlyBudgets = readStoredArray(['family_monefy_monthly_budgets']);
+      state.expectedExpenses = readStoredArray(['family_monefy_expected']);
+      state.moneyRequests = readStoredArray(['family_monefy_requests']);
+      state.notes = readStoredArray(['family_monefy_notes']);
 
       // تحميل الصلاحيات
       const storedPerm = localStorage.getItem('family_monefy_perms');
@@ -17129,28 +17074,20 @@
       // تحميل طلبات المصروف وتهيئتها
       try {
         const storedReqs = localStorage.getItem('family_monefy_requests');
-        if (storedReqs) {
-          state.moneyRequests = JSON.parse(storedReqs);
-        } else {
-          state.moneyRequests = generateRichDemoRequests();
-          localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
+        if (storedReqs !== null) {
+          const parsedReqs = JSON.parse(storedReqs);
+          state.moneyRequests = Array.isArray(parsedReqs) ? parsedReqs : [];
         }
       } catch(e) {
-        state.moneyRequests = generateRichDemoRequests();
+        state.moneyRequests = [];
       }
 
       // تحميل الملاحظات المفتوحة وتهيئتها
       try {
         const storedNotes = localStorage.getItem('family_monefy_notes');
-        if (storedNotes) {
-          state.notes = JSON.parse(storedNotes);
-        } else {
-          state.notes = [
-            { id: 'note-demo-1', title: 'صيانة وتغيير فلاتر مياه', content: 'تم تركيب 5 شمعات جديدة للفلتر مع الضمان لمدة سنة كاملة', member: 'ماهر', priority: 'important', date: todayIsoStr, time: '11:00 ص' },
-            { id: 'note-demo-2', title: 'مستلزمات صيدلية أدوية للحاجة', content: 'أدوية الضغط والسكر الشهرية وفيتامينات كبار السن', member: 'أية', priority: 'urgent', date: todayIsoStr, time: '10:15 ص' },
-            { id: 'note-demo-3', title: 'اشتراك وملازم مدرسة محمد', content: 'سداد كتب اللغات والمذكرات الشهرية واستلام الإيصال', member: 'محمد', priority: 'normal', date: todayIsoStr, time: '09:00 ص' }
-          ];
-          localStorage.setItem('family_monefy_notes', JSON.stringify(state.notes));
+        if (storedNotes !== null) {
+          const parsedNotes = JSON.parse(storedNotes);
+          state.notes = Array.isArray(parsedNotes) ? parsedNotes : [];
         }
       } catch(e) {
         state.notes = [];
@@ -17185,17 +17122,21 @@
 
       // الاستماع للمزامنة السحابية الفورية
       syncChannel.onmessage = (e) => {
-        if (e.data && e.data.type === 'SYNC_TX') {
+        if (e.data && (e.data.type === 'SYNC_TX' || e.data.type === 'SYNC_TRANSACTIONS') && Array.isArray(e.data.transactions)) {
           state.transactions = e.data.transactions;
+          if (Array.isArray(e.data.wallets)) state.wallets = e.data.wallets;
+          if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
+          populateWalletDropdowns();
           renderUI();
-          const txInfo = e.data.tx;
-          const isExp = txInfo && txInfo.type === 'expense';
-          const msg = isExp 
-            ? `قام ${e.data.author} بتسجيل مصروف: "${e.data.label}" بمبلغ ${txInfo ? txInfo.amount : ''} ج.م`
-            : `قام ${e.data.author} بتسجيل دخل جديد: "${e.data.label}" بمبلغ ${txInfo ? txInfo.amount : ''} ج.م`;
-          
-          triggerSystemNotification('🔔 إشعار مصروفات العيلة', msg);
-          showToast(`⚡ مزامنة فورية: ${msg}`);
+          if (e.data.label) {
+            const txInfo = e.data.tx || e.data.transaction;
+            const kind = txInfo?.type === 'expense' ? 'مصروف' : 'دخل';
+            const msg = `تمت مزامنة ${kind}: ${e.data.label}`;
+            if (typeof triggerSystemNotification === 'function') triggerSystemNotification('🔔 تحديث العمليات', msg);
+            showToast(`⚡ ${msg}`);
+          } else {
+            showToast('تم تحديث سجل العمليات في علامة تبويب أخرى');
+          }
         } else if (e.data && e.data.type === 'SYNC_PERM') {
           state.permissions = e.data.permissions;
           playNotificationChime();
@@ -17284,7 +17225,7 @@
       // safeEvent btnToggleCurrency removed to prevent double-click skip (onclick handles it)
 
       const dateInp = document.getElementById('inpTxDate');
-      if (dateInp) dateInp.value = new Date().toISOString().split('T')[0];
+      if (dateInp) dateInp.value = getLocalDateStr(new Date());
 
       // إطلاق الواجهة بأمان كامل ومحمي ضد أي توقف
       try { if (typeof initMemberPhotoPickers === 'function') initMemberPhotoPickers(); } catch(e) { console.error('Member pickers error:', e); }
@@ -17294,21 +17235,9 @@
       try { initDonutChart(); } catch(e) { console.error('Donut init error:', e); }
       try { initAnalyticsChart(); } catch(e) { console.error('Analytics init error:', e); }
       try { updateUserAndDefaultDisplay(); } catch(e) { console.error('User display error:', e); }
+      try { auditAndRecomputeAllWalletBalances(); } catch(e) { console.warn('Wallet balance audit notice:', e); }
       try { renderUI(); } catch(e) { console.error('Render UI error:', e); }
       try { fetchTradingViewRates(); } catch(e) { console.error('TradingView error:', e); }
-      try {
-        const storedExp = localStorage.getItem('family_monefy_expected');
-        if (storedExp) {
-          state.expectedExpenses = JSON.parse(storedExp);
-        } else {
-          state.expectedExpenses = [
-            { id: 'exp-1', type: 'upcoming_bill', title: 'فاتورة الكهرباء والغاز الشهرية', amount: 1850, dueDate: getLocalDateStr(new Date()), member: 'البيت', status: 'upcoming' },
-            { id: 'exp-2', type: 'debt', title: 'قسط الجمعية العائلية', amount: 5000, dueDate: getLocalDateStr(new Date()), member: 'ماهر', status: 'upcoming' },
-            { id: 'exp-3', type: 'upcoming_bill', title: 'مستلزمات صيدلية أدوية للحاجة', amount: 1200, dueDate: getLocalDateStr(new Date()), member: 'الحاجة', status: 'upcoming' }
-          ];
-          localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-        }
-      } catch(e) { state.expectedExpenses = []; }
       try { if (typeof initMonthlyBudgetUI === 'function') initMonthlyBudgetUI(); } catch(e) {}
       try { if (typeof renderExpectedList === 'function') renderExpectedList(); } catch(e) {}
       // تشغيل المزامنة والتحديث الشامل التلقائي (الكود + الحسابات + الذهب) مع كل فتح للتطبيق
@@ -17322,18 +17251,53 @@
     // 2. إدارة المحافظ المتعددة بحسابات خاصة
     // ==========================================
     function populateWalletDropdowns() {
-      // 1. القائمة في الشريط العلوي
-      const selectTop = document.getElementById('activeWalletSelect');
-      let html = `<option value="all">كل المحافظ مجتمعة</option>`;
-      state.wallets.forEach(w => {
-        html += `<option value="${w.id}">${w.name}</option>`;
-      });
-      selectTop.innerHTML = html;
-      selectTop.value = state.currentWalletId;
+      const wallets = Array.isArray(state.wallets) ? state.wallets : [];
+      const options = wallets.map(w => `<option value="${escapeHtml(w.id)}">${escapeHtml(w.name)}</option>`).join('');
+      const setOptions = (id, includeAll = false) => {
+        const select = document.getElementById(id);
+        if (!select) return;
+        const previousValue = select.value;
+        select.innerHTML = `${includeAll ? '<option value="all">كل المحافظ مجتمعة</option>' : ''}${options}`;
+        const values = Array.from(select.options, option => option.value);
+        if (values.includes(previousValue)) select.value = previousValue;
+        else if (includeAll) select.value = 'all';
+        else if (values.length) select.value = values[0];
+      };
 
-      // 2. القائمة داخل نموذج الحركة
-      const selectForm = document.getElementById('inpTxWallet');
-      selectForm.innerHTML = state.wallets.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+      setOptions('activeWalletSelect', true);
+      const activeWallet = document.getElementById('activeWalletSelect');
+      if (activeWallet) {
+        if (Array.from(activeWallet.options).some(option => option.value === state.currentWalletId)) activeWallet.value = state.currentWalletId;
+        else activeWallet.value = state.currentWalletId = 'all';
+      }
+
+      setOptions('inpTxWallet');
+      setOptions('inpDirectIncomeWallet');
+      setOptions('inpTransferFromWallet');
+      setOptions('inpTransferToWallet');
+      setOptions('inpSecTransFrom');
+      setOptions('inpSecTransTo');
+      setOptions('stmtWalletFilter', true);
+      setOptions('secFilterWallet', true);
+
+      const transferFrom = document.getElementById('inpTransferFromWallet');
+      const transferTo = document.getElementById('inpTransferToWallet');
+      if (transferFrom && transferTo && transferFrom.value === transferTo.value && transferTo.options.length > 1) {
+        transferTo.selectedIndex = 1;
+      }
+
+      const categoryFilter = document.getElementById('secFilterCategory');
+      if (categoryFilter) {
+        const previousCategory = categoryFilter.value || 'all';
+        const categories = new Map();
+        (state.transactions || []).forEach(tx => {
+          if (!tx.category) return;
+          categories.set(String(tx.category), typeof getCategoryName === 'function' ? getCategoryName(tx.category, tx.type) : String(tx.category));
+        });
+        categoryFilter.innerHTML = '<option value="all">كل البنود</option>' +
+          Array.from(categories, ([id, name]) => `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`).join('');
+        categoryFilter.value = categories.has(previousCategory) ? previousCategory : 'all';
+      }
     }
 
     function handleCreateWallet() {
@@ -17350,7 +17314,8 @@
         id: 'wallet-' + Date.now(),
         name: name,
         icon: icon,
-        initialBalance: initBal
+        balance: 0,
+        initialBalance: 0
       };
 
       state.wallets.push(newWallet);
@@ -17366,9 +17331,11 @@
           category: 'other_inc',
           member: state.selectedMember !== 'الكل' ? state.selectedMember : 'ماهر',
           walletId: newWallet.id,
-          date: new Date().toISOString().split('T')[0]
+          date: getLocalDateStr(new Date())
         });
         saveTx();
+      } else {
+        auditAndRecomputeAllWalletBalances();
       }
 
       logActivity({
@@ -17466,6 +17433,7 @@
         const filtered = getFilteredTransactions();
         let totalExp = 0, totalInc = 0;
         filtered.forEach(t => {
+          if (t.type === 'transfer' || t.category === 'transfer') return;
           const a = parseFloat(t.amount) || 0;
           if (t.type === 'income') totalInc += a;
           else totalExp += a;
@@ -18924,6 +18892,7 @@
       const dayMap = {};
 
       filtered.forEach(t => {
+        if (t.type === 'transfer' || t.category === 'transfer') return;
         const d = t.date;
         if (!d) return;
         if (!dayMap[d]) dayMap[d] = { exp: 0, inc: 0 };
@@ -19717,6 +19686,8 @@
       let list = type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
       let found = list.find(c => c.id === catId);
       if (found) return found;
+
+      if (catId === 'transfer') return { id: 'transfer', name: 'تحويل بين المحافظ', icon: 'fa-right-left', color: '#38bdf8' };
 
       const all = [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
       found = all.find(c => c.id === catId);
@@ -20685,24 +20656,17 @@ function generateRichDemoTransactions() {
 
     function renderUI() {
       // 1. حساب الرصيد الفعلي التراكمي المعتمد لكافة المحافظ (السيولة النقدية الدائمة بالخزينة)
-      let allTxs = state.transactions || [];
-      if (state.currentWalletId && state.currentWalletId !== 'all') {
-        allTxs = allTxs.filter(t => t.walletId === state.currentWalletId);
-      }
-      let actualTotalInc = 0;
-      let actualTotalExp = 0;
-      allTxs.forEach(t => {
-        const amt = Number(t.amount) || 0;
-        if (t.type === 'income') actualTotalInc += amt;
-        else if (t.type === 'expense') actualTotalExp += amt;
-      });
-      const actualBalance = actualTotalInc - actualTotalExp;
+      const visibleWallets = (state.wallets || []).filter(wallet =>
+        !state.currentWalletId || state.currentWalletId === 'all' || wallet.id === state.currentWalletId
+      );
+      const actualBalance = visibleWallets.reduce((sum, wallet) => sum + (Number(wallet.balance) || 0), 0);
 
       // 2. الحركات المفلترة بحسب الفترة الزمنية المختارة (اليوم / الأسبوع / الشهر / الكل / مخصص)
       const filtered = getFilteredTransactions();
       let periodInc = 0;
       let periodExp = 0;
       filtered.forEach(t => {
+        if (t.type === 'transfer' || t.category === 'transfer') return;
         const amt = Number(t.amount) || 0;
         if (t.type === 'income') periodInc += amt;
         else if (t.type === 'expense') periodExp += amt;
@@ -20848,7 +20812,7 @@ function generateRichDemoTransactions() {
 
       const catTotals = {};
       (filtered || []).forEach(t => {
-        if (t.type === 'expense') {
+        if (t.type === 'expense' && t.category !== 'transfer') {
           let c = t.category;
           if (c === 'shopping' || c === 'supermarket') c = 'food';
           if (c === 'kids' || c === 'gifts' || c === 'entertainment') c = 'other';
@@ -22004,7 +21968,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
 
       if (amountInp) amountInp.value = '';
       if (labelInp) labelInp.value = '';
-      if (dateInp) dateInp.value = new Date().toISOString().split('T')[0];
+      if (dateInp) dateInp.value = getLocalDateStr(new Date());
       clearReceiptUpload();
 
       if (catSel) {
@@ -22183,27 +22147,86 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         // دالة توحيد وترقية معرفات المحافظ للعمليات التاريخية
     function normalizeWalletId(wId) {
       if (!wId) return 'wallet-cash-safe';
+      if (wId === 'cash') return 'wallet-cash-safe';
       if (wId === 'wallet-cash-safe' || wId === 'wallet-default' || wId === 'wallet-home-cash') return 'wallet-cash-safe';
       if (wId === 'wallet-vodafone') return 'wallet-vodafone';
       if (wId === 'wallet-reserve' || wId === 'wallet-bank-misr') return 'wallet-reserve';
       if (wId === 'wallet-other' || wId === 'wallet-instapay' || wId === 'wallet-cib-credit') return 'wallet-other';
       if (wId === 'wallet-ahly') return 'wallet-cash-safe';
-      return 'wallet-cash-safe';
+      return wId;
     }
 
+    function auditAndRecomputeAllWalletBalances() {
+      if (!Array.isArray(state.wallets)) state.wallets = [];
+      const transactions = Array.isArray(state.transactions) ? state.transactions.filter(tx => tx && !tx.deleted) : [];
+      const findWallet = reference => {
+        if (reference === undefined || reference === null || reference === '') return null;
+        const value = String(reference);
+        if (value === 'all') return state.wallets.find(wallet => wallet && wallet.isDefault) || state.wallets[0] || null;
+        const normalized = normalizeWalletId(value);
+        return state.wallets.find(wallet => wallet.id === value || wallet.name === value || wallet.id === normalized) || null;
+      };
+      const effectForWallet = (wallet, tx) => {
+        const amount = Math.abs(Number(tx.amount) || 0);
+        if (!amount) return 0;
+        if (tx.type === 'transfer') {
+          const fromWallet = findWallet(tx.fromWalletId || tx.fromWallet || tx.walletId || tx.wallet);
+          const toWallet = findWallet(tx.toWalletId || tx.toWallet);
+          return (fromWallet && fromWallet.id === wallet.id ? -amount : 0) +
+            (toWallet && toWallet.id === wallet.id ? amount : 0);
+        }
+        const txWallet = findWallet(tx.walletId || tx.wallet || 'wallet-cash-safe');
+        if (!txWallet || txWallet.id !== wallet.id) return 0;
+        if (tx.type === 'income') return amount;
+        if (tx.type === 'expense') return -amount;
+        return 0;
+      };
+
+      state.wallets.forEach(wallet => {
+        if (!wallet || typeof wallet !== 'object') return;
+        const netTransactions = transactions.reduce((sum, tx) => sum + effectForWallet(wallet, tx), 0);
+        const explicitOpening = Number(wallet.initialBalance ?? wallet.baseBalance);
+        let openingBalance;
+        if (Number.isFinite(explicitOpening)) {
+          const openingWasAlreadyRecorded = transactions.some(tx =>
+            tx.type === 'income' &&
+            String(tx.label || '').startsWith('رصيد افتتاحي لمحفظة') &&
+            findWallet(tx.walletId || tx.wallet) === wallet &&
+            Math.abs(Math.abs(Number(tx.amount) || 0) - explicitOpening) < 0.01
+          );
+          openingBalance = openingWasAlreadyRecorded ? 0 : explicitOpening;
+          if (openingWasAlreadyRecorded) wallet.initialBalance = 0;
+        } else {
+          const savedBalance = Number(wallet.balance);
+          openingBalance = Number.isFinite(savedBalance) ? savedBalance - netTransactions : 0;
+          wallet.initialBalance = openingBalance;
+        }
+        const balance = Math.round((openingBalance + netTransactions + Number.EPSILON) * 100) / 100;
+        wallet.balance = Object.is(balance, -0) ? 0 : balance;
+      });
+
+      try { localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets)); } catch(e) {
+        console.warn('تعذر حفظ أرصدة المحافظ بعد المراجعة.');
+      }
+      return state.wallets;
+    }
+    window.auditAndRecomputeAllWalletBalances = auditAndRecomputeAllWalletBalances;
+
     function saveTx() {
-      if (typeof triggerDriveAutoSync === "function") triggerDriveAutoSync();
+      if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
 
       try {
         localStorage.setItem('family_monefy_v2_tx', JSON.stringify(state.transactions));
       } catch(e) {
         console.warn('LocalStorage limit exceeded, data retained in active memory state:', e);
       }
+      if (typeof triggerDriveAutoSync === 'function') triggerDriveAutoSync();
       try {
         syncChannel.postMessage({
-          type: 'SYNC_TRANSACTIONS',
-          transactions: state.transactions.slice(0, 500),
-          sender: state.currentUser
+          type: 'SYNC_TX',
+          transactions: state.transactions,
+          wallets: state.wallets,
+          author: state.currentUser
         });
       } catch(e) {}
     }
@@ -22812,7 +22835,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       const member = memSel ? memSel.value : 'أية';
       const amount = parseFloat(amtInp ? amtInp.value : 0);
       const reason = rsnInp ? rsnInp.value.trim() : '';
-      const reqDate = dateInp && dateInp.value ? dateInp.value : new Date().toISOString().split('T')[0];
+      const reqDate = dateInp && dateInp.value ? dateInp.value : getLocalDateStr(new Date());
 
       if (isNaN(amount) || amount <= 0) {
         showToast('⚠️ الرجاء إدخال مبلغ صحيح للطلب');
@@ -23318,7 +23341,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         amtEl.style.color = (exp.type === 'debt_for_us' ? '#34d399' : '#f87171');
       }
 
-      if (dateInp) dateInp.value = new Date().toISOString().split('T')[0];
+      if (dateInp) dateInp.value = getLocalDateStr(new Date());
       if (noteInp) noteInp.value = '';
       removePayExpectedPhoto();
       if (exp.photo) {
@@ -23371,7 +23394,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       const noteInp = document.getElementById('payExpNoteInput');
 
       const walletId = walletSel ? walletSel.value : (state.wallets[0] ? state.wallets[0].id : 'wallet-default');
-      const txDate = dateInp && dateInp.value ? dateInp.value : new Date().toISOString().split('T')[0];
+      const txDate = dateInp && dateInp.value ? dateInp.value : getLocalDateStr(new Date());
       const category = catSel ? catSel.value : (exp.type === 'upcoming_bill' ? 'bills' : 'other');
       const note = noteInp ? noteInp.value.trim() : '';
 
@@ -25323,7 +25346,7 @@ function openSettingsModal(targetSection = '') {
         category: 'food',
         member: target,
         walletId: state.currentWalletId !== 'all' ? state.currentWalletId : state.wallets[0].id,
-        date: new Date().toISOString().split('T')[0]
+        date: getLocalDateStr(new Date())
       };
 
       state.transactions.push(newTx);
@@ -25380,6 +25403,8 @@ function openSettingsModal(targetSection = '') {
           if (syncData.transactions && syncData.transactions.length > 0 && (!state.transactions || state.transactions.length === 0)) {
             state.transactions = syncData.transactions;
             if (syncData.wallets) state.wallets = syncData.wallets;
+            if (Array.isArray(syncData.expectedExpenses)) state.expectedExpenses = syncData.expectedExpenses;
+            if (Array.isArray(syncData.monthlyBudgets)) state.monthlyBudgets = syncData.monthlyBudgets;
             if (syncData.debts) state.debts = syncData.debts;
             if (syncData.moneyRequests) state.moneyRequests = syncData.moneyRequests;
             if (syncData.notes) state.notes = syncData.notes;
@@ -25423,6 +25448,8 @@ function openSettingsModal(targetSection = '') {
         updatedAt: new Date().toISOString(),
         transactions: state.transactions || [],
         wallets: state.wallets || [],
+        expectedExpenses: state.expectedExpenses || [],
+        monthlyBudgets: state.monthlyBudgets || [],
         debts: state.debts || [],
         moneyRequests: state.moneyRequests || [],
         notes: state.notes || [],
@@ -25680,6 +25707,15 @@ function openSettingsModal(targetSection = '') {
             localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
             populateWalletDropdowns();
           }
+          if (Array.isArray(vData.expectedExpenses)) {
+            state.expectedExpenses = vData.expectedExpenses;
+            localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
+          }
+          if (Array.isArray(vData.monthlyBudgets)) {
+            state.monthlyBudgets = vData.monthlyBudgets;
+            localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+            initMonthlyBudgetUI();
+          }
           if (vData.debts) {
             state.debts = vData.debts;
             saveDebts();
@@ -25700,6 +25736,7 @@ function openSettingsModal(targetSection = '') {
             state.permissions = vData.permissions;
             localStorage.setItem('family_monefy_perms', JSON.stringify(state.permissions));
           }
+          auditAndRecomputeAllWalletBalances();
         } catch(e) {
           console.error('Error loading email vault:', e);
         }
@@ -25759,6 +25796,8 @@ function openSettingsModal(targetSection = '') {
           email: email,
           transactions: state.transactions || [],
           wallets: state.wallets || [],
+          expectedExpenses: state.expectedExpenses || [],
+          monthlyBudgets: state.monthlyBudgets || [],
           debts: state.debts || [],
           moneyRequests: state.moneyRequests || [],
           notes: state.notes || [],
@@ -25777,6 +25816,16 @@ function openSettingsModal(targetSection = '') {
           state.wallets = vault.wallets;
           localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
           populateWalletDropdowns();
+        }
+        auditAndRecomputeAllWalletBalances();
+        if (Array.isArray(vault.expectedExpenses)) {
+          state.expectedExpenses = vault.expectedExpenses;
+          localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
+        }
+        if (Array.isArray(vault.monthlyBudgets)) {
+          state.monthlyBudgets = vault.monthlyBudgets;
+          localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+          initMonthlyBudgetUI();
         }
         if (vault.debts) {
           state.debts = vault.debts;
@@ -26668,6 +26717,16 @@ function openSettingsModal(targetSection = '') {
               populateWalletDropdowns();
             }
 
+            if (Array.isArray(data.expectedExpenses)) {
+              state.expectedExpenses = data.expectedExpenses;
+              localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
+            }
+            if (Array.isArray(data.monthlyBudgets)) {
+              state.monthlyBudgets = data.monthlyBudgets;
+              localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+              if (typeof initMonthlyBudgetUI === 'function') initMonthlyBudgetUI();
+            }
+
             if (data.activityLog) {
               state.activityLog = data.activityLog;
               saveActivityLog();
@@ -26689,6 +26748,7 @@ function openSettingsModal(targetSection = '') {
               state.permissions = data.permissions;
               localStorage.setItem('family_monefy_perms', JSON.stringify(state.permissions));
             }
+            auditAndRecomputeAllWalletBalances();
             saveEmailVault();
 
             logActivity({
@@ -26937,69 +26997,71 @@ function openSettingsModal(targetSection = '') {
     }
 
     function renderIncomeHistoryList() {
-      const container = document.getElementById('incomeHistoryListContainer');
-      const totalAmtEl = document.getElementById('incomeHistoryTotalAmt');
-      if (!container) return;
+      const containers = [
+        document.getElementById('incomeHistoryListContainer'),
+        document.getElementById('directIncomeListRows')
+      ].filter(Boolean);
+      if (!containers.length) return;
 
-      const incomeList = (state.transactions || []).filter(t => t.type === 'income');
-      // ترتيب تنازلي حسب التاريخ
+      const incomeList = (state.transactions || []).filter(t => t.type === 'income' && t.category !== 'transfer');
       incomeList.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      const total = incomeList.reduce((sum, tx) => sum + (Number(tx.amount) || 0), 0);
+      const totalHtml = formatMoneyWithSignHtml(total, '+');
+      ['incomeHistoryTotalAmt', 'lblIncomeHistoryTotalAmt'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = totalHtml;
+      });
+      const countBadge = document.getElementById('incomeBadgeCount');
+      if (countBadge) countBadge.textContent = String(incomeList.length);
 
-      let total = 0;
-      incomeList.forEach(t => { total += (Number(t.amount) || 0); });
-      if (totalAmtEl) totalAmtEl.innerHTML = formatMoneyWithSignHtml(total, '+');
+      const emptyHtml = `
+        <div style="text-align: center; padding: 25px 10px; color: #94a3b8;">
+          <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem; margin-bottom: 8px;"></i>
+          <div style="font-weight: 800; font-size: 0.85rem;">لا توجد عمليات إيداع أو دخل مسجلة</div>
+        </div>`;
 
-      if (incomeList.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 25px 10px; color: #94a3b8;">
-            <i class="fa-solid fa-circle-exclamation" style="font-size: 2rem; margin-bottom: 8px;"></i>
-            <div style="font-weight: 800; font-size: 0.85rem;">لا توجد عمليات إيداع أو دخل مسجلة</div>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = incomeList.map(t => {
-        const amt = Number(t.amount) || 0;
-        const wName = getWalletName(t.walletId);
-        const memberAvatar = MEMBER_AVATARS[t.member] || null;
+      const rowsHtml = incomeList.map(tx => {
+        const amount = Number(tx.amount) || 0;
+        const member = String(tx.member || 'العائلة');
+        const walletName = String(getWalletName(tx.walletId));
+        const memberAvatar = MEMBER_AVATARS[member] || null;
         const avatarHtml = memberAvatar
-          ? `<img src="${memberAvatar}" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover;">`
+          ? `<img src="${escapeHtml(memberAvatar)}" alt="" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover;">`
           : `<i class="fa-solid fa-user" style="font-size: 0.7rem; color: #10b981;"></i>`;
-
         return `
-          <div class="ops-tx-card-lux" style="cursor: pointer;" ondblclick="closeModal('incomeHistoryModal'); openEditTxModal('${t.id}')" title="اضغط مرتين للتعديل">
+          <div class="ops-tx-card-lux">
             <div class="ops-tx-right-cluster">
               <div class="ops-tx-icon-bubble" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff;">
                 <i class="fa-solid fa-money-bill-wave"></i>
               </div>
               <div class="ops-tx-info-block">
-                <div class="ops-tx-label-text">${escapeHtml(t.label || 'إيداع نقدي')}</div>
+                <div class="ops-tx-label-text">${escapeHtml(tx.label || 'إيداع نقدي')}</div>
                 <div class="ops-tx-meta-chips">
-                  <span class="ops-tx-chip" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25);">
-                    ${avatarHtml}
-                    <span>${t.member || 'العائلة'}</span>
-                  </span>
-                  <span class="ops-tx-chip" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25);">
-                    <i class="fa-solid fa-vault"></i>
-                    <span>${wName}</span>
-                  </span>
-                  <span class="ops-tx-chip" style="color: #94a3b8;">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span>${t.date || ''}</span>
-                  </span>
+                  <span class="ops-tx-chip" style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25);">${avatarHtml}<span>${escapeHtml(member)}</span></span>
+                  <span class="ops-tx-chip" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25);"><i class="fa-solid fa-vault"></i><span>${escapeHtml(walletName)}</span></span>
+                  <span class="ops-tx-chip" style="color: #94a3b8;"><i class="fa-regular fa-calendar"></i><span>${escapeHtml(tx.date || '')}</span></span>
                 </div>
               </div>
             </div>
             <div class="ops-tx-left-cluster">
-              ${formatMoneyWithSignHtml(amt, '+', 'ops-tx-amount-text')}
-              <button class="ops-tx-edit-btn" onclick="closeModal('incomeHistoryModal'); openEditTxModal('${t.id}')" title="تعديل الإيداع" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-left: 4px;">
+              ${formatMoneyWithSignHtml(amount, '+', 'ops-tx-amount-text')}
+              <button type="button" class="ops-tx-edit-btn" data-income-edit="${escapeHtml(String(tx.id || ''))}" title="تعديل الإيداع" aria-label="تعديل الإيداع" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-left: 4px;">
                 <i class="fa-solid fa-pen-to-square" style="font-size: 0.76rem;"></i>
               </button>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join('');
+
+      containers.forEach(container => {
+        container.innerHTML = rowsHtml || emptyHtml;
+        container.querySelectorAll('[data-income-edit]').forEach(button => {
+          button.addEventListener('click', () => {
+            const transactionId = button.getAttribute('data-income-edit');
+            if (container.id === 'incomeHistoryListContainer') closeModal('incomeHistoryModal');
+            if (transactionId && typeof editTx === 'function') editTx(transactionId);
+          });
+        });
+      });
     }
 
     // =========================================================================
@@ -27074,8 +27136,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611081550);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.0');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111450);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.5');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -27957,7 +28019,9 @@ function openSettingsModal(targetSection = '') {
         label: `سداد: ${bill.title || bill.label || 'فاتورة مستحقة'}`,
         category: bill.category || 'bills',
         member: bill.member || 'البيت',
-        walletId: state.currentWalletId || 'cash',
+        walletId: state.currentWalletId && state.currentWalletId !== 'all'
+          ? state.currentWalletId
+          : ((state.wallets || [])[0]?.id || 'wallet-cash-safe'),
         date: getLocalDateStr(new Date()),
         time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
         receipt: bill.photo || null,
@@ -27968,10 +28032,8 @@ function openSettingsModal(targetSection = '') {
       if (!state.transactions) state.transactions = [];
       state.transactions.unshift(newTx);
 
-      try {
-        localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-        localStorage.setItem('family_monefy_txs', JSON.stringify(state.transactions));
-      } catch(e) {}
+      try { localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses)); } catch(e) {}
+      if (typeof saveTx === 'function') saveTx();
 
       playNotificationChime();
       renderUI();
@@ -28073,15 +28135,23 @@ function openSettingsModal(targetSection = '') {
 
 function initMonthlyBudgetUI() {
       const stored = localStorage.getItem('family_monefy_monthly_budgets');
-      if (stored) {
-        try { state.monthlyBudgets = JSON.parse(stored); } catch(e) { state.monthlyBudgets = []; }
-      }
-
-      if (!state.monthlyBudgets || !Array.isArray(state.monthlyBudgets) || state.monthlyBudgets.length === 0) {
-        state.monthlyBudgets = generateRichDemoBudgets();
+      if (stored !== null) {
         try {
-          localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
-        } catch(e) {}
+          const parsed = JSON.parse(stored);
+          state.monthlyBudgets = Array.isArray(parsed) ? parsed : [];
+        } catch(e) {
+          state.monthlyBudgets = [];
+          console.warn('تعذر قراءة الخطط المحفوظة؛ تم الاحتفاظ بالنسخة الأصلية دون استبدالها.');
+        }
+      }
+      if (!Array.isArray(state.monthlyBudgets)) state.monthlyBudgets = [];
+
+      if (state.monthlyBudgets.length === 0) {
+        state.activeBudgetId = null;
+        currentBudgetMonthData = null;
+        populateBudgetPlanSelector();
+        renderBudgetMembersMultiPicker();
+        return;
       }
 
       // ترقية وتأكيد سلامة كل خطة
@@ -28149,15 +28219,47 @@ function initMonthlyBudgetUI() {
       if (!sel) return;
       if (!state.monthlyBudgets) state.monthlyBudgets = [];
 
+      if (state.monthlyBudgets.length === 0) {
+        sel.innerHTML = '<option value="">لا توجد خطط محفوظة بعد</option>';
+        sel.value = '';
+        return;
+      }
+
       sel.innerHTML = state.monthlyBudgets.map(b => {
         const totalExp = (b.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
-        return `<option value="${b.id}" ${b.id === state.activeBudgetId ? 'selected' : ''}>📋 ${escapeHtml(b.name)} [${b.month}] - مقدر: ${formatMoney(totalExp)}</option>`;
+        return `<option value="${escapeHtml(String(b.id || ''))}" ${b.id === state.activeBudgetId ? 'selected' : ''}>📋 ${escapeHtml(b.name)} [${escapeHtml(String(b.month || ''))}] - مقدر: ${formatMoney(totalExp)}</option>`;
       }).join('');
     }
 
     function loadActiveBudgetPlan() {
-      if (!state.monthlyBudgets || state.monthlyBudgets.length === 0) {
+      if (!Array.isArray(state.monthlyBudgets) || state.monthlyBudgets.length === 0) {
         initMonthlyBudgetUI();
+        if (!Array.isArray(state.monthlyBudgets) || state.monthlyBudgets.length === 0) {
+          currentBudgetMonthData = null;
+          state.activeBudgetId = null;
+          populateBudgetPlanSelector();
+          renderBudgetMembersMultiPicker();
+          const itemsContainer = document.getElementById('budgetItemsListContainer');
+          if (itemsContainer) {
+            itemsContainer.innerHTML = '<div style="padding:18px; text-align:center; color:#94a3b8;">لا توجد خطة ميزانية محفوظة. أنشئ خطة جديدة للبدء.</div>';
+          }
+          const incomeContainer = document.getElementById('budgetIncomeRowsContainer');
+          if (incomeContainer) incomeContainer.innerHTML = '';
+          const itemCount = document.getElementById('budgetItemsCountBadge');
+          if (itemCount) itemCount.textContent = '0 بند';
+          const nameInput = document.getElementById('inpBudgetName');
+          const monthInput = document.getElementById('inpBudgetMonth');
+          if (nameInput) nameInput.value = '';
+          if (monthInput) monthInput.value = '';
+          const zero = formatMoney(0);
+          const incomeKpi = document.getElementById('budgetKpiIncome');
+          const expenseKpi = document.getElementById('budgetKpiExpense');
+          const surplusKpi = document.getElementById('budgetKpiSurplus');
+          if (incomeKpi) incomeKpi.textContent = `+ ${zero}`;
+          if (expenseKpi) expenseKpi.textContent = `− ${zero}`;
+          if (surplusKpi) surplusKpi.textContent = zero;
+          return;
+        }
       }
 
       let activePlan = state.monthlyBudgets.find(b => b.id === state.activeBudgetId);
@@ -28185,9 +28287,15 @@ function initMonthlyBudgetUI() {
     }
 
     function onBudgetPlanSelect(budgetId) {
+      if (!budgetId) {
+        currentBudgetMonthData = null;
+        state.activeBudgetId = null;
+        loadActiveBudgetPlan();
+        return;
+      }
       state.activeBudgetId = budgetId;
       loadActiveBudgetPlan();
-      showToast(`📂 تم فتح الميزانية: (${currentBudgetMonthData.name})`);
+      if (currentBudgetMonthData) showToast(`📂 تم فتح الميزانية: (${currentBudgetMonthData.name})`);
     }
 
     function onBudgetNameChange(val) {
@@ -28675,8 +28783,8 @@ function initMonthlyBudgetUI() {
       currentBudgetMonthData.incomes.push({
         id: 'inc-' + Date.now(),
         name: 'مصدر دخل جديد',
-        amount: 10000,
-        member: 'ماهر'
+        amount: 0,
+        member: 'البيت'
       });
       renderMonthlyBudgetAllocations();
     }
@@ -28742,16 +28850,17 @@ function initMonthlyBudgetUI() {
       const cloneSel = document.getElementById('newPlanCloneSourceSelect');
 
       const nextMonth = new Date();
+      nextMonth.setDate(1);
       nextMonth.setMonth(nextMonth.getMonth() + 1);
-      const yyyyMm = nextMonth.toISOString().slice(0, 7);
+      const yyyyMm = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
 
       if (monthInp) monthInp.value = yyyyMm;
       if (nameInp) nameInp.value = `ميزانية شهر ${yyyyMm} التقديرية`;
-      if (incInp) incInp.value = 85000;
+      if (incInp) incInp.value = '';
 
       if (cloneSel) {
-        cloneSel.innerHTML = '<option value="none">✨ خطة فارغة جديدة (قيم افتراضية متوازنة)</option>' +
-          (state.monthlyBudgets || []).map(b => `<option value="${b.id}">📑 استنساخ من: ${escapeHtml(b.name)} [${b.month}]</option>`).join('');
+        cloneSel.innerHTML = '<option value="none">✨ خطة فارغة جديدة</option>' +
+          (state.monthlyBudgets || []).map(b => `<option value="${escapeHtml(String(b.id || ''))}">📑 استنساخ من: ${escapeHtml(b.name)} [${escapeHtml(String(b.month || ''))}]</option>`).join('');
       }
 
       openModal('newBudgetPlanModal');
@@ -28765,13 +28874,19 @@ function initMonthlyBudgetUI() {
 
       const month = monthInp && monthInp.value ? monthInp.value : '2026-12';
       const name = nameInp && nameInp.value.trim() ? nameInp.value.trim() : `ميزانية شهر ${month}`;
-      const targetIncome = parseFloat(incInp ? incInp.value : 85000) || 85000;
+      const targetIncomeValue = parseFloat(incInp?.value || '0');
+      if (!Number.isFinite(targetIncomeValue) || targetIncomeValue < 0) {
+        showToast('يرجى إدخال دخل مستهدف صحيح أو تركه فارغاً', 'error');
+        incInp?.focus();
+        return;
+      }
+      const targetIncome = targetIncomeValue;
       const cloneFromId = cloneSel ? cloneSel.value : 'none';
 
       let items = [];
-      let incomes = [
-        { id: 'inc-' + Date.now(), name: 'راتب ماهر الأساسي', amount: targetIncome, member: 'ماهر' }
-      ];
+      let incomes = targetIncome > 0
+        ? [{ id: 'inc-' + Date.now(), name: 'دخل مخطط', amount: targetIncome, member: 'البيت' }]
+        : [];
 
       if (cloneFromId !== 'none') {
         const src = (state.monthlyBudgets || []).find(b => b.id === cloneFromId);
@@ -28780,14 +28895,6 @@ function initMonthlyBudgetUI() {
           items = JSON.parse(JSON.stringify(src.items || []));
           incomes = JSON.parse(JSON.stringify(src.incomes || []));
         }
-      } else {
-        items = [
-          { id: 'it-1', category: 'food', title: 'طعام ومشتريات وسوبرماركت', amount: 20000, members: ['البيت'], notes: '' },
-          { id: 'it-2', category: 'bills', title: 'فواتير والتزامات شهرية', amount: 8000, members: ['البيت'], notes: '' },
-          { id: 'it-3', category: 'transport', title: 'مواصلات وبنزين سيارة', amount: 6000, members: ['ماهر'], notes: '' },
-          { id: 'it-4', category: 'education', title: 'تعليم ودروس سناتر ومذكرات', amount: 15000, members: ['محمد', 'مريم'], notes: '' },
-          { id: 'it-5', category: 'daily', title: 'مصروف يومي شخصي', amount: 4000, members: ['ماهر', 'أية'], notes: '' }
-        ];
       }
 
       const newPlan = {
@@ -28880,15 +28987,15 @@ function initMonthlyBudgetUI() {
                   ${isActive ? '<span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 1px 6px; border-radius: 5px;">الخطة النشطة</span>' : ''}
                 </div>
                 <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 2px;">
-                  الشهر: <strong style="color: #cbd5e1;">${b.month}</strong> • عدد البنود: <strong style="color: #38bdf8;">${(b.items || []).length} بند</strong>
+                  الشهر: <strong style="color: #cbd5e1;">${escapeHtml(String(b.month || ''))}</strong> • عدد البنود: <strong style="color: #38bdf8;">${(b.items || []).length} بند</strong>
                 </div>
               </div>
 
               <div style="display: flex; gap: 6px;">
-                <button type="button" onclick="restoreBudgetForView('${b.id}')" style="padding: 6px 12px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.74rem; font-weight: 800; cursor: pointer;">
+                <button type="button" onclick="restoreBudgetForView('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 12px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.74rem; font-weight: 800; cursor: pointer;">
                   <i class="fa-solid fa-folder-open"></i> عرض وتعديل
                 </button>
-                <button type="button" onclick="deleteBudgetFromHistory('${b.id}')" style="padding: 6px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 0.74rem; font-weight: 800; cursor: pointer;" title="حذف">
+                <button type="button" onclick="deleteBudgetFromHistory('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 0.74rem; font-weight: 800; cursor: pointer;" title="حذف">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
               </div>
@@ -30785,8 +30892,7 @@ function saveEditedTx() {
     tx.receipt = window.currentEditTxReceiptDataUri;
   }
 
-  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
-  else localStorage.setItem('family_monefy_transactions', JSON.stringify(state.transactions));
+  if (typeof saveTx === 'function') saveTx();
 
   if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
   if (typeof renderUI === 'function') renderUI();
@@ -30844,7 +30950,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.4)</span>
+          <span>النظام جاهز ومحدث (v5.3.5)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
@@ -31616,8 +31722,7 @@ function executeWalletTransfer() {
   if (!state.transactions) state.transactions = [];
   state.transactions.push(txOut, txIn);
 
-  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
-  else localStorage.setItem('family_monefy_transactions', JSON.stringify(state.transactions));
+  if (typeof saveTx === 'function') saveTx();
 
   if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
   if (typeof renderUI === 'function') renderUI();
@@ -31631,24 +31736,45 @@ function renderWalletStatement() {
   const container = document.getElementById('walletStatementTableContainer');
   if (!container) return;
   const wallet = document.getElementById('stmtWalletFilter')?.value || 'all';
+  const wallets = Array.isArray(state.wallets) ? state.wallets : [];
+  const selectedWallets = wallet === 'all' ? wallets : wallets.filter(item => item.id === wallet);
+  const openingBalance = selectedWallets.reduce((sum, item) => sum + (Number(item.initialBalance ?? item.baseBalance) || 0), 0);
+  const matchesWallet = reference => {
+    if (!reference) return false;
+    const value = String(reference);
+    return selectedWallets.some(item => item.id === value || item.name === value || item.id === normalizeWalletId(value));
+  };
+  let txs = (state.transactions || []).filter(tx => {
+    if (wallet === 'all') return true;
+    if (tx.type === 'transfer') return matchesWallet(tx.fromWalletId || tx.fromWallet || tx.walletId || tx.wallet) || matchesWallet(tx.toWalletId || tx.toWallet);
+    return matchesWallet(tx.walletId || tx.wallet || 'wallet-cash-safe');
+  });
+  txs.sort((a,b) => (a.date || '').localeCompare(b.date || '') || String(a.time || '').localeCompare(String(b.time || '')));
 
-  let txs = (state.transactions || []).filter(t => wallet === 'all' || (t.walletId || 'cash') === wallet);
-  txs.sort((a,b) => (a.date || '').localeCompare(b.date || ''));
-
-  let bal = 0;
+  let bal = openingBalance;
   let inFlow = 0;
   let outFlow = 0;
 
   const rows = txs.map((t, idx) => {
-    const isInc = t.type === 'income';
+    const isTransfer = t.type === 'transfer' || t.category === 'transfer';
     const amt = parseFloat(t.amount) || 0;
-    if (isInc) { inFlow += amt; bal += amt; }
-    else { outFlow += amt; bal -= amt; }
+    let effect = t.type === 'income' ? amt : (t.type === 'expense' ? -amt : 0);
+    if (t.type === 'transfer') {
+      const fromMatches = wallet !== 'all' && matchesWallet(t.fromWalletId || t.fromWallet || t.walletId || t.wallet);
+      const toMatches = wallet !== 'all' && matchesWallet(t.toWalletId || t.toWallet);
+      effect = fromMatches ? -amt : (toMatches ? amt : 0);
+    }
+    const isInc = effect > 0 || (t.type === 'income' && effect >= 0);
+    bal += effect;
+    if (!(wallet === 'all' && isTransfer)) {
+      if (effect > 0) inFlow += effect;
+      else if (effect < 0) outFlow += Math.abs(effect);
+    }
 
     return `
       <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
         <td style="padding: 6px;">${idx + 1}</td>
-        <td style="padding: 6px;">${t.date || '-'}</td>
+        <td style="padding: 6px;">${escapeHtml(t.date || '-')}</td>
         <td style="padding: 6px;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
         <td style="padding: 6px; color:#34d399; text-align:left;">${isInc ? `+${amt.toFixed(2)}` : '-'}</td>
         <td style="padding: 6px; color:#f43f5e; text-align:left;">${!isInc ? `-${amt.toFixed(2)}` : '-'}</td>
@@ -31811,13 +31937,26 @@ function importFromGoogleDriveDirect(event) {
       const data = JSON.parse(e.target.result);
       if (data && (data.state || data.transactions)) {
         const newState = data.state || data;
-        if (newState.transactions) state.transactions = newState.transactions;
-        if (newState.expectedExpenses) state.expectedExpenses = newState.expectedExpenses;
-        if (newState.monthlyBudgets) state.monthlyBudgets = newState.monthlyBudgets;
-        if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
+        const fields = ['transactions', 'wallets', 'expectedExpenses', 'monthlyBudgets', 'moneyRequests', 'notes', 'debts', 'activityLog'];
+        const importedFields = fields.filter(field => Array.isArray(newState[field]));
+        if (!importedFields.length) {
+          if (typeof showToast === 'function') showToast('ملف النسخة لا يحتوي على بيانات قابلة للاستعادة', 'error');
+          return;
+        }
+        importedFields.forEach(field => { state[field] = newState[field]; });
+        if (typeof saveTx === 'function' && importedFields.includes('transactions')) saveTx();
         if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
+        if (importedFields.includes('expectedExpenses')) localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
+        if (importedFields.includes('monthlyBudgets')) localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+        if (importedFields.includes('moneyRequests') && typeof saveMoneyRequests === 'function') saveMoneyRequests();
+        if (importedFields.includes('notes') && typeof saveNotes === 'function') saveNotes();
+        if (importedFields.includes('debts') && typeof saveDebts === 'function') saveDebts();
+        if (importedFields.includes('activityLog') && typeof saveActivityLog === 'function') saveActivityLog();
         if (typeof renderUI === 'function') renderUI();
-        if (typeof showToast === 'function') showToast('تمت استعادة البيانات بنجاح تام ✓', 'success');
+        if (typeof renderExpectedList === 'function') renderExpectedList();
+        if (typeof renderRequestsList === 'function') renderRequestsList();
+        if (typeof renderBudgetHistory === 'function') renderBudgetHistory();
+        if (typeof showToast === 'function') showToast('تمت استعادة بيانات النسخة المحددة بنجاح ✓', 'success');
       } else {
         if (typeof showToast === 'function') showToast('الملف غير متوافق', 'error');
       }
@@ -31826,26 +31965,64 @@ function importFromGoogleDriveDirect(event) {
     }
   };
   reader.readAsText(file);
+  event.target.value = '';
 }
 window.importFromGoogleDriveDirect = importFromGoogleDriveDirect;
 
 // 9. SECONDARY WALLETS, REQUESTS, INCOME TABS
 function toggleSecAddWalletForm() {
-  const f = document.getElementById('secAddWalletForm');
+  const f = document.getElementById('secBoxAddWallet');
   if (f) f.style.display = (f.style.display === 'none' || !f.style.display) ? 'block' : 'none';
 }
 window.toggleSecAddWalletForm = toggleSecAddWalletForm;
 
 function handleCreateSecWallet() {
-  const name = document.getElementById('secWalletNameInput')?.value.trim();
-  const initBal = parseFloat(document.getElementById('secWalletInitialBalanceInput')?.value) || 0;
+  const nameInput = document.getElementById('inpSecNewWalletName');
+  const balanceInput = document.getElementById('inpSecNewWalletBal');
+  const iconInput = document.getElementById('inpSecNewWalletIcon');
+  const colorInput = document.getElementById('inpSecNewWalletColor');
+  const name = nameInput?.value.trim();
+  const initBal = parseFloat(balanceInput?.value) || 0;
   if (!name) {
     if (typeof showToast === 'function') showToast('يرجى إدخال اسم المحفظة', 'error');
+    nameInput?.focus();
+    return;
+  }
+  if (!Number.isFinite(initBal) || initBal < 0) {
+    if (typeof showToast === 'function') showToast('يرجى إدخال رصيد افتتاحي صحيح', 'error');
+    balanceInput?.focus();
     return;
   }
   if (!state.wallets) state.wallets = [];
-  state.wallets.push({ id: 'w_' + Date.now(), name: name, balance: initBal });
+  const iconValue = iconInput?.value || 'fa-wallet';
+  const icon = iconValue.split(/\s+/).find(token => /^fa-[\w-]+$/.test(token) && token !== 'fa-solid') || 'fa-wallet';
+  const color = /^#[0-9a-f]{6}$/i.test(colorInput?.value || '') ? colorInput.value : '#38bdf8';
+  const walletId = 'wallet-' + Date.now();
+  const newWallet = { id: walletId, name: name, type: 'wallet', balance: 0, initialBalance: 0, icon: icon, color: color };
+  state.wallets.push(newWallet);
+  localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
+
+  if (initBal > 0) {
+    if (!Array.isArray(state.transactions)) state.transactions = [];
+    state.transactions.unshift({
+      id: 'tx-opening-' + Date.now(),
+      type: 'income',
+      amount: initBal,
+      label: `رصيد افتتاحي لمحفظة (${name})`,
+      category: 'other_inc',
+      walletId: walletId,
+      member: state.currentUser || 'ماهر',
+      date: typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+      createdAt: new Date().toISOString()
+    });
+    if (typeof saveTx === 'function') saveTx();
+  }
+
+  if (nameInput) nameInput.value = '';
+  if (balanceInput) balanceInput.value = '0';
   toggleSecAddWalletForm();
+  if (typeof populateWalletDropdowns === 'function') populateWalletDropdowns();
   if (typeof renderUI === 'function') renderUI();
   if (typeof showToast === 'function') showToast(`تم إنشاء محفظة [${name}] بنجاح ✓`, 'success');
 }
@@ -31859,10 +32036,119 @@ window.toggleSecTransferForm = toggleSecTransferForm;
 function handleExecuteSecTransfer() { executeWalletTransfer(); }
 window.handleExecuteSecTransfer = handleExecuteSecTransfer;
 
-function renderSecWalletStatementTable() { renderWalletStatement(); }
+function renderSecWalletStatementTable() {
+  const tableBody = document.getElementById('secWalletTableBody');
+  if (!tableBody) return;
+
+  const walletFilter = document.getElementById('secFilterWallet')?.value || 'all';
+  const memberFilter = document.getElementById('secFilterMember')?.value || 'all';
+  const categoryFilter = document.getElementById('secFilterCategory')?.value || 'all';
+  const periodFilter = document.getElementById('secFilterPeriod')?.value || 'month';
+  const today = typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0];
+  const monthPrefix = today.slice(0, 7);
+  const weekStartDate = new Date();
+  weekStartDate.setDate(weekStartDate.getDate() - 6);
+  const weekStart = typeof getLocalDateStr === 'function' ? getLocalDateStr(weekStartDate) : weekStartDate.toISOString().split('T')[0];
+
+  const wallets = Array.isArray(state.wallets) ? state.wallets : [];
+  const wallet = wallets.find(item => item.id === walletFilter);
+  const openingBalance = walletFilter === 'all'
+    ? wallets.reduce((sum, item) => sum + (Number(item.initialBalance) || 0), 0)
+    : Number(wallet?.initialBalance) || 0;
+  const allTransactions = (state.transactions || []).slice().sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
+
+  const belongsToWallet = tx => {
+    if (walletFilter === 'all') return true;
+    const targetId = typeof normalizeWalletId === 'function' ? normalizeWalletId(walletFilter) : walletFilter;
+    if (tx.type === 'transfer') {
+      const fromId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.fromWalletId || tx.walletId) : (tx.fromWalletId || tx.walletId);
+      const toId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.toWalletId) : tx.toWalletId;
+      return fromId === targetId || toId === targetId;
+    }
+    const txWalletId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.walletId || tx.wallet) : (tx.walletId || tx.wallet);
+    return txWalletId === targetId;
+  };
+  const matchesPeriod = tx => {
+    const date = String(tx.date || '');
+    if (periodFilter === 'today') return date === today;
+    if (periodFilter === 'week') return date >= weekStart && date <= today;
+    if (periodFilter === 'month') return date.startsWith(monthPrefix);
+    return true;
+  };
+  const matchesFilters = tx => belongsToWallet(tx) &&
+    (memberFilter === 'all' || tx.member === memberFilter) &&
+    (categoryFilter === 'all' || String(tx.category || '') === categoryFilter) &&
+    matchesPeriod(tx);
+
+  const transactionEffect = tx => {
+    if (tx.deleted) return 0;
+    const amount = Math.abs(Number(tx.amount) || 0);
+    if (tx.type === 'transfer') {
+      if (walletFilter === 'all') return 0;
+      const targetId = typeof normalizeWalletId === 'function' ? normalizeWalletId(walletFilter) : walletFilter;
+      const fromId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.fromWalletId || tx.walletId) : (tx.fromWalletId || tx.walletId);
+      const toId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.toWalletId) : tx.toWalletId;
+      return fromId === targetId ? -amount : (toId === targetId ? amount : 0);
+    }
+    if (walletFilter !== 'all' && !belongsToWallet(tx)) return 0;
+    if (tx.type === 'income') return amount;
+    if (tx.type === 'expense') return -amount;
+    return 0;
+  };
+
+  const filteredTransactions = allTransactions.filter(matchesFilters);
+  let totalIn = 0;
+  let totalOut = 0;
+  filteredTransactions.forEach(tx => {
+    const amount = Math.abs(Number(tx.amount) || 0);
+    const effect = transactionEffect(tx);
+    if (effect > 0) totalIn += amount;
+    else if (effect < 0) totalOut += amount;
+  });
+
+  let runningBalance = openingBalance;
+  const visibleRows = [];
+  allTransactions.forEach(tx => {
+    runningBalance += transactionEffect(tx);
+    if (!matchesFilters(tx)) return;
+    const amount = Math.abs(Number(tx.amount) || 0);
+    const effect = transactionEffect(tx);
+    const categoryName = typeof getCategoryName === 'function'
+      ? getCategoryName(tx.category, tx.type)
+      : String(tx.category || '—');
+    const effectLabel = effect > 0 ? `+ ${formatMoney(amount)}` : (effect < 0 ? `− ${formatMoney(amount)}` : 'تحويل');
+    visibleRows.push(`
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+        <td style="padding: 7px 6px; white-space: nowrap;">${escapeHtml(tx.date || '—')}</td>
+        <td style="padding: 7px 6px;">${escapeHtml(tx.label || '—')}</td>
+        <td style="padding: 7px 6px; white-space: nowrap;">${escapeHtml(tx.member || '—')}</td>
+        <td style="padding: 7px 6px;">${escapeHtml(categoryName)}</td>
+        <td style="padding: 7px 6px;">${escapeHtml(tx.author || tx.member || '—')}</td>
+        <td style="padding: 7px 6px; direction: ltr; text-align: left; white-space: nowrap;">${escapeHtml(effectLabel)}</td>
+        <td style="padding: 7px 6px; direction: ltr; text-align: left; white-space: nowrap;">${formatMoney(runningBalance)}</td>
+      </tr>`);
+  });
+
+  tableBody.innerHTML = visibleRows.join('') || '<tr><td colspan="7" style="text-align:center; padding:18px; color:#94a3b8;">لا توجد حركات مطابقة للفلاتر</td></tr>';
+  const setKpi = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  setKpi('secWalletKpiOpening', formatMoney(openingBalance));
+  setKpi('secWalletKpiTotalIn', `+ ${formatMoney(totalIn)}`);
+  setKpi('secWalletKpiTotalOut', `− ${formatMoney(totalOut)}`);
+  setKpi('secWalletKpiBalance', formatMoney(runningBalance));
+}
 window.renderSecWalletStatementTable = renderSecWalletStatementTable;
 
-function resetSecWalletFilters() { renderWalletStatement(); }
+function resetSecWalletFilters() {
+  const wallet = document.getElementById('secFilterWallet');
+  const member = document.getElementById('secFilterMember');
+  const category = document.getElementById('secFilterCategory');
+  const period = document.getElementById('secFilterPeriod');
+  if (wallet) wallet.value = 'all';
+  if (member) member.value = 'all';
+  if (category) category.value = 'all';
+  if (period) period.value = 'month';
+  renderSecWalletStatementTable();
+}
 window.resetSecWalletFilters = resetSecWalletFilters;
 
 function exportSecWalletExcel() { exportAuditLedgerCSV(); }
@@ -31872,68 +32158,115 @@ function exportSecWalletPdf() { window.print(); }
 window.exportSecWalletPdf = exportSecWalletPdf;
 
 function switchIncomeSubTab(tab) {
-  const newSec = document.getElementById('incomeNewSection');
-  const listSec = document.getElementById('incomeListSection');
+  if (tab !== 'new' && tab !== 'list') return;
+  const newSec = document.getElementById('panelIncomeNewForm');
+  const listSec = document.getElementById('panelIncomeHistoryContainer');
   const btnNew = document.getElementById('btnSubIncomeNew');
   const btnList = document.getElementById('btnSubIncomeList');
-  if (newSec && listSec) {
-    newSec.style.display = (tab === 'new') ? 'block' : 'none';
-    listSec.style.display = (tab === 'list') ? 'block' : 'none';
-  }
-  if (btnNew) btnNew.classList.toggle('active', tab === 'new');
-  if (btnList) btnList.classList.toggle('active', tab === 'list');
+  if (newSec) newSec.style.display = (tab === 'new') ? 'block' : 'none';
+  if (listSec) listSec.style.display = (tab === 'list') ? 'block' : 'none';
+  const setButton = (button, active) => {
+    if (!button) return;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', String(active));
+    button.style.background = active ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent';
+    button.style.color = active ? '#fff' : '#94a3b8';
+    button.style.boxShadow = active ? '0 3px 10px rgba(16, 185, 129, 0.3)' : 'none';
+  };
+  setButton(btnNew, tab === 'new');
+  setButton(btnList, tab === 'list');
+  if (tab === 'list' && typeof renderIncomeHistoryList === 'function') renderIncomeHistoryList();
 }
 window.switchIncomeSubTab = switchIncomeSubTab;
 
 function handleSaveDirectIncome() {
-  const amt = parseFloat(document.getElementById('inpDirectIncomeAmount')?.value) || 0;
-  const label = document.getElementById('inpDirectIncomeLabel')?.value.trim() || 'دخل مباشر';
-  if (amt <= 0) {
+  const amountInput = document.getElementById('inpDirectIncomeAmount');
+  const amount = parseFloat(amountInput?.value);
+  const dateInput = document.getElementById('inpDirectIncomeDate');
+  const walletInput = document.getElementById('inpDirectIncomeWallet');
+  const categoryInput = document.getElementById('inpDirectIncomeCategory');
+  const memberInput = document.getElementById('inpDirectIncomeMember');
+  const descriptionInput = document.getElementById('inpDirectIncomeDesc');
+  if (!Number.isFinite(amount) || amount <= 0) {
     if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ دخل صحيح', 'error');
+    amountInput?.focus();
     return;
   }
+  const walletId = walletInput?.value || (state.currentWalletId !== 'all' ? state.currentWalletId : state.wallets?.[0]?.id);
+  if (!walletId || !(state.wallets || []).some(wallet => wallet.id === walletId)) {
+    if (typeof showToast === 'function') showToast('أضف محفظة صالحة قبل تسجيل الدخل', 'error');
+    return;
+  }
+  const localDate = typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0];
   const tx = {
     id: 'tx-' + Date.now(),
     type: 'income',
-    amount: amt,
-    label: label,
-    category: 'salary',
-    walletId: 'cash',
-    member: state.currentUser || 'ماهر',
-    date: getLocalDateStr(new Date()),
+    amount: amount,
+    label: descriptionInput?.value.trim() || 'دخل مباشر',
+    category: categoryInput?.value || 'salary',
+    walletId: walletId,
+    member: memberInput?.value || state.currentUser || 'ماهر',
+    date: dateInput?.value || localDate,
     time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
     createdAt: new Date().toISOString()
   };
   if (!state.transactions) state.transactions = [];
   state.transactions.unshift(tx);
-  if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
+  if (typeof saveTx === 'function') saveTx();
   if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
   if (typeof renderUI === 'function') renderUI();
+  if (typeof renderIncomeHistoryList === 'function') renderIncomeHistoryList();
+  if (descriptionInput) descriptionInput.value = '';
+  if (amountInput) amountInput.value = '';
   if (typeof showToast === 'function') showToast('تم تسجيل الدخل بنجاح ✓', 'success');
 }
 window.handleSaveDirectIncome = handleSaveDirectIncome;
 
 function switchRequestMainSection(sec) {
-  ['requests', 'income', 'wallets'].forEach(s => {
-    const secEl = document.getElementById(`sectionMain_${s}`);
-    const btnEl = document.getElementById(`btnMainTab${s.charAt(0).toUpperCase() + s.slice(1)}`);
-    if (secEl) secEl.style.display = (s === sec) ? 'block' : 'none';
-    if (btnEl) btnEl.classList.toggle('active', s === sec);
+  const sections = [
+    { key: 'requests', sectionId: 'secReqRequests', buttonId: 'btnMainTabRequests', color: '236, 72, 153' },
+    { key: 'income', sectionId: 'secReqIncome', buttonId: 'btnMainTabIncome', color: '16, 185, 129' },
+    { key: 'wallets', sectionId: 'secReqWallets', buttonId: 'btnMainTabWallets', color: '56, 189, 248' }
+  ];
+  if (!sections.some(item => item.key === sec)) return;
+  sections.forEach(item => {
+    const active = item.key === sec;
+    const secEl = document.getElementById(item.sectionId);
+    const btnEl = document.getElementById(item.buttonId);
+    if (secEl) secEl.style.display = active ? 'block' : 'none';
+    if (btnEl) {
+      btnEl.classList.toggle('active', active);
+      btnEl.setAttribute('aria-selected', String(active));
+      btnEl.style.background = active ? `linear-gradient(135deg, rgba(${item.color}, 1), rgba(${item.color}, 0.72))` : 'transparent';
+      btnEl.style.color = active ? '#fff' : '#94a3b8';
+      btnEl.style.boxShadow = active ? `0 3px 10px rgba(${item.color}, 0.35)` : 'none';
+    }
   });
+  if (sec === 'income') switchIncomeSubTab('new');
+  if (sec === 'requests') switchRequestSubTab('new');
+  if (sec === 'wallets' && typeof renderSecWalletStatementTable === 'function') renderSecWalletStatementTable();
 }
 window.switchRequestMainSection = switchRequestMainSection;
 
 function switchRequestSubTab(tab) {
-  const newSec = document.getElementById('reqNewSection');
-  const listSec = document.getElementById('reqListSection');
+  if (tab !== 'new' && tab !== 'list') return;
+  const newSec = document.getElementById('panelReqNewForm');
+  const listSec = document.getElementById('panelReqListContainer');
   const btnNew = document.getElementById('btnSubReqNew');
   const btnList = document.getElementById('btnSubReqList');
-  if (newSec && listSec) {
-    newSec.style.display = (tab === 'new') ? 'block' : 'none';
-    listSec.style.display = (tab === 'list') ? 'block' : 'none';
-  }
-  if (btnNew) btnNew.classList.toggle('active', tab === 'new');
-  if (btnList) btnList.classList.toggle('active', tab === 'list');
+  if (newSec) newSec.style.display = (tab === 'new') ? 'block' : 'none';
+  if (listSec) listSec.style.display = (tab === 'list') ? 'block' : 'none';
+  const setButton = (button, active) => {
+    if (!button) return;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', String(active));
+    button.style.background = active ? 'linear-gradient(135deg, #ec4899, #be185d)' : 'transparent';
+    button.style.color = active ? '#fff' : '#94a3b8';
+    button.style.boxShadow = active ? '0 3px 10px rgba(236, 72, 153, 0.3)' : 'none';
+  };
+  setButton(btnNew, tab === 'new');
+  setButton(btnList, tab === 'list');
+  if (tab === 'list' && typeof renderRequestsList === 'function') renderRequestsList();
 }
 window.switchRequestSubTab = switchRequestSubTab;
 
@@ -32394,13 +32727,13 @@ window.filterArchiveType = filterArchiveType;
           </div>
           <div class="form-group-custom">
             <label class="form-label-custom">الدخل المبدئي المتوقع (ج.م)</label>
-            <input type="number" step="500" id="newPlanTargetIncomeInput" class="form-input-custom" placeholder="85000">
+            <input type="number" min="0" step="500" id="newPlanTargetIncomeInput" class="form-input-custom" placeholder="0">
           </div>
         </div>
         <div class="form-group-custom" style="margin-bottom: 16px;">
           <label class="form-label-custom">استنساخ البنود والتقديرات من خطة سابقة:</label>
           <select id="newPlanCloneSourceSelect" class="form-select-custom" style="width: 100%;">
-            <option value="none">✨ خطة فارغة جديدة (قيم افتراضية متوازنة)</option>
+            <option value="none">✨ خطة فارغة جديدة</option>
           </select>
         </div>
         <div style="display: flex; gap: 8px;">
@@ -32714,116 +33047,6 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-
-  <!-- =========================================================================
-       نافذة تفاصيل عملية الأرشيف الفاخرة (Activity Details Modal)
-       تعرض كامل تفاصيل العملية دون اختصار مع المستند المرفق وزر الانتقال
-       ========================================================================= -->
-  <div class="modal-overlay modal-overlay-custom" id="activityDetailsModal" style="display: none; z-index: 100020 !important; align-items: center !important; justify-content: center !important; padding: 14px; direction: rtl;" dir="rtl" onclick="if(event.target === this) closeModal('activityDetailsModal')">
-    <div class="modal-content-card" style="max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.85); padding: 18px; box-sizing: border-box;">
-      
-      <!-- هيدر النافذة -->
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; margin-bottom: 14px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div id="actDetailHeaderIconBadge" style="width: 38px; height: 38px; border-radius: 12px; background: rgba(56, 189, 248, 0.15); border: 1.2px solid rgba(56, 189, 248, 0.35); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #38bdf8;">
-            <i class="fa-solid fa-clock-rotate-left" id="actDetailHeaderIcon"></i>
-          </div>
-          <div>
-            <h3 id="actDetailActionTitle" style="font-size: 0.98rem; font-weight: 900; color: #f8fafc; margin: 0;">تفاصيل حركة الأرشيف</h3>
-            <span id="actDetailTypeBadge" style="font-size: 0.65rem; color: #94a3b8; font-weight: 700;">سجل الحركة الموثقة</span>
-          </div>
-        </div>
-        <button type="button" onclick="closeModal('activityDetailsModal')" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- بانر المبلغ المالي الضخم والمدقق محاسبياً -->
-      <div id="actDetailAmountBanner" style="background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 12px; text-align: center; margin-bottom: 14px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);">
-        <div style="font-size: 0.70rem; color: #94a3b8; font-weight: 800; margin-bottom: 3px;">قيمة العملية المالية</div>
-        <div id="actDetailAmountVal" style="font-size: 1.75rem; font-weight: 900; color: #38bdf8; direction: ltr; font-variant-numeric: tabular-nums;">+ 0.00 ج.م</div>
-      </div>
-
-      <!-- نص البيان والوصف الكامل دون أي اختصار -->
-      <div style="margin-bottom: 12px;">
-        <label style="font-size: 0.70rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px; display: block;">البيان والوصف الكامل للعملية:</label>
-        <div id="actDetailFullLabel" style="font-size: 0.88rem; font-weight: 800; color: #f8fafc; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 10px 12px; line-height: 1.5; word-break: break-word;"></div>
-      </div>
-
-      <!-- شبكة البيانات التفصيلية (التاريخ، المنفذ، المستفيد، المحفظة، البند) -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-        <!-- التاريخ والوقت -->
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 8px 10px;">
-          <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 2px;"><i class="fa-regular fa-calendar-check" style="color: #38bdf8;"></i> التاريخ والوقت</div>
-          <div id="actDetailDateTime" style="font-size: 0.78rem; font-weight: 800; color: #e2e8f0;"></div>
-        </div>
-
-        <!-- المنفذ (المستخدم الفعلي) -->
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 8px 10px;">
-          <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 2px;"><i class="fa-solid fa-user-pen" style="color: #a855f7;"></i> المنفذ (بواسطة)</div>
-          <div id="actDetailAuthor" style="font-size: 0.78rem; font-weight: 800; color: #e2e8f0; display: flex; align-items: center; gap: 6px;"></div>
-        </div>
-
-        <!-- يخص من في الأسرة -->
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 8px 10px;">
-          <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 2px;"><i class="fa-solid fa-people-roof" style="color: #f59e0b;"></i> يخص في الأسرة</div>
-          <div id="actDetailMember" style="font-size: 0.78rem; font-weight: 800; color: #e2e8f0; display: flex; align-items: center; gap: 6px;"></div>
-        </div>
-
-        <!-- المحفظة أو الحساب -->
-        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 10px; padding: 8px 10px;">
-          <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; margin-bottom: 2px;"><i class="fa-solid fa-wallet" style="color: #10b981;"></i> المحفظة / الخزينة</div>
-          <div id="actDetailWallet" style="font-size: 0.78rem; font-weight: 800; color: #e2e8f0;"></div>
-        </div>
-      </div>
-
-      <!-- بند الملاحظات الإضافية (إن وجد) -->
-      <div id="actDetailNotesCard" style="display: none; background: rgba(245, 158, 11, 0.08); border: 1.2px solid rgba(245, 158, 11, 0.25); border-radius: 10px; padding: 8px 12px; margin-bottom: 12px;">
-        <div style="font-size: 0.68rem; font-weight: 800; color: #fbbf24; margin-bottom: 2px;"><i class="fa-solid fa-note-sticky"></i> ملاحظات إضافية:</div>
-        <div id="actDetailNotesTxt" style="font-size: 0.78rem; font-weight: 700; color: #f8fafc; line-height: 1.4;"></div>
-      </div>
-
-      <!-- معاينة المستند المرفق (الفاتورة / الإيصال / الصورة) -->
-      <div id="actDetailReceiptCard" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 10px; margin-bottom: 14px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-file-invoice-dollar" style="color: #38bdf8;"></i> المستند المرفق / الفاتورة:
-          </span>
-          <span id="actDetailReceiptStatusBadge" style="font-size: 0.62rem; padding: 1px 6px; border-radius: 5px; font-weight: 800;"></span>
-        </div>
-
-        <!-- صورة المستند المرفق إن وجدت -->
-        <div id="actDetailReceiptImgBox" style="display: none; position: relative; border-radius: 10px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,0.12);">
-          <img id="actDetailReceiptImg" src="" style="width: 100%; max-height: 200px; object-fit: contain; display: block; cursor: pointer;" onclick="openReceiptFromActDetail()" title="انقر لتكبير المستند بالشاشة الكاملة">
-          <div style="position: absolute; bottom: 6px; right: 6px; display: flex; gap: 6px;">
-            <button type="button" onclick="openReceiptFromActDetail()" style="background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 0.70rem; padding: 4px 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-expand"></i> تكبير
-            </button>
-            <button type="button" onclick="downloadReceiptFromActDetail()" style="background: rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 0.70rem; padding: 4px 8px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-download"></i> حفظ
-            </button>
-          </div>
-        </div>
-
-        <!-- حالة عدم وجود مرفق -->
-        <div id="actDetailNoReceiptMsg" style="display: block; text-align: center; padding: 12px; color: #64748b; font-size: 0.75rem; font-weight: 700;">
-          <i class="fa-regular fa-image" style="font-size: 1.3rem; margin-bottom: 4px; display: block; opacity: 0.4;"></i>
-          لا توجد صورة أو فاتورة مرفقة مع هذه الحركة
-        </div>
-      </div>
-
-      <!-- أزرار الإجراءات السريعة (الانتقال لقسم الحركة + الإغلاق) -->
-      <div style="display: flex; gap: 8px;">
-        <button type="button" id="btnActDetailContextJump" onclick="jumpToActivityContext()" class="btn-submit-tx" style="flex: 1; height: 40px; font-size: 0.82rem; font-weight: 800; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 10px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);">
-          <i class="fa-solid fa-arrow-up-right-from-square"></i> <span id="actDetailJumpBtnTxt">الانتقال للقسم المعني</span>
-        </button>
-        <button type="button" onclick="closeModal('activityDetailsModal')" style="height: 40px; padding: 0 16px; font-size: 0.82rem; font-weight: 800; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">
-          إغلاق
-        </button>
-      </div>
-
-    </div>
-  </div>
 
   <!-- =========================================================================
        1. درج ملخص النشاط المالي الشامل (يفتح من اليسار)
