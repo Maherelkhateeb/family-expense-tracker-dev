@@ -9991,6 +9991,318 @@
       font-weight: 900;
     }
 
+    /* لوحة إنشاء المهام: تسلسل أوضح ومساحات مريحة للشاشات المختلفة */
+    .tasks-creator-panel,
+    .tasks-creator-panel * { box-sizing: border-box; }
+    .tasks-creator-panel {
+      width: min(100%, 920px);
+      margin-inline: auto;
+      padding: clamp(14px, 2vw, 22px) !important;
+      gap: 16px !important;
+      border: 1px solid rgba(52, 211, 153, 0.34) !important;
+      border-radius: 20px !important;
+      background: radial-gradient(circle at 100% 0%, rgba(16, 185, 129, 0.10), transparent 34%),
+                  linear-gradient(145deg, rgba(25, 38, 58, 0.98), rgba(10, 19, 38, 0.99)) !important;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    }
+    .tasks-creator-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    }
+    .tasks-creator-heading {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+    .tasks-creator-heading-icon {
+      flex: 0 0 42px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      border-radius: 13px;
+      color: #6ee7b7;
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.24), rgba(5, 150, 105, 0.10));
+      font-size: 1rem;
+    }
+    .tasks-creator-heading-copy { min-width: 0; display: grid; gap: 3px; }
+    .tasks-creator-heading h2 {
+      margin: 0;
+      color: #f8fafc;
+      font-size: 0.98rem;
+      font-weight: 900;
+      line-height: 1.35;
+    }
+    .tasks-creator-heading p {
+      margin: 0;
+      color: #94a3b8;
+      font-size: 0.70rem;
+      font-weight: 650;
+    }
+    #unifiedCreatorActiveTagBadge {
+      margin-inline-start: 2px;
+      padding: 4px 9px !important;
+      border-radius: 999px !important;
+      white-space: nowrap;
+      font-size: 0.68rem !important;
+    }
+    .tasks-creator-close {
+      flex: 0 0 auto;
+      min-height: 36px;
+      padding: 0 11px !important;
+      border-radius: 10px !important;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+    }
+    .tasks-creator-close:hover { background: rgba(244, 63, 94, 0.24) !important; }
+    .tasks-creator-field { min-width: 0; display: grid; gap: 8px; }
+    .tasks-creator-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #e2e8f0;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+    .tasks-creator-label i { color: #6ee7b7; }
+    .tasks-creator-title-input {
+      width: 100%;
+      min-width: 0;
+      height: 48px;
+      padding: 0 14px;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: 12px;
+      outline: none;
+      color: #f8fafc;
+      background: rgba(7, 15, 31, 0.74);
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+    .tasks-creator-title-input::placeholder { color: #74839a; font-weight: 550; }
+    .tasks-creator-title-input:focus {
+      border-color: rgba(52, 211, 153, 0.72) !important;
+      background: rgba(7, 15, 31, 0.94);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+    }
+    .tasks-creator-tag-head,
+    .tasks-creator-schedule-head,
+    .tasks-creator-details-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .tasks-creator-tag-help,
+    .tasks-creator-schedule-help {
+      margin: 3px 0 0;
+      color: #8493a9;
+      font-size: 0.66rem;
+      font-weight: 600;
+    }
+    .tasks-creator-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px !important;
+      overflow: visible !important;
+      padding: 0 !important;
+    }
+    .tasks-creator-panel .btn-unified-tag-chip {
+      min-height: 35px;
+      padding: 6px 11px;
+      border-radius: 10px;
+      border-color: rgba(148, 163, 184, 0.18);
+      background: rgba(30, 41, 59, 0.62);
+      font-size: 0.72rem;
+    }
+    .tasks-creator-panel .btn-unified-tag-chip.active {
+      box-shadow: 0 5px 14px rgba(124, 58, 237, 0.24);
+    }
+    .tasks-creator-schedule {
+      display: grid;
+      gap: 13px;
+      padding: 15px;
+      border: 1px solid rgba(56, 189, 248, 0.20);
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(10, 22, 42, 0.78), rgba(13, 24, 43, 0.56));
+    }
+    .tasks-creator-schedule-title {
+      display: block;
+      color: #f1f5f9;
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+    .tasks-creator-date-summary {
+      max-width: 56%;
+      padding: 6px 10px;
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      border-radius: 999px;
+      color: #ddd6fe !important;
+      background: rgba(109, 40, 217, 0.14);
+      font-size: 0.68rem !important;
+      font-weight: 850 !important;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tasks-creator-schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .tasks-creator-date-group,
+    .tasks-creator-time-group { min-width: 0; display: grid; align-content: start; gap: 8px; }
+    .tasks-creator-group-label {
+      color: #aab8ca;
+      font-size: 0.70rem;
+      font-weight: 850;
+    }
+    .tasks-creator-date-presets,
+    .tasks-creator-time-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px !important;
+      overflow: visible !important;
+      padding: 0 !important;
+    }
+    .tasks-creator-panel .btn-inline-dt-preset {
+      min-height: 34px;
+      padding: 6px 10px !important;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 9px !important;
+      background: rgba(30, 41, 59, 0.72);
+      font-size: 0.70rem !important;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .tasks-creator-panel .btn-inline-dt-preset.active {
+      border-color: rgba(168, 85, 247, 0.7) !important;
+      background: rgba(124, 58, 237, 0.24) !important;
+      color: #e9d5ff !important;
+      box-shadow: 0 3px 10px rgba(124, 58, 237, 0.16);
+    }
+    .tasks-creator-picker-button {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-color: rgba(56, 189, 248, 0.34);
+      border-radius: 11px;
+      color: #e0f2fe;
+      background: linear-gradient(100deg, rgba(124, 58, 237, 0.22), rgba(14, 165, 233, 0.13));
+      font-size: 0.76rem;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+    .tasks-creator-picker-button:hover {
+      border-color: rgba(56, 189, 248, 0.68);
+      background: linear-gradient(100deg, rgba(124, 58, 237, 0.30), rgba(14, 165, 233, 0.20));
+    }
+    .tasks-creator-timezone-note {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #8294ad;
+      font-size: 0.64rem;
+      font-weight: 650;
+    }
+    .tasks-creator-timezone-note i { color: #38bdf8; }
+    .tasks-creator-details {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding-top: 2px;
+    }
+    .tasks-creator-member-group { min-width: 0; display: grid; gap: 7px; }
+    .tasks-creator-member-list { display: flex; flex-wrap: wrap; gap: 6px !important; }
+    .tasks-creator-panel .btn-inline-member-chip {
+      min-height: 32px;
+      padding: 5px 10px;
+      border-radius: 9px;
+      border-color: rgba(148, 163, 184, 0.18);
+      color: #cbd5e1;
+      background: rgba(30, 41, 59, 0.62);
+      font-size: 0.69rem;
+    }
+    .tasks-creator-panel .btn-inline-member-chip.active {
+      background: rgba(14, 165, 233, 0.16) !important;
+      border-color: rgba(56, 189, 248, 0.62) !important;
+      color: #7dd3fc !important;
+    }
+    .tasks-creator-attachments { display: flex; align-items: center; justify-content: flex-end; gap: 7px; flex-wrap: wrap; }
+    .tasks-creator-attachments-label { width: 100%; color: #9aabc0; font-size: 0.66rem; font-weight: 750; text-align: right; }
+    .tasks-creator-attachment-button {
+      min-height: 34px !important;
+      padding: 0 11px !important;
+      border-radius: 9px !important;
+      font-size: 0.70rem !important;
+      transition: transform 0.16s ease, background 0.16s ease;
+    }
+    .tasks-creator-attachment-button:hover { transform: translateY(-1px); }
+    .tasks-creator-photo-preview { max-width: 100%; flex-wrap: wrap; }
+    .tasks-creator-actions {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 9px !important;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tasks-creator-submit,
+    .tasks-creator-cancel {
+      min-height: 46px !important;
+      border-radius: 11px !important;
+      font-size: 0.80rem !important;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+    .tasks-creator-submit:hover { box-shadow: 0 8px 20px rgba(16, 185, 129, 0.22) !important; }
+    .tasks-creator-submit:active,
+    .tasks-creator-cancel:active { transform: scale(0.985); }
+    .tasks-creator-panel button:focus-visible,
+    .tasks-creator-title-input:focus-visible {
+      outline: 2px solid rgba(125, 211, 252, 0.86);
+      outline-offset: 2px;
+    }
+    #tasksCalendarProductivityPinnedCard {
+      position: sticky !important;
+      top: calc(58px + env(safe-area-inset-top, 0px)) !important;
+      z-index: 95 !important;
+      align-self: stretch;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    @media (max-width: 640px) {
+      .tasks-creator-panel { padding: 14px !important; gap: 14px !important; }
+      .tasks-creator-header { align-items: flex-start; }
+      .tasks-creator-heading-icon { flex-basis: 38px; width: 38px; height: 38px; }
+      .tasks-creator-heading h2 { font-size: 0.90rem; }
+      .tasks-creator-schedule-grid { grid-template-columns: minmax(0, 1fr); }
+      .tasks-creator-date-presets,
+      .tasks-creator-time-presets { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); }
+      .tasks-creator-panel .btn-inline-dt-preset { width: 100%; }
+      .tasks-creator-details { grid-template-columns: minmax(0, 1fr); }
+      .tasks-creator-attachments { justify-content: flex-start; }
+      .tasks-creator-attachments-label { text-align: right; }
+      #tasksCalendarProductivityPinnedCard { top: calc(56px + env(safe-area-inset-top, 0px)) !important; }
+    }
+    @media (max-width: 420px) {
+      .tasks-creator-header { gap: 8px; }
+      .tasks-creator-heading { gap: 8px; }
+      .tasks-creator-heading p { font-size: 0.64rem; }
+      .tasks-creator-date-summary { max-width: 52%; font-size: 0.62rem !important; }
+      .tasks-creator-actions { grid-template-columns: minmax(0, 1fr); }
+      .tasks-creator-cancel { justify-content: center; }
+      #tasksCalendarProductivityPinnedCard { padding: 8px 9px !important; }
+      #tasksCalendarProductivityPinnedCard > div:nth-child(2) { gap: 4px !important; }
+    }
+
     /* مقبضا الشاشات الجانبية يمين ويسار */
     .side-screen-edge-handle {
       position: fixed;
@@ -16508,55 +16820,39 @@
           </div>
         </button>
 
-        <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (مخفية افتراضياً وتظهر فقط عند الضغط على زر إضافة مهمة) -->
-        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 14px 16px; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
-          
-          <!-- هيدر كارت الإضافة مع زر إغلاق / إلغاء واضح للعودة للقائمة النظيفة -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);">
-                <i class="fa-solid fa-pen-to-square"></i>
+        <!-- لوحة إضافة مهمة منظمة بإجراءات واضحة -->
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card tasks-creator-panel" role="region" aria-labelledby="tasksCreatorHeading" style="display: none; flex-direction: column;">
+          <div class="tasks-creator-header">
+            <div class="tasks-creator-heading">
+              <div class="tasks-creator-heading-icon" aria-hidden="true"><i class="fa-solid fa-pen-to-square"></i></div>
+              <div class="tasks-creator-heading-copy">
+                <h2 id="tasksCreatorHeading">إضافة مهمة جديدة</h2>
+                <p>أدخل التفاصيل، ثم اختر التصنيف والموعد المناسب.</p>
               </div>
-              <span style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
-              <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
+              <span id="unifiedCreatorActiveTagBadge">🌐 عامة</span>
             </div>
-            
-            <!-- زر إغلاق النموذج -->
-            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 28px; padding: 0 10px; border-radius: 7px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #f43f5e; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-xmark"></i>
-              <span>إلغاء</span>
+            <button type="button" class="tasks-creator-close" onclick="hideUnifiedTaskCreator()" aria-label="إغلاق نموذج إضافة المهمة">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i><span>إغلاق</span>
             </button>
           </div>
 
-          <!-- 1. بيان المهمة (عنوان / تفاصيل) -->
-          <div style="display: flex; flex-direction: column; gap: 5px;">
-            <label for="quickTaskTitleInput" style="font-size: 0.75rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-align-right" style="color: #a855f7;"></i>
-              <span>بيان المهمة / التفاصيل:</span>
-            </label>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <input type="text" id="quickTaskTitleInput" placeholder="اكتب بيان المهمة هنا... (مثال: سداد فاتورة الكهرباء والإنترنت)" style="flex: 1; height: 42px; border-radius: 11px; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); color: #fff; font-size: 0.86rem; font-weight: 800; padding: 0 14px; outline: none; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#c084fc'" onblur="this.style.borderColor='rgba(168, 85, 247, 0.4)'" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
-              <button type="button" onclick="handleQuickTaskAdd()" style="height: 42px; padding: 0 16px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.84rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(16, 185, 129, 0.45); flex-shrink: 0; transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
-                <i class="fa-solid fa-check"></i>
-                <span>حفظ</span>
-              </button>
-            </div>
-          </div>
+          <section class="tasks-creator-field" aria-labelledby="quickTaskTitleLabel">
+            <label id="quickTaskTitleLabel" class="tasks-creator-label" for="quickTaskTitleInput"><i class="fa-solid fa-align-right" aria-hidden="true"></i> تفاصيل المهمة</label>
+            <input type="text" id="quickTaskTitleInput" class="tasks-creator-title-input" placeholder="مثال: سداد فاتورة الكهرباء والإنترنت" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickTaskAdd()}">
+          </section>
 
-          <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
-          <div style="display: flex; flex-direction: column; gap: 6px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.74rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
-                <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
-                <span>اختر التاج / الوسم:</span>
-              </span>
-              <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">(اضغط للتبديل الفوري)</span>
+          <section class="tasks-creator-field tasks-creator-tag-section" aria-labelledby="tasksCreatorTagLabel">
+            <div class="tasks-creator-tag-head">
+              <div>
+                <span id="tasksCreatorTagLabel" class="tasks-creator-label"><i class="fa-solid fa-tags" aria-hidden="true"></i> تصنيف المهمة</span>
+                <p class="tasks-creator-tag-help">اختر وسمًا واحدًا لتنظيم المهمة.</p>
+              </div>
             </div>
-            <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
+            <div id="unifiedTaskTagChipsList" class="custom-scrollbar tasks-creator-tag-list" role="group" aria-label="تصنيف المهمة">
               <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
               <button type="button" class="btn-unified-tag-chip active" data-tag="general" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="planned" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)">⭐ هامة / عاجلة</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="shopping" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="home" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
               <button type="button" class="btn-unified-tag-chip" data-tag="bills" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
@@ -16565,57 +16861,51 @@
             </div>
           </div>
 
-          <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
-          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
-                <span>تحديد موعد المهمة (التاريخ والساعة معاً من نفس الشاشة):</span>
-              </span>
-              <span id="lblUnifiedTaskDateTimeDisplay" style="font-size: 0.68rem; font-weight: 850; color: #38bdf8;">اليوم</span>
+          <section class="tasks-creator-schedule" aria-labelledby="tasksCreatorScheduleLabel">
+            <div class="tasks-creator-schedule-head">
+              <div>
+                <span id="tasksCreatorScheduleLabel" class="tasks-creator-schedule-title"><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> موعد المهمة</span>
+                <p class="tasks-creator-schedule-help">حدد التاريخ والوقت، أو اترك الوقت دون تحديد.</p>
+              </div>
+              <span id="lblUnifiedTaskDateTimeDisplay" class="tasks-creator-date-summary">اليوم</span>
             </div>
 
-            <!-- شبكة التاريخ والساعة -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-              <!-- عمود التاريخ -->
-              <div style="display: flex; flex-direction: column; gap: 5px;">
-                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">📅 التاريخ:</label>
-                <!-- اختصارات سريعة للأيام -->
-                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
+            <div class="tasks-creator-schedule-grid">
+              <div class="tasks-creator-date-group">
+                <span class="tasks-creator-group-label"><i class="fa-regular fa-calendar" aria-hidden="true"></i> التاريخ</span>
+                <div class="tasks-creator-date-presets" id="inlineDatePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)">اليوم</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)">غدًا</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)">بعد يومين</button>
                 </div>
-                <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
                 <input type="date" id="inlineTaskDueDate" hidden onchange="onInlineDateCustomChange(this.value)">
               </div>
 
-              <!-- عمود الساعة / الوقت -->
-              <div style="display: flex; flex-direction: column; gap: 5px;">
-                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">⏰ التوقيت (الساعة):</label>
-                <!-- اختصارات سريعة للساعات -->
-                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 ص</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">01:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">05:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
+              <div class="tasks-creator-time-group">
+                <span class="tasks-creator-group-label"><i class="fa-regular fa-clock" aria-hidden="true"></i> الوقت</span>
+                <div class="tasks-creator-time-presets custom-scrollbar" id="inlineTimePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)">09:00 ص</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)">01:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)">05:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)">09:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset tasks-creator-no-time" data-time="" onclick="selectInlineTimePreset('', this)" title="إزالة الوقت">بدون وقت</button>
                 </div>
-                <!-- حقل إدخال الساعة المباشر من نفس الشاشة -->
                 <input type="time" id="inlineTaskDueTime" hidden onchange="onInlineTimeCustomChange(this.value)">
               </div>
             </div>
-            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button" onclick="openTaskDateTimePickerModal('inline')">🗓️ فتح التقويم واختيار الوقت</button>
+
+            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button tasks-creator-picker-button" onclick="openTaskDateTimePickerModal('inline')">
+              تخصيص التاريخ والوقت والمنطقة الزمنية
+            </button>
+            <div class="tasks-creator-timezone-note"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i><span>يمكنك اختيار المنطقة الزمنية من شاشة تخصيص الموعد.</span></div>
             <input type="hidden" id="inlineTaskDueSecond" value="00">
             <input type="hidden" id="inlineTaskDueTimezone">
           </div>
 
-          <!-- 4. المسؤول + خياري إضافة الصورة (تصوير بالكاميرا أو اختيار من الاستوديو) للمهمة الرئيسية -->
-          <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-            <!-- اختيار فرد العائلة المسؤول -->
-            <div style="display: flex; align-items: center; gap: 5px;">
-              <span style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1;">👤 المسؤول:</span>
-              <div style="display: flex; gap: 3px;" id="inlineTaskMemberGroup">
+          <section class="tasks-creator-details" aria-label="المسؤول والمرفقات">
+            <div class="tasks-creator-member-group">
+              <span class="tasks-creator-label"><i class="fa-solid fa-user-check" aria-hidden="true"></i> المسؤول عن المهمة</span>
+              <div class="tasks-creator-member-list" id="inlineTaskMemberGroup" role="group" aria-label="اختيار المسؤول">
                 <button type="button" class="btn-inline-member-chip active" data-member="البيت" onclick="selectInlineTaskMember('البيت', this)">البيت</button>
                 <button type="button" class="btn-inline-member-chip" data-member="ماهر" onclick="selectInlineTaskMember('ماهر', this)">ماهر</button>
                 <button type="button" class="btn-inline-member-chip" data-member="آية" onclick="selectInlineTaskMember('آية', this)">آية</button>
@@ -16624,30 +16914,24 @@
               </div>
             </div>
 
-            <!-- خيارا إضافة الصورة للمهمة الرئيسية: تصوير أو استوديو -->
-            <div style="display: flex; gap: 5px; align-items: center;">
-              <button type="button" onclick="triggerMainTaskCamera()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(56, 189, 248, 0.16); border: 1.2px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                <i class="fa-solid fa-camera"></i>
-                <span>تصوير</span>
+            <div class="tasks-creator-attachments">
+              <span class="tasks-creator-attachments-label">مرفق صورة (اختياري)</span>
+              <button type="button" class="tasks-creator-attachment-button" onclick="triggerMainTaskCamera()" style="background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.38); color: #7dd3fc; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-camera" aria-hidden="true"></i><span>التقاط صورة</span>
               </button>
-              <button type="button" onclick="triggerMainTaskGallery()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.16); border: 1.2px solid rgba(16, 185, 129, 0.5); color: #34d399; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-                <i class="fa-solid fa-image"></i>
-                <span>استوديو</span>
+              <button type="button" class="tasks-creator-attachment-button" onclick="triggerMainTaskGallery()" style="background: rgba(16,185,129,0.11); border: 1px solid rgba(16,185,129,0.34); color: #6ee7b7; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-regular fa-image" aria-hidden="true"></i><span>اختيار صورة</span>
               </button>
-              <!-- شريط معاينة صورة المهمة الرئيسية -->
-              <div id="quickTaskPhotoPreviewBar" style="display: none; align-items: center; gap: 6px;"></div>
+              <div id="quickTaskPhotoPreviewBar" class="tasks-creator-photo-preview" style="display: none; align-items: center; gap: 6px;"></div>
             </div>
           </div>
 
-          <!-- 5. زرا الحفظ والإلغاء النهائيين -->
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 42px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.86rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
-              <i class="fa-solid fa-check-double"></i>
-              <span>✨ حفظ وإضافة المهمة</span>
+          <div class="tasks-creator-actions">
+            <button type="button" id="btnSubmitUnifiedTask" class="tasks-creator-submit" onclick="handleQuickTaskAdd()">
+              <i class="fa-solid fa-check" aria-hidden="true"></i><span>حفظ وإضافة المهمة</span>
             </button>
-            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 42px; padding: 0 14px; border-radius: 11px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-xmark"></i>
-              <span>إلغاء</span>
+            <button type="button" class="tasks-creator-cancel" onclick="hideUnifiedTaskCreator()">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i><span>إلغاء</span>
             </button>
           </div>
 
@@ -16696,7 +16980,7 @@
            ========================================================== -->
       <div id="tasksTabCalendarView" style="display: none; flex-direction: column; gap: 12px;">
         <!-- مؤشرات الإنجاز مثبتة أعلى التقويم أسفل الشريط العلوي -->
-        <div id="tasksCalendarProductivityPinnedCard" style="position: sticky; top: 56px; z-index: 90; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
+        <div id="tasksCalendarProductivityPinnedCard" class="tasks-calendar-metrics-sticky" style=" background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <div style="font-size: 0.82rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
@@ -16949,7 +17233,7 @@
               <span class="theme-check-dot" data-theme="light" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #0284c7; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #0284c7;"></span>
             </div>
             <div style="font-size: 0.65rem; color: #475569;">مظهر نهاري أبيض ساطع ونقي وفائق الوضوح للرؤية تحت الشمس</div>
-          </div>
+          </section>
 
         </div>
 
@@ -16981,7 +17265,7 @@
                 <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.8 • متزامن</span>
               </h3>
             </div>
-          </div>
+          </section>
           <!-- زر الإغلاق المدمج داخل رأس النافذة -->
           <button type="button" class="btn-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; cursor: pointer; margin: 0;">&times;</button>
         </div>
@@ -17001,7 +17285,7 @@
               <i class="fa-solid fa-arrows-rotate"></i>
               <span>تبديل المستخدم</span>
             </button>
-          </div>
+          </section>
 
           <!-- القسم 1: المظهر والتخصيص البصري -->
           <div class="settings-unified-section" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
@@ -17079,7 +17363,6 @@
                 </div>
               </div>
             </div>
-
             <!-- 2. أنماط وألوان الأيقونات (12 نمط باليت متناسق) -->
             <div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
