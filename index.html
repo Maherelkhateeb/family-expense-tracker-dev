@@ -16695,6 +16695,38 @@
            2. التبويب الثاني: شاشة التقويم الشهري التفاعلي (tasksTabCalendarView)
            ========================================================== -->
       <div id="tasksTabCalendarView" style="display: none; flex-direction: column; gap: 12px;">
+        <!-- مؤشرات الإنجاز مثبتة أعلى التقويم أسفل الشريط العلوي -->
+        <div id="tasksCalendarProductivityPinnedCard" style="position: sticky; top: 56px; z-index: 90; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 4px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 0.82rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
+              <span>مؤشرات الإنتاجية والإنجاز:</span>
+            </div>
+            <span id="tasksCalendarCompletionRateBadge" style="font-size: 0.72rem; font-weight: 950; color: #34d399; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 8px;">0%</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; margin-bottom: 6px;">
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">إجمالي المهام</div>
+              <div id="tasksCalendarTotalCount" style="font-size: 0.86rem; font-weight: 900; color: #38bdf8;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المكتملة ✅</div>
+              <div id="tasksCalendarDoneCount" style="font-size: 0.86rem; font-weight: 900; color: #34d399;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المتبقية ⏳</div>
+              <div id="tasksCalendarPendingCount" style="font-size: 0.86rem; font-weight: 900; color: #fbbf24;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 5px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;">المتأخرة ⚠️</div>
+              <div id="tasksCalendarOverdueCount" style="font-size: 0.86rem; font-weight: 900; color: #f43f5e;">0</div>
+            </div>
+          </div>
+          <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
+            <div id="tasksCalendarProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #10b981); transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+
         <!-- بطاقة التقويم الشهري التفاعلي -->
         <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1.2px solid rgba(168, 85, 247, 0.35); border-radius: 16px; padding: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
           <!-- شريط تصفح الشهر -->
@@ -30486,6 +30518,7 @@ function switchTasksViewMode(mode) {
     if (viewList) viewList.style.display = 'none';
     if (viewCal) viewCal.style.display = 'flex';
     renderTasksCalendar();
+    updateTasksProductivityKPIs();
   } else {
     if (btnList) {
       btnList.classList.add('active');
@@ -31018,6 +31051,12 @@ function updateTasksProductivityKPIs() {
   const elOverdue = document.getElementById('pinnedTasksOverdueCount');
   const elBadge = document.getElementById('pinnedTasksCompletionRateBadge');
   const elBar = document.getElementById('pinnedTasksProgressBar');
+  const calendarElTotal = document.getElementById('tasksCalendarTotalCount');
+  const calendarElPending = document.getElementById('tasksCalendarPendingCount');
+  const calendarElDone = document.getElementById('tasksCalendarDoneCount');
+  const calendarElOverdue = document.getElementById('tasksCalendarOverdueCount');
+  const calendarElBadge = document.getElementById('tasksCalendarCompletionRateBadge');
+  const calendarElBar = document.getElementById('tasksCalendarProgressBar');
 
   if (elTotal) elTotal.textContent = total;
   if (elPending) elPending.textContent = pending;
@@ -31025,6 +31064,12 @@ function updateTasksProductivityKPIs() {
   if (elOverdue) elOverdue.textContent = overdue;
   if (elBadge) elBadge.textContent = `${pct}%`;
   if (elBar) elBar.style.width = `${pct}%`;
+  if (calendarElTotal) calendarElTotal.textContent = total;
+  if (calendarElPending) calendarElPending.textContent = pending;
+  if (calendarElDone) calendarElDone.textContent = done;
+  if (calendarElOverdue) calendarElOverdue.textContent = overdue;
+  if (calendarElBadge) calendarElBadge.textContent = `${pct}%`;
+  if (calendarElBar) calendarElBar.style.width = `${pct}%`;
 
   const catCounts = { all: total, shopping: 0, bills: 0, health: 0, home: 0, work: 0 };
   tasks.forEach(t => {
