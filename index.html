@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.7';
-    var APP_BUILD_ID = 202611111551;
+    var APP_VERSION = 'v5.3.8';
+    var APP_BUILD_ID = 202611111626;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16943,7 +16943,7 @@
             <div>
               <h3 class="modal-title-custom" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>مركز الضبط الموحد والمزامنة</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.7 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.8 • متزامن</span>
               </h3>
             </div>
           </div>
@@ -17505,8 +17505,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.7';
-      const APP_BUILD_ID = 202611111551;
+      const APP_VERSION = 'v5.3.8';
+      const APP_BUILD_ID = 202611111626;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -21584,6 +21584,9 @@ function generateRichDemoTransactions() {
         'rose': { gradient: 'linear-gradient(135deg, #f472b6 0%, #be185d 100%)', accent: '#f472b6', shadow: 'rgba(244, 114, 182, 0.65)' }
       };
       const curIconPal = ICON_PALETTES_MAP[activeIconTheme] || null;
+      const getCardTopBackground = (accent) => isLight
+        ? `linear-gradient(145deg, ${accent}38 0%, ${accent}1f 56%, ${accent}12 100%)`
+        : `linear-gradient(145deg, ${accent}60 0%, ${accent}3c 56%, ${accent}25 100%)`;
 
       const existingCards = grid.querySelectorAll('.cat-card');
       const needRebuild = (existingCards.length !== EXPENSE_CATEGORIES.length) || 
@@ -21603,9 +21606,11 @@ function generateRichDemoTransactions() {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardBg = pal.bgGrad(theme.accent);
-          const cardBorder = `2px solid ${pal.border(theme.accent)}`;
-          const cardShadow = pal.shadow(theme.accent);
+          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
+          const cardBg = pal.bgGrad(cardAccent);
+          const cardBorder = `2px solid ${pal.border(cardAccent)}`;
+          const cardShadow = pal.shadow(cardAccent);
+          const cardTopBg = getCardTopBackground(cardAccent);
 
           const converted = convertAmount(spent);
           let numStr = '0.00';
@@ -21666,11 +21671,11 @@ function generateRichDemoTransactions() {
             <div class="cat-card-top-half" 
                  onclick="event.stopPropagation(); openQuickCategoryExpense('${cat.id}');"
                  title="انقر على الرمز لتسجيل مصروف جديد في ${theme.name}"
-                 style="flex: 1.35 1 68%; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 3px 2px; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
+                 style="flex: 1.35 1 68%; min-height: 0; width: 100%; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 3px 2px; background: ${cardTopBg}; border-radius: 14px 14px 0 0; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
               
               <!-- بالون الرمز أكبر ومجسم يملأ مساحته بروعة متفاعل مع باليت الأيقونات -->
               <div class="cat-icon-bubble" 
-                   style="background: ${curIconPal ? curIconPal.gradient : theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${curIconPal ? curIconPal.accent : theme.accent}; flex-shrink: 0;">
+                   style="background: ${curIconPal ? curIconPal.gradient : theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${cardAccent}; flex-shrink: 0;">
                 <span style="font-size: clamp(1.45rem, 3.8vw, 1.75rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
@@ -21703,6 +21708,7 @@ function generateRichDemoTransactions() {
           if (!card) return;
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
           const theme = HIGH_CONTRAST_THEMES[cat.id] || { accent: cat.color || '#38bdf8' };
+          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
           const converted = convertAmount(spent);
           let numStr = '0.00';
           if (spent > 0) {
@@ -21725,14 +21731,17 @@ function generateRichDemoTransactions() {
           }
 
           // مزامنة الألوان الحية للبطاقة وبالون الأيقونة
-          card.style.background = pal.bgGrad(curIconPal ? curIconPal.accent : theme.accent);
-          card.style.borderColor = pal.border(curIconPal ? curIconPal.accent : theme.accent);
-          card.style.boxShadow = pal.shadow(curIconPal ? curIconPal.accent : theme.accent);
+          card.style.background = pal.bgGrad(cardAccent);
+          card.style.borderColor = pal.border(cardAccent);
+          card.style.boxShadow = pal.shadow(cardAccent);
+
+          const topHalf = card.querySelector('.cat-card-top-half');
+          if (topHalf) topHalf.style.background = getCardTopBackground(cardAccent);
 
           const bubble = card.querySelector('.cat-icon-bubble');
           if (bubble) {
             bubble.style.background = curIconPal ? curIconPal.gradient : theme.gradient;
-            bubble.style.outline = '1.8px solid ' + (curIconPal ? curIconPal.accent : theme.accent);
+            bubble.style.outline = '1.8px solid ' + cardAccent;
             bubble.style.boxShadow = `0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
           }
 
@@ -27711,8 +27720,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111551);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.7');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611111626);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.8');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -31832,7 +31841,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.7)</span>
+          <span>النظام جاهز ومحدث (v5.3.8)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
