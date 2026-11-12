@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.19';
-    var APP_BUILD_ID = 202611121101;
+    var APP_VERSION = 'v5.3.20';
+    var APP_BUILD_ID = 202611121110;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -14520,6 +14520,28 @@
       background: var(--bg-card);
     }
     #taskDateTimePickerModal .task-picker-stepper output { color: var(--text-main) !important; }
+    #taskDateTimePickerModal .task-picker-stepper button {
+      width: 38px !important;
+      height: 28px !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      padding: 0 !important;
+      border-radius: 9px !important;
+      color: var(--picker-accent) !important;
+      background: linear-gradient(145deg, var(--picker-accent-soft), var(--bg-card-sub)) !important;
+      border: 1px solid rgba(109, 92, 231, 0.30) !important;
+      box-shadow: inset 0 1px rgba(255,255,255,0.28), 0 2px 7px rgba(15,23,42,0.10);
+      transition: transform 0.16s ease, color 0.16s ease, background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+      touch-action: manipulation;
+    }
+    #taskDateTimePickerModal .task-picker-stepper button:hover:not(:disabled) {
+      color: #ffffff !important;
+      background: linear-gradient(145deg, #7868f2, var(--picker-accent-strong)) !important;
+      border-color: var(--picker-accent) !important;
+      box-shadow: 0 4px 11px rgba(109, 92, 231, 0.26);
+      transform: translateY(-1px);
+    }
     #taskDateTimePickerModal #taskPickerNoTimeButton {
       color: var(--text-muted) !important;
       background: var(--bg-card-sub) !important;
@@ -18165,7 +18187,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.19 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.20 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18760,8 +18782,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.19';
-      const APP_BUILD_ID = 202611121101;
+      const APP_VERSION = 'v5.3.20';
+      const APP_BUILD_ID = 202611121110;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -29687,8 +29709,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121101);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.19');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121110);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.20');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -34045,7 +34067,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.19)</span>
+          <span>النظام جاهز ومحدث (v5.3.20)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
@@ -36547,19 +36569,19 @@ window.filterArchiveType = filterArchiveType;
         </div>
         <div id="taskPickerTimeWheels" class="task-picker-time-wheels">
           <div class="task-picker-stepper">
-            <button type="button" onclick="adjustTaskPickerTime('hour',1)" aria-label="زيادة الساعة">⌃</button>
+            <button type="button" onclick="adjustTaskPickerTime('hour',1)" aria-label="زيادة الساعة"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i></button>
             <output id="taskPickerHourValue">10</output>
-            <button type="button" onclick="adjustTaskPickerTime('hour',-1)" aria-label="إنقاص الساعة">⌄</button>
+            <button type="button" onclick="adjustTaskPickerTime('hour',-1)" aria-label="إنقاص الساعة"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
           </div>
           <div class="task-picker-stepper">
-            <button type="button" onclick="adjustTaskPickerTime('minute',1)" aria-label="زيادة الدقائق">⌃</button>
+            <button type="button" onclick="adjustTaskPickerTime('minute',1)" aria-label="زيادة الدقائق"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i></button>
             <output id="taskPickerMinuteValue">00</output>
-            <button type="button" onclick="adjustTaskPickerTime('minute',-1)" aria-label="إنقاص الدقائق">⌄</button>
+            <button type="button" onclick="adjustTaskPickerTime('minute',-1)" aria-label="إنقاص الدقائق"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
           </div>
           <div class="task-picker-stepper">
-            <button type="button" onclick="adjustTaskPickerTime('second',1)" aria-label="زيادة الثواني">⌃</button>
+            <button type="button" onclick="adjustTaskPickerTime('second',1)" aria-label="زيادة الثواني"><i class="fa-solid fa-chevron-up" aria-hidden="true"></i></button>
             <output id="taskPickerSecondValue">00</output>
-            <button type="button" onclick="adjustTaskPickerTime('second',-1)" aria-label="إنقاص الثواني">⌄</button>
+            <button type="button" onclick="adjustTaskPickerTime('second',-1)" aria-label="إنقاص الثواني"><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></button>
           </div>
           <div class="task-picker-period" id="taskPickerPeriodControls">
             <button type="button" id="taskPickerAmButton" onclick="setTaskPickerPeriod('AM')">AM</button>
