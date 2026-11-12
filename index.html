@@ -9932,14 +9932,21 @@
     /* تنسيقات لوحة إضافة وتسجيل المهام الموحدة والشاملة من نفس الشاشة */
     .tasks-unified-creator-card {
       box-sizing: border-box;
-      padding: 10px 12px !important;
-      gap: 9px !important;
+      padding: 14px !important;
+      gap: 12px !important;
       border-radius: 15px !important;
     }
     .task-creator-fields {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(170px, 0.44fr);
-      gap: 8px;
+      grid-template-columns: minmax(0, 1.4fr) minmax(210px, 0.8fr);
+      gap: 10px;
+    }
+    .task-creator-section {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.46);
     }
     .task-creator-field {
       min-width: 0;
@@ -9973,6 +9980,158 @@
       border-color: #c084fc;
       box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
     }
+    .task-creator-control[aria-invalid="true"] {
+      border-color: #fb7185 !important;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12) !important;
+    }
+    .task-creator-input-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 0.64rem;
+      line-height: 1.5;
+    }
+    .task-creator-title-counter { color: #7f91a8; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .task-creator-title-counter.is-near-limit { color: #fbbf24; }
+    .task-creator-title-error {
+      display: none;
+      color: #fda4af;
+      font-size: 0.68rem;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+    .task-creator-title-error.is-visible { display: block; }
+    .task-creator-project-quick-add {
+      display: none;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.06);
+    }
+    .task-creator-project-quick-add.is-open { display: grid; }
+    .task-creator-project-quick-add input {
+      width: 100%;
+      min-width: 0;
+      height: 34px;
+      box-sizing: border-box;
+      padding: 0 9px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      font: inherit;
+      font-size: 0.74rem;
+      outline: none;
+    }
+    .task-creator-project-quick-add button {
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      font-size: 0.70rem;
+      font-weight: 850;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .task-creator-subtasks {
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 11px;
+      background: rgba(15, 23, 42, 0.45);
+      overflow: hidden;
+    }
+    .task-creator-subtasks summary {
+      min-height: 42px;
+      padding: 0 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: #e2e8f0;
+      font-size: 0.72rem;
+      font-weight: 850;
+      cursor: pointer;
+      list-style: none;
+    }
+    .task-creator-subtasks summary::-webkit-details-marker { display: none; }
+    .task-creator-subtasks summary::after {
+      content: '+';
+      color: #6ee7b7;
+      font-size: 1.05rem;
+      line-height: 1;
+      transition: transform 0.18s ease;
+    }
+    .task-creator-subtasks[open] summary::after { content: '−'; }
+    .task-creator-subtasks-summary-copy { display: flex; align-items: center; gap: 7px; min-width: 0; }
+    .task-creator-subtasks-summary-copy small { color: #8ea0b8; font-size: 0.64rem; font-weight: 650; }
+    .task-creator-subtasks-count {
+      min-width: 21px;
+      height: 21px;
+      padding: 0 5px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 7px;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.13);
+      font-size: 0.65rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .task-creator-subtasks-body { padding: 0 10px 10px; display: grid; gap: 8px; }
+    .task-creator-subtask-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+    .task-creator-subtask-entry input {
+      min-width: 0;
+      height: 36px;
+      padding: 0 9px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(30, 41, 59, 0.82);
+      color: #f8fafc;
+      font-size: 0.73rem;
+      outline: none;
+    }
+    .task-creator-subtask-entry button,
+    .task-creator-subtask-remove {
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(16, 185, 129, 0.36);
+      background: rgba(16, 185, 129, 0.15);
+      color: #6ee7b7;
+      font-size: 0.70rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+    .task-creator-subtask-list { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+    .task-creator-subtask-list:empty { display: none; }
+    .task-creator-subtask-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 32px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.56);
+      color: #dbe5f1;
+      font-size: 0.70rem;
+    }
+    .task-creator-subtask-remove {
+      min-height: 25px;
+      padding: 0 7px;
+      border-color: rgba(244, 63, 94, 0.3);
+      background: rgba(244, 63, 94, 0.1);
+      color: #fda4af;
+    }
+    .task-creator-submit[disabled] { opacity: 0.7; cursor: wait !important; filter: saturate(0.6); }
     .tasks-productivity-card {
       position: relative;
       z-index: 40;
@@ -9991,6 +10150,9 @@
     }
     @media (max-width: 600px) {
       .task-creator-fields { grid-template-columns: minmax(0, 1fr); }
+      .task-creator-project-quick-add { grid-template-columns: minmax(0, 1fr) auto; }
+      .task-creator-project-quick-add .task-creator-project-cancel { grid-column: 2; }
+      .task-creator-subtasks-summary-copy small { display: none; }
       #tasksFullScreenModal.calendar-mode #tasksProductivityPinnedCard { top: 54px; }
     }
     .btn-unified-tag-chip {
@@ -17536,15 +17698,15 @@
         </button>
 
         <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (مخفية افتراضياً وتظهر فقط عند الضغط على زر إضافة مهمة) -->
-        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 10px 12px; flex-direction: column; gap: 9px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" role="form" aria-labelledby="tasksCreatorHeading" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 10px 12px; flex-direction: column; gap: 9px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
           
           <!-- هيدر كارت الإضافة مع زر إغلاق / إلغاء واضح للعودة للقائمة النظيفة -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+          <div class="task-creator-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);">
                 <i class="fa-solid fa-pen-to-square"></i>
               </div>
-              <span style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
+              <span id="tasksCreatorHeading" style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
               <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
             </div>
             
@@ -17558,41 +17720,50 @@
           <!-- عنوان المهمة والمشروع المرتبط بها -->
           <div class="task-creator-fields">
             <label class="task-creator-field">
-              <span class="task-creator-field-label"><i class="fa-solid fa-align-right" style="color: #a855f7;"></i> المهمة</span>
-              <input type="text" id="quickTaskTitleInput" class="task-creator-control" placeholder="اكتب عنوان المهمة أو الإجراء المطلوب" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
+              <span class="task-creator-field-label"><i class="fa-solid fa-align-right" style="color: #a855f7;"></i> عنوان المهمة <span style="color:#fda4af;">*</span></span>
+              <input type="text" id="quickTaskTitleInput" class="task-creator-control" placeholder="مثال: سداد فاتورة الكهرباء" maxlength="120" autocomplete="off" aria-required="true" aria-invalid="false" aria-describedby="quickTaskTitleHint quickTaskTitleCounter quickTaskTitleError" oninput="updateQuickTaskTitleFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickTaskAdd()}">
+              <span class="task-creator-input-meta"><span id="quickTaskTitleHint">اكتب إجراءً واضحًا يسهل تنفيذه.</span><span id="quickTaskTitleCounter" class="task-creator-title-counter">0 / 120</span></span>
+              <span id="quickTaskTitleError" class="task-creator-title-error" role="alert" aria-live="polite"></span>
             </label>
             <label class="task-creator-field">
-              <span class="task-creator-field-label"><i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> المشروع</span>
-              <select id="quickTaskProjectSelect" class="task-creator-control" onchange="handleTxProjectSelection(this)" aria-label="مشروع المهمة">
+              <span class="task-creator-field-label"><i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> المشروع <span style="color:#7f91a8; font-weight:650;">اختياري</span></span>
+              <select id="quickTaskProjectSelect" class="task-creator-control" onchange="handleQuickTaskProjectSelection(this)" aria-label="مشروع المهمة">
                 <option value="">بدون مشروع</option>
                 <option value="__new_project__">＋ إنشاء مشروع جديد</option>
               </select>
+              <span class="task-creator-input-meta"><span>اربط المهمة بمشروع لمتابعة إنجازه.</span></span>
             </label>
           </div>
+          <div id="quickTaskProjectQuickAdd" class="task-creator-project-quick-add" aria-label="إنشاء مشروع للمهمة">
+            <input type="text" id="quickTaskNewProjectInput" maxlength="60" placeholder="اسم المشروع الجديد" aria-label="اسم المشروع الجديد" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmQuickTaskProject()}if(event.key==='Escape')cancelQuickTaskProject()">
+            <button type="button" onclick="confirmQuickTaskProject()"><i class="fa-solid fa-plus" aria-hidden="true"></i> إضافة</button>
+            <button type="button" class="task-creator-project-cancel" onclick="cancelQuickTaskProject()">إلغاء</button>
+          </div>
+          <span id="quickTaskProjectHint" class="task-creator-input-meta" style="display:none; color:#7dd3fc;">سيُربط المشروع بالمهمة عند حفظها.</span>
 
           <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
-          <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div class="task-creator-section" style="display: flex; flex-direction: column; gap: 6px;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <span style="font-size: 0.70rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
                 <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
                 <span>التصنيف</span>
               </span>
             </div>
-            <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
-              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
-              <button type="button" class="btn-unified-tag-chip active" data-tag="general" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="planned" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="home" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="bills" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="health" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="work" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
+            <div id="unifiedTaskTagChipsList" role="group" aria-label="تصنيف المهمة" style="display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 0 6px;" class="custom-scrollbar">
+              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" aria-pressed="false" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
+              <button type="button" class="btn-unified-tag-chip active" data-tag="general" aria-pressed="true" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="planned" aria-pressed="false" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="important" aria-pressed="false" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" aria-pressed="false" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="home" aria-pressed="false" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="bills" aria-pressed="false" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="health" aria-pressed="false" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="work" aria-pressed="false" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
             </div>
           </div>
 
           <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
-          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+          <div class="task-creator-section" style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
@@ -17607,10 +17778,10 @@
               <div style="display: flex; flex-direction: column; gap: 5px;">
                 <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">📅 التاريخ:</label>
                 <!-- اختصارات سريعة للأيام -->
-                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
-                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
+                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup" role="group" aria-label="موعد المهمة">
+                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" aria-pressed="true" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" aria-pressed="false" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" aria-pressed="false" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
                 </div>
                 <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
                 <input type="date" id="inlineTaskDueDate" hidden onchange="onInlineDateCustomChange(this.value)">
@@ -17620,12 +17791,12 @@
               <div style="display: flex; flex-direction: column; gap: 5px;">
                 <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">⏰ التوقيت (الساعة):</label>
                 <!-- اختصارات سريعة للساعات -->
-                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup">
-                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 ص</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">01:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">05:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 م</button>
-                  <button type="button" class="btn-inline-dt-preset" data-time="" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
+                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup" role="group" aria-label="وقت المهمة">
+                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" aria-pressed="false" onclick="selectInlineTimePreset('09:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 ص</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" aria-pressed="false" onclick="selectInlineTimePreset('13:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">01:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" aria-pressed="false" onclick="selectInlineTimePreset('17:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">05:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" aria-pressed="false" onclick="selectInlineTimePreset('21:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 م</button>
+                  <button type="button" class="btn-inline-dt-preset" data-time="" aria-pressed="true" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
                 </div>
                 <!-- حقل إدخال الساعة المباشر من نفس الشاشة -->
                 <input type="time" id="inlineTaskDueTime" hidden onchange="onInlineTimeCustomChange(this.value)">
@@ -17637,16 +17808,16 @@
           </div>
 
           <!-- 4. المسؤول + خياري إضافة الصورة (تصوير بالكاميرا أو اختيار من الاستوديو) للمهمة الرئيسية -->
-          <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div class="task-creator-section" style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
             <!-- اختيار فرد العائلة المسؤول -->
             <div style="display: flex; align-items: center; gap: 5px;">
               <span style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1;">👤 المسؤول:</span>
-              <div style="display: flex; gap: 3px;" id="inlineTaskMemberGroup">
-                <button type="button" class="btn-inline-member-chip active" data-member="البيت" onclick="selectInlineTaskMember('البيت', this)">البيت</button>
-                <button type="button" class="btn-inline-member-chip" data-member="ماهر" onclick="selectInlineTaskMember('ماهر', this)">ماهر</button>
-                <button type="button" class="btn-inline-member-chip" data-member="آية" onclick="selectInlineTaskMember('آية', this)">آية</button>
-                <button type="button" class="btn-inline-member-chip" data-member="محمد" onclick="selectInlineTaskMember('محمد', this)">محمد</button>
-                <button type="button" class="btn-inline-member-chip" data-member="مريم" onclick="selectInlineTaskMember('مريم', this)">مريم</button>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px;" id="inlineTaskMemberGroup" role="group" aria-label="المسؤول عن المهمة">
+                <button type="button" class="btn-inline-member-chip active" data-member="البيت" aria-pressed="true" onclick="selectInlineTaskMember('البيت', this)">البيت</button>
+                <button type="button" class="btn-inline-member-chip" data-member="ماهر" aria-pressed="false" onclick="selectInlineTaskMember('ماهر', this)">ماهر</button>
+                <button type="button" class="btn-inline-member-chip" data-member="آية" aria-pressed="false" onclick="selectInlineTaskMember('آية', this)">آية</button>
+                <button type="button" class="btn-inline-member-chip" data-member="محمد" aria-pressed="false" onclick="selectInlineTaskMember('محمد', this)">محمد</button>
+                <button type="button" class="btn-inline-member-chip" data-member="مريم" aria-pressed="false" onclick="selectInlineTaskMember('مريم', this)">مريم</button>
               </div>
             </div>
 
@@ -17665,9 +17836,23 @@
             </div>
           </div>
 
+          <details id="quickTaskSubtasksDetails" class="task-creator-subtasks">
+            <summary>
+              <span class="task-creator-subtasks-summary-copy"><span><i class="fa-solid fa-list-check" style="color:#6ee7b7;"></i> خطوات فرعية</span><small>اختياري · جزّئ المهمة إلى خطوات قابلة للإنجاز</small></span>
+              <span id="quickTaskSubtaskCount" class="task-creator-subtasks-count" aria-label="عدد الخطوات الفرعية">0</span>
+            </summary>
+            <div class="task-creator-subtasks-body">
+              <div class="task-creator-subtask-entry">
+                <input type="text" id="quickTaskSubtaskInput" maxlength="110" placeholder="اكتب الخطوة التالية" aria-label="إضافة خطوة فرعية" onkeydown="if(event.key==='Enter'){event.preventDefault();addQuickTaskSubtask()}">
+                <button type="button" onclick="addQuickTaskSubtask()"><i class="fa-solid fa-plus" aria-hidden="true"></i> إضافة خطوة</button>
+              </div>
+              <ul id="quickTaskSubtaskList" class="task-creator-subtask-list" aria-live="polite" aria-label="الخطوات الفرعية المضافة"></ul>
+            </div>
+          </details>
+
           <!-- حفظ واحد واضح بدل تكرار زر الحفظ داخل حقل العنوان -->
           <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.82rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
+            <button type="button" id="btnSubmitUnifiedTask" class="task-creator-submit" aria-describedby="quickTaskFormStatus" onclick="handleQuickTaskAdd()" style="flex: 1; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.82rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
               <i class="fa-solid fa-check-double"></i>
               <span>حفظ المهمة</span>
             </button>
@@ -17676,6 +17861,7 @@
               <span>إلغاء</span>
             </button>
           </div>
+          <span id="quickTaskFormStatus" class="task-creator-input-meta" role="status" aria-live="polite" aria-atomic="true"></span>
 
         </div>
 
@@ -32193,8 +32379,10 @@ function getTodoTasks() {
 function saveTodoTasks(tasks) {
   try {
     localStorage.setItem('family_monefy_tasks', JSON.stringify(tasks));
+    return true;
   } catch (e) {
     console.error('Error saving tasks:', e);
+    return false;
   }
 }
 
@@ -32370,8 +32558,11 @@ window._selectedTaskMember = 'البيت';
 function selectTaskInlineTag(tagKey, element) {
   window._selectedTaskTag = tagKey;
   const chips = document.querySelectorAll('#unifiedTaskTagChipsList .btn-unified-tag-chip');
-  chips.forEach(c => c.classList.remove('active'));
-  if (element) element.classList.add('active');
+  chips.forEach(c => {
+    const selected = c === element;
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
+  });
 
   const badge = document.getElementById('unifiedCreatorActiveTagBadge');
   const tagLabels = {
@@ -32412,8 +32603,11 @@ function selectTaskInlineTag(tagKey, element) {
 
 function selectInlineDatePreset(preset, element) {
   const chips = document.querySelectorAll('#inlineDatePresetGroup .btn-inline-dt-preset');
-  chips.forEach(c => c.classList.remove('active'));
-  if (element) element.classList.add('active');
+  chips.forEach(c => {
+    const selected = c === element;
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
+  });
 
   const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
   let targetStr = getTaskDateInTimezone(zone);
@@ -32430,27 +32624,26 @@ function selectInlineDatePreset(preset, element) {
 
 function onInlineDateCustomChange(val) {
   const chips = document.querySelectorAll('#inlineDatePresetGroup .btn-inline-dt-preset');
-  chips.forEach(c => c.classList.remove('active'));
-
   const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
   const todayStr = getTaskDateInTimezone(zone);
-  const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
-
-  if (val === todayStr) {
-    const b = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
-    if (b) b.classList.add('active');
-  } else if (val === tomorrowStr) {
-    const b = document.querySelector('#inlineDatePresetGroup [data-preset="tomorrow"]');
-    if (b) b.classList.add('active');
-  }
+  chips.forEach(c => {
+    const selected = c.dataset.preset === 'today' && val === todayStr
+      || c.dataset.preset === 'tomorrow' && val === addDaysToTaskIsoDate(todayStr, 1)
+      || c.dataset.preset === 'after_two_days' && val === addDaysToTaskIsoDate(todayStr, 2);
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
+  });
 
   updateUnifiedTaskDateTimeLabel();
 }
 
 function selectInlineTimePreset(timeStr, element) {
   const chips = document.querySelectorAll('#inlineTimePresetGroup .btn-inline-dt-preset');
-  chips.forEach(c => c.classList.remove('active'));
-  if (element) element.classList.add('active');
+  chips.forEach(c => {
+    const selected = c === element;
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
+  });
 
   const timeInp = document.getElementById('inlineTaskDueTime');
   if (timeInp) timeInp.value = timeStr;
@@ -32462,9 +32655,10 @@ function selectInlineTimePreset(timeStr, element) {
 
 function onInlineTimeCustomChange(val) {
   const chips = document.querySelectorAll('#inlineTimePresetGroup .btn-inline-dt-preset');
-  chips.forEach(c => c.classList.remove('active'));
   chips.forEach(c => {
-    if (c.getAttribute('data-time') === val) c.classList.add('active');
+    const selected = c.getAttribute('data-time') === val;
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
   });
 
   updateUnifiedTaskDateTimeLabel();
@@ -32513,8 +32707,153 @@ function formatTime12hArabic(val) {
 function selectInlineTaskMember(member, element) {
   window._selectedTaskMember = member;
   const chips = document.querySelectorAll('#inlineTaskMemberGroup .btn-inline-member-chip');
-  chips.forEach(c => c.classList.remove('active'));
-  if (element) element.classList.add('active');
+  chips.forEach(c => {
+    const selected = c === element;
+    c.classList.toggle('active', selected);
+    c.setAttribute('aria-pressed', String(selected));
+  });
+}
+
+function updateQuickTaskTitleFeedback() {
+  const input = document.getElementById('quickTaskTitleInput');
+  const counter = document.getElementById('quickTaskTitleCounter');
+  const title = String(input && input.value || '').trim();
+  if (counter) {
+    const length = String(input && input.value || '').length;
+    counter.textContent = `${length} / 120`;
+    counter.classList.toggle('is-near-limit', length >= 105);
+  }
+  if (title) {
+    setQuickTaskTitleError('');
+    const status = document.getElementById('quickTaskFormStatus');
+    if (status && status.dataset.tone === 'error') setQuickTaskFormStatus('');
+  }
+}
+
+function setQuickTaskTitleError(message) {
+  const input = document.getElementById('quickTaskTitleInput');
+  const error = document.getElementById('quickTaskTitleError');
+  const hasError = !!message;
+  if (input) input.setAttribute('aria-invalid', String(hasError));
+  if (error) {
+    error.textContent = message || '';
+    error.classList.toggle('is-visible', hasError);
+  }
+}
+
+function setQuickTaskFormStatus(message, tone = 'info') {
+  const status = document.getElementById('quickTaskFormStatus');
+  if (!status) return;
+  status.textContent = message || '';
+  status.dataset.tone = tone;
+  status.style.color = tone === 'error' ? '#fda4af' : tone === 'success' ? '#6ee7b7' : '#94a3b8';
+}
+
+function handleQuickTaskProjectSelection(select) {
+  if (!select) return;
+  const panel = document.getElementById('quickTaskProjectQuickAdd');
+  const hint = document.getElementById('quickTaskProjectHint');
+  if (select.value !== '__new_project__') {
+    select.dataset.lastValue = select.value;
+    if (panel) panel.classList.remove('is-open');
+    if (hint) hint.style.display = 'none';
+    return;
+  }
+
+  select.value = select.dataset.lastValue || '';
+  if (panel) panel.classList.add('is-open');
+  const input = document.getElementById('quickTaskNewProjectInput');
+  if (input) setTimeout(() => input.focus(), 30);
+}
+
+function confirmQuickTaskProject() {
+  const input = document.getElementById('quickTaskNewProjectInput');
+  const select = document.getElementById('quickTaskProjectSelect');
+  const panel = document.getElementById('quickTaskProjectQuickAdd');
+  const hint = document.getElementById('quickTaskProjectHint');
+  const name = String(input && input.value || '').trim().replace(/\s+/g, ' ');
+  if (!name) {
+    if (typeof showToast === 'function') showToast('اكتب اسم المشروع أولاً');
+    if (input) input.focus();
+    return false;
+  }
+  const existing = getKnownProjects().find(project => project.toLocaleLowerCase() === name.toLocaleLowerCase());
+  const selectedName = existing || name;
+  if (select) {
+    if (!Array.from(select.options).some(option => option.value === selectedName)) {
+      const option = new Option(selectedName, selectedName);
+      const createOption = Array.from(select.options).find(item => item.value === '__new_project__');
+      select.insertBefore(option, createOption || null);
+    }
+    select.value = selectedName;
+    select.dataset.lastValue = selectedName;
+  }
+  if (input) input.value = '';
+  if (panel) panel.classList.remove('is-open');
+  if (hint) hint.style.display = 'flex';
+  if (typeof showToast === 'function') showToast(existing ? 'تم اختيار المشروع الموجود' : 'سيُحفظ المشروع مع المهمة عند إضافتها');
+  return true;
+}
+
+function cancelQuickTaskProject() {
+  const select = document.getElementById('quickTaskProjectSelect');
+  const panel = document.getElementById('quickTaskProjectQuickAdd');
+  const input = document.getElementById('quickTaskNewProjectInput');
+  if (select) select.value = select.dataset.lastValue || '';
+  if (panel) panel.classList.remove('is-open');
+  if (input) input.value = '';
+}
+
+window._quickTaskDraftSubtasks = window._quickTaskDraftSubtasks || [];
+
+function renderQuickTaskSubtasks() {
+  const list = document.getElementById('quickTaskSubtaskList');
+  const count = document.getElementById('quickTaskSubtaskCount');
+  const items = Array.isArray(window._quickTaskDraftSubtasks) ? window._quickTaskDraftSubtasks : [];
+  if (count) {
+    count.textContent = String(items.length);
+    count.setAttribute('aria-label', `${items.length} خطوات فرعية`);
+  }
+  if (!list) return;
+  list.innerHTML = items.map(item => `
+    <li>
+      <span>${escapeHtml(item.title)}</span>
+      <button type="button" class="task-creator-subtask-remove" onclick="removeQuickTaskSubtask('${item.id}')" aria-label="حذف الخطوة: ${escapeHtml(item.title)}"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    </li>
+  `).join('');
+}
+
+function addQuickTaskSubtask() {
+  const input = document.getElementById('quickTaskSubtaskInput');
+  const title = String(input && input.value || '').trim().replace(/\s+/g, ' ');
+  if (!title) {
+    if (typeof showToast === 'function') showToast('اكتب وصف الخطوة أولاً');
+    if (input) input.focus();
+    return false;
+  }
+  if (window._quickTaskDraftSubtasks.length >= 12) {
+    if (typeof showToast === 'function') showToast('يمكن إضافة 12 خطوة فرعية كحد أقصى للمهمة');
+    return false;
+  }
+  const id = `sub_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  window._quickTaskDraftSubtasks.push({ id, title, completed: false });
+  if (input) { input.value = ''; input.focus(); }
+  renderQuickTaskSubtasks();
+  return true;
+}
+
+function removeQuickTaskSubtask(subtaskId) {
+  window._quickTaskDraftSubtasks = window._quickTaskDraftSubtasks.filter(item => item.id !== subtaskId);
+  renderQuickTaskSubtasks();
+}
+
+function clearQuickTaskDraftSubtasks() {
+  window._quickTaskDraftSubtasks = [];
+  const input = document.getElementById('quickTaskSubtaskInput');
+  const details = document.getElementById('quickTaskSubtasksDetails');
+  if (input) input.value = '';
+  if (details) details.open = false;
+  renderQuickTaskSubtasks();
 }
 
 function openOrToggleUnifiedTaskCreator() {
@@ -32533,11 +32872,21 @@ function openNewTaskDrawerModal() {
 function resetUnifiedTaskForm() {
   const titleInp = document.getElementById('quickTaskTitleInput');
   if (titleInp) titleInp.value = '';
+  updateQuickTaskTitleFeedback();
+  setQuickTaskTitleError('');
+  setQuickTaskFormStatus('');
   const projectSelect = document.getElementById('quickTaskProjectSelect');
   if (projectSelect) {
     projectSelect.value = '';
     projectSelect.dataset.lastValue = '';
   }
+  const projectPanel = document.getElementById('quickTaskProjectQuickAdd');
+  const projectInput = document.getElementById('quickTaskNewProjectInput');
+  const projectHint = document.getElementById('quickTaskProjectHint');
+  if (projectPanel) projectPanel.classList.remove('is-open');
+  if (projectInput) projectInput.value = '';
+  if (projectHint) projectHint.style.display = 'none';
+  clearQuickTaskDraftSubtasks();
 
   const defaultTagBtn = document.querySelector('#unifiedTaskTagChipsList [data-tag="general"]');
   if (defaultTagBtn) selectTaskInlineTag('general', defaultTagBtn);
@@ -32743,62 +33092,102 @@ window.triggerSubtaskGallery = triggerSubtaskGallery;
 window.handleTaskFileChosen = handleTaskFileChosen;
 window.clearSubtaskPendingPhoto = clearSubtaskPendingPhoto;
 
+window._isQuickTaskSaving = false;
+
 function handleQuickTaskAdd() {
+  if (window._isQuickTaskSaving) return false;
   const titleInp = document.getElementById('quickTaskTitleInput');
-  const title = titleInp ? titleInp.value.trim() : '';
+  const title = String(titleInp && titleInp.value || '').trim().replace(/\s+/g, ' ');
   if (!title) {
-    if (typeof showToast === 'function') showToast('يرجى إدخال بيان المهمة أولاً');
+    setQuickTaskTitleError('عنوان المهمة مطلوب قبل الحفظ.');
+    setQuickTaskFormStatus('أكمل الحقل المطلوب للمتابعة.', 'error');
     if (titleInp) titleInp.focus();
-    return;
+    return false;
+  }
+  setQuickTaskTitleError('');
+  setQuickTaskFormStatus('');
+  if (titleInp && titleInp.value !== title) titleInp.value = title;
+  updateQuickTaskTitleFeedback();
+
+  const submitButton = document.getElementById('btnSubmitUnifiedTask');
+  const originalButtonHtml = submitButton ? submitButton.innerHTML : '';
+  window._isQuickTaskSaving = true;
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.setAttribute('aria-busy', 'true');
+    submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i><span>جارٍ حفظ المهمة…</span>';
   }
 
-  const now = new Date();
-  const dateInp = document.getElementById('inlineTaskDueDate');
-  const timeInp = document.getElementById('inlineTaskDueTime');
-  const timezoneInp = document.getElementById('inlineTaskDueTimezone');
-  const secondInp = document.getElementById('inlineTaskDueSecond');
-  const dueTimezone = timezoneInp && timezoneInp.value || window._selectedTaskTimezone || getDefaultTaskTimezone();
-  const dueDate = (dateInp && dateInp.value) ? dateInp.value : getTaskDateInTimezone(dueTimezone, now);
-  const dueTime = (timeInp && timeInp.value) ? timeInp.value : '';
-  const dueSecond = dueTime && secondInp ? String(Number(secondInp.value) || 0).padStart(2, '0') : '00';
+  let isSaved = false;
+  try {
+    const now = new Date();
+    const dateInp = document.getElementById('inlineTaskDueDate');
+    const timeInp = document.getElementById('inlineTaskDueTime');
+    const timezoneInp = document.getElementById('inlineTaskDueTimezone');
+    const secondInp = document.getElementById('inlineTaskDueSecond');
+    const dueTimezone = timezoneInp && timezoneInp.value || window._selectedTaskTimezone || getDefaultTaskTimezone();
+    const dueDate = (dateInp && dateInp.value) ? dateInp.value : getTaskDateInTimezone(dueTimezone, now);
+    const dueTime = (timeInp && timeInp.value) ? timeInp.value : '';
+    const dueSecond = dueTime && secondInp ? String(Number(secondInp.value) || 0).padStart(2, '0') : '00';
 
-  const tag = window._selectedTaskTag || 'general';
-  const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
-  const priority = tag === 'important' ? 'high' : (window._selectedTaskPriority || 'medium');
-  const projectSelect = document.getElementById('quickTaskProjectSelect');
-  const project = String(projectSelect && projectSelect.value || '').trim();
+    const tag = window._selectedTaskTag || 'general';
+    const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
+    const priority = tag === 'important' ? 'high' : (window._selectedTaskPriority || 'medium');
+    const projectSelect = document.getElementById('quickTaskProjectSelect');
+    const project = String(projectSelect && projectSelect.value || '').trim();
+    const draftSubtasks = Array.isArray(window._quickTaskDraftSubtasks) ? window._quickTaskDraftSubtasks : [];
 
-  const newTask = {
-    id: 'task_' + Date.now(),
-    title: title,
-    dueDate: dueDate,
-    dueTime: dueTime,
-    dueSecond: dueSecond,
-    dueTimeZone: dueTimezone,
-    dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, dueTimezone) || null,
-    tag: tag,
-    category: tag, // Ensures seamless matching with category filters
-    project: project,
-    assignedMember: member,
-    priority: priority,
-    completed: false,
-    photo: window.currentQuickTaskPhoto || null,
-    createdAt: new Date().toISOString(),
-    subtasks: []
-  };
+    const newTask = {
+      id: `task_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      title: title,
+      dueDate: dueDate,
+      dueTime: dueTime,
+      dueSecond: dueSecond,
+      dueTimeZone: dueTimezone,
+      dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, dueTimezone) || null,
+      tag: tag,
+      category: tag,
+      project: project,
+      assignedMember: member,
+      priority: priority,
+      completed: false,
+      photo: window.currentQuickTaskPhoto || null,
+      createdAt: new Date().toISOString(),
+      subtasks: draftSubtasks.map(item => ({ id: item.id, title: item.title, completed: false }))
+    };
 
-  const tasks = getTodoTasks();
-  tasks.unshift(newTask);
-  saveTodoTasks(tasks);
-  if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
+    const tasks = getTodoTasks();
+    tasks.unshift(newTask);
+    if (!saveTodoTasks(tasks)) {
+      setQuickTaskFormStatus('تعذر الحفظ على هذا الجهاز. بياناتك ما زالت في النموذج؛ تأكد من توفر مساحة أو أزل الصورة المرفقة ثم أعد المحاولة.', 'error');
+      return false;
+    }
+    isSaved = true;
 
-  if (titleInp) titleInp.value = '';
-  clearTaskPendingPhoto();
-
-  renderTasksProList();
-  updateTasksProductivityKPIs();
-  hideUnifiedTaskCreator();
-  if (typeof showToast === 'function') showToast('تمت إضافة المهمة بنجاح ✓');
+    if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
+    clearTaskPendingPhoto();
+    renderTasksProList();
+    updateTasksProductivityKPIs();
+    hideUnifiedTaskCreator();
+    const subtaskSummary = draftSubtasks.length === 1 ? ' مع خطوة فرعية' : draftSubtasks.length === 2 ? ' مع خطوتين فرعيتين' : draftSubtasks.length ? ` مع ${draftSubtasks.length} خطوات فرعية` : '';
+    if (typeof showToast === 'function') showToast(`تمت إضافة المهمة${subtaskSummary} ✓`);
+    return true;
+  } catch (error) {
+    console.error('Error creating task:', error);
+    if (isSaved) {
+      if (typeof showToast === 'function') showToast('تم حفظ المهمة، لكن تعذر تحديث العرض. أعد فتح قائمة المهام.');
+      return true;
+    }
+    setQuickTaskFormStatus('حدث خلل أثناء الحفظ. بقيت بياناتك في النموذج ويمكنك المحاولة مرة أخرى.', 'error');
+    return false;
+  } finally {
+    window._isQuickTaskSaving = false;
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.removeAttribute('aria-busy');
+      submitButton.innerHTML = originalButtonHtml;
+    }
+  }
 }
 
 function updateTasksProductivityKPIs() {
