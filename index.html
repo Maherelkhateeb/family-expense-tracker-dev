@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.16';
-    var APP_BUILD_ID = 202611121052;
+    var APP_VERSION = 'v5.3.18';
+    var APP_BUILD_ID = 202611121057;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5253,6 +5253,8 @@
     .range-date-value.is-pending output { color: #94a3b8; }
     .range-calendar-nav {
       display: flex;
+      flex-direction: row-reverse;
+      direction: ltr;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
@@ -13257,6 +13259,8 @@
     .task-picker-month-heading {
       direction: rtl;
       display: flex;
+      flex-direction: row-reverse;
+      direction: ltr;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
@@ -17975,7 +17979,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.16 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.18 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18570,8 +18574,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.16';
-      const APP_BUILD_ID = 202611121052;
+      const APP_VERSION = 'v5.3.18';
+      const APP_BUILD_ID = 202611121057;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -29497,8 +29501,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121052);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.16');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121057);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.18');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -33652,7 +33656,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.16)</span>
+          <span>النظام جاهز ومحدث (v5.3.18)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
