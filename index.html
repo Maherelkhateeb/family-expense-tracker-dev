@@ -146,7 +146,7 @@
 
     var currentEditTxReceiptDataUri = null;
     var APP_VERSION = 'v5.3.16';
-    var APP_BUILD_ID = 202611121050;
+    var APP_BUILD_ID = 202611121052;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -14384,6 +14384,138 @@
       border-color: rgba(244, 63, 94, 0.34) !important;
     }
   </style>
+
+  <style id="summary-rebuild-styles">
+    #summaryLeftDrawer.summary-rebuilt-drawer {
+      width: min(94vw, 430px) !important;
+      max-width: 430px !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
+      background: linear-gradient(155deg, #0b1220 0%, #080d18 100%) !important;
+      border-right: 1px solid rgba(56, 189, 248, .32) !important;
+      box-shadow: 16px 0 48px rgba(0, 0, 0, .55) !important;
+      overflow: hidden !important;
+      z-index: 100010 !important;
+    }
+    #summaryLeftDrawer.summary-rebuilt-drawer.open { transform: translateX(0) !important; }
+    #summaryDrawerBackdrop.summary-rebuild-backdrop { z-index: 100005 !important; }
+    .summary-rebuilt-header {
+      flex: 0 0 auto; display: flex; align-items: center; gap: 10px;
+      padding: 13px 14px 11px; border-bottom: 1px solid rgba(148, 163, 184, .16);
+      background: radial-gradient(circle at 95% 0, rgba(14, 165, 233, .13), transparent 42%), #111a2b;
+    }
+    .summary-header-icon {
+      width: 38px; height: 38px; flex: 0 0 38px; display: grid; place-items: center;
+      border-radius: 12px; color: #7dd3fc; font-size: 1.02rem;
+      background: linear-gradient(145deg, rgba(14, 165, 233, .22), rgba(14, 165, 233, .08));
+      border: 1px solid rgba(56, 189, 248, .3);
+    }
+    .summary-header-copy { min-width: 0; flex: 1; }
+    .summary-header-copy h2 { margin: 0; color: #f8fafc; font-size: .95rem; font-weight: 950; }
+    .summary-header-copy p { margin: 3px 0 0; color: #7dd3fc; font-size: .65rem; font-weight: 750; }
+    .summary-close-btn {
+      width: 30px; height: 30px; flex: 0 0 30px; border-radius: 50%;
+      color: #cbd5e1; background: rgba(148, 163, 184, .1); border: 1px solid rgba(148, 163, 184, .18);
+      font-size: 1.05rem; cursor: pointer;
+    }
+    .summary-rebuilt-controls {
+      flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px;
+      padding: 9px 12px 10px; background: rgba(15, 23, 42, .93);
+      border-bottom: 1px solid rgba(148, 163, 184, .14);
+    }
+    .summary-group-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .summary-group-mode-btn, .summary-period-btn, .summary-currency-btn {
+      min-width: 0; border-radius: 9px; color: #a8b4c7; background: rgba(30, 41, 59, .55);
+      border: 1px solid rgba(148, 163, 184, .15); font: inherit; font-weight: 850; cursor: pointer;
+      transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+    }
+    .summary-group-mode-btn { height: 35px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-size: .72rem; }
+    .summary-group-mode-btn.active { color: #dff6ff; background: linear-gradient(135deg, rgba(14, 165, 233, .28), rgba(2, 132, 199, .14)); border-color: rgba(56, 189, 248, .58); box-shadow: 0 4px 14px rgba(2, 132, 199, .12); }
+    .summary-period-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+    .summary-period-btn { height: 29px; font-size: .65rem; }
+    .summary-period-btn.active { color: #fff; background: linear-gradient(135deg, #0284c7, #0369a1); border-color: transparent; box-shadow: 0 3px 10px rgba(2, 132, 199, .22); }
+    .summary-custom-date-row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 6px; align-items: end;
+      padding: 7px; border-radius: 10px; background: rgba(8, 15, 28, .8); border: 1px solid rgba(56, 189, 248, .18);
+    }
+    .summary-custom-date-row label { min-width: 0; display: flex; flex-direction: column; gap: 3px; color: #9fb0c5; font-size: .6rem; font-weight: 800; }
+    .summary-custom-date-row input { width: 100%; height: 30px; min-width: 0; box-sizing: border-box; border-radius: 7px; padding: 0 5px; color: #e2e8f0; background: #111a2b; border: 1px solid rgba(148, 163, 184, .2); font: inherit; font-size: .65rem; color-scheme: dark; }
+    .summary-custom-date-row button { height: 30px; padding: 0 10px; border: 0; border-radius: 7px; color: #fff; background: #0284c7; font: inherit; font-size: .65rem; font-weight: 850; cursor: pointer; }
+    .summary-currency-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 7px; border-radius: 9px; background: rgba(30, 41, 59, .42); }
+    .summary-currency-row > span { color: #fbbf24; font-size: .64rem; font-weight: 850; white-space: nowrap; }
+    .summary-currency-row > div { display: flex; gap: 4px; }
+    .summary-currency-btn { min-height: 25px; padding: 0 8px; font-size: .61rem; white-space: nowrap; }
+    .summary-currency-btn.active { color: #7dd3fc; background: rgba(56, 189, 248, .16); border-color: rgba(56, 189, 248, .48); }
+    .summary-group-mode-btn:hover, .summary-period-btn:hover, .summary-currency-btn:hover { transform: translateY(-1px); }
+    .summary-rebuilt-content {
+      flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+      display: flex; flex-direction: column; gap: 11px; padding: 11px 12px 28px; box-sizing: border-box;
+    }
+    .summary-selected-card {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 11px 12px;
+      border-radius: 13px; background: linear-gradient(135deg, rgba(30, 41, 59, .94), rgba(15, 23, 42, .95));
+      border: 1px solid rgba(56, 189, 248, .26); box-shadow: 0 5px 16px rgba(0, 0, 0, .16);
+    }
+    .summary-selected-card > div { min-width: 0; }
+    .summary-eyebrow { color: #8ba0b9; font-size: .59rem; font-weight: 800; }
+    .summary-selected-card h3 { margin: 2px 0 1px; color: #7dd3fc; font-size: .82rem; font-weight: 950; overflow-wrap: anywhere; }
+    .summary-selected-card p { margin: 0; color: #64748b; font-size: .61rem; font-weight: 700; }
+    .summary-show-all-btn { flex: 0 0 auto; padding: 5px 8px; border-radius: 7px; color: #7dd3fc; background: rgba(56, 189, 248, .1); border: 1px solid rgba(56, 189, 248, .24); font: inherit; font-size: .62rem; font-weight: 850; cursor: pointer; }
+    .summary-show-all-btn.is-hidden { visibility: hidden; pointer-events: none; }
+    .summary-kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .summary-kpi { min-width: 0; display: flex; flex-direction: column; gap: 5px; padding: 10px 9px; border-radius: 12px; background: rgba(15, 23, 42, .82); }
+    .summary-kpi > span { display: flex; align-items: center; gap: 5px; font-size: .63rem; font-weight: 850; }
+    .summary-kpi > strong { display: block; font-family: var(--font-numbers); font-size: clamp(.80rem, 3.8vw, .98rem); font-weight: 950; line-height: 1.2; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+    .summary-kpi > small { color: #718096; font-size: .58rem; font-weight: 700; }
+    .summary-kpi-expense { border: 1px solid rgba(244, 63, 94, .28); }
+    .summary-kpi-expense > span, .summary-kpi-expense > strong { color: #fb7185; }
+    .summary-kpi-income { border: 1px solid rgba(16, 185, 129, .28); }
+    .summary-kpi-income > span, .summary-kpi-income > strong { color: #34d399; }
+    .summary-section { display: flex; flex-direction: column; gap: 7px; }
+    .summary-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .summary-section-heading h3 { margin: 0; color: #e2e8f0; font-size: .74rem; font-weight: 950; }
+    .summary-section-heading > span { color: #718096; font-size: .58rem; font-weight: 750; }
+    .summary-group-list, .summary-category-list { display: flex; flex-direction: column; gap: 6px; }
+    .summary-group-row, .summary-category-row {
+      width: 100%; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 8px 9px;
+      text-align: right; color: #e2e8f0; background: rgba(15, 23, 42, .84);
+      border: 1px solid rgba(148, 163, 184, .12); border-radius: 11px; font: inherit; cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+    }
+    .summary-group-row:hover, .summary-category-row:hover { transform: translateY(-1px); border-color: rgba(56, 189, 248, .42); }
+    .summary-group-row.active { border-color: rgba(56, 189, 248, .58); background: linear-gradient(135deg, rgba(8, 47, 73, .64), rgba(15, 23, 42, .94)); }
+    .summary-group-icon, .summary-category-icon { width: 32px; height: 32px; flex: 0 0 32px; display: grid; place-items: center; border-radius: 9px; color: #7dd3fc; background: rgba(56, 189, 248, .1); border: 1px solid rgba(56, 189, 248, .2); }
+    .summary-group-main, .summary-category-main { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .summary-group-title, .summary-category-title { overflow: hidden; color: #f1f5f9; font-size: .70rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .summary-group-meta, .summary-category-meta { color: #718096; font-size: .57rem; font-weight: 700; }
+    .summary-group-track { height: 4px; margin-top: 2px; overflow: hidden; border-radius: 999px; background: rgba(148, 163, 184, .12); }
+    .summary-group-track > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0284c7, #22d3ee); }
+    .summary-group-value, .summary-category-value { flex: 0 0 auto; max-width: 43%; color: #fb7185; font-family: var(--font-numbers); font-size: .68rem; font-weight: 950; text-align: left; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+    .summary-category-icon { color: var(--summary-category-color, #38bdf8); background: color-mix(in srgb, var(--summary-category-color, #38bdf8) 12%, transparent); border-color: color-mix(in srgb, var(--summary-category-color, #38bdf8) 30%, transparent); }
+    .summary-category-value { color: #fb7185; }
+    .summary-empty-state { min-height: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 14px; border: 1px dashed rgba(148, 163, 184, .2); border-radius: 11px; color: #77869a; background: rgba(15, 23, 42, .44); font-size: .67rem; font-weight: 750; text-align: center; }
+    .summary-empty-state i { color: #64748b; font-size: 1rem; }
+    body.light-theme #summaryLeftDrawer.summary-rebuilt-drawer { background: linear-gradient(155deg, #f8fbff, #eef4fa) !important; }
+    body.light-theme .summary-rebuilt-header { background: #f8fbff; border-color: #dbe4ef; }
+    body.light-theme .summary-header-copy h2, body.light-theme .summary-section-heading h3 { color: #172033; }
+    body.light-theme .summary-rebuilt-controls { background: #eef4fa; border-color: #dbe4ef; }
+    body.light-theme .summary-group-mode-btn, body.light-theme .summary-period-btn, body.light-theme .summary-currency-btn { color: #526174; background: #fff; border-color: #d5dfeb; }
+    body.light-theme .summary-group-mode-btn.active, body.light-theme .summary-period-btn.active { color: #fff; background: linear-gradient(135deg, #0284c7, #0369a1); }
+    body.light-theme .summary-currency-btn.active { color: #0369a1; background: #e0f2fe; border-color: #7dd3fc; }
+    body.light-theme .summary-currency-row, body.light-theme .summary-custom-date-row { background: #fff; border-color: #dbe4ef; }
+    body.light-theme .summary-custom-date-row input { color: #1e293b; background: #f8fafc; border-color: #cbd5e1; color-scheme: light; }
+    body.light-theme .summary-selected-card, body.light-theme .summary-kpi, body.light-theme .summary-group-row, body.light-theme .summary-category-row { background: #fff; border-color: #dce5ef; box-shadow: 0 4px 12px rgba(15, 23, 42, .04); }
+    body.light-theme .summary-selected-card h3, body.light-theme .summary-group-title, body.light-theme .summary-category-title { color: #1e293b; }
+    body.light-theme .summary-eyebrow, body.light-theme .summary-selected-card p, body.light-theme .summary-group-meta, body.light-theme .summary-category-meta, body.light-theme .summary-section-heading > span { color: #64748b; }
+    @media (max-width: 390px) {
+      #summaryLeftDrawer.summary-rebuilt-drawer { width: 96vw !important; }
+      .summary-rebuilt-content { padding-inline: 9px; gap: 9px; }
+      .summary-rebuilt-controls { padding-inline: 9px; }
+      .summary-group-value, .summary-category-value { font-size: .62rem; max-width: 45%; }
+      .summary-group-icon, .summary-category-icon { width: 29px; height: 29px; flex-basis: 29px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -18439,7 +18571,7 @@
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
       const APP_VERSION = 'v5.3.16';
-      const APP_BUILD_ID = 202611121050;
+      const APP_BUILD_ID = 202611121052;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -26505,11 +26637,13 @@ function openSettingsModal(targetSection = '') {
 
     
     // =========================================================================
-    // محرك الشاشة الجانبية اليسرى (ملخص المصروفات والنشاط المالي بالفرد)
+    // محرك ملخص المصروفات المعاد بناؤه: التجميع حسب الشخص أو المشروع
     // =========================================================================
     let currentDrawerMember = 'الكل';
     let currentSummaryPeriod = 'month';
     let currentSummaryCurrency = 'EGP';
+    let currentSummaryGroupMode = 'member';
+    let currentSummaryGroupKey = 'all';
     let summaryCustomDateRange = { from: '', to: '' };
 
     window.openSummaryLeftDrawer = openSummaryDrawer;
@@ -26517,16 +26651,16 @@ function openSettingsModal(targetSection = '') {
     function openSummaryDrawer(targetMember = null) {
       const drawer = document.getElementById('summaryLeftDrawer');
       const backdrop = document.getElementById('summaryDrawerBackdrop');
-      if (targetMember) {
-        currentDrawerMember = targetMember;
-      } else if (state.currentMemberFilter && state.currentMemberFilter !== 'الكل') {
-        currentDrawerMember = state.currentMemberFilter;
-      } else {
-        currentDrawerMember = 'الكل';
-      }
+      currentSummaryGroupMode = 'member';
+      const requestedMember = targetMember !== null && targetMember !== undefined
+        ? targetMember
+        : (state.currentMemberFilter && state.currentMemberFilter !== 'الكل' ? state.currentMemberFilter : 'الكل');
+      currentSummaryGroupKey = (!requestedMember || requestedMember === 'الكل' || requestedMember === 'all') ? 'all' : summaryNormalizeMember(requestedMember);
+      currentDrawerMember = currentSummaryGroupKey === 'all' ? 'الكل' : currentSummaryGroupKey;
       if (drawer) drawer.classList.add('open');
       if (backdrop) backdrop.classList.add('active');
-      renderSummaryDrawer(currentSummaryPeriod, currentDrawerMember);
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
     }
 
     function closeSummaryLeftDrawer() {
@@ -26536,222 +26670,319 @@ function openSettingsModal(targetSection = '') {
       if (backdrop) backdrop.classList.remove('active');
     }
 
-    function switchSummaryPeriod(p) {
-      currentSummaryPeriod = p;
-      ['day', 'week', 'month', 'year', 'custom'].forEach(tab => {
-        const btnId = 'btnSummaryTab' + tab.charAt(0).toUpperCase() + tab.slice(1);
-        const btn = document.getElementById(btnId);
-        if (btn) {
-          if (tab === p) {
-            btn.className = 'exp-tab-btn active';
-            btn.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
-            btn.style.color = '#fff';
-            btn.style.border = 'none';
-          } else {
-            btn.className = 'exp-tab-btn';
-            btn.style.background = 'transparent';
-            btn.style.color = '#94a3b8';
-            btn.style.border = '1px solid rgba(255,255,255,0.1)';
-          }
-        }
-      });
+    function summaryNormalizeMember(value) {
+      const member = String(value || '').trim();
+      if (!member || member === 'الكل' || member === 'العائلة' || member === 'الأسرة') return 'البيت';
+      return member === 'آية' ? 'أية' : member;
+    }
 
-      const customRow = document.getElementById('drawerSummaryCustomDateRow');
-      if (customRow) {
-        customRow.style.display = p === 'custom' ? 'grid' : 'none';
+    function summaryEscapeHtml(value) {
+      const entities = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, ch => entities[ch]);
+    }
+
+    function summaryProjectName(tx) {
+      const raw = typeof getTransactionProjectName === 'function'
+        ? getTransactionProjectName(tx)
+        : String(tx && (tx.project || tx.projectName) || '').trim();
+      return String(raw || '').trim();
+    }
+
+    function summaryMemberName(tx) {
+      return summaryNormalizeMember(tx && (tx.member || tx.memberName || tx.person));
+    }
+
+    function summaryGroupKey(tx, mode) {
+      if (mode === 'project') return summaryProjectName(tx) || '__no_project__';
+      return summaryMemberName(tx);
+    }
+
+    function summaryGroupLabel(key, mode) {
+      if (key === 'all') return mode === 'project' ? 'كافة المشاريع' : 'كافة أفراد الأسرة';
+      if (mode === 'project' && key === '__no_project__') return 'بدون مشروع';
+      return String(key || '');
+    }
+
+    function summaryGetRange(period) {
+      const today = getLocalDateStr(new Date());
+      const todayDate = new Date(today + 'T12:00:00');
+      const shiftDate = days => {
+        const value = new Date(todayDate);
+        value.setDate(value.getDate() + days);
+        return getLocalDateStr(value);
+      };
+      const monthStart = getLocalDateStr(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1, 12));
+      const yearStart = todayDate.getFullYear() + '-01-01';
+
+      if (period === 'day') return { from: today, to: today, title: 'حركات اليوم' };
+      if (period === 'week') return { from: shiftDate(-6), to: today, title: 'آخر 7 أيام' };
+      if (period === 'month') {
+        return {
+          from: monthStart,
+          to: today,
+          title: todayDate.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' })
+        };
       }
+      if (period === 'year') return { from: yearStart, to: today, title: 'عام ' + todayDate.getFullYear() };
+      if (period === 'custom') {
+        if (!summaryCustomDateRange.from || !summaryCustomDateRange.to) {
+          return { from: '', to: '', title: 'فترة مخصصة', valid: false };
+        }
+        return {
+          from: summaryCustomDateRange.from,
+          to: summaryCustomDateRange.to,
+          title: summaryFormatDate(summaryCustomDateRange.from) + ' – ' + summaryFormatDate(summaryCustomDateRange.to),
+          valid: true
+        };
+      }
+      return { from: '', to: '', title: 'كل الفترات' };
+    }
 
-      renderSummaryDrawer(p, currentDrawerMember);
+    function summaryFormatDate(dateString) {
+      if (!dateString) return '—';
+      const date = new Date(String(dateString).slice(0, 10) + 'T12:00:00');
+      return Number.isNaN(date.getTime()) ? String(dateString) : date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function summaryFormatAmount(amount) {
+      const value = Math.abs(Number(amount) || 0);
+      const market = state.market || {};
+      let converted = value;
+      let suffix = 'ج.م';
+      if (currentSummaryCurrency === 'SAR') {
+        converted = value / (Number(market.sarEgp) || 14.37);
+        suffix = 'ر.س';
+      } else if (currentSummaryCurrency === 'USD') {
+        converted = value / (Number(market.usdEgp) || 53.97);
+        suffix = 'USD';
+      } else if (currentSummaryCurrency === 'GOLD21') {
+        converted = value / (Number(market.gold21) || 6265);
+        suffix = 'جم ذهب 21';
+      }
+      return Number(converted).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + suffix;
+    }
+
+    function setSummaryGroupMode(mode) {
+      if (mode !== 'member' && mode !== 'project') return;
+      currentSummaryGroupMode = mode;
+      currentSummaryGroupKey = 'all';
+      currentDrawerMember = 'الكل';
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+
+    function switchDrawerMember(member) {
+      currentSummaryGroupMode = 'member';
+      currentSummaryGroupKey = (!member || member === 'الكل' || member === 'all') ? 'all' : summaryNormalizeMember(member);
+      currentDrawerMember = currentSummaryGroupKey === 'all' ? 'الكل' : currentSummaryGroupKey;
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+
+    function switchDrawerProject(project) {
+      currentSummaryGroupMode = 'project';
+      currentSummaryGroupKey = project === 'all' ? 'all' : String(project || '__no_project__');
+      currentDrawerMember = 'الكل';
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+
+    function selectSummaryGroupFromElement(button) {
+      if (!button || !button.dataset) return;
+      currentSummaryGroupKey = String(button.dataset.groupKey || 'all');
+      if (currentSummaryGroupMode === 'member') {
+        currentDrawerMember = currentSummaryGroupKey === 'all' ? 'الكل' : summaryNormalizeMember(currentSummaryGroupKey);
+      } else {
+        currentDrawerMember = 'الكل';
+      }
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+
+    function switchSummaryPeriod(period) {
+      const allowed = ['day', 'week', 'month', 'year', 'custom', 'all'];
+      if (!allowed.includes(period)) return;
+      currentSummaryPeriod = period;
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
     }
 
     function applyCustomSummaryDate() {
       const from = document.getElementById('summaryCustomDateFrom')?.value || '';
       const to = document.getElementById('summaryCustomDateTo')?.value || '';
-      summaryCustomDateRange = { from, to };
-      renderSummaryDrawer('custom', currentDrawerMember);
+      if (!from || !to) {
+        if (typeof showToast === 'function') showToast('حدد تاريخ البداية والنهاية لعرض الفترة المخصصة');
+        return;
+      }
+      if (from > to) {
+        if (typeof showToast === 'function') showToast('تاريخ البداية يجب أن يسبق تاريخ النهاية');
+        return;
+      }
+      summaryCustomDateRange = { from: from, to: to };
+      renderSummaryDrawer();
     }
 
-    function setSummaryCurrency(curr) {
-      currentSummaryCurrency = curr;
-      ['EGP', 'SAR', 'USD', 'GOLD'].forEach(c => {
-        const btn = document.getElementById('btnSummaryCurr' + c);
-        if (btn) {
-          const isTarget = (curr === 'GOLD21' && c === 'GOLD') || (curr === c);
-          if (isTarget) {
-            btn.style.background = c === 'GOLD' ? 'rgba(245, 158, 11, 0.35)' : 'rgba(56, 189, 248, 0.35)';
-            btn.style.color = c === 'GOLD' ? '#fbbf24' : '#38bdf8';
-            btn.style.border = '1.2px solid ' + (c === 'GOLD' ? '#fbbf24' : '#38bdf8');
-          } else {
-            btn.style.background = 'transparent';
-            btn.style.color = '#94a3b8';
-            btn.style.border = '1px solid rgba(255,255,255,0.1)';
-          }
-        }
+    function setSummaryCurrency(currency) {
+      if (!['EGP', 'SAR', 'USD', 'GOLD21'].includes(currency)) return;
+      currentSummaryCurrency = currency;
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+
+    function syncSummaryDrawerControls() {
+      const drawer = document.getElementById('summaryLeftDrawer');
+      if (!drawer) return;
+      drawer.querySelectorAll('.summary-group-mode-btn').forEach(button => {
+        const active = button.dataset.mode === currentSummaryGroupMode;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
-      renderSummaryDrawer(currentSummaryPeriod, currentDrawerMember);
+      drawer.querySelectorAll('.summary-period-btn').forEach(button => {
+        const active = button.dataset.period === currentSummaryPeriod;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      drawer.querySelectorAll('.summary-currency-btn').forEach(button => {
+        const active = button.dataset.currency === currentSummaryCurrency;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      const customRow = document.getElementById('drawerSummaryCustomDateRow');
+      if (customRow) customRow.style.display = currentSummaryPeriod === 'custom' ? 'grid' : 'none';
+      const from = document.getElementById('summaryCustomDateFrom');
+      const to = document.getElementById('summaryCustomDateTo');
+      if (from && summaryCustomDateRange.from) from.value = summaryCustomDateRange.from;
+      if (to && summaryCustomDateRange.to) to.value = summaryCustomDateRange.to;
+      const subtitle = document.getElementById('summaryDrawerSubtitle');
+      if (subtitle) subtitle.textContent = currentSummaryGroupMode === 'project'
+        ? 'مقارنة المصروفات بين المشاريع'
+        : 'مقارنة مصروفات أفراد الأسرة';
     }
 
-    function formatSummaryVal(amtEgp) {
-      const g21Price = (state.market && state.market.gold21) || 6265;
-      const usdRate = (state.market && state.market.usdEgp) || 53.97;
-      const sarRate = (state.market && state.market.sarEgp) || 14.37;
-
-      if (currentSummaryCurrency === 'GOLD21') {
-        const grams = g21Price > 0 ? (amtEgp / g21Price).toFixed(2) : '0.00';
-        return `${grams} جم ذهب 21`;
-      } else if (currentSummaryCurrency === 'USD') {
-        const usd = usdRate > 0 ? (amtEgp / usdRate).toFixed(2) : '0.00';
-        return `$${Number(usd).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-      } else if (currentSummaryCurrency === 'SAR') {
-        const sar = sarRate > 0 ? (amtEgp / sarRate).toFixed(2) : '0.00';
-        return `ر.س ${Number(sar).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-      }
-      return `ج.م ${Number(amtEgp).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+    function summaryCategoryIcon(icon) {
+      const value = String(icon || 'fa-receipt').trim().split(/\s+/).pop();
+      return /^fa-[a-z0-9-]+$/i.test(value) ? value : 'fa-receipt';
     }
 
-    function switchDrawerMember(m) {
-      currentDrawerMember = m;
-      renderSummaryDrawer(currentSummaryPeriod, m);
-    }
-
-    function drillDownFromMemberDrawer(catId, catName) {
-      closeSummaryLeftDrawer();
-      if (typeof openOperationsFiltered === 'function') {
-        openOperationsFiltered({
-          category: catId,
-          categoryName: catName,
-          member: currentDrawerMember,
-          type: 'expense'
-        });
-      }
-      showToast(`🔍 عرض كشف حركات ${catName} الخاصة بـ ${currentDrawerMember}`);
-    }
-
-    function renderSummaryDrawer(period = currentSummaryPeriod, member = currentDrawerMember) {
+    function renderSummaryDrawer() {
       const container = document.getElementById('summaryDrawerContent');
-      const selectorStrip = document.getElementById('drawerMemberSelectorStrip');
       if (!container) return;
 
-      const membersList = ['الكل', 'البيت', 'ماهر', 'آية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'أخرى'];
-      if (selectorStrip) {
-        selectorStrip.innerHTML = membersList.map(m => {
-          const isActive = m === member;
-          return `
-            <button type="button" onclick="switchDrawerMember('${m}')" style="padding: 4px 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 850; border: ${isActive ? '1.2px solid #38bdf8' : '1px solid rgba(255,255,255,0.1)'}; background: ${isActive ? 'rgba(56, 189, 248, 0.25)' : 'rgba(15, 23, 42, 0.6)'}; color: ${isActive ? '#38bdf8' : '#94a3b8'}; cursor: pointer; white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 4px;">
-              <span>👤</span>
-              <span>${m}</span>
-            </button>
-          `;
-        }).join('');
-      }
-
-      const now = new Date();
-      const todayStr = getLocalDateStr(now);
-      const weekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
-      const weekAgoStr = getLocalDateStr(weekAgo);
-      const thisMonthPrefix = todayStr.substring(0, 7);
-      const thisYearPrefix = todayStr.substring(0, 4);
-
-      let txList = [...(state.transactions || [])];
-      let periodTitle = 'حركات الفترة المحددة';
-
-      if (period === 'day') {
-        txList = txList.filter(t => t.date === todayStr);
-        periodTitle = `حركات اليوم (${todayStr})`;
-      } else if (period === 'week') {
-        txList = txList.filter(t => t.date >= weekAgoStr && t.date <= todayStr);
-        periodTitle = `حركات آخر 7 أيام`;
-      } else if (period === 'month') {
-        txList = txList.filter(t => (t.date || '').startsWith(thisMonthPrefix));
-        periodTitle = `حركات شهر ${now.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' })}`;
-      } else if (period === 'year') {
-        txList = txList.filter(t => (t.date || '').startsWith(thisYearPrefix));
-        periodTitle = `حركات عام ${thisYearPrefix}`;
-      } else if (period === 'custom') {
-        if (summaryCustomDateRange.from && summaryCustomDateRange.to) {
-          txList = txList.filter(t => t.date >= summaryCustomDateRange.from && t.date <= summaryCustomDateRange.to);
-          periodTitle = `الفترة (${summaryCustomDateRange.from} إلى ${summaryCustomDateRange.to})`;
-        }
-      }
-
-      if (member !== 'الكل') {
-        txList = txList.filter(t => {
-          const m = t.member || 'البيت';
-          if (member === 'البيت') return m === 'البيت' || m === 'العائلة' || !t.member;
-          if (member === 'آية' || member === 'أية') return m === 'آية' || m === 'أية';
-          return m === member;
-        });
-      }
-
-      let totalExp = 0, totalInc = 0;
-      const catTotals = {};
-
-      txList.forEach(t => {
-        const amt = Number(t.amount) || 0;
-        if (t.type === 'expense') {
-          totalExp += amt;
-          const cId = t.category || 'other';
-          catTotals[cId] = (catTotals[cId] || 0) + amt;
-        } else if (t.type === 'income') {
-          totalInc += amt;
-        }
+      const range = summaryGetRange(currentSummaryPeriod);
+      const periodTransactions = (Array.isArray(state.transactions) ? state.transactions : []).filter(tx => {
+        if (!tx || tx.deleted || (tx.type !== 'expense' && tx.type !== 'income')) return false;
+        if (currentSummaryPeriod === 'custom' && range.valid === false) return false;
+        const date = String(tx.date || tx.createdAt || '').slice(0, 10);
+        if (range.from && (!date || date < range.from)) return false;
+        if (range.to && (!date || date > range.to)) return false;
+        return true;
       });
 
-      const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
-      const catBreakdownHtml = sortedCats.map(([catId, sum]) => {
-        const cat = getCategoryObj(catId, 'expense');
-        const pct = totalExp > 0 ? ((sum / totalExp) * 100).toFixed(1) : '0';
-        return `
-          <div onclick="drillDownFromMemberDrawer('${catId}', '${cat.name}')" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; cursor: pointer; transition: all 0.2s ease;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 32px; height: 32px; border-radius: 8px; background: ${cat.color ? cat.color + '22' : 'rgba(56,189,248,0.15)'}; border: 1px solid ${cat.color ? cat.color + '55' : 'rgba(56,189,248,0.3)'}; color: ${cat.color || '#38bdf8'}; display: flex; align-items: center; justify-content: center; font-size: 0.90rem;">
-                <i class="fa-solid ${cat.icon || 'fa-receipt'}"></i>
-              </div>
-              <div>
-                <div style="font-size: 0.82rem; font-weight: 850; color: #f8fafc;">${cat.name}</div>
-                <div style="font-size: 0.65rem; color: #94a3b8;">${pct}% من مصروفات ${member}</div>
-              </div>
-            </div>
-            <div style="text-align: left;">
-              <div style="font-size: 0.88rem; font-weight: 950; color: #ff4d6d; font-family: var(--font-numbers); direction: ltr;">
-                - ${formatSummaryVal(sum)}
-              </div>
-              <div style="font-size: 0.62rem; color: #38bdf8;">عرض التفاصيل ❯</div>
-            </div>
-          </div>
-        `;
+      const totalPeriodExpenses = periodTransactions
+        .filter(tx => tx.type === 'expense')
+        .reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
+
+      const groupsByKey = new Map();
+      periodTransactions.forEach(tx => {
+        if (tx.type !== 'expense') return;
+        const key = summaryGroupKey(tx, currentSummaryGroupMode);
+        const item = groupsByKey.get(key) || { key: key, amount: 0, count: 0 };
+        item.amount += Math.abs(Number(tx.amount) || 0);
+        item.count += 1;
+        groupsByKey.set(key, item);
+      });
+
+      const groups = Array.from(groupsByKey.values())
+        .sort((a, b) => b.amount - a.amount || summaryGroupLabel(a.key, currentSummaryGroupMode).localeCompare(summaryGroupLabel(b.key, currentSummaryGroupMode), 'ar'));
+
+      const hasSelection = currentSummaryGroupKey !== 'all';
+      const selectedTransactions = hasSelection
+        ? periodTransactions.filter(tx => summaryGroupKey(tx, currentSummaryGroupMode) === currentSummaryGroupKey)
+        : periodTransactions;
+      const expenses = selectedTransactions.filter(tx => tx.type === 'expense');
+      const incomes = selectedTransactions.filter(tx => tx.type === 'income');
+      const expenseTotal = expenses.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
+      const incomeTotal = incomes.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
+      const selectedLabel = summaryGroupLabel(currentSummaryGroupKey, currentSummaryGroupMode);
+      const modeLabel = currentSummaryGroupMode === 'project' ? 'مشروع' : 'شخص';
+
+      const groupRows = groups.map(item => {
+        const share = totalPeriodExpenses > 0 ? Math.round((item.amount / totalPeriodExpenses) * 100) : 0;
+        const active = hasSelection && item.key === currentSummaryGroupKey;
+        const icon = currentSummaryGroupMode === 'project'
+          ? (item.key === '__no_project__' ? 'fa-folder-minus' : 'fa-folder-open')
+          : 'fa-user';
+        return '<button type="button" class="summary-group-row' + (active ? ' active' : '') + '" data-group-key="' + summaryEscapeHtml(item.key) + '" onclick="selectSummaryGroupFromElement(this)" aria-pressed="' + (active ? 'true' : 'false') + '">' +
+          '<span class="summary-group-icon"><i class="fa-solid ' + icon + '"></i></span>' +
+          '<span class="summary-group-main"><span class="summary-group-title">' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + '</span>' +
+          '<span class="summary-group-meta">' + item.count.toLocaleString('ar-EG') + ' عملية · ' + share + '% من المصروفات</span>' +
+          '<span class="summary-group-track"><span style="width:' + share + '%"></span></span></span>' +
+          '<span class="summary-group-value">− ' + summaryEscapeHtml(summaryFormatAmount(item.amount)) + '</span></button>';
       }).join('');
 
-      container.innerHTML = `
-        <div style="background: rgba(30, 41, 59, 0.55); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 800;">${periodTitle}</div>
-          <div style="font-size: 0.92rem; font-weight: 900; color: #38bdf8; margin-top: 2px;">👤 ${member === 'الكل' ? 'كافة أفراد العائلة مجتمعين' : 'مصروفات: ' + member}</div>
-        </div>
+      const categoryTotals = new Map();
+      expenses.forEach(tx => {
+        const key = String(tx.category || 'other');
+        categoryTotals.set(key, (categoryTotals.get(key) || 0) + Math.abs(Number(tx.amount) || 0));
+      });
+      const categories = Array.from(categoryTotals.entries()).sort((a, b) => b[1] - a[1]);
+      const categoryRows = categories.map(([categoryId, amount]) => {
+        const category = typeof getCategoryObj === 'function' ? getCategoryObj(categoryId, 'expense') : { name: categoryId, color: '#38bdf8', icon: 'fa-receipt' };
+        const name = String(category && category.name || categoryId);
+        const colorValue = String(category && category.color || '#38bdf8');
+        const color = /^#[0-9a-f]{3,8}$/i.test(colorValue) ? colorValue : '#38bdf8';
+        const icon = summaryCategoryIcon(category && category.icon);
+        const share = expenseTotal > 0 ? ((amount / expenseTotal) * 100).toFixed(1) : '0.0';
+        return '<button type="button" class="summary-category-row" data-category-id="' + summaryEscapeHtml(categoryId) + '" data-category-name="' + summaryEscapeHtml(name) + '" onclick="drillDownFromSummaryElement(this)">' +
+          '<span class="summary-category-icon" style="--summary-category-color:' + color + '"><i class="fa-solid ' + icon + '"></i></span>' +
+          '<span class="summary-category-main"><span class="summary-category-title">' + summaryEscapeHtml(name) + '</span>' +
+          '<span class="summary-category-meta">' + share + '% · عرض الحركات</span></span>' +
+          '<span class="summary-category-value">− ' + summaryEscapeHtml(summaryFormatAmount(amount)) + '</span></button>';
+      }).join('');
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px;">
-          <div style="background: rgba(244, 63, 94, 0.12); border: 1.2px solid rgba(244, 63, 94, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
-            <div style="font-size: 0.66rem; color: #fca5a5; font-weight: 800;">إجمالي المصروفات</div>
-            <div style="font-size: 1.05rem; font-weight: 950; color: #ff4d6d; font-family: var(--font-numbers); direction: ltr; unicode-bidi: isolate; margin-top: 2px;">
-              - ${formatSummaryVal(totalExp)}
-            </div>
-          </div>
-          <div style="background: rgba(16, 185, 129, 0.12); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
-            <div style="font-size: 0.66rem; color: #86efac; font-weight: 800;">إجمالي الإيداعات</div>
-            <div style="font-size: 1.05rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr; unicode-bidi: isolate; margin-top: 2px;">
-              + ${formatSummaryVal(totalInc)}
-            </div>
-          </div>
-        </div>
+      const customPending = currentSummaryPeriod === 'custom' && range.valid === false;
+      const emptyGroups = customPending
+        ? 'حدد تاريخ البداية والنهاية لعرض نتائج الفترة.'
+        : 'لا توجد مصروفات مسجلة في هذه الفترة.';
+      const listTitle = currentSummaryGroupMode === 'project' ? 'المصروفات حسب المشروع' : 'المصروفات حسب الشخص';
 
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 6px;">
-          <span style="font-size: 0.80rem; font-weight: 900; color: #f8fafc;"><i class="fa-solid fa-list-ul" style="color: #38bdf8;"></i> توزيع النفقات حسب البند:</span>
-          <span style="font-size: 0.62rem; color: #38bdf8;">(انقر على أي بند للانتقال لكشف حركاته)</span>
-        </div>
+      container.innerHTML =
+        '<section class="summary-selected-card">' +
+          '<div><span class="summary-eyebrow">' + (hasSelection ? 'المجموعة المحددة · ' + modeLabel : 'نطاق التحليل') + '</span>' +
+          '<h3>' + summaryEscapeHtml(selectedLabel) + '</h3><p>' + summaryEscapeHtml(range.title) + '</p></div>' +
+          '<button type="button" class="summary-show-all-btn' + (!hasSelection ? ' is-hidden' : '') + '" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' +
+        '</section>' +
+        '<section class="summary-kpi-grid">' +
+          '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>− ' + summaryEscapeHtml(summaryFormatAmount(expenseTotal)) + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+          '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>+ ' + summaryEscapeHtml(summaryFormatAmount(incomeTotal)) + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+        '</section>' +
+        '<section class="summary-section">' +
+          '<div class="summary-section-heading"><h3>' + listTitle + '</h3><span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
+          '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
+        '</section>' +
+        '<section class="summary-section">' +
+          '<div class="summary-section-heading"><h3>تفاصيل البنود</h3><span>' + (hasSelection ? 'ضمن المجموعة المحددة' : 'كافة النتائج') + '</span></div>' +
+          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
+        '</section>';
+    }
 
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          ${catBreakdownHtml || '<div style="text-align: center; color: #64748b; font-size: 0.76rem; padding: 25px 10px; background: rgba(15, 23, 42, 0.5); border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1);">لا توجد حركات مصروفات مسجلة لهذا الفرد خلال الفترة المحددة</div>'}
-        </div>
-      `;
+    function drillDownFromSummaryElement(button) {
+      if (!button || !button.dataset) return;
+      drillDownFromMemberDrawer(button.dataset.categoryId, button.dataset.categoryName);
+    }
+
+    function drillDownFromMemberDrawer(categoryId, categoryName) {
+      closeSummaryLeftDrawer();
+      if (typeof openOperationsFiltered === 'function') {
+        const filters = { category: categoryId, categoryName: categoryName, type: 'expense' };
+        if (currentSummaryGroupKey !== 'all' && currentSummaryGroupMode === 'member') {
+          filters.member = currentDrawerMember;
+        } else if (currentSummaryGroupKey !== 'all' && currentSummaryGroupMode === 'project') {
+          filters.project = currentSummaryGroupKey === '__no_project__' ? '__no_project__' : currentSummaryGroupKey;
+        }
+        openOperationsFiltered(filters);
+      }
+      if (typeof showToast === 'function') showToast('عرض حركات ' + (categoryName || 'البند') + ' ضمن الملخص المحدد');
     }
 
     // تفعيل إيماءات السحب الجانبي (Swipe Gestures) لفتح وإغلاق الشاشات الجانبية يمين ويسار
@@ -29266,7 +29497,7 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121050);
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121052);
           const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.16');
 
           const isNewer = remoteBuild && (
@@ -35591,67 +35822,59 @@ window.filterArchiveType = filterArchiveType;
 
 
   <!-- =========================================================================
-       1. درج ملخص النشاط المالي الشامل (يفتح من اليسار)
+       1. ملخص المصروفات: التجميع حسب الشخص أو المشروع
        ========================================================================= -->
-  <div class="drawer-backdrop" id="summaryDrawerBackdrop" onclick="closeSummaryLeftDrawer()"></div>
-    <!-- الدرج الجانبي الأيسر: ملخص المصروفات بالفرد (Member Financial Breakdown) -->
-  <div class="summary-left-drawer" id="summaryLeftDrawer" style="display: flex; flex-direction: column; overflow: hidden;" dir="rtl">
-    <!-- ترويسة الدرج الأيسر: ملخص المصروفات بالفرد -->
-    <div style="padding: 12px 14px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); background: linear-gradient(135deg, #0f172a, #1e293b); flex-shrink: 0;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #0369a1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.05rem; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);">
-            <i class="fa-solid fa-user-chart"></i>
-          </div>
-          <div>
-            <div style="font-size: 0.95rem; font-weight: 900; color: #f8fafc;">ملخص المصروفات بالفرد</div>
-            <div style="font-size: 0.65rem; color: #38bdf8; font-weight: 700;">تحليل دقيق لنفقات وبنود كل فرد من الأسرة</div>
-          </div>
-        </div>
-        <button type="button" onclick="closeSummaryLeftDrawer()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; width: 28px; height: 28px; line-height: 26px; text-align: center; color: #94a3b8; font-size: 1.15rem; cursor: pointer;">&times;</button>
+  <div class="drawer-backdrop summary-rebuild-backdrop" id="summaryDrawerBackdrop" onclick="closeSummaryLeftDrawer()" aria-hidden="true"></div>
+  <aside class="summary-left-drawer summary-rebuilt-drawer" id="summaryLeftDrawer" role="dialog" aria-modal="true" aria-label="ملخص المصروفات" dir="rtl">
+    <header class="summary-rebuilt-header">
+      <div class="summary-header-icon"><i class="fa-solid fa-chart-pie"></i></div>
+      <div class="summary-header-copy">
+        <h2>ملخص المصروفات</h2>
+        <p id="summaryDrawerSubtitle">مقارنة مصروفات أفراد الأسرة</p>
+      </div>
+      <button type="button" class="summary-close-btn" onclick="closeSummaryLeftDrawer()" aria-label="إغلاق الملخص">&times;</button>
+    </header>
+
+    <div class="summary-rebuilt-controls">
+      <div class="summary-group-mode" role="group" aria-label="طريقة التجميع">
+        <button type="button" id="btnSummaryGroupMember" class="summary-group-mode-btn active" data-mode="member" onclick="setSummaryGroupMode('member')" aria-pressed="true">
+          <i class="fa-solid fa-users"></i><span>حسب الشخص</span>
+        </button>
+        <button type="button" id="btnSummaryGroupProject" class="summary-group-mode-btn" data-mode="project" onclick="setSummaryGroupMode('project')" aria-pressed="false">
+          <i class="fa-solid fa-diagram-project"></i><span>حسب المشروع</span>
+        </button>
       </div>
 
-      <!-- شريط كبسولات اختيار أفراد العائلة في الدرج -->
-      <div id="drawerMemberSelectorStrip" style="display: flex; gap: 5px; overflow-x: auto; padding: 4px 0 6px; -webkit-overflow-scrolling: touch;" class="custom-scrollbar">
-        <!-- تتولد ديناميكياً بواسطة renderMemberSelectorStrip() -->
+      <div class="summary-period-grid" role="group" aria-label="الفترة">
+        <button type="button" class="summary-period-btn" data-period="day" onclick="switchSummaryPeriod('day')">اليوم</button>
+        <button type="button" class="summary-period-btn" data-period="week" onclick="switchSummaryPeriod('week')">الأسبوع</button>
+        <button type="button" class="summary-period-btn active" data-period="month" onclick="switchSummaryPeriod('month')">الشهر</button>
+        <button type="button" class="summary-period-btn" data-period="year" onclick="switchSummaryPeriod('year')">السنة</button>
+        <button type="button" class="summary-period-btn" data-period="custom" onclick="switchSummaryPeriod('custom')">مخصص</button>
+        <button type="button" class="summary-period-btn" data-period="all" onclick="switchSummaryPeriod('all')">كل الفترات</button>
       </div>
 
-      <!-- أدوات الفلاتر الزمنية للملخص -->
-      <div id="drawerSummaryFilterBar" style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px;">
-        <!-- تبويبات الفترات: اليوم / الأسبوع / الشهر / السنة / مخصص -->
-        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;">
-          <button type="button" class="exp-tab-btn active" id="btnSummaryTabDay" onclick="switchSummaryPeriod('day')" style="padding: 6px 2px; border-radius: 8px; font-weight: 800; font-size: 0.70rem; border: none; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; cursor: pointer; text-align: center;">اليوم</button>
-          <button type="button" class="exp-tab-btn" id="btnSummaryTabWeek" onclick="switchSummaryPeriod('week')" style="padding: 6px 2px; border-radius: 8px; font-weight: 800; font-size: 0.70rem; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer; text-align: center;">الأسبوع</button>
-          <button type="button" class="exp-tab-btn" id="btnSummaryTabMonth" onclick="switchSummaryPeriod('month')" style="padding: 6px 2px; border-radius: 8px; font-weight: 800; font-size: 0.70rem; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer; text-align: center;">الشهر</button>
-          <button type="button" class="exp-tab-btn" id="btnSummaryTabYear" onclick="switchSummaryPeriod('year')" style="padding: 6px 2px; border-radius: 8px; font-weight: 800; font-size: 0.70rem; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer; text-align: center;">السنة</button>
-          <button type="button" class="exp-tab-btn" id="btnSummaryTabCustom" onclick="switchSummaryPeriod('custom')" style="padding: 6px 2px; border-radius: 8px; font-weight: 800; font-size: 0.70rem; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer; text-align: center;">مخصص</button>
-        </div>
+      <div id="drawerSummaryCustomDateRow" class="summary-custom-date-row" style="display:none">
+        <label><span>من</span><input type="date" id="summaryCustomDateFrom" onchange="applyCustomSummaryDate()" aria-label="تاريخ البداية"></label>
+        <label><span>إلى</span><input type="date" id="summaryCustomDateTo" onchange="applyCustomSummaryDate()" aria-label="تاريخ النهاية"></label>
+        <button type="button" onclick="applyCustomSummaryDate()">تطبيق</button>
+      </div>
 
-        <!-- سطر اختيار التاريخ المخصص (يظهر عند اختيار مخصص) -->
-        <div id="drawerSummaryCustomDateRow" style="display: none; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: center; background: rgba(15, 23, 42, 0.8); padding: 6px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.4);">
-          <input type="date" id="summaryCustomDateFrom" class="form-input-custom" style="height: 30px; font-size: 0.70rem; padding: 0 4px;" onchange="applyCustomSummaryDate()">
-          <input type="date" id="summaryCustomDateTo" class="form-input-custom" style="height: 30px; font-size: 0.70rem; padding: 0 4px;" onchange="applyCustomSummaryDate()">
-          <button type="button" onclick="applyCustomSummaryDate()" style="padding: 0 8px; height: 30px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: #0284c7; color: #fff; border: none; cursor: pointer;">تطبيق</button>
-        </div>
-
-        <!-- شريط تحويل العملات وتقويم الأسعار -->
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 4px 6px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.25);">
-          <span style="font-size: 0.64rem; font-weight: 800; color: #fbbf24;"><i class="fa-solid fa-coins"></i> العملة:</span>
-          <div style="display: flex; gap: 4px;">
-            <button type="button" class="btn-summary-curr-pill active" id="btnSummaryCurrEGP" onclick="setSummaryCurrency('EGP')" style="padding: 2px 7px; border-radius: 6px; font-size: 0.64rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(56, 189, 248, 0.5); background: rgba(56, 189, 248, 0.2); color: #38bdf8;">ج.م</button>
-            <button type="button" class="btn-summary-curr-pill" id="btnSummaryCurrSAR" onclick="setSummaryCurrency('SAR')" style="padding: 2px 7px; border-radius: 6px; font-size: 0.64rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8;">ر.س</button>
-            <button type="button" class="btn-summary-curr-pill" id="btnSummaryCurrUSD" onclick="setSummaryCurrency('USD')" style="padding: 2px 7px; border-radius: 6px; font-size: 0.64rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8;">$ USD</button>
-            <button type="button" class="btn-summary-curr-pill" id="btnSummaryCurrGOLD" onclick="setSummaryCurrency('GOLD21')" style="padding: 2px 7px; border-radius: 6px; font-size: 0.64rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8;">🪙 ذهب 21</button>
-          </div>
+      <div class="summary-currency-row">
+        <span><i class="fa-solid fa-coins"></i> العملة</span>
+        <div role="group" aria-label="عملة العرض">
+          <button type="button" class="summary-currency-btn active" data-currency="EGP" onclick="setSummaryCurrency('EGP')">ج.م</button>
+          <button type="button" class="summary-currency-btn" data-currency="SAR" onclick="setSummaryCurrency('SAR')">ر.س</button>
+          <button type="button" class="summary-currency-btn" data-currency="USD" onclick="setSummaryCurrency('USD')">USD</button>
+          <button type="button" class="summary-currency-btn" data-currency="GOLD21" onclick="setSummaryCurrency('GOLD21')">ذهب 21</button>
         </div>
       </div>
     </div>
 
-    <!-- المحتوى التفاعلي للملخص بالفرد -->
-    <div id="summaryDrawerContent" style="padding: 12px 14px 40px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="custom-scrollbar">
-      <!-- يتولد ديناميكياً بواسطة renderSummaryDrawer() -->
-    </div>
-  </div>
+    <main id="summaryDrawerContent" class="summary-rebuilt-content custom-scrollbar" aria-live="polite">
+      <div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>جارٍ تجهيز الملخص...</span></div>
+    </main>
+  </aside>
 
   <!-- =========================================================================
        2. نافذة مهام Microsoft To-Do المتكاملة (Tasks)
