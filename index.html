@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.14';
-    var APP_BUILD_ID = 202611121026;
+    var APP_VERSION = 'v5.3.15';
+    var APP_BUILD_ID = 202611121037;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -14193,6 +14193,197 @@
       #goldDrawerPanel .market-box { padding: 8px !important; }
     }
   </style>
+<style id="unified-date-task-picker-theme">
+    :root {
+      --picker-accent: #6d5ce7;
+      --picker-accent-strong: #5948c8;
+      --picker-accent-soft: rgba(109, 92, 231, 0.18);
+    }
+    body:not(.light-theme) input[type="date"],
+    body:not(.light-theme) input[type="time"],
+    body:not(.light-theme) input[type="datetime-local"] {
+      color-scheme: dark;
+      accent-color: var(--picker-accent);
+    }
+    body.light-theme input[type="date"],
+    body.light-theme input[type="time"],
+    body.light-theme input[type="datetime-local"] {
+      color-scheme: light;
+      accent-color: var(--picker-accent-strong);
+    }
+    input[type="date"].form-input-custom,
+    input[type="time"].form-input-custom,
+    input[type="datetime-local"].form-input-custom {
+      background-color: var(--bg-card-sub) !important;
+      color: var(--text-main) !important;
+      border-color: var(--border) !important;
+    }
+
+    .custom-date-modal-overlay,
+    #taskDateTimePickerModal {
+      background: rgba(4, 8, 18, 0.72) !important;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    #customDatePickerDrawer .custom-date-sheet-card,
+    #taskDateTimePickerModal .modal-content-card {
+      color: var(--text-main) !important;
+      background: linear-gradient(155deg, var(--bg-card-sub), var(--bg-card)) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: 0 20px 55px rgba(0, 0, 0, 0.36), inset 0 1px rgba(255, 255, 255, 0.035) !important;
+    }
+    #customDatePickerDrawer .custom-date-sheet-head,
+    #taskDateTimePickerModal .modal-content-card > div:first-child {
+      color: var(--text-main) !important;
+      border-bottom-color: var(--border) !important;
+    }
+    #customDatePickerDrawer #customDatePickerTitle,
+    #taskDateTimePickerModal #taskPickerDateReadout,
+    #taskDateTimePickerModal #taskPickerMonthLabel {
+      color: var(--text-main) !important;
+    }
+    #customDatePickerDrawer .custom-date-sheet-head i { color: var(--picker-accent) !important; }
+    #customDatePickerDrawer .custom-date-sheet-head .btn-modal-close {
+      color: var(--text-muted) !important;
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+    }
+    #taskDateTimePickerModal .btn-close-drawer {
+      color: var(--text-main) !important;
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+    }
+    #customDatePickerDrawer .range-date-value {
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+    }
+    #customDatePickerDrawer .range-date-value-label,
+    #customDatePickerDrawer .range-calendar-nav-label,
+    #customDatePickerDrawer .range-calendar-weekdays span,
+    #customDatePickerDrawer .range-date-hint,
+    #taskDateTimePickerModal #taskPickerZoneReadout,
+    #taskDateTimePickerModal .task-picker-weekdays span,
+    #taskDateTimePickerModal label[for="taskPickerTimezoneSelect"],
+    #taskDateTimePickerModal .modal-content-card > div:nth-of-type(6) > span {
+      color: var(--text-muted) !important;
+    }
+    #customDatePickerDrawer .range-date-value output { color: var(--text-main) !important; }
+    #customDatePickerDrawer .range-date-value.is-pending output { color: var(--text-muted) !important; }
+    #customDatePickerDrawer .range-calendar-nav button,
+    #taskDateTimePickerModal .task-picker-month-heading button,
+    #taskDateTimePickerModal .task-picker-stepper button,
+    #taskDateTimePickerModal .task-picker-mode button,
+    #taskDateTimePickerModal .task-picker-period button {
+      color: var(--text-main) !important;
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+      transition: color 0.16s ease, background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+    }
+    #customDatePickerDrawer .range-calendar-nav button:hover,
+    #taskDateTimePickerModal .task-picker-month-heading button:hover,
+    #taskDateTimePickerModal .task-picker-stepper button:hover,
+    #taskDateTimePickerModal .task-picker-mode button:hover,
+    #taskDateTimePickerModal .task-picker-period button:hover {
+      color: var(--picker-accent) !important;
+      border-color: var(--picker-accent) !important;
+      background: var(--picker-accent-soft) !important;
+    }
+    #customDatePickerDrawer .range-calendar-month-title { color: var(--text-main) !important; }
+    #customDatePickerDrawer .range-calendar-month + .range-calendar-month { border-top-color: var(--border) !important; }
+    #customDatePickerDrawer .range-calendar-months { scrollbar-color: var(--picker-accent) transparent; }
+    #customDatePickerDrawer .range-calendar-day,
+    #taskDateTimePickerModal .task-picker-calendar-grid button.range-calendar-day {
+      color: var(--text-main) !important;
+    }
+    #customDatePickerDrawer .range-calendar-day::after,
+    #taskDateTimePickerModal .task-picker-calendar-grid button.range-calendar-day::after {
+      background: linear-gradient(145deg, #7868f2, var(--picker-accent-strong)) !important;
+      box-shadow: 0 3px 11px rgba(109, 92, 231, 0.34);
+    }
+    #customDatePickerDrawer .range-calendar-day.is-range-between::before,
+    #customDatePickerDrawer .range-calendar-day.is-range-start:not(.is-range-end)::before,
+    #customDatePickerDrawer .range-calendar-day.is-range-end:not(.is-range-start)::before,
+    #taskDateTimePickerModal .range-calendar-day.is-range-between::before,
+    #taskDateTimePickerModal .range-calendar-day.is-range-start:not(.is-range-end)::before,
+    #taskDateTimePickerModal .range-calendar-day.is-range-end:not(.is-range-start)::before {
+      background: var(--picker-accent-soft) !important;
+    }
+    #customDatePickerDrawer .range-calendar-day.is-range-start,
+    #customDatePickerDrawer .range-calendar-day.is-range-end,
+    #taskDateTimePickerModal .range-calendar-day.is-range-start,
+    #taskDateTimePickerModal .range-calendar-day.is-range-end {
+      color: #ffffff !important;
+    }
+    #customDatePickerDrawer .range-calendar-day.is-today:not(.is-range-start):not(.is-range-end),
+    #customDatePickerDrawer .range-calendar-day:hover:not(.is-range-start):not(.is-range-end),
+    #taskDateTimePickerModal .range-calendar-day.is-today:not(.is-range-start):not(.is-range-end),
+    #taskDateTimePickerModal .range-calendar-day:hover:not(.is-range-start):not(.is-range-end) {
+      color: var(--picker-accent) !important;
+      border-color: var(--picker-accent) !important;
+    }
+    #customDatePickerDrawer .range-calendar-day:focus-visible,
+    #customDatePickerDrawer .range-calendar-nav button:focus-visible,
+    #taskDateTimePickerModal button:focus-visible,
+    #taskDateTimePickerModal select:focus-visible {
+      outline: 2px solid var(--picker-accent) !important;
+      outline-offset: 2px;
+    }
+    #customDatePickerDrawer .custom-date-sheet-actions .btn-apply-period-main {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #7868f2, var(--picker-accent-strong)) !important;
+      border: 1px solid rgba(167, 151, 255, 0.36) !important;
+      box-shadow: 0 5px 15px rgba(89, 72, 200, 0.25) !important;
+    }
+    #customDatePickerDrawer .btn-reset-period-sub {
+      color: var(--text-muted) !important;
+      border-color: var(--border) !important;
+    }
+    #customDatePickerDrawer .btn-reset-period-sub:hover {
+      color: var(--picker-accent) !important;
+      background: var(--picker-accent-soft) !important;
+    }
+
+    #taskDateTimePickerModal #taskPickerTimezoneSelect {
+      color: var(--text-main) !important;
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+      color-scheme: inherit;
+    }
+    #taskDateTimePickerModal #taskPickerTimezoneSelect option {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+    #taskDateTimePickerModal .task-picker-stepper output { color: var(--text-main) !important; }
+    #taskDateTimePickerModal #taskPickerNoTimeButton {
+      color: var(--text-muted) !important;
+      background: var(--bg-card-sub) !important;
+      border-color: var(--border) !important;
+    }
+    #taskDateTimePickerModal #taskPickerNoTimeButton.is-active,
+    #taskDateTimePickerModal .task-picker-period button.is-active,
+    #taskDateTimePickerModal .task-picker-mode button.is-active {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #7868f2, var(--picker-accent-strong)) !important;
+      border-color: #a99bff !important;
+      box-shadow: 0 3px 12px rgba(109, 92, 231, 0.24);
+    }
+    #taskDateTimePickerModal #taskDateTimeSummaryBadge {
+      color: var(--picker-accent) !important;
+      background: var(--picker-accent-soft) !important;
+      border-color: rgba(109, 92, 231, 0.38) !important;
+    }
+    #taskDateTimePickerModal .modal-content-card > div:last-child button:first-child {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #7868f2, var(--picker-accent-strong)) !important;
+      border: 1px solid rgba(167, 151, 255, 0.36) !important;
+      box-shadow: 0 4px 13px rgba(89, 72, 200, 0.24);
+    }
+    #taskDateTimePickerModal .modal-content-card > div:last-child button:last-child {
+      color: #fda4af !important;
+      background: rgba(244, 63, 94, 0.10) !important;
+      border-color: rgba(244, 63, 94, 0.34) !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -17652,7 +17843,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.14 • متزامن</span>
+                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.15 • متزامن</span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -18247,8 +18438,8 @@
     
 
       // 3. إدارة الإصدار وقراءة البيانات المحفوظة دون إنشاء بيانات تجريبية تلقائياً.
-      const APP_VERSION = 'v5.3.14';
-      const APP_BUILD_ID = 202611121026;
+      const APP_VERSION = 'v5.3.15';
+      const APP_BUILD_ID = 202611121037;
       localStorage.setItem('family_monefy_version', APP_VERSION);
 
       const readStoredArray = (keys) => {
@@ -29075,8 +29266,8 @@ function openSettingsModal(targetSection = '') {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121026);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.14');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121037);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.15');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -33230,7 +33421,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.14)</span>
+          <span>النظام جاهز ومحدث (v5.3.15)</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
