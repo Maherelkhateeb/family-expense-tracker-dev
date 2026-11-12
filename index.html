@@ -1382,10 +1382,9 @@
     /* كبسولة / زر الرقم: مخصص لفتح صفحة التحليل المفلترة بناءً على الفترة ونوع المصروف */
     .cat-card-val-btn {
       width: 100%;
-      padding: 6px 2px;
+      padding: 5px 2px;
       border-radius: 8px;
-      font-size: 0.84rem;
-      line-height: 1.15;
+      font-size: 0.74rem;
       font-weight: 900;
       cursor: pointer;
       direction: ltr;
@@ -5467,9 +5466,8 @@
       text-align: center !important;
     }
     .cat-card-val-btn {
-      font-size: 0.82rem !important;
-      line-height: 1.15 !important;
-      padding: 3px 4px !important;
+      font-size: 0.68rem !important;
+      padding: 2px 4px !important;
       width: 96% !important;
       border-radius: 7px !important;
       white-space: nowrap !important;
@@ -22643,17 +22641,17 @@ function generateRichDemoTransactions() {
           const signStr = (spent > 0) ? '-' : '';
 
           // خط أرقام ذكي يتكيف مع طول المبلغ حتى لا يخرج عن حدود البطاقة نهائياً
-          let amtFontSize = 'clamp(0.85rem, 2.6vw, 0.96rem)';
+          let amtFontSize = 'clamp(0.92rem, 2.8vw, 1.02rem)';
           let amtLetterSpacing = '-0.2px';
           const totalLen = numStr.length;
           if (totalLen >= 14 || isGold) {
-            amtFontSize = 'clamp(0.58rem, 1.7vw, 0.68rem)';
+            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
             amtLetterSpacing = '-0.5px';
           } else if (totalLen >= 10) {
-            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
+            amtFontSize = 'clamp(0.75rem, 2.15vw, 0.86rem)';
             amtLetterSpacing = '-0.4px';
           } else if (totalLen >= 7) {
-            amtFontSize = 'clamp(0.74rem, 2.2vw, 0.85rem)';
+            amtFontSize = 'clamp(0.84rem, 2.5vw, 0.94rem)';
             amtLetterSpacing = '-0.3px';
           }
 
@@ -22739,17 +22737,17 @@ function generateRichDemoTransactions() {
           }
           const signStr = (spent > 0) ? '-' : '';
 
-          let amtFontSize = 'clamp(0.85rem, 2.6vw, 0.96rem)';
+          let amtFontSize = 'clamp(0.92rem, 2.8vw, 1.02rem)';
           let amtLetterSpacing = '-0.2px';
           const totalLen = numStr.length;
           if (totalLen >= 14 || isGold) {
-            amtFontSize = 'clamp(0.58rem, 1.7vw, 0.68rem)';
+            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
             amtLetterSpacing = '-0.5px';
           } else if (totalLen >= 10) {
-            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
+            amtFontSize = 'clamp(0.75rem, 2.15vw, 0.86rem)';
             amtLetterSpacing = '-0.4px';
           } else if (totalLen >= 7) {
-            amtFontSize = 'clamp(0.74rem, 2.2vw, 0.85rem)';
+            amtFontSize = 'clamp(0.84rem, 2.5vw, 0.94rem)';
             amtLetterSpacing = '-0.3px';
           }
 
