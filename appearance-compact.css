@@ -202,3 +202,182 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 
 /* Avoid dark-to-light background interpolation that briefly hides amounts. */
 #appFrame #viewExpenses .cat-card .cat-card-bottom-half { transition: none !important; }
+
+
+/* 2026-11-13 | Summary filters: compact, complete, single-row controls.
+   Dedicated summary rules avoid changing the main expense screen or data. */
+#summaryLeftDrawer.summary-rebuilt-drawer {
+  display: flex !important;
+  flex-direction: column !important;
+}
+#summaryLeftDrawer .summary-rebuilt-header {
+  padding: 9px 12px !important;
+  gap: 7px !important;
+}
+#summaryLeftDrawer .summary-header-icon {
+  width: 32px !important;
+  height: 32px !important;
+  flex-basis: 32px !important;
+}
+#summaryLeftDrawer .summary-rebuilt-controls {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  padding: 6px 9px 8px !important;
+  min-height: 0 !important;
+}
+#summaryLeftDrawer .summary-group-mode {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+}
+#summaryLeftDrawer .summary-group-mode-btn {
+  height: 32px !important;
+  min-height: 32px !important;
+  font-size: .68rem !important;
+  padding: 2px 6px !important;
+}
+/* Auto flow accommodates the eight existing relatives + All in one RTL row.
+   An additional future member scrolls horizontally on very narrow screens,
+   never creates a second row or truncates the available controls. */
+#summaryLeftDrawer #summaryMemberSelector.summary-member-selector {
+  display: grid;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(34px, 1fr) !important;
+  grid-template-columns: none !important;
+  grid-template-rows: 27px !important;
+  align-items: stretch !important;
+  gap: 3px !important;
+  padding: 0 1px 2px !important;
+  margin: 0 !important;
+  max-width: 100%;
+  min-height: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+#summaryLeftDrawer #summaryMemberSelector.summary-member-selector::-webkit-scrollbar { display: none; }
+#summaryLeftDrawer .summary-member-selector .summary-member-btn {
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 27px !important;
+  min-height: 27px !important;
+  padding: 2px 1px !important;
+  border-radius: 7px !important;
+  font-size: clamp(.50rem, 2.15vw, .64rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+}
+#summaryLeftDrawer .summary-period-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+#summaryLeftDrawer .summary-period-grid .summary-period-btn {
+  width: 100% !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  min-width: 0 !important;
+  padding: 3px 1px !important;
+  border-radius: 7px !important;
+  font-size: clamp(.51rem, 2.1vw, .68rem) !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  letter-spacing: -.16px;
+}
+#summaryLeftDrawer .summary-custom-date-row { margin: 0 !important; gap: 4px !important; }
+#summaryLeftDrawer .summary-currency-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  width: 100% !important;
+  min-height: 35px !important;
+  padding: 4px 6px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+#summaryLeftDrawer .summary-currency-row > span {
+  flex: 0 0 auto;
+  font-size: .65rem !important;
+}
+#summaryLeftDrawer .summary-currency-row > div {
+  display: flex !important;
+  flex: 0 1 auto !important;
+  align-items: center !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+#summaryLeftDrawer .summary-currency-btn {
+  padding: 3px 6px !important;
+  min-height: 26px !important;
+  font-size: .61rem !important;
+}
+#summaryLeftDrawer #summaryDrawerContent.summary-rebuilt-content {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 8px 10px 16px !important;
+  overflow-y: auto !important;
+}
+#summaryLeftDrawer .summary-selected-card { padding: 8px 10px !important; min-height: 0 !important; }
+#summaryLeftDrawer .summary-kpi { padding: 8px !important; gap: 3px !important; }
+#summaryLeftDrawer .summary-empty-state { min-height: 54px !important; padding: 9px 8px !important; gap: 4px !important; }
+#summaryLeftDrawer .summary-section { margin: 0 !important; }
+@media (max-width: 375px) {
+  #summaryLeftDrawer .summary-rebuilt-controls { padding-inline: 6px !important; }
+  #summaryLeftDrawer .summary-member-selector .summary-member-btn { font-size: .51rem !important; }
+  #summaryLeftDrawer .summary-period-grid .summary-period-btn { font-size: .52rem !important; }
+}
+
+/* Card choices: 10 items fill rows 3 + 3 + 4 with no two empty cells.
+   Preserve every original selectable card style and its click handler. */
+#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  align-content: start !important;
+  align-items: stretch !important;
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
+  grid-column: span 4;
+  min-width: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style]:nth-child(n+7) {
+  grid-column: span 3;
+}
+#settingsSec_appearance .compact-appearance-cards-panel,
+#settingsSec_appearance .compact-appearance-card-tile {
+  min-height: 0 !important;
+  height: auto !important;
+  align-content: start !important;
+  justify-content: flex-start !important;
+}
+#settingsSec_appearance .compact-appearance-cards-panel {
+  padding-bottom: 7px !important;
+}
+@media (max-width: 365px) {
+  #settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
+    grid-column: span 1 !important;
+  }
+}
