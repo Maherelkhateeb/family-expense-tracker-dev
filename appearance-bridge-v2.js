@@ -11,34 +11,18 @@
     mode: [['light', 'فاتح'], ['dark', 'داكن']]
   };
   const allowHex = value => /^#[0-9a-f]{6}$/i.test(value || '');
+  // One-time reset for every installation: retire ALL earlier visual selections.
+  // This affects appearance only, never transactions or financial data.
   const stored = (() => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch(e) { return {}; } })();
-  // Respect existing users' saved appearance before applying the new-user Facebook default.
-  // The old UI has been retired, so map retired themes to their closest supported palette.
-  const savedValue = key => { try { return localStorage.getItem(key); } catch(e) { return null; } };
-  const oldTheme = savedValue('family_monefy_theme');
-  const oldCardStyle = savedValue('family_monefy_design_style');
-  const oldThemePalettes = {
-    navy:'slate', black:'slate', emerald:'emerald', purple:'violet',
-    rose:'rose', ocean:'facebook', gold:'gold', slate:'slate',
-    light:'facebook', facebook:'facebook', crimson:'rose', amber:'gold',
-    midnight:'violet', forest:'emerald', carbon:'slate', sapphire:'facebook'
-  };
-  const oldCardStyles = {
-    glass:'classic', minimal:'flat', neumorphic:'modern',
-    neon:'luxury', clear:'facebook'
-  };
-  const savedPalette = appearance.palettes.some(p => p.id === stored.palette) ? stored.palette : null;
-  const savedStyle = appearance.cardStyles.includes(stored.cardStyle) ? stored.cardStyle : null;
-  const inheritedPalette = oldTheme ? oldThemePalettes[oldTheme] : null;
-  const inheritedStyle = oldCardStyle ? oldCardStyles[oldCardStyle] : null;
+  const migrated = stored.appearanceDefaultVersion === 3;
   const data = {
-    palette: savedPalette || inheritedPalette || 'facebook',
-    cardStyle: savedStyle || inheritedStyle || 'facebook',
-    cardColor: appearance.cardColors.some(c => c.id === stored.cardColor) ? stored.cardColor : 'auto',
-    mode: ['light','dark'].includes(stored.mode) ? stored.mode
-      : (oldTheme && !['facebook','light'].includes(oldTheme) ? 'dark' : 'light'),
-    customBackground: allowHex(stored.customBackground) ? stored.customBackground : '#FFFFFF',
-    customAccent: allowHex(stored.customAccent) ? stored.customAccent : '#0866FF'
+    appearanceDefaultVersion: 3,
+    palette: migrated && appearance.palettes.some(p => p.id === stored.palette) ? stored.palette : 'facebook',
+    cardStyle: migrated && appearance.cardStyles.includes(stored.cardStyle) ? stored.cardStyle : 'facebook',
+    cardColor: migrated && appearance.cardColors.some(c => c.id === stored.cardColor) ? stored.cardColor : 'auto',
+    mode: migrated && ['light','dark'].includes(stored.mode) ? stored.mode : 'light',
+    customBackground: migrated && allowHex(stored.customBackground) ? stored.customBackground : '#FFFFFF',
+    customAccent: migrated && allowHex(stored.customAccent) ? stored.customAccent : '#0866FF'
   };
   function persist() {
     try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) { console.warn('Appearance preference could not be saved', e); }
@@ -175,6 +159,7 @@
     if (rerender) render();
   }
   function init() {
+    if (!migrated) persist(); // one-time Facebook default, including existing users
     apply();
     // Appearance is purely visual: never modify transactions, balances, wallets, or backup keys.
     window.FamilyAppearanceBridgeV2 = Object.freeze({
