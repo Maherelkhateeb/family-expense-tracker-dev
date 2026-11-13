@@ -10,6 +10,7 @@ on:
       - appearance-compact.css
       - appearance-compact.js
       - scripts/test-compact-appearance.cjs
+      - scripts/test-summary-tight-filters.cjs
       - .github/workflows/compact-appearance-mobile.yml
   pull_request:
     paths:
@@ -17,6 +18,7 @@ on:
       - appearance-compact.css
       - appearance-compact.js
       - scripts/test-compact-appearance.cjs
+      - scripts/test-summary-tight-filters.cjs
       - .github/workflows/compact-appearance-mobile.yml
 
 permissions:
@@ -44,6 +46,7 @@ jobs:
         run: |
           mkdir -p screenshots
           node scripts/test-compact-appearance.cjs
+          node scripts/test-summary-tight-filters.cjs
           node scripts/test-mobile-appearance.cjs
       - name: Upload mobile screenshots
         if: always()
