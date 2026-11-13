@@ -34,19 +34,50 @@
   function readableText(background) {
     return contrast(background, "#FFFFFF") >= contrast(background, "#111827") ? "#FFFFFF" : "#111827";
   }
-  function resolve({ palette = "facebook", cardStyle = "facebook", cardColor = "auto", mode = "light" } = {}) {
+  function safeHex(value, fallback) {
+    return typeof value === "string" && /^#[a-f0-9]{6}$/i.test(value) ? value.toUpperCase() : fallback;
+  }
+  function mixHex(a, b, amount) {
+    const x = rgb(a), y = rgb(b);
+    return "#" + x.map((v, i) =>
+      Math.round((v * (1 - amount) + y[i] * amount) * 255).toString(16).padStart(2, "0")
+    ).join("").toUpperCase();
+  }
+  // Preserve readable contrast at both ends of every gradient, including custom colors.
+  function gradientEnd(background) {
+    const text = readableText(background);
+    return mixHex(background, text === "#FFFFFF" ? "#111827" : "#FFFFFF", 0.22);
+  }
+  function readableIcon(accent, background) {
+    return contrast(accent, background) >= 3 ? accent : readableText(background);
+  }
+  function resolve({
+    palette = "facebook", cardStyle = "facebook", cardColor = "auto", mode = "light",
+    customBackground, customAccent
+  } = {}) {
     const p = palettes.find(x => x.id === palette) || palettes[0];
     const c = cardColors.find(x => x.id === cardColor) || cardColors[0];
     const dark = mode === "dark";
-    const background = c.id === "custom" ? (dark ? "#242526" : "#FFFFFF") : (c.background || (dark ? "#242526" : "#FFFFFF"));
-    const accent = c.accent || p.primary;
+    const backgrounds = {
+      auto: dark ? "#242526" : "#FFFFFF",
+      soft: dark ? "#1C2942" : "#E8F0FE",
+      colorful: dark ? "#302247" : "#EDE9FE"
+    };
+    const background = c.id === "custom"
+      ? safeHex(customBackground, dark ? "#242526" : "#FFFFFF")
+      : backgrounds[c.id] || backgrounds.auto;
+    const accent = c.id === "custom"
+      ? safeHex(customAccent, p.primary)
+      : c.accent || p.primary;
+    const secondary = dark ? "#B0B3B8" : "#475569";
     return {
       palette: p.id, cardStyle: cardStyles.includes(cardStyle) ? cardStyle : "facebook",
       cardColor: c.id, mode: dark ? "dark" : "light",
       primary: p.primary, pageBackground: dark ? "#18191A" : "#F0F2F5",
-      cardBackground: background, cardText: readableText(background),
-      accent, accentText: readableText(accent),
-      secondaryText: contrast(background, dark ? "#B0B3B8" : "#475569") >= 4.5 ? (dark ? "#B0B3B8" : "#475569") : readableText(background)
+      cardBackground: background, gradientEnd: gradientEnd(background),
+      cardText: readableText(background),
+      accent, accentText: readableText(accent), cardIcon: readableIcon(accent, background),
+      secondaryText: contrast(background, secondary) >= 4.5 ? secondary : readableText(background)
     };
   }
   const api = Object.freeze({ palettes, cardStyles, cardColors, contrast, readableText, resolve });
