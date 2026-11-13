@@ -100,36 +100,6 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
           return report;
         });
         console.log('GRID_GAPS '+size.name+' '+mode+' '+JSON.stringify(checked));
-        console.log('GRID_DEBUG '+size.name+' '+mode+' '+JSON.stringify(await page.evaluate(()=>{
-          const grid=document.querySelector('#settingsSec_appearance .appearance-palette-grid');
-          const foot=document.querySelector('#viewExpenses .cat-card-bottom-half');
-          const val=foot?.querySelector('.cat-number-val');
-          return {
-            mode:document.body.className,htmlMode:document.documentElement.className,
-            footerMatchesLight:foot?.matches('body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half'),
-            footerMatchesDark:foot?.matches('body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half'),
-            footerBackgroundPriority:foot?.style.getPropertyPriority('background'),
-            matchedBackgroundRules:(()=>{
-              if(!foot)return [];
-              let hits=[];
-              function visit(rules,source){
-                for(const rule of rules){
-                  if(rule.cssRules){visit(rule.cssRules,source);continue}
-                  if(!rule.selectorText||!rule.style)continue;
-                  const bg=rule.style.getPropertyValue('background')||rule.style.getPropertyValue('background-color');
-                  if(!bg)continue;
-                  try{if(foot.matches(rule.selectorText))hits.push({source,selector:rule.selectorText.slice(0,180),bg:bg.slice(0,100),important:rule.style.getPropertyPriority('background')||rule.style.getPropertyPriority('background-color')})}catch(e){}
-                }
-              }
-              for(const sheet of document.styleSheets){try{visit(sheet.cssRules,(sheet.href||'inline').slice(-55))}catch(e){}}
-              return hits.slice(-15);
-            })(),
-            palette:grid?Array.from(grid.children).map(x=>({t:x.textContent.trim().slice(0,13),col:getComputedStyle(x).gridColumn,rect:[Math.round(x.getBoundingClientRect().left),Math.round(x.getBoundingClientRect().right)],style:x.getAttribute('style')?.slice(0,150)})):[],
-            footerClass:foot?.className,footerStyle:foot?.getAttribute('style')?.slice(0,300),
-            footerBg:foot?getComputedStyle(foot).backgroundColor:null,footerValue:val?getComputedStyle(val).color:null,
-            cssLinks:Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(x=>x.href).filter(x=>x.includes('appearance'))
-          };
-        })));
         for (const selector of ['.appearance-palette-grid','.appearance-icon-grid']) {
           assert.equal(checked[selector].count,10,selector+' options changed');
           assert.ok(checked[selector].noOverflow,selector+' overflow');
