@@ -38,7 +38,7 @@
     const p = palettes.find(x => x.id === palette) || palettes[0];
     const c = cardColors.find(x => x.id === cardColor) || cardColors[0];
     const dark = mode === "dark";
-    const background = c.background || (dark ? "#242526" : "#FFFFFF");
+    const background = c.id === "custom" ? (dark ? "#242526" : "#FFFFFF") : (c.background || (dark ? "#242526" : "#FFFFFF"));
     const accent = c.accent || p.primary;
     return {
       palette: p.id, cardStyle: cardStyles.includes(cardStyle) ? cardStyle : "facebook",
@@ -46,7 +46,7 @@
       primary: p.primary, pageBackground: dark ? "#18191A" : "#F0F2F5",
       cardBackground: background, cardText: readableText(background),
       accent, accentText: readableText(accent),
-      secondaryText: dark && c.id === "auto" ? "#B0B3B8" : readableText(background)
+      secondaryText: contrast(background, dark ? "#B0B3B8" : "#475569") >= 4.5 ? (dark ? "#B0B3B8" : "#475569") : readableText(background)
     };
   }
   const api = Object.freeze({ palettes, cardStyles, cardColors, contrast, readableText, resolve });
