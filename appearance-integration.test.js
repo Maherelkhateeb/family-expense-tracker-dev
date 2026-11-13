@@ -17,3 +17,19 @@ assert.ok(css.includes('html[data-appearance-v2] body .history-card'));
 assert.ok(css.includes('html[data-appearance-v2] body .summary-card'));
 new Function(bridge); // Parse check, does not execute browser code
 console.log('PASS: appearance v2 integration structure and JS syntax');
+
+
+const appearance = require('./appearance-v2.js');
+assert.ok(root.includes('id="familyAppearancePaletteGrid"'), 'Missing new palette controls');
+assert.ok(root.includes('id="cardStyleButtonsContainer"'), 'Missing new card style controls');
+assert.ok(root.includes('id="themeCardsGrid"'), 'Missing new theme drawer controls');
+assert.ok(!/id=["']themeOpt[A-Za-z]+["']/.test(root), 'Legacy palette buttons still present');
+assert.ok(!/\[data-app-theme\s*=\s*["'][^"']+["']\]/.test(root), 'Legacy theme CSS overrides remain');
+assert.ok(root.includes('window.FamilyAppearanceBridgeV2'), 'Missing old theme API delegation');
+assert.ok(root.includes("localStorage.getItem('family_monefy_theme')"), 'Old user preferences no longer readable');
+assert.ok(!/family_monefy_(wallets|v2_tx|requests|monthly_budgets|expected)/.test(bridge),
+  'Visual bridge must not modify financial storage keys');
+assert.equal(appearance.palettes.length, 6);
+assert.equal(appearance.cardStyles.length, 6);
+assert.equal(appearance.cardColors.length, 4);
+console.log('PASS: removed legacy UI/CSS and preserved appearance compatibility');
