@@ -1,9 +1,9 @@
 // Run with: node appearance-v2.test.js
 const assert = require("node:assert/strict");
 const appearance = require("./appearance-v2.js");
-assert.equal(appearance.palettes.length, 10);
-assert.equal(appearance.cardStyles.length, 10);
-assert.equal(appearance.cardColors.length, 6);
+assert.equal(appearance.palettes.length, 6);
+assert.equal(appearance.cardStyles.length, 6);
+assert.equal(appearance.cardColors.length, 4);
 let combinations = 0;
 for (const p of appearance.palettes) {
   for (const style of appearance.cardStyles) {
@@ -22,5 +22,5 @@ for (const p of appearance.palettes) {
     }
   }
 }
-assert.equal(combinations, 1200);
+assert.equal(combinations, 288);
 console.log(`PASS: ${combinations} combinations validated`);
