@@ -119,14 +119,14 @@
     if (!document.body) return;
     const options = appearance.resolve(data);
     const dark = data.mode === 'dark';
-    const bg = data.cardColor === 'custom' ? data.customBackground : options.cardBackground;
-    const accent = data.cardColor === 'custom' ? data.customAccent : options.accent;
-    const primaryText = appearance.readableText(bg);
+    const bg = options.cardBackground;
+    const accent = options.primary; // The chosen palette always controls app buttons and highlights.
+    const primaryText = options.cardText;
     const accentText = appearance.readableText(accent);
     const neutral = dark ? '#242526' : '#FFFFFF';
     const input = dark ? '#30343A' : '#F7F8FA';
-    const muted = appearance.contrast(bg, dark ? '#B0B3B8' : '#475569') >= 4.5
-      ? (dark ? '#B0B3B8' : '#475569') : primaryText;
+    const muted = options.secondaryText;
+    const pageMuted = dark ? '#B0B3B8' : '#475569';
     const root = document.documentElement;
     root.dataset.appearanceV2 = 'true';
     root.dataset.appearanceCardStyle = data.cardStyle;
@@ -138,15 +138,17 @@
     if (window.state) window.state.appTheme = dark ? 'navy' : 'facebook';
     const vars = {
       '--v2-page': options.pageBackground, '--v2-card': bg,
-      '--v2-card-alt': dark ? '#30343A' : '#EEF2FF',
+      '--v2-card-alt': options.gradientEnd,
       '--v2-header': neutral, '--v2-input': input,
       '--v2-text': dark ? '#F9FAFB' : '#111827',
       '--v2-card-text': primaryText, '--v2-muted': muted,
+      '--v2-page-muted': pageMuted, '--v2-card-icon': options.cardIcon,
+      '--v2-card-accent': options.accent, '--v2-brand': accent,
       '--v2-border': dark ? '#596271' : '#CBD5E1',
       '--v2-accent': accent, '--v2-accent-text': accentText,
       '--bg-app': options.pageBackground, '--bg-card': bg,
       '--bg-card-sub': bg, '--accent': accent, '--primary': accent,
-      '--text-main': dark ? '#F9FAFB' : '#111827', '--text-muted': muted,
+      '--text-main': dark ? '#F9FAFB' : '#111827', '--text-muted': pageMuted,
       '--border': dark ? '#596271' : '#CBD5E1',
       '--header-bg': neutral, '--nav-bg': neutral, '--body-bg': options.pageBackground
     };
