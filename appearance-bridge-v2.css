@@ -1,0 +1,134 @@
+/* Appearance v2: presentation-only overrides across all views; financial state untouched. */
+html[data-appearance-v2] body,
+html[data-appearance-v2] body .mobile-frame,
+html[data-appearance-v2] body #appFrame,
+html[data-appearance-v2] body .page-view,
+html[data-appearance-v2] body .app-scroll-body {
+  background: var(--v2-page) !important;
+  color: var(--v2-text) !important;
+}
+html[data-appearance-v2] body .app-header,
+html[data-appearance-v2] body .app-bottom-nav,
+html[data-appearance-v2] body .bottom-dock-nav {
+  background: var(--v2-header) !important;
+  border-color: var(--v2-border) !important;
+  color: var(--v2-text) !important;
+}
+html[data-appearance-v2] body .app-card-panel,
+html[data-appearance-v2] body .modal-content-card,
+html[data-appearance-v2] body .settings-unified-section,
+html[data-appearance-v2] body .settings-control-tile,
+html[data-appearance-v2] body .settings-user-card,
+html[data-appearance-v2] body .history-card,
+html[data-appearance-v2] body .monefy-central-card,
+html[data-appearance-v2] body .chart-block,
+html[data-appearance-v2] body .charts-visual-section,
+html[data-appearance-v2] body .summary-card,
+html[data-appearance-v2] body .ops-tx-card-lux,
+html[data-appearance-v2] body .ops-tx-card-clean,
+html[data-appearance-v2] body .kpi-master-wealth-cockpit,
+html[data-appearance-v2] body .executive-cockpit-card,
+html[data-appearance-v2] body .cockpit-hero-side,
+html[data-appearance-v2] body .stat-capsule-twin,
+html[data-appearance-v2] body .recent-tx-card,
+html[data-appearance-v2] body .commitment-card-lux,
+html[data-appearance-v2] body .exp-cockpit-card,
+html[data-appearance-v2] body .tx-row,
+html[data-appearance-v2] body .cat-box,
+html[data-appearance-v2] body .cat-card,
+html[data-appearance-v2] body .grid-cat-card,
+html[data-appearance-v2] body .category-card {
+  background: var(--v2-card) !important;
+  border-color: var(--v2-border) !important;
+  color: var(--v2-card-text) !important;
+  text-shadow: none !important;
+}
+html[data-appearance-v2] body .app-card-panel .summary-title,
+html[data-appearance-v2] body .app-card-panel .chart-block-title,
+html[data-appearance-v2] body .app-card-panel .chart-main-heading,
+html[data-appearance-v2] body .app-card-panel .tx-label-name,
+html[data-appearance-v2] body .history-card .tx-label-name,
+html[data-appearance-v2] body .modal-content-card .modal-title-custom,
+html[data-appearance-v2] body .settings-unified-section > div > div > span,
+html[data-appearance-v2] body .settings-unified-section .settings-control-tile,
+html[data-appearance-v2] body .cockpit-hero-value,
+html[data-appearance-v2] body .flow-amount {
+  color: var(--v2-card-text) !important;
+}
+html[data-appearance-v2] body .tx-sub-info,
+html[data-appearance-v2] body .chart-sub-heading,
+html[data-appearance-v2] body .summary-subtitle,
+html[data-appearance-v2] body .wallet-subtitle {
+  color: var(--v2-muted) !important;
+}
+html[data-appearance-v2] body .form-control-input,
+html[data-appearance-v2] body .search-input-field,
+html[data-appearance-v2] body .modal-select,
+html[data-appearance-v2] body .date-picker-control,
+html[data-appearance-v2] body .form-select-custom {
+  background: var(--v2-input) !important;
+  color: var(--v2-text) !important;
+  border-color: var(--v2-border) !important;
+}
+html[data-appearance-v2] body .btn-primary-custom,
+html[data-appearance-v2] body .settings-tab-btn.active {
+  background: var(--v2-accent) !important;
+  color: var(--v2-accent-text) !important;
+  border-color: var(--v2-accent) !important;
+}
+html[data-appearance-v2][data-appearance-card-style="classic"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="classic"] body .summary-card {
+  border-radius: 16px !important; box-shadow: 0 2px 10px rgba(0,0,0,.13) !important;
+}
+html[data-appearance-v2][data-appearance-card-style="facebook"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="facebook"] body .summary-card {
+  border-radius: 12px !important; box-shadow: 0 1px 4px rgba(0,0,0,.10) !important;
+}
+html[data-appearance-v2][data-appearance-card-style="modern"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="modern"] body .summary-card {
+  border-radius: 22px !important; box-shadow: 0 8px 24px rgba(0,0,0,.15) !important;
+}
+html[data-appearance-v2][data-appearance-card-style="flat"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="flat"] body .summary-card {
+  border-radius: 8px !important; box-shadow: none !important;
+}
+html[data-appearance-v2][data-appearance-card-style="gradient"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="gradient"] body .summary-card {
+  background: linear-gradient(135deg, var(--v2-card), var(--v2-card-alt)) !important;
+  border-radius: 18px !important;
+}
+html[data-appearance-v2][data-appearance-card-style="luxury"] body .app-card-panel,
+html[data-appearance-v2][data-appearance-card-style="luxury"] body .summary-card {
+  border-radius: 20px !important;
+  border: 1px solid var(--v2-accent) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,.16) !important;
+}
+html[data-appearance-v2] .family-appearance-choice {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 36px; padding: 7px 9px; border-radius: 10px; cursor: pointer;
+  background: var(--v2-card) !important; border: 1px solid var(--v2-border) !important;
+  color: var(--v2-card-text) !important; font: inherit; font-size: .72rem; font-weight: 800;
+}
+html[data-appearance-v2] .family-appearance-choice[aria-pressed="true"] {
+  border: 2px solid var(--v2-accent) !important;
+  outline: 2px solid var(--v2-accent) !important; outline-offset: 1px;
+}
+html[data-appearance-v2] .family-appearance-choice:focus-visible {
+  outline: 3px solid var(--v2-accent) !important;
+}
+html[data-appearance-v2] .family-appearance-group {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; margin: 8px 0;
+}
+html[data-appearance-v2] .family-appearance-extra {
+  display: flex; flex-direction: column; gap: 5px; margin: 7px 0;
+  color: var(--v2-card-text) !important;
+}
+html[data-appearance-v2] .family-appearance-extra label {
+  font-size: .72rem; font-weight: 800; color: var(--v2-card-text) !important;
+}
+html[data-appearance-v2] .family-appearance-choice .appearance-swatch {
+  width: 15px; height: 15px; flex: 0 0 15px; border-radius: 50%; border: 1px solid var(--v2-border);
+}
+html[data-appearance-v2] .family-appearance-extra input[type=color] {
+  width: 48%; height: 32px; border: 1px solid var(--v2-border); border-radius: 6px;
+}
