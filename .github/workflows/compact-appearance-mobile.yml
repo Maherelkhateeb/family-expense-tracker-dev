@@ -10,6 +10,7 @@ on:
       - appearance-compact.css
       - appearance-compact.js
       - scripts/test-compact-appearance.cjs
+      - scripts/test-appearance-grid-contrast.cjs
       - .github/workflows/compact-appearance-mobile.yml
   pull_request:
     paths:
@@ -17,6 +18,7 @@ on:
       - appearance-compact.css
       - appearance-compact.js
       - scripts/test-compact-appearance.cjs
+      - scripts/test-appearance-grid-contrast.cjs
       - .github/workflows/compact-appearance-mobile.yml
 
 permissions:
@@ -45,6 +47,7 @@ jobs:
           mkdir -p screenshots
           node scripts/test-compact-appearance.cjs
           node scripts/test-mobile-appearance.cjs
+          node scripts/test-appearance-grid-contrast.cjs
       - name: Upload mobile screenshots
         if: always()
         uses: actions/upload-artifact@v4
