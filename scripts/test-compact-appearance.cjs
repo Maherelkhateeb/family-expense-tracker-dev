@@ -62,17 +62,17 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
             const grid=document.querySelector('#settingsSec_appearance '+selector);
             const bounds=grid.getBoundingClientRect();
             const elements=Array.from(grid.querySelectorAll(':scope > button'));
-            const rows=new Map();
+            const rows=[];
             for(const node of elements){
               const rect=node.getBoundingClientRect();
-              const key=Math.round(rect.top);
-              if(!rows.has(key))rows.set(key,[]);
-              rows.get(key).push(rect);
+              let row=rows.find(r=>Math.abs(r.top-rect.top)<9);
+              if(!row){row={top:rect.top,items:[]};rows.push(row)}
+              row.items.push(rect);
             }
             report[selector]={
               count:elements.length,
-              layout:Array.from(rows.values()).map(items=>items.length),
-              blankEdges:Array.from(rows.values()).map(items=>{
+              layout:rows.map(r=>r.items.length),
+              blankEdges:rows.map(r=>{const items=r.items;
                 const left=Math.min(...items.map(r=>r.left));
                 const right=Math.max(...items.map(r=>r.right));
                 return Math.round(Math.max(0,left-bounds.left,right-bounds.right));
@@ -101,6 +101,9 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
           const val=foot?.querySelector('.cat-number-val');
           return {
             mode:document.body.className,htmlMode:document.documentElement.className,
+            footerMatchesLight:foot?.matches('body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half'),
+            footerMatchesDark:foot?.matches('body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half'),
+            footerBackgroundPriority:foot?.style.getPropertyPriority('background'),
             palette:grid?Array.from(grid.children).map(x=>({t:x.textContent.trim().slice(0,13),col:getComputedStyle(x).gridColumn,rect:[Math.round(x.getBoundingClientRect().left),Math.round(x.getBoundingClientRect().right)],style:x.getAttribute('style')?.slice(0,150)})):[],
             footerClass:foot?.className,footerStyle:foot?.getAttribute('style')?.slice(0,300),
             footerBg:foot?getComputedStyle(foot).backgroundColor:null,footerValue:val?getComputedStyle(val).color:null,
