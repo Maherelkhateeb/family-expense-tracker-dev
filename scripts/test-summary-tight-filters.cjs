@@ -54,7 +54,9 @@ try {
         currencyParent:currency[0]?.parentElement?.className,
         contentParent:drawer.querySelector('#summaryDrawerContent')?.parentElement?.id,
         memberFont: getComputedStyle(members[0]).fontSize,
-        periodFont: getComputedStyle(dates[0]).fontSize
+        periodFont: getComputedStyle(dates[0]).fontSize,
+        clippedMembers:members.filter(x=>x.scrollWidth>x.clientWidth+2).map(x=>x.textContent.trim()),
+        clippedDates:dates.filter(x=>x.scrollWidth>x.clientWidth+2).map(x=>x.textContent.trim())
       };
     });
     console.log('FILTER_LAYOUT '+viewport.name+' '+JSON.stringify(state));
@@ -65,6 +67,10 @@ try {
     assert.equal(state.dates,6,'Six date periods expected');
     assert.equal(state.datesSameRow,true,'Period buttons wrap');
     assert.equal(state.dateOverflow,false,'Period row overflows viewport');
+    if(viewport.width>=390){
+      assert.deepEqual(state.clippedMembers,[],'Member labels clipped');
+      assert.deepEqual(state.clippedDates,[],'Period labels clipped');
+    }
     assert.ok(state.controlsHeight<200,'Filters still unnecessarily tall: '+state.controlsHeight);
     if(viewport.width>=390)assert.ok(state.memberScrollWidth<=state.memberWidth+3,'Members require scrolling on common phone width');
     await page.screenshot({path:'screenshots/'+viewport.name+'-summary.png',fullPage:false});
