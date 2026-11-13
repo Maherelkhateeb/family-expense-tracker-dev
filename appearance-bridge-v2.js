@@ -12,12 +12,31 @@
   };
   const allowHex = value => /^#[0-9a-f]{6}$/i.test(value || '');
   const stored = (() => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch(e) { return {}; } })();
-  const oldTheme = (() => { try { return localStorage.getItem('family_monefy_theme') || 'navy'; } catch(e) { return 'navy'; } })();
+  // Respect existing users' saved appearance before applying the new-user Facebook default.
+  // The old UI has been retired, so map retired themes to their closest supported palette.
+  const savedValue = key => { try { return localStorage.getItem(key); } catch(e) { return null; } };
+  const oldTheme = savedValue('family_monefy_theme');
+  const oldCardStyle = savedValue('family_monefy_design_style');
+  const oldThemePalettes = {
+    navy:'slate', black:'slate', emerald:'emerald', purple:'violet',
+    rose:'rose', ocean:'facebook', gold:'gold', slate:'slate',
+    light:'facebook', facebook:'facebook', crimson:'rose', amber:'gold',
+    midnight:'violet', forest:'emerald', carbon:'slate', sapphire:'facebook'
+  };
+  const oldCardStyles = {
+    glass:'classic', minimal:'flat', neumorphic:'modern',
+    neon:'luxury', clear:'facebook'
+  };
+  const savedPalette = appearance.palettes.some(p => p.id === stored.palette) ? stored.palette : null;
+  const savedStyle = appearance.cardStyles.includes(stored.cardStyle) ? stored.cardStyle : null;
+  const inheritedPalette = oldTheme ? oldThemePalettes[oldTheme] : null;
+  const inheritedStyle = oldCardStyle ? oldCardStyles[oldCardStyle] : null;
   const data = {
-    palette: appearance.palettes.some(p => p.id === stored.palette) ? stored.palette : 'facebook',
-    cardStyle: appearance.cardStyles.includes(stored.cardStyle) ? stored.cardStyle : 'facebook',
+    palette: savedPalette || inheritedPalette || 'facebook',
+    cardStyle: savedStyle || inheritedStyle || 'facebook',
     cardColor: appearance.cardColors.some(c => c.id === stored.cardColor) ? stored.cardColor : 'auto',
-    mode: ['light','dark'].includes(stored.mode) ? stored.mode : (['facebook','light'].includes(oldTheme) ? 'light' : 'dark'),
+    mode: ['light','dark'].includes(stored.mode) ? stored.mode
+      : (oldTheme && !['facebook','light'].includes(oldTheme) ? 'dark' : 'light'),
     customBackground: allowHex(stored.customBackground) ? stored.customBackground : '#FFFFFF',
     customAccent: allowHex(stored.customAccent) ? stored.customAccent : '#0866FF'
   };
