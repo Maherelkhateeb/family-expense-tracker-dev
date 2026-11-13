@@ -1,0 +1,134 @@
+
+/* Compact, accessible, mobile-first appearance settings. No data-layer selectors. */
+#settingsModal .settings-modal-shell {
+  width: min(96vw, 520px) !important;
+  max-height: min(92dvh, 940px) !important;
+  border-radius: 16px !important;
+}
+#settingsModal .settings-modal-head {
+  padding: 8px 11px !important;
+  min-height: 53px !important;
+}
+#settingsModal #settingsModalTitle { font-size: .82rem !important; }
+#settingsModal .settings-modal-subtitle { font-size: .60rem !important; line-height: 1.3 !important; margin-top: 2px !important; }
+#settingsModal .version-badge { font-size: .49rem !important; padding: 1px 4px !important; }
+#settingsModal .settings-modal-scroll { padding: 7px 9px !important; gap: 7px !important; overscroll-behavior: contain; }
+#settingsModal .settings-tabs-strip { gap: 5px !important; margin-bottom: 0 !important; }
+#settingsModal .settings-tabs-strip button { min-height: 35px !important; padding: 6px 8px !important; font-size: .72rem !important; }
+#settingsModal .settings-user-card { padding: 5px 8px !important; border-radius: 10px !important; margin-bottom: 6px !important; }
+#settingsModal .settings-user-card img { width: 25px !important; height: 25px !important; }
+#settingsModal .settings-user-card button { padding: 5px 7px !important; font-size: .63rem !important; }
+#settingsSec_appearance[data-compact-ready="true"] {
+  padding: 0 !important; gap: 6px !important; border: 0 !important;
+  background: transparent !important; display: flex !important; flex-direction: column !important;
+}
+#settingsSec_appearance .compact-appearance-section {
+  border: 1px solid var(--appearance-border, #40516b) !important;
+  border-radius: 12px !important;
+  background: var(--appearance-panel-soft, #17243a) !important;
+  overflow: hidden; margin: 0 !important; min-width: 0;
+}
+#settingsSec_appearance .compact-appearance-toggle {
+  color: var(--appearance-text, #f8fafc) !important;
+  background: transparent !important; border: 0 !important;
+  width: 100%; min-height: 43px; cursor: pointer;
+  padding: 7px 10px !important; display: flex; align-items: center; text-align: right;
+  gap: 7px; font: inherit; font-size: .73rem !important; font-weight: 850;
+}
+#settingsSec_appearance .compact-appearance-toggle:focus-visible {
+  outline: 2px solid var(--appearance-accent-text, #7dd3fc);
+  outline-offset: -3px;
+}
+#settingsSec_appearance .compact-appearance-heading-icon { font-size: .82rem; color: var(--appearance-accent-text, #7dd3fc); width: 17px; flex: 0 0 17px; }
+#settingsSec_appearance .compact-appearance-title { min-width: 0; flex: 1; }
+#settingsSec_appearance .compact-appearance-summary {
+  font-size: .61rem !important; font-weight: 800 !important; min-width: 0;
+  max-width: 34%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--appearance-accent-text, #7dd3fc) !important;
+  padding: 3px 6px; border-radius: 7px; border: 1px solid var(--appearance-border, #40516b);
+}
+#settingsSec_appearance .compact-appearance-chevron { font-size: .72rem; color: var(--appearance-muted, #cbd5e1); transition: transform .16s ease; }
+#settingsSec_appearance .compact-appearance-section.is-open .compact-appearance-chevron { transform: rotate(180deg); }
+#settingsSec_appearance .compact-appearance-panel {
+  padding: 0 9px 9px !important; display: flex !important; flex-direction: column !important; gap: 7px !important;
+  min-width: 0; border-top: 1px solid var(--appearance-border, #40516b);
+}
+#settingsSec_appearance .compact-appearance-panel[hidden] { display: none !important; }
+#settingsSec_appearance .appearance-mode-row { margin: 8px 0 0 !important; gap: 6px !important; }
+#settingsSec_appearance .appearance-mode-button {
+  min-height: 33px !important; font-size: .69rem !important; padding: 5px 8px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance #settingsThemePreview {
+  margin: 0 !important; padding: 6px 8px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance .settings-live-preview-label { margin: 0 0 4px !important; font-size: .59rem !important; }
+#settingsSec_appearance .settings-live-preview-card {
+  padding: 6px 8px !important; min-height: 44px !important; gap: 7px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance .settings-live-preview-icon { width: 27px !important; height: 27px !important; flex-basis: 27px !important; border-radius: 7px !important; }
+#settingsSec_appearance .settings-live-preview-copy strong { font-size: .68rem !important; }
+#settingsSec_appearance .settings-live-preview-copy small { font-size: .57rem !important; }
+#settingsSec_appearance .settings-live-preview-value { font-size: .65rem !important; }
+#settingsSec_appearance .appearance-preview-footnote { display: none !important; }
+#settingsSec_appearance .appearance-palette-grid {
+  margin: 8px 0 0 !important; display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
+}
+#settingsSec_appearance .theme-pill-option {
+  min-width: 0; min-height: 38px !important; border-radius: 8px !important;
+  padding: 5px 5px !important; font-size: .62rem !important;
+  line-height: 1.25 !important; gap: 4px !important;
+}
+#settingsSec_appearance .theme-color-dot {
+  width: 13px !important; height: 13px !important; flex-basis: 13px !important; border-radius: 50% !important;
+}
+#settingsSec_appearance .appearance-icon-grid {
+  margin-top: 8px !important; display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important;
+}
+#settingsSec_appearance .icon-theme-pill {
+  min-height: 39px !important; border-radius: 8px !important;
+  padding: 4px 3px !important; font-size: .62rem !important; line-height: 1.22 !important; gap: 1px !important;
+}
+#settingsSec_appearance .icon-color-dots { font-size: .60rem !important; letter-spacing: 0 !important; }
+#settingsSec_appearance .settings-font-grid {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
+  margin-top: 8px !important;
+}
+#settingsSec_appearance .settings-font-grid button {
+  min-width: 0; min-height: 34px !important; padding: 4px 3px !important;
+  border-radius: 8px !important; font-size: .62rem !important;
+}
+#settingsSec_appearance .settings-font-preview { padding: 6px 8px !important; margin: 0 !important; border-radius: 8px !important; }
+#settingsSec_appearance .settings-font-preview-label { font-size: .58rem !important; }
+#settingsSec_appearance .settings-font-preview-sample { font-size: .74rem !important; }
+#settingsSec_appearance .settings-control-tile { margin: 0 !important; padding: 6px 7px !important; border-radius: 9px !important; }
+#settingsSec_appearance .settings-control-tile > div:first-child { margin-bottom: 4px !important; }
+#settingsSec_appearance .settings-control-tile button { font-size: .63rem !important; min-height: 32px !important; padding: 4px 3px !important; }
+#settingsSec_appearance #cardStyleButtonsContainer {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important; margin-top: 8px !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer button {
+  min-height: 42px !important; padding: 4px 3px !important; border-radius: 9px !important; gap: 1px !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer strong { font-size: .66rem !important; line-height: 1.2 !important; }
+#settingsSec_appearance #cardStyleButtonsContainer small { font-size: .53rem !important; line-height: 1.1 !important; }
+#settingsSec_appearance .compact-appearance-size { margin-top: 0 !important; }
+#settingsSec_appearance .compact-appearance-card-tile > div:first-child { display: none !important; }
+#settingsModal .settings-pane[hidden] { display: none !important; }
+@media(max-width:365px) {
+  #settingsModal .settings-modal-shell { width: 98vw !important; }
+  #settingsSec_appearance .appearance-palette-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+  #settingsSec_appearance .appearance-icon-grid { grid-template-columns: repeat(3,minmax(0,1fr)) !important; }
+  #settingsSec_appearance .compact-appearance-summary { max-width: 29%; }
+}
+@media(min-width:550px) {
+  #settingsModal .settings-modal-shell { max-width: 510px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #settingsSec_appearance .compact-appearance-chevron { transition: none !important; }
+}
+
+/* Respect hidden typography label despite its legacy inline display style. */
+#settingsSec_appearance .compact-appearance-font-panel > div:first-child > div:first-child[hidden] { display: none !important; }
