@@ -73,6 +73,32 @@ try {
     }
     assert.ok(state.controlsHeight<200,'Filters still unnecessarily tall: '+state.controlsHeight);
     if(viewport.width>=390)assert.ok(state.memberScrollWidth<=state.memberWidth+3,'Members require scrolling on common phone width');
+    assert.equal(await page.locator('.summary-selected-card').count(),0,'Redundant scope card remains');
+    const compactRows=await page.locator('.summary-kpi').evaluateAll(cards=>cards.every(card=>{
+      const boxes=[...card.children].map(e=>e.getBoundingClientRect());
+      return Math.max(...boxes.map(r=>r.top)) < Math.min(...boxes.map(r=>r.bottom));
+    }));
+    assert.ok(compactRows,'Financial totals must share one line');
+    assert.equal(await page.locator('.summary-member-btn').first().evaluate(e=>getComputedStyle(e).justifyContent),'center');
+    await page.locator('.summary-period-btn[data-period="custom"]').click();
+    await page.locator('#summaryInlineCalendar #customDatePickerDrawer').waitFor({state:'visible'});
+    assert.equal(await page.locator('#customDatePickerDialog').getAttribute('aria-modal'),null);
+    const fits=await page.locator('#customDatePickerConfirmButton').evaluate(button=>{
+      const b=button.getBoundingClientRect(),d=document.getElementById('summaryLeftDrawer').getBoundingClientRect();
+      return b.bottom<=d.bottom && b.left>=d.left && b.right<=d.right;
+    });
+    assert.ok(fits,'Inline calendar confirmation must fit inside summary');
+    const days=page.locator('#customRangeCalendarMonths .range-calendar-day');
+    await days.nth(0).click();
+    await days.nth(12).click();
+    await page.locator('#customDatePickerConfirmButton').click();
+    await page.locator('#summaryDrawerContent').waitFor({state:'visible'});
+    assert.ok(await page.locator('#summaryCustomDateFrom').inputValue());
+    assert.ok(await page.locator('#summaryCustomDateTo').inputValue());
+    assert.equal(await page.locator('#summaryInlineCalendar #customDatePickerDrawer').count(),0);
+    await page.locator('.summary-period-btn[data-period="custom"]').click();
+    await page.locator('.summary-period-btn[data-period="month"]').click();
+    assert.equal(await page.locator('#customDatePickerDrawer').isVisible(),false);
     await page.screenshot({path:'screenshots/'+viewport.name+'-summary.png',fullPage:false});
     await page.evaluate(()=>window.closeSummaryLeftDrawer());
     await page.evaluate(()=>window.openSettingsModal());

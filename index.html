@@ -15048,7 +15048,7 @@
     }
   </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
-  <link rel="stylesheet" href="./appearance-compact.css?v=20261113-summary-compact2">
+  <link rel="stylesheet" href="./appearance-compact.css?v=20261113-summary-inline3">
   <script src="./appearance-compact.js?v=20261113-gapfix1" defer></script>
 </head>
 <body>
@@ -21938,9 +21938,21 @@
       renderCustomDateRangePicker();
     }
 
+    let customDatePickerHome = null;
     function toggleCustomDatePicker(open = true) {
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
+      const summary = document.getElementById('summaryLeftDrawer');
+      const dialog = document.getElementById('customDatePickerDialog');
+      const inlineSummary = open && customRangePickerContext.fromInput?.id === 'summaryCustomDateFrom';
+      if (inlineSummary) {
+        if (!customDatePickerHome) customDatePickerHome = { parent: drawer.parentNode, next: drawer.nextSibling };
+        document.getElementById('summaryInlineCalendar').appendChild(drawer);
+        summary.classList.add('is-picking-dates');
+        drawer.classList.add('summary-inline-picker');
+        dialog.setAttribute('role', 'region');
+        dialog.removeAttribute('aria-modal');
+      }
       if (open) {
         if (customRangePickerContext.mode === 'app' && !customRangePickerDraftReady) {
           const today = typeof getLocalDateStr === 'function'
@@ -21954,11 +21966,20 @@
         drawer.style.display = 'flex';
         drawer.setAttribute('aria-hidden', 'false');
         renderCustomDateRangePicker();
-        if (typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
+        if (!inlineSummary && typeof pushModalState === 'function') pushModalState('customDatePickerDrawer');
       } else {
         drawer.style.display = 'none';
         drawer.setAttribute('aria-hidden', 'true');
-        if (typeof popModalState === 'function') popModalState('customDatePickerDrawer');
+        const wasInline = drawer.classList.contains('summary-inline-picker');
+        if (!wasInline && typeof popModalState === 'function') popModalState('customDatePickerDrawer');
+        if (wasInline) {
+          summary.classList.remove('is-picking-dates');
+          drawer.classList.remove('summary-inline-picker');
+          customDatePickerHome.parent.insertBefore(drawer, customDatePickerHome.next);
+          customDatePickerHome = null;
+          dialog.setAttribute('role', 'dialog');
+          dialog.setAttribute('aria-modal', 'true');
+        }
         if (customRangePickerContext.mode !== 'app') customRangePickerDraftReady = false;
         customRangePickerContext = { mode: 'app' };
         drawer.classList.remove('is-single-date');
@@ -26840,6 +26861,7 @@ function openSettingsModal(targetSection = '') {
     }
 
     function closeSummaryLeftDrawer() {
+      if (document.getElementById('customDatePickerDrawer')?.classList.contains('summary-inline-picker')) toggleCustomDatePicker(false);
       const drawer = document.getElementById('summaryLeftDrawer');
       const backdrop = document.getElementById('summaryDrawerBackdrop');
       if (drawer) drawer.classList.remove('open');
@@ -26997,9 +27019,11 @@ function openSettingsModal(targetSection = '') {
     function switchSummaryPeriod(period) {
       const allowed = ['day', 'week', 'month', 'year', 'custom', 'all'];
       if (!allowed.includes(period)) return;
+      if (document.getElementById('customDatePickerDrawer')?.classList.contains('summary-inline-picker')) toggleCustomDatePicker(false);
       currentSummaryPeriod = period;
       syncSummaryDrawerControls();
       renderSummaryDrawer();
+      if (period === 'custom') openSummaryCustomDatePicker();
     }
 
     function applyCustomSummaryDate() {
@@ -27160,17 +27184,12 @@ function openSettingsModal(targetSection = '') {
       const listTitle = currentSummaryGroupMode === 'project' ? 'المصروفات حسب المشروع' : 'المصروفات حسب الشخص';
 
       container.innerHTML =
-        '<section class="summary-selected-card">' +
-          '<div><span class="summary-eyebrow">' + (hasSelection ? 'المجموعة المحددة · ' + modeLabel : 'نطاق التحليل') + '</span>' +
-          '<h3>' + summaryEscapeHtml(selectedLabel) + '</h3><p>' + summaryEscapeHtml(range.title) + '</p></div>' +
-          '<button type="button" class="summary-show-all-btn' + (!hasSelection ? ' is-hidden' : '') + '" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' +
-        '</section>' +
         '<section class="summary-kpi-grid">' +
           '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>− ' + summaryEscapeHtml(summaryFormatAmount(expenseTotal)) + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
           '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>+ ' + summaryEscapeHtml(summaryFormatAmount(incomeTotal)) + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
         '</section>' +
         '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3>' + listTitle + '</h3><span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
+          '<div class="summary-section-heading"><h3>' + listTitle + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
           '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
         '</section>' +
         '<section class="summary-section">' +
@@ -36319,6 +36338,7 @@ window.filterArchiveType = filterArchiveType;
       </div>
     </div>
 
+    <div id="summaryInlineCalendar"></div>
     <main id="summaryDrawerContent" class="summary-rebuilt-content custom-scrollbar" aria-live="polite">
       <div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>جارٍ تجهيز الملخص...</span></div>
     </main>
