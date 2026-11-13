@@ -199,3 +199,6 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-sign {
   color: #fecaca !important;
 }
+
+/* Avoid dark-to-light background interpolation that briefly hides amounts. */
+#appFrame #viewExpenses .cat-card .cat-card-bottom-half { transition: none !important; }
