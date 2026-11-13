@@ -95,6 +95,18 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
           return report;
         });
         console.log('GRID_GAPS '+size.name+' '+mode+' '+JSON.stringify(checked));
+        console.log('GRID_DEBUG '+size.name+' '+mode+' '+JSON.stringify(await page.evaluate(()=>{
+          const grid=document.querySelector('#settingsSec_appearance .appearance-palette-grid');
+          const foot=document.querySelector('#viewExpenses .cat-card-bottom-half');
+          const val=foot?.querySelector('.cat-number-val');
+          return {
+            mode:document.body.className,htmlMode:document.documentElement.className,
+            palette:grid?Array.from(grid.children).map(x=>({t:x.textContent.trim().slice(0,13),col:getComputedStyle(x).gridColumn,rect:[Math.round(x.getBoundingClientRect().left),Math.round(x.getBoundingClientRect().right)],style:x.getAttribute('style')?.slice(0,150)})):[],
+            footerClass:foot?.className,footerStyle:foot?.getAttribute('style')?.slice(0,300),
+            footerBg:foot?getComputedStyle(foot).backgroundColor:null,footerValue:val?getComputedStyle(val).color:null,
+            cssLinks:Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(x=>x.href).filter(x=>x.includes('appearance'))
+          };
+        })));
         for (const selector of ['.appearance-palette-grid','.appearance-icon-grid']) {
           assert.equal(checked[selector].count,10,selector+' options changed');
           assert.ok(checked[selector].noOverflow,selector+' overflow');
