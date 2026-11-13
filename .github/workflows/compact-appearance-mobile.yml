@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - feature/mobile-compact-appearance
-      - fix/appearance-grid-gap-contrast-20261113
       - main
     paths:
       - index.html
