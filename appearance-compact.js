@@ -146,6 +146,7 @@
         const fresh = footer.dataset.expenseContrastMode !== key;
         if (fresh || footer.style.getPropertyPriority('background') !== 'important') {
           footer.style.setProperty('background', bg, 'important');
+          footer.style.setProperty('transition', 'none', 'important');
           footer.style.setProperty('border-top-color', light ? '#cbd5e1' : '#475569', 'important');
         }
         footer.dataset.expenseContrastMode = key;
