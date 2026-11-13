@@ -129,3 +129,6 @@
 @media (prefers-reduced-motion: reduce) {
   #settingsSec_appearance .compact-appearance-chevron { transition: none !important; }
 }
+
+/* Respect hidden typography label despite its legacy inline display style. */
+#settingsSec_appearance .compact-appearance-font-panel > div:first-child > div:first-child[hidden] { display: none !important; }
