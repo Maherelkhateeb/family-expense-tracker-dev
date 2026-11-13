@@ -14860,7 +14860,194 @@
       .summary-date-range-values { gap: 4px; font-size: .56rem; }
     }
   </style>
-</head>
+  <style id="appearance-rebuild">
+    :root { --appearance-accent-text:#7dd3fc; --appearance-swatch:#0f2d55; --appearance-card-bg:#17243a; --appearance-icon-surface:#24334b; }
+    body:not(.light-theme) {
+      --appearance-panel:#111b2c; --appearance-panel-soft:#17243a; --appearance-text:#f8fafc;
+      --appearance-muted:#cbd5e1; --appearance-border:#40516b; --appearance-card-bg:#17243a;
+      --appearance-icon-surface:#24334b;
+      background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--appearance-accent-text) 16%,#0c1422) 0%,#0c1422 48%,#090f19 100%) !important;
+      color:#f8fafc;
+    }
+    body.light-theme {
+      --appearance-panel:#f5f8fc; --appearance-panel-soft:#fff; --appearance-text:#142033;
+      --appearance-muted:#475569; --appearance-border:#cbd5e1; --appearance-card-bg:#fff;
+      --appearance-icon-surface:#eaf0f6;
+      background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--appearance-accent-text) 7%,#fff) 0%,#f4f7fb 58%,#edf2f7 100%) !important;
+      color:#142033;
+    }
+    body:not(.light-theme) :is(#settingsModal .modal-content-card,#themeDrawerModal .modal-content-card) {
+      background:#111b2c !important; color:#f8fafc !important; border-color:#40516b !important;
+    }
+    body.light-theme :is(#settingsModal .modal-content-card,#themeDrawerModal .modal-content-card) {
+      background:#f5f8fc !important; color:#142033 !important; border-color:#cbd5e1 !important;
+      box-shadow:0 14px 40px rgba(15,23,42,.12) !important;
+    }
+    #settingsModal .settings-modal-head { background:var(--appearance-panel-soft) !important; border-color:var(--appearance-border) !important; }
+    #settingsModal .settings-modal-head *,#settingsModal .settings-modal-head .modal-title-custom { color:var(--appearance-text) !important; }
+    #settingsSec_appearance,#settingsSec_appearance .settings-control-tile {
+      background:var(--appearance-panel) !important; border-color:var(--appearance-border) !important; color:var(--appearance-text) !important;
+    }
+    #settingsSec_appearance .appearance-settings-block {
+      border:1px solid var(--appearance-border); background:var(--appearance-panel-soft); border-radius:14px; padding:10px;
+    }
+    #settingsSec_appearance .appearance-section-heading,#settingsSec_appearance .appearance-subheading,
+    #settingsSec_appearance .appearance-mode-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    #settingsSec_appearance .appearance-section-heading { color:var(--appearance-text); font-size:.82rem; font-weight:900; margin-bottom:8px; }
+    #settingsSec_appearance .appearance-section-heading i { color:var(--appearance-accent-text) !important; }
+    #settingsSec_appearance .appearance-active-badge,#settingsSec_appearance .appearance-contrast-badge {
+      border:1px solid var(--appearance-border); border-radius:999px; padding:3px 8px;
+      color:var(--appearance-accent-text); font-size:.65rem; font-weight:800; white-space:nowrap;
+    }
+    #settingsSec_appearance .appearance-mode-row { margin-bottom:9px; }
+    #settingsSec_appearance .appearance-mode-button,#settingsSec_appearance .theme-pill-option,
+    #settingsSec_appearance .icon-theme-pill,#settingsSec_appearance #cardStyleButtonsContainer button {
+      min-width:0; min-height:38px; display:flex; align-items:center; justify-content:center; gap:6px;
+      border:1px solid var(--appearance-border) !important; border-radius:10px !important;
+      padding:6px 8px !important; background:var(--appearance-panel-soft) !important;
+      color:var(--appearance-text) !important; font-family:inherit; font-size:.72rem !important;
+      font-weight:800; line-height:1.25; cursor:pointer;
+      transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+    }
+    #settingsSec_appearance .appearance-mode-button { flex:1; }
+    #settingsSec_appearance .appearance-mode-button.active,#settingsSec_appearance .theme-pill-option.active,
+    #settingsSec_appearance .icon-theme-pill.active,#settingsSec_appearance #cardStyleButtonsContainer button.active {
+      border:2px solid var(--appearance-accent-text) !important;
+      box-shadow:0 0 0 2px color-mix(in srgb,var(--appearance-accent-text) 20%,transparent) !important;
+    }
+    #settingsSec_appearance .theme-pill-option:hover,#settingsSec_appearance .icon-theme-pill:hover,
+    #settingsSec_appearance #cardStyleButtonsContainer button:hover,#settingsSec_appearance .appearance-mode-button:hover { transform:translateY(-1px); }
+    #settingsSec_appearance .appearance-palette-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:7px; }
+    #settingsSec_appearance .theme-pill-option { justify-content:flex-start; text-align:start; }
+    #settingsSec_appearance .theme-color-dot {
+      width:18px !important; height:18px !important; flex:0 0 18px; margin:0 !important;
+      border:2px solid rgba(255,255,255,.68) !important;
+      background:var(--theme-swatch) !important; box-shadow:inset 0 0 0 1px rgba(15,23,42,.16);
+    }
+    #settingsSec_appearance .appearance-subheading { margin:9px 0 5px; color:var(--appearance-text); font-size:.73rem; font-weight:850; }
+    #settingsSec_appearance .appearance-subheading small { color:var(--appearance-muted); font-size:.62rem; font-weight:700; }
+    #settingsSec_appearance .appearance-icon-grid,#settingsSec_appearance .appearance-card-style-grid {
+      display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;
+    }
+    #settingsSec_appearance .icon-theme-pill,#settingsSec_appearance #cardStyleButtonsContainer button {
+      flex-direction:column; gap:2px; text-align:center;
+    }
+    #settingsSec_appearance .icon-color-dots { color:var(--icon-swatch,var(--app-active-icon-color)) !important; letter-spacing:2px; font-size:.73rem; }
+    #settingsSec_appearance #cardStyleButtonsContainer button small { color:var(--appearance-muted) !important; font-size:.61rem; font-weight:700; }
+    #settingsThemePreview {
+      margin:8px 0 10px; padding:9px; border:1px solid var(--appearance-border);
+      border-radius:12px; background:var(--appearance-panel);
+    }
+    #settingsThemePreview .settings-live-preview-label {
+      display:flex; align-items:center; gap:6px; color:var(--appearance-muted);
+      font-size:.66rem; font-weight:800; margin-bottom:7px;
+    }
+    #settingsThemePreview .settings-live-preview-label i { color:var(--appearance-accent-text) !important; }
+    #settingsThemePreview .appearance-contrast-badge { margin-inline-start:auto; }
+    #settingsThemePreview .appearance-contrast-badge.passes { color:#047857; border-color:#047857; }
+    body:not(.light-theme) #settingsThemePreview .appearance-contrast-badge.passes { color:#6ee7b7; border-color:#6ee7b7; }
+    #settingsThemePreview .appearance-contrast-badge.fails { color:#b91c1c; border-color:#b91c1c; }
+    #settingsThemePreview .settings-live-preview-card {
+      display:flex; align-items:center; gap:9px; min-width:0; padding:10px;
+      border:1px solid var(--appearance-border) !important; border-radius:12px;
+      background-color:var(--appearance-card-bg) !important; color:var(--appearance-text) !important;
+    }
+    #settingsThemePreview .settings-live-preview-icon {
+      display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px;
+      flex:0 0 34px; border-radius:10px; background:var(--appearance-icon-surface) !important;
+      color:var(--app-active-icon-color) !important;
+    }
+    #settingsThemePreview .settings-live-preview-icon i { color:var(--app-active-icon-color) !important; font-size:1rem; }
+    #settingsThemePreview .settings-live-preview-copy {
+      display:flex; flex:1 1 auto; flex-direction:column; gap:2px; min-width:0;
+    }
+    #settingsThemePreview .settings-live-preview-copy strong { color:var(--appearance-text) !important; font-size:.74rem; }
+    #settingsThemePreview .settings-live-preview-copy small { color:var(--appearance-muted) !important; font-size:.63rem; }
+    #settingsThemePreview .settings-live-preview-value {
+      color:var(--appearance-accent-text) !important; font-size:.72rem;
+      font-variant-numeric:tabular-nums; white-space:nowrap;
+    }
+    #settingsThemePreview .appearance-preview-footnote { margin-top:6px; color:var(--appearance-muted); font-size:.60rem; font-weight:700; }
+    #settingsThemePreview[data-card-style="glass"] .settings-live-preview-card { backdrop-filter:blur(16px); box-shadow:0 8px 22px rgba(15,23,42,.10); }
+    #settingsThemePreview[data-card-style="minimal"] .settings-live-preview-card { border-radius:8px; box-shadow:none; }
+    #settingsThemePreview[data-card-style="neumorphic"] .settings-live-preview-card { border-radius:15px; box-shadow:inset 2px 2px 5px rgba(15,23,42,.12),3px 4px 8px rgba(15,23,42,.08); }
+    #settingsThemePreview[data-card-style="neon"] .settings-live-preview-card { border:2px solid var(--appearance-accent-text) !important; box-shadow:0 0 10px color-mix(in srgb,var(--appearance-accent-text) 24%,transparent); }
+    #settingsThemePreview[data-card-style="clear"] .settings-live-preview-card { border-width:2px !important; border-radius:10px; }
+    #settingsThemePreview[data-card-style="elevated"] .settings-live-preview-card { box-shadow:0 10px 22px rgba(15,23,42,.20); }
+    #settingsThemePreview[data-card-style="outlined"] .settings-live-preview-card { border-style:dashed !important; border-width:2px !important; }
+    #settingsThemePreview[data-card-style="gradient"] .settings-live-preview-card { background-image:linear-gradient(120deg,color-mix(in srgb,var(--appearance-accent-text) 9%,var(--appearance-card-bg)),var(--appearance-card-bg)); }
+    #settingsThemePreview[data-card-style="compact"] .settings-live-preview-card { border-radius:7px; padding-block:6px; }
+    #settingsThemePreview[data-card-style="soft"] .settings-live-preview-card { border-radius:20px; box-shadow:0 5px 16px rgba(15,23,42,.09); }
+
+    .theme-card-box {
+      display:flex; align-items:center; gap:9px; min-height:52px; width:100%;
+      border:1px solid var(--appearance-border) !important; border-radius:12px; padding:9px 10px;
+      background:var(--appearance-card-bg) !important; color:var(--appearance-text) !important;
+      cursor:pointer; text-align:start; font-family:inherit;
+    }
+    .theme-card-box.active { border:2px solid var(--appearance-accent-text) !important; }
+    .theme-card-box .theme-card-swatch {
+      width:23px; height:23px; flex:0 0 23px; border-radius:50%;
+      background:var(--theme-swatch); border:2px solid rgba(255,255,255,.72);
+    }
+    .theme-card-box .theme-card-label { flex:1; font-size:.76rem; font-weight:850; }
+    .theme-card-box .theme-check-dot { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; color:var(--appearance-accent-text); }
+    body.light-theme .theme-card-box .theme-card-label { color:#142033 !important; }
+    body:not(.light-theme) .theme-card-box .theme-card-label { color:#f8fafc !important; }
+
+    /* Neutral opaque card surfaces keep all recorded amounts and labels readable in both modes. */
+    body.light-theme #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body.light-theme #topKpiThreeStrip {
+      background-color:#fff !important; border-color:#d7e0ea !important; color:#142033 !important;
+    }
+    body:not(.light-theme) #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body:not(.light-theme) #topKpiThreeStrip {
+      background-color:#17243a !important; border-color:#34445e !important; color:#f8fafc !important;
+    }
+    body.light-theme #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block) :not(i):not(svg):not(button):not(input):not(select):not(textarea):not(canvas),
+    body:not(.light-theme) #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block) :not(i):not(svg):not(button):not(input):not(select):not(textarea):not(canvas) {
+      color:inherit !important;
+    }
+    html[data-icon-theme] i:not(.btn-modal-close):not(#toastMsg i),
+    html[data-icon-theme] svg:not(.brand-logo) {
+      color:var(--app-active-icon-color) !important; fill:var(--app-active-icon-color) !important;
+    }
+
+    body { --appearance-card-radius:16px; --appearance-card-shadow:0 8px 22px rgba(15,23,42,.10); --appearance-card-border-style:solid; --appearance-card-border-width:1px; }
+    body[data-card-style="glass"] { --appearance-card-radius:16px; --appearance-card-shadow:0 8px 22px rgba(15,23,42,.10); }
+    body[data-card-style="minimal"] { --appearance-card-radius:8px; --appearance-card-shadow:none; }
+    body[data-card-style="neumorphic"] { --appearance-card-radius:16px; --appearance-card-shadow:inset 2px 2px 5px rgba(15,23,42,.10),4px 6px 12px rgba(15,23,42,.10); }
+    body[data-card-style="neon"] { --appearance-card-radius:14px; --appearance-card-shadow:0 0 0 1px color-mix(in srgb,var(--appearance-accent-text) 24%,transparent); --appearance-card-border-width:1.5px; }
+    body[data-card-style="clear"] { --appearance-card-radius:10px; --appearance-card-shadow:0 3px 12px rgba(15,23,42,.06); --appearance-card-border-width:2px; }
+    body[data-card-style="elevated"] { --appearance-card-radius:16px; --appearance-card-shadow:0 12px 28px rgba(15,23,42,.18); }
+    body[data-card-style="outlined"] { --appearance-card-radius:14px; --appearance-card-shadow:none; --appearance-card-border-style:dashed; --appearance-card-border-width:2px; }
+    body[data-card-style="gradient"] { --appearance-card-radius:18px; --appearance-card-shadow:0 8px 22px rgba(15,23,42,.10); }
+    body[data-card-style="compact"] { --appearance-card-radius:7px; --appearance-card-shadow:0 2px 6px rgba(15,23,42,.08); }
+    body[data-card-style="soft"] { --appearance-card-radius:20px; --appearance-card-shadow:0 6px 18px rgba(15,23,42,.09); }
+    body[data-card-style] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style] #topKpiThreeStrip {
+      border-radius:var(--appearance-card-radius) !important;
+      box-shadow:var(--appearance-card-shadow) !important;
+      border-style:var(--appearance-card-border-style) !important;
+      border-width:var(--appearance-card-border-width) !important;
+    }
+    body[data-card-style="glass"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="glass"] #topKpiThreeStrip { backdrop-filter:blur(16px); }
+    body[data-card-style="neon"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="neon"] #topKpiThreeStrip { border-color:var(--appearance-accent-text) !important; }
+    body[data-card-style="gradient"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="gradient"] #topKpiThreeStrip {
+      background-image:linear-gradient(130deg,color-mix(in srgb,var(--appearance-accent-text) 8%,var(--appearance-card-bg)),var(--appearance-card-bg)) !important;
+    }
+    @media (max-width:480px) {
+      #settingsModal .settings-modal-shell { width:96vw !important; max-height:94vh !important; }
+      #settingsSec_appearance { padding:9px !important; gap:8px !important; }
+      #settingsSec_appearance .appearance-palette-grid { gap:6px; }
+      #settingsSec_appearance .theme-pill-option { font-size:.66rem !important; padding-inline:6px !important; }
+      #settingsSec_appearance .settings-live-preview-value { font-size:.64rem; }
+    }
+  </style>
+  </head>
 <body>
 
   <div class="mobile-frame" id="appFrame">
@@ -18212,96 +18399,17 @@
 
 
         <!-- شبكة كروت الخلفيات المتعددة الغنية بالألوان -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;" id="themeCardsGrid">
-          
-          <!-- 1. أسود ملكي فاحم -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('black')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(255,255,255,0.18); background: #000000; position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">🖤 أسود ملكي فاحم</span>
-              <span class="theme-check-dot" data-theme="black" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #38bdf8;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #94a3b8;">اللون الأسود الأصلي العميق (OLED)</div>
-          </div>
-
-          <!-- 2. كحلي ملكي أزرق -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('navy')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, #0b1a30, #1e3a68); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(11,26,48,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">💙 كحلي ملكي أزرق</span>
-              <span class="theme-check-dot" data-theme="navy" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #38bdf8;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #93c5fd;">أزرق ملكي عميق وراقي جداً</div>
-          </div>
-
-          <!-- 3. زمردي أخضر فاخر -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('emerald')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(16, 185, 129, 0.45); background: linear-gradient(135deg, #04241a, #0d5942); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(4,36,26,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">💚 زمردي ملكي أخضر</span>
-              <span class="theme-check-dot" data-theme="emerald" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #34d399; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #34d399;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #a7f3d0;">أخضر زمردي غني وفخم ومريح للعين</div>
-          </div>
-
-          <!-- 4. بنفسجي إمبراطوري -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('purple')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(168, 85, 247, 0.45); background: linear-gradient(135deg, #190a2e, #481775); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(25,10,46,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">💜 بنفسجي إمبراطوري</span>
-              <span class="theme-check-dot" data-theme="purple" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #c084fc; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #c084fc;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #e9d5ff;">ياقوت بنفسجي ملكي ساحر وفاخر</div>
-          </div>
-
-          <!-- 5. عنابي وياقوتي فخم -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('rose')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(244, 63, 94, 0.45); background: linear-gradient(135deg, #260a17, #5c1433); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(38,10,23,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">🍷 عنابي ملكي فاخر</span>
-              <span class="theme-check-dot" data-theme="rose" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #fb7185; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #fb7185;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #fecdd3;">ياقوتي أحمر داكن ودافئ وأصيل</div>
-          </div>
-
-          <!-- 6. سماوي فيروزي بحري -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('ocean')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(6, 182, 212, 0.45); background: linear-gradient(135deg, #062338, #0f5480); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(6,35,56,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">🌊 سماوي فيروزي بحري</span>
-              <span class="theme-check-dot" data-theme="ocean" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #22d3ee; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #22d3ee;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #a5f3fc;">أزرق بحري منعش وعصري</div>
-          </div>
-
-          <!-- 7. موكا وبرونزي دافئ -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('gold')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, #21160a, #4d3314); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(33,22,10,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">☕ موكا وبرونزي دافئ</span>
-              <span class="theme-check-dot" data-theme="gold" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #fbbf24; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #fbbf24;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #fde68a;">بني قهوة دافئ وفاخر وجذاب</div>
-          </div>
-
-          <!-- 8. تيتانيوم رمادي -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('slate')" style="cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(148, 163, 184, 0.45); background: linear-gradient(135deg, #131a27, #28364f); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(19,26,39,0.5);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">🪙 تيتانيوم رمادي</span>
-              <span class="theme-check-dot" data-theme="slate" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #94a3b8; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #94a3b8;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #cbd5e1;">رمادي بلاتيني معماري رصين</div>
-          </div>
-
-          <!-- 9. النهار الأبيض الملكي -->
-          <div class="theme-card-box" onclick="selectThemeAndApply('light')" style="grid-column: span 2; cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(2, 132, 199, 0.45); background: linear-gradient(135deg, #ffffff, #e2e8f0); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #0f172a;">☀️ النهار الأبيض اللؤلؤي (Light Mode)</span>
-              <span class="theme-check-dot" data-theme="light" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #0284c7; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #0284c7;"></span>
-            </div>
-            <div style="font-size: 0.65rem; color: #475569;">مظهر نهاري أبيض ساطع ونقي وفائق الوضوح للرؤية تحت الشمس</div>
-          </div>
-          <div class="theme-card-box theme-facebook-option" onclick="selectThemeAndApply('facebook')" style="grid-column: span 2; cursor: pointer; border-radius: 12px; padding: 10px; border: 1.5px solid rgba(8, 102, 255, 0.4); background: linear-gradient(135deg, #ffffff, #eaf2ff); position: relative; transition: all 0.2s; box-shadow: 0 4px 12px rgba(8, 102, 255, 0.10);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-size: 0.84rem; font-weight: 900; color: #1c1e21;">🔵 أزرق وأبيض — بطاقات واضحة</span>
-              <span class="theme-check-dot" data-theme="facebook" style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #0866ff; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; color: #0866ff;"></span>
-            </div>
-            <div style="font-size: 0.68rem; color: #65676b;">مظهر نهاري نظيف مع أزرق واضح وخلفية رمادية فاتحة</div>
-          </div>
-
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px;" id="themeCardsGrid">
+          <button type="button" class="theme-card-box" data-theme="navy" onclick="selectThemeAndApply('navy')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#0f2d55"></span><span class="theme-card-label">كحلي ملكي</span><span class="theme-check-dot" data-theme="navy" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="emerald" onclick="selectThemeAndApply('emerald')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#047857"></span><span class="theme-card-label">زمردي</span><span class="theme-check-dot" data-theme="emerald" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="purple" onclick="selectThemeAndApply('purple')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#7e22ce"></span><span class="theme-card-label">بنفسجي</span><span class="theme-check-dot" data-theme="purple" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="rose" onclick="selectThemeAndApply('rose')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#be123c"></span><span class="theme-card-label">وردي ياقوتي</span><span class="theme-check-dot" data-theme="rose" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="ocean" onclick="selectThemeAndApply('ocean')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#0e7490"></span><span class="theme-card-label">محيطي</span><span class="theme-check-dot" data-theme="ocean" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="gold" onclick="selectThemeAndApply('gold')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#a16207"></span><span class="theme-card-label">ذهبي</span><span class="theme-check-dot" data-theme="gold" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="slate" onclick="selectThemeAndApply('slate')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#475569"></span><span class="theme-card-label">رمادي تيتانيوم</span><span class="theme-check-dot" data-theme="slate" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="midnight" onclick="selectThemeAndApply('midnight')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#4338ca"></span><span class="theme-card-label">نيلي ليلي</span><span class="theme-check-dot" data-theme="midnight" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="forest" onclick="selectThemeAndApply('forest')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#166534"></span><span class="theme-card-label">أخضر غابة</span><span class="theme-check-dot" data-theme="forest" aria-hidden="true"></span></button>
+          <button type="button" class="theme-card-box" data-theme="sapphire" onclick="selectThemeAndApply('sapphire')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#1d4ed8"></span><span class="theme-card-label">ياقوت أزرق</span><span class="theme-check-dot" data-theme="sapphire" aria-hidden="true"></span></button>
         </div>
 
         <button type="button" class="btn-submit-tx" onclick="closeModal('themeDrawerModal')" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #f8fafc; height: 38px; font-size: 0.82rem; font-weight: 800; border-radius: 10px; width: 100%; cursor: pointer;">
@@ -18369,151 +18477,58 @@
           <!-- القسم 1: المظهر والتخصيص البصري -->
           <div class="settings-unified-section" id="settingsSec_appearance" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
             
-            <!-- 1. سمات وألوان التطبيق -->
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-palette" style="color: #a855f7; font-size: 0.88rem;"></i>
-                  <span>لون التطبيق ونمطه (16 سمة):</span>
-                </div>
-                <span id="activeThemeBadge" style="font-size: 0.63rem; color: #38bdf8; font-weight: 800; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 7px; border-radius: 5px;">كحلي ملكي</span>
+            <!-- لوحة المظهر الجديدة: وضع مستقل، لوحة ألوان، ومعاينة حيّة -->
+            <div class="appearance-settings-block">
+              <div class="appearance-section-heading">
+                <span><i class="fa-solid fa-palette" aria-hidden="true"></i> المظهر ولوحة الألوان</span>
+                <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
+              </div>
+              <div class="appearance-mode-row" role="group" aria-label="وضع العرض">
+                <button type="button" id="appearanceModeDark" class="appearance-mode-button" onclick="setAppColorMode('dark')" aria-pressed="true"><i class="fa-solid fa-moon" aria-hidden="true"></i> داكن</button>
+                <button type="button" id="appearanceModeLight" class="appearance-mode-button" onclick="setAppColorMode('light')" aria-pressed="false"><i class="fa-solid fa-sun" aria-hidden="true"></i> فاتح</button>
               </div>
               <div class="settings-live-preview" id="settingsThemePreview" aria-live="polite">
-                <div class="settings-live-preview-label"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>معاينة مباشرة</span></div>
+                <div class="settings-live-preview-label"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>معاينة مباشرة</span><span id="appearanceContrastBadge" class="appearance-contrast-badge">تباين AA</span></div>
                 <div class="settings-live-preview-card">
                   <span class="settings-live-preview-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
                   <span class="settings-live-preview-copy"><strong>مصروفات العائلة</strong><small>الرصيد المتبقي</small></span>
                   <strong class="settings-live-preview-value" dir="ltr">1,250 ج.م</strong>
                 </div>
+                <div class="appearance-preview-footnote">النصوص والأرقام محفوظة بتباين WCAG AA في الوضعين.</div>
               </div>
-              <div class="theme-color-palette" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-                <div class="theme-pill-option active" id="themeOptNavy" onclick="setAppTheme('navy')" style="background: rgba(12, 23, 46, 0.95); border: 1.5px solid #0284c7; border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #0284c7;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #fff;">كحلي ملكي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptBlack" onclick="setAppTheme('black')" style="background: rgba(5, 7, 12, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #090d16;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">أسود فاحم</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptEmerald" onclick="setAppTheme('emerald')" style="background: rgba(6, 32, 22, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #10b981;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">زمردي فاخر</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptPurple" onclick="setAppTheme('purple')" style="background: rgba(26, 12, 44, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #a855f7;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">بنفسجي ملكي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptRose" onclick="setAppTheme('rose')" style="background: rgba(38, 10, 20, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #e11d48;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">عنابي ياقوتي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptOcean" onclick="setAppTheme('ocean')" style="background: rgba(8, 28, 42, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #06b6d4;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">سماوي فيروزي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptGold" onclick="setAppTheme('gold')" style="background: rgba(34, 22, 10, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #f59e0b;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">موكا وبرونزي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptSlate" onclick="setAppTheme('slate')" style="background: rgba(22, 28, 38, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #64748b;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">تيتانيوم رمادي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptLight" onclick="setAppTheme('light')" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #94a3b8; margin: 0 auto 3px; background: #f8fafc;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #0f172a;">أبيض نهار</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptFacebook" onclick="setAppTheme('facebook')" style="background: linear-gradient(135deg, #ffffff, #eaf2ff); border: 1.5px solid #0866ff; border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #dbeafe; margin: 0 auto 3px; background: #0866ff;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #1c1e21;">أزرق وأبيض</div>
-                </div>
-                <!-- 6 ألوان وخلفيات ملكية إضافية -->
-                <div class="theme-pill-option" id="themeOptCrimson" onclick="setAppTheme('crimson')" style="background: rgba(42, 10, 20, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #f43f5e;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">قرمزي روبي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptAmber" onclick="setAppTheme('amber')" style="background: rgba(44, 22, 6, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #d97706;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">عنبر ملكي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptMidnight" onclick="setAppTheme('midnight')" style="background: rgba(16, 20, 52, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #6366f1;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">أزرق ليلي</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptForest" onclick="setAppTheme('forest')" style="background: rgba(8, 42, 26, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #059669;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">غابة خضراء</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptCarbon" onclick="setAppTheme('carbon')" style="background: rgba(28, 31, 38, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #ea580c;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">كربون داكن</div>
-                </div>
-                <div class="theme-pill-option" id="themeOptSapphire" onclick="setAppTheme('sapphire')" style="background: rgba(10, 32, 74, 0.95); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; cursor: pointer;">
-                  <div class="theme-color-dot" style="width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.4); margin: 0 auto 3px; background: #2563eb;"></div>
-                  <div style="font-size: 0.65rem; font-weight: 850; color: #cbd5e1;">ياقوت أزرق</div>
-                </div>
+              <div class="appearance-subheading"><span>لوحات الألوان</span><small>10 اختيارات متوافقة</small></div>
+              <div class="theme-color-palette appearance-palette-grid" role="group" aria-label="لوحة الألوان">
+                <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true" aria-label="تطبيق لوحة كحلي ملكي"><span class="theme-color-dot" style="--theme-swatch:#0f2d55" aria-hidden="true"></span><span>كحلي ملكي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false" aria-label="تطبيق لوحة زمردي"><span class="theme-color-dot" style="--theme-swatch:#047857" aria-hidden="true"></span><span>زمردي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false" aria-label="تطبيق لوحة بنفسجي"><span class="theme-color-dot" style="--theme-swatch:#7e22ce" aria-hidden="true"></span><span>بنفسجي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false" aria-label="تطبيق لوحة وردي ياقوتي"><span class="theme-color-dot" style="--theme-swatch:#be123c" aria-hidden="true"></span><span>وردي ياقوتي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false" aria-label="تطبيق لوحة محيطي"><span class="theme-color-dot" style="--theme-swatch:#0e7490" aria-hidden="true"></span><span>محيطي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false" aria-label="تطبيق لوحة ذهبي"><span class="theme-color-dot" style="--theme-swatch:#a16207" aria-hidden="true"></span><span>ذهبي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false" aria-label="تطبيق لوحة رمادي تيتانيوم"><span class="theme-color-dot" style="--theme-swatch:#475569" aria-hidden="true"></span><span>رمادي تيتانيوم</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false" aria-label="تطبيق لوحة نيلي ليلي"><span class="theme-color-dot" style="--theme-swatch:#4338ca" aria-hidden="true"></span><span>نيلي ليلي</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptForest" data-theme="forest" onclick="setAppTheme('forest')" aria-pressed="false" aria-label="تطبيق لوحة أخضر غابة"><span class="theme-color-dot" style="--theme-swatch:#166534" aria-hidden="true"></span><span>أخضر غابة</span></button>
+                <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false" aria-label="تطبيق لوحة ياقوت أزرق"><span class="theme-color-dot" style="--theme-swatch:#1d4ed8" aria-hidden="true"></span><span>ياقوت أزرق</span></button>
               </div>
             </div>
 
-            <!-- 2. أنماط وألوان الأيقونات (12 نمط باليت متناسق) -->
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-icons" style="color: #fbbf24; font-size: 0.88rem;"></i>
-                  <span>ألوان ونمط الأيقونات (12 باليت):</span>
-                </div>
-                <span id="activeIconThemeBadge" style="font-size: 0.63rem; color: #fbbf24; background: rgba(251, 191, 36, 0.16); border: 1px solid rgba(251, 191, 36, 0.4); padding: 1px 7px; border-radius: 5px; font-weight: 850;">ملون فينتك</span>
+            <!-- 2. ألوان الأيقونات: 10 درجات واضحة لكل وضع -->
+            <div class="appearance-settings-block">
+              <div class="appearance-section-heading">
+                <span><i class="fa-solid fa-icons" aria-hidden="true"></i> ألوان الأيقونات</span>
+                <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-                <div class="icon-theme-pill active" id="iconThemeOptVibrant" onclick="setAppIconTheme('vibrant')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px;"><span style="color: #10b981; font-size: 0.65rem;">●</span><span style="color: #38bdf8; font-size: 0.65rem;">●</span><span style="color: #f59e0b; font-size: 0.65rem;">●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">ملون فينتك</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptGold" onclick="setAppIconTheme('gold')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #f59e0b; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">ذهبي متوهج</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptEmerald" onclick="setAppIconTheme('emerald')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #10b981; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">زمردي نيون</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptOcean" onclick="setAppIconTheme('ocean')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #06b6d4; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">سماوي بحري</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptPurple" onclick="setAppIconTheme('purple')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #a855f7; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">ياقوتي ملكي</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptSilver" onclick="setAppIconTheme('silver')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #94a3b8; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">بلاتيني فضي</div>
-                </div>
-                <!-- 6 أنماط أيقونات إضافية -->
-                <div class="icon-theme-pill" id="iconThemeOptRuby" onclick="setAppIconTheme('ruby')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #f43f5e; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">روبي قرمزي</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptAmber" onclick="setAppIconTheme('amber')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #f97316; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">عنبر كهرماني</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptCyber" onclick="setAppIconTheme('cyber')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #a3e635; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">سايبر نيون</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptTeal" onclick="setAppIconTheme('teal')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #14b8a6; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">تيل ملكي</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptIndigo" onclick="setAppIconTheme('indigo')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #818cf8; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">نيلي ليزري</div>
-                </div>
-                <div class="icon-theme-pill" id="iconThemeOptRose" onclick="setAppIconTheme('rose')" style="padding: 6px 4px; border-radius: 8px; text-align: center; cursor: pointer;">
-                  <div style="display: flex; justify-content: center; gap: 3px; margin-bottom: 2px; color: #fb7185; font-size: 0.65rem;"><span>●</span><span>●</span><span>●</span></div>
-                  <div style="font-size: 0.65rem; font-weight: 850;">وردي زهري</div>
-                </div>
+              <div class="appearance-subheading"><span>اختر لونًا موحدًا وواضحًا</span><small>10 اختيارات</small></div>
+              <div class="appearance-icon-grid" role="group" aria-label="ألوان الأيقونات">
+                <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>فينتك</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>ذهبي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>زمردي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>محيطي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>بنفسجي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>روبي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>عنبر</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptTeal" data-icon-theme="teal" onclick="setAppIconTheme('teal')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>تركوازي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>نيلي</span></button>
+                <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>وردي</span></button>
               </div>
             </div>
 
@@ -18571,12 +18586,18 @@
                 <div style="margin-bottom: 5px; font-size: 0.70rem; font-weight: 850; color: #cbd5e1;">
                   <i class="fa-solid fa-shapes" style="color: #38bdf8;"></i> نمط الكروت:
                 </div>
-                <div id="cardStyleButtonsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 3px;">
-                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" onclick="setAppDesignStyle('glass')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">✨ زجاجي</button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleMin" onclick="setAppDesignStyle('minimal')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">📐 بسيط</button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeu" onclick="setAppDesignStyle('neumorphic')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">🔲 مجسم 3D</button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" onclick="setAppDesignStyle('neon')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">⚡ نيون</button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleClear" onclick="setAppDesignStyle('clear')" style="padding: 5px 2px; font-size: 0.64rem; border-radius: 6px;">▣ بطاقات واضحة</button>
+                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid" role="group" aria-label="أنماط الكروت">
+                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>شفاف هادئ</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleMin" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>بسيط</strong><small>مسطح ونظيف</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleNeu" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>مجسّم</strong><small>عمق ناعم</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>حدود مضيئة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>واضح</strong><small>إطار بارز</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleCompact" data-card-style="compact" onclick="setAppDesignStyle('compact')" aria-pressed="false"><strong>مدمج</strong><small>زوايا صغيرة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleSoft" data-card-style="soft" onclick="setAppDesignStyle('soft')" aria-pressed="false"><strong>ناعم</strong><small>استدارة واسعة</small></button>
+                </div>
                 </div>
               </div>
             </div>
@@ -18653,54 +18674,48 @@
     // محرك تبديل المظهر الداكن والفاتح
     // ==========================================
     function initTheme() {
-      const savedTheme = localStorage.getItem('app_theme') || 'dark';
-      if (savedTheme === 'light') {
-        document.body.classList.add('light-theme');
-        const icon = document.getElementById('themeIcon');
-        if (icon) {
-          icon.className = 'fa-solid fa-sun';
-          icon.style.color = '#f59e0b';
-        }
+      const savedMode = localStorage.getItem('family_monefy_color_mode')
+        || localStorage.getItem('app_theme')
+        || ((['light', 'facebook'].includes(localStorage.getItem('family_monefy_theme'))) ? 'light' : 'dark');
+      setAppColorMode(savedMode, false);
+    }
+
+    function setAppColorMode(mode, persist = true) {
+      const target = mode === 'light' ? 'light' : 'dark';
+      const isLight = target === 'light';
+      document.body.classList.toggle('light-theme', isLight);
+      document.documentElement.setAttribute('data-color-mode', target);
+      document.body.setAttribute('data-color-mode', target);
+      const icon = document.getElementById('themeIcon');
+      if (icon) {
+        icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+        icon.style.color = isLight ? '#a16207' : '#cbd5e1';
+      }
+      ['appearanceModeDark', 'appearanceModeLight'].forEach(id => {
+        const button = document.getElementById(id);
+        if (!button) return;
+        const selected = (id === 'appearanceModeLight') === isLight;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      });
+      updateAppearanceAccent();
+      const currentIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
+      setAppIconTheme(currentIconTheme, false);
+      updateAppearancePreview();
+      if (persist) {
+        try {
+          localStorage.setItem('family_monefy_color_mode', target);
+          localStorage.setItem('app_theme', target);
+        } catch (e) {}
+        if (typeof renderUI === 'function') renderUI();
+        if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
+        if (typeof showToast === 'function') showToast(isLight ? 'تم تفعيل المظهر الفاتح ☀️' : 'تم تفعيل المظهر الداكن 🌙');
       }
     }
 
     function toggleTheme() {
-      const isLight = document.body.classList.toggle('light-theme');
-      const theme = isLight ? 'light' : 'dark';
-      localStorage.setItem('app_theme', theme);
-      const icon = document.getElementById('themeIcon');
-      if (icon) {
-        icon.className = isLight ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-        icon.style.color = isLight ? '#f59e0b' : '#94a3b8';
-      }
-      showToast(isLight ? 'تم تفعيل المظهر الفاتح ☀️' : 'تم تفعيل المظهر الداكن 🌙');
-
-      // إعادة رسم وتحديث كافة الكروت والرسوم البيانية فوراً بالتباين المناسب
-      if (typeof renderUI === 'function') {
-        renderUI();
-      }
-      if (typeof updateAnalyticsChart === 'function') {
-        updateAnalyticsChart();
-      }
-
-      // تحديث شارت العجلة وشارت الرسوم
-      if (donutChartInstance && donutChartInstance.data && donutChartInstance.data.datasets.length) {
-        donutChartInstance.data.datasets[0].borderColor = isLight ? '#ffffff' : '#131b2e';
-        donutChartInstance.update();
-      }
-      if (analyticsChartInstance && analyticsChartInstance.options && analyticsChartInstance.options.scales) {
-        if (analyticsChartInstance.options.scales.x && analyticsChartInstance.options.scales.x.ticks) {
-          analyticsChartInstance.options.scales.x.ticks.color = isLight ? '#475569' : '#94a3b8';
-        }
-        if (analyticsChartInstance.options.scales.y && analyticsChartInstance.options.scales.y.ticks) {
-          analyticsChartInstance.options.scales.y.ticks.color = isLight ? '#475569' : '#94a3b8';
-        }
-        if (analyticsChartInstance.options.scales.y && analyticsChartInstance.options.scales.y.grid) {
-          analyticsChartInstance.options.scales.y.grid.color = isLight ? '#e2e8f0' : '#1e293b';
-        }
-        analyticsChartInstance.update();
-      }
-      renderUI();
+      const next = document.body.classList.contains('light-theme') ? 'dark' : 'light';
+      setAppColorMode(next);
     }
 
     // محرك الإشعارات والصوت الفوري للمزامنة
@@ -18984,6 +18999,10 @@
       try {
         const savedTheme = localStorage.getItem('family_monefy_theme') || 'navy';
         setAppTheme(savedTheme, false);
+        const savedMode = localStorage.getItem('family_monefy_color_mode')
+          || localStorage.getItem('app_theme')
+          || ((['light', 'facebook'].includes(savedTheme)) ? 'light' : 'dark');
+        setAppColorMode(savedMode, false);
 
         const savedIconTheme = localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
         setAppIconTheme(savedIconTheme, false);
@@ -18995,7 +19014,7 @@
         setAppFontSize(savedFontSize, false);
 
         const savedCardStyle = localStorage.getItem('family_monefy_design_style') || 'glass';
-        setAppDesignStyle(savedCardStyle, false);
+        setAppDesignStyle(savedCardStyle, false, false);
       } catch(e) {}
 
       // تحديث قوائم المحافظ
@@ -26378,224 +26397,123 @@ function openSettingsModal(targetSection = '') {
       reader.readAsText(file);
     }
 
+    const APPEARANCE_PALETTES = {
+      navy: { name: 'كحلي ملكي', swatch: '#0f2d55', dark: '#7dd3fc', light: '#075985' },
+      emerald: { name: 'زمردي', swatch: '#047857', dark: '#6ee7b7', light: '#047857' },
+      purple: { name: 'بنفسجي', swatch: '#7e22ce', dark: '#d8b4fe', light: '#6b21a8' },
+      rose: { name: 'وردي ياقوتي', swatch: '#be123c', dark: '#fda4af', light: '#9f1239' },
+      ocean: { name: 'محيطي', swatch: '#0e7490', dark: '#67e8f9', light: '#0e7490' },
+      gold: { name: 'ذهبي', swatch: '#a16207', dark: '#fcd34d', light: '#854d0e' },
+      slate: { name: 'رمادي تيتانيوم', swatch: '#475569', dark: '#cbd5e1', light: '#475569' },
+      midnight: { name: 'نيلي ليلي', swatch: '#4338ca', dark: '#a5b4fc', light: '#3730a3' },
+      forest: { name: 'أخضر غابة', swatch: '#166534', dark: '#86efac', light: '#166534' },
+      sapphire: { name: 'ياقوت أزرق', swatch: '#1d4ed8', dark: '#93c5fd', light: '#1d4ed8' }
+    };
+    const APPEARANCE_PALETTE_ALIASES = {
+      black: 'slate', carbon: 'slate', crimson: 'rose', amber: 'gold',
+      light: 'sapphire', facebook: 'sapphire'
+    };
+    const APPEARANCE_ICON_THEMES = {
+      vibrant: { name: 'فينتك', dark: '#7dd3fc', light: '#0369a1' },
+      gold: { name: 'ذهبي', dark: '#fcd34d', light: '#854d0e' },
+      emerald: { name: 'زمردي', dark: '#6ee7b7', light: '#047857' },
+      ocean: { name: 'محيطي', dark: '#67e8f9', light: '#0e7490' },
+      purple: { name: 'بنفسجي', dark: '#d8b4fe', light: '#6b21a8' },
+      ruby: { name: 'روبي', dark: '#fda4af', light: '#9f1239' },
+      amber: { name: 'عنبر', dark: '#fdba74', light: '#9a3412' },
+      teal: { name: 'تركوازي', dark: '#5eead4', light: '#0f766e' },
+      indigo: { name: 'نيلي', dark: '#a5b4fc', light: '#3730a3' },
+      rose: { name: 'وردي', dark: '#f9a8d4', light: '#9d174d' }
+    };
+
+    function appearanceContrastRatio(foreground, background) {
+      const parse = value => {
+        const nums = String(value).match(/[\d.]+/g);
+        if (!nums || nums.length < 3) return null;
+        return nums.slice(0, 3).map(Number).map(channel => {
+          const c = channel / 255;
+          return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        });
+      };
+      const fg = parse(foreground), bg = parse(background);
+      if (!fg || !bg) return 0;
+      const lum = rgb => 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+      const a = lum(fg), b = lum(bg);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    }
+
+    function appearanceMixColor(foreground, background, foregroundWeight) {
+      const parseHex = value => {
+        const match = String(value || '').match(/^#([\da-f]{3}|[\da-f]{6})$/i);
+        if (!match) return null;
+        const hex = match[1].length === 3 ? match[1].split('').map(char => char + char).join('') : match[1];
+        return [0, 2, 4].map(index => parseInt(hex.slice(index, index + 2), 16));
+      };
+      const fg = parseHex(foreground), bg = parseHex(background);
+      if (!fg || !bg) return background;
+      return 'rgb(' + fg.map((channel, index) => Math.round(channel * foregroundWeight + bg[index] * (1 - foregroundWeight))).join(', ') + ')';
+    }
+
+    function updateAppearanceAccent() {
+      const root = document.documentElement;
+      const palette = APPEARANCE_PALETTES[state.appTheme] || APPEARANCE_PALETTES.navy;
+      const isLight = document.body.classList.contains('light-theme');
+      root.style.setProperty('--appearance-accent-text', isLight ? palette.light : palette.dark);
+      root.style.setProperty('--appearance-swatch', palette.swatch);
+      root.setAttribute('data-color-mode', isLight ? 'light' : 'dark');
+      document.body.setAttribute('data-color-mode', isLight ? 'light' : 'dark');
+    }
+
+    function updateAppearancePreview() {
+      const preview = document.getElementById('settingsThemePreview');
+      if (!preview) return;
+      preview.setAttribute('data-card-style', document.body.getAttribute('data-card-style') || 'glass');
+      const card = preview.querySelector('.settings-live-preview-card');
+      const badge = document.getElementById('appearanceContrastBadge');
+      if (!card || !badge) return;
+      const background = getComputedStyle(card).backgroundColor;
+      const textNodes = [
+        preview.querySelector('.settings-live-preview-copy strong'),
+        preview.querySelector('.settings-live-preview-copy small'),
+        preview.querySelector('.settings-live-preview-value')
+      ].filter(Boolean);
+      const backgrounds = [background];
+      if (preview.getAttribute('data-card-style') === 'gradient') {
+        const palette = APPEARANCE_PALETTES[state.appTheme] || APPEARANCE_PALETTES.navy;
+        const isLight = document.body.classList.contains('light-theme');
+        const surface = isLight ? '#ffffff' : '#17243a';
+        const accent = isLight ? palette.light : palette.dark;
+        for (let tint = 0.01; tint <= 0.09; tint += 0.01) {
+          backgrounds.push(appearanceMixColor(accent, surface, tint));
+        }
+      }
+      const ratios = textNodes.map(node => Math.min(...backgrounds.map(color => appearanceContrastRatio(getComputedStyle(node).color, color))));
+      const minimum = ratios.length ? Math.min(...ratios) : 0;
+      badge.textContent = 'تباين ' + minimum.toFixed(1) + ':1 • WCAG AA';
+      badge.classList.toggle('passes', minimum >= 4.5);
+      badge.classList.toggle('fails', minimum < 4.5);
+    }
+
     function setAppTheme(theme, persist = true) {
-      const validThemes = [
-        'navy', 'black', 'emerald', 'purple', 'rose', 'ocean', 'gold', 'slate', 'light',
-        'facebook', 'crimson', 'amber', 'midnight', 'forest', 'carbon', 'sapphire'
-      ];
-      if (!validThemes.includes(theme)) theme = 'navy';
-
-      state.appTheme = theme;
-      document.documentElement.setAttribute('data-app-theme', theme);
-      document.body.setAttribute('data-app-theme', theme);
-
-      if (theme === 'light' || theme === 'facebook') {
-        document.body.classList.add('light-theme');
-      } else {
-        document.body.classList.remove('light-theme');
-      }
-
-      // تطبيق فوري مباشر للخلفية والألوان لضمان التغيير البصري 100%
-      const themeBgs = {
-        'navy': {
-          body: 'radial-gradient(circle at 50% 0%, #1e3a8a 0%, #0f172a 45%, #070e1c 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(30, 58, 138, 0.40), rgba(15, 23, 42, 0.95))',
-          accent: '#38bdf8'
-        },
-        'black': {
-          body: 'radial-gradient(circle at 50% 0%, #18181b 0%, #09090b 50%, #000000 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, #18181b 0%, #09090b 100%)',
-          accent: '#e2e8f0'
-        },
-        'emerald': {
-          body: 'radial-gradient(circle at 50% 0%, #065f46 0%, #064e3b 35%, #022c22 75%, #011a14 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(6, 95, 70, 0.45), rgba(2, 44, 34, 0.95))',
-          accent: '#34d399'
-        },
-        'purple': {
-          body: 'radial-gradient(circle at 50% 0%, #581c87 0%, #3b0764 35%, #1e1b4b 75%, #120b2e 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(88, 28, 135, 0.45), rgba(30, 27, 75, 0.95))',
-          accent: '#c084fc'
-        },
-        'rose': {
-          body: 'radial-gradient(circle at 50% 0%, #881337 0%, #4c0519 35%, #2d0b1d 75%, #18050f 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(136, 19, 55, 0.45), rgba(45, 11, 29, 0.95))',
-          accent: '#fb7185'
-        },
-        'ocean': {
-          body: 'radial-gradient(circle at 50% 0%, #0e7490 0%, #155e75 30%, #083344 65%, #021e28 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(14, 116, 144, 0.45), rgba(8, 51, 68, 0.95))',
-          accent: '#22d3ee'
-        },
-        'gold': {
-          body: 'radial-gradient(circle at 50% 0%, #78350f 0%, #451a03 35%, #261102 75%, #180901 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(120, 53, 15, 0.45), rgba(38, 17, 2, 0.95))',
-          accent: '#fbbf24'
-        },
-        'slate': {
-          body: 'radial-gradient(circle at 50% 0%, #334155 0%, #1e293b 40%, #0f172a 80%, #080d17 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(51, 65, 85, 0.45), rgba(15, 23, 42, 0.95))',
-          accent: '#94a3b8'
-        },
-        'light': {
-          body: 'radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f1f5f9 40%, #ffffff 100%)',
-          frame: 'transparent',
-          card: '#ffffff',
-          accent: '#0284c7'
-        },
-        'facebook': {
-          body: 'linear-gradient(180deg, #ffffff 0%, #f0f2f5 58%, #eaf0f8 100%)',
-          frame: 'transparent',
-          card: '#ffffff',
-          accent: '#0866ff'
-        },
-        'crimson': {
-          body: 'radial-gradient(circle at 50% 0%, #9f1239 0%, #831843 35%, #4c0519 75%, #24030d 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(159, 18, 57, 0.45), rgba(45, 11, 29, 0.95))',
-          accent: '#f43f5e'
-        },
-        'amber': {
-          body: 'radial-gradient(circle at 50% 0%, #c2410c 0%, #9a3412 35%, #431407 75%, #220903 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(194, 65, 12, 0.45), rgba(67, 20, 7, 0.95))',
-          accent: '#d97706'
-        },
-        'midnight': {
-          body: 'radial-gradient(circle at 50% 0%, #3730a3 0%, #1e1b4b 40%, #0f0c2e 80%, #070518 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(55, 48, 163, 0.45), rgba(15, 12, 46, 0.95))',
-          accent: '#6366f1'
-        },
-        'forest': {
-          body: 'radial-gradient(circle at 50% 0%, #047857 0%, #064e3b 40%, #022c22 80%, #011a13 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(4, 120, 87, 0.45), rgba(2, 44, 34, 0.95))',
-          accent: '#059669'
-        },
-        'carbon': {
-          body: 'radial-gradient(circle at 50% 0%, #3f3f46 0%, #27272a 45%, #18181b 80%, #09090b 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(63, 63, 70, 0.45), rgba(24, 24, 27, 0.95))',
-          accent: '#ea580c'
-        },
-        'sapphire': {
-          body: 'radial-gradient(circle at 50% 0%, #2563eb 0%, #1d4ed8 35%, #172554 75%, #0a142e 100%)',
-          frame: 'transparent',
-          card: 'linear-gradient(145deg, rgba(37, 99, 235, 0.45), rgba(23, 37, 84, 0.95))',
-          accent: '#2563eb'
-        }
-      };
-      const curB = themeBgs[theme] || themeBgs['navy'];
-      document.body.style.setProperty('background', curB.body, 'important');
-      document.documentElement.style.setProperty('background', curB.body, 'important');
-      const appFrame = document.getElementById('appFrame');
-      if (appFrame) {
-        appFrame.style.setProperty('background', 'transparent', 'important');
-        appFrame.style.setProperty('background-color', 'transparent', 'important');
-      }
-      const setCard = document.querySelector('#settingsModal .modal-content-card');
-      if (setCard) {
-        setCard.style.setProperty('background', curB.card, 'important');
-        setCard.style.setProperty('border', `1.5px solid ${curB.accent}`, 'important');
-      }
-      try { if (typeof renderUI === 'function') renderUI(); } catch(e) {}
-
-      if (persist) {
-        try { localStorage.setItem('family_monefy_theme', theme); } catch(e) {}
-      }
-
-      const themeMetadata = [
-        { key: 'Navy', theme: 'navy', color: '#38bdf8', bg: 'rgba(12, 23, 46, 0.95)', name: 'كحلي ملكي أزرق' },
-        { key: 'Black', theme: 'black', color: '#e2e8f0', bg: 'rgba(5, 7, 12, 0.95)', name: 'أسود فاحم (OLED)' },
-        { key: 'Emerald', theme: 'emerald', color: '#34d399', bg: 'rgba(6, 32, 22, 0.95)', name: 'زمردي أخضر فاخر' },
-        { key: 'Purple', theme: 'purple', color: '#c084fc', bg: 'rgba(26, 12, 44, 0.95)', name: 'بنفسجي ملكي' },
-        { key: 'Rose', theme: 'rose', color: '#fb7185', bg: 'rgba(38, 10, 20, 0.95)', name: 'عنابي ياقوتي' },
-        { key: 'Ocean', theme: 'ocean', color: '#22d3ee', bg: 'rgba(8, 28, 42, 0.95)', name: 'سماوي فيروزي' },
-        { key: 'Gold', theme: 'gold', color: '#fbbf24', bg: 'rgba(34, 22, 10, 0.95)', name: 'موكا وبرونزي' },
-        { key: 'Slate', theme: 'slate', color: '#94a3b8', bg: 'rgba(22, 28, 38, 0.95)', name: 'تيتانيوم رمادي' },
-        { key: 'Light', theme: 'light', color: '#0284c7', bg: '#ffffff', name: 'أبيض نهار' },
-        { key: 'Facebook', theme: 'facebook', color: '#0866ff', bg: '#ffffff', name: 'أزرق وأبيض' },
-        { key: 'Crimson', theme: 'crimson', color: '#f43f5e', bg: 'rgba(42, 10, 20, 0.95)', name: 'قرمزي روبي' },
-        { key: 'Amber', theme: 'amber', color: '#d97706', bg: 'rgba(44, 22, 6, 0.95)', name: 'عنبر ملكي' },
-        { key: 'Midnight', theme: 'midnight', color: '#6366f1', bg: 'rgba(16, 20, 52, 0.95)', name: 'أزرق ليلي' },
-        { key: 'Forest', theme: 'forest', color: '#059669', bg: 'rgba(8, 42, 26, 0.95)', name: 'غابة خضراء' },
-        { key: 'Carbon', theme: 'carbon', color: '#ea580c', bg: 'rgba(28, 31, 38, 0.95)', name: 'كربون داكن' },
-        { key: 'Sapphire', theme: 'sapphire', color: '#2563eb', bg: 'rgba(10, 32, 74, 0.95)', name: 'ياقوت أزرق' }
-      ];
-
-      themeMetadata.forEach(tm => {
-        const el = document.getElementById('themeOpt' + tm.key);
-        if (!el) return;
-        const isMatch = (tm.theme === theme);
-        const dot = el.querySelector('.theme-color-dot');
-        el.setAttribute('role', 'button');
-        el.tabIndex = 0;
-        el.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
-        el.setAttribute('aria-label', 'تطبيق سمة ' + tm.name);
-
-        if (isMatch) {
-          el.classList.add('active');
-          el.style.setProperty('border', `2.5px solid ${tm.color}`, 'important');
-          el.style.setProperty('box-shadow', `0 0 16px ${tm.color}99, inset 0 0 8px ${tm.color}44`, 'important');
-          el.style.setProperty('transform', 'translateY(-2px) scale(1.04)', 'important');
-          el.style.setProperty('background', tm.bg, 'important');
-          if (dot) {
-            dot.innerHTML = `<i class="fa-solid fa-check" style="font-size:0.65rem; font-weight:900; color:${tm.theme === 'light' ? '#000' : '#fff'};"></i>`;
-            dot.style.setProperty('background', tm.color, 'important');
-            dot.style.setProperty('box-shadow', `0 0 10px ${tm.color}`, 'important');
-          }
-        } else {
-          el.classList.remove('active');
-          el.style.border = '1.5px solid rgba(255, 255, 255, 0.12)';
-          el.style.boxShadow = 'none';
-          el.style.transform = 'none';
-          el.style.background = tm.bg;
-          if (dot) {
-            dot.innerHTML = '';
-            dot.style.boxShadow = 'none';
-          }
-        }
+      const requested = String(theme || '');
+      const canonical = APPEARANCE_PALETTE_ALIASES[requested] || requested;
+      const target = Object.prototype.hasOwnProperty.call(APPEARANCE_PALETTES, canonical) ? canonical : 'navy';
+      state.appTheme = target;
+      document.documentElement.setAttribute('data-app-theme', target);
+      document.body.setAttribute('data-app-theme', target);
+      updateAppearanceAccent();
+      document.querySelectorAll('.theme-pill-option[data-theme], .theme-card-box[data-theme]').forEach(option => {
+        const selected = option.getAttribute('data-theme') === target;
+        option.classList.toggle('active', selected);
+        option.setAttribute('aria-pressed', selected ? 'true' : 'false');
       });
-
-      const names = {
-        'navy': 'كحلي ملكي أزرق',
-        'black': 'أسود فاحم (OLED)',
-        'emerald': 'زمردي أخضر فاخر',
-        'purple': 'بنفسجي ملكي',
-        'rose': 'عنابي ياقوتي',
-        'ocean': 'سماوي فيروزي',
-        'gold': 'موكا وبرونزي',
-        'slate': 'تيتانيوم رمادي',
-        'light': 'أبيض نهار',
-        'facebook': 'أزرق فيسبوك وأبيض',
-        'crimson': 'قرمزي روبي ناري',
-        'amber': 'عنبر وذهب إمبراطوري',
-        'midnight': 'أزرق ليلي عميق',
-        'forest': 'غابة ملكية خضراء',
-        'carbon': 'كربون داكن بركاني',
-        'sapphire': 'ياقوت أزرق نقي'
-      };
-
-      const activeBadge = document.getElementById('activeThemeBadge');
-      if (activeBadge) {
-        activeBadge.innerHTML = `<i class="fa-solid fa-circle-check" style="margin-left: 3px;"></i>${names[theme] || theme}`;
-        activeBadge.style.color = '#38bdf8';
-        activeBadge.style.background = 'rgba(56, 189, 248, 0.18)';
-        activeBadge.style.border = '1px solid #38bdf8';
+      const badge = document.getElementById('activeThemeBadge');
+      if (badge) badge.textContent = APPEARANCE_PALETTES[target].name;
+      if (persist) {
+        try { localStorage.setItem('family_monefy_theme', target); } catch (e) {}
+        if (typeof showToast === 'function') showToast('🎨 تم تطبيق لوحة ' + APPEARANCE_PALETTES[target].name);
       }
-
-      if (persist && typeof showToast === 'function') {
-        showToast(`🎨 تم تطبيق سمة: ${names[theme] || theme}`);
-      }
+      updateAppearancePreview();
     }
 
     function openThemeDrawer() {
@@ -26609,145 +26527,48 @@ function openSettingsModal(targetSection = '') {
     }
 
     function updateThemeCheckDots() {
-      const cur = state.appTheme || 'navy';
-      const themeColorsMap = {
-        'navy': '#38bdf8',
-        'black': '#e2e8f0',
-        'emerald': '#34d399',
-        'purple': '#c084fc',
-        'rose': '#fb7185',
-        'ocean': '#22d3ee',
-        'gold': '#fbbf24',
-        'slate': '#94a3b8',
-        'light': '#0284c7',
-        'facebook': '#0866ff',
-        'crimson': '#f43f5e',
-        'amber': '#d97706',
-        'midnight': '#6366f1',
-        'forest': '#059669',
-        'carbon': '#ea580c',
-        'sapphire': '#2563eb'
-      };
-      const curColor = themeColorsMap[cur] || '#38bdf8';
+      const current = state.appTheme || 'navy';
       document.querySelectorAll('.theme-check-dot').forEach(dot => {
-        const t = dot.getAttribute('data-theme');
+        const key = dot.getAttribute('data-theme');
         const tile = dot.closest('.theme-card-box');
         if (tile) {
-          tile.setAttribute('role', 'button');
-          tile.tabIndex = 0;
-          tile.setAttribute('aria-pressed', t === cur ? 'true' : 'false');
+          const selected = key === current;
+          tile.classList.toggle('active', selected);
+          tile.setAttribute('aria-pressed', selected ? 'true' : 'false');
         }
-        if (t === cur) {
-          dot.innerHTML = `<i class="fa-solid fa-check" style="font-size: 0.72rem; font-weight:900; color:${cur === 'light' ? '#000' : '#fff'};"></i>`;
-          dot.style.setProperty('background', curColor, 'important');
-          dot.style.setProperty('border', '2px solid #ffffff', 'important');
-          dot.style.setProperty('box-shadow', `0 0 12px ${curColor}`, 'important');
-        } else {
-          dot.innerHTML = '';
-          dot.style.background = 'transparent';
-          dot.style.borderColor = 'rgba(255,255,255,0.3)';
-          dot.style.boxShadow = 'none';
-        }
+        dot.innerHTML = key === current ? '<i class="fa-solid fa-check" aria-hidden="true"></i>' : '';
       });
     }
 
     function setAppIconTheme(iconTheme, persist = true) {
-      const validThemes = [
-        'vibrant', 'gold', 'emerald', 'ocean', 'purple', 'silver',
-        'ruby', 'amber', 'cyber', 'teal', 'indigo', 'rose'
-      ];
-      if (!validThemes.includes(iconTheme)) iconTheme = 'vibrant';
+      const aliases = { silver: 'vibrant', cyber: 'teal' };
+      const requested = aliases[String(iconTheme || '')] || String(iconTheme || '');
+      const target = Object.prototype.hasOwnProperty.call(APPEARANCE_ICON_THEMES, requested) ? requested : 'vibrant';
+      const palette = APPEARANCE_ICON_THEMES[target];
+      const isLight = document.body.classList.contains('light-theme');
+      const activeColor = isLight ? palette.light : palette.dark;
 
-      state.iconTheme = iconTheme;
-      document.documentElement.setAttribute('data-icon-theme', iconTheme);
-      document.body.setAttribute('data-icon-theme', iconTheme);
-
-      if (persist) {
-        try { localStorage.setItem('family_monefy_icon_theme', iconTheme); } catch(e) {}
-      }
-
-      const paletteColors = {
-        'vibrant': '#38bdf8',
-        'gold': '#fbbf24',
-        'emerald': '#34d399',
-        'ocean': '#22d3ee',
-        'purple': '#c084fc',
-        'silver': '#e2e8f0',
-        'ruby': '#fb7185',
-        'amber': '#fb923c',
-        'cyber': '#a3e635',
-        'teal': '#2dd4bf',
-        'indigo': '#818cf8',
-        'rose': '#f472b6'
-      };
-      const activeColor = paletteColors[iconTheme] || '#38bdf8';
+      state.iconTheme = target;
+      document.documentElement.setAttribute('data-icon-theme', target);
+      document.body.setAttribute('data-icon-theme', target);
       document.documentElement.style.setProperty('--app-active-icon-color', activeColor);
-
-      const names = {
-        'vibrant': 'ملون فينتك',
-        'gold': 'ذهبي متوهج',
-        'emerald': 'زمردي نيون',
-        'ocean': 'سماوي بحري',
-        'purple': 'ياقوتي ملكي',
-        'silver': 'بلاتيني فضي',
-        'ruby': 'روبي قرمزي',
-        'amber': 'عنبر كهرماني',
-        'cyber': 'سايبر نيون',
-        'teal': 'تيل ملكي',
-        'indigo': 'نيلي ليزري',
-        'rose': 'وردي زهري'
-      };
-
-      const opts = [
-        'Vibrant', 'Gold', 'Emerald', 'Ocean', 'Purple', 'Silver',
-        'Ruby', 'Amber', 'Cyber', 'Teal', 'Indigo', 'Rose'
-      ];
-      opts.forEach(o => {
-        const el = document.getElementById('iconThemeOpt' + o);
-        if (el) {
-          const optKey = o.toLowerCase();
-          const optColor = paletteColors[optKey] || '#38bdf8';
-          el.setAttribute('role', 'button');
-          el.tabIndex = 0;
-          el.setAttribute('aria-pressed', optKey === iconTheme ? 'true' : 'false');
-          if (optKey === iconTheme) {
-            el.classList.add('active');
-            el.style.setProperty('border', `2px solid ${optColor}`, 'important');
-            el.style.setProperty('box-shadow', `0 0 14px ${optColor}80, inset 0 0 8px ${optColor}33`, 'important');
-            el.style.setProperty('background', `${optColor}1a`, 'important');
-            el.style.setProperty('transform', 'translateY(-2px) scale(1.04)', 'important');
-          } else {
-            el.classList.remove('active');
-            el.style.setProperty('border', '1.2px solid rgba(255, 255, 255, 0.1)', 'important');
-            el.style.setProperty('box-shadow', 'none', 'important');
-            el.style.setProperty('background', 'rgba(255, 255, 255, 0.02)', 'important');
-            el.style.setProperty('transform', 'none', 'important');
-          }
-        }
+      document.querySelectorAll('.icon-theme-pill[data-icon-theme]').forEach(option => {
+        const optionKey = option.getAttribute('data-icon-theme');
+        const selected = optionKey === target;
+        const optionPalette = APPEARANCE_ICON_THEMES[optionKey];
+        if (optionPalette) option.style.setProperty('--icon-swatch', isLight ? optionPalette.light : optionPalette.dark);
+        option.classList.toggle('active', selected);
+        option.setAttribute('aria-pressed', selected ? 'true' : 'false');
       });
-
       const badge = document.getElementById('activeIconThemeBadge');
-      if (badge) {
-        badge.textContent = names[iconTheme] || iconTheme;
-        badge.style.setProperty('border', `1.5px solid ${activeColor}`, 'important');
-        badge.style.setProperty('color', activeColor, 'important');
-        badge.style.setProperty('box-shadow', `0 0 10px ${activeColor}40`, 'important');
+      if (badge) badge.textContent = palette.name;
+      if (persist) {
+        try { localStorage.setItem('family_monefy_icon_theme', target); } catch (e) {}
+        if (typeof showToast === 'function') showToast('✨ تم تطبيق لون الأيقونات: ' + palette.name);
       }
-
-      const catGrid = document.getElementById('catGrid');
-      if (catGrid) catGrid.dataset.iconTheme = ''; // Force re-render
-
-      try {
-        if (typeof renderUI === 'function') renderUI();
-      } catch(e) {}
-
-      if (persist && typeof showToast === 'function') {
-        showToast(`✨ تم تفعيل نمط ألوان الأيقونات: ${names[iconTheme] || iconTheme}`);
-      }
+      updateAppearancePreview();
     }
 
-
-    
     // تبديل إظهار وطي شارت TradingView المصغر في بورصة الذهب
     function toggleTradingViewChart() {
       const container = document.getElementById('tvChartContainer');
@@ -26891,57 +26712,24 @@ function openSettingsModal(targetSection = '') {
       }
     }
 
-    function setAppDesignStyle(style, notify = true) {
-      const validStyles = ['glass', 'minimal', 'neumorphic', 'neon', 'clear'];
-      const targetStyle = validStyles.includes(style) ? style : 'glass';
-
+    function setAppDesignStyle(style, notify = true, persist = true) {
+      const validStyles = ['glass', 'minimal', 'neumorphic', 'neon', 'clear', 'elevated', 'outlined', 'gradient', 'compact', 'soft'];
+      const targetStyle = validStyles.includes(String(style || '')) ? String(style) : 'glass';
       document.documentElement.setAttribute('data-card-style', targetStyle);
       document.body.setAttribute('data-card-style', targetStyle);
-      localStorage.setItem('family_monefy_design_style', targetStyle);
-
-      const btnMap = {
-        glass: document.getElementById('designStyleGlass'),
-        minimal: document.getElementById('designStyleMin'),
-        neumorphic: document.getElementById('designStyleNeu'),
-        neon: document.getElementById('designStyleNeon'),
-        clear: document.getElementById('designStyleClear')
-      };
-
-      Object.keys(btnMap).forEach(k => {
-        if (btnMap[k]) {
-          const selected = k === targetStyle;
-          btnMap[k].classList.toggle('active', selected);
-          btnMap[k].setAttribute('aria-pressed', selected ? 'true' : 'false');
-        }
+      document.querySelectorAll('#cardStyleButtonsContainer [data-card-style]').forEach(button => {
+        const selected = button.getAttribute('data-card-style') === targetStyle;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
       });
-
-      // إعادة رسم الكروت فورياً لتطبيق النمط الجديد أمام عين المستخدم في نفس اللحظة
-      try {
-        if (typeof renderCategoriesGrid === 'function') {
-          const currentFiltered = typeof getFilteredTransactions === 'function' ? getFilteredTransactions() : state.transactions;
-          renderCategoriesGrid(currentFiltered);
-        }
-        if (typeof renderUI === 'function') {
-          renderUI();
-        }
-      } catch(e) {
-        console.warn('Error refreshing UI on card style change:', e);
+      if (persist) {
+        try { localStorage.setItem('family_monefy_design_style', targetStyle); } catch (e) {}
       }
-
-      if (notify && typeof showToast === 'function') {
-        const labels = {
-          glass: '✨ تم تفعيل النمط الزجاجي الفخم (شفافية ولمعان)',
-          minimal: '📐 تم تفعيل النمط العصري المدمج (مصمت ورشيق)',
-          neumorphic: '🌟 تم تفعيل النمط الكلاسيكي المجسم 3D',
-          neon: '💎 تم تفعيل نمط النيون المتوهج السيبراني',
-          clear: '▣ تم تفعيل البطاقات الواضحة ذات الحدود الهادئة'
-        };
-        showToast(labels[targetStyle] || 'تم تغيير نمط الكروت بنجاح');
-      }
+      updateAppearancePreview();
+      if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + targetStyle);
     }
 
 
-    
     // تبديل تبويبات بورصة الذهب والعملات (Zero-Scroll 3 Tabs)
     function switchGoldDrawerTab(tabName) {
       const tabs = ['rates', 'calc', 'chart'];
