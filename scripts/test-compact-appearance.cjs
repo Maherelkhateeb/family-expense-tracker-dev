@@ -16,6 +16,8 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
       const response=await page.goto(URL,{waitUntil:'domcontentloaded',timeout:45000});
       assert.ok(response?.ok(),'App page failed HTTP '+response?.status());
       await page.waitForFunction(()=>document.querySelector('#settingsSec_appearance')?.dataset.compactReady==='true',{timeout:20000});
+      await page.evaluate(()=>window.openSettingsModal());
+      await page.locator('#settingsModal').waitFor({state:'visible',timeout:20000});
       const initial=await page.evaluate(()=>{
         const root=document.querySelector('#settingsSec_appearance');
         const accordions=Array.from(root.querySelectorAll('.compact-appearance-section'));
@@ -40,9 +42,7 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
       assert.ok(initial.contentWidth<=initial.width+2,'Appearance panel horizontal overflow');
       assert.ok(initial.scrollWidth<=initial.viewportWidth+2,'Document horizontal overflow');
 
-      // Opens the genuine settings modal (isolated blank profile; no user data).
-      await page.evaluate(()=>window.openSettingsModal());
-      await page.locator('#settingsModal').waitFor({state:'visible',timeout:20000});
+      // Genuine settings modal in an isolated blank profile, with no user data.
       await page.screenshot({path:'screenshots/'+size.name+'-closed.png',fullPage:false});
       for(const name of ['colors','icons','font','cards']){
         const toggle=page.locator('#compactAppearanceToggle-'+name);
