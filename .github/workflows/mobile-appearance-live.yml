@@ -1,0 +1,42 @@
+name: Mobile appearance - live browser smoke
+
+on:
+  push:
+    branches:
+      - qa/mobile-appearance-smoke
+    paths:
+      - scripts/test-mobile-appearance.cjs
+      - .github/workflows/mobile-appearance-live.yml
+  pull_request:
+    paths:
+      - scripts/test-mobile-appearance.cjs
+      - .github/workflows/mobile-appearance-live.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-mobile-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run mobile and desktop browser checks
+        run: |
+          mkdir -p screenshots
+          node scripts/test-mobile-appearance.cjs
+      - name: Save screenshots for visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-appearance-screenshots
+          path: screenshots/*.png
+          if-no-files-found: ignore
