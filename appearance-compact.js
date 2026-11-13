@@ -175,3 +175,33 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true});
   else install();
 })();
+
+
+/* Keep generated category labels legible after switching light/dark mode.
+   The legacy renderer sets color with inline !important, which ordinary CSS
+   cannot override; recolor only these labels without touching amounts/data. */
+(function () {
+  'use strict';
+  function startCategoryContrastSync() {
+    var grid = document.querySelector('#viewExpenses .categories-monefy-grid');
+    if (!grid || grid.dataset.contrastSync === 'true') return;
+    grid.dataset.contrastSync = 'true';
+    function refresh() {
+      var color = document.body.classList.contains('light-theme') ? '#142033' : '#ffffff';
+      grid.querySelectorAll('.cat-card-top-half .cat-label-text').forEach(function (label) {
+        label.style.setProperty('color', color, 'important');
+        label.style.setProperty('text-shadow', 'none', 'important');
+      });
+    }
+    new MutationObserver(refresh).observe(grid, { childList: true, subtree: true });
+    new MutationObserver(refresh).observe(document.body, {
+      attributes: true, attributeFilter: ['class', 'data-color-mode']
+    });
+    refresh();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startCategoryContrastSync, { once: true });
+  } else {
+    startCategoryContrastSync();
+  }
+})();
