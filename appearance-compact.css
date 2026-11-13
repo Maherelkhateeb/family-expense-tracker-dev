@@ -202,3 +202,116 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 
 /* Avoid dark-to-light background interpolation that briefly hides amounts. */
 #appFrame #viewExpenses .cat-card .cat-card-bottom-half { transition: none !important; }
+
+
+/* 2026-11-13: complete rows with 10 choices; no orphan buttons or blank cells.
+   Three / three / four palettes and four / three / three icon colors. */
+#settingsSec_appearance .appearance-palette-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option {
+  grid-column: span 4;
+  min-width: 0 !important;
+  min-height: 44px !important;
+  justify-content: center !important;
+  flex-wrap: wrap;
+  padding: 5px 3px !important;
+  text-align: center !important;
+  overflow-wrap: anywhere;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option:nth-child(n+7) {
+  grid-column: span 3;
+}
+#settingsSec_appearance .appearance-icon-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+}
+#settingsSec_appearance .appearance-icon-grid > .icon-theme-pill {
+  grid-column: span 3;
+  min-width: 0 !important;
+  overflow-wrap: anywhere;
+  min-height: 42px !important;
+}
+#settingsSec_appearance .appearance-icon-grid > .icon-theme-pill:nth-child(n+5) {
+  grid-column: span 4;
+}
+/* On narrow phones keep two equal columns (five fully occupied rows). */
+@media (max-width: 365px) {
+  #settingsSec_appearance .appearance-palette-grid,
+  #settingsSec_appearance .appearance-icon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #settingsSec_appearance .appearance-palette-grid > .theme-pill-option,
+  #settingsSec_appearance .appearance-icon-grid > .icon-theme-pill {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Readable expense categories in every user palette, font and card style.
+   Accent/icon colors stay customizable. Neutral, opaque surfaces prevent a
+   vivid top gradient and dark amount strip from hiding the financial figures. */
+body.light-theme #viewExpenses .cat-card .cat-card-top-half {
+  background: #eaf1ff !important;
+  background-image: none !important;
+}
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-top-half {
+  background: #20345b !important;
+  background-image: none !important;
+}
+body.light-theme #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #f8fafc !important;
+  background-image: none !important;
+  border-top-color: #cbd5e1 !important;
+}
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #101e36 !important;
+  background-image: none !important;
+  border-top-color: #465b7b !important;
+}
+body.light-theme #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body.light-theme #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val * {
+  color: #273449 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important;
+}
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val * {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-shadow: none !important;
+}
+body.light-theme #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body.light-theme #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val * {
+  color: #a61932 !important;
+}
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body:not(.light-theme) #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val * {
+  color: #ff9aa9 !important;
+}
+#viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val {
+  font-weight: 900 !important;
+  min-height: 20px;
+  align-items: center !important;
+}
+
+/* Keep the inactive bottom-navigation labels readable in light mode. */
+body.light-theme #appBottomNav .nav-tab-item:not(.active) span,
+body.light-theme #appBottomNav .nav-tab-item:not(.active) svg {
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+body.light-theme #appBottomNav .nav-tab-item.active {
+  background: #e0f2fe !important;
+  border-color: #0284c7 !important;
+}
+body.light-theme #appBottomNav .nav-tab-item.active span,
+body.light-theme #appBottomNav .nav-tab-item.active svg {
+  color: #075985 !important;
+  opacity: 1 !important;
+}
+body:not(.light-theme) #appBottomNav .nav-tab-item:not(.active) span,
+body:not(.light-theme) #appBottomNav .nav-tab-item:not(.active) svg {
+  color: #dbeafe !important;
+  opacity: 1 !important;
+}
