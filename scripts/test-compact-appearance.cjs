@@ -55,6 +55,11 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
       // options, at every viewport and in both light and dark modes.
       for (const mode of ['light','dark']) {
         await page.evaluate(mode=>window.setAppColorMode(mode),mode);
+        await page.waitForFunction(mode=>{
+          const footer=document.querySelector('#viewExpenses .cat-card-bottom-half');
+          return footer && footer.dataset.expenseContrastMode?.startsWith(mode+':')
+            && footer.style.getPropertyPriority('background')==='important';
+        },mode,{timeout:15000});
         const checked=await page.evaluate(()=>{
           const selectors=['.appearance-palette-grid','.appearance-icon-grid'];
           const report={};
