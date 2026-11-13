@@ -132,3 +132,70 @@
 
 /* Respect hidden typography label despite its legacy inline display style. */
 #settingsSec_appearance .compact-appearance-font-panel > div:first-child > div:first-child[hidden] { display: none !important; }
+
+
+/* 2026-11-13: Fill incomplete last rows without fake blank cells.
+   Ten palettes: 3 + 3 + 2 + 2. Ten icons: 4 + 4 + 2.
+   Keep options, click handlers, and compact accordion height intact. */
+#settingsSec_appearance .appearance-palette-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option {
+  grid-column: span 2;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option:nth-child(n+7) {
+  grid-column: span 3;
+}
+#settingsSec_appearance .appearance-icon-grid > .icon-theme-pill:nth-last-child(-n+2) {
+  grid-column: span 2;
+}
+@media (max-width: 365px) {
+  #settingsSec_appearance .appearance-palette-grid,
+  #settingsSec_appearance .appearance-icon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #settingsSec_appearance .appearance-palette-grid > .theme-pill-option,
+  #settingsSec_appearance .appearance-icon-grid > .icon-theme-pill {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Financial numerals stay readable regardless of the chosen palette.
+   Fixes the dark amount-on-dark footer seen on light-theme expense cards.
+   Only touches the expense-category amount strip, not user data or branding. */
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #f8fafc !important;
+  border-top-color: #cbd5e1 !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #111e34 !important;
+  border-top-color: #475569 !important;
+}
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-number-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-currency-label,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-sign {
+  color: #172033 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-number-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-currency-label,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-sign {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-number-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-currency-label,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-sign {
+  color: #b91c1c !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-number-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-currency-label,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-sign {
+  color: #fecaca !important;
+}
