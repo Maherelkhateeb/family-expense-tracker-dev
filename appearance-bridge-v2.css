@@ -76,33 +76,33 @@ html[data-appearance-v2] body .settings-tab-btn.active {
   color: var(--v2-accent-text) !important;
   border-color: var(--v2-accent) !important;
 }
-html[data-appearance-v2][data-appearance-card-style="classic"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="classic"] body .summary-card {
-  border-radius: 16px !important; box-shadow: 0 2px 10px rgba(0,0,0,.13) !important;
+/* Apply all six card shapes to ALL dashboard, transaction and settings surfaces. */
+html[data-appearance-v2] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) {
+  background: var(--v2-card) !important;
+  color: var(--v2-card-text) !important;
+  border-color: var(--v2-border) !important;
+  text-shadow: none !important;
 }
-html[data-appearance-v2][data-appearance-card-style="facebook"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="facebook"] body .summary-card {
-  border-radius: 12px !important; box-shadow: 0 1px 4px rgba(0,0,0,.10) !important;
+html[data-appearance-v2] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) :is(.cockpit-hero-value, .summary-title, .flow-amount, .tx-label-name, .chart-main-heading, .settings-live-preview-value, .stat-value, .kpi-value, .balance-value, .amount-value) {
+  color: var(--v2-card-text) !important;
+  text-shadow: none !important;
 }
-html[data-appearance-v2][data-appearance-card-style="modern"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="modern"] body .summary-card {
-  border-radius: 22px !important; box-shadow: 0 8px 24px rgba(0,0,0,.15) !important;
+html[data-appearance-v2] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) :is(.tx-sub-info, .chart-sub-heading, .summary-subtitle, .wallet-subtitle) {
+  color: var(--v2-muted) !important;
 }
-html[data-appearance-v2][data-appearance-card-style="flat"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="flat"] body .summary-card {
-  border-radius: 8px !important; box-shadow: none !important;
+html[data-appearance-v2] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) :is(.card-icon, .stat-icon, .kpi-icon, .summary-icon, .cockpit-icon) {
+  color: var(--v2-card-icon) !important;
 }
-html[data-appearance-v2][data-appearance-card-style="gradient"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="gradient"] body .summary-card {
-  background: linear-gradient(135deg, var(--v2-card), var(--v2-card-alt)) !important;
-  border-radius: 18px !important;
+html[data-appearance-v2] body .app-header :is(.subheading, .subtitle),
+html[data-appearance-v2] body .app-bottom-nav :is(.subheading, .subtitle) {
+  color: var(--v2-page-muted) !important;
 }
-html[data-appearance-v2][data-appearance-card-style="luxury"] body .app-card-panel,
-html[data-appearance-v2][data-appearance-card-style="luxury"] body .summary-card {
-  border-radius: 20px !important;
-  border: 1px solid var(--v2-accent) !important;
-  box-shadow: 0 6px 20px rgba(0,0,0,.16) !important;
-}
+html[data-appearance-v2][data-appearance-card-style="classic"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { border-radius: 16px !important; box-shadow: 0 2px 10px rgba(0,0,0,.13) !important; }
+html[data-appearance-v2][data-appearance-card-style="facebook"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { border-radius: 12px !important; box-shadow: 0 1px 4px rgba(0,0,0,.10) !important; }
+html[data-appearance-v2][data-appearance-card-style="modern"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { border-radius: 22px !important; box-shadow: 0 8px 24px rgba(0,0,0,.15) !important; }
+html[data-appearance-v2][data-appearance-card-style="flat"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { border-radius: 8px !important; box-shadow: none !important; }
+html[data-appearance-v2][data-appearance-card-style="gradient"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { background: linear-gradient(135deg, var(--v2-card), var(--v2-card-alt)) !important; border-radius: 18px !important; }
+html[data-appearance-v2][data-appearance-card-style="luxury"] body :is(.app-card-panel, .modal-content-card, .settings-unified-section, .settings-control-tile, .settings-user-card, .history-card, .monefy-central-card, .chart-block, .charts-visual-section, .summary-card, .ops-tx-card-lux, .ops-tx-card-clean, .kpi-master-wealth-cockpit, .executive-cockpit-card, .cockpit-hero-side, .stat-capsule-twin, .recent-tx-card, .commitment-card-lux, .exp-cockpit-card, .tx-row, .cat-box, .cat-card, .grid-cat-card, .category-card, #topKpiThreeStrip) { border-radius: 20px !important; border: 1px solid var(--v2-card-accent) !important; box-shadow: 0 6px 20px rgba(0,0,0,.16) !important; }
 html[data-appearance-v2] .family-appearance-choice {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   min-height: 36px; padding: 7px 9px; border-radius: 10px; cursor: pointer;
