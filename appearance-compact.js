@@ -123,3 +123,54 @@
     initCompactAppearance();
   }
 }());
+
+
+/* Contrast guard for dynamically rendered expense amounts.
+ * The app rebuilds and recolors category cards when settings change.
+ * Reassert accessible amount styles after those updates, without touching data. */
+(function () {
+  'use strict';
+  function install() {
+    const page = document.getElementById('viewExpenses');
+    if (!page || page.dataset.expenseContrastGuard === '1') return;
+    page.dataset.expenseContrastGuard = '1';
+    let queued = false;
+    function apply() {
+      queued = false;
+      const light = document.body.classList.contains('light-theme');
+      page.querySelectorAll('.cat-card-bottom-half').forEach(footer => {
+        const spent = footer.classList.contains('has-spent');
+        const key = (light ? 'light' : 'dark') + ':' + (spent ? 'spent' : 'zero');
+        const bg = light ? '#f8fafc' : '#111e34';
+        const fg = spent ? (light ? '#b91c1c' : '#fecaca') : (light ? '#172033' : '#f8fafc');
+        const fresh = footer.dataset.expenseContrastMode !== key;
+        if (fresh || footer.style.getPropertyPriority('background') !== 'important') {
+          footer.style.setProperty('background', bg, 'important');
+          footer.style.setProperty('border-top-color', light ? '#cbd5e1' : '#475569', 'important');
+        }
+        footer.dataset.expenseContrastMode = key;
+        footer.querySelectorAll('.cat-amount-val, .cat-number-val, .cat-currency-label, .cat-amount-sign').forEach(el => {
+          if (fresh || el.style.getPropertyPriority('color') !== 'important') {
+            el.style.setProperty('color', fg, 'important');
+            el.style.setProperty('opacity', '1', 'important');
+          }
+        });
+      });
+    }
+    function schedule() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(apply);
+    }
+    new MutationObserver(schedule).observe(page, {
+      childList: true, subtree: true, attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+    new MutationObserver(schedule).observe(document.body, {
+      attributes: true, attributeFilter: ['class', 'data-color-mode']
+    });
+    apply();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true});
+  else install();
+})();
