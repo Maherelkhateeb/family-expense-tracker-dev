@@ -267,7 +267,7 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
   min-height: 27px !important;
   padding: 2px 1px !important;
   border-radius: 7px !important;
-  font-size: clamp(.50rem, 2.15vw, .64rem) !important;
+  font-size: clamp(9px, 2.35vw, 10.5px) !important;
   font-weight: 800 !important;
   line-height: 1.15 !important;
   white-space: nowrap !important;
@@ -288,7 +288,7 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
   min-width: 0 !important;
   padding: 3px 1px !important;
   border-radius: 7px !important;
-  font-size: clamp(.51rem, 2.1vw, .68rem) !important;
+  font-size: clamp(9px, 2.5vw, 11px) !important;
   font-weight: 800 !important;
   white-space: nowrap !important;
   letter-spacing: -.16px;
@@ -338,7 +338,7 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 #summaryLeftDrawer .summary-section { margin: 0 !important; }
 @media (max-width: 375px) {
   #summaryLeftDrawer .summary-rebuilt-controls { padding-inline: 6px !important; }
-  #summaryLeftDrawer .summary-member-selector .summary-member-btn { font-size: .51rem !important; }
+  #summaryLeftDrawer .summary-member-selector .summary-member-btn { font-size: 9px !important; }
   #summaryLeftDrawer .summary-period-grid .summary-period-btn { font-size: .52rem !important; }
 }
 
