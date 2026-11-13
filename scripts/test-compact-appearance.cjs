@@ -50,6 +50,62 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
         assert.equal(await toggle.getAttribute('aria-expanded'),'true');
         assert.equal(await page.locator('#compactAppearancePanel-'+name).getAttribute('hidden'),null);
       }
+
+      // Prevent the exact blank-tail rows reported by the user in appearance
+      // options, at every viewport and in both light and dark modes.
+      for (const mode of ['light','dark']) {
+        await page.evaluate(mode=>window.setAppColorMode(mode),mode);
+        const checked=await page.evaluate(()=>{
+          const selectors=['.appearance-palette-grid','.appearance-icon-grid'];
+          const report={};
+          for(const selector of selectors){
+            const grid=document.querySelector('#settingsSec_appearance '+selector);
+            const bounds=grid.getBoundingClientRect();
+            const elements=Array.from(grid.querySelectorAll(':scope > button'));
+            const rows=new Map();
+            for(const node of elements){
+              const rect=node.getBoundingClientRect();
+              const key=Math.round(rect.top);
+              if(!rows.has(key))rows.set(key,[]);
+              rows.get(key).push(rect);
+            }
+            report[selector]={
+              count:elements.length,
+              layout:Array.from(rows.values()).map(items=>items.length),
+              blankEdges:Array.from(rows.values()).map(items=>{
+                const left=Math.min(...items.map(r=>r.left));
+                const right=Math.max(...items.map(r=>r.right));
+                return Math.round(Math.max(0,left-bounds.left,right-bounds.right));
+              }),
+              noOverflow:elements.every(node=>{
+                const b=node.getBoundingClientRect();
+                return b.left>=bounds.left-2 && b.right<=bounds.right+2;
+              })
+            };
+          }
+          const footer=document.querySelector('#viewExpenses .cat-card-bottom-half');
+          const value=footer?.querySelector('.cat-number-val');
+          function rgb(color){const m=color.match(/rgba?\(([^)]+)\)/);return m?m[1].split(',').slice(0,3).map(Number):null}
+          function lum(values){const c=values.map(x=>{x/=255;return x<=.04045?x/12.92:((x+.055)/1.055)**2.4});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+          function contrast(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+          report.footerCount=document.querySelectorAll('#viewExpenses .cat-card-bottom-half .cat-number-val').length;
+          report.footerRatio=value&&footer?contrast(rgb(getComputedStyle(value).color),rgb(getComputedStyle(footer).backgroundColor)):0;
+          report.footerTextColor=value?getComputedStyle(value).color:'missing';
+          report.footerBackground=footer?getComputedStyle(footer).backgroundColor:'missing';
+          return report;
+        });
+        console.log('GRID_GAPS '+size.name+' '+mode+' '+JSON.stringify(checked));
+        for (const selector of ['.appearance-palette-grid','.appearance-icon-grid']) {
+          assert.equal(checked[selector].count,10,selector+' options changed');
+          assert.ok(checked[selector].noOverflow,selector+' overflow');
+          assert.ok(checked[selector].blankEdges.every(gap=>gap<=3),
+            selector+' contains blank partial rows '+JSON.stringify(checked[selector]));
+        }
+        assert.ok(checked.footerCount>0,'Expense category values are missing');
+        assert.ok(checked.footerRatio>=4.5,
+          'Expense amount unreadable ('+mode+'): '+JSON.stringify(checked));
+      }
+
       await page.screenshot({path:'screenshots/'+size.name+'-open.png',fullPage:false});
 
       // Verify settings continue to work after moving the original controls.
