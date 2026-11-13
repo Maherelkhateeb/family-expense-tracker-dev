@@ -3,8 +3,10 @@ name: Mobile appearance - live browser smoke
 on:
   push:
     branches:
+      - main
       - qa/mobile-appearance-smoke
     paths:
+      - index.html
       - scripts/test-mobile-appearance.cjs
       - .github/workflows/mobile-appearance-live.yml
   pull_request:
