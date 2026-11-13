@@ -7,22 +7,16 @@
     ["facebook", "فيسبوك", "#0866FF"],
     ["emerald", "زمردي", "#047857"],
     ["violet", "بنفسجي", "#7C3AED"],
-    ["teal", "تركواز", "#0F766E"],
-    ["orange", "برتقالي", "#C2410C"],
-    ["pink", "وردي", "#BE185D"],
-    ["navy", "كحلي", "#1E40AF"],
-    ["gold", "ذهبي", "#92400E"],
-    ["red", "أحمر", "#B91C1C"],
-    ["slate", "رمادي", "#475569"]
+    ["rose", "وردي", "#BE185D"],
+    ["gold", "ذهبي", "#B45309"],
+    ["slate", "رمادي أنيق", "#475569"]
   ].map(([id, label, primary]) => ({ id, label, primary }));
-  const cardStyles = ["flat", "raised", "outlined", "soft", "glass", "gradient", "side-stripe", "top-accent", "rounded", "minimal"];
+  const cardStyles = ["classic", "facebook", "modern", "flat", "gradient", "luxury"];
   const cardColors = [
     { id: "auto", label: "تلقائي" },
-    { id: "blue", label: "أزرق هادئ", background: "#DBEAFE", accent: "#1D4ED8" },
-    { id: "green", label: "أخضر", background: "#D1FAE5", accent: "#047857" },
-    { id: "purple", label: "بنفسجي", background: "#EDE9FE", accent: "#6D28D9" },
-    { id: "sand", label: "رملي", background: "#FEF3C7", accent: "#92400E" },
-    { id: "rose", label: "وردي هادئ", background: "#FCE7F3", accent: "#BE185D" }
+    { id: "soft", label: "هادئ", background: "#E8F0FE", accent: "#1D4ED8" },
+    { id: "colorful", label: "ملون", background: "#EDE9FE", accent: "#6D28D9" },
+    { id: "custom", label: "تخصيص يدوي" }
   ];
   function rgb(hex) {
     const h = hex.replace("#", "");
@@ -40,14 +34,14 @@
   function readableText(background) {
     return contrast(background, "#FFFFFF") >= contrast(background, "#111827") ? "#FFFFFF" : "#111827";
   }
-  function resolve({ palette = "facebook", cardStyle = "raised", cardColor = "auto", mode = "light" } = {}) {
+  function resolve({ palette = "facebook", cardStyle = "facebook", cardColor = "auto", mode = "light" } = {}) {
     const p = palettes.find(x => x.id === palette) || palettes[0];
     const c = cardColors.find(x => x.id === cardColor) || cardColors[0];
     const dark = mode === "dark";
     const background = c.background || (dark ? "#242526" : "#FFFFFF");
     const accent = c.accent || p.primary;
     return {
-      palette: p.id, cardStyle: cardStyles.includes(cardStyle) ? cardStyle : "raised",
+      palette: p.id, cardStyle: cardStyles.includes(cardStyle) ? cardStyle : "facebook",
       cardColor: c.id, mode: dark ? "dark" : "light",
       primary: p.primary, pageBackground: dark ? "#18191A" : "#F0F2F5",
       cardBackground: background, cardText: readableText(background),
