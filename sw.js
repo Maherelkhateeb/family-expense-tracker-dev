@@ -1,5 +1,5 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = "family-finance-v5.3.36-202611141209";
+const CACHE_NAME = "family-finance-v5.3.36-202611141209-alert-fix";
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -53,7 +53,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
 
   // Network first for index.html, version.json, market_rates.json to ensure instant updates
-  if (url.pathname.endsWith('appearance-compact.css') || url.pathname.endsWith('appearance-compact.js') || url.pathname.endsWith('index.html') || url.pathname.endsWith('version.json') || url.pathname.endsWith('market_rates.json') || url.pathname === '/' || url.pathname.endsWith('/')) {
+  if (url.pathname.endsWith('family-alerts.js') || url.pathname.endsWith('family-alerts.css') || url.pathname.endsWith('appearance-compact.css') || url.pathname.endsWith('appearance-compact.js') || url.pathname.endsWith('index.html') || url.pathname.endsWith('version.json') || url.pathname.endsWith('market_rates.json') || url.pathname === '/' || url.pathname.endsWith('/')) {
     e.respondWith(
       fetch(e.request, { cache: 'no-cache' }).then((res) => {
         const copy = res.clone();
