@@ -158,7 +158,7 @@ body.light-theme #appFrame #viewOperations {
   --task-text: #f3f7fc; --task-muted: #a9bbd0; --task-accent: #a5e3f8;
   --task-active: #153c52; --task-save: #08785d;
   background: var(--task-panel) !important; border: 1px solid var(--task-line) !important;
-  border-radius: 14px !important; color: var(--task-text); padding: 12px !important; gap: 10px !important;
+  border-radius: 14px !important; color: var(--task-text); padding: 9px !important; gap: 7px !important;
   box-shadow: none !important;
 }
 body.light-theme #tasksUnifiedCreatorCard {
@@ -273,4 +273,30 @@ body.light-theme #secReqWallets, #walletPrintSheet {
   body.printing-wallet-statement > :not(#walletPrintSheet) { display: none !important; }
   body.printing-wallet-statement #walletPrintSheet { display: block; color: var(--wallet-text); background: #fff; padding: 12px; }
   #walletPrintSheet tr { break-inside: avoid; }
+}
+
+#tasksUnifiedCreatorCard .task-creator-section { padding: 7px; }
+#tasksUnifiedCreatorCard .task-creator-classification { gap: 5px; }
+#tasksUnifiedCreatorCard .task-creator-appointment {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 5px 7px; align-items: center;
+}
+#tasksUnifiedCreatorCard #taskCreatorAppointmentHeading { grid-column: 1; grid-row: 1; }
+#tasksUnifiedCreatorCard .task-creator-picker-button { grid-column: 2; grid-row: 1; min-height: 34px; width: auto; }
+#tasksUnifiedCreatorCard .task-creator-schedule-grid { grid-column: 1 / -1; gap: 5px; }
+#tasksUnifiedCreatorCard .task-creator-schedule-group { gap: 0; }
+#tasksUnifiedCreatorCard :is(.task-creator-date-presets,.task-creator-time-presets) { gap: 4px; }
+#tasksUnifiedCreatorCard :is(.btn-unified-tag-chip,.btn-inline-dt-preset,.btn-inline-member-chip,.task-creator-attachment-button) {
+  width: 100%; min-height: 34px; padding-inline: 3px !important;
+}
+#tasksUnifiedCreatorCard .task-creator-field { gap: 3px; }
+#tasksUnifiedCreatorCard .task-creator-input-meta:not(:has(.task-creator-title-counter)):empty { display: none; }
+#tasksUnifiedCreatorCard .task-creator-subtasks summary { min-height: 36px; }
+@media (min-width: 390px) and (max-width: 730px) {
+  #tasksUnifiedCreatorCard .task-creator-category-grid { grid-template-columns: repeat(5,minmax(0,1fr)); }
+}
+@media (max-width: 560px) {
+  #tasksUnifiedCreatorCard .task-creator-assignment-grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 6px; }
+  #tasksUnifiedCreatorCard .task-creator-member-list { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 3px; }
+  #tasksUnifiedCreatorCard .task-creator-fields { grid-template-columns: minmax(0,1.55fr) minmax(0,1fr); gap: 6px; }
+  #tasksUnifiedCreatorCard .task-creator-control { padding-inline: 6px; min-width: 0; }
 }

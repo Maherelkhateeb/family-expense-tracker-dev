@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.28';
-    var APP_BUILD_ID = 202611141115;
+    var APP_VERSION = 'v5.3.29';
+    var APP_BUILD_ID = 202611141130;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15053,7 +15053,7 @@
   <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261114-settings-open">
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114">
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18083,8 +18083,8 @@
           <div class="task-creator-fields">
             <label class="task-creator-field">
               <span class="task-creator-field-label"><i class="fa-solid fa-align-right" style="color: #a855f7;"></i> عنوان المهمة <span style="color:#fda4af;">*</span></span>
-              <input type="text" id="quickTaskTitleInput" class="task-creator-control" placeholder="مثال: سداد فاتورة الكهرباء" maxlength="120" autocomplete="off" aria-required="true" aria-invalid="false" aria-describedby="quickTaskTitleHint quickTaskTitleCounter quickTaskTitleError" oninput="updateQuickTaskTitleFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickTaskAdd()}">
-              <span class="task-creator-input-meta"><span id="quickTaskTitleHint">اكتب إجراءً واضحًا يسهل تنفيذه.</span><span id="quickTaskTitleCounter" class="task-creator-title-counter">0 / 120</span></span>
+              <input type="text" id="quickTaskTitleInput" class="task-creator-control" placeholder="مثال: سداد فاتورة الكهرباء" maxlength="120" autocomplete="off" aria-required="true" aria-invalid="false" aria-describedby="quickTaskTitleCounter quickTaskTitleError" oninput="updateQuickTaskTitleFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();handleQuickTaskAdd()}">
+              <span class="task-creator-input-meta"><span id="quickTaskTitleCounter" class="task-creator-title-counter">0 / 120</span></span>
               <span id="quickTaskTitleError" class="task-creator-title-error" role="alert" aria-live="polite"></span>
             </label>
             <label class="task-creator-field">
@@ -18093,7 +18093,7 @@
                 <option value="">بدون مشروع</option>
                 <option value="__new_project__">＋ إنشاء مشروع جديد</option>
               </select>
-              <span class="task-creator-input-meta"><span>اربط المهمة بمشروع لمتابعة إنجازه.</span></span>
+
             </label>
           </div>
           <div id="quickTaskProjectQuickAdd" class="task-creator-project-quick-add" aria-label="إنشاء مشروع للمهمة">
@@ -18109,29 +18109,26 @@
               <span id="taskCreatorCategoryHeading" class="task-creator-section-title"><i class="fa-solid fa-tags" style="color: #38bdf8;" aria-hidden="true"></i> التصنيف</span>
 
             </div>
-            <div id="unifiedTaskTagChipsList" class="task-creator-category-grid" role="group" aria-label="تصنيف المهمة">
-              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" aria-pressed="false" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
-              <button type="button" class="btn-unified-tag-chip active" data-tag="general" aria-pressed="true" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="planned" aria-pressed="false" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="important" aria-pressed="false" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" aria-pressed="false" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="home" aria-pressed="false" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="bills" aria-pressed="false" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="health" aria-pressed="false" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
-              <button type="button" class="btn-unified-tag-chip" data-tag="work" aria-pressed="false" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
+            <div id="unifiedTaskTagChipsList" class="task-creator-category-grid" role="group" aria-label="تصنيفات المهمة، يمكن اختيار أكثر من تصنيف">
+              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" aria-pressed="false" onclick="selectTaskInlineTag('my_day')">☀️ يومي</button>
+              <button type="button" class="btn-unified-tag-chip active" data-tag="general" aria-pressed="true" onclick="selectTaskInlineTag('general')">🌐 عامة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="planned" aria-pressed="false" onclick="selectTaskInlineTag('planned')">📅 مجدولة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="important" aria-pressed="false" onclick="selectTaskInlineTag('important')" style="border-color: rgba(244,63,94,0.35);">⭐ عاجلة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" aria-pressed="false" onclick="selectTaskInlineTag('shopping')">🛒 مشتريات</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="home" aria-pressed="false" onclick="selectTaskInlineTag('home')">🛋️ منزلية</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="bills" aria-pressed="false" onclick="selectTaskInlineTag('bills')">⚡ فواتير</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="health" aria-pressed="false" onclick="selectTaskInlineTag('health')">🩺 صحة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="work" aria-pressed="false" onclick="selectTaskInlineTag('work')">💼 عمل</button>
             </div>
           </section>
 
           <!-- 3. موعد واضح في عمودين متوازنين -->
           <section class="task-creator-section task-creator-appointment" aria-labelledby="taskCreatorAppointmentHeading">
-            <div class="task-creator-section-heading">
-              <span id="taskCreatorAppointmentHeading" class="task-creator-section-title"><i class="fa-regular fa-calendar-check" style="color: #c084fc;" aria-hidden="true"></i> الموعد</span>
-
-            </div>
+            <span id="taskCreatorAppointmentHeading" class="task-creator-section-title">الموعد</span>
 
             <div class="task-creator-schedule-grid">
-              <section class="task-creator-schedule-group" aria-labelledby="taskCreatorDateLabel">
-                <span id="taskCreatorDateLabel" class="task-creator-group-label"><i class="fa-regular fa-calendar" aria-hidden="true"></i> التاريخ</span>
+              <section class="task-creator-schedule-group" aria-label="التاريخ">
+
                 <div class="task-creator-date-presets" id="inlineDatePresetGroup" role="group" aria-label="اختيار تاريخ المهمة">
                   <button type="button" class="btn-inline-dt-preset active" data-preset="today" aria-pressed="true" onclick="selectInlineDatePreset('today', this)">اليوم</button>
                   <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" aria-pressed="false" onclick="selectInlineDatePreset('tomorrow', this)">غدًا</button>
@@ -18140,8 +18137,8 @@
                 <input type="date" id="inlineTaskDueDate" hidden onchange="onInlineDateCustomChange(this.value)">
               </section>
 
-              <section class="task-creator-schedule-group" aria-labelledby="taskCreatorTimeLabel">
-                <span id="taskCreatorTimeLabel" class="task-creator-group-label"><i class="fa-regular fa-clock" aria-hidden="true"></i> الوقت</span>
+              <section class="task-creator-schedule-group" aria-label="الوقت">
+
                 <div class="task-creator-time-presets" id="inlineTimePresetGroup" role="group" aria-label="اختيار وقت المهمة">
                   <button type="button" class="btn-inline-dt-preset" data-time="09:00" aria-pressed="false" onclick="selectInlineTimePreset('09:00', this)">09:00 ص</button>
                   <button type="button" class="btn-inline-dt-preset" data-time="13:00" aria-pressed="false" onclick="selectInlineTimePreset('13:00', this)">01:00 م</button>
@@ -18153,7 +18150,7 @@
               </section>
             </div>
 
-            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button task-creator-picker-button" onclick="openTaskDateTimePickerModal('inline')"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i> تخصيص التاريخ والوقت والمنطقة الزمنية</button>
+            <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button task-creator-picker-button" onclick="openTaskDateTimePickerModal('inline')"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i> تخصيص الموعد</button>
 
             <input type="hidden" id="inlineTaskDueSecond" value="00">
             <input type="hidden" id="inlineTaskDueTimezone">
@@ -31832,7 +31829,12 @@ function updateTaskDateTimeTargetDisplay(target) {
   const offset = getTaskTimeZoneOffsetText(zone, values.date, values.time, values.second);
   fields.button.textContent = target === 'quick' ? `📅 ${dateText}${values.time ? ` · ${timeText}` : ''}` : `📅 ${dateText}${values.time ? ` • ${timeText}` : ''} · ${offset}`;
   fields.button.title = `${formatTaskPickerDate(values.date)}${values.time ? ` ${timeText}` : ''} · ${zone}`;
-  if (target === 'inline') fields.button.textContent = `تخصيص الموعد · ${fields.button.textContent}`;
+  if (target === 'inline') {
+    const presetDate = [...document.querySelectorAll('#inlineDatePresetGroup button')].some(button => button.getAttribute('aria-pressed') === 'true');
+    const presetTime = [...document.querySelectorAll('#inlineTimePresetGroup button')].some(button => button.dataset.time === values.time);
+    fields.button.textContent = presetDate && presetTime && zone === getDefaultTaskTimezone()
+      ? 'تخصيص الموعد' : `تخصيص · ${dateText}${values.time ? ` · ${timeText}` : ''} · ${offset}`;
+  }
 }
 
 function populateTaskTimezoneSelect(selectedZone) {
@@ -32324,54 +32326,32 @@ function clearTaskPendingPhoto() {
    وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.4)
    دمج بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة
    ========================================================== */
-window._selectedTaskTag = 'general';
-window._selectedTaskPriority = 'medium';
+let selectedTaskTags = new Set(['general']);
 window._selectedTaskMember = 'البيت';
 
-function selectTaskInlineTag(tagKey, element) {
-  window._selectedTaskTag = tagKey;
-  const chips = document.querySelectorAll('#unifiedTaskTagChipsList .btn-unified-tag-chip');
-  chips.forEach(c => {
-    const selected = c === element;
-    c.classList.toggle('active', selected);
-    c.setAttribute('aria-pressed', String(selected));
+function syncTaskTagChoices() {
+  document.querySelectorAll('#unifiedTaskTagChipsList [data-tag]').forEach(chip => {
+    const selected = selectedTaskTags.has(chip.dataset.tag);
+    chip.classList.toggle('active', selected);
+    chip.setAttribute('aria-pressed', String(selected));
   });
+}
 
-  const badge = document.getElementById('unifiedCreatorActiveTagBadge');
-  const tagLabels = {
-    'my_day': '☀️ يومي',
-    'general': '🌐 عامة',
-    'planned': '📅 مجدولة',
-    'important': '⭐ هامة / عاجلة',
-    'shopping': '🛒 مشتريات',
-    'home': '🛋️ منزلية',
-    'bills': '⚡ فواتير',
-    'health': '🩺 صحة',
-    'work': '💼 عمل'
-  };
-  if (badge) badge.textContent = tagLabels[tagKey] || tagKey;
-
-  const todayStr = getTaskDateInTimezone(document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone());
-  const dateInp = document.getElementById('inlineTaskDueDate');
-
-  if (tagKey === 'my_day') {
-    if (dateInp) dateInp.value = todayStr;
-    const todayBtn = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
-    if (todayBtn) selectInlineDatePreset('today', todayBtn);
-  } else if (tagKey === 'planned') {
-    if (dateInp && dateInp.value === todayStr) {
-      const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
-      dateInp.value = tomorrowStr;
-      const tmrwBtn = document.querySelector('#inlineDatePresetGroup [data-preset="tomorrow"]');
-      if (tmrwBtn) selectInlineDatePreset('tomorrow', tmrwBtn);
-    }
-  }
-
-  if (tagKey === 'important') {
-    window._selectedTaskPriority = 'high';
+function selectTaskInlineTag(tagKey) {
+  if (selectedTaskTags.has(tagKey)) {
+    selectedTaskTags.delete(tagKey);
   } else {
-    window._selectedTaskPriority = 'medium';
+    if (selectedTaskTags.size === 1 && selectedTaskTags.has('general')) selectedTaskTags.clear();
+    selectedTaskTags.add(tagKey);
   }
+  if (!selectedTaskTags.size) selectedTaskTags.add('general');
+  syncTaskTagChoices();
+}
+
+function getTaskTags(task) {
+  const saved = Array.isArray(task.tags) ? task.tags.filter(tag => typeof tag === 'string' && tag.trim()) : [];
+  const tags = saved.length ? saved : [task.tag || task.category || 'general'];
+  return [...new Set(tags.map(tag => tag === 'daily' ? 'my_day' : tag === 'scheduled' ? 'planned' : tag))];
 }
 
 function selectInlineDatePreset(preset, element) {
@@ -32636,8 +32616,8 @@ function resetUnifiedTaskForm() {
   if (projectHint) projectHint.style.display = 'none';
   clearQuickTaskDraftSubtasks();
 
-  const defaultTagBtn = document.querySelector('#unifiedTaskTagChipsList [data-tag="general"]');
-  if (defaultTagBtn) selectTaskInlineTag('general', defaultTagBtn);
+  selectedTaskTags = new Set(['general']);
+  syncTaskTagChoices();
 
   const defaultDateBtn = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
   if (defaultDateBtn) selectInlineDatePreset('today', defaultDateBtn);
@@ -32652,7 +32632,6 @@ function resetUnifiedTaskForm() {
 }
 
 function renderTaskTagBadge(task) {
-  const tagKey = task.tag || task.category || 'general';
   const tagConfigs = {
     'my_day': { label: '☀️ يومي', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)' },
     'general': { label: '🌐 عامة', color: '#c084fc', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' },
@@ -32664,8 +32643,10 @@ function renderTaskTagBadge(task) {
     'health': { label: '🩺 صحة', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.15)', border: 'rgba(6, 182, 212, 0.4)' },
     'work': { label: '💼 عمل', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.4)' },
   };
-  const cfg = tagConfigs[tagKey] || tagConfigs['general'];
-  return `<span style="font-size: 0.65rem; font-weight: 850; padding: 1px 7px; border-radius: 6px; color: ${cfg.color}; background: ${cfg.bg}; border: 1px solid ${cfg.border};">${cfg.label}</span>`;
+  return getTaskTags(task).map(tag => {
+    const cfg = Object.hasOwn(tagConfigs, tag) ? tagConfigs[tag] : tagConfigs.general;
+    return `<span style="font-size: 0.65rem; font-weight: 850; padding: 1px 7px; border-radius: 6px; color: ${cfg.color}; background: ${cfg.bg}; border: 1px solid ${cfg.border};">${cfg.label}</span>`;
+  }).join(' ');
 }
 
 window.selectTaskInlineTag = selectTaskInlineTag;
@@ -32878,9 +32859,10 @@ function handleQuickTaskAdd() {
     const dueTime = (timeInp && timeInp.value) ? timeInp.value : '';
     const dueSecond = dueTime && secondInp ? String(Number(secondInp.value) || 0).padStart(2, '0') : '00';
 
-    const tag = window._selectedTaskTag || 'general';
+    const tags = [...selectedTaskTags];
+    const tag = tags.find(value => value !== 'general') || 'general';
     const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
-    const priority = tag === 'important' ? 'high' : (window._selectedTaskPriority || 'medium');
+    const priority = tags.includes('important') ? 'high' : 'medium';
     const projectSelect = document.getElementById('quickTaskProjectSelect');
     const project = String(projectSelect && projectSelect.value || '').trim();
     const draftSubtasks = Array.isArray(window._quickTaskDraftSubtasks) ? window._quickTaskDraftSubtasks : [];
@@ -32893,7 +32875,8 @@ function handleQuickTaskAdd() {
       dueSecond: dueSecond,
       dueTimeZone: dueTimezone,
       dueAt: resolveTaskDateTimeInTimezone(dueDate, dueTime, dueSecond, dueTimezone) || null,
-      tag: tag,
+      tags,
+      tag,
       category: tag,
       project: project,
       assignedMember: member,
@@ -32962,7 +32945,9 @@ function updateTasksProductivityKPIs() {
 
   const catCounts = { all: total, shopping: 0, bills: 0, health: 0, home: 0, work: 0 };
   tasks.forEach(t => {
-    if (catCounts[t.category] !== undefined) catCounts[t.category]++;
+    getTaskTags(t).forEach(tag => {
+      if (tag !== 'all' && Object.hasOwn(catCounts, tag)) catCounts[tag]++;
+    });
   });
   ['All', 'Shopping', 'Bills', 'Health', 'Home', 'Work'].forEach(c => {
     const el = document.getElementById('catBadge' + c);
@@ -33153,13 +33138,13 @@ function renderTasksProList() {
   let tasks = getTodoTasks();
   // Apply Section Filter
   if (window.currentTaskSectionFilter === 'my_day') {
-    tasks = tasks.filter(isTaskDueTodayByDate);
+    tasks = tasks.filter(t => isTaskDueTodayByDate(t) || getTaskTags(t).includes('my_day'));
   } else if (window.currentTaskSectionFilter === 'important') {
-    tasks = tasks.filter(t => t.priority === 'high');
+    tasks = tasks.filter(t => t.priority === 'high' || getTaskTags(t).includes('important'));
   } else if (window.currentTaskSectionFilter === 'planned') {
-    tasks = tasks.filter(t => !!t.dueDate);
+    tasks = tasks.filter(t => !!t.dueDate || getTaskTags(t).includes('planned'));
   } else if (window.currentTaskSectionFilter === 'shopping') {
-    tasks = tasks.filter(t => t.category === 'shopping');
+    tasks = tasks.filter(t => getTaskTags(t).includes('shopping'));
   } else if (window.currentTaskSectionFilter === 'overdue') {
     tasks = tasks.filter(isTaskOverdueByDate);
   } else if (window.currentTaskSectionFilter === 'completed') {
@@ -33168,7 +33153,7 @@ function renderTasksProList() {
 
   // Apply Category Filter
   if (window.currentTaskCategoryFilter !== 'all') {
-    tasks = tasks.filter(t => t.category === window.currentTaskCategoryFilter);
+    tasks = tasks.filter(t => getTaskTags(t).includes(window.currentTaskCategoryFilter));
   }
 
   // Apply Member Filter
@@ -33439,17 +33424,6 @@ function selectTasksCalendarDay(dateStr) {
       box-shadow: 0 2px 8px rgba(0,0,0,0.25);
     `;
 
-    // Tag badge mapping
-    let tagText = 'عامة';
-    let tagColor = '#94a3b8';
-    let tagBg = 'rgba(148, 163, 184, 0.16)';
-    const tag = t.tag || t.category || 'general';
-    if (tag === 'daily') { tagText = 'يومية'; tagColor = '#38bdf8'; tagBg = 'rgba(56, 189, 248, 0.18)'; }
-    else if (tag === 'scheduled') { tagText = 'مجدولة'; tagColor = '#a855f7'; tagBg = 'rgba(168, 85, 247, 0.18)'; }
-    else if (tag === 'important') { tagText = 'عاجلة'; tagColor = '#f43f5e'; tagBg = 'rgba(244, 63, 94, 0.18)'; }
-    else if (tag === 'bills') { tagText = 'فواتير'; tagColor = '#fbbf24'; tagBg = 'rgba(245, 158, 11, 0.18)'; }
-    else if (tag === 'shopping') { tagText = 'تسوق'; tagColor = '#34d399'; tagBg = 'rgba(16, 185, 129, 0.18)'; }
-
     const subtasks = Array.isArray(t.subtasks) ? t.subtasks : [];
     const subDoneCount = subtasks.filter(s => s.completed).length;
 
@@ -33466,10 +33440,7 @@ function selectTasksCalendarDay(dateStr) {
             ${escapeHtml(t.title)}
           </div>
           <div style="font-size: 0.68rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; margin-top: 4px; flex-wrap: wrap;">
-            <!-- Tag Pill -->
-            <span style="background: ${tagBg}; color: ${tagColor}; padding: 1px 7px; border-radius: 6px; font-weight: 850; border: 1px solid ${tagColor}40;">
-              ${tagText}
-            </span>
+            ${renderTaskTagBadge(t)}
             ${t.project ? `<span style="background:rgba(56,189,248,0.10); color:#7dd3fc; padding:1px 6px; border-radius:6px; font-weight:800; border:1px solid rgba(56,189,248,0.22);">📌 ${escapeHtml(t.project)}</span>` : ''}
             ${t.dueTime ? `<span style="background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 5px; color: #cbd5e1; font-weight: 750;"><i class="fa-regular fa-clock" style="font-size: 0.62rem;"></i> ${escapeHtml(formatTaskTimeDisplay(t))}</span>` : ''}
             ${t.dueTimeZone && t.dueTime ? `<span title="${escapeHtml(t.dueTimeZone)}" style="background:rgba(56,189,248,0.10); padding:1px 6px; border-radius:5px; color:#7dd3fc; font-weight:750;">${escapeHtml(getTaskTimezoneBadge(t))}</span>` : ''}
@@ -33584,9 +33555,9 @@ function renderTasksCalendar() {
         const dot = document.createElement('span');
         let dotColor = '#38bdf8';
         if (t.completed) dotColor = '#10b981';
-        else if (t.priority === 'high' || t.tag === 'important') dotColor = '#f43f5e';
-        else if (t.category === 'shopping' || t.tag === 'shopping') dotColor = '#34d399';
-        else if (t.category === 'bills' || t.tag === 'bills') dotColor = '#fbbf24';
+        else if (t.priority === 'high' || getTaskTags(t).includes('important')) dotColor = '#f43f5e';
+        else if (getTaskTags(t).includes('shopping')) dotColor = '#34d399';
+        else if (getTaskTags(t).includes('bills')) dotColor = '#fbbf24';
         dot.style.cssText = `width: 5px; height: 5px; border-radius: 50%; background: ${dotColor};`;
         dotsRow.appendChild(dot);
       });
