@@ -1,0 +1,13 @@
+#headerNotifBadge:not([hidden]){display:inline-grid;place-items:center;min-width:1.2em;padding:1px 3px;border-radius:100px;background:#b91c1c;color:#fff;font-size:.68rem}
+#notificationsModal{--alert-panel:#111b2c;--alert-row:#1b283c;--alert-text:#f1f5f9;--alert-muted:#b7c6da;--alert-line:#41516b;--alert-accent:#7dd3fc}
+body.light-theme #notificationsModal{--alert-panel:#fff;--alert-row:#edf3f9;--alert-text:#152339;--alert-muted:#435770;--alert-line:#afc0d5;--alert-accent:#075985}
+#notificationsModal>.modal-content-card{background:var(--alert-panel)!important;color:var(--alert-text)!important;border-color:var(--alert-line)!important}
+#notificationsModal h3{color:var(--alert-text)!important}
+#notificationsModal button{color:var(--alert-accent)!important}
+.family-alert{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:10px;padding:8px;display:grid;gap:5px;color:var(--alert-text)}
+.family-alert[data-unread=true]{border-inline-start:3px solid var(--alert-accent)}
+.family-alert-main{display:grid;gap:4px;width:100%;text-align:start;background:none;border:0;padding:2px;font:inherit;color:var(--alert-text)!important}
+.family-alert small{color:var(--alert-muted)}
+.family-alert button,.family-alert-main:is(button){cursor:pointer}
+.family-alert>button,#notificationsListContainer>button{justify-self:start;min-height:32px;background:var(--alert-panel);border:1px solid var(--alert-line);border-radius:6px;padding:4px 8px}
+.family-alert p{margin:0;overflow-wrap:anywhere}

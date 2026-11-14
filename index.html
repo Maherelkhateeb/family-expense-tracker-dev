@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.29';
-    var APP_BUILD_ID = 202611141130;
+    var APP_VERSION = 'v5.3.30';
+    var APP_BUILD_ID = 202611141145;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15055,6 +15055,8 @@
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
+  <script src="./family-alerts.js?v=20261114"></script>
+  <link rel="stylesheet" href="./family-alerts.css?v=20261114">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -15077,7 +15079,7 @@
           <!-- 1. زر التنبيهات (أقصى يمين الشاشة) -->
           <button class="header-settings-btn" id="btnNotificationsBell" onclick="openNotificationsModal()" title="الإشعارات والتنبيهات الذكية" style="position: relative; background: rgba(245, 158, 11, 0.18); border: 1.2px solid rgba(245, 158, 11, 0.45); color: #fbbf24; height: 32px; padding: 0 7px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.70rem; font-weight: 800; white-space: nowrap;">
             <i class="fa-solid fa-bell"></i>
-            <span id="headerNotifBadge" class="notif-badge-dot" style="position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%; border: 1px solid #0f172a; display: inline-block;"></span>
+            <span id="headerNotifBadge" hidden></span>
             <span>تنبيهات</span>
           </button>
 
@@ -19015,6 +19017,7 @@
       syncChannel.onmessage = (e) => {
         if (e.data && (e.data.type === 'SYNC_TX' || e.data.type === 'SYNC_TRANSACTIONS') && Array.isArray(e.data.transactions)) {
           state.transactions = e.data.transactions;
+          familyAlerts.observe(state.transactions, e.data.author, true);
           if (Array.isArray(e.data.wallets)) state.wallets = e.data.wallets;
           if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
           populateWalletDropdowns();
@@ -22737,6 +22740,7 @@ function generateRichDemoTransactions() {
       localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
 
       state.transactions = generateRichDemoTransactions();
+      familyAlerts.observe(state.transactions, null, true);
       saveTx();
 
       state.moneyRequests = generateRichDemoRequests();
@@ -22953,6 +22957,7 @@ function generateRichDemoTransactions() {
     }
 
     function renderUI() {
+      familyAlerts.refresh();
       refreshProjectSelectors();
       if (document.getElementById('btnMainTabWallets')?.getAttribute('aria-selected') === 'true') {
         populateWalletDropdowns();
@@ -24498,16 +24503,6 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         receipt: state.pendingReceiptDataUri || null
       };
 
-      // إضافة إشعار ذكي مرتبط بالحركة فوراً
-      if (typeof addSystemNotification === 'function') {
-        addSystemNotification({
-          type: currentModalType,
-          title: currentModalType === 'income' ? 'إيداع جديد تم تسجيله' : 'مصروف جديد تم تسجيله',
-          body: `${label} بمبلغ ${formatMoney(amount)} (${newTx.member})`,
-          txId: newTx.id
-        });
-      }
-
       state.transactions.unshift(newTx);
       saveTx();
       // ضمان ظهور الحركة الجديدة فوراً في صفحة العمليات المسجلة بإزالة أي حجب مؤقت
@@ -24544,12 +24539,6 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       closeModal('txModal');
       renderUI();
       
-      addSystemNotification({
-        type: currentModalType,
-        title: currentModalType === 'income' ? 'إيداع / دخل جديد' : 'تسجيل مصروف جديد',
-        body: `${label} بمبلغ ${amount} ج.م (${getCategoryName(newTx.category)}) بواسطة ${newTx.author || 'ماهر'}`,
-        txId: newTx.id
-      });
       filterOperationsList();
       showToast(`✅ تم حفظ ${currentModalType === 'income' ? 'الدخل' : 'المصروف'} بنجاح: ${amount} ج.م`);
     }
@@ -24644,6 +24633,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
     window.auditAndRecomputeAllWalletBalances = auditAndRecomputeAllWalletBalances;
 
     function saveTx() {
+      familyAlerts.observe(state.transactions, state.currentUser);
       if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
 
       try {
@@ -27617,6 +27607,7 @@ function openSettingsModal(targetSection = '') {
           const syncData = JSON.parse(masterSync);
           if (syncData.transactions && syncData.transactions.length > 0 && (!state.transactions || state.transactions.length === 0)) {
             state.transactions = syncData.transactions;
+            familyAlerts.observe(state.transactions, null, true);
             if (syncData.wallets) state.wallets = syncData.wallets;
             if (Array.isArray(syncData.expectedExpenses)) state.expectedExpenses = syncData.expectedExpenses;
             if (Array.isArray(syncData.monthlyBudgets)) state.monthlyBudgets = syncData.monthlyBudgets;
@@ -27914,6 +27905,7 @@ function openSettingsModal(targetSection = '') {
           const vData = JSON.parse(localVault);
           if (vData.transactions && vData.transactions.length > 0) {
             state.transactions = vData.transactions;
+            familyAlerts.observe(state.transactions, null, true);
             restoredCount = vData.transactions.length;
             saveTx();
           }
@@ -28025,6 +28017,7 @@ function openSettingsModal(targetSection = '') {
       try {
         if (vault.transactions && vault.transactions.length > 0) {
           state.transactions = vault.transactions;
+            familyAlerts.observe(state.transactions, null, true);
           saveTx();
         }
         if (vault.wallets && vault.wallets.length > 0) {
@@ -28937,6 +28930,7 @@ function openSettingsModal(targetSection = '') {
 
           if (confirm(`تم العثور على نسخة احتياطية تحتوي على (${data.transactions.length}) حركة. هل تريد استرجاعها وتحديث التطبيق؟`)) {
             state.transactions = data.transactions;
+            familyAlerts.observe(state.transactions, null, true);
             saveTx();
 
             if (data.wallets) {
@@ -29018,6 +29012,7 @@ function openSettingsModal(targetSection = '') {
     // تشغيل فوري بدون انتظار إذا كانت الصفحة قد تم تحميلها بالفعل
     window.addEventListener('DOMContentLoaded', () => {
       initApp();
+      familyAlerts.observe(state.transactions, state.currentUser, true);
       setTimeout(() => orchestrateAppStartupRefresh(true), 500);
     });
     // احتياط إضافي لمتصفحات الهواتف لضمان التحديث التلقائي
@@ -31143,6 +31138,7 @@ function initMonthlyBudgetUI() {
 
       populateBudgetPlanSelector();
       renderProjectBudgetAnalysis();
+      familyAlerts.refresh();
       playNotificationChime();
       showToast(`💾 تم حفظ وتثبيت خطة (${currentBudgetMonthData.name}) بنجاح! ✨`);
       triggerDriveAutoSync();
@@ -33703,6 +33699,7 @@ function saveEditedTx() {
   tx.project = projectVal.trim() || null;
   tx.type = typeVal;
   if (window.currentEditTxReceiptDataUri !== undefined) {
+    if (tx.receipt !== window.currentEditTxReceiptDataUri) tx.alertReceiptVersion = Date.now();
     tx.receipt = window.currentEditTxReceiptDataUri;
   }
 
@@ -33754,45 +33751,8 @@ function viewReceiptImage(dataUri) {
 }
 window.viewReceiptImage = viewReceiptImage;
 
-// 2. NOTIFICATIONS CENTER
-function openNotificationsModal() {
-  const container = document.getElementById('notificationsContainer');
-  if (container) {
-    const syncTime = localStorage.getItem('last_master_sync_time') || 'اليوم';
-    const count = (state.transactions || []).length;
-    container.innerHTML = `
-      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
-          <i class="fa-solid fa-circle-check"></i>
-          <span>إصدار التطبيق ${window.APP_VERSION}</span>
-        </div>
-        <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
-          تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
-        </div>
-        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 4px;">آخر مزامنة: ${syncTime}</div>
-      </div>
-      <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 12px; padding: 12px;">
-        <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #c084fc; font-size: 0.85rem;">
-          <i class="fa-solid fa-receipt"></i>
-          <span>سجل العمليات النشط</span>
-        </div>
-        <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
-          إجمالي العمليات المسجلة في الذاكرة المحلية: <strong>${count} عملية</strong>.
-        </div>
-      </div>
-    `;
-  }
-  if (typeof openModal === 'function') openModal('notificationsModal');
-}
-window.openNotificationsModal = openNotificationsModal;
-
-function markAllNotificationsRead() {
-  const badge = document.getElementById('headerNotifBadge');
-  if (badge) badge.style.display = 'none';
-  if (typeof showToast === 'function') showToast('تم تحديد كافة الإشعارات كمقروءة ✓', 'info');
-  if (typeof closeModal === 'function') closeModal('notificationsModal');
-}
-window.markAllNotificationsRead = markAllNotificationsRead;
+function openNotificationsModal() { familyAlerts.open(); }
+function markAllNotificationsRead() { familyAlerts.mark(); }
 
 // 3. FAMILY PROFILE PIN VERIFICATION
 window._pendingPinMember = null;
@@ -34513,6 +34473,7 @@ function executeWalletTransfer() {
     amount: amt,
     label: `تحويل إلى ${to}: ${note}`,
     category: 'transfer',
+    author: state.currentUser,
     walletId: from,
     member: state.currentUser || 'ماهر',
     date: date,
@@ -34526,6 +34487,7 @@ function executeWalletTransfer() {
     amount: amt,
     label: `تحويل وارد من ${from}: ${note}`,
     category: 'transfer',
+    author: state.currentUser,
     walletId: to,
     member: state.currentUser || 'ماهر',
     date: date,
@@ -36238,8 +36200,8 @@ window.filterArchiveType = filterArchiveType;
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button type="button" onclick="markAllNotificationsRead()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; font-weight: 800; border-radius: 6px; padding: 3px 8px; cursor: pointer;">تحديد كمقروء</button>
-          <button type="button" class="btn-modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+          <button type="button" onclick="markAllNotificationsRead()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; font-weight: 800; border-radius: 6px; padding: 3px 8px; cursor: pointer;">تحديد الكل كمقروء</button>
+          <button type="button" aria-label="إغلاق التنبيهات" class="btn-modal-close" onclick="closeModal('notificationsModal')">&times;</button>
         </div>
       </div>
 
