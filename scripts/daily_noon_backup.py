@@ -17,7 +17,6 @@ def main():
     print("Daily 12:00 PM Backup & Cleanup Engine")
     print("=" * 60)
 
-    # 1. حساب تاريخ اليوم والأمس بتوقيت الرياض / القاهرة (UTC+3)
     tz_local = timezone(timedelta(hours=3))
     now = datetime.now(tz_local)
     today_str = now.strftime('%Y-%m-%d')
@@ -30,7 +29,6 @@ def main():
 
     endpoint = "https://script.google.com/macros/s/AKfycbwdIuCjR3lUy0DTBnWTj9koFZ4ghRxR2Dq-sdj_LjIS2r_gHfpp4AX_32dNd2RRKPaShQ/exec"
 
-    # 2. جلب أحدث بيانات من سحابة Google Drive
     print(f"Fetching latest family database from Google Drive...")
     req = urllib.request.Request(endpoint, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
     
@@ -39,12 +37,9 @@ def main():
             content = resp.read().decode('utf-8')
             parsed = json.loads(content)
             data = parsed.get('data', parsed)
-            print(f"Successfully fetched database. Top-level keys: {list(data.keys()) if isinstance(data, dict) else 'N/A'}")
+            print(f"Successfully fetched database.")
     except Exception as e:
         print(f"Warning: Failed to fetch from Google Drive directly: {e}")
-        # fallback to local file if available
-        repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        index_path = os.path.join(repo_root, 'index.html')
         data = {
             "app": "FamilyExpenseTrackerMonefy",
             "account": "maher.easybakery@gmail.com",
@@ -52,7 +47,6 @@ def main():
             "notice": "Auto-generated snapshot"
         }
 
-    # 3. حفظ نسخة اليوم في مجلد backups
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     backup_dir = os.path.join(repo_root, 'backups')
     os.makedirs(backup_dir, exist_ok=True)
@@ -73,7 +67,6 @@ def main():
         json.dump(backup_payload, f, ensure_ascii=False, indent=2)
     print(f"Saved today's backup file: {today_file_path}")
 
-    # 4. حذف نسخة اليوم السابق وأي نسخ أقدم للحفاظ على المساحة والترتيب
     deleted_local = []
     for fname in os.listdir(backup_dir):
         if fname.startswith("family_backup_") and fname.endswith(".json") and fname != f"family_backup_{today_str}.json":
@@ -85,7 +78,6 @@ def main():
             except Exception as e:
                 print(f"Error removing {fname}: {e}")
 
-    # 5. إرسال أمر النسخ الاحتياطي وحذف نسخة الأمس لسحابة Google Apps Script (Drive)
     print(f"Triggering Google Drive cloud backup & deletion...")
     post_payload = {
         "action": "daily_noon_backup",

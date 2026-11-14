@@ -73,6 +73,30 @@
         }
       }
       if (!state.activityLog) state.activityLog = [];
+
+      // إذا كان سجل الأرشيف فارغاً، يتم ملؤه تلقائياً بالحركات المسجلة ليعمل الأرشيف فورياً وبكفاءة
+      if (state.activityLog.length === 0 && state.transactions && state.transactions.length > 0) {
+        state.transactions.slice(0, 300).forEach(t => {
+          const isInc = t.type === 'income';
+          const amt = parseFloat(t.amount) || 0;
+          state.activityLog.push({
+            id: 'act-' + (t.id || (Date.now() + Math.random())),
+            timestamp: t.date ? (t.date + 'T12:00:00.000Z') : new Date().toISOString(),
+            date: t.date || new Date().toISOString().split('T')[0],
+            time: '12:00 م',
+            action: isInc ? 'إضافة دخل جديد' : 'تسجيل مصروف جديد',
+            type: isInc ? 'add_income' : 'add_expense',
+            label: t.label || (isInc ? 'دخل' : 'مصروف'),
+            amount: amt,
+            member: t.member || 'ماهر',
+            author: t.member || 'ماهر',
+            category: t.category || 'other',
+            sign: isInc ? '+' : '-',
+            wallet: t.walletId || t.wallet || 'cash'
+          });
+        });
+        saveActivityLog();
+      }
     }
 
     let activeModalsStack = [];
@@ -159,7 +183,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.47';
+    var APP_VERSION = 'v5.3.49';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -9161,13 +9185,18 @@
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      padding: 6px 10px !important;
-      border-radius: 11px !important;
-      font-size: 0.82rem !important;
+      padding: 4px 8px !important;
+      border-radius: 9px !important;
+      font-size: 0.79rem !important;
       white-space: nowrap !important;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.30) !important;
-      min-height: 38px !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+      min-height: 33px !important;
+      height: 34px !important;
+      box-sizing: border-box !important;
+    }
+    .cockpit-flow-pill.outflow {
+      margin-bottom: 1px !important;
     }
     .cockpit-flow-pill:hover {
       transform: translateY(-1px) scale(1.01) !important;
@@ -12916,14 +12945,14 @@
     .kpi-master-wealth-cockpit {
       width: calc(100% - 10px) !important;
       margin: 2px 5px 6px !important;
-      min-height: 88px !important;
+      min-height: 94px !important;
       height: auto !important;
       max-height: none !important;
       box-sizing: border-box !important;
       display: flex !important;
-      align-items: stretch !important;
+      align-items: center !important;
       justify-content: space-between !important;
-      padding: 6px 10px !important;
+      padding: 8px 12px 10px 14px !important;
       gap: 8px !important;
       position: relative !important;
       overflow: hidden !important;
@@ -13042,8 +13071,10 @@
       max-width: 44% !important;
       display: flex !important;
       flex-direction: column !important;
-      justify-content: space-between !important;
-      gap: 5px !important;
+      justify-content: center !important;
+      gap: 4px !important;
+      padding: 2px 2px 3px !important;
+      margin-inline-start: 5px !important;
       box-sizing: border-box !important;
     }
 
@@ -16985,20 +17016,16 @@
         </div>
       </div>
 
-      <!-- Segmented Antigravity Tab Switcher (Zero-Scroll Navigation) -->
+      <!-- Segmented Antigravity Tab Switcher (Zero-Scroll Navigation - 2 Symmetrical Tabs) -->
       <div class="gold-antigravity-tabs" role="tablist">
         <button type="button" class="gold-tab-btn active" id="goldTabBtn_prices" onclick="switchGoldDrawerTab('prices')" role="tab">
           <i class="fa-solid fa-coins"></i>
-          <span>الأسعار الحية</span>
+          <span>الأسعار والحاسبة</span>
         </button>
         <button type="button" class="gold-tab-btn" id="goldTabBtn_converter" onclick="switchGoldDrawerTab('converter')" role="tab">
           <i class="fa-solid fa-right-left"></i>
           <span>المحول الذكي</span>
           <span class="gold-tab-new-pill">جديد</span>
-        </button>
-        <button type="button" class="gold-tab-btn" id="goldTabBtn_tools" onclick="switchGoldDrawerTab('tools')" role="tab">
-          <i class="fa-solid fa-calculator"></i>
-          <span>حاسبة وبياني</span>
         </button>
       </div>
 
@@ -17041,7 +17068,7 @@
                 </div>
                 <div class="market-box-val" id="tvGold21Val">—</div>
                 <div class="market-box-sub">
-                  <span>سعر الجرام</span>
+                  
                   <span class="change-tag" id="tvGold21Chg">—</span>
                 </div>
                 <div class="market-buy-price" id="tvGold21Buy">—</div>
@@ -17054,7 +17081,7 @@
                 </div>
                 <div class="market-box-val" id="tvGold24Val">—</div>
                 <div class="market-box-sub">
-                  <span>نقاء 99.9%</span>
+                  
                   <span class="change-tag" id="tvGold24Chg">—</span>
                 </div>
                 <div class="market-buy-price" id="tvGold24Buy">—</div>
@@ -17067,7 +17094,7 @@
                 </div>
                 <div class="market-box-val" id="tvGold18Val">—</div>
                 <div class="market-box-sub">
-                  <span>سعر الجرام</span>
+                  
                   <span class="change-tag" id="tvGold18Chg" hidden></span>
                 </div>
                 <div class="market-buy-price" id="tvGold18Buy">—</div>
@@ -17080,7 +17107,7 @@
                 </div>
                 <div class="market-box-val" id="tvGoldPoundVal">—</div>
                 <div class="market-box-sub">
-                  <span>وزن 8 جرام - 21</span>
+                  
                   <span class="change-tag" id="tvGoldPoundChg">—</span>
                 </div>
                 <div class="market-buy-price" id="tvGoldPoundBuy">—</div>
@@ -17111,7 +17138,7 @@
                 </div>
                 <div class="market-box-val" id="tvUsdVal">—</div>
                 <div class="market-box-sub">
-                  <span>USD / EGP</span>
+                  
                   <span class="change-tag up" id="tvUsdChg">—</span>
                 </div>
                 <div class="market-buy-price" id="tvUsdBuy">—</div>
@@ -17124,7 +17151,7 @@
                 </div>
                 <div class="market-box-val" id="tvSarVal">—</div>
                 <div class="market-box-sub">
-                  <span>SAR / EGP</span>
+                  
                   <span class="change-tag down" id="tvSarChg">—</span>
                 </div>
                 <div class="market-buy-price" id="tvSarBuy">—</div>
@@ -17137,7 +17164,7 @@
                 </div>
                 <div class="market-box-val" id="tvEurVal">—</div>
                 <div class="market-box-sub">
-                  <span>EUR / EGP</span>
+                  
                   <span class="change-tag" id="tvEurChg" hidden></span>
                 </div>
                 <div class="market-buy-price" id="tvEurBuy">—</div>
@@ -17150,7 +17177,7 @@
                 </div>
                 <div class="market-box-val" id="tvAedVal">—</div>
                 <div class="market-box-sub">
-                  <span>AED / EGP</span>
+                  
                   <span class="change-tag" id="tvAedChg" hidden></span>
                 </div>
                 <div class="market-buy-price" id="tvAedBuy">—</div>
@@ -17165,6 +17192,120 @@
               <div class="val-sub" id="goldValuationSourceText">بحسب السعر المتاح</div>
             </div>
             <div class="val-badge" id="goldValuationText">0.00 جم ذهب 21</div>
+          </div>
+        
+
+<!-- حاسبة الصاغة والمصنعية التقديرية (Antigravity Professional Calculator) -->
+          <div class="gold-market-section gold-calculator-section">
+            
+            <!-- ترويسة الحاسبة -->
+            <div class="calc-section-header">
+              <div class="calc-header-title">
+                <div class="calc-header-icon"><i class="fa-solid fa-calculator"></i></div>
+                <span>حاسبة الصاغة والمصنعية</span>
+              </div>
+              <span class="calc-header-badge"><i class="fa-solid fa-circle-info"></i> سوق الصاغة</span>
+            </div>
+
+            <!-- بطاقة الإجمالي التقديري الشاملة (Hero Card) -->
+            <div class="gold-calc-hero">
+              <div class="calc-hero-label">إجمالي الشراء التقديري:</div>
+              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
+              
+            </div>
+
+            <!-- اختيار نوع المشغولات أو السبيكة -->
+            <div class="calc-form-group">
+              <label class="calc-field-label" for="calcAsset">
+                <i class="fa-solid fa-gem"></i> نوع الذهب / السبائك:
+              </label>
+              <div class="calc-select-wrapper">
+                <select class="calc-select" id="calcAsset" onchange="onGoldAssetChange()">
+                  <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
+                  <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
+                  <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
+                  <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
+                  <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
+                  <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
+                  <option value="usd">💵 دولار أمريكي (USDEGP)</option>
+                  <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- حقول الإدخال: الوزن والمصنعية جنباً إلى جنب -->
+            <div class="calc-inputs-grid">
+              <div class="calc-input-box">
+                <label class="calc-field-label" id="lblCalcQty" for="calcQty">
+                  <i class="fa-solid fa-scale-balanced"></i> الوزن (جرام):
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="0.01" class="calc-input" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()">
+                </div>
+              </div>
+              <div class="calc-input-box" id="colCalcWorkmanship">
+                <label class="calc-field-label" for="calcWorkmanshipPerGram">
+                  <i class="fa-solid fa-hammer"></i> المصنعية (ج.م):
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="5" class="calc-input" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()">
+                </div>
+              </div>
+            </div>
+
+            <!-- ملاحظة سوق الصاغة الذكية -->
+            <div id="calcWorkmanshipNote" class="calc-workmanship-note" style="display: none;"></div>
+
+            <!-- تفاصيل الحسبة المحاسبية والمالية (Financial Breakdown Card) -->
+            <div class="gold-calc-breakdown-card">
+              <div class="breakdown-row" id="rowCalcGoldRaw">
+                <span class="b-label"><i class="fa-solid fa-ring"></i> الذهب الخام:</span>
+                <span class="b-val b-val-raw" id="calcGoldRawVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcWorkmanshipTotal">
+                <span class="b-label"><i class="fa-solid fa-tags"></i> المصنعية والدمغة:</span>
+                <span class="b-val b-val-work" id="calcWorkmanshipTotalVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcCashback">
+                <span class="b-label"><i class="fa-solid fa-arrow-rotate-left"></i> كاش باك مسترد:</span>
+                <span class="b-val b-val-cash" id="calcCashbackVal">—</span>
+              </div>
+              <div class="breakdown-divider"></div>
+              <div class="breakdown-row breakdown-row-total">
+                <span class="b-label b-label-net"><i class="fa-solid fa-shield-halved"></i> الصافي بعد الكاش باك:</span>
+                <span class="b-val b-val-net" id="calcNetCostVal">—</span>
+              </div>
+            </div>
+
+            <!-- أزرار الاختيارات السريعة -->
+            <div class="calc-presets-section">
+              <span class="calc-presets-label">خيارات جاهزة:</span>
+              <div class="gold-calc-presets">
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
+                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+              </div>
+            </div>
+
+            <!-- زر تسجيل كمصروف في المحفظة -->
+            <button type="button" onclick="applyCalcToExpense()" class="btn-gold-save-expense">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>تسجيل كمصروف في المحفظة</span>
+            </button>
+          </div>
+
+          <!-- مؤشر الذهب الحي TradingView -->
+          <div class="gold-market-section gold-chart-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView)
+              </span>
+              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 7px; border-radius: 5px; font-size: 0.62rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">إظهار الشارت 📈</button>
+            </div>
+            <div id="tvChartContainer" style="display: none; width: 100%; height: 210px; border-radius: 9px; overflow: hidden; background: #000;">
+              <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
           </div>
         </div>
 
@@ -17329,125 +17470,7 @@
           </div>
         </div>
 
-        <!-- ==============================================
-             TAB 3: حاسبة المصنعية والرسم البياني
-             ============================================== -->
-        <div class="gold-tab-pane" id="goldTabPane_tools">
-          <!-- حاسبة الصاغة والمصنعية التقديرية (Antigravity Professional Calculator) -->
-          <div class="gold-market-section gold-calculator-section">
-            
-            <!-- ترويسة الحاسبة -->
-            <div class="calc-section-header">
-              <div class="calc-header-title">
-                <div class="calc-header-icon"><i class="fa-solid fa-calculator"></i></div>
-                <span>حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
-              </div>
-              <span class="calc-header-badge"><i class="fa-solid fa-circle-info"></i> سوق الصاغة</span>
-            </div>
-
-            <!-- بطاقة الإجمالي التقديري الشاملة (Hero Card) -->
-            <div class="gold-calc-hero">
-              <div class="calc-hero-label">إجمالي الشراء التقديري شامل المصنعية:</div>
-              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
-              <div class="calc-hero-sub">سعر الذهب الخام الصافي + إجمالي المصنعية والدمغة</div>
-            </div>
-
-            <!-- اختيار نوع المشغولات أو السبيكة -->
-            <div class="calc-form-group">
-              <label class="calc-field-label" for="calcAsset">
-                <i class="fa-solid fa-gem"></i> نوع المشغولات / السبائك / العملة:
-              </label>
-              <div class="calc-select-wrapper">
-                <select class="calc-select" id="calcAsset" onchange="onGoldAssetChange()">
-                  <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
-                  <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
-                  <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
-                  <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
-                  <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
-                  <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
-                  <option value="usd">💵 دولار أمريكي (USDEGP)</option>
-                  <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- حقول الإدخال: الوزن والمصنعية جنباً إلى جنب -->
-            <div class="calc-inputs-grid">
-              <div class="calc-input-box">
-                <label class="calc-field-label" id="lblCalcQty" for="calcQty">
-                  <i class="fa-solid fa-scale-balanced"></i> الوزن بالجرام / العدد:
-                </label>
-                <div class="calc-input-wrapper">
-                  <input type="number" step="0.01" class="calc-input" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()">
-                </div>
-              </div>
-              <div class="calc-input-box" id="colCalcWorkmanship">
-                <label class="calc-field-label" for="calcWorkmanshipPerGram">
-                  <i class="fa-solid fa-hammer"></i> المصنعية المقدرة (ج.م/جم):
-                </label>
-                <div class="calc-input-wrapper">
-                  <input type="number" step="5" class="calc-input" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()">
-                </div>
-              </div>
-            </div>
-
-            <!-- ملاحظة سوق الصاغة الذكية -->
-            <div id="calcWorkmanshipNote" class="calc-workmanship-note" style="display: none;"></div>
-
-            <!-- تفاصيل الحسبة المحاسبية والمالية (Financial Breakdown Card) -->
-            <div class="gold-calc-breakdown-card">
-              <div class="breakdown-row" id="rowCalcGoldRaw">
-                <span class="b-label"><i class="fa-solid fa-ring"></i> قيمة الذهب الخام الصافي:</span>
-                <span class="b-val b-val-raw" id="calcGoldRawVal">—</span>
-              </div>
-              <div class="breakdown-row" id="rowCalcWorkmanshipTotal">
-                <span class="b-label"><i class="fa-solid fa-tags"></i> إجمالي المصنعية والدمغة:</span>
-                <span class="b-val b-val-work" id="calcWorkmanshipTotalVal">—</span>
-              </div>
-              <div class="breakdown-row" id="rowCalcCashback">
-                <span class="b-label"><i class="fa-solid fa-arrow-rotate-left"></i> كاش باك مسترد عند البيع:</span>
-                <span class="b-val b-val-cash" id="calcCashbackVal">—</span>
-              </div>
-              <div class="breakdown-divider"></div>
-              <div class="breakdown-row breakdown-row-total">
-                <span class="b-label b-label-net"><i class="fa-solid fa-shield-halved"></i> بعد خصم كاش باك مفترض:</span>
-                <span class="b-val b-val-net" id="calcNetCostVal">—</span>
-              </div>
-            </div>
-
-            <!-- أزرار الاختيارات السريعة -->
-            <div class="calc-presets-section">
-              <span class="calc-presets-label">خيارات جاهزة:</span>
-              <div class="gold-calc-presets">
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
-                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
-              </div>
-            </div>
-
-            <!-- زر تسجيل كمصروف في المحفظة -->
-            <button type="button" onclick="applyCalcToExpense()" class="btn-gold-save-expense">
-              <i class="fa-solid fa-cart-plus"></i>
-              <span>تسجيل كمصروف في المحفظة</span>
-            </button>
-          </div>
-
-          <!-- مؤشر الذهب الحي TradingView -->
-          <div class="gold-market-section gold-chart-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-              <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
-                <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView)
-              </span>
-              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 7px; border-radius: 5px; font-size: 0.62rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">طي / إظهار</button>
-            </div>
-            <div id="tvChartContainer" style="width: 100%; height: 210px; border-radius: 9px; overflow: hidden; background: #000;">
-              <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
-            </div>
-          </div>
         </div>
-
-      </div>
     </div>
 
     <!-- نوافذ الحوار والتأكيد (Modal Dialogs) -->
@@ -18730,7 +18753,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.47</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.49</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -18956,6 +18979,7 @@
                   <i class="fa-solid fa-upload" style="color: #f59e0b;"></i>
                   <span>استيراد JSON</span>
                 </button>
+                <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="importDataJSON(event)">
               </div>
 
               <!-- بطاقة المزامنة السحابية وتحديث الكاش -->
@@ -22511,6 +22535,7 @@
       if (typeof renderAnalyticsUI === "function") renderAnalyticsUI();
       if (typeof renderExecutiveKPIs === "function") renderExecutiveKPIs();
       if (typeof renderExecutiveCharts === "function") renderExecutiveCharts();
+      if (typeof renderActivityLogUI === "function") renderActivityLogUI();
       if (notify) showToast(`📅 تم تطبيق الفترة: ${periodLabels[p] || p}`);
     }
 
@@ -27533,12 +27558,12 @@ function switchSettingsTab(tabName) {
           '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>+ ' + summaryEscapeHtml(summaryFormatAmount(incomeTotal)) + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
         '</section>' +
         '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3>' + listTitle + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
-          '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
+          '<div class="summary-section-heading"><h3>الإجمالي حسب البند</h3><span>' + (hasSelection ? 'ضمن المجموعة المحددة' : 'كافة النتائج') + '</span></div>' +
+          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
         '</section>' +
         '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3>تفاصيل البنود</h3><span>' + (hasSelection ? 'ضمن المجموعة المحددة' : 'كافة النتائج') + '</span></div>' +
-          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
+          '<div class="summary-section-heading"><h3>' + listTitle + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
+          '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
         '</section>';
     }
 
@@ -27687,7 +27712,8 @@ function switchSettingsTab(tabName) {
     // محول العملات والذهب الذكي والتنقل بين تبويبات البورصة (Antigravity UX)
     // =========================================================================
     function switchGoldDrawerTab(tabId) {
-      const tabs = ['prices', 'converter', 'tools'];
+      if (tabId === 'tools') tabId = 'prices';
+      const tabs = ['prices', 'converter'];
       tabs.forEach(t => {
         const btn = document.getElementById('goldTabBtn_' + t);
         const pane = document.getElementById('goldTabPane_' + t);
@@ -27696,7 +27722,7 @@ function switchSettingsTab(tabName) {
       });
       if (tabId === 'converter') {
         runUniversalConverter();
-      } else if (tabId === 'tools') {
+      } else {
         if (typeof recalcGoldTotal === 'function') recalcGoldTotal();
       }
     }
@@ -29191,7 +29217,7 @@ function switchSettingsTab(tabName) {
         list = state.activityLog || [];
       }
 
-      // 1. فلترة الأرشيف الموسعة والشاملة
+      // 1. فلترة الأرشيف الموسعة والشاملة حسب نوع النشاط
       if (currentActivityTab === 'expense') {
         list = list.filter(a => a.type === 'add_expense' || (a.sign === '-' && !a.type.includes('delete')));
       } else if (currentActivityTab === 'income') {
@@ -29204,6 +29230,39 @@ function switchSettingsTab(tabName) {
         list = list.filter(a => a.type && (a.type.includes('transfer') || a.type.includes('wallet')));
       } else if (currentActivityTab === 'delete') {
         list = list.filter(a => a.type && a.type.includes('delete'));
+      }
+
+      // 1.5 فلترة الفترة الزمنية للأرشيف بحسب الفترة المحددة
+      const nowAct = new Date();
+      const todayActStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(nowAct) : nowAct.toISOString().split('T')[0];
+      const curPeriod = state.period || 'all';
+
+      if (curPeriod === 'today' || curPeriod === 'day') {
+        list = list.filter(a => (a.date || a.timestamp || '').startsWith(todayActStr));
+      } else if (curPeriod === 'week') {
+        const d7 = new Date(nowAct.getFullYear(), nowAct.getMonth(), nowAct.getDate() - 6);
+        const d7Str = typeof getLocalDateStr === 'function' ? getLocalDateStr(d7) : d7.toISOString().split('T')[0];
+        list = list.filter(a => {
+          const d = (a.date || a.timestamp || '').substring(0, 10);
+          return d >= d7Str && d <= todayActStr;
+        });
+      } else if (curPeriod === 'month') {
+        const startM = new Date(nowAct.getFullYear(), nowAct.getMonth(), 1);
+        const endM = new Date(nowAct.getFullYear(), nowAct.getMonth() + 1, 0);
+        const sMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(startM) : startM.toISOString().split('T')[0];
+        const eMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(endM) : endM.toISOString().split('T')[0];
+        list = list.filter(a => {
+          const d = (a.date || a.timestamp || '').substring(0, 10);
+          return d >= sMStr && d <= eMStr;
+        });
+      } else if (curPeriod === 'custom' && state.customDateRange) {
+        const { start, end } = state.customDateRange;
+        list = list.filter(a => {
+          const d = (a.date || a.timestamp || '').substring(0, 10);
+          if (start && d < start) return false;
+          if (end && d > end) return false;
+          return true;
+        });
       }
 
       // 2. فلترة البحث
@@ -34429,7 +34488,29 @@ const ALL_AUDIT_CATEGORIES = [
 
 window.auditSelectedMembers = window.auditSelectedMembers || new Set();
 window.auditSelectedCategories = window.auditSelectedCategories || new Set();
+window.auditSelectedWallets = window.auditSelectedWallets || new Set();
+window.auditSelectedTypes = window.auditSelectedTypes || new Set();
 window.auditSortOrder = window.auditSortOrder || 'desc'; // Default: Newest first!
+
+function getTxAttachmentUrl(t) {
+  if (!t) return null;
+  if (t.receiptDataUri) return t.receiptDataUri;
+  if (t.receiptUrl) return t.receiptUrl;
+  if (typeof t.receipt === 'string' && t.receipt.trim()) return t.receipt.trim();
+  if (typeof t.receipt === 'object' && t.receipt) return t.receipt.url || t.receipt.data || t.receipt.uri || null;
+  if (t.attachment && typeof t.attachment === 'string') return t.attachment.trim();
+  if (Array.isArray(t.attachments) && t.attachments.length > 0) {
+    const a0 = t.attachments[0];
+    return typeof a0 === 'string' ? a0 : (a0.url || a0.data || a0.uri || null);
+  }
+  if (t.photo) return t.photo;
+  if (t.image) return t.image;
+  if (t.billPhoto) return t.billPhoto;
+  if (t.fileUrl) return t.fileUrl;
+  if (t.file && typeof t.file === 'string') return t.file;
+  return null;
+}
+window.getTxAttachmentUrl = getTxAttachmentUrl;
 
 function openActualBalanceAuditModal() {
   if (typeof openModal === 'function') openModal('actualBalanceAuditModal');
@@ -34444,7 +34525,7 @@ function toggleAuditSortOrder() {
   const txt = document.getElementById('txtAuditSortOrder');
   const ico = document.getElementById('iconAuditSortOrder');
   if (txt) {
-    txt.textContent = (window.auditSortOrder === 'desc') ? 'الترتيب: الأحدث أولاً ⬇️' : 'الترتيب: الأقدم أولاً ⬆️';
+    txt.textContent = (window.auditSortOrder === 'desc') ? 'الأحدث أولاً ⬇️' : 'الأقدم أولاً ⬆️';
   }
   if (ico) {
     ico.className = (window.auditSortOrder === 'desc') ? 'fa-solid fa-arrow-down-short-wide' : 'fa-solid fa-arrow-up-wide-short';
@@ -34456,15 +34537,16 @@ window.toggleAuditSortOrder = toggleAuditSortOrder;
 function toggleAuditDropdown(type) {
   const mMenu = document.getElementById('auditMemberDropdownMenu');
   const cMenu = document.getElementById('auditCategoryDropdownMenu');
-  if (type === 'member') {
-    if (cMenu) cMenu.style.display = 'none';
-    if (mMenu) {
-      mMenu.style.display = (mMenu.style.display === 'block') ? 'none' : 'block';
-    }
-  } else if (type === 'category') {
-    if (mMenu) mMenu.style.display = 'none';
-    if (cMenu) {
-      cMenu.style.display = (cMenu.style.display === 'block') ? 'none' : 'block';
+  const wMenu = document.getElementById('auditWalletDropdownMenu');
+  const tMenu = document.getElementById('auditTypeDropdownMenu');
+  const menus = { member: mMenu, category: cMenu, wallet: wMenu, type: tMenu };
+
+  for (const [key, menu] of Object.entries(menus)) {
+    if (!menu) continue;
+    if (key === type) {
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    } else {
+      menu.style.display = 'none';
     }
   }
 }
@@ -34473,20 +34555,18 @@ window.toggleAuditDropdown = toggleAuditDropdown;
 // Close dropdown menus when clicking outside
 if (!window._auditDropdownListenerAttached) {
   document.addEventListener('click', function(e) {
-    const mCont = document.getElementById('auditMemberMultiContainer');
-    const mMenu = document.getElementById('auditMemberDropdownMenu');
-    if (mCont && mMenu && !mCont.contains(e.target)) {
-      mMenu.style.display = 'none';
-    }
-    const cCont = document.getElementById('auditCategoryMultiContainer');
-    const cMenu = document.getElementById('auditCategoryDropdownMenu');
-    if (cCont && cMenu && !cCont.contains(e.target)) {
-      cMenu.style.display = 'none';
-    }
+    ['auditMember', 'auditCategory', 'auditWallet', 'auditType'].forEach(prefix => {
+      const cont = document.getElementById(prefix + 'MultiContainer');
+      const menu = document.getElementById(prefix + 'DropdownMenu');
+      if (cont && menu && !cont.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
   });
   window._auditDropdownListenerAttached = true;
 }
 
+// 1. أفراد الأسرة
 function selectAllAuditMembers(selectAll) {
   if (selectAll) {
     window.auditSelectedMembers.clear();
@@ -34503,7 +34583,6 @@ function toggleAuditMember(mem) {
     window.auditSelectedMembers.clear();
     window.auditSelectedMembers.add(mem);
   } else if (window.auditSelectedMembers.size === 0) {
-    // previously all were selected; clicking one focuses on that one
     window.auditSelectedMembers = new Set([mem]);
   } else {
     if (window.auditSelectedMembers.has(mem)) {
@@ -34514,7 +34593,7 @@ function toggleAuditMember(mem) {
     } else {
       window.auditSelectedMembers.add(mem);
       if (window.auditSelectedMembers.size === ALL_AUDIT_MEMBERS.length) {
-        window.auditSelectedMembers.clear(); // all selected
+        window.auditSelectedMembers.clear();
       }
     }
   }
@@ -34548,18 +34627,19 @@ function updateAuditMemberUI() {
     container.innerHTML = ALL_AUDIT_MEMBERS.map(m => {
       const checked = isAll || (!isNone && window.auditSelectedMembers.has(m));
       return `
-        <label style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; border-radius: 6px; background: ${checked ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255,255,255,0.03)'}; cursor: pointer; user-select: none; transition: background 0.15s;" onmouseover="this.style.background='rgba(168, 85, 247, 0.2)'" onmouseout="this.style.background='${checked ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255,255,255,0.03)'}'">
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 3px 6px; border-radius: 6px; background: ${checked ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255,255,255,0.02)'}; cursor: pointer; user-select: none; transition: background 0.15s;" onmouseover="this.style.background='rgba(168, 85, 247, 0.25)'" onmouseout="this.style.background='${checked ? 'rgba(168, 85, 247, 0.15)' : 'rgba(255,255,255,0.02)'}'">
           <div style="display: flex; align-items: center; gap: 6px;">
             <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleAuditMember('${m}')" style="accent-color: #a855f7; width: 14px; height: 14px; cursor: pointer;">
-            <span style="font-size: 0.74rem; font-weight: 800; color: #f8fafc;">${m}</span>
+            <span style="font-size: 0.72rem; font-weight: 750; color: #f8fafc;">${m}</span>
           </div>
-          <span style="font-size: 0.65rem; color: #a855f7;"><i class="fa-solid fa-user"></i></span>
         </label>
       `;
     }).join('');
   }
 }
+window.updateAuditMemberUI = updateAuditMemberUI;
 
+// 2. بنود الصرف والإيراد
 function selectAllAuditCategories(selectAll) {
   if (selectAll) {
     window.auditSelectedCategories.clear();
@@ -34576,7 +34656,6 @@ function toggleAuditCategory(catId) {
     window.auditSelectedCategories.clear();
     window.auditSelectedCategories.add(catId);
   } else if (window.auditSelectedCategories.size === 0) {
-    // previously all were selected; clicking one focuses on that one
     window.auditSelectedCategories = new Set([catId]);
   } else {
     if (window.auditSelectedCategories.has(catId)) {
@@ -34647,20 +34726,176 @@ function updateAuditCategoryUI() {
     `;
   }
 }
+window.updateAuditCategoryUI = updateAuditCategoryUI;
+
+// 3. المحافظ المالية (متعدد الاختيار)
+function selectAllAuditWallets(selectAll) {
+  if (selectAll) {
+    window.auditSelectedWallets.clear();
+  } else {
+    window.auditSelectedWallets = new Set(['__NONE__']);
+  }
+  updateAuditWalletUI();
+  if (typeof renderAuditWalletsCards === 'function') renderAuditWalletsCards();
+  renderActualBalanceAuditLedger();
+}
+window.selectAllAuditWallets = selectAllAuditWallets;
+
+function toggleAuditWallet(walletId) {
+  const wallets = state.wallets || [];
+  if (window.auditSelectedWallets.has('__NONE__')) {
+    window.auditSelectedWallets.clear();
+    window.auditSelectedWallets.add(walletId);
+  } else if (window.auditSelectedWallets.size === 0) {
+    window.auditSelectedWallets = new Set([walletId]);
+  } else {
+    if (window.auditSelectedWallets.has(walletId)) {
+      window.auditSelectedWallets.delete(walletId);
+      if (window.auditSelectedWallets.size === 0) {
+        window.auditSelectedWallets.add('__NONE__');
+      }
+    } else {
+      window.auditSelectedWallets.add(walletId);
+      if (window.auditSelectedWallets.size === wallets.length) {
+        window.auditSelectedWallets.clear();
+      }
+    }
+  }
+  updateAuditWalletUI();
+  if (typeof renderAuditWalletsCards === 'function') renderAuditWalletsCards();
+  renderActualBalanceAuditLedger();
+}
+window.toggleAuditWallet = toggleAuditWallet;
+
+function updateAuditWalletUI() {
+  const container = document.getElementById('auditWalletListContainer');
+  const label = document.getElementById('auditWalletMultiText');
+  const isNone = window.auditSelectedWallets.has('__NONE__');
+  const isAll = (window.auditSelectedWallets.size === 0);
+  const wallets = state.wallets || [];
+
+  if (label) {
+    if (isAll) {
+      label.innerHTML = '🏦 كافة المحافظ المجمعة';
+    } else if (isNone) {
+      label.innerHTML = '<span style="color:#f87171;">⚠️ لا توجد محافظ محددة</span>';
+    } else {
+      const arr = Array.from(window.auditSelectedWallets);
+      if (arr.length === 1) {
+        const w = wallets.find(x => x.id === arr[0]);
+        label.innerHTML = `🏦 ${w ? w.name : arr[0]}`;
+      } else {
+        label.innerHTML = `🏦 ${arr.length} محافظ محددة`;
+      }
+    }
+  }
+
+  if (container) {
+    container.innerHTML = wallets.map(w => {
+      const checked = isAll || (!isNone && window.auditSelectedWallets.has(w.id));
+      const bal = parseFloat(w.balance) || 0;
+      return `
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; border-radius: 6px; background: ${checked ? 'rgba(16, 185, 129, 0.12)' : 'rgba(255,255,255,0.02)'}; cursor: pointer; user-select: none; transition: background 0.15s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.2)'" onmouseout="this.style.background='${checked ? 'rgba(16, 185, 129, 0.12)' : 'rgba(255,255,255,0.02)'}'">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleAuditWallet('${w.id}')" style="accent-color: #10b981; width: 14px; height: 14px; cursor: pointer;">
+            <i class="fa-solid ${w.icon || 'fa-wallet'}" style="color: ${w.color || '#38bdf8'}; font-size: 0.8rem;"></i>
+            <span style="font-size: 0.72rem; font-weight: 750; color: #f8fafc;">${w.name}</span>
+          </div>
+          <span style="font-size: 0.65rem; color: ${bal >= 0 ? '#34d399' : '#f87171'}; font-weight: 800; font-family: var(--font-numbers); direction: ltr;">${bal.toFixed(2)}</span>
+        </label>
+      `;
+    }).join('');
+  }
+}
+window.updateAuditWalletUI = updateAuditWalletUI;
+
+// 4. نوع العملية (متعدد الاختيار)
+const ALL_AUDIT_TYPES = [
+  { id: 'expense', name: 'مصروفات وسحوبات (-)', icon: 'fa-arrow-up', color: '#f43f5e' },
+  { id: 'income', name: 'إيداعات ودخول (+)', icon: 'fa-arrow-down', color: '#34d399' },
+  { id: 'transfer', name: 'تحويلات بين المحافظ (🔄)', icon: 'fa-arrows-rotate', color: '#38bdf8' },
+  { id: 'with_receipt', name: 'عمليات بمرفقات فقط (📎)', icon: 'fa-paperclip', color: '#fbbf24' }
+];
+
+function selectAllAuditTypes(selectAll) {
+  if (selectAll) {
+    window.auditSelectedTypes.clear();
+  } else {
+    window.auditSelectedTypes = new Set(['__NONE__']);
+  }
+  updateAuditTypeUI();
+  renderActualBalanceAuditLedger();
+}
+window.selectAllAuditTypes = selectAllAuditTypes;
+
+function toggleAuditType(typeId) {
+  if (window.auditSelectedTypes.has('__NONE__')) {
+    window.auditSelectedTypes.clear();
+    window.auditSelectedTypes.add(typeId);
+  } else if (window.auditSelectedTypes.size === 0) {
+    window.auditSelectedTypes = new Set([typeId]);
+  } else {
+    if (window.auditSelectedTypes.has(typeId)) {
+      window.auditSelectedTypes.delete(typeId);
+      if (window.auditSelectedTypes.size === 0) {
+        window.auditSelectedTypes.add('__NONE__');
+      }
+    } else {
+      window.auditSelectedTypes.add(typeId);
+      if (window.auditSelectedTypes.size === ALL_AUDIT_TYPES.length) {
+        window.auditSelectedTypes.clear();
+      }
+    }
+  }
+  updateAuditTypeUI();
+  renderActualBalanceAuditLedger();
+}
+window.toggleAuditType = toggleAuditType;
+
+function updateAuditTypeUI() {
+  const container = document.getElementById('auditTypeListContainer');
+  const label = document.getElementById('auditTypeMultiText');
+  const isNone = window.auditSelectedTypes.has('__NONE__');
+  const isAll = (window.auditSelectedTypes.size === 0);
+
+  if (label) {
+    if (isAll) {
+      label.innerHTML = '🔄 كافة العمليات';
+    } else if (isNone) {
+      label.innerHTML = '<span style="color:#f87171;">⚠️ لا توجد أنواع محددة</span>';
+    } else {
+      const arr = Array.from(window.auditSelectedTypes);
+      if (arr.length === 1) {
+        const item = ALL_AUDIT_TYPES.find(x => x.id === arr[0]);
+        label.innerHTML = `<span style="color:${item?.color || '#38bdf8'}">${item?.name.split(' ')[0] || arr[0]}</span>`;
+      } else {
+        label.innerHTML = `🔄 ${arr.length} أنواع محددة`;
+      }
+    }
+  }
+
+  if (container) {
+    container.innerHTML = ALL_AUDIT_TYPES.map(t => {
+      const checked = isAll || (!isNone && window.auditSelectedTypes.has(t.id));
+      return `
+        <label style="display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; border-radius: 6px; background: ${checked ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255,255,255,0.02)'}; cursor: pointer; user-select: none; transition: background 0.15s;" onmouseover="this.style.background='rgba(56, 189, 248, 0.2)'" onmouseout="this.style.background='${checked ? 'rgba(56, 189, 248, 0.12)' : 'rgba(255,255,255,0.02)'}'">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleAuditType('${t.id}')" style="accent-color: #38bdf8; width: 14px; height: 14px; cursor: pointer;">
+            <i class="fa-solid ${t.icon}" style="color: ${t.color}; font-size: 0.8rem;"></i>
+            <span style="font-size: 0.72rem; font-weight: 750; color: #f8fafc;">${t.name}</span>
+          </div>
+        </label>
+      `;
+    }).join('');
+  }
+}
+window.updateAuditTypeUI = updateAuditTypeUI;
 
 function populateAuditFilters() {
   updateAuditMemberUI();
   updateAuditCategoryUI();
-
-  // المحافظ المالية
-  const selWallet = document.getElementById('auditWalletFilter');
-  if (selWallet) {
-    const cur = selWallet.value || 'all';
-    const wallets = state.wallets || [];
-    selWallet.innerHTML = '<option value="all">كافة المحافظ المجمعة</option>' +
-      wallets.map(w => `<option value="${w.id}">${w.name} (${w.type === 'cash' ? 'كاش' : 'محفظة'})</option>`).join('');
-    selWallet.value = cur;
-  }
+  updateAuditWalletUI();
+  updateAuditTypeUI();
 }
 window.populateAuditFilters = populateAuditFilters;
 
@@ -34677,28 +34912,29 @@ function renderAuditWalletsCards() {
     totalTxt.textContent = `إجمالي السيولة: ${totalLiquidity.toFixed(2)} ج.م`;
   }
 
-  const selectedWallet = document.getElementById('auditWalletFilter')?.value || 'all';
+  const isNone = window.auditSelectedWallets.has('__NONE__');
+  const isAll = (window.auditSelectedWallets.size === 0);
 
   container.innerHTML = wallets.map(w => {
-    const isSelected = selectedWallet === w.id;
+    const isSelected = isAll || (!isNone && window.auditSelectedWallets.has(w.id));
     const bal = parseFloat(w.balance) || 0;
     const color = w.color || '#38bdf8';
     const icon = w.icon || 'fa-wallet';
 
     return `
-      <div onclick="selectAuditWalletQuick('${w.id}')" style="cursor: pointer; background: ${isSelected ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.95))' : 'rgba(30, 41, 59, 0.6)'}; border: 1.4px solid ${isSelected ? '#38bdf8' : 'rgba(255,255,255,0.1)'}; border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; box-shadow: ${isSelected ? '0 0 12px rgba(56, 189, 248, 0.35)' : 'none'};">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <div style="width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: ${color};">
+      <div onclick="selectAuditWalletQuick('${w.id}')" style="cursor: pointer; background: ${isSelected && !isAll ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.95))' : 'rgba(30, 41, 59, 0.55)'}; border: 1.2px solid ${isSelected && !isAll ? '#38bdf8' : 'rgba(255,255,255,0.08)'}; border-radius: 10px; padding: 6px 9px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; box-shadow: ${isSelected && !isAll ? '0 0 10px rgba(56, 189, 248, 0.35)' : 'none'};">
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <div style="width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: ${color}; font-size: 0.8rem;">
             <i class="fa-solid ${icon}"></i>
           </div>
           <div>
-            <div style="font-size: 0.74rem; font-weight: 850; color: #f8fafc;">${w.name}</div>
-            <div style="font-size: 0.62rem; color: #94a3b8;">${w.type === 'cash' ? 'كاش' : 'محفظة'}</div>
+            <div style="font-size: 0.72rem; font-weight: 850; color: #f8fafc;">${w.name}</div>
+            <div style="font-size: 0.58rem; color: #94a3b8;">${w.type === 'cash' ? 'كاش' : 'محفظة'}</div>
           </div>
         </div>
         <div style="text-align: left;">
-          <div style="font-size: 0.86rem; font-weight: 900; color: ${bal >= 0 ? '#34d399' : '#f87171'}; font-family: var(--font-numbers); direction: ltr;">${bal.toFixed(2)} ج.م</div>
-          ${isSelected ? '<span style="font-size: 0.58rem; color: #38bdf8; font-weight: 800;">مُفعل ✓</span>' : ''}
+          <div style="font-size: 0.82rem; font-weight: 900; color: ${bal >= 0 ? '#34d399' : '#f87171'}; font-family: var(--font-numbers); direction: ltr;">${bal.toFixed(2)} ج.م</div>
+          ${isSelected && !isAll ? '<span style="font-size: 0.56rem; color: #38bdf8; font-weight: 800;">مُفعل ✓</span>' : ''}
         </div>
       </div>
     `;
@@ -34707,12 +34943,7 @@ function renderAuditWalletsCards() {
 window.renderAuditWalletsCards = renderAuditWalletsCards;
 
 function selectAuditWalletQuick(walletId) {
-  const sel = document.getElementById('auditWalletFilter');
-  if (sel) {
-    sel.value = (sel.value === walletId) ? 'all' : walletId;
-  }
-  renderAuditWalletsCards();
-  renderActualBalanceAuditLedger();
+  toggleAuditWallet(walletId);
 }
 window.selectAuditWalletQuick = selectAuditWalletQuick;
 
@@ -34738,8 +34969,6 @@ function renderActualBalanceAuditLedger() {
 
   const q = (document.getElementById('auditSearchInput')?.value || '').trim().toLowerCase();
   const period = document.getElementById('auditPeriodFilter')?.value || 'all';
-  const wallet = document.getElementById('auditWalletFilter')?.value || 'all';
-  const type = document.getElementById('auditTypeFilter')?.value || 'all';
 
   let txs = (state.transactions || []).slice();
 
@@ -34747,7 +34976,7 @@ function renderActualBalanceAuditLedger() {
   if (q) {
     txs = txs.filter(t => {
       const catInfo = getCategoryArabicInfo(t.category, t.type);
-      return (t.label || '').toLowerCase().includes(q) || 
+      return (t.label || '').toLowerCase().includes(q) ||
              (t.category || '').toLowerCase().includes(q) ||
              catInfo.name.toLowerCase().includes(q) ||
              (t.member || '').toLowerCase().includes(q) ||
@@ -34806,7 +35035,7 @@ function renderActualBalanceAuditLedger() {
     }
   }
 
-  // 4. تصفية بنود الصرف والإيراد (متعدد الاختيار + مطابقة عربية شاملة)
+  // 4. تصفية بنود الصرف والإيراد (متعدد الاختيار)
   if (window.auditSelectedCategories && window.auditSelectedCategories.size > 0) {
     if (window.auditSelectedCategories.has('__NONE__')) {
       txs = [];
@@ -34814,7 +35043,7 @@ function renderActualBalanceAuditLedger() {
       txs = txs.filter(t => {
         const rawKey = String(t.category || '').trim().toLowerCase();
         const info = getCategoryArabicInfo(t.category, t.type);
-        
+
         if (window.auditSelectedCategories.has(rawKey)) return true;
         if (rawKey === 'home' && window.auditSelectedCategories.has('house')) return true;
         if (rawKey === 'biz' && window.auditSelectedCategories.has('business')) return true;
@@ -34827,17 +35056,43 @@ function renderActualBalanceAuditLedger() {
     }
   }
 
-  // 5. تصفية المحفظة
-  if (wallet !== 'all') {
-    txs = txs.filter(t => (t.walletId || t.wallet || 'cash') === wallet);
+  // 5. تصفية المحافظ (متعدد الاختيار)
+  if (window.auditSelectedWallets && window.auditSelectedWallets.size > 0) {
+    if (window.auditSelectedWallets.has('__NONE__')) {
+      txs = [];
+    } else {
+      txs = txs.filter(t => {
+        const wid = t.walletId || t.wallet || 'cash';
+        return window.auditSelectedWallets.has(wid);
+      });
+    }
   }
 
-  // 6. تصفية نوع العملية
-  if (type !== 'all') {
-    txs = txs.filter(t => t.type === type);
+  // 6. تصفية نوع العملية (متعدد الاختيار بما في ذلك المرفقات)
+  if (window.auditSelectedTypes && window.auditSelectedTypes.size > 0) {
+    if (window.auditSelectedTypes.has('__NONE__')) {
+      txs = [];
+    } else {
+      txs = txs.filter(t => {
+        const hasReceipt = Boolean(getTxAttachmentUrl(t));
+        const hasReceiptFilter = window.auditSelectedTypes.has('with_receipt');
+
+        if (hasReceiptFilter && window.auditSelectedTypes.size === 1) {
+          return hasReceipt;
+        }
+
+        if (hasReceiptFilter) {
+          const nonReceiptTypes = new Set(window.auditSelectedTypes);
+          nonReceiptTypes.delete('with_receipt');
+          return hasReceipt && nonReceiptTypes.has(t.type);
+        }
+
+        return window.auditSelectedTypes.has(t.type);
+      });
+    }
   }
 
-  // فرز زمني تسلسلي لحساب الرصيد التراكمي بدقة رياضية
+  // فرز تسلسلي زمني لحساب الرصيد التراكمي بدقة رياضية
   txs.sort((a, b) => {
     const dComp = (a.date || '').localeCompare(b.date || '');
     if (dComp !== 0) return dComp;
@@ -34870,63 +35125,66 @@ function renderActualBalanceAuditLedger() {
     const isInc = t.type === 'income';
     const amt = parseFloat(t.amount) || 0;
     const catInfo = getCategoryArabicInfo(t.category, t.type);
-    const receiptImg = t.receiptDataUri || t.receiptUrl || t.receipt || t.photo || t.image || null;
+    const receiptImg = getTxAttachmentUrl(t);
+    const safeLabel = typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-');
 
     return `
-      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.15s ease;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
-        <td style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">${idx + 1}</td>
-        <td style="padding: 8px 6px; font-size: 0.74rem; color: #cbd5e1; white-space: nowrap;">${t.date || '-'}</td>
-        <td style="padding: 8px 6px; font-size: 0.78rem; font-weight: 700; color: #f8fafc;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
-        <td style="padding: 8px 6px; font-size: 0.74rem; color: #38bdf8;">${t.member || '-'}</td>
-        <td style="padding: 8px 6px; font-size: 0.74rem; color: ${catInfo.color || '#c084fc'}; white-space: nowrap;">
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.12s ease;" onmouseover="this.style.background='rgba(56, 189, 248, 0.05)'" onmouseout="this.style.background='transparent'">
+        <td style="padding: 6px 5px; font-size: 0.70rem; color: #94a3b8; text-align: center;">${idx + 1}</td>
+        <td style="padding: 6px 5px; font-size: 0.72rem; color: #cbd5e1; white-space: nowrap;">${t.date || '-'}</td>
+        <td style="padding: 6px 8px; font-size: 0.76rem; font-weight: 750; color: #f8fafc; line-height: 1.35; word-break: break-word;">${safeLabel}</td>
+        <td style="padding: 6px 5px; font-size: 0.72rem; color: #38bdf8; white-space: nowrap;">${t.member || '-'}</td>
+        <td style="padding: 6px 5px; font-size: 0.72rem; color: ${catInfo.color || '#c084fc'}; white-space: nowrap;">
           <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 750;">
-            <span style="font-size: 0.85rem;">${catInfo.emoji}</span>
+            <span style="font-size: 0.82rem;">${catInfo.emoji}</span>
             <span>${catInfo.name}</span>
           </span>
         </td>
-        <td style="padding: 8px 6px; font-size: 0.76rem; font-weight: 800; color: #34d399; text-align: left; font-family: var(--font-numbers); direction: ltr;">
+        <td style="padding: 6px 6px; font-size: 0.75rem; font-weight: 800; color: #34d399; text-align: left; font-family: var(--font-numbers); direction: ltr;">
           ${isInc ? `+${amt.toFixed(2)}` : '-'}
         </td>
-        <td style="padding: 8px 6px; font-size: 0.76rem; font-weight: 800; color: #f43f5e; text-align: left; font-family: var(--font-numbers); direction: ltr;">
+        <td style="padding: 6px 6px; font-size: 0.75rem; font-weight: 800; color: #f43f5e; text-align: left; font-family: var(--font-numbers); direction: ltr;">
           ${!isInc ? `-${amt.toFixed(2)}` : '-'}
         </td>
-        <td style="padding: 8px 6px; font-size: 0.78rem; font-weight: 900; color: ${(t._runningBalance || 0) >= 0 ? '#38bdf8' : '#f87171'}; text-align: left; font-family: var(--font-numbers); direction: ltr;">
+        <td style="padding: 6px 6px; font-size: 0.76rem; font-weight: 900; color: ${(t._runningBalance || 0) >= 0 ? '#38bdf8' : '#f87171'}; text-align: left; font-family: var(--font-numbers); direction: ltr;">
           ${(t._runningBalance !== undefined ? t._runningBalance : running).toFixed(2)}
         </td>
-        <td style="padding: 6px 4px; text-align: center; white-space: nowrap;">
+        <td style="padding: 5px 4px; text-align: center; white-space: nowrap;">
           ${receiptImg ? `
-            <div onclick="event.stopPropagation(); if (typeof openReceiptLightbox === 'function') openReceiptLightbox('${receiptImg}', '${typeof escapeHtml === 'function' ? escapeHtml(t.label || 'إيصال') : (t.label || 'إيصال')}');" style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; background: rgba(56, 189, 248, 0.18); border: 1.2px solid rgba(56, 189, 248, 0.5); border-radius: 8px; padding: 2px 7px; color: #38bdf8; font-size: 0.70rem; font-weight: 850; box-shadow: 0 2px 6px rgba(0,0,0,0.3); transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'" title="انقر لتكبير صورة الإيصال والفاتورة">
-              <img src="${receiptImg}" style="width: 22px; height: 22px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.6);" />
-              <span>عرض</span>
+            <div onclick="event.stopPropagation(); if (typeof openReceiptLightbox === 'function') openReceiptLightbox('${receiptImg}', '${safeLabel}');" 
+                 class="audit-attachment-chip"
+                 title="انقر لتكبير ومعاينة المرفق والفاتورة">
+              <img src="${receiptImg}" class="audit-attachment-thumb" onerror="this.style.display='none'" />
+              <span>عرض 📎</span>
             </div>
-          ` : '<span style="color: #64748b; font-size: 0.70rem;">-</span>'}
+          ` : '<span style="color: #64748b; font-size: 0.70rem; opacity: 0.6;">—</span>'}
         </td>
       </tr>
     `;
   }).join('');
 
   container.innerHTML = `
-    <table style="width: 100%; border-collapse: collapse; text-align: right;">
+    <table style="width: 100%; border-collapse: separate; border-spacing: 0; text-align: right;">
       <thead>
-        <tr style="background: rgba(30, 41, 59, 0.7); border-bottom: 1.5px solid rgba(56, 189, 248, 0.3);">
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">#</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">التاريخ</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">البيان</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">العضو</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #94a3b8;">التصنيف</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #34d399; text-align: left;">إيداع (+)</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #f43f5e; text-align: left;">مصروف (-)</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #38bdf8; text-align: left;">الرصيد التراكمي</th>
-          <th style="padding: 8px 6px; font-size: 0.72rem; color: #38bdf8; text-align: center; width: 68px;">المرفق</th>
+        <tr style="position: sticky; top: 0; z-index: 10; background: #0f172a; border-bottom: 2px solid rgba(56, 189, 248, 0.45); box-shadow: 0 2px 5px rgba(0,0,0,0.45);">
+          <th style="padding: 7px 5px; font-size: 0.70rem; color: #94a3b8; text-align: center; width: 40px; background: #0f172a;">#</th>
+          <th style="padding: 7px 5px; font-size: 0.70rem; color: #94a3b8; width: 85px; background: #0f172a;">التاريخ</th>
+          <th style="padding: 7px 8px; font-size: 0.70rem; color: #94a3b8; background: #0f172a;">البيان والتفاصيل</th>
+          <th style="padding: 7px 5px; font-size: 0.70rem; color: #94a3b8; width: 75px; background: #0f172a;">العضو</th>
+          <th style="padding: 7px 5px; font-size: 0.70rem; color: #94a3b8; width: 110px; background: #0f172a;">التصنيف</th>
+          <th style="padding: 7px 6px; font-size: 0.70rem; color: #34d399; text-align: left; width: 95px; background: #0f172a;">إيداع (+)</th>
+          <th style="padding: 7px 6px; font-size: 0.70rem; color: #f43f5e; text-align: left; width: 95px; background: #0f172a;">مصروف (-)</th>
+          <th style="padding: 7px 6px; font-size: 0.70rem; color: #38bdf8; text-align: left; width: 105px; background: #0f172a;">الرصيد التراكمي</th>
+          <th style="padding: 7px 5px; font-size: 0.70rem; color: #38bdf8; text-align: center; width: 80px; background: #0f172a;">المرفق 📎</th>
         </tr>
       </thead>
       <tbody>
-        ${rows || '<tr><td colspan="9" style="text-align:center; padding: 20px; color:#94a3b8;">لا توجد عمليات مطابقة للفلاتر المحددة</td></tr>'}
+        ${rows || '<tr><td colspan="9" style="text-align:center; padding: 25px; color:#94a3b8; font-size: 0.8rem;">لا توجد عمليات مطابقة للفلاتر المحددة</td></tr>'}
       </tbody>
     </table>
   `;
 
-  // 7. تحديث إحصائيات الفلترة
+  // 7. تحديث إحصائيات الفلترة المباشرة
   const elInc = document.getElementById('auditFilteredIncome');
   const elExp = document.getElementById('auditFilteredExpense');
   const elNet = document.getElementById('auditFilteredNet');
@@ -34949,7 +35207,7 @@ function renderActualBalanceAuditLedger() {
   const eqText = document.getElementById('auditEquationText');
   if (eqText) eqText.textContent = `${totInc.toFixed(2)} - ${totExp.toFixed(2)} = ${(totInc - totExp).toFixed(2)} ج.م`;
 
-  // 9. تخزين الحركات المفلترة للتصدير
+  // 9. تخزين الحركات المفلترة للتصدير والطباعة
   window.lastAuditFilteredTxs = displayTxs;
 }
 window.renderActualBalanceAuditLedger = renderActualBalanceAuditLedger;
@@ -34973,28 +35231,35 @@ function resetAuditFilters() {
 
   window.auditSelectedMembers.clear();
   window.auditSelectedCategories.clear();
+  window.auditSelectedWallets.clear();
+  window.auditSelectedTypes.clear();
+
   updateAuditMemberUI();
   updateAuditCategoryUI();
+  updateAuditWalletUI();
+  updateAuditTypeUI();
 
-  ['auditPeriodFilter', 'auditWalletFilter', 'auditTypeFilter'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = 'all';
-  });
+  const pEl = document.getElementById('auditPeriodFilter');
+  if (pEl) pEl.value = 'all';
 
   if (typeof renderAuditWalletsCards === 'function') renderAuditWalletsCards();
   renderActualBalanceAuditLedger();
+  if (typeof showToast === 'function') showToast('تم تفريغ كافة الفلاتر والبحث بنجاح ✓', 'info');
 }
 window.resetAuditFilters = resetAuditFilters;
 
 function exportAuditLedgerCSV() {
   const txs = window.lastAuditFilteredTxs || (state.transactions || []).slice();
-  let csv = "\uFEFF# التاريخ,البيان,العضو,التصنيف,المحفظة,المبلغ,النوع,الرصيد التراكمي\n";
+  let csv = "﻿# التاريخ,البيان,العضو,التصنيف,المحفظة,المبلغ,النوع,الرصيد التراكمي,المرفق
+";
   txs.forEach((t, i) => {
     const catInfo = getCategoryArabicInfo(t.category, t.type);
     const amt = parseFloat(t.amount) || 0;
     const isInc = t.type === 'income';
     const runningStr = (t._runningBalance !== undefined) ? t._runningBalance.toFixed(2) : '';
-    csv += `"${i+1}","${t.date||''}","${(t.label||'').replace(/"/g,'""')}","${t.member||''}","${catInfo.name}","${t.walletId||t.wallet||'cash'}","${amt.toFixed(2)}","${isInc ? 'إيداع (+)' : 'مصروف (-)'}","${runningStr}\n"`;
+    const hasAtt = Boolean(getTxAttachmentUrl(t));
+    csv += `"${i+1}","${t.date||''}","${(t.label||'').replace(/"/g,'""')}","${t.member||''}","${catInfo.name}","${t.walletId||t.wallet||'cash'}","${amt.toFixed(2)}","${isInc ? 'إيداع (+)' : 'مصروف (-)'}","${runningStr}","${hasAtt ? 'يوجد مرفق' : 'بدون'}"
+`;
   });
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
@@ -35003,14 +35268,86 @@ function exportAuditLedgerCSV() {
   a.download = `audit_ledger_${getLocalDateStr(new Date())}.csv`;
   a.click();
   URL.revokeObjectURL(url);
-  if (typeof showToast === 'function') showToast('تم تصدير كشف التدقيق المفلتر CSV بنجاح ✓', 'success');
+  if (typeof showToast === 'function') showToast('تم تصدير كشف الحساب المفلتر CSV بنجاح ✓', 'success');
 }
 window.exportAuditLedgerCSV = exportAuditLedgerCSV;
 
 function printAuditLedgerStatement() {
+  const txs = window.lastAuditFilteredTxs || (state.transactions || []).slice();
+  const printContainer = document.getElementById('printableStatementSheet');
+  if (printContainer) {
+    let totInc = 0;
+    let totExp = 0;
+    let rowsHtml = '';
+
+    txs.forEach((t, i) => {
+      const amt = parseFloat(t.amount) || 0;
+      const isInc = t.type === 'income';
+      if (isInc) totInc += amt;
+      else totExp += amt;
+
+      const catInfo = getCategoryArabicInfo(t.category, t.type);
+      const debitTxt = !isInc ? `-${amt.toFixed(2)}` : '-';
+      const creditTxt = isInc ? `+${amt.toFixed(2)}` : '-';
+      const runningBal = (t._runningBalance !== undefined) ? t._runningBalance.toFixed(2) : '-';
+      const receiptImg = getTxAttachmentUrl(t);
+
+      rowsHtml += `
+        <tr style="border-bottom: 1px solid #e2e8f0; font-size: 0.74rem;">
+          <td style="padding: 5px; text-align: center;">${i + 1}</td>
+          <td style="padding: 5px; white-space: nowrap;">${t.date || '-'}</td>
+          <td style="padding: 5px; font-weight: 700;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
+          <td style="padding: 5px;">${t.member || '-'}</td>
+          <td style="padding: 5px;">${catInfo.name}</td>
+          <td style="padding: 5px; color: #16a34a; font-weight: 700; direction: ltr; text-align: left;">${creditTxt}</td>
+          <td style="padding: 5px; color: #dc2626; font-weight: 700; direction: ltr; text-align: left;">${debitTxt}</td>
+          <td style="padding: 5px; font-weight: 800; color: #0284c7; direction: ltr; text-align: left;">${runningBal}</td>
+          <td style="padding: 5px; text-align: center;">${receiptImg ? '📎 يوجد مرفق' : '-'}</td>
+        </tr>
+      `;
+    });
+
+    const netBal = totInc - totExp;
+    printContainer.innerHTML = `
+      <div class="print-header-box" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 10px; margin-bottom: 12px; direction: rtl;">
+        <div>
+          <h2 style="margin: 0 0 4px; font-size: 1.3rem; color: #0369a1; font-weight: 900;">كشف وتدقيق مصدر الرصيد الفعلي</h2>
+          <div style="font-size: 0.78rem; color: #475569;">تقرير تدقيق مالي محاسبي شامل لحركات الصندوق والمحافظ</div>
+        </div>
+        <div style="text-align: left; font-size: 0.74rem; color: #64748b; direction: rtl;">
+          <div>تاريخ التقرير: <strong>${new Date().toLocaleDateString('ar-EG')}</strong></div>
+          <div>عدد الحركات: <strong>${txs.length} حركة</strong></div>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; direction: rtl;">
+        <div style="text-align: center;"><div style="font-size: 0.70rem; color: #64748b;">إجمالي الإيداعات (+)</div><div style="font-size: 1.05rem; font-weight: 900; color: #16a34a; direction: ltr;">+${totInc.toFixed(2)} ج.م</div></div>
+        <div style="text-align: center;"><div style="font-size: 0.70rem; color: #64748b;">إجمالي المصروفات (-)</div><div style="font-size: 1.05rem; font-weight: 900; color: #dc2626; direction: ltr;">-${totExp.toFixed(2)} ج.م</div></div>
+        <div style="text-align: center;"><div style="font-size: 0.70rem; color: #64748b;">صافي الحركة المعتمد</div><div style="font-size: 1.05rem; font-weight: 900; color: #0284c7; direction: ltr;">${netBal.toFixed(2)} ج.م</div></div>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; direction: rtl; text-align: right;">
+        <thead>
+          <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1; font-size: 0.74rem; color: #334155;">
+            <th style="padding: 6px; text-align: center;">#</th>
+            <th style="padding: 6px;">التاريخ</th>
+            <th style="padding: 6px;">البيان</th>
+            <th style="padding: 6px;">العضو</th>
+            <th style="padding: 6px;">التصنيف</th>
+            <th style="padding: 6px; text-align: left;">إيداع (+)</th>
+            <th style="padding: 6px; text-align: left;">مصروف (-)</th>
+            <th style="padding: 6px; text-align: left;">الرصيد التراكمي</th>
+            <th style="padding: 6px; text-align: center;">المرفق</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding:15px;">لا توجد حركات مطابقة</td></tr>'}
+        </tbody>
+      </table>
+    `;
+  }
   window.print();
 }
 window.printAuditLedgerStatement = printAuditLedgerStatement;
+
 
 // 5. WALLET TRANSFERS & STATEMENTS
 function executeWalletTransfer() {
@@ -35756,15 +36093,163 @@ function loadMoreArchiveActivities() {
 window.loadMoreArchiveActivities = loadMoreArchiveActivities;
 
 function filterArchiveType(type, btn) {
-  document.querySelectorAll('.ops-type-filter button, .btn-export-tool').forEach(b => {
-    if (b.getAttribute('onclick')?.includes('filterArchiveType')) b.classList.remove('active');
+  document.querySelectorAll('.archive-filter-row button').forEach(b => {
+    if (b.getAttribute('onclick')?.includes('filterArchiveType')) {
+      b.classList.remove('active');
+      b.style.background = '';
+      b.style.color = '';
+    }
   });
-  if (btn) btn.classList.add('active');
-  if (typeof filterOperationsList === 'function') filterOperationsList();
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.background = 'rgba(56, 189, 248, 0.25)';
+    btn.style.color = '#38bdf8';
+  }
+  currentActivityTab = type || 'all';
+  if (typeof renderActivityLogUI === 'function') renderActivityLogUI();
 }
 window.filterArchiveType = filterArchiveType;
 
+    // ==============================================================
+    // أدوات الضبط المركزية: إدارة المحافظ، كشف الحساب، تصدير واستيراد JSON
+    // ==============================================================
+    function openWalletsModal() {
+      if (typeof openModal === 'function') openModal('walletModal');
+    }
+    window.openWalletsModal = openWalletsModal;
 
+    function openFullStatementModal() {
+      if (typeof renderWalletStatement === 'function') renderWalletStatement();
+      if (typeof openModal === 'function') openModal('walletStatementModal');
+    }
+    window.openFullStatementModal = openFullStatementModal;
+
+    function exportDataJSON() {
+      if (typeof downloadBackup === 'function') {
+        downloadBackup();
+      } else if (typeof exportToGoogleDriveDirect === 'function') {
+        exportToGoogleDriveDirect();
+      }
+    }
+    window.exportDataJSON = exportDataJSON;
+
+    function importDataJSON(event) {
+      const file = event.target?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          const newState = data.state || data;
+          const fields = ['transactions', 'wallets', 'expectedExpenses', 'monthlyBudgets', 'moneyRequests', 'notes', 'debts', 'activityLog'];
+          const importedFields = fields.filter(field => Array.isArray(newState[field]));
+          if (!importedFields.length && !newState.transactions) {
+            if (typeof showToast === 'function') showToast('ملف النسخة لا يحتوي على بيانات قابلة للاستعادة', 'error');
+            return;
+          }
+          fields.forEach(field => {
+            if (Array.isArray(newState[field])) state[field] = newState[field];
+          });
+          if (typeof saveTx === 'function') saveTx();
+          if (typeof saveTransactionsToStorage === 'function') saveTransactionsToStorage();
+          if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
+          if (typeof renderUI === 'function') renderUI();
+          if (typeof showToast === 'function') showToast('✅ تم استيراد واستعادة البيانات بنجاح', 'success');
+          event.target.value = '';
+        } catch(err) {
+          if (typeof showToast === 'function') showToast('فشل استيراد النسخة: ' + err.message, 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+    window.importDataJSON = importDataJSON;
+
+    // ==============================================================
+    // محرك النسخ الاحتياطي اليومي 12:00 ظهراً وحفظ Google Drive مع التنبيه
+    // ==============================================================
+    async function executeDailyNoonBackup(isManual = false) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const yDate = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      const yesterdayStr = yDate.toISOString().split('T')[0];
+      const timeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+      const backupPayload = {
+        app: 'FamilyExpenseTrackerMonefy',
+        account: (typeof GDRIVE_CONFIG !== 'undefined' ? GDRIVE_CONFIG.targetAccount : 'maher.easybakery@gmail.com'),
+        backupType: 'daily_noon_scheduled',
+        backupDate: todayStr,
+        previousDayDeleted: yesterdayStr,
+        scheduledTime: '12:00:00',
+        executedAt: now.toISOString(),
+        database: {
+          transactions: state.transactions || [],
+          wallets: state.wallets || [],
+          expectedExpenses: state.expectedExpenses || [],
+          monthlyBudgets: state.monthlyBudgets || [],
+          moneyRequests: state.moneyRequests || [],
+          notes: state.notes || [],
+          debts: state.debts || [],
+          activityLog: state.activityLog || [],
+          currency: state.currency || 'EGP'
+        }
+      };
+
+      try {
+        localStorage.setItem(`family_backup_${todayStr}`, JSON.stringify(backupPayload));
+        localStorage.removeItem(`family_backup_${yesterdayStr}`);
+        localStorage.setItem('family_daily_noon_backup_date', todayStr);
+        localStorage.setItem('family_daily_noon_backup_time', timeStr);
+      } catch(e) {}
+
+      const endpoint = "https://script.google.com/macros/s/AKfycbwdIuCjR3lUy0DTBnWTj9koFZ4ghRxR2Dq-sdj_LjIS2r_gHfpp4AX_32dNd2RRKPaShQ/exec";
+      try {
+        await fetch(endpoint, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'daily_noon_backup',
+            todayDate: todayStr,
+            yesterdayDate: yesterdayStr,
+            todayFileName: `family_backup_${todayStr}.json`,
+            yesterdayFileName: `family_backup_${yesterdayStr}.json`,
+            data: backupPayload
+          })
+        });
+      } catch(e) {
+        console.warn('Note on Drive Cloud Post:', e);
+      }
+
+      if (window.FamilyAlerts && typeof window.FamilyAlerts.created === 'function') {
+        window.FamilyAlerts.created('backup', {
+          id: `backup_${todayStr}_${Date.now()}`,
+          title: 'النسخ الاحتياطي اليومي',
+          message: `تم أخذ نسخة احتياطية الساعة 12:00 وحفظها بنجاح على Google Drive وحذف نسخة الأمس (${yesterdayStr}) تلقائياً.`
+        });
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('✅ تم أخذ نسخة احتياطية على Google Drive وحذف نسخة الأمس', 'success', 3500);
+      }
+    }
+    window.executeDailyNoonBackup = executeDailyNoonBackup;
+
+    function checkAndRunDailyNoonBackup() {
+      try {
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const lastRun = localStorage.getItem('family_daily_noon_backup_date');
+        if (now.getHours() >= 12 && lastRun !== todayStr) {
+          console.log('⏰ [DailyBackup] بدء تشغيل النسخ الاحتياطي المجدول لليوم (12:00 ظهراً)...');
+          executeDailyNoonBackup(false);
+        }
+      } catch(e) {}
+    }
+    window.checkAndRunDailyNoonBackup = checkAndRunDailyNoonBackup;
+
+    setTimeout(checkAndRunDailyNoonBackup, 3000);
+    setInterval(checkAndRunDailyNoonBackup, 15 * 60 * 1000);
 
     </script>
 
@@ -35885,31 +36370,95 @@ window.filterArchiveType = filterArchiveType;
   <!-- ==============================================================
        نافذة تدقيق ومصدر الرصيد الفعلي الشاملة (Executive Source of Funds & Ledger)
        ============================================================== -->
+    <!-- نافذة كشف وتدقيق مصدر الرصيد الفعلي (Accounting Ledger Statement & Audit Modal) -->
   <div class="modal-overlay modal-overlay-custom" id="actualBalanceAuditModal" style="z-index: 10500;">
-    <div class="modal-content-card" style="max-width: 960px; width: 96%; max-height: 94vh; padding: 18px 20px; border-radius: 24px; display: flex; flex-direction: column; background: linear-gradient(145deg, #0b1329, #0f172a); border: 1px solid rgba(56, 189, 248, 0.28); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);">
-      
+    <div class="modal-content-card" style="max-width: 1240px; width: 96%; height: 95vh; max-height: 95vh; padding: 12px 16px; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(145deg, #0b1329, #0f172a); border: 1.2px solid rgba(56, 189, 248, 0.35); box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);">
+
+      <style>
+        .btn-audit-mini {
+          height: 27px !important;
+          padding: 2px 9px !important;
+          font-size: 0.68rem !important;
+          font-weight: 800 !important;
+          border-radius: 6px !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 4px !important;
+          cursor: pointer !important;
+          transition: all 0.15s ease !important;
+          white-space: nowrap !important;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+        }
+        .btn-audit-mini:hover {
+          transform: translateY(-1px) !important;
+          filter: brightness(1.2) !important;
+        }
+        .btn-audit-mini.btn-audit-sort {
+          background: rgba(56, 189, 248, 0.12) !important;
+          border: 1px solid rgba(56, 189, 248, 0.4) !important;
+          color: #38bdf8 !important;
+        }
+        .btn-audit-mini.btn-audit-excel {
+          background: rgba(16, 185, 129, 0.12) !important;
+          border: 1px solid rgba(16, 185, 129, 0.4) !important;
+          color: #34d399 !important;
+        }
+        .btn-audit-mini.btn-audit-print {
+          background: rgba(244, 63, 94, 0.12) !important;
+          border: 1px solid rgba(244, 63, 94, 0.4) !important;
+          color: #fb7185 !important;
+        }
+        .audit-attachment-chip {
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          background: rgba(56, 189, 248, 0.16);
+          border: 1.2px solid rgba(56, 189, 248, 0.45);
+          border-radius: 6px;
+          padding: 2px 7px;
+          color: #38bdf8;
+          font-size: 0.68rem;
+          font-weight: 850;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+          transition: all 0.15s ease;
+        }
+        .audit-attachment-chip:hover {
+          background: rgba(56, 189, 248, 0.28);
+          transform: scale(1.05);
+        }
+        .audit-attachment-thumb {
+          width: 18px;
+          height: 18px;
+          object-fit: cover;
+          border-radius: 3px;
+          border: 1px solid rgba(56, 189, 248, 0.6);
+        }
+      </style>
+
       <!-- رأس النافذة -->
-      <div class="modal-head" style="margin-bottom: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.25)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(16, 185, 129, 0.4);">
-            <i class="fa-solid fa-scale-balanced" style="color: #34d399; font-size: 1.20rem;"></i>
+      <div class="modal-head" style="margin-bottom: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.25)); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(16, 185, 129, 0.4);">
+            <i class="fa-solid fa-scale-balanced" style="color: #34d399; font-size: 1.05rem;"></i>
           </div>
           <div>
-            <h3 class="modal-title-custom" style="font-size: 1.08rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 8px;">
+            <h3 class="modal-title-custom" style="font-size: 1.02rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
               <span>كشف وتدقيق مصدر الرصيد الفعلي</span>
             </h3>
-
           </div>
         </div>
 
-        <!-- الجانب الأيسر العلوي: ملحوظة جانبية لنتيجة وقيمة المطابقة المحاسبية وزر الإغلاق -->
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div id="auditHeaderReconNote" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(15, 23, 42, 0.90)); border: 1.2px solid rgba(34, 197, 94, 0.5); border-radius: 10px; padding: 4px 11px; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
-            <div style="display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 900; color: #34d399;">
+        <!-- ملحوظة المطابقة المحاسبية وزر الإغلاق -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div id="auditHeaderReconNote" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.16), rgba(15, 23, 42, 0.90)); border: 1.2px solid rgba(34, 197, 94, 0.5); border-radius: 8px; padding: 3px 9px; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+            <div style="display: flex; align-items: center; gap: 5px; font-size: 0.70rem; font-weight: 900; color: #34d399;">
               <i class="fa-solid fa-circle-check" style="color: #22c55e;"></i>
               <span>فارق المطابقة: <strong style="color: #ffffff; text-decoration: underline;">0.00 ج.م</strong> (تطابق تام)</span>
             </div>
-            <div id="auditEquationText" style="font-size: 0.60rem; color: #7dd3fc; font-family: 'Courier New', monospace; font-weight: 700; direction: ltr;">
+            <div id="auditEquationText" style="font-size: 0.58rem; color: #7dd3fc; font-family: 'Courier New', monospace; font-weight: 700; direction: ltr;">
               0.00 - 0.00 = 0.00
             </div>
           </div>
@@ -35917,260 +36466,282 @@ window.filterArchiveType = filterArchiveType;
         </div>
       </div>
 
-      <!-- محتوى النافذة القابل للتمرير -->
-      <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-left: 2px; padding-right: 2px;" class="custom-scrollbar">
-        
-        <!-- 1. كروت معادلة الرصيد المحاسبية (Decomposition Cards) -->
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;" id="auditKpiCardsGrid">
-          <!-- كارت إجمالي الإيداعات -->
-          <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.70rem; color: #94a3b8; font-weight: 800;">إجمالي الإيداعات (+)</span>
-              <i class="fa-solid fa-circle-arrow-down" style="color: #34d399; font-size: 0.85rem;"></i>
-            </div>
-            <div id="auditMetricTotalInc" style="font-size: 1.35rem; font-weight: 950; color: #34d399;">+ 0.00 ج.م</div>
-            <div style="font-size: 0.62rem; color: #6ee7b7; font-weight: 600;">كافة الدخول المحققة</div>
-          </div>
+      <!-- محتوى النافذة الرئيسي المقسم إلى قسمين: علوي مدمج + جدول ممتد بارتفاع كامل -->
+      <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; gap: 8px;">
 
-          <!-- كارت إجمالي المصروفات -->
-          <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.28); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.70rem; color: #94a3b8; font-weight: 800;">إجمالي المصروفات (-)</span>
-              <i class="fa-solid fa-circle-arrow-up" style="color: #f43f5e; font-size: 0.85rem;"></i>
-            </div>
-            <div id="auditMetricTotalExp" style="font-size: 1.35rem; font-weight: 950; color: #f43f5e;">- 0.00 ج.م</div>
-            <div style="font-size: 0.62rem; color: #fda4af; font-weight: 600;">كافة السحوبات والمصاريف</div>
-          </div>
+        <!-- القسم العلوي المدمج (KPIs + المحافظ + الفلاتر + شريط الإحصائيات والأزرار) -->
+        <div style="flex-shrink: 0; display: flex; flex-direction: column; gap: 7px;">
 
-          <!-- كارت صافي الفارق التراكمي -->
-          <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.70rem; color: #94a3b8; font-weight: 800;">صافي التدفقات (الفارق)</span>
-              <i class="fa-solid fa-chart-line" style="color: #38bdf8; font-size: 0.85rem;"></i>
-            </div>
-            <div id="auditMetricNetFlow" style="font-size: 1.35rem; font-weight: 950; color: #38bdf8;">0.00 ج.م</div>
-            <div style="font-size: 0.62rem; color: #7dd3fc; font-weight: 600;">(الإيداعات - المصروفات)</div>
-          </div>
-
-          <!-- كارت الرصيد الفعلي الحالي -->
-          <div style="background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(16, 185, 129, 0.2)); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px;">
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 0.70rem; color: #e2e8f0; font-weight: 900;">الرصيد الفعلي المعتمد</span>
-              <i class="fa-solid fa-shield-halved" style="color: #34d399; font-size: 0.90rem;"></i>
-            </div>
-            <div id="auditMetricActualBal" style="font-size: 1.50rem; font-weight: 950; color: #ffffff;">+ 0.00 ج.م</div>
-            <div style="font-size: 0.62rem; color: #a7f3d0; font-weight: 700;">السيولة المتاحة حالياً</div>
-          </div>
-        </div>
-
-
-
-        <!-- 2. كروت توزيع السيولة على المحافظ (مع إمكانية النقر السريع للفلترة) -->
-        <div>
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <div style="font-size: 0.75rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i>
-              <span>توزيع السيولة النقدية والمصرفية على المحافظ (انقر على المحفظة للفلترة المباشرة):</span>
-            </div>
-            <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 700;" id="auditWalletsTotalLiquidityText">إجمالي السيولة: 0.00 ج.م</span>
-          </div>
-          <div id="auditWalletsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
-            <!-- تتولد ديناميكياً بواسطة renderAuditWalletsCards() -->
-          </div>
-        </div>
-
-        <!-- 3. شريط البحث والفلترة متعدد الأبعاد -->
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px;">
-          
-          <!-- سطر البحث الفوري -->
-          <div style="position: relative; width: 100%;">
-            <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
-            <input type="text" id="auditSearchInput" oninput="renderActualBalanceAuditLedger()" placeholder="ابحث فورياً في البيان، المستفيد، المبلغ، التصنيف، أو اسم المحفظة..." style="width: 100%; height: 40px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 0 38px 0 35px; color: #f8fafc; font-size: 0.80rem; font-weight: 700; outline: none; transition: all 0.2s ease;">
-            <button type="button" onclick="clearAuditSearch()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 0.90rem; padding: 4px;" title="مسح البحث">&times;</button>
-          </div>
-
-          <!-- شبكة الفلاتر الخمسة -->
-          <div class="audit-filters-grid" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) auto; gap: 6px; align-items: end;">
-            
-            <!-- فلتر الفترة الزمنية -->
-            <div>
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 3px;">
-                <i class="fa-regular fa-calendar" style="color: #38bdf8;"></i> التاريخ / الفترة:
-              </label>
-              <select class="form-select-custom" id="auditPeriodFilter" onchange="onAuditPeriodChange()" style="height: 36px; font-size: 0.72rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; width: 100%; padding: 0 8px;">
-                <option value="all">كافة التواريخ</option>
-                <option value="today">اليوم فقط</option>
-                <option value="yesterday">أمس</option>
-                <option value="week">آخر 7 أيام</option>
-                <option value="this_month">هذا الشهر</option>
-                <option value="last_month">الشهر السابق</option>
-                <option value="last_30_days">آخر 30 يوماً</option>
-                <option value="this_year">هذا العام</option>
-                <option value="custom">📅 نطاق تاريخ مخصص...</option>
-              </select>
+          <!-- 1. كروت معادلة الرصيد المحاسبية -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;" id="auditKpiCardsGrid">
+            <!-- كارت إجمالي الإيداعات -->
+            <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.28); border-radius: 10px; padding: 6px 10px; display: flex; flex-direction: column; gap: 1px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 800;">إجمالي الإيداعات (+)</span>
+                <i class="fa-solid fa-circle-arrow-down" style="color: #34d399; font-size: 0.75rem;"></i>
+              </div>
+              <div id="auditMetricTotalInc" style="font-size: 1.15rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr; text-align: right;">+ 0.00 ج.م</div>
+              <div style="font-size: 0.58rem; color: #6ee7b7; font-weight: 600;">كافة الدخول المحققة</div>
             </div>
 
-            <!-- فلتر الشخص / المستفيد (متعدد الاختيار) -->
-            <div style="position: relative;" id="auditMemberMultiContainer">
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 3px;">
-                <i class="fa-solid fa-user-group" style="color: #a855f7;"></i> الشخص / المستفيد:
-              </label>
-              <button type="button" id="auditMemberMultiBtn" onclick="toggleAuditDropdown('member')" style="height: 36px; font-size: 0.72rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 8px; color: #f8fafc; width: 100%; padding: 0 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
-                <span id="auditMemberMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">👥 كافة أفراد الأسرة</span>
-                <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; color: #a855f7; margin-right: 4px;"></i>
-              </button>
-              <select id="auditMemberFilter" style="display: none;"><option value="all">كافة أفراد الأسرة</option></select>
-              
-              <!-- القائمة المنسدلة لاختيار عدة أشخاص -->
-              <div id="auditMemberDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 220px; background: #0f172a; border: 1.5px solid rgba(168, 85, 247, 0.5); border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 10px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 8px;">
-                  <span style="font-size: 0.68rem; font-weight: 900; color: #c084fc;">اختر شخصاً أو أكثر:</span>
-                  <div style="display: flex; gap: 4px;">
-                    <button type="button" onclick="selectAllAuditMembers(true)" style="background: rgba(168, 85, 247, 0.25); border: none; color: #e9d5ff; font-size: 0.62rem; font-weight: 800; border-radius: 4px; padding: 2px 7px; cursor: pointer;">الكل</button>
-                    <button type="button" onclick="selectAllAuditMembers(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.62rem; font-weight: 800; border-radius: 4px; padding: 2px 7px; cursor: pointer;">تفريغ</button>
+            <!-- كارت إجمالي المصروفات -->
+            <div style="background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.28); border-radius: 10px; padding: 6px 10px; display: flex; flex-direction: column; gap: 1px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 800;">إجمالي المصروفات (-)</span>
+                <i class="fa-solid fa-circle-arrow-up" style="color: #f43f5e; font-size: 0.75rem;"></i>
+              </div>
+              <div id="auditMetricTotalExp" style="font-size: 1.15rem; font-weight: 950; color: #f43f5e; font-family: var(--font-numbers); direction: ltr; text-align: right;">- 0.00 ج.م</div>
+              <div style="font-size: 0.58rem; color: #fda4af; font-weight: 600;">كافة السحوبات والمصاريف</div>
+            </div>
+
+            <!-- كارت صافي التدفقات -->
+            <div style="background: rgba(14, 165, 233, 0.08); border: 1px solid rgba(14, 165, 233, 0.28); border-radius: 10px; padding: 6px 10px; display: flex; flex-direction: column; gap: 1px;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 800;">صافي التدفقات (الفارق)</span>
+                <i class="fa-solid fa-chart-line" style="color: #38bdf8; font-size: 0.75rem;"></i>
+              </div>
+              <div id="auditMetricNetFlow" style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr; text-align: right;">0.00 ج.م</div>
+              <div style="font-size: 0.58rem; color: #7dd3fc; font-weight: 600;">(الإيداعات - المصروفات)</div>
+            </div>
+
+            <!-- كارت الرصيد الفعلي المعتمد -->
+            <div style="background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(15, 23, 42, 0.8)); border: 1px solid rgba(56, 189, 248, 0.45); border-radius: 10px; padding: 6px 10px; display: flex; flex-direction: column; gap: 1px; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 0.66rem; color: #bae6fd; font-weight: 900;">الرصيد الفعلي المعتمد</span>
+                <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 0.75rem;"></i>
+              </div>
+              <div id="auditMetricActualBal" style="font-size: 1.15rem; font-weight: 950; color: #ffffff; font-family: var(--font-numbers); direction: ltr; text-align: right;">0.00 ج.م</div>
+              <div style="font-size: 0.58rem; color: #e0f2fe; font-weight: 700;">السيولة المتاحة حالياً</div>
+            </div>
+          </div>
+
+          <!-- 2. بطاقات السيولة النقدية والمصرفية على المحافظ -->
+          <div style="background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 6px 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <div style="font-size: 0.68rem; font-weight: 850; color: #f8fafc; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i>
+                <span>توزيع السيولة النقدية والمصرفية على المحافظ (انقر على المحفظة للتحديد/الإلغاء):</span>
+              </div>
+              <span style="font-size: 0.62rem; color: #94a3b8; font-weight: 750;" id="auditWalletsTotalLiquidityText">إجمالي السيولة: 0.00 ج.م</span>
+            </div>
+            <div id="auditWalletsCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px;">
+              <!-- تتولد ديناميكياً بواسطة renderAuditWalletsCards() -->
+            </div>
+          </div>
+
+          <!-- 3. شريط البحث والفلاتر متعددة الأبعاد (أفراد، بنود، محافظ، أنواع عمليات) -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+
+            <!-- سطر البحث الفوري -->
+            <div style="position: relative; width: 100%;">
+              <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.78rem;"></i>
+              <input type="text" id="auditSearchInput" oninput="renderActualBalanceAuditLedger()" placeholder="ابحث فورياً في البيان، المستفيد، المبلغ، التصنيف، أو اسم المحفظة..." style="width: 100%; height: 32px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0 32px 0 30px; color: #f8fafc; font-size: 0.74rem; font-weight: 700; outline: none; transition: all 0.2s ease;">
+              <button type="button" onclick="clearAuditSearch()" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #94a3b8; cursor: pointer; font-size: 0.85rem; padding: 2px;" title="مسح البحث">&times;</button>
+            </div>
+
+            <!-- شبكة الفلاتر الخمسة: الفترة، المستفيد، البند، المحافظ، نوع العملية + زر تفريغ الفلاتر -->
+            <div class="audit-filters-grid" style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) auto; gap: 6px; align-items: end;">
+
+              <!-- فلتر الفترة الزمنية -->
+              <div>
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">
+                  <i class="fa-regular fa-calendar" style="color: #38bdf8;"></i> الفترة:
+                </label>
+                <select class="form-select-custom" id="auditPeriodFilter" onchange="onAuditPeriodChange()" style="height: 32px; font-size: 0.70rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 7px; color: #f8fafc; width: 100%; padding: 0 6px;">
+                  <option value="all">كافة التواريخ</option>
+                  <option value="today">اليوم فقط</option>
+                  <option value="yesterday">أمس</option>
+                  <option value="week">آخر 7 أيام</option>
+                  <option value="this_month">هذا الشهر</option>
+                  <option value="last_month">الشهر السابق</option>
+                  <option value="last_30_days">آخر 30 يوماً</option>
+                  <option value="this_year">هذا العام</option>
+                  <option value="custom">📅 مخصص...</option>
+                </select>
+              </div>
+
+              <!-- فلتر الشخص / المستفيد (متعدد الاختيار) -->
+              <div style="position: relative;" id="auditMemberMultiContainer">
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">
+                  <i class="fa-solid fa-user-group" style="color: #a855f7;"></i> الشخص:
+                </label>
+                <button type="button" id="auditMemberMultiBtn" onclick="toggleAuditDropdown('member')" style="height: 32px; font-size: 0.70rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 7px; color: #f8fafc; width: 100%; padding: 0 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
+                  <span id="auditMemberMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">👥 كافة الأفراد</span>
+                  <i class="fa-solid fa-chevron-down" style="font-size: 0.60rem; color: #a855f7; margin-right: 3px;"></i>
+                </button>
+                <div id="auditMemberDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 210px; background: #0f172a; border: 1.5px solid rgba(168, 85, 247, 0.5); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px; margin-bottom: 6px;">
+                    <span style="font-size: 0.66rem; font-weight: 900; color: #c084fc;">اختر شخصاً أو أكثر:</span>
+                    <div style="display: flex; gap: 4px;">
+                      <button type="button" onclick="selectAllAuditMembers(true)" style="background: rgba(168, 85, 247, 0.25); border: none; color: #e9d5ff; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">الكل</button>
+                      <button type="button" onclick="selectAllAuditMembers(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">تفريغ</button>
+                    </div>
+                  </div>
+                  <div id="auditMemberListContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+                    <!-- يتولد ديناميكياً -->
                   </div>
                 </div>
-                <div id="auditMemberListContainer" style="display: flex; flex-direction: column; gap: 5px; max-height: 220px; overflow-y: auto;">
-                  <!-- يتولد ديناميكياً بخانات اختيار checkboxes لكل فرد -->
+              </div>
+
+              <!-- فلتر نوع المصروف / البند (متعدد الاختيار) -->
+              <div style="position: relative;" id="auditCategoryMultiContainer">
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">
+                  <i class="fa-solid fa-tag" style="color: #f59e0b;"></i> البند والتصنيف:
+                </label>
+                <button type="button" id="auditCategoryMultiBtn" onclick="toggleAuditDropdown('category')" style="height: 32px; font-size: 0.70rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 7px; color: #f8fafc; width: 100%; padding: 0 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
+                  <span id="auditCategoryMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🏷️ كافة البنود</span>
+                  <i class="fa-solid fa-chevron-down" style="font-size: 0.60rem; color: #f59e0b; margin-right: 3px;"></i>
+                </button>
+                <div id="auditCategoryDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 250px; background: #0f172a; border: 1.5px solid rgba(245, 158, 11, 0.5); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px; margin-bottom: 6px;">
+                    <span style="font-size: 0.66rem; font-weight: 900; color: #fbbf24;">اختر بنداً أو أكثر:</span>
+                    <div style="display: flex; gap: 4px;">
+                      <button type="button" onclick="selectAllAuditCategories(true)" style="background: rgba(245, 158, 11, 0.25); border: none; color: #fde68a; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">الكل</button>
+                      <button type="button" onclick="selectAllAuditCategories(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">تفريغ</button>
+                    </div>
+                  </div>
+                  <div id="auditCategoryListContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto;">
+                    <!-- يتولد ديناميكياً -->
+                  </div>
                 </div>
+              </div>
+
+              <!-- فلتر المحافظ (متعدد الاختيار) -->
+              <div style="position: relative;" id="auditWalletMultiContainer">
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">
+                  <i class="fa-solid fa-vault" style="color: #10b981;"></i> المحفظة:
+                </label>
+                <button type="button" id="auditWalletMultiBtn" onclick="toggleAuditDropdown('wallet')" style="height: 32px; font-size: 0.70rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 7px; color: #f8fafc; width: 100%; padding: 0 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
+                  <span id="auditWalletMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🏦 كافة المحافظ</span>
+                  <i class="fa-solid fa-chevron-down" style="font-size: 0.60rem; color: #10b981; margin-right: 3px;"></i>
+                </button>
+                <input type="hidden" id="auditWalletFilter" value="all">
+
+                <div id="auditWalletDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 220px; background: #0f172a; border: 1.5px solid rgba(16, 185, 129, 0.5); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px; margin-bottom: 6px;">
+                    <span style="font-size: 0.66rem; font-weight: 900; color: #34d399;">اختر محفظة أو أكثر:</span>
+                    <div style="display: flex; gap: 4px;">
+                      <button type="button" onclick="selectAllAuditWallets(true)" style="background: rgba(16, 185, 129, 0.25); border: none; color: #a7f3d0; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">الكل</button>
+                      <button type="button" onclick="selectAllAuditWallets(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">تفريغ</button>
+                    </div>
+                  </div>
+                  <div id="auditWalletListContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+                    <!-- يتولد ديناميكياً -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- فلتر نوع الحركة (متعدد الاختيار) -->
+              <div style="position: relative;" id="auditTypeMultiContainer">
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">
+                  <i class="fa-solid fa-arrows-left-right" style="color: #38bdf8;"></i> نوع العملية:
+                </label>
+                <button type="button" id="auditTypeMultiBtn" onclick="toggleAuditDropdown('type')" style="height: 32px; font-size: 0.70rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 7px; color: #f8fafc; width: 100%; padding: 0 6px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
+                  <span id="auditTypeMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🔄 كافة العمليات</span>
+                  <i class="fa-solid fa-chevron-down" style="font-size: 0.60rem; color: #38bdf8; margin-right: 3px;"></i>
+                </button>
+                <input type="hidden" id="auditTypeFilter" value="all">
+
+                <div id="auditTypeDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 210px; background: #0f172a; border: 1.5px solid rgba(56, 189, 248, 0.5); border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 8px;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 5px; margin-bottom: 6px;">
+                    <span style="font-size: 0.66rem; font-weight: 900; color: #7dd3fc;">اختر نوعاً أو أكثر:</span>
+                    <div style="display: flex; gap: 4px;">
+                      <button type="button" onclick="selectAllAuditTypes(true)" style="background: rgba(56, 189, 248, 0.25); border: none; color: #bae6fd; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">الكل</button>
+                      <button type="button" onclick="selectAllAuditTypes(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.60rem; font-weight: 800; border-radius: 4px; padding: 2px 6px; cursor: pointer;">تفريغ</button>
+                    </div>
+                  </div>
+                  <div id="auditTypeListContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 200px; overflow-y: auto;">
+                    <!-- يتولد ديناميكياً -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- زر تفريغ الفلاتر -->
+              <div>
+                <button type="button" onclick="resetAuditFilters()" class="btn-submit-tx" style="margin: 0; height: 32px; padding: 0 9px; font-size: 0.68rem; font-weight: 800; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 7px; white-space: nowrap; display: flex; align-items: center; gap: 4px;" title="إعادة ضبط كافة الفلاتر والبحث">
+                  <i class="fa-solid fa-rotate-left"></i>
+                  <span>تفريغ الفلاتر</span>
+                </button>
               </div>
             </div>
 
-            <!-- فلتر نوع المصروف / التصنيف (متعدد الاختيار) -->
-            <div style="position: relative;" id="auditCategoryMultiContainer">
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 3px;">
-                <i class="fa-solid fa-tags" style="color: #f59e0b;"></i> نوع المصروف / البند:
-              </label>
-              <button type="button" id="auditCategoryMultiBtn" onclick="toggleAuditDropdown('category')" style="height: 36px; font-size: 0.72rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; color: #f8fafc; width: 100%; padding: 0 8px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; text-align: right; box-sizing: border-box;">
-                <span id="auditCategoryMultiText" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🏷️ كافة البنود</span>
-                <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem; color: #f59e0b; margin-right: 4px;"></i>
+            <!-- سطر التاريخ المخصص (يظهر فقط عند اختيار مخصص) -->
+            <div id="auditCustomDateRow" style="display: none; grid-template-columns: 1fr 1fr auto; gap: 6px; align-items: end; background: rgba(30, 41, 59, 0.6); padding: 6px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.35);">
+              <div>
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">من تاريخ:</label>
+                <input type="date" id="auditDateFrom" class="form-input-custom" onchange="renderActualBalanceAuditLedger()" style="height: 30px; font-size: 0.70rem; padding: 0 6px;">
+              </div>
+              <div>
+                <label style="font-size: 0.62rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">إلى تاريخ:</label>
+                <input type="date" id="auditDateTo" class="form-input-custom" onchange="renderActualBalanceAuditLedger()" style="height: 30px; font-size: 0.70rem; padding: 0 6px;">
+              </div>
+              <button type="button" onclick="renderActualBalanceAuditLedger()" class="btn-submit-tx" style="margin: 0; height: 30px; padding: 0 12px; font-size: 0.70rem; font-weight: 800; background: linear-gradient(135deg, #0284c7, #0369a1); border-radius: 7px;">
+                تطبيق
               </button>
-              <select id="auditCategoryFilter" style="display: none;"><option value="all">كافة بنود الصرف والإيراد</option></select>
-              
-              <!-- القائمة المنسدلة لاختيار عدة بنود -->
-              <div id="auditCategoryDropdownMenu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0; min-width: 260px; background: #0f172a; border: 1.5px solid rgba(245, 158, 11, 0.5); border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.9); z-index: 10600; padding: 10px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 8px;">
-                  <span style="font-size: 0.68rem; font-weight: 900; color: #fbbf24;">اختر بنداً أو أكثر:</span>
-                  <div style="display: flex; gap: 4px;">
-                    <button type="button" onclick="selectAllAuditCategories(true)" style="background: rgba(245, 158, 11, 0.25); border: none; color: #fde68a; font-size: 0.62rem; font-weight: 800; border-radius: 4px; padding: 2px 7px; cursor: pointer;">الكل</button>
-                    <button type="button" onclick="selectAllAuditCategories(false)" style="background: rgba(239, 68, 68, 0.25); border: none; color: #fca5a5; font-size: 0.62rem; font-weight: 800; border-radius: 4px; padding: 2px 7px; cursor: pointer;">تفريغ</button>
-                  </div>
-                </div>
-                <div id="auditCategoryListContainer" style="display: flex; flex-direction: column; gap: 4px; max-height: 250px; overflow-y: auto;">
-                  <!-- يتولد ديناميكياً بخانات اختيار checkboxes لكل بند مصنف -->
-                </div>
+            </div>
+          </div>
+
+          <!-- 4. شريط مؤشرات الفلترة المباشرة + الأزرار المصغرة الذكية (تنسيق أنيق مدمج) -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; background: rgba(30, 41, 59, 0.55); padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.06);">
+
+            <!-- مؤشرات نتائج الفلترة المباشرة -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.70rem;">
+              <div style="color: #cbd5e1; font-weight: 800;">
+                <span>النتائج المطابقة:</span>
+                <span id="auditFilteredCount" style="color: #38bdf8; font-weight: 900; margin-right: 4px;">0 حركة</span>
+              </div>
+              <div style="color: #cbd5e1; font-weight: 800;">
+                <span>إيداعات مفلترة:</span>
+                <span id="auditFilteredIncome" style="color: #34d399; font-weight: 900; margin-right: 4px;">+ 0.00 ج.م</span>
+              </div>
+              <div style="color: #cbd5e1; font-weight: 800;">
+                <span>مصروفات مفلترة:</span>
+                <span id="auditFilteredExpense" style="color: #f43f5e; font-weight: 900; margin-right: 4px;">- 0.00 ج.م</span>
+              </div>
+              <div style="color: #cbd5e1; font-weight: 800;">
+                <span>صافي الحركة:</span>
+                <span id="auditFilteredNet" style="color: #fbbf24; font-weight: 900; margin-right: 4px;">0.00 ج.م</span>
               </div>
             </div>
 
-            <!-- فلتر المحفظة -->
-            <div>
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 3px;">
-                <i class="fa-solid fa-vault" style="color: #10b981;"></i> المحفظة:
-              </label>
-              <select class="form-select-custom" id="auditWalletFilter" onchange="onAuditWalletFilterChange()" style="height: 36px; font-size: 0.72rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; width: 100%; padding: 0 8px;">
-                <option value="all">كافة المحافظ المجمعة</option>
-                <!-- تتولد خيارات المحافظ ديناميكياً -->
-              </select>
-            </div>
-
-            <!-- فلتر نوع الحركة -->
-            <div>
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 3px;">
-                <i class="fa-solid fa-arrows-left-right" style="color: #38bdf8;"></i> نوع العملية:
-              </label>
-              <select class="form-select-custom" id="auditTypeFilter" onchange="renderActualBalanceAuditLedger()" style="height: 36px; font-size: 0.72rem; font-weight: 800; background: #1e293b; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #f8fafc; width: 100%; padding: 0 8px;">
-                <option value="all">كافة العمليات</option>
-                <option value="income">إيداعات ودخول فقط (+)</option>
-                <option value="expense">مصروفات وسحوبات فقط (-)</option>
-                <option value="transfer">تحويلات بين المحافظ (🔄)</option>
-              </select>
-            </div>
-
-            <!-- زر تفريغ الفلاتر -->
-            <div>
-              <button type="button" onclick="resetAuditFilters()" class="btn-submit-tx" style="margin: 0; height: 36px; padding: 0 10px; font-size: 0.70rem; font-weight: 800; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; white-space: nowrap; display: flex; align-items: center; gap: 4px;" title="إعادة ضبط كافة الفلاتر والبحث">
-                <i class="fa-solid fa-rotate-left"></i>
-                <span>تفريغ الفلاتر</span>
+            <!-- أزرار الترتيب والتصدير والطباعة (تنسيق مدمج صغير جداً وعصري) -->
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <button type="button" onclick="toggleAuditSortOrder()" class="btn-audit-mini btn-audit-sort" id="btnAuditSortOrder" title="تغيير اتجاه ترتيب الحركات">
+                <i class="fa-solid fa-arrow-down-short-wide" id="iconAuditSortOrder"></i>
+                <span id="txtAuditSortOrder">الأحدث أولاً ⬇️</span>
+              </button>
+              <button type="button" onclick="exportAuditLedgerCSV()" class="btn-audit-mini btn-audit-excel" title="تصدير كشف الحساب CSV / إكسيل">
+                <i class="fa-solid fa-file-csv"></i>
+                <span>تصدير CSV</span>
+              </button>
+              <button type="button" onclick="printAuditLedgerStatement()" class="btn-audit-mini btn-audit-print" title="طباعة كشف الحساب المعتمد">
+                <i class="fa-solid fa-print"></i>
+                <span>طباعة</span>
               </button>
             </div>
           </div>
 
-          <!-- سطر التاريخ المخصص (يظهر فقط عند اختيار مخصص) -->
-          <div id="auditCustomDateRow" style="display: none; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; background: rgba(30, 41, 59, 0.6); padding: 8px; border-radius: 10px; border: 1px dashed rgba(56, 189, 248, 0.35);">
-            <div>
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">من تاريخ:</label>
-              <input type="date" id="auditDateFrom" class="form-input-custom" onchange="renderActualBalanceAuditLedger()" style="height: 34px; font-size: 0.72rem; padding: 0 8px;">
-            </div>
-            <div>
-              <label style="font-size: 0.66rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">إلى تاريخ:</label>
-              <input type="date" id="auditDateTo" class="form-input-custom" onchange="renderActualBalanceAuditLedger()" style="height: 34px; font-size: 0.72rem; padding: 0 8px;">
-            </div>
-            <button type="button" onclick="renderActualBalanceAuditLedger()" class="btn-submit-tx" style="margin: 0; height: 34px; padding: 0 14px; font-size: 0.72rem; font-weight: 800; background: linear-gradient(135deg, #0284c7, #0369a1); border-radius: 8px;">
-              تطبيق التاريخ
-            </button>
-          </div>
         </div>
 
-        <!-- 4. شريط مؤشرات الفلترة المباشرة + أزرار التصدير والطباعة -->
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: rgba(30, 41, 59, 0.5); padding: 8px 12px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06);">
-          
-          <!-- مؤشرات نتائج الفلترة المباشرة -->
-          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.72rem;">
-            <div style="color: #cbd5e1; font-weight: 800;">
-              <span>النتائج المطابقة:</span>
-              <span id="auditFilteredCount" style="color: #38bdf8; font-weight: 900; margin-right: 4px;">0 حركة</span>
-            </div>
-            <div style="color: #cbd5e1; font-weight: 800;">
-              <span>إيداعات مفلترة:</span>
-              <span id="auditFilteredIncome" style="color: #34d399; font-weight: 900; margin-right: 4px;">+ 0.00 ج.م</span>
-            </div>
-            <div style="color: #cbd5e1; font-weight: 800;">
-              <span>مصروفات مفلترة:</span>
-              <span id="auditFilteredExpense" style="color: #f43f5e; font-weight: 900; margin-right: 4px;">- 0.00 ج.م</span>
-            </div>
-            <div style="color: #cbd5e1; font-weight: 800;">
-              <span>صافي الحركة:</span>
-              <span id="auditFilteredNet" style="color: #fbbf24; font-weight: 900; margin-right: 4px;">0.00 ج.م</span>
-            </div>
-          </div>
-
-          <!-- أزرار الترتيب والتصدير والطباعة -->
-          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <button type="button" onclick="toggleAuditSortOrder()" class="btn-export-tool" id="btnAuditSortOrder" style="border-radius: 8px; padding: 6px 12px; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; gap: 5px; background: rgba(56, 189, 248, 0.16); border: 1.2px solid rgba(56, 189, 248, 0.45); color: #38bdf8; cursor: pointer;" title="تغيير اتجاه ترتيب الحركات">
-              <i class="fa-solid fa-arrow-down-short-wide" id="iconAuditSortOrder"></i>
-              <span id="txtAuditSortOrder">الترتيب: الأحدث أولاً ⬇️</span>
-            </button>
-            <button type="button" onclick="exportAuditLedgerCSV()" class="btn-export-tool excel-btn" style="border-radius: 8px; padding: 6px 12px; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-file-csv"></i>
-              <span>تصدير CSV / إكسيل</span>
-            </button>
-            <button type="button" onclick="printAuditLedgerStatement()" class="btn-export-tool pdf-btn" style="border-radius: 8px; padding: 6px 12px; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-print"></i>
-              <span>طباعة كشف الحساب</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 5. جدول كشف الحركات والتدقيق المحاسبي التفصيلي -->
-        <div id="auditLedgerTableContainer" style="border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; background: rgba(15, 23, 42, 0.75); overflow: hidden; min-height: 250px;">
+        <!-- 5. جدول كشف الحركات والتدقيق المحاسبي التفصيلي (يمتد بارتفاع مرن لعرض كافة الحركات مع هيدر ثابت) -->
+        <div id="auditLedgerTableContainer" style="flex: 1; min-height: 380px; overflow-y: auto; overflow-x: auto; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; background: rgba(15, 23, 42, 0.85); position: relative;" class="custom-scrollbar">
           <!-- يتولد ديناميكياً بواسطة renderActualBalanceAuditLedger() -->
         </div>
 
       </div>
 
       <!-- تذييل النافذة -->
-      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
-        <div style="font-size: 0.65rem; color: #64748b; font-weight: 700;">
+      <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+        <div style="font-size: 0.62rem; color: #64748b; font-weight: 700;">
           نظام التدقيق المالي والمحاسبي المتكامل © 2026 — عائلة ماهر & آية
         </div>
-        <button type="button" onclick="closeModal('actualBalanceAuditModal')" class="btn-submit-tx" style="margin: 0; height: 34px; padding: 0 20px; font-size: 0.75rem; font-weight: 800; background: rgba(255, 255, 255, 0.1); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px;">
+        <button type="button" onclick="closeModal('actualBalanceAuditModal')" class="btn-submit-tx" style="margin: 0; height: 30px; padding: 0 16px; font-size: 0.72rem; font-weight: 800; background: rgba(255, 255, 255, 0.08); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 7px; cursor: pointer;">
           إغلاق النافذة
         </button>
       </div>
 
     </div>
   </div>
-
 
 
   <!-- نافذة إنشاء خطة ميزانية تقديرية جديدة -->
