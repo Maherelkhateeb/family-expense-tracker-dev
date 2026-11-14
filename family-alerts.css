@@ -12,3 +12,5 @@ body.light-theme #notificationsModal{--alert-panel:#fff;--alert-row:#edf3f9;--al
 .family-alert>button,#notificationsListContainer>button{justify-self:start;min-height:32px;background:var(--alert-panel);border:1px solid var(--alert-line);border-radius:6px;padding:4px 8px}
 .family-alert p{margin:0;overflow-wrap:anywhere}
 #notificationsModal .modal-head{flex-wrap:wrap;gap:7px}#alertSoundButton,#runAlertDemo{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:7px;padding:6px 8px;font:inherit;font-size:.74rem;cursor:pointer}.alert-demo-tools{margin-bottom:7px}
+.family-alert[data-unread=true]{grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:5px;padding:6px 8px}
+.family-alert[data-unread=true]>button{width:34px;min-height:34px;padding:0;justify-self:end;font-size:1rem;line-height:1}
