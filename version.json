@@ -1,5 +1,5 @@
 {
-  "version": "v5.3.44",
-  "build": "202611141405",
-  "releaseNotes": "Zero-scroll ultra-compact settings modal layout: eliminated all empty voids, fixed font grid full width, 3 zero-scroll tabs with 3x3 matrices"
+  "version": "v5.3.45",
+  "build": "202611141416",
+  "releaseNotes": "Redesigned Gold & Currencies drawer in sleek Antigravity zero-scroll style with smart bidirectional currency & gold converter"
 }

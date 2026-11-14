@@ -14539,72 +14539,7 @@
 
   </style>
   <style id="gold-market-refresh-styles">
-    #goldDrawerPanel .gold-market-topbar {
-      background: radial-gradient(circle at 90% 0%, rgba(245,158,11,.19), transparent 34%), linear-gradient(135deg,#172033,#0b1220) !important;
-      border-bottom: 1px solid rgba(251,191,36,.35) !important;
-    }
-    #goldDrawerPanel .gold-market-toolbar { gap: 10px; align-items: flex-start !important; }
-    #goldDrawerPanel .gold-market-source-chips { gap: 6px !important; }
-    #goldDrawerPanel .market-source-pill {
-      display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 3px 8px !important;
-      border-radius: 999px !important; font-size: .62rem !important; line-height: 1.15; white-space: nowrap;
-    }
-    #goldDrawerPanel .market-source-pill-official { background: rgba(16,185,129,.15) !important; color: #6ee7b7 !important; border: 1px solid rgba(52,211,153,.28) !important; }
-    #goldDrawerPanel .market-source-pill-chart { background: rgba(56,189,248,.10) !important; color: #7dd3fc !important; border: 1px solid rgba(56,189,248,.24) !important; }
-    #goldDrawerPanel .market-update-status {
-      display: inline-flex !important; align-items: center; gap: 5px !important; min-height: 22px; padding: 3px 8px;
-      border-radius: 999px; font-size: .61rem !important; line-height: 1.2; background: rgba(148,163,184,.09);
-    }
-    #goldDrawerPanel .market-update-status[data-status="fresh"] { color: #86efac !important; background: rgba(34,197,94,.10); }
-    #goldDrawerPanel .market-update-status[data-status="estimated"] { color: #fcd34d !important; background: rgba(245,158,11,.11); }
-    #goldDrawerPanel .market-update-status[data-status="stale"] { color: #fca5a5 !important; background: rgba(239,68,68,.10); }
-    #goldDrawerPanel .gold-refresh-btn {
-      flex: 0 0 auto; min-height: 32px; padding: 5px 11px !important; border-radius: 9px !important;
-      background: linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08)) !important;
-      border: 1px solid rgba(251,191,36,.45) !important; color: #fde68a !important;
-      font-size: .68rem !important; font-weight: 850 !important; transition: .18s ease;
-    }
-    #goldDrawerPanel .gold-refresh-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(245,158,11,.15); }
-    #goldDrawerPanel .gold-refresh-btn:disabled { opacity: .7; cursor: wait; }
-    #goldDrawerPanel .gold-refresh-btn.is-loading i { animation: goldRefreshSpin .8s linear infinite; }
-    @keyframes goldRefreshSpin { to { transform: rotate(360deg); } }
-    #goldDrawerPanel .gold-market-content { gap: 11px !important; padding: 10px 12px 28px !important; }
-    #goldDrawerPanel .gold-market-section {
-      border-radius: 16px !important; padding: 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,.16);
-    }
-    #goldDrawerPanel .gold-rates-section { border-color: rgba(251,191,36,.34) !important; background: linear-gradient(145deg,rgba(33,39,54,.98),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .fx-market-section { border-color: rgba(52,211,153,.28) !important; background: linear-gradient(145deg,rgba(28,42,52,.96),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .market-section-heading { font-size: .78rem !important; letter-spacing: .01em; }
-    #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 8px !important; }
-    #goldDrawerPanel .market-box {
-      min-width: 0; position: relative; overflow: hidden; border-radius: 12px !important; padding: 9px 10px !important;
-      background: linear-gradient(145deg,rgba(35,47,67,.94),rgba(20,29,45,.96)) !important;
-      border: 1px solid rgba(148,163,184,.17) !important; box-shadow: inset 0 1px rgba(255,255,255,.035),0 4px 10px rgba(0,0,0,.12);
-    }
-    #goldDrawerPanel .market-box::after { content: ''; position: absolute; top: 0; inset-inline: 12px; height: 2px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg,transparent,rgba(251,191,36,.7),transparent); opacity: .65; }
-    #goldDrawerPanel .fx-market-section .market-box::after { background: linear-gradient(90deg,transparent,rgba(52,211,153,.7),transparent); }
-    #goldDrawerPanel .market-box-title { min-height: 18px; font-size: .69rem !important; }
-    #goldDrawerPanel .market-box-val { font-size: 1.04rem !important; line-height: 1.35; font-variant-numeric: tabular-nums; }
-    #goldDrawerPanel .market-box-sub { gap: 5px; align-items: center; }
-    #goldDrawerPanel .gold-calculator-section { border-radius: 16px !important; box-shadow: 0 8px 22px rgba(0,0,0,.22) !important; }
-    #goldDrawerPanel .gold-calc-summary { border-radius: 14px !important; background: radial-gradient(circle at 95% 0%,rgba(251,191,36,.15),transparent 45%),linear-gradient(135deg,rgba(245,158,11,.20),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .gold-calc-breakdown { border-radius: 12px !important; }
-    #goldDrawerPanel .gold-calc-presets { gap: 6px !important; margin-top: 8px; }
-    #goldDrawerPanel .gold-calc-presets button { min-height: 32px; border-radius: 9px !important; transition: .16s ease; }
-    #goldDrawerPanel .gold-calc-presets button:hover { border-color: rgba(251,191,36,.5) !important; color: #fde68a !important; }
-    #goldDrawerPanel .gold-chart-section { border-radius: 16px !important; overflow: hidden; }
-    #goldDrawerPanel #tvChartContainer { border: 1px solid rgba(148,163,184,.16); }
-    #goldDrawerPanel .gold-valuation-section { border-radius: 14px !important; }
-    @media (max-width: 440px) {
-      #goldDrawerPanel .gold-market-toolbar { align-items: flex-start !important; }
-      #goldDrawerPanel .gold-market-source-chips { flex: 1 1 100%; }
-      #goldDrawerPanel .market-update-status { flex-basis: 100%; order: 2; }
-      #goldDrawerPanel .gold-refresh-btn { min-height: 31px; padding-inline: 9px !important; }
-      #goldDrawerPanel .gold-market-content { padding-inline: 9px !important; }
-      #goldDrawerPanel .gold-market-section { padding: 10px !important; }
-      #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 6px !important; }
-      #goldDrawerPanel .market-box { padding: 8px !important; }
-    }
+    /* Replaced with authoritative gold-market.css (v4.0 Antigravity) */
   </style>
 <style id="unified-date-task-picker-theme">
     :root {
@@ -15149,7 +15084,7 @@
   </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=20261114-gold1"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
+  <link rel="stylesheet" href="./gold-market.css?v=20261114-antigravity2">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
   <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
@@ -16998,228 +16933,473 @@
        القائمة الجانبية المنفصلة: الذهب والعملات (TradingView)
          ============================================== -->
     <div class="side-drawer-backdrop" id="goldDrawerBackdrop" onclick="closeGoldDrawer()"></div>
-    <div class="side-drawer-panel" id="goldDrawerPanel" style="max-height: 98vh; height: 98vh; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: -10px 0 35px rgba(0,0,0,0.7);">
+    <div class="side-drawer-panel" id="goldDrawerPanel">
       
-      <!-- ترويسة البورصة العلوية المدمجة الموحدة (Zero-Scroll Header) -->
-      <div class="drawer-top-bar gold-market-topbar" style="padding: 10px 14px 8px; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1.5px solid var(--gold); flex-shrink: 0;">
-        <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="drawer-main-title" style="font-size: 0.92rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 7px;">
-            <i class="fa-solid fa-coins"></i>
-            <span>الذهب والعملات</span>
+      <!-- Antigravity Header with Status & Close -->
+      <div class="drawer-top-bar gold-market-topbar">
+        <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <div class="drawer-main-title" style="display: flex; align-items: center; gap: 7px;">
+            <div class="gold-icon-badge"><i class="fa-solid fa-coins"></i></div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 0.92rem; font-weight: 850; color: #fbbf24;">الذهب والعملات</span>
+              <span class="gold-sub-badge">مباشر</span>
+            </div>
           </div>
-          <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" style="font-size: 1.2rem; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer;">&times;</button>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" class="gold-refresh-btn" id="btnRefreshTv" onclick="fetchTradingViewRates(true)" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار">
+              <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
+            </button>
+            <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" aria-label="إغلاق">&times;</button>
+          </div>
         </div>
-        <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: #cbd5e1; margin-top: 5px;">
-          <div class="gold-market-source-chips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <span id="marketLocalSourcePill" class="market-source-pill market-source-pill-official" title="أسعار السوق المحلي من بنك مصر ومصادر الذهب المصرية" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 2px 7px; border-radius: 6px; font-weight: 800; font-size: 0.63rem;">
-              <i class="fa-solid fa-building-columns"></i> تعويم (بنك مصر & الصاغة)
+        <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="gold-market-source-chips" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+            <span id="marketLocalSourcePill" class="market-source-pill market-source-pill-official" title="أسعار السوق المحلي من بنك مصر ومصادر الذهب المصرية">
+              <i class="fa-solid fa-building-columns"></i> تعويم & بنك مصر
             </span>
-            <span class="market-source-pill market-source-pill-chart" style="background: rgba(41, 98, 255, 0.2); color: #38bdf8; border: 1px solid rgba(41, 98, 255, 0.4); padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.61rem;">
+            <span class="market-source-pill market-source-pill-chart" style="display:none;">
               <i class="fa-solid fa-chart-line"></i> رسم عالمي مستقل
             </span>
-            <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite" style="color: #cbd5e1; font-weight: 700; font-size: 0.66rem; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-circle" style="font-size: 0.40rem;"></i> جارٍ التحقق من الأسعار…
+            <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite">
+              <i class="fa-solid fa-circle" style="font-size: 0.38rem;"></i> جارٍ التحقق…
             </span>
           </div>
-          <button type="button" class="period-btn active gold-refresh-btn" id="btnRefreshTv" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار المتاحة" style="font-size: 0.68rem; padding: 2px 10px; border-radius: 7px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; cursor: pointer;">
-            <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
+          <button type="button" class="gold-info-trigger-btn" onclick="toggleGoldProvenanceModal()" title="تفاصيل المصادر والتوثيق">
+            <i class="fa-solid fa-circle-info"></i> المصادر
           </button>
         </div>
       </div>
 
-      <!-- جسم البورصة الموحد في شاشة واحدة متكاملة بدون تبويبات وبدون أي تمرير أفقي -->
-      <div class="drawer-view-container gold-market-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 12px 30px; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;">
+      <!-- Segmented Antigravity Tab Switcher (Zero-Scroll Navigation) -->
+      <div class="gold-antigravity-tabs" role="tablist">
+        <button type="button" class="gold-tab-btn active" id="goldTabBtn_prices" onclick="switchGoldDrawerTab('prices')" role="tab">
+          <i class="fa-solid fa-coins"></i>
+          <span>الأسعار الحية</span>
+        </button>
+        <button type="button" class="gold-tab-btn" id="goldTabBtn_converter" onclick="switchGoldDrawerTab('converter')" role="tab">
+          <i class="fa-solid fa-right-left"></i>
+          <span>المحول الذكي</span>
+          <span class="gold-tab-new-pill">جديد</span>
+        </button>
+        <button type="button" class="gold-tab-btn" id="goldTabBtn_tools" onclick="switchGoldDrawerTab('tools')" role="tab">
+          <i class="fa-solid fa-calculator"></i>
+          <span>حاسبة وبياني</span>
+        </button>
+      </div>
+
+      <!-- Provenance Micro-Sheet (Collapsible modal, retains all DOM IDs for full compatibility) -->
+      <div id="goldProvenanceModal" class="gold-provenance-sheet" style="display: none;">
+        <div class="gold-prov-inner">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <strong style="color: #fbbf24; font-size: 0.74rem;"><i class="fa-solid fa-shield-halved"></i> مصادر وتوثيق الأسعار</strong>
+            <button type="button" onclick="toggleGoldProvenanceModal()" style="background: none; border: none; color: #94a3b8; font-size: 1rem; cursor: pointer; padding: 0 4px;">&times;</button>
+          </div>
+          <p id="marketSourceDetails" style="margin: 2px 0; font-size: 0.65rem; color: #cbd5e1;">الذهب: Ta3weem | العملات: بنك مصر</p>
+          <p id="marketQuoteTimes" style="margin: 2px 0; font-size: 0.65rem; color: #94a3b8;">وقت أسعار المصدر: غير معلن</p>
+          <p id="goldPriceBasis" style="margin: 2px 0; font-size: 0.63rem; color: #94a3b8;">القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.</p>
+          <div class="market-source-links" style="display: flex; gap: 8px; margin-top: 5px; font-size: 0.63rem;">
+            <a href="https://ta3weem.com/ar" target="_blank" rel="noopener">تعويم</a>
+            <a href="https://gold-api.com" target="_blank" rel="noopener">Gold API</a>
+            <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN TAB CONTENT CONTAINER -->
+      <div class="drawer-view-container gold-market-content" style="flex: 1; overflow: hidden; padding: 0; display: flex; flex-direction: column; width: 100%;">
         
-        <section class="market-provenance" aria-label="مصادر الأسعار">
-          <p id="marketSourceDetails">جارٍ قراءة مصادر الأسعار…</p>
-          <p id="marketQuoteTimes">وقت أسعار المصدر: غير معلن</p>
-          <p id="goldPriceBasis">الأسعار بالجنيه المصري، والأونصة العالمية بالدولار.</p>
-          <div class="market-source-links"><a href="https://ta3weem.com/ar" target="_blank" rel="noopener">تعويم</a><a href="https://gold-api.com" target="_blank" rel="noopener">Gold API</a><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a></div>
-        </section>
-        <!-- القسم 1: أسعار الذهب في الصاغة (مصر) -->
-        <div class="gold-market-section gold-rates-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #fde047; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
-            <span id="goldRatesSectionTitle" style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-gem" style="color: var(--gold);"></i> أسعار الذهب المحلية (مركز المعلومات IDSC & تعويم)</span>
-            <span id="goldRatesFreshnessHint" style="font-size: 0.65rem; color: #94a3b8;"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> تحقق دوري</span>
+        <!-- ==============================================
+             TAB 1: الأسعار الحية (Live Rates Grid) - ZERO SCROLL
+             ============================================== -->
+        <div class="gold-tab-pane active" id="goldTabPane_prices">
+          <!-- أسعار الذهب -->
+          <div class="gold-market-section gold-rates-section" style="margin-bottom: 6px;">
+            <div class="market-section-heading">
+              <span id="goldRatesSectionTitle"><i class="fa-solid fa-gem" style="color: var(--market-accent);"></i> أسعار الذهب بالسوق المصري</span>
+              <span id="goldRatesFreshnessHint"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> لحظي</span>
+            </div>
+            <div class="gold-grid-cards">
+              <!-- عيار 21 -->
+              <div class="market-box gold-21-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
+                </div>
+                <div class="market-box-val" id="tvGold21Val">—</div>
+                <div class="market-box-sub">
+                  <span>سعر الجرام</span>
+                  <span class="change-tag" id="tvGold21Chg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGold21Buy">—</div>
+              </div>
+
+              <!-- عيار 24 -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
+                </div>
+                <div class="market-box-val" id="tvGold24Val">—</div>
+                <div class="market-box-sub">
+                  <span>نقاء 99.9%</span>
+                  <span class="change-tag" id="tvGold24Chg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGold24Buy">—</div>
+              </div>
+
+              <!-- عيار 18 -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-sparkles"></i> <span>ذهب عيار 18</span>
+                </div>
+                <div class="market-box-val" id="tvGold18Val">—</div>
+                <div class="market-box-sub">
+                  <span>سعر الجرام</span>
+                  <span class="change-tag" id="tvGold18Chg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvGold18Buy">—</div>
+              </div>
+
+              <!-- جنيه الذهب -->
+              <div class="market-box gold-pound-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
+                </div>
+                <div class="market-box-val" id="tvGoldPoundVal">—</div>
+                <div class="market-box-sub">
+                  <span>وزن 8 جرام - 21</span>
+                  <span class="change-tag" id="tvGoldPoundChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGoldPoundBuy">—</div>
+              </div>
+            </div>
+
+            <!-- أونصة الذهب عالمياً (Horizontal Micro-Strip) -->
+            <div class="gold-ounce-strip">
+              <div class="ounce-title">
+                <i class="fa-solid fa-globe"></i>
+                <span>أونصة الذهب عالمياً</span>
+              </div>
+              <div class="ounce-val" id="tvGoldOunceVal">—</div>
+              <div class="ounce-time" id="tvGoldOunceTime">وقت المصدر غير متاح</div>
+            </div>
           </div>
-          <div class="gold-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-            <!-- عيار 21 -->
-            <div class="market-box gold-21-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.75); border: 1.4px solid rgba(245, 158, 11, 0.5);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #fbbf24; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
+
+          <!-- أسعار العملات -->
+          <div class="gold-market-section fx-market-section" style="margin-bottom: 6px;">
+            <div class="market-section-heading">
+              <span id="fxRatesSectionTitle"><i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> أسعار العملات مقابل الجنيه</span>
+            </div>
+            <div class="fx-grid-cards">
+              <!-- دولار -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
+                </div>
+                <div class="market-box-val" id="tvUsdVal">—</div>
+                <div class="market-box-sub">
+                  <span>USD / EGP</span>
+                  <span class="change-tag up" id="tvUsdChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvUsdBuy">—</div>
               </div>
-              <div class="market-box-val" id="tvGold21Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>سعر الجرام</span>
-                <span class="change-tag down" id="tvGold21Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGold21Buy">—</div>
+
+              <!-- ريال سعودي -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
+                </div>
+                <div class="market-box-val" id="tvSarVal">—</div>
+                <div class="market-box-sub">
+                  <span>SAR / EGP</span>
+                  <span class="change-tag down" id="tvSarChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvSarBuy">—</div>
+              </div>
+
+              <!-- يورو -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-euro-sign"></i> <span>اليورو الأوروبي</span>
+                </div>
+                <div class="market-box-val" id="tvEurVal">—</div>
+                <div class="market-box-sub">
+                  <span>EUR / EGP</span>
+                  <span class="change-tag" id="tvEurChg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvEurBuy">—</div>
+              </div>
+
+              <!-- درهم إماراتي -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-coins"></i> <span>الدرهم الإماراتي</span>
+                </div>
+                <div class="market-box-val" id="tvAedVal">—</div>
+                <div class="market-box-sub">
+                  <span>AED / EGP</span>
+                  <span class="change-tag" id="tvAedChg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvAedBuy">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- تقويم الرصيد الفعلي الحالي بالذهب -->
+          <div class="gold-market-section gold-valuation-strip">
+            <div class="val-info">
+              <div class="val-title"><i class="fa-solid fa-scale-balanced"></i> تقويم رصيدك الفعلي بالذهب</div>
+              <div class="val-sub" id="goldValuationSourceText">بحسب السعر المتاح</div>
+            </div>
+            <div class="val-badge" id="goldValuationText">0.00 جم ذهب 21</div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 2: محول العملات والذهب الذكي (Smart Universal Converter)
+             ============================================== -->
+        <div class="gold-tab-pane" id="goldTabPane_converter">
+          <!-- بطاقة الإدخال والاختيار -->
+          <div class="conv-input-card">
+            <div class="conv-input-row">
+              <div class="conv-field conv-amount-field">
+                <label for="convAmount">المبلغ أو الكمية:</label>
+                <div class="conv-input-wrapper">
+                  <input type="number" id="convAmount" value="10000" min="0" step="any" oninput="runUniversalConverter()" placeholder="10000">
+                  <button type="button" class="conv-clear-btn" onclick="document.getElementById('convAmount').value=''; runUniversalConverter();" title="مسح">✕</button>
+                </div>
+              </div>
+              <div class="conv-field conv-source-field">
+                <label for="convSourceAsset">من عملة / أصل:</label>
+                <select id="convSourceAsset" onchange="runUniversalConverter()">
+                  <optgroup label="العملات النقدية">
+                    <option value="EGP" selected>🇪🇬 جنيه مصري (EGP)</option>
+                    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
+                    <option value="SAR">🇸🇦 ريال سعودي (SAR)</option>
+                    <option value="EUR">🇪🇺 يورو أوروبي (EUR)</option>
+                    <option value="AED">🇦🇪 درهم إماراتي (AED)</option>
+                  </optgroup>
+                  <optgroup label="أصول الذهب (بالجرام / العدد)">
+                    <option value="GOLD21">💎 ذهب عيار 21 (جرام)</option>
+                    <option value="GOLD24">🧱 ذهب عيار 24 (جرام)</option>
+                    <option value="GOLD18">✨ ذهب عيار 18 (جرام)</option>
+                    <option value="GOLD_POUND">🪙 جنيه ذهب (8 جم عيار 21)</option>
+                  </optgroup>
+                </select>
+              </div>
             </div>
 
-            <!-- عيار 24 -->
-            <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
+            <!-- مبالغ سريعة بنقرة واحدة -->
+            <div class="conv-presets-row">
+              <span class="conv-preset-label">مبالغ سريعة:</span>
+              <div class="conv-preset-pills">
+                <button type="button" class="conv-pill" onclick="applyConvPreset(1000)">1,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(5000)">5,000</button>
+                <button type="button" class="conv-pill active" onclick="applyConvPreset(10000)">10,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(50000)">50,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(100000)">100,000</button>
               </div>
-              <div class="market-box-val" id="tvGold24Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>نقاء 99.9%</span>
-                <span class="change-tag down" id="tvGold24Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGold24Buy">—</div>
             </div>
 
-<div class="market-box"><div class="market-box-title">ذهب عيار 18</div><div class="market-box-val" id="tvGold18Val">—</div><div class="market-box-sub"><span>سعر الجرام</span><span class="change-tag" id="tvGold18Chg" hidden></span></div><div class="market-buy-price" id="tvGold18Buy">—</div></div>
-            <!-- جنيه الذهب -->
-            <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.8)); border: 1.2px solid rgba(245, 158, 11, 0.5);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #fde047; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
-              </div>
-              <div class="market-box-val" id="tvGoldPoundVal" style="font-size: 1.02rem; font-weight: 900; color: #fde047; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; align-items: center; color: #cbd5e1;">
-                <span>وزن 8 جرام - عيار 21</span>
-                <span class="change-tag down" id="tvGoldPoundChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGoldPoundBuy">—</div>
+            <!-- شريط ملخص التحويل اللحظي -->
+            <div class="conv-summary-strip" id="convSourceSummary">
+              10,000 جنيه مصري تعادل حالياً:
             </div>
+          </div>
 
-            <!-- أونصة الذهب عالمياً -->
-            <div class="market-box global-ounce-card" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #38bdf8; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-globe"></i> <span>أونصة الذهب عالمياً</span>
+          <!-- نتائج الذهب المكافئ -->
+          <div class="conv-section-block">
+            <div class="conv-section-title">
+              <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
+              <span>ما يعادله بالذهب (وزناً بالجرامات):</span>
+            </div>
+            <div class="conv-results-grid gold-results">
+              <!-- Gold 21 -->
+              <div class="conv-res-card gold-res-card highlight" onclick="copyConvVal('convResGold21', 'عيار 21')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 21</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold21">—</div>
+                <div class="res-card-desc">الأكثر تداولاً بالصاغة</div>
               </div>
-              <div class="market-box-val" id="tvGoldOunceVal" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" id="tvGoldOunceTime">وقت المصدر غير متاح</div>
+
+              <!-- Gold 24 -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGold24', 'عيار 24')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 24</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold24">—</div>
+                <div class="res-card-desc">سبائك نقاء 99.9%</div>
+              </div>
+
+              <!-- Gold 18 -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGold18', 'عيار 18')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 18</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold18">—</div>
+                <div class="res-card-desc">مشغولات راقية</div>
+              </div>
+
+              <!-- Gold Pound -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGoldPound', 'جنيه ذهب')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">جنيه ذهب</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGoldPound">—</div>
+                <div class="res-card-desc">8 جرام عيار 21</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- نتائج العملات النقدية المكافئة -->
+          <div class="conv-section-block">
+            <div class="conv-section-title">
+              <i class="fa-solid fa-money-bill-transfer" style="color: #34d399;"></i>
+              <span>ما يعادله بالعملات النقدية:</span>
+            </div>
+            <div class="conv-results-grid fx-results">
+              <!-- EGP -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResEgp', 'الجنيه المصري')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇪🇬 الجنيه</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResEgp">—</div>
+                <div class="res-card-desc">EGP مصري</div>
+              </div>
+
+              <!-- USD -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResUsd', 'الدولار الأمريكي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇺🇸 دولار</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResUsd">—</div>
+                <div class="res-card-desc">USD أمريكي</div>
+              </div>
+
+              <!-- SAR -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResSar', 'الريال السعودي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇸🇦 ريال</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResSar">—</div>
+                <div class="res-card-desc">SAR سعودي</div>
+              </div>
+
+              <!-- EUR -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResEur', 'اليورو الأوروبي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇪🇺 يورو</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResEur">—</div>
+                <div class="res-card-desc">EUR أوروبي</div>
+              </div>
+
+              <!-- AED -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResAed', 'الدرهم الإماراتي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇦🇪 درهم</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResAed">—</div>
+                <div class="res-card-desc">AED إماراتي</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- القسم 2: أسعار العملات الفورية (TradingView FX) -->
-        <div class="gold-market-section fx-market-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #34d399; margin-bottom: 7px; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> <span id="fxRatesSectionTitle">أسعار صرف العملات المحلية (بنك مصر & تعويم)</span>
-          </div>
-          <div class="fx-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-            <!-- دولار -->
-            <div class="market-box" style="padding: 6px 9px; border-radius: 9px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(16, 185, 129, 0.3);">
-              <div class="market-box-title" style="font-size: 0.68rem; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
+        <!-- ==============================================
+             TAB 3: حاسبة المصنعية والرسم البياني
+             ============================================== -->
+        <div class="gold-tab-pane" id="goldTabPane_tools">
+          <!-- حاسبة الصاغة والمصنعية -->
+          <div class="gold-market-section gold-calculator-section" style="margin-bottom: 8px;">
+            <div style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+              <span style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
+              <span style="font-size: 0.62rem; color: #38bdf8;"><i class="fa-solid fa-circle-info"></i> مصنعية الصاغة</span>
+            </div>
+
+            <div class="gold-calc-summary">
+              <div style="font-size: 0.65rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي الشراء التقديري شامل المصنعية:</div>
+              <div id="calcFinalTotal" style="font-size: 1.25rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">—</div>
+            </div>
+
+            <div class="form-group-custom" style="margin-bottom: 6px;">
+              <label class="form-label-custom" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">نوع المشغولات / السبائك / العملة:</label>
+              <select class="form-select-custom" id="calcAsset" onchange="onGoldAssetChange()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; font-size: 0.75rem; padding: 0 8px;">
+                <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
+                <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
+                <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
+                <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
+                <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
+                <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
+                <option value="usd">💵 دولار أمريكي (USDEGP)</option>
+                <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
+              </select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+              <div>
+                <label class="form-label-custom" id="lblCalcQty" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الوزن بالجرام / العدد:</label>
+                <input type="number" step="0.01" class="form-input-custom" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-weight: 900; font-size: 0.95rem; text-align: center;">
               </div>
-              <div class="market-box-val" id="tvUsdVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>USDEGP</span>
-                <span class="change-tag up" id="tvUsdChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvUsdBuy">—</div>
-            </div>
-
-            <!-- ريال سعودي -->
-            <div class="market-box" style="padding: 6px 9px; border-radius: 9px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(16, 185, 129, 0.3);">
-              <div class="market-box-title" style="font-size: 0.68rem; color: #059669; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
+              <div id="colCalcWorkmanship">
+                <label class="form-label-custom" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">المصنعية المقدرة (ج.م/جم):</label>
+                <input type="number" step="5" class="form-input-custom" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.18); color: #fbbf24; font-weight: 900; font-size: 0.95rem; text-align: center;">
               </div>
-              <div class="market-box-val" id="tvSarVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>SAREGP</span>
-                <span class="change-tag down" id="tvSarChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvSarBuy">—</div>
             </div>
-<div class="market-box"><div class="market-box-title">اليورو</div><div class="market-box-val" id="tvEurVal">—</div><div class="market-box-sub"><span>EUR / EGP</span><span class="change-tag" id="tvEurChg" hidden></span></div><div class="market-buy-price" id="tvEurBuy">—</div></div>
-<div class="market-box"><div class="market-box-title">الدرهم الإماراتي</div><div class="market-box-val" id="tvAedVal">—</div><div class="market-box-sub"><span>AED / EGP</span><span class="change-tag" id="tvAedChg" hidden></span></div><div class="market-buy-price" id="tvAedBuy">—</div></div>
+
+            <div class="gold-calc-breakdown">
+              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 2px;">
+                <span>قيمة الذهب الخام الصافي:</span>
+                <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">—</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 2px;">
+                <span>إجمالي المصنعية والدمغة:</span>
+                <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">—</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 3px;">
+                <span>كاش باك مفترض عند إعادة البيع:</span>
+                <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">—</span>
+              </div>
+              <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8;">بعد خصم كاش باك مفترض:</span>
+                <span id="calcNetCostVal" style="font-size: 0.88rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">—</span>
+              </div>
+            </div>
+
+            <div class="gold-calc-presets">
+              <button type="button" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
+              <button type="button" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
+              <button type="button" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
+              <button type="button" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+            </div>
+
+            <button type="button" onclick="applyCalcToExpense()" class="btn-primary" style="width: 100%; margin-top: 8px; height: 34px; border-radius: 8px; font-size: 0.74rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+              <i class="fa-solid fa-cart-plus"></i> تسجيل كمصروف في المحفظة
+            </button>
+          </div>
+
+          <!-- مؤشر الذهب الحي TradingView -->
+          <div class="gold-market-section gold-chart-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView)
+              </span>
+              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 7px; border-radius: 5px; font-size: 0.62rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">طي / إظهار</button>
+            </div>
+            <div id="tvChartContainer" style="width: 100%; height: 210px; border-radius: 9px; overflow: hidden; background: #000;">
+              <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
           </div>
         </div>
 
-<details class="gold-tool-panel"><summary>حاسبة الذهب والمصنعية</summary>        <!-- القسم 3: حاسبة الصاغة والمصنعية التقديرية بالسوق المصري -->
-        <div class="gold-market-section gold-calculator-section" style="background: rgba(15, 23, 42, 0.9); border: 1.4px solid rgba(245, 158, 11, 0.5); border-radius: 14px; padding: 12px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
-          <div style="font-size: 0.82rem; font-weight: 800; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-            <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
-            <span style="font-size: 0.64rem; color: #38bdf8;"><i class="fa-solid fa-circle-info"></i> مصنعية سوق الصاغة</span>
-          </div>
-
-          <!-- مربع إجمالي التكلفة الشاملة البارز -->
-          <div class="gold-calc-summary" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: center;">
-            <div style="font-size: 0.68rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي الشراء التقديري شامل المصنعية:</div>
-            <div id="calcFinalTotal" style="font-size: 1.35rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">—</div>
-          </div>
-
-          <!-- اختيار نوع الأصل الذهبي أو العملة -->
-          <div class="form-group-custom" style="margin-bottom: 8px;">
-            <label class="form-label-custom" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 3px;">نوع المشغولات / السبائك / العملة:</label>
-            <select class="form-select-custom" id="calcAsset" onchange="onGoldAssetChange()" style="width: 100%; height: 38px; border-radius: 10px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; font-size: 0.82rem; padding: 0 10px;">
-              <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
-              <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
-              <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
-              <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
-              <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
-              <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
-              <option value="usd">💵 دولار أمريكي (USDEGP)</option>
-              <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
-            </select>
-          </div>
-
-          <!-- حقول الوزن بالجرام والمصنعية التقديرية للجرام -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-            <div>
-              <label class="form-label-custom" id="lblCalcQty" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الوزن بالجرام / العدد:</label>
-              <input type="number" step="0.01" class="form-input-custom" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(255,255,255,0.18); color: #fff; font-weight: 900; font-size: 1.05rem; text-align: center;">
-            </div>
-            <div>
-              <label class="form-label-custom" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">المصنعية المقدرة (ج.م/جم):</label>
-              <input type="number" step="5" class="form-input-custom" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(255,255,255,0.18); color: #fbbf24; font-weight: 900; font-size: 1.05rem; text-align: center;">
-            </div>
-          </div>
-
-          <!-- تفاصيل الحسبة المحاسبية: خام الذهب، المصنعية، الكاش باك -->
-          <div class="gold-calc-breakdown" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
-              <span>قيمة الذهب الخام الصافي:</span>
-              <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">—</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
-              <span>إجمالي المصنعية والدمغة:</span>
-              <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">—</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 4px;">
-              <span>كاش باك مفترض عند إعادة البيع:</span>
-              <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">—</span>
-            </div>
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.76rem; font-weight: 800; color: #38bdf8;">بعد خصم كاش باك مفترض:</span>
-              <span id="calcNetCostVal" style="font-size: 0.92rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">—</span>
-            </div>
-          </div>
-
-          <!-- أزرار الاختيارات السريعة للوزن والمصنعية -->
-          <div class="gold-calc-presets" style="display: flex; gap: 4px;">
-            <button type="button" onclick="applyGoldPreset('gold21_jewelry', 5, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">5جم 21</button>
-            <button type="button" onclick="applyGoldPreset('gold21_jewelry', 10, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">10جم 21</button>
-            <button type="button" onclick="applyGoldPreset('gold24_bar_small', 10, 70)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">سبيكة 10ج</button>
-            <button type="button" onclick="applyGoldPreset('gold_pound', 1, 62.5)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde047; cursor: pointer;">جنيه BTC</button>
-          </div>
-        </div>
-
-</details>
-<details class="gold-tool-panel"><summary>الرسم البياني العالمي</summary>        <!-- القسم 4: الشارت الحي للذهب TradingView Live -->
-        <div class="gold-market-section gold-chart-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView - للمطابقة والتحليل)
-            </span>
-            <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 8px; border-radius: 6px; font-size: 0.65rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">طي / إظهار</button>
-          </div>
-          <div id="tvChartContainer" style="width: 100%; height: 230px; border-radius: 10px; overflow: hidden; background: #000;">
-            <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
-          </div>
-        </div>
-
-</details>
-        <!-- القسم 5: تقويم الرصيد الفعلي الحالي بالذهب -->
-        <div class="gold-market-section gold-valuation-section" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
-          <div>
-            <div style="font-size: 0.70rem; color: #fbbf24; font-weight: 800;"><i class="fa-solid fa-scale-balanced"></i> تقويم الرصيد الفعلي الحالي بالذهب</div>
-            <div style="font-size: 0.62rem; color: #94a3b8; margin-top: 2px;">ما يعادله رصيد المحافظ بالجرامات:</div>
-          </div>
-          <div style="text-align: left;">
-            <div id="goldValuationText" style="font-size: 1.05rem; font-weight: 900; color: #fde047; direction: rtl;">0.00 جم ذهب 21</div>
-            <div id="goldValuationSourceText" style="font-size: 0.60rem; color: #34d399; font-weight: 700;">بحسب السعر المتاح</div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -27401,6 +27581,7 @@ function switchSettingsTab(tabName) {
         const goldGrams = g21 > 0 ? (totalBal / g21).toFixed(2) : '0.00';
         const valEl = document.getElementById('goldValuationText');
         if (valEl) valEl.textContent = g21 > 0 ? `${goldGrams} جم ذهب 21` : 'السعر غير متاح';
+        if (typeof runUniversalConverter === 'function') runUniversalConverter();
       } catch(e) {}
     }
 
@@ -27418,6 +27599,131 @@ function switchSettingsTab(tabName) {
         if (window.history.state && window.history.state.modalId === 'goldDrawer') {
           window.history.back();
         }
+      }
+    }
+
+    // =========================================================================
+    // محول العملات والذهب الذكي والتنقل بين تبويبات البورصة (Antigravity UX)
+    // =========================================================================
+    function switchGoldDrawerTab(tabId) {
+      const tabs = ['prices', 'converter', 'tools'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('goldTabBtn_' + t);
+        const pane = document.getElementById('goldTabPane_' + t);
+        if (btn) btn.classList.toggle('active', t === tabId);
+        if (pane) pane.classList.toggle('active', t === tabId);
+      });
+      if (tabId === 'converter') {
+        runUniversalConverter();
+      } else if (tabId === 'tools') {
+        if (typeof recalcGoldTotal === 'function') recalcGoldTotal();
+      }
+    }
+
+    function toggleGoldProvenanceModal() {
+      const modal = document.getElementById('goldProvenanceModal');
+      if (!modal) return;
+      modal.style.display = (modal.style.display === 'none' || !modal.style.display) ? 'block' : 'none';
+    }
+
+    function runUniversalConverter() {
+      const amountInput = document.getElementById('convAmount');
+      const sourceSelect = document.getElementById('convSourceAsset');
+      if (!amountInput || !sourceSelect) return;
+
+      const rawAmount = parseFloat(amountInput.value) || 0;
+      const source = sourceSelect.value || 'EGP';
+
+      // استخراج الأسعار الحية مع الحفاظ على قيم احتياطية آمنة
+      const m = state.market || {};
+      const rates = {
+        usd: (m.usdEgp && m.usdEgp > 0) ? Number(m.usdEgp) : 53.49,
+        sar: (m.sarEgp && m.sarEgp > 0) ? Number(m.sarEgp) : 14.24,
+        eur: (m.eurEgp && m.eurEgp > 0) ? Number(m.eurEgp) : 59.22,
+        aed: (m.aedEgp && m.aedEgp > 0) ? Number(m.aedEgp) : 14.57,
+        gold21: (m.gold21 && m.gold21 > 0) ? Number(m.gold21) : 6165.00,
+        gold24: (m.gold24 && m.gold24 > 0) ? Number(m.gold24) : 7045.75,
+        gold18: (m.gold18 && m.gold18 > 0) ? Number(m.gold18) : 5284.25,
+        goldPound: (m.goldPound && m.goldPound > 0) ? Number(m.goldPound) : 49320.00
+      };
+
+      // تحويل المبلغ المدخل إلى الجنيه المصري كأساس مشترك
+      let egp = 0;
+      if (source === 'EGP') egp = rawAmount;
+      else if (source === 'USD') egp = rawAmount * rates.usd;
+      else if (source === 'SAR') egp = rawAmount * rates.sar;
+      else if (source === 'EUR') egp = rawAmount * rates.eur;
+      else if (source === 'AED') egp = rawAmount * rates.aed;
+      else if (source === 'GOLD21') egp = rawAmount * rates.gold21;
+      else if (source === 'GOLD24') egp = rawAmount * rates.gold24;
+      else if (source === 'GOLD18') egp = rawAmount * rates.gold18;
+      else if (source === 'GOLD_POUND') egp = rawAmount * rates.goldPound;
+
+      const fmt = (n, dec = 2) => Number(n).toLocaleString('ar-EG', { maximumFractionDigits: dec, minimumFractionDigits: (Number.isInteger(n) ? 0 : dec) });
+      const setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+      // تحديث نتائج الذهب المكافئ
+      const g21 = rates.gold21 > 0 ? (egp / rates.gold21) : 0;
+      const g24 = rates.gold24 > 0 ? (egp / rates.gold24) : 0;
+      const g18 = rates.gold18 > 0 ? (egp / rates.gold18) : 0;
+      const gPound = rates.goldPound > 0 ? (egp / rates.goldPound) : 0;
+
+      setT('convResGold21', fmt(g21, 2) + ' جم');
+      setT('convResGold24', fmt(g24, 2) + ' جم');
+      setT('convResGold18', fmt(g18, 2) + ' جم');
+      setT('convResGoldPound', fmt(gPound, 2) + ' جنيه');
+
+      // تحديث نتائج العملات النقدية المكافئة
+      const usdVal = rates.usd > 0 ? (egp / rates.usd) : 0;
+      const sarVal = rates.sar > 0 ? (egp / rates.sar) : 0;
+      const eurVal = rates.eur > 0 ? (egp / rates.eur) : 0;
+      const aedVal = rates.aed > 0 ? (egp / rates.aed) : 0;
+
+      setT('convResEgp', fmt(egp, 2) + ' ج.م');
+      setT('convResUsd', fmt(usdVal, 2) + ' $');
+      setT('convResSar', fmt(sarVal, 2) + ' ر.س');
+      setT('convResEur', fmt(eurVal, 2) + ' €');
+      setT('convResAed', fmt(aedVal, 2) + ' د.إ');
+
+      // شريط الملخص التفاعلي
+      const sumEl = document.getElementById('convSourceSummary');
+      if (sumEl) {
+        const labels = {
+          'EGP': 'جنيه مصري', 'USD': 'دولار أمريكي', 'SAR': 'ريال سعودي',
+          'EUR': 'يورو أوروبي', 'AED': 'درهم إماراتي', 'GOLD21': 'جرام ذهب 21',
+          'GOLD24': 'جرام ذهب 24', 'GOLD18': 'جرام ذهب 18', 'GOLD_POUND': 'جنيه ذهب'
+        };
+        const sLabel = labels[source] || source;
+        if (source === 'EGP') {
+          sumEl.textContent = `${fmt(rawAmount, 2)} ${sLabel} تعادل حالياً:`;
+        } else {
+          sumEl.textContent = `${fmt(rawAmount, 2)} ${sLabel} = ${fmt(egp, 2)} ج.م تقريباً تعادل:`;
+        }
+      }
+    }
+
+    function applyConvPreset(amount) {
+      const inp = document.getElementById('convAmount');
+      if (inp) {
+        inp.value = amount;
+        document.querySelectorAll('#goldDrawerPanel .conv-pill').forEach(btn => {
+          btn.classList.toggle('active', parseFloat(btn.textContent.replace(/,/g, '')) === amount);
+        });
+        runUniversalConverter();
+      }
+    }
+
+    function copyConvVal(elemId, label) {
+      const el = document.getElementById(elemId);
+      if (!el) return;
+      const text = el.textContent.trim();
+      if (!text || text === '—') return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          if (typeof showToast === 'function') {
+            showToast(`تم نسخ ${label}: ${text}`, 'success', 2000);
+          }
+        }).catch(() => {});
       }
     }
 
@@ -27491,6 +27797,7 @@ function switchSettingsTab(tabName) {
         const balance=typeof computeTotalEffectiveBalance==='function'?computeTotalEffectiveBalance():state.balance||0;
         text('goldValuationText',(balance/market.gold21).toLocaleString('ar-EG',{maximumFractionDigits:2})+' جم ذهب 21');
         updateCalcDisplay();
+        if(typeof runUniversalConverter==='function')runUniversalConverter();
         if(typeof renderUI==='function')renderUI();
         if(typeof renderSecWalletView==='function')renderSecWalletView();
         return market;
