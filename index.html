@@ -159,7 +159,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.46';
+    var APP_VERSION = 'v5.3.47';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -18707,7 +18707,6 @@
           <button type="button" class="theme-card-box" data-theme="slate" onclick="selectThemeAndApply('slate')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#475569"></span><span class="theme-card-label">رمادي تيتانيوم</span><span class="theme-check-dot" data-theme="slate" aria-hidden="true"></span></button>
           <button type="button" class="theme-card-box" data-theme="midnight" onclick="selectThemeAndApply('midnight')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#4338ca"></span><span class="theme-card-label">نيلي ليلي</span><span class="theme-check-dot" data-theme="midnight" aria-hidden="true"></span></button>
           <button type="button" class="theme-card-box" data-theme="forest" onclick="selectThemeAndApply('forest')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#166534"></span><span class="theme-card-label">أخضر غابة</span><span class="theme-check-dot" data-theme="forest" aria-hidden="true"></span></button>
-          <button type="button" class="theme-card-box" data-theme="sapphire" onclick="selectThemeAndApply('sapphire')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#1d4ed8"></span><span class="theme-card-label">ياقوت أزرق</span><span class="theme-check-dot" data-theme="sapphire" aria-hidden="true"></span></button>
         </div>
 
         <button type="button" class="btn-submit-tx" onclick="closeModal('themeDrawerModal')" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #f8fafc; height: 38px; font-size: 0.82rem; font-weight: 800; border-radius: 10px; width: 100%; cursor: pointer;">
@@ -18731,7 +18730,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.46</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.47</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -18792,12 +18791,12 @@
                 </button>
               </div>
 
-              <!-- مجموعة 1: ألوان التطبيق 9 متوازنة في 3 صفوف (كل خيار هو اللون نفسه) -->
+              <!-- مجموعة 1: ألوان التطبيق (8 ألوان متوازنة) (كل خيار هو اللون نفسه) -->
               <div class="antigravity-card-block">
                 <div class="antigravity-card-header">
                   <div class="antigravity-card-title">
                     <i class="fa-solid fa-palette"></i>
-                    <span>ألوان التطبيق (9 ألوان)</span>
+                    <span>ألوان التطبيق (8 ألوان متوازنة)</span>
                   </div>
                   <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
                 </div>
@@ -18810,7 +18809,6 @@
                   <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span>نيلي ليلي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false"><span>ياقوت أزرق</span><i class="fa-solid fa-check theme-active-check"></i></button>
                 </div>
               </div>
 
@@ -26763,7 +26761,7 @@ function switchSettingsTab(tabName) {
     };
     const APPEARANCE_PALETTE_ALIASES = {
       black: 'slate', carbon: 'slate', crimson: 'rose', amber: 'gold',
-      light: 'sapphire', facebook: 'sapphire'
+      light: 'navy', facebook: 'navy', sapphire: 'navy'
     };
     const APPEARANCE_ICON_THEMES = {
       vibrant: { name: 'فينتك', dark: '#7dd3fc', light: '#0369a1' },

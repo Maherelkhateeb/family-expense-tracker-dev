@@ -1,5 +1,6 @@
 {
-  "version": "v5.3.46",
-  "build": "202611141445",
-  "releaseNotes": "Professional Antigravity redesign: Symmetrical 50/50 segmented navigation tabs, 6 granular font sizes (micro, small, medium, large, xlarge, huge) with responsive sample track, and high-contrast styling"
+  "version": "v5.3.47",
+  "build": "202611141555",
+  "buildId": "202611141555",
+  "releaseNotes": "Removed sapphire blue theme for balanced 8-color matrix with zero orphan elements"
 }
