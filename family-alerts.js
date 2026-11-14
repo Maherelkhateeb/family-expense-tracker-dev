@@ -18,12 +18,29 @@ const familyAlerts = (() => {
     member:tx.member, author:tx.author, receiptVersion:tx.alertReceiptVersion, project:getTransactionProjectName(tx),
     from:tx.fromWalletId || tx.fromWallet, to:tx.toWalletId || tx.toWallet
   }]));
+  const soundKey = prefix+'_sound';
+  let audio;
+  function ring() {
+    if (!read(soundKey,false) || !audio || audio.state !== 'running') return;
+    for (const [index, frequency] of [660,880].entries()) {
+      const oscillator=audio.createOscillator(), gain=audio.createGain(), start=audio.currentTime+index*.15;
+      oscillator.frequency.value=frequency; gain.gain.setValueAtTime(.17,start); gain.gain.exponentialRampToValueAtTime(.001,start+.16);
+      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start+.17);
+    }
+  }
+  async function toggleSound() {
+    if (read(soundKey,false) && audio?.state === 'running') {write(soundKey,false);render();return;}
+    try {
+      audio ||= new (window.AudioContext || window.webkitAudioContext)();
+      await audio.resume(); write(soundKey,true); ring(); render();
+    } catch {showToast('تعذر تشغيل الصوت في هذا المتصفح');}
+  }
   function store(events) {
     if (!events.length) return;
     const saved = rows();
     const known = new Set(saved.map(item => item.id));
     const added = events.filter(item => !known.has(item.id) && known.add(item.id));
-    if (added.length) write(prefix, [...added, ...saved].sort((a,b) => b.at-a.at).slice(0,1500));
+    if (added.length) { write(prefix, [...added, ...saved].sort((a,b) => b.at-a.at).slice(0,1500)); ring(); }
   }
   function observe(transactions, actor, baseline = false) {
     const next = snapshot(transactions);
@@ -63,7 +80,7 @@ const familyAlerts = (() => {
     const obligations = new Map();
     for (const item of [...(state.debts || []), ...(state.expectedExpenses || [])]) if (item?.id) obligations.set(item.id,item);
     for (const item of obligations.values()) {
-      if (!item.dueDate || item.paid || item.deleted || ['paid','settled','cancelled','archived'].includes(item.status)) continue;
+      if (String(item.id).startsWith('alert-demo-') || !item.dueDate || item.paid || item.deleted || ['paid','settled','cancelled','archived'].includes(item.status)) continue;
       const remaining = Number(item.amount)-Number(item.paidAmount || 0);
       const days = daysUntil(item.dueDate);
       if (!(remaining > 0) || ![7,3,1,0,-1].includes(days)) continue;
@@ -71,7 +88,7 @@ const familyAlerts = (() => {
       push('due:'+item.id+':'+item.dueDate+':'+days,'تذكير استحقاق', (item.title || item.label || 'فاتورة أو دين')+' · '+timing+' · '+item.dueDate+' · المتبقي '+amount(remaining));
     }
     for (const plan of state.monthlyBudgets || []) {
-      if (plan.month !== today.slice(0,7)) continue;
+      if (String(plan.id).startsWith('alert-demo-') || plan.month !== today.slice(0,7)) continue;
       const scoped = expenses.filter(tx => dateOf(tx).slice(0,7) === plan.month &&
         (!plan.project || getTransactionProjectName(tx).toLocaleLowerCase() === plan.project.trim().toLocaleLowerCase()));
       const items = (plan.items || []).filter(item => Number(item.amount) > 0);
@@ -123,6 +140,8 @@ const familyAlerts = (() => {
     render();
   }
   function render() {
+    const sound = document.getElementById('alertSoundButton');
+    if (sound) sound.textContent = audio?.state === 'running' && read(soundKey,false) ? 'إيقاف الصوت' : 'تشغيل الصوت';
     const items = visible();
     const seen = new Set(read(readKey(),[]));
     const count = items.filter(item => !seen.has(item.id)).length;
@@ -181,11 +200,70 @@ const familyAlerts = (() => {
       list.append(card);
     }
   }
+  function demo() {
+    if (rows().some(row=>row.demo)) { showToast('الحالات التجريبية مسجلة بالفعل'); return; }
+    const at=Date.now(), today=getLocalDateStr(new Date(at)), month=today.slice(0,7);
+    const wallet=state.wallets?.[0]?.id;
+    if (!wallet) { showToast('أنشئ محفظة أولًا لتسجيل بيانات الاختبار'); return; }
+    const events=[];
+    const add=(title, body, extra={})=>{
+      const n=events.length+1;
+      events.push({id:'alert-demo:'+n,at:at+n,demo:true,title,body:'اختبار التنبيهات '+n+' · '+body,...extra});
+    };
+    const tx=(id,type,value,author,category='daily')=>({id:'alert-demo-tx-'+at+'-'+id,type,amount:value,author,member:author,category,date:today,walletId:wallet,label:'اختبار التنبيهات · '+id,createdAt:new Date(at).toISOString()});
+    const actors=['أية','ماهر','محمد','مريم'];
+    for (const [kind,count] of [['expense',12],['income',6],['transfer',4],['edit',4],['delete',4]]) {
+      for(let i=0;i<count;i++) {
+        const author=actors[i%actors.length], item=tx(events.length+1,kind==='income'?'income':kind==='transfer'&&state.wallets.length>1?'transfer':'expense',50+i*15,author,kind==='income'?'salary':kind==='transfer'?'transfer':'daily');
+        if(item.type==='transfer'){item.fromWalletId=wallet;item.toWalletId=state.wallets[1].id;}
+        if(kind!=='delete' && (kind!=='transfer' || item.type==='transfer')) state.transactions.unshift(item);
+        const titles={expense:'مصروف جديد',income:'إيداع مبلغ',transfer:'تحويل بين المحافظ',edit:'تعديل عملية',delete:'حذف عملية'};
+        const snapshotItem=snapshot([item]).get(item.id);
+        add(titles[kind],author+' · '+amount(item.amount)+' · '+getCategoryName(item.category,item.type),{tx:snapshotItem,kind,old:kind==='edit'?{...snapshotItem,amount:item.amount-10}:undefined});
+      }
+    }
+    for(let i=0;i<4;i++) {
+      const member=actors[i], value=200+50*i, reason='اختبار التنبيهات · طلب '+(i+1);
+      state.moneyRequests.unshift({id:'alert-demo-request-'+at+'-'+i,member,amount:value,reason,date:today,status:'pending',allocations:[{amount:value,category:'daily',member}],createdBy:member});
+      add('طلب مبلغ',member+' · '+amount(value),{details:[reason,member,amount(value),today]});
+    }
+    for(let i=0;i<3;i++) {
+      const name='اختبار التنبيهات · موازنة '+(i+1), value=400+i*50;
+      state.monthlyBudgets.unshift({id:'alert-demo-budget-'+at+'-'+i,name,month,project:'مشروع اختبار '+(i+1),items:[{amount:value,category:'daily',members:['أية']}],incomes:[],categories:{}});
+      add('موازنة جديدة',name,{details:[name,month,amount(value)]});
+    }
+    const tasks=getTodoTasks();
+    for(let i=0;i<3;i++) {
+      const title='اختبار التنبيهات · مهمة '+(i+1);
+      tasks.unshift({id:'alert-demo-task-'+at+'-'+i,title,dueDate:today,assignedMember:actors[i],tag:'general',completed:false,subtasks:[]});
+      add('مهمة جديدة',title,{details:[title,actors[i],today]});
+    }
+    for(const [offset,timing] of [[7,'قبل ٧ أيام'],[3,'قبل ٣ أيام'],[1,'قبل يوم'],[0,'يوم الاستحقاق'],[-1,'بعد الاستحقاق']]) {
+      const date=new Date(at); date.setDate(date.getDate()+offset);
+      const dueDate=getLocalDateStr(date), title='اختبار التنبيهات · '+(offset%2?'دين':'فاتورة')+' '+timing;
+      state.expectedExpenses.unshift({id:'alert-demo-due-'+at+'-'+offset,title,amount:250,paidAmount:0,dueDate,status:'upcoming',type:offset%2?'debt_on_us':'upcoming_bill'});
+      add('تذكير استحقاق',title,{details:[title,dueDate,amount(250)]});
+    }
+    for(const [scope,spent,limit] of [['بند مصروف يومي',85,100],['مصروف أية',125,100],['مشروع اختبار',445,500],['إجمالي الموازنة',590,500]]) {
+      add(spent>=limit?'تجاوز حد الموازنة':'اقتراب من حد الموازنة',scope,{details:[scope,amount(spent)+' من '+amount(limit),month]});
+    }
+    add('تذكير لأية بتسجيل المصروفات','مثال على التذكير اليومي',{details:['سجّلي مصروفات اليوم إذا لم تسجّليها بعد.',today]});
+    saveTodoTasks(tasks);
+    saveMoneyRequests();
+    localStorage.setItem('family_monefy_monthly_budgets',JSON.stringify(state.monthlyBudgets));
+    localStorage.setItem('family_monefy_expected',JSON.stringify(state.expectedExpenses));
+    previous=snapshot(state.transactions);
+    saveTx();
+    store(events);
+    openDetail=null;
+    render();
+    showToast('تم تسجيل ٥٠ حالة تجريبية');
+  }
   function refresh() { reminders(); }
   function open() { openDetail=null; openModal('notificationsModal'); refresh(); }
   window.addEventListener('storage',event=>{ if(event.key?.startsWith(prefix)) render(); });
   document.addEventListener('visibilitychange',()=>{ if(previous && !document.hidden) refresh(); });
   window.addEventListener('focus',()=>{ if(previous) refresh(); });
   setInterval(()=>{ if(previous && !document.hidden) refresh(); },60000);
-  return {observe,refresh,open,mark,created};
+  return {observe,refresh,open,mark,created,demo,toggleSound};
 })();

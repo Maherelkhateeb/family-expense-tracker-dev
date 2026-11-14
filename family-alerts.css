@@ -11,3 +11,4 @@ body.light-theme #notificationsModal{--alert-panel:#fff;--alert-row:#edf3f9;--al
 .family-alert button,.family-alert-main:is(button){cursor:pointer}
 .family-alert>button,#notificationsListContainer>button{justify-self:start;min-height:32px;background:var(--alert-panel);border:1px solid var(--alert-line);border-radius:6px;padding:4px 8px}
 .family-alert p{margin:0;overflow-wrap:anywhere}
+#notificationsModal .modal-head{flex-wrap:wrap;gap:7px}#alertSoundButton,#runAlertDemo{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:7px;padding:6px 8px;font:inherit;font-size:.74rem;cursor:pointer}.alert-demo-tools{margin-bottom:7px}
