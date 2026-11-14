@@ -283,12 +283,16 @@ body.light-theme .antigravity-nav-pill.active {
   box-shadow: 0 2px 6px rgba(14, 165, 233, 0.12) !important;
 }
 
-/* Scroll Container - Zero Scrolling Target */
+/* Scroll Container */
+#settingsModal .settings-modal-scroll,
+#settingsModal .antigravity-scroll-body,
 #settingsModal .antigravity-settings-body {
   padding: 4px 10px 8px !important;
   gap: 8px !important;
   flex: 1 1 auto !important;
+  min-height: 0 !important;
   overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
   overscroll-behavior: contain !important;
 }
 
@@ -418,101 +422,7 @@ body.light-theme .antigravity-mode-btn[aria-pressed="true"] {
   box-sizing: border-box !important;
 }
 
-/* Theme Palette Buttons - 3x3 Compact Full Width */
-#settingsModal .antigravity-palette-grid .theme-pill-option {
-  height: 34px !important;
-  min-height: 34px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(30, 41, 59, 0.55) !important;
-  color: #cbd5e1 !important;
-  padding: 3px 6px !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-body.light-theme #settingsModal .antigravity-palette-grid .theme-pill-option {
-  background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-  color: #334155 !important;
-}
-#settingsModal .antigravity-palette-grid .theme-pill-option.active {
-  border: 1.5px solid #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.18) !important;
-  color: #38bdf8 !important;
-}
-body.light-theme #settingsModal .antigravity-palette-grid .theme-pill-option.active {
-  border-color: #0284c7 !important;
-  background: #f0f9ff !important;
-  color: #0284c7 !important;
-}
-#settingsModal .antigravity-palette-grid .theme-pill-option span:last-child {
-  font-size: 0.65rem !important;
-  font-weight: 850 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-.theme-color-dot {
-  width: 14px !important;
-  height: 14px !important;
-  border-radius: 50% !important;
-  background: var(--theme-swatch) !important;
-  border: 1.2px solid rgba(255, 255, 255, 0.5) !important;
-  flex-shrink: 0 !important;
-  box-shadow: 0 0 6px var(--theme-swatch) !important;
-}
-
-/* Icon Grid - 3x3 Compact */
-#settingsModal .antigravity-icon-grid .icon-theme-pill {
-  height: 34px !important;
-  min-height: 34px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(30, 41, 59, 0.55) !important;
-  color: #cbd5e1 !important;
-  padding: 3px 6px !important;
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-body.light-theme #settingsModal .antigravity-icon-grid .icon-theme-pill {
-  background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-  color: #334155 !important;
-}
-#settingsModal .antigravity-icon-grid .icon-theme-pill.active {
-  border: 1.5px solid #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.18) !important;
-  color: #38bdf8 !important;
-}
-body.light-theme #settingsModal .antigravity-icon-grid .icon-theme-pill.active {
-  border-color: #0284c7 !important;
-  background: #f0f9ff !important;
-  color: #0284c7 !important;
-}
-#settingsModal .antigravity-icon-grid .icon-theme-pill span:last-child {
-  font-size: 0.65rem !important;
-  font-weight: 850 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-.icon-color-dots {
-  font-size: 0.55rem !important;
-  letter-spacing: -1px !important;
-  color: var(--icon-swatch, #38bdf8) !important;
-}
+/* Legacy chunk removed - using rich vibrant gradients */
 
 /* Card Styles Grid - 3x3 Compact */
 #settingsModal .antigravity-card-style-grid button {
@@ -983,24 +893,23 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 
 /* Card choices: 10 items fill rows 3 + 3 + 4 with no two empty cells.
    Preserve every original selectable card style and its click handler. */
-#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid,
+#settingsSec_appearance #cardStyleButtonsContainer.antigravity-card-style-grid {
   display: grid !important;
-  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-  gap: 5px !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
   align-content: start !important;
   align-items: stretch !important;
   margin: 4px 0 0 !important;
   padding: 0 !important;
   min-height: 0 !important;
+  width: 100% !important;
 }
 #settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
-  grid-column: span 4;
+  grid-column: auto !important;
   min-width: 0 !important;
   width: 100% !important;
   margin: 0 !important;
-}
-#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style]:nth-child(n+7) {
-  grid-column: span 3;
 }
 #settingsSec_appearance .compact-appearance-cards-panel,
 #settingsSec_appearance .compact-appearance-card-tile {
@@ -1111,4 +1020,357 @@ button, input[type="button"], input[type="submit"], [role="tab"] {
     .task-picker-month-heading button, .task-picker-stepper button) > :is(i, span, svg) {
   margin: 0 !important;
   text-align: center !important;
+}
+
+
+
+/* =========================================================================
+   Unified 3x3 Matrices: Choices represent the actual colors and styles
+   ========================================================================= */
+
+/* 1. App Color Themes (9 Colors - 3x3 Rows - Each Choice IS The Color) */
+.antigravity-palette-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option {
+  height: 35px !important;
+  min-height: 35px !important;
+  border-radius: 9px !important;
+  padding: 2px 6px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, outline 0.16s ease !important;
+  position: relative !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option span {
+  font-size: 0.69rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option .theme-active-check {
+  display: none;
+  font-size: 0.62rem !important;
+  color: #ffffff !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option.active .theme-active-check {
+  display: inline-block !important;
+}
+
+/* Specific vibrant backgrounds representing each color itself */
+#settingsModal .theme-pill-option[data-theme="navy"] { background: linear-gradient(135deg, #0b1f3a, #163e72) !important; }
+#settingsModal .theme-pill-option[data-theme="emerald"] { background: linear-gradient(135deg, #064e3b, #059669) !important; }
+#settingsModal .theme-pill-option[data-theme="purple"] { background: linear-gradient(135deg, #581c87, #7c3aed) !important; }
+#settingsModal .theme-pill-option[data-theme="rose"] { background: linear-gradient(135deg, #881337, #be123c) !important; }
+#settingsModal .theme-pill-option[data-theme="ocean"] { background: linear-gradient(135deg, #155e75, #0891b2) !important; }
+#settingsModal .theme-pill-option[data-theme="gold"] { background: linear-gradient(135deg, #78350f, #b45309) !important; }
+#settingsModal .theme-pill-option[data-theme="slate"] { background: linear-gradient(135deg, #334155, #475569) !important; }
+#settingsModal .theme-pill-option[data-theme="midnight"] { background: linear-gradient(135deg, #312e81, #4338ca) !important; }
+#settingsModal .theme-pill-option[data-theme="sapphire"] { background: linear-gradient(135deg, #1e3a8a, #2563eb) !important; }
+
+#settingsModal .antigravity-palette-grid .theme-pill-option:hover {
+  transform: translateY(-1.5px) scale(1.02) !important;
+  filter: brightness(1.12) !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option.active {
+  outline: 2.5px solid #ffffff !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1.5px) scale(1.03) !important;
+}
+
+body.light-theme #settingsModal .antigravity-palette-grid .theme-pill-option.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1.5px !important;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.6), 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 2. Icon Themes (9 Colors - 3x3 Rows - Each Choice IS The Color) */
+.antigravity-icon-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill {
+  height: 35px !important;
+  min-height: 35px !important;
+  border-radius: 9px !important;
+  padding: 2px 6px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, outline 0.16s ease !important;
+  position: relative !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill span {
+  font-size: 0.69rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill .icon-active-check {
+  display: none;
+  font-size: 0.62rem !important;
+  color: #ffffff !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill.active .icon-active-check {
+  display: inline-block !important;
+}
+
+/* Specific vibrant gradients for icon themes */
+#settingsModal .icon-theme-pill[data-icon-theme="vibrant"] { background: linear-gradient(135deg, #0284c7, #06b6d4) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="gold"] { background: linear-gradient(135deg, #b45309, #f59e0b) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="emerald"] { background: linear-gradient(135deg, #047857, #10b981) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="ocean"] { background: linear-gradient(135deg, #0e7490, #06b6d4) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="purple"] { background: linear-gradient(135deg, #6d28d9, #8b5cf6) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="ruby"] { background: linear-gradient(135deg, #be123c, #f43f5e) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="amber"] { background: linear-gradient(135deg, #c2410c, #f97316) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="indigo"] { background: linear-gradient(135deg, #3730a3, #6366f1) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="rose"] { background: linear-gradient(135deg, #be185d, #ec4899) !important; }
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill:hover {
+  transform: translateY(-1.5px) scale(1.02) !important;
+  filter: brightness(1.12) !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill.active {
+  outline: 2.5px solid #ffffff !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1.5px) scale(1.03) !important;
+}
+
+body.light-theme #settingsModal .antigravity-icon-grid .icon-theme-pill.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1.5px !important;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.6), 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 3. Card Styles (9 Styles - 3x3 Rows - Each Choice Demonstrates Its Style) */
+.antigravity-card-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-card-style-grid button {
+  height: 38px !important;
+  min-height: 38px !important;
+  border-radius: 9px !important;
+  padding: 3px 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  line-height: 1.15 !important;
+  color: #f8fafc !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease !important;
+}
+
+#settingsModal .antigravity-card-style-grid button strong {
+  font-size: 0.70rem !important;
+  font-weight: 850 !important;
+}
+#settingsModal .antigravity-card-style-grid button small {
+  font-size: 0.58rem !important;
+  opacity: 0.8 !important;
+}
+
+body.light-theme #settingsModal .antigravity-card-style-grid button {
+  color: #1e293b !important;
+}
+
+#settingsModal #designStyleGlass {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+#settingsModal #designStyleMin {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+#settingsModal #designStyleNeu {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.15), 2px 2px 6px rgba(0, 0, 0, 0.45) !important;
+}
+#settingsModal #designStyleNeon {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+}
+#settingsModal #designStyleClear {
+  background: transparent !important;
+  border: 2px solid #94a3b8 !important;
+}
+#settingsModal #designStyleElevated {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.6) !important;
+}
+#settingsModal #designStyleOutlined {
+  background: transparent !important;
+  border: 1.5px dashed #94a3b8 !important;
+}
+#settingsModal #designStyleGradient {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+}
+#settingsModal #designStyleSoft {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+}
+
+/* Light Theme Card Styles */
+body.light-theme #settingsModal #designStyleGlass {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+}
+body.light-theme #settingsModal #designStyleMin {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+}
+body.light-theme #settingsModal #designStyleNeu {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: inset 1px 1px 2px #ffffff, 2px 2px 4px rgba(15, 23, 42, 0.12) !important;
+}
+body.light-theme #settingsModal #designStyleNeon {
+  background: #f0f9ff !important;
+  border: 1.5px solid #0284c7 !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.35) !important;
+}
+body.light-theme #settingsModal #designStyleClear {
+  background: #ffffff !important;
+  border: 2px solid #475569 !important;
+}
+body.light-theme #settingsModal #designStyleElevated {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 16px -2px rgba(15, 23, 42, 0.15) !important;
+}
+body.light-theme #settingsModal #designStyleOutlined {
+  background: #ffffff !important;
+  border: 1.5px dashed #64748b !important;
+}
+body.light-theme #settingsModal #designStyleGradient {
+  background: linear-gradient(135deg, rgba(224, 242, 254, 0.8), rgba(243, 232, 255, 0.8)) !important;
+  border: 1px solid rgba(14, 165, 233, 0.4) !important;
+}
+body.light-theme #settingsModal #designStyleSoft {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 16px !important;
+}
+
+#settingsModal .antigravity-card-style-grid button.active {
+  outline: 2.5px solid #38bdf8 !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
+  transform: translateY(-1.5px) scale(1.02) !important;
+}
+body.light-theme #settingsModal .antigravity-card-style-grid button.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.45) !important;
+}
+
+/* 4. Fonts Grid (9 Fonts - 3x3 Rows - Each Choice In Its Own Font) */
+.antigravity-font-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill {
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 9px !important;
+  padding: 3px 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(30, 41, 59, 0.65) !important;
+  color: #f1f5f9 !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease !important;
+}
+
+body.light-theme #settingsModal .antigravity-font-grid .font-choice-pill {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill:hover {
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill.active {
+  background: rgba(56, 189, 248, 0.22) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3) !important;
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 1px !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+body.light-theme #settingsModal .antigravity-font-grid .font-choice-pill.active {
+  background: #f0f9ff !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+  outline: 2px solid #0284c7 !important;
 }
