@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.25';
-    var APP_BUILD_ID = 202611132255;
+    var APP_VERSION = 'v5.3.26';
+    var APP_BUILD_ID = 202611140945;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15049,6 +15049,8 @@
     }
   </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
+  <script src="./market-data.js?v=20261114-gold1"></script>
+  <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261113-summary-inline5">
   <script src="./appearance-compact.js?v=20261113-gapfix1" defer></script>
 </head>
@@ -16945,7 +16947,7 @@
         <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center;">
           <div class="drawer-main-title" style="font-size: 0.92rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 7px;">
             <i class="fa-solid fa-coins"></i>
-            <span>بورصة الذهب والعملات وحاسبة الصاغة</span>
+            <span>الذهب والعملات</span>
           </div>
           <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" style="font-size: 1.2rem; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer;">&times;</button>
         </div>
@@ -16955,10 +16957,10 @@
               <i class="fa-solid fa-building-columns"></i> تعويم (بنك مصر & الصاغة)
             </span>
             <span class="market-source-pill market-source-pill-chart" style="background: rgba(41, 98, 255, 0.2); color: #38bdf8; border: 1px solid rgba(41, 98, 255, 0.4); padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.61rem;">
-              <i class="fa-solid fa-chart-line"></i> TradingView للمطابقة
+              <i class="fa-solid fa-chart-line"></i> رسم عالمي مستقل
             </span>
             <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite" style="color: #cbd5e1; font-weight: 700; font-size: 0.66rem; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-circle" style="font-size: 0.40rem;"></i> أسعار رسمية حية
+              <i class="fa-solid fa-circle" style="font-size: 0.40rem;"></i> جارٍ التحقق من الأسعار…
             </span>
           </div>
           <button type="button" class="period-btn active gold-refresh-btn" id="btnRefreshTv" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار المتاحة" style="font-size: 0.68rem; padding: 2px 10px; border-radius: 7px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; cursor: pointer;">
@@ -16970,6 +16972,12 @@
       <!-- جسم البورصة الموحد في شاشة واحدة متكاملة بدون تبويبات وبدون أي تمرير أفقي -->
       <div class="drawer-view-container gold-market-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 12px 30px; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;">
         
+        <section class="market-provenance" aria-label="مصادر الأسعار">
+          <p id="marketSourceDetails">جارٍ قراءة مصادر الأسعار…</p>
+          <p id="marketQuoteTimes">وقت أسعار المصدر: غير معلن</p>
+          <p id="goldPriceBasis">الأسعار بالجنيه المصري، والأونصة العالمية بالدولار.</p>
+          <div class="market-source-links"><a href="https://ta3weem.com/ar" target="_blank" rel="noopener">تعويم</a><a href="https://gold-api.com" target="_blank" rel="noopener">Gold API</a><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a></div>
+        </section>
         <!-- القسم 1: أسعار الذهب في الصاغة (مصر) -->
         <div class="gold-market-section gold-rates-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
           <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #fde047; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
@@ -16980,46 +16988,47 @@
             <!-- عيار 21 -->
             <div class="market-box gold-21-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.75); border: 1.4px solid rgba(245, 158, 11, 0.5);">
               <div class="market-box-title" style="font-size: 0.70rem; color: #fbbf24; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-ring"></i> <span>عيار 21 (الأكثر طلباً)</span>
+                <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
               </div>
-              <div class="market-box-val" id="tvGold21Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">6,395 ج.م</div>
+              <div class="market-box-val" id="tvGold21Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
               <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
                 <span>سعر الجرام</span>
-                <span class="change-tag down" id="tvGold21Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">-0.40%</span>
-              </div>
+                <span class="change-tag down" id="tvGold21Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
+              </div><div class="market-buy-price" id="tvGold21Buy">—</div>
             </div>
 
             <!-- عيار 24 -->
             <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
               <div class="market-box-title" style="font-size: 0.70rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-bars"></i> <span>عيار 24 (السبائك)</span>
+                <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
               </div>
-              <div class="market-box-val" id="tvGold24Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">7,309 ج.م</div>
+              <div class="market-box-val" id="tvGold24Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
               <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
                 <span>نقاء 99.9%</span>
-                <span class="change-tag down" id="tvGold24Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">-0.40%</span>
-              </div>
+                <span class="change-tag down" id="tvGold24Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
+              </div><div class="market-buy-price" id="tvGold24Buy">—</div>
             </div>
 
+<div class="market-box"><div class="market-box-title">ذهب عيار 18</div><div class="market-box-val" id="tvGold18Val">—</div><div class="market-box-sub"><span>سعر الجرام</span><span class="change-tag" id="tvGold18Chg" hidden></span></div><div class="market-buy-price" id="tvGold18Buy">—</div></div>
             <!-- جنيه الذهب -->
             <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.8)); border: 1.2px solid rgba(245, 158, 11, 0.5);">
               <div class="market-box-title" style="font-size: 0.70rem; color: #fde047; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-coins"></i> <span>جنيه الذهب (BTC)</span>
+                <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
               </div>
-              <div class="market-box-val" id="tvGoldPoundVal" style="font-size: 1.02rem; font-weight: 900; color: #fde047; margin: 2px 0;">49,320 ج.م</div>
+              <div class="market-box-val" id="tvGoldPoundVal" style="font-size: 1.02rem; font-weight: 900; color: #fde047; margin: 2px 0;">—</div>
               <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; align-items: center; color: #cbd5e1;">
                 <span>وزن 8 جرام - عيار 21</span>
-                <span class="change-tag down" id="tvGoldPoundChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">-3.60%</span>
-              </div>
+                <span class="change-tag down" id="tvGoldPoundChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
+              </div><div class="market-buy-price" id="tvGoldPoundBuy">—</div>
             </div>
 
             <!-- أونصة الذهب عالمياً -->
-            <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
+            <div class="market-box global-ounce-card" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
               <div class="market-box-title" style="font-size: 0.70rem; color: #38bdf8; font-weight: 800; display: flex; align-items: center; gap: 3px;">
                 <i class="fa-solid fa-globe"></i> <span>أونصة الذهب عالمياً</span>
               </div>
-              <div class="market-box-val" id="tvGoldOunceVal" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">$4043.83</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; color: #94a3b8;">TVC:GOLD</div>
+              <div class="market-box-val" id="tvGoldOunceVal" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
+              <div class="market-box-sub" id="tvGoldOunceTime">وقت المصدر غير متاح</div>
             </div>
           </div>
         </div>
@@ -17035,11 +17044,11 @@
               <div class="market-box-title" style="font-size: 0.68rem; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 3px;">
                 <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
               </div>
-              <div class="market-box-val" id="tvUsdVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">55.84 ج.م</div>
+              <div class="market-box-val" id="tvUsdVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
               <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
                 <span>USDEGP</span>
-                <span class="change-tag up" id="tvUsdChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">+0.12%</span>
-              </div>
+                <span class="change-tag up" id="tvUsdChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
+              </div><div class="market-buy-price" id="tvUsdBuy">—</div>
             </div>
 
             <!-- ريال سعودي -->
@@ -17047,16 +17056,18 @@
               <div class="market-box-title" style="font-size: 0.68rem; color: #059669; font-weight: 800; display: flex; align-items: center; gap: 3px;">
                 <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
               </div>
-              <div class="market-box-val" id="tvSarVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">14.87 ج.م</div>
+              <div class="market-box-val" id="tvSarVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
               <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
                 <span>SAREGP</span>
-                <span class="change-tag down" id="tvSarChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">-0.01%</span>
-              </div>
+                <span class="change-tag down" id="tvSarChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
+              </div><div class="market-buy-price" id="tvSarBuy">—</div>
             </div>
+<div class="market-box"><div class="market-box-title">اليورو</div><div class="market-box-val" id="tvEurVal">—</div><div class="market-box-sub"><span>EUR / EGP</span><span class="change-tag" id="tvEurChg" hidden></span></div><div class="market-buy-price" id="tvEurBuy">—</div></div>
+<div class="market-box"><div class="market-box-title">الدرهم الإماراتي</div><div class="market-box-val" id="tvAedVal">—</div><div class="market-box-sub"><span>AED / EGP</span><span class="change-tag" id="tvAedChg" hidden></span></div><div class="market-buy-price" id="tvAedBuy">—</div></div>
           </div>
         </div>
 
-        <!-- القسم 3: حاسبة الصاغة والمصنعية التقديرية بالسوق المصري -->
+<details class="gold-tool-panel"><summary>حاسبة الذهب والمصنعية</summary>        <!-- القسم 3: حاسبة الصاغة والمصنعية التقديرية بالسوق المصري -->
         <div class="gold-market-section gold-calculator-section" style="background: rgba(15, 23, 42, 0.9); border: 1.4px solid rgba(245, 158, 11, 0.5); border-radius: 14px; padding: 12px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
           <div style="font-size: 0.82rem; font-weight: 800; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
             <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
@@ -17065,8 +17076,8 @@
 
           <!-- مربع إجمالي التكلفة الشاملة البارز -->
           <div class="gold-calc-summary" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: center;">
-            <div style="font-size: 0.68rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي التكلفة التقديرية للشراء بالصاغة (شامل المصنعية):</div>
-            <div id="calcFinalTotal" style="font-size: 1.35rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">64,950.00 ج.م</div>
+            <div style="font-size: 0.68rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي الشراء التقديري شامل المصنعية:</div>
+            <div id="calcFinalTotal" style="font-size: 1.35rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">—</div>
           </div>
 
           <!-- اختيار نوع الأصل الذهبي أو العملة -->
@@ -17100,19 +17111,19 @@
           <div class="gold-calc-breakdown" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;">
             <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
               <span>قيمة الذهب الخام الصافي:</span>
-              <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">63,950.00 ج.م</span>
+              <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">—</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
               <span>إجمالي المصنعية والدمغة:</span>
-              <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">1,200.00 ج.م</span>
+              <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">—</span>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 4px;">
-              <span>كاش باك مسترد عند إعادة البيع:</span>
-              <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">0.00 ج.م</span>
+              <span>كاش باك مفترض عند إعادة البيع:</span>
+              <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">—</span>
             </div>
             <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.76rem; font-weight: 800; color: #38bdf8;">صافي التكلفة الحقيقية بعد الكاش باك:</span>
-              <span id="calcNetCostVal" style="font-size: 0.92rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">65,150.00 ج.م</span>
+              <span style="font-size: 0.76rem; font-weight: 800; color: #38bdf8;">بعد خصم كاش باك مفترض:</span>
+              <span id="calcNetCostVal" style="font-size: 0.92rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">—</span>
             </div>
           </div>
 
@@ -17125,7 +17136,8 @@
           </div>
         </div>
 
-        <!-- القسم 4: الشارت الحي للذهب TradingView Live -->
+</details>
+<details class="gold-tool-panel"><summary>الرسم البياني العالمي</summary>        <!-- القسم 4: الشارت الحي للذهب TradingView Live -->
         <div class="gold-market-section gold-chart-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <span style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
@@ -17138,6 +17150,7 @@
           </div>
         </div>
 
+</details>
         <!-- القسم 5: تقويم الرصيد الفعلي الحالي بالذهب -->
         <div class="gold-market-section gold-valuation-section" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
           <div>
@@ -27314,11 +27327,11 @@ function openSettingsModal(targetSection = '') {
           }, 15 * 60 * 1000);
         }
         // تقويم الرصيد الفعلي الحالي بالذهب عيار 21
-        const g21 = (state.market && state.market.gold21) || 6375;
+        const g21 = (state.market && state.market.gold21) || 0;
         const totalBal = (typeof computeTotalEffectiveBalance === 'function') ? computeTotalEffectiveBalance() : (state.balance || 0);
         const goldGrams = g21 > 0 ? (totalBal / g21).toFixed(2) : '0.00';
         const valEl = document.getElementById('goldValuationText');
-        if (valEl) valEl.textContent = `${goldGrams} جم ذهب 21`;
+        if (valEl) valEl.textContent = g21 > 0 ? `${goldGrams} جم ذهب 21` : 'السعر غير متاح';
       } catch(e) {}
     }
 
@@ -27357,359 +27370,69 @@ function openSettingsModal(targetSection = '') {
     }
 
     async function fetchAndApplyMarketRates(forceLive = false) {
-      const spin = document.getElementById('iconSpin');
-      const goldBadgeIcon = document.querySelector('#btnOpenGold i');
-      const statusEl = document.getElementById('tvUpdateTime');
-      if (spin) spin.classList.add('fa-spin');
-      if (goldBadgeIcon) goldBadgeIcon.classList.add('fa-spin');
-
-      let marketData = null;
-      let isFresh = false;
-      let sourceAgeMinutes = Infinity;
-      let usedEstimate = false;
-      let refreshedGoldSpot = false;
-
-      // أحدث نسخة من المصدر المحلي ثم نسخة التطبيق الاحتياطية.
-      const feedUrls = [
-        'https://raw.githubusercontent.com/Maherelkhateeb/family-expense-tracker-dev/market-rates/market_rates.json?_t=' + Date.now(),
-        'market_rates.json?_t=' + Date.now()
-      ];
-      const feedResults = await Promise.allSettled(feedUrls.map(async (url) => {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 9000);
-        try {
-          const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
-          if (!response.ok) throw new Error('Market feed returned ' + response.status);
-          const json = await response.json();
-          if (!json || !json.currencies || !json.gold) throw new Error('Market feed schema is incomplete');
-          const verifiedAt = json.checkedAt || json.updatedAt;
-          const stamp = verifiedAt ? new Date(verifiedAt).getTime() : 0;
-          const ageMinutes = stamp > 0 ? Math.max(0, (Date.now() - stamp) / 60000) : Infinity;
-          return { json, ageMinutes };
-        } finally {
-          clearTimeout(timeoutId);
-        }
-      }));
-      const validFeeds = feedResults.filter(item => item.status === 'fulfilled').map(item => item.value).sort((a, b) => a.ageMinutes - b.ageMinutes);
-      if (validFeeds.length) {
-        marketData = validFeeds[0].json;
-        sourceAgeMinutes = validFeeds[0].ageMinutes;
-        isFresh = sourceAgeMinutes <= 90;
-      }
-
-      // عند غياب المصدر المحلي أو تقادمه، اعرض تقديراً عالمياً موسوماً بوضوح.
-      if (!marketData || !isFresh) {
-        try {
-          let liveUsd = 0;
-          let liveSar = 0;
-          let liveEur = 0;
-          let liveAed = 0;
-          let liveFxUpdatedAt = '';
-
-          // جلب أسعار العملات الفورية الحية
-          const fxUrls = [
-            'https://api.exchangerate-api.com/v4/latest/USD',
-            'https://open.er-api.com/v6/latest/USD'
-          ];
-          for (const fxUrl of fxUrls) {
-            try {
-              const fxResp = await fetch(fxUrl, { cache: 'no-store' });
-              if (fxResp.ok) {
-                const fxData = await fxResp.json();
-                if (fxData && fxData.rates && fxData.rates.EGP) {
-                  liveUsd = Number(fxData.rates.EGP);
-                  liveSar = liveUsd / (Number(fxData.rates.SAR) || 3.75);
-                  liveEur = liveUsd / (Number(fxData.rates.EUR) || 0.92);
-                  liveAed = liveUsd / (Number(fxData.rates.AED) || 3.6725);
-                  liveFxUpdatedAt = fxData.time_last_update_utc || fxData.time_last_update || '';
-                  break;
-                }
-              }
-            } catch (e) {}
-          }
-
-          // جلب سعر أونصة الذهب الفورية عالمياً (Live XAU Spot)
-          let liveGoldOunce = 0;
-          try {
-            const goldResp = await fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' });
-            if (goldResp.ok) {
-              const gData = await goldResp.json();
-              if (gData && gData.price && Number(gData.price) > 1000) {
-                liveGoldOunce = Number(gData.price);
-              }
-            }
-          } catch (e) {}
-
-          if (liveUsd > 30 && liveGoldOunce > 1000) {
-            // معادلة الذهب المعتمدة بالسوق المصري (جرام 24 = (الأونصة × الدولار ÷ 31.1035) × 1.012 فروق صاغة)
-            const g24Calc = Math.round(((liveGoldOunce * liveUsd) / 31.1034768) * 1.012);
-            const g21Calc = Math.round(g24Calc * (21 / 24));
-            const g18Calc = Math.round(g24Calc * (18 / 24));
-            const gPoundCalc = Math.round(g21Calc * 8);
-
-            marketData = {
-              updatedAt: new Date().toISOString(),
-              checkedAt: new Date().toISOString(),
-              lastUpdateHuman: new Date().toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }),
-              rateMode: 'estimated',
-              provider: 'تقدير عالمي غير رسمي (سعر صرف مرجعي يومي + أونصة فورية)',
-              fxProvider: 'Global FX (مرجعي يومي)',
-              goldProvider: 'XAU Spot (تقدير عالمي)',
-              fxUpdatedAt: liveFxUpdatedAt,
-              currencies: {
-                USD: { sell: Number(liveUsd.toFixed(2)), buy: Number((liveUsd - 0.10).toFixed(2)), chg: '0%' },
-                SAR: { sell: Number(liveSar.toFixed(2)), buy: Number((liveSar - 0.05).toFixed(2)), chg: '0%' },
-                EUR: { sell: Number(liveEur.toFixed(2)), buy: Number((liveEur - 0.20).toFixed(2)), chg: '0%' },
-                AED: { sell: Number(liveAed.toFixed(2)), buy: Number((liveAed - 0.05).toFixed(2)), chg: '0%' }
-              },
-              gold: {
-                gold24: { sell: g24Calc, buy: g24Calc - 40, chg: '0%' },
-                gold21: { sell: g21Calc, buy: g21Calc - 35, chg: '0%' },
-                gold18: { sell: g18Calc, buy: g18Calc - 30, chg: '0%' },
-                goldPound: { sell: gPoundCalc, buy: gPoundCalc - 300, chg: '0%' },
-                goldOunceUSD: liveGoldOunce
-              }
-            };
-            sourceAgeMinutes = 0;
-            isFresh = true;
-            usedEstimate = true;
-          }
-        } catch(netErr) {
-          console.warn('Direct live financial engine notice:', netErr);
-        }
-      } else if (forceLive) {
-        // عند التحديث اليدوي، تبقى الأسعار المحلية كما هي ونحدّث الأونصة العالمية فقط.
-        try {
-          const goldResp = await fetch('https://api.gold-api.com/price/XAU', { cache: 'no-store' });
-          if (goldResp.ok) {
-            const gData = await goldResp.json();
-            const liveGoldOunce = Number(gData && gData.price);
-            if (liveGoldOunce > 1000) {
-              marketData = { ...marketData, gold: { ...marketData.gold, goldOunceUSD: liveGoldOunce }, globalGoldUpdatedAt: new Date().toISOString() };
-              refreshedGoldSpot = true;
-            }
-          }
-        } catch(spotErr) {
-          console.warn('Global gold spot refresh notice:', spotErr);
-        }
-      }
-
-      // 3. كاش محفوظ مسبقاً في حال انقطاع الإنترنت الكامل (Offline Graceful Fallback)
-      const savedMarket = localStorage.getItem('family_last_live_market');
-      let cached = null;
-      if (savedMarket) {
-        try { cached = JSON.parse(savedMarket); } catch (e) {}
-      }
-
-      let usdSell = cached ? (cached.usdEgp || 54.40) : 54.40;
-      let usdBuy = cached ? (cached.usdBuy || 54.30) : 54.30;
-      let usdChg = cached ? (cached.usdChg ?? 0.0) : 0.0;
-
-      let sarSell = cached ? (cached.sarEgp || 14.49) : 14.49;
-      let sarBuy = cached ? (cached.sarBuy || 14.39) : 14.39;
-      let sarChg = cached ? (cached.sarChg ?? 0.0) : 0.0;
-
-      let eurSell = cached ? (cached.eurEgp || 61.11) : 61.11;
-      let eurBuy = cached ? (cached.eurBuy || 60.45) : 60.45;
-      let eurChg = cached ? (cached.eurChg ?? 0.0) : 0.0;
-
-      let aedSell = cached ? (cached.aedEgp || 14.81) : 14.81;
-      let aedBuy = cached ? (cached.aedBuy || 14.77) : 14.77;
-      let aedChg = cached ? (cached.aedChg ?? 0.0) : 0.0;
-
-      let g24Sell = cached ? (cached.gold24 || 7160.00) : 7160.00;
-      let g24Buy = cached ? (cached.gold24Buy || 7091.50) : 7091.50;
-      let g24Chg = cached ? (cached.gold24Chg ?? 0.00) : 0.00;
-
-      let g21Sell = cached ? (cached.gold21 || 6265.00) : 6265.00;
-      let g21Buy = cached ? (cached.gold21Buy || 6205.00) : 6205.00;
-      let g21Chg = cached ? (cached.gold21Chg ?? 0.00) : 0.00;
-
-      let g18Sell = cached ? (cached.gold18 || 5370.00) : 5370.00;
-      let g18Buy = cached ? (cached.gold18Buy || 5318.50) : 5318.50;
-      let g18Chg = cached ? (cached.gold18Chg ?? 0.00) : 0.00;
-
-      let gPoundSell = cached ? (cached.goldPound || 50120.00) : 50120.00;
-      let gPoundBuy = cached ? (cached.goldPoundBuy || 49640.00) : 49640.00;
-      let gPoundChg = cached ? (cached.goldPoundChg ?? 0.0) : 0.0;
-
-      let goldOunce = cached ? (cached.goldOunce || 4072.10) : 4072.10;
-
-      if (marketData && marketData.currencies && marketData.gold) {
-        if (marketData.currencies.USD) {
-          usdSell = Number(marketData.currencies.USD.sell) || usdSell;
-          usdBuy = Number(marketData.currencies.USD.buy) || usdBuy;
-          usdChg = typeof marketData.currencies.USD.chg === 'string' ? parseFloat(marketData.currencies.USD.chg.replace('%', '')) : (Number(marketData.currencies.USD.chg) || usdChg);
-        }
-        if (marketData.currencies.SAR) {
-          sarSell = Number(marketData.currencies.SAR.sell) || sarSell;
-          sarBuy = Number(marketData.currencies.SAR.buy) || sarBuy;
-          sarChg = typeof marketData.currencies.SAR.chg === 'string' ? parseFloat(marketData.currencies.SAR.chg.replace('%', '')) : (Number(marketData.currencies.SAR.chg) || sarChg);
-        }
-        if (marketData.currencies.EUR) {
-          eurSell = Number(marketData.currencies.EUR.sell) || eurSell;
-          eurBuy = Number(marketData.currencies.EUR.buy) || eurBuy;
-          eurChg = typeof marketData.currencies.EUR.chg === 'string' ? parseFloat(marketData.currencies.EUR.chg.replace('%', '')) : (Number(marketData.currencies.EUR.chg) || eurChg);
-        }
-        if (marketData.currencies.AED) {
-          aedSell = Number(marketData.currencies.AED.sell) || aedSell;
-          aedBuy = Number(marketData.currencies.AED.buy) || aedBuy;
-          aedChg = typeof marketData.currencies.AED.chg === 'string' ? parseFloat(marketData.currencies.AED.chg.replace('%', '')) : (Number(marketData.currencies.AED.chg) || aedChg);
-        }
-        if (marketData.gold.gold24) {
-          g24Sell = Number(marketData.gold.gold24.sell) || g24Sell;
-          g24Buy = Number(marketData.gold.gold24.buy) || g24Buy;
-          g24Chg = typeof marketData.gold.gold24.chg === 'string' ? parseFloat(marketData.gold.gold24.chg.replace('%', '')) : (Number(marketData.gold.gold24.chg) || g24Chg);
-        }
-        if (marketData.gold.gold21) {
-          g21Sell = Number(marketData.gold.gold21.sell) || g21Sell;
-          g21Buy = Number(marketData.gold.gold21.buy) || g21Buy;
-          g21Chg = typeof marketData.gold.gold21.chg === 'string' ? parseFloat(marketData.gold.gold21.chg.replace('%', '')) : (Number(marketData.gold.gold21.chg) || g21Chg);
-        }
-        if (marketData.gold.gold18) {
-          g18Sell = Number(marketData.gold.gold18.sell) || g18Sell;
-          g18Buy = Number(marketData.gold.gold18.buy) || g18Buy;
-          g18Chg = typeof marketData.gold.gold18.chg === 'string' ? parseFloat(marketData.gold.gold18.chg.replace('%', '')) : (Number(marketData.gold.gold18.chg) || g18Chg);
-        }
-        if (marketData.gold.goldPound) {
-          gPoundSell = Number(marketData.gold.goldPound.sell) || gPoundSell;
-          gPoundBuy = Number(marketData.gold.goldPound.buy) || gPoundBuy;
-          gPoundChg = typeof marketData.gold.goldPound.chg === 'string' ? parseFloat(marketData.gold.goldPound.chg.replace('%', '')) : (Number(marketData.gold.goldPound.chg) || gPoundChg);
-        }
-        if (marketData.gold.goldOunceUSD) {
-          goldOunce = Number(marketData.gold.goldOunceUSD) || goldOunce;
-        }
-      }
-
-      // حفظ كائن السوق في الحالة المحلية
-      state.market = {
-        source: (marketData && marketData.provider) ? marketData.provider : 'السوق المالي والبورصة الحية',
-        usdEgp: usdSell, usdBuy: usdBuy, usdChg: usdChg,
-        sarEgp: sarSell, sarBuy: sarBuy, sarChg: sarChg,
-        eurEgp: eurSell, eurBuy: eurBuy, eurChg: eurChg,
-        aedEgp: aedSell, aedBuy: aedBuy, aedChg: aedChg,
-        gold24: g24Sell, gold24Buy: g24Buy, gold24Chg: g24Chg,
-        gold21: g21Sell, gold21Buy: g21Buy, gold21Chg: g21Chg,
-        gold18: g18Sell, gold18Buy: g18Buy, gold18Chg: g18Chg,
-        goldPound: gPoundSell, goldPoundBuy: gPoundBuy, goldPoundChg: gPoundChg,
-        goldOunce: goldOunce,
-        updatedAt: (marketData && marketData.updatedAt) ? marketData.updatedAt : (cached && cached.updatedAt ? cached.updatedAt : null),
-        checkedAt: marketData && marketData.checkedAt ? marketData.checkedAt : (cached && cached.checkedAt ? cached.checkedAt : null),
-        lastUpdateHuman: marketData && marketData.lastUpdateHuman ? marketData.lastUpdateHuman : (cached && cached.lastUpdateHuman ? cached.lastUpdateHuman : null),
-        rateMode: marketData && marketData.rateMode ? marketData.rateMode : (cached && cached.rateMode ? cached.rateMode : 'estimated'),
-        fxProvider: marketData && marketData.fxProvider ? marketData.fxProvider : (cached && cached.fxProvider ? cached.fxProvider : null),
-        goldProvider: marketData && marketData.goldProvider ? marketData.goldProvider : (cached && cached.goldProvider ? cached.goldProvider : null)
-      };
-
-      // نسب التحويل المحاسبي الدقيق
-      state.rates.USD = 1 / usdSell;
-      state.rates.SAR = 1 / sarSell;
-      state.rates.GOLD21 = 1 / g21Sell;
-
+      const text = (id,value) => { const el=document.getElementById(id); if(el)el.textContent=value; };
+      const status=document.getElementById('tvUpdateTime');
+      const badge=document.querySelector('#btnOpenGold i');
+      if(badge)badge.classList.add('fa-spin');
+      if(status){status.dataset.status='loading';status.textContent='جارٍ التحقق من المصادر…';}
       try {
-        localStorage.setItem('family_last_live_market', JSON.stringify(state.market));
-      } catch (e) {}
-
-      // تحديث عناصر الواجهة
-      const setElText = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = val;
-      };
-
-      const setChgTag = (id, chgVal) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        const num = typeof chgVal === 'string' ? parseFloat(chgVal.replace('%', '')) : Number(chgVal);
-        el.textContent = (isNaN(num) ? '' : (num >= 0 ? '+' : '')) + (isNaN(num) ? chgVal : num.toFixed(2) + '%');
-        el.classList.remove('up', 'down');
-        if (!isNaN(num)) {
-          el.classList.add(num >= 0 ? 'up' : 'down');
+        const result=await MarketData.load(localStorage,forceLive);
+        if(!result){
+          if(status){status.dataset.status='stale';status.textContent='تعذر جلب الأسعار · أعد المحاولة';}
+          text('marketLocalSourcePill','لا توجد بيانات موثّقة');
+          text('goldRatesFreshnessHint','الأسعار غير متاحة');
+          for(const id of ['tvGold21Val','tvGold24Val','tvGold18Val','tvGoldPoundVal','tvGoldOunceVal','tvUsdVal','tvSarVal','tvEurVal','tvAedVal'])text(id,'—');
+          text('marketSourceDetails','لم يصل سعر صالح من المصدر. لن تُعرض أسعار ثابتة بديلة.');
+          state.market=null;
+          updateCalcDisplay();
+          return null;
         }
-      };
-
-      setElText('tvGold21Val', Math.round(g21Sell).toLocaleString('ar-EG') + ' ج.م');
-      setChgTag('tvGold21Chg', g21Chg);
-      setElText('tvGold24Val', Math.round(g24Sell).toLocaleString('ar-EG') + ' ج.م');
-      setChgTag('tvGold24Chg', g24Chg);
-      setElText('tvGoldPoundVal', Math.round(gPoundSell).toLocaleString('ar-EG') + ' ج.م');
-      setChgTag('tvGoldPoundChg', gPoundChg);
-      setElText('tvGoldOunceVal', '$' + goldOunce.toFixed(2));
-
-      setElText('tvUsdVal', usdSell.toFixed(2) + ' ج.م');
-      setChgTag('tvUsdChg', usdChg);
-      setElText('tvSarVal', sarSell.toFixed(2) + ' ج.م');
-      setChgTag('tvSarChg', sarChg);
-
-      setElText('tvSummaryText', `دولار: ${usdSell.toFixed(2)} ج.م | ريال: ${sarSell.toFixed(2)} ج.م | ذهب 21: ${Math.round(g21Sell).toLocaleString('ar-EG')} ج.م`);
-
-      const verificationStamp = state.market.checkedAt || state.market.updatedAt;
-      const verificationDate = verificationStamp ? new Date(verificationStamp) : null;
-      const verificationAge = verificationDate && !Number.isNaN(verificationDate.getTime())
-        ? Math.max(0, (Date.now() - verificationDate.getTime()) / 60000)
-        : Infinity;
-      const statusIsFresh = isFresh && verificationAge <= 90;
-      const verificationLabel = verificationDate && !Number.isNaN(verificationDate.getTime())
-        ? verificationDate.toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' })
-        : 'وقت التحقق غير متاح';
-      const inferredProvider = String(state.market.source || '');
-      const fxProvider = String((marketData && marketData.fxProvider) || (marketData && marketData.currencies && marketData.currencies.USD && marketData.currencies.USD.bank) || state.market.fxProvider || '');
-      const goldProvider = String((marketData && marketData.goldProvider) || (marketData && marketData.gold && marketData.gold.gold21 && marketData.gold.gold21.source) || state.market.goldProvider || '');
-      const localFx = /ta3weem|تعويم|banque misr|بنك مصر/i.test(fxProvider);
-      const localGold = /ta3weem|تعويم|IDSC|مركز المعلومات/i.test(goldProvider);
-      const inferredMode = localFx && localGold ? 'official' : ((localFx || localGold) ? 'mixed' : 'estimated');
-      const effectiveMode = (marketData && marketData.rateMode) || (inferredMode !== 'estimated' ? inferredMode : (/ta3weem|تعويم|IDSC|مركز المعلومات/i.test(inferredProvider) ? 'mixed' : 'estimated'));
-      const isEstimated = usedEstimate || effectiveMode === 'estimated';
-      let statusText;
-      let statusKind;
-      if (!statusIsFresh) {
-        statusText = `آخر أسعار محفوظة · ${verificationLabel}`;
-        statusKind = 'stale';
-      } else if (isEstimated) {
-        statusText = `تقدير عالمي غير رسمي · ${verificationLabel}`;
-        statusKind = 'estimated';
-      } else {
-        statusText = `${effectiveMode === 'official' ? 'أسعار محلية' : 'أسعار محلية ومرجعية'} · تحقق ${verificationLabel}${refreshedGoldSpot ? ' · الأونصة الآن' : ''}`;
-        statusKind = 'fresh';
+        const feed=result.feed, old=state.market||{};
+        const stale=result.offline||MarketData.age(feed.checkedAt||feed.updatedAt)>90;
+        const estimated=feed.rateMode==='estimated';
+        const fmt=(n,currency='ج.م')=>MarketData.positive(n)?Number(n).toLocaleString('ar-EG',{maximumFractionDigits:2})+' '+currency:'—';
+        const date=s=>MarketData.stamp(s)?new Date(MarketData.stamp(s)).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'}):'غير معلن';
+        const changes=(id,quote)=>{const el=document.getElementById(id);if(!el)return;const v=quote?.chg;el.hidden=v===null||v===undefined||v==='';el.classList.remove('up','down');if(!el.hidden){const n=parseFloat(v);el.textContent=Number.isFinite(n)?(n>0?'+':'')+n.toFixed(2)+'%':'—';if(n)el.classList.add(n>0?'up':'down');}};
+        const market={source:feed.provider,updatedAt:feed.updatedAt,checkedAt:feed.checkedAt,rateMode:feed.rateMode,fxProvider:feed.fxProvider,goldProvider:feed.goldProvider,fxUpdatedAt:feed.fxUpdatedAt,goldUpdatedAt:feed.goldUpdatedAt,globalGoldUpdatedAt:feed.globalGoldUpdatedAt,isStale:stale};
+        for(const [code,key,id] of [['USD','usd','Usd'],['SAR','sar','Sar'],['EUR','eur','Eur'],['AED','aed','Aed']]){
+          const q=feed.currencies[code];market[key+'Egp']=MarketData.positive(q?.sell)?Number(q.sell):null;market[key+'Buy']=MarketData.positive(q?.buy)?Number(q.buy):null;market[key+'Chg']=q?.chg??null;
+          text('tv'+id+'Val',fmt(q?.sell));text('tv'+id+'Buy',MarketData.positive(q?.buy)?'شراء المصدر: '+fmt(q.buy):'سعر مرجعي · دون فرق شراء/بيع');changes('tv'+id+'Chg',q);
+        }
+        for(const [key,id] of [['gold21','Gold21'],['gold24','Gold24'],['gold18','Gold18'],['goldPound','GoldPound']]){
+          const q=feed.gold[key];market[key]=Number(q.sell);market[key+'Buy']=MarketData.positive(q.buy)?Number(q.buy):null;market[key+'Chg']=q.chg??null;
+          text('tv'+id+'Val',fmt(q.sell));text('tv'+id+'Buy',MarketData.positive(q.buy)?'شراء المصدر: '+fmt(q.buy):'تقديري · دون مصنعية');changes('tv'+id+'Chg',q);
+        }
+        market.goldOunce=MarketData.positive(feed.gold.goldOunceUSD)?Number(feed.gold.goldOunceUSD):null;
+        state.market=market;
+        state.rates.USD=1/market.usdEgp;state.rates.SAR=1/market.sarEgp;state.rates.GOLD21=1/market.gold21;
+        try{localStorage.setItem('family_last_live_market',JSON.stringify(market));}catch(e){}
+        text('tvGoldOunceVal',fmt(market.goldOunce,'USD'));
+        text('tvGoldOunceTime','وقت سعر الأونصة: '+date(feed.globalGoldUpdatedAt));
+        text('tvSummaryText','دولار: '+fmt(market.usdEgp)+' | ريال: '+fmt(market.sarEgp)+' | ذهب 21: '+fmt(market.gold21));
+        const mode=estimated?'تقدير عالمي':feed.rateMode==='mixed'?'محلي + مرجعي':'أسعار محلية';
+        if(status){status.dataset.status=stale?'stale':estimated?'estimated':'fresh';status.textContent=(stale?'بيانات محفوظة · ':'')+'آخر تحقق: '+date(feed.checkedAt||feed.updatedAt);}
+        text('marketLocalSourcePill',mode);
+        text('goldRatesSectionTitle',estimated?'الذهب · تقدير عالمي':'الذهب · السوق المصري');
+        text('fxRatesSectionTitle',estimated?'العملات · سعر مرجعي':'العملات مقابل الجنيه');
+        text('goldRatesFreshnessHint',stale?'قديمة أو غير متصلة':'آخر سعر متاح');
+        text('marketSourceDetails','الذهب: '+(feed.goldProvider||'غير محدد')+' | العملات: '+(feed.fxProvider||'غير محدد'));
+        text('marketQuoteTimes','وقت أسعار المصدر — الذهب: '+date(feed.goldUpdatedAt)+' · العملات: '+date(feed.fxUpdatedAt));
+        text('goldPriceBasis',estimated?'أسعار تقديرية من الأونصة وسعر الصرف؛ لا تمثل عرض شراء أو بيع محلي.':'القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.');
+        text('goldValuationSourceText',stale?'بحسب سعر محفوظ':estimated?'بحسب تقدير عالمي':'بحسب سعر عيار 21');
+        const balance=typeof computeTotalEffectiveBalance==='function'?computeTotalEffectiveBalance():state.balance||0;
+        text('goldValuationText',(balance/market.gold21).toLocaleString('ar-EG',{maximumFractionDigits:2})+' جم ذهب 21');
+        updateCalcDisplay();
+        if(typeof renderUI==='function')renderUI();
+        if(typeof renderSecWalletView==='function')renderSecWalletView();
+        return market;
+      }catch(error){
+        if(status){status.dataset.status='stale';status.textContent='تعذر التحديث · أعد المحاولة';}
+        console.warn('Market update failed',error);
+        return state.market||null;
+      }finally{
+        if(badge)badge.classList.remove('fa-spin');
+        document.getElementById('iconSpin')?.classList.remove('fa-spin');
       }
-      if (statusEl) {
-        statusEl.dataset.status = statusKind;
-        statusEl.title = `${state.market.source || 'مصدر الأسعار'}${fxProvider ? ` · العملات: ${fxProvider}` : ''}${goldProvider ? ` · الذهب: ${goldProvider}` : ''}`;
-        const icon = document.createElement('i');
-        icon.className = statusKind === 'fresh' ? 'fa-solid fa-circle-check' : (statusKind === 'estimated' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-clock');
-        statusEl.replaceChildren(icon, document.createTextNode(' ' + statusText));
-      }
-      const goldTitle = document.getElementById('goldRatesSectionTitle');
-      const fxTitle = document.getElementById('fxRatesSectionTitle');
-      const freshnessHint = document.getElementById('goldRatesFreshnessHint');
-      const sourcePill = document.getElementById('marketLocalSourcePill');
-      const goldLabel = isEstimated ? 'تقدير الذهب العالمي (غير رسمي)' : (effectiveMode === 'official' ? 'أسعار الذهب المحلية (مركز المعلومات IDSC & تعويم)' : 'أسعار الذهب المحلية والمرجعية');
-      const fxLabel = isEstimated ? 'سعر صرف مرجعي يومي (غير رسمي)' : (effectiveMode === 'official' ? 'أسعار الصرف المحلية (بنك مصر & تعويم)' : 'أسعار الصرف المحلية والمرجعية');
-      if (goldTitle) {
-        const gem = Object.assign(document.createElement('i'), { className: 'fa-solid fa-gem' });
-        gem.style.color = 'var(--gold)';
-        goldTitle.replaceChildren(gem, document.createTextNode(' ' + goldLabel));
-      }
-      if (fxTitle) fxTitle.textContent = fxLabel;
-      if (freshnessHint) freshnessHint.textContent = statusIsFresh ? 'تحقق كل 30 دقيقة' : 'استخدم زر التحديث لإعادة المحاولة';
-      if (sourcePill) {
-        sourcePill.title = `${fxProvider || 'مرجع العملات غير متاح'} · ${goldProvider || 'مرجع الذهب غير متاح'}`;
-        const sourceLabel = !statusIsFresh ? 'بيانات محفوظة' : (isEstimated ? 'تقدير عالمي' : (effectiveMode === 'official' ? 'مصدر محلي' : 'محلي + مرجعي'));
-        sourcePill.replaceChildren(
-          Object.assign(document.createElement('i'), { className: isEstimated || !statusIsFresh ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-building-columns' }),
-          document.createTextNode(' ' + sourceLabel)
-        );
-      }
-      const valuationSource = document.getElementById('goldValuationSourceText');
-      if (valuationSource) valuationSource.textContent = !statusIsFresh ? 'بحسب آخر سعر محفوظ' : (isEstimated ? 'بحسب تقدير عالمي غير رسمي' : 'بحسب سعر عيار 21 من المصدر');
-
-      if (typeof updateCalcDisplay === 'function') updateCalcDisplay();
-      if (typeof renderUI === 'function') renderUI();
-      if (typeof renderSecWalletView === 'function') renderSecWalletView();
-
-      if (spin) setTimeout(() => spin.classList.remove('fa-spin'), 600);
-      if (goldBadgeIcon) setTimeout(() => goldBadgeIcon.classList.remove('fa-spin'), 600);
-
-      return state.market;
     }
     // =========================================================================
     // محرك البدء الشامل والموازنة التلقائية مع كل عملية فتح للبرنامج
@@ -27792,6 +27515,10 @@ function openSettingsModal(targetSection = '') {
     };
 
     function onGoldAssetChange() {
+      if (!state.market || !MarketData.stamp(state.market.checkedAt || state.market.updatedAt) || !MarketData.positive(state.market.gold21)) {
+        for (const id of ['calcFinalTotal','calcGoldRawVal','calcWorkmanshipTotalVal','calcCashbackVal','calcNetCostVal','goldValuationText']) {const el=document.getElementById(id);if(el)el.textContent='السعر غير متاح';}
+        return;
+      }
       const asset = (document.getElementById('calcAsset') ? document.getElementById('calcAsset').value : 'gold21_jewelry') || 'gold21_jewelry';
       const preset = WORKMANSHIP_PRESETS[asset] || WORKMANSHIP_PRESETS['gold21_jewelry'];
 
@@ -27902,10 +27629,7 @@ function openSettingsModal(targetSection = '') {
         const textVal = finalEl.textContent.replace(/[^0-9.]/g, '');
         total = parseFloat(textVal) || 0;
       }
-      if (total <= 0) {
-        const g21 = (state.market && state.market.gold21) || 6395;
-        total = Math.round(qty * g21 * 100) / 100;
-      }
+      if (total <= 0) { showToast('لا يوجد سعر صالح لحساب المصروف'); return; }
 
       closeGoldDrawer();
       openTxModal('expense');

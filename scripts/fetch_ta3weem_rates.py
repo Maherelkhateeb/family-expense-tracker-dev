@@ -9,7 +9,7 @@ Tier 2: Direct query to open financial APIs:
         - Currency: api.exchangerate-api.com & open.er-api.com (USD, SAR, EUR, AED, KWD to EGP)
         - Gold: api.gold-api.com/price/XAU (Live international Gold Ounce Spot)
         - Computes accurate Egyptian 24k, 21k, 18k, and Gold Pound prices
-Tier 3: Cached baseline from market_rates.json with updated timestamp
+Tier 3: Preserve cached observations without refreshing their quote timestamps
 """
 
 import json
@@ -25,6 +25,15 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 ctx = ssl.create_default_context()
+SOURCE_TIMES = {}
+
+def source_time(value):
+    try:
+        if isinstance(value, (int, float)):
+            return datetime.fromtimestamp(value, timezone.utc).isoformat()
+        return datetime.fromisoformat(str(value).replace('Z', '+00:00')).isoformat()
+    except (ValueError, TypeError, OverflowError):
+        return None
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -101,6 +110,7 @@ def fetch_live_global_fx():
                 data = json.loads(raw)
                 rates = data.get('rates', {})
                 if 'EGP' in rates and rates['EGP'] > 0:
+                    SOURCE_TIMES['fx'] = source_time(data.get('time_last_update_unix') or data.get('time_last_update'))
                     usd_egp = float(rates['EGP'])
                     sar_egp = usd_egp / float(rates.get('SAR', 3.75))
                     eur_egp = usd_egp / float(rates.get('EUR', 0.92))
@@ -124,6 +134,7 @@ def fetch_live_global_gold():
         try:
             data = json.loads(raw)
             if 'price' in data and float(data['price']) > 500:
+                SOURCE_TIMES['gold'] = source_time(data.get('updatedAt'))
                 return float(data['price'])
         except Exception as e:
             print(f"Gold API notice: {e}")
@@ -198,9 +209,9 @@ def main():
             return {
                 'code': code,
                 'name': name,
-                'buy': t_data['buy'] or (t_data['sell'] - 0.10),
+                'buy': t_data['buy'],
                 'sell': t_data['sell'],
-                'chg': t_data.get('sell_chg') or '0%',
+                'chg': t_data.get('sell_chg'),
                 'bank': 'بنك مصر (مباشر تعويم)'
             }
         # Fallback to Live FX API
@@ -210,20 +221,21 @@ def main():
             return {
                 'code': code,
                 'name': name,
-                'buy': round(sell_p - spread, 2),
+                'buy': None,
                 'sell': sell_p,
-                'chg': '0%',
-                'bank': 'السعر الرسمي اللحظي (Global FX)'
+                'chg': None,
+                'bank': 'ExchangeRate-API (مرجع يومي)',
+                'sourceUpdatedAt': SOURCE_TIMES.get('fx')
             }
         # Fallback to existing baseline
         cached = base_curr.get(code, {})
         return {
             'code': code,
             'name': name,
-            'buy': cached.get('buy', default_buy),
-            'sell': cached.get('sell', default_sell),
-            'chg': cached.get('chg', default_chg),
-            'bank': cached.get('bank', 'بنك مصر')
+            'buy': None,
+            'sell': None,
+            'chg': None,
+            'bank': 'غير متاح'
         }
 
     final_currencies = {
@@ -239,7 +251,7 @@ def main():
     # Formula: 1 Troy Ounce = 31.1034768 grams 24k.
     # Use fresh XAU spot when available; otherwise derive missing karats from a current Ta3weem 21k quote.
     if live_gold_xau:
-        computed_24k = round(((live_gold_xau * usd_rate) / 31.1034768) * 1.012, 1)
+        computed_24k = round((live_gold_xau * usd_rate) / 31.1034768, 2)
         computed_21k = round(computed_24k * (21.0 / 24.0), 1)
         computed_18k = round(computed_24k * (18.0 / 24.0), 1)
         computed_pound = round(computed_21k * 8.0, 1)
@@ -259,9 +271,9 @@ def main():
             return {
                 'karat': karat,
                 'name': name,
-                'buy': t_data['buy'] or (t_data['sell'] - 40),
+                'buy': t_data['buy'],
                 'sell': t_data['sell'],
-                'chg': t_data.get('sell_chg') or '0%',
+                'chg': t_data.get('sell_chg'),
                 'source': 'مركز المعلومات IDSC (مباشر تعويم)'
             }
         # Fallback to computed live gold
@@ -269,17 +281,18 @@ def main():
             return {
                 'karat': karat,
                 'name': name,
-                'buy': round(comp_val - 45, 1),
+                'buy': None,
                 'sell': comp_val,
-                'chg': '0%',
-                'source': f'بورصة الذهب العالمية (${live_gold_xau:.1f}/أونصة)'
+                'chg': None,
+                'source': 'تقدير عالمي من الأونصة' if live_gold_xau else 'مشتق من سعر عيار 21 المحلي',
+                'sourceUpdatedAt': SOURCE_TIMES.get('gold') if live_gold_xau else None
             }
         cached = base_gold.get(key, {})
         return {
             'karat': karat,
             'name': name,
-            'buy': cached.get('buy', default_buy),
-            'sell': cached.get('sell', default_sell),
+            'buy': None,
+            'sell': None,
             'chg': cached.get('chg', '0%'),
             'source': cached.get('source', 'بورصة الذهب')
         }
@@ -292,12 +305,13 @@ def main():
             'karat': 21,
             'weight': 8,
             'name': 'جنيه ذهب (BTC)',
-            'buy': g_map.get('goldPound', {}).get('buy') or round(computed_pound - 350, 1),
+            'buy': g_map.get('goldPound', {}).get('buy'),
             'sell': g_map.get('goldPound', {}).get('sell') or computed_pound,
             'chg': g_map.get('goldPound', {}).get('sell_chg') or '0%',
-            'source': 'مركز المعلومات IDSC / الصاغة'
+            'source': 'مركز المعلومات IDSC / الصاغة' if g_map.get('goldPound') else 'تقدير من سعر الجرام',
+            'sourceUpdatedAt': None if g_map.get('goldPound') else SOURCE_TIMES.get('gold')
         },
-        'goldOunceUSD': round(float(live_gold_xau or base_gold.get('goldOunceUSD') or 0), 2)
+        'goldOunceUSD': round(float(live_gold_xau), 2) if live_gold_xau else None
     }
 
     # Timezones: Cairo / KSA (UTC+2 / UTC+3)
@@ -310,8 +324,13 @@ def main():
     fx_provider = 'Ta3weem / بنك مصر' if official_fx else 'Global FX (مرجعي يومي)'
     gold_provider = 'Ta3weem / مركز المعلومات IDSC' if official_gold else 'XAU Spot (تقدير عالمي)'
     market_data = {
+        'schemaVersion': 2,
+        'fxUpdatedAt': None if official_fx else SOURCE_TIMES.get('fx'),
+        'goldUpdatedAt': None if official_gold else SOURCE_TIMES.get('gold'),
+        'globalGoldUpdatedAt': SOURCE_TIMES.get('gold'),
         'updatedAt': now_utc.isoformat(),
         'checkedAt': now_utc.isoformat(),
+        'sourceTimeNote': 'وقت التحقق منفصل عن وقت السعر؛ الوقت غير المعلن من المصدر يظل غير معلن',
         'lastUpdateHuman': now_cairo.strftime('%Y-%m-%d %I:%M %p بتوقيت القاهرة'),
         'lastCheckedHuman': now_cairo.strftime('%Y-%m-%d %I:%M %p بتوقيت القاهرة'),
         'provider': 'Ta3weem / بنك مصر / مركز المعلومات IDSC' if rate_mode == 'official' else 'أسعار مختلطة: مصدر محلي + مرجع عالمي' if rate_mode == 'mixed' else 'تقدير عالمي (Global FX + XAU Spot)',

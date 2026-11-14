@@ -1,0 +1,22 @@
+'use strict';
+const assert=require('node:assert/strict'),api=require('../market-data.js');
+const now=new Date().toISOString();
+const fx={rates:{USD:1,EGP:50,SAR:3.75,EUR:.9,AED:3.67},time_last_update_unix:Math.floor(Date.now()/1000)};
+const gold={price:3000,updatedAt:now};
+const feed=api.estimate(fx,gold);
+assert(api.valid(feed));assert.equal(feed.currencies.USD.buy,null);assert.equal(feed.gold.gold21.buy,null);assert.equal(feed.gold.gold21.chg,null);
+assert(Math.abs(feed.gold.gold24.sell-3000*50/31.1034768)<1e-8);
+assert.equal(api.estimate(fx,{price:3000}),null,'Undated quotes cannot become current');
+assert.equal(api.valid({...feed,checkedAt:'2099-01-01',updatedAt:'2099-01-01'}),false);
+assert.equal(api.estimate({...fx,time_last_update_unix:1},gold),null,'Stale FX must not be stamped fresh');
+(async()=>{
+ const values=new Map(),storage={getItem:k=>values.get(k)||null,setItem:(k,v)=>values.set(k,v)};
+ global.fetch=async()=>({ok:true,json:async()=>feed});
+ let r=await api.load(storage,false);assert(r&&!r.offline);
+ global.fetch=async()=>{throw Error('offline')};
+ r=await api.load(storage,false);assert(r.offline);assert.equal(r.feed.checkedAt,feed.checkedAt,'Offline check must preserve observation timestamp');
+ values.clear();assert.equal(await api.load(storage,false),null,'No invented defaults during outage');
+ global.fetch=async()=>({ok:true,json:async()=>({checkedAt:now,currencies:{},gold:{}})});
+ assert.equal(await api.load(storage,false),null,'Malformed feed rejected');
+ console.log('PASS: dated source prices, no fabricated spread/premium, cache preservation, invalid data and complete outage');
+})().catch(e=>{console.error(e);process.exitCode=1});

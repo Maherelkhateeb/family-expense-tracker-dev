@@ -9,6 +9,10 @@ on:
       - index.html
       - appearance-compact.css
       - appearance-compact.js
+      - market-data.js
+      - gold-market.css
+      - scripts/test-gold-market.cjs
+      - scripts/test-market-data.cjs
       - scripts/test-compact-appearance.cjs
       - scripts/test-summary-tight-filters.cjs
       - scripts/test-control-alignment.cjs
@@ -18,6 +22,10 @@ on:
       - index.html
       - appearance-compact.css
       - appearance-compact.js
+      - market-data.js
+      - gold-market.css
+      - scripts/test-gold-market.cjs
+      - scripts/test-market-data.cjs
       - scripts/test-compact-appearance.cjs
       - scripts/test-summary-tight-filters.cjs
       - scripts/test-control-alignment.cjs
@@ -50,6 +58,8 @@ jobs:
           node scripts/test-compact-appearance.cjs
           node scripts/test-summary-tight-filters.cjs
           node scripts/test-control-alignment.cjs
+          node scripts/test-market-data.cjs
+          node scripts/test-gold-market.cjs
           node scripts/test-mobile-appearance.cjs
       - name: Upload mobile screenshots
         if: always()
