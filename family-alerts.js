@@ -476,8 +476,9 @@ const familyAlerts = (() => {
   function handleAlertClick(item) {
     if (!item) return;
 
-    // 1. تحديد كمقروء وإغلاق مركز التنبيهات فوراً
+    // 1. تحديد كمقروء وتفعيل مؤشر العودة إلى نافذة التنبيهات عند إغلاق التفاصيل
     mark(item.id);
+    window._returnToNotificationsOnClose = true;
     if (typeof closeModal === 'function') {
       closeModal('notificationsModal');
     }
