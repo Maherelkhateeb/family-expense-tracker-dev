@@ -249,6 +249,19 @@ const familyAlerts = (() => {
     render();
   }
 
+  function toggleRead(id, event) {
+    if (event) event.stopPropagation();
+    if (!id) return;
+    const readSet = getReadIds();
+    if (readSet.has(id)) {
+      readSet.delete(id);
+    } else {
+      readSet.add(id);
+    }
+    safeWrite(READ_KEY, Array.from(readSet));
+    render();
+  }
+
   // --- التلقيم التلقائي المبدئي من العمليات الفعلية إذا كان السجل فارغاً ---
   function hydrateFromActualData() {
     const stored = getAlerts();
@@ -651,17 +664,23 @@ const familyAlerts = (() => {
 
       card.append(mainBtn);
 
-      // زر تحديد كمقروء السريع
+      // صندوق حالة القراءة (Checkbox)
+      const checkBtn = document.createElement('button');
+      checkBtn.className = `alert-check-box ${isUnread ? 'is-unread' : 'is-read'}`;
+      checkBtn.type = 'button';
+      checkBtn.setAttribute('role', 'checkbox');
+      checkBtn.setAttribute('aria-checked', String(!isUnread));
       if (isUnread) {
-        const checkBtn = document.createElement('button');
-        checkBtn.className = 'alert-check-btn';
-        checkBtn.type = 'button';
-        checkBtn.textContent = '✓';
-        checkBtn.title = 'تحديد كمقروء دون مغادرة التنبيهات';
-        checkBtn.setAttribute('aria-label', 'تحديد كمقروء');
-        checkBtn.onclick = (e) => mark(item.id, e);
-        card.append(checkBtn);
+        checkBtn.textContent = ''; // صندوق فارغ في حالة غير مقروء
+        checkBtn.title = 'تحديد كمقروء (اضغط لتفعيل علامة الصح)';
+        checkBtn.setAttribute('aria-label', 'غير مقروء، اضغط للتعليم كمقروء');
+      } else {
+        checkBtn.textContent = '✓'; // تظهر علامة الصح عند القراءة
+        checkBtn.title = 'مقروء (اضغط لإعادة التعيين كغير مقروء)';
+        checkBtn.setAttribute('aria-label', 'مقروء، اضغط للتعليم كغير مقروء');
       }
+      checkBtn.onclick = (e) => toggleRead(item.id, e);
+      card.append(checkBtn);
 
       container.append(card);
     }
@@ -784,6 +803,7 @@ const familyAlerts = (() => {
     observe,
     created,
     mark,
+    toggleRead,
     render,
     open,
     refresh,

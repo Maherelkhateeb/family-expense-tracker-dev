@@ -218,25 +218,55 @@ body.light-theme #notificationsModal {
   word-break: break-word;
 }
 
-/* زر تحديد كمقروء السريع */
-.alert-check-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--alert-border);
-  color: #10b981;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 900;
-  display: grid;
+/* صندوق حالة القراءة (Checkbox) */
+.alert-check-box, .alert-check-btn {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 7px;
+  display: inline-grid;
   place-items: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  font-size: 0.92rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0;
   flex-shrink: 0;
 }
 
-.alert-check-btn:hover {
+/* حالة غير مقروء: الصندوق فارغ ومحاط بإطار أنيق */
+.alert-check-box.is-unread {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.8px solid rgba(245, 158, 11, 0.6);
+  color: transparent;
+}
+.alert-check-box.is-unread:hover {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+}
+
+/* حالة مقروء: تظهر علامة الصح الخضراء بوضوح داخل الصندوق */
+.alert-check-box.is-read {
   background: rgba(16, 185, 129, 0.18);
-  border-color: rgba(16, 185, 129, 0.4);
-  transform: scale(1.08);
+  border: 1.8px solid #10b981;
+  color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.25);
+}
+.alert-check-box.is-read:hover {
+  background: rgba(16, 185, 129, 0.28);
+  border-color: #34d399;
+  color: #34d399;
+}
+
+body.light-theme .alert-check-box.is-unread {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1.8px solid #d97706;
+}
+
+body.light-theme .alert-check-box.is-read {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1.8px solid #059669;
+  color: #059669;
 }
