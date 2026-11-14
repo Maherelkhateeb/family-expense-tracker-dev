@@ -126,22 +126,96 @@ body.light-theme #appFrame #viewOperations {
 }
 #appFrame #viewOperations .ops-date-title { color: var(--ledger-text) !important; text-shadow: none !important; overflow-wrap: anywhere; }
 #appFrame #viewOperations .ops-tx-card-clean {
-  background: var(--ledger-panel) !important; border-color: var(--ledger-line) !important;
-  border-radius: 11px !important; box-shadow: none !important;
+  background: var(--ledger-panel) !important;
+  border: 1px solid var(--ledger-line) !important;
+  border-radius: var(--harmony-card-radius, 11px) !important;
+  box-shadow: none !important;
+  padding: var(--harmony-card-padding, 9px 10px) !important;
+  margin-bottom: var(--harmony-card-margin, 6px) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
-#appFrame #viewOperations .ops-tx-card-clean.is-selected { border-color: var(--ledger-accent) !important; background: var(--ledger-active) !important; }
-#appFrame #viewOperations .ops-entry { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-#appFrame #viewOperations .ops-entry-main { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; }
-#appFrame #viewOperations .ops-entry-icon { display: grid; place-items: center; width: 32px; height: 32px; flex: none; color: var(--ledger-accent); background: var(--ledger-active); border-radius: 8px; }
-#appFrame #viewOperations .ops-entry-body { min-width: 0; }
-#appFrame #viewOperations .ops-entry-title { font-weight: 800; font-size: .86rem; line-height: 1.35; overflow-wrap: anywhere; color: var(--ledger-text) !important; }
-#appFrame #viewOperations :is(.ops-entry-meta,.ops-entry-date) { color: var(--ledger-muted) !important; font-size: .68rem; overflow-wrap: anywhere; }
-#appFrame #viewOperations .ops-entry-meta { display: flex; flex-wrap: wrap; gap: 1px 7px; margin-top: 4px; }
-#appFrame #viewOperations .ops-entry-meta > span { min-width: 0; }
-#appFrame #viewOperations .ops-entry-total { text-align: end; flex: none; max-width: 38%; }
-#appFrame #viewOperations .ops-entry-amount { font-family: var(--font-numbers); font-weight: 850; color: var(--ledger-credit) !important; unicode-bidi: isolate; overflow-wrap: anywhere; }
-#appFrame #viewOperations .ops-entry-amount.is-expense { color: var(--ledger-debit) !important; }
-#appFrame #viewOperations .ops-entry-date { margin-top: 2px; }
+#appFrame #viewOperations .ops-tx-card-clean.is-selected {
+  border-color: var(--ledger-accent) !important;
+  background: var(--ledger-active) !important;
+}
+#appFrame #viewOperations .ops-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--harmony-gap, 8px);
+}
+#appFrame #viewOperations .ops-entry-main {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: var(--harmony-gap, 8px);
+}
+#appFrame #viewOperations .ops-entry-icon {
+  display: grid;
+  place-items: center;
+  width: var(--harmony-icon-size, 32px) !important;
+  height: var(--harmony-icon-size, 32px) !important;
+  font-size: var(--harmony-icon-font, 0.86rem) !important;
+  flex: none;
+  border-radius: var(--harmony-icon-radius, 8px) !important;
+  transition: all 0.2s ease;
+}
+#appFrame #viewOperations .ops-entry-body {
+  min-width: 0;
+}
+#appFrame #viewOperations .ops-entry-title {
+  font-weight: var(--harmony-title-weight, 800) !important;
+  font-size: var(--harmony-title-size, .86rem) !important;
+  line-height: var(--harmony-line-height, 1.35) !important;
+  letter-spacing: var(--harmony-letter-spacing, normal) !important;
+  overflow-wrap: anywhere;
+  color: var(--ledger-text) !important;
+}
+#appFrame #viewOperations :is(.ops-entry-meta,.ops-entry-date) {
+  color: var(--ledger-muted) !important;
+  font-size: var(--harmony-meta-size, .68rem) !important;
+  overflow-wrap: anywhere;
+}
+#appFrame #viewOperations .ops-entry-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 6px;
+  margin-top: 3px;
+  align-items: center;
+}
+#appFrame #viewOperations .ops-entry-meta > span,
+#appFrame #viewOperations .ops-entry-meta time {
+  min-width: 0;
+  padding: var(--harmony-badge-padding, 2px 6px);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+body.light-theme #appFrame #viewOperations .ops-entry-meta > span,
+body.light-theme #appFrame #viewOperations .ops-entry-meta time {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+#appFrame #viewOperations .ops-entry-total {
+  text-align: end;
+  flex: none;
+  max-width: var(--harmony-total-max-width, 42%);
+}
+#appFrame #viewOperations .ops-entry-amount {
+  font-family: var(--font-numbers);
+  font-weight: var(--harmony-amount-weight, 850) !important;
+  font-size: var(--harmony-amount-size, .92rem) !important;
+  color: var(--ledger-credit) !important;
+  unicode-bidi: isolate;
+  white-space: nowrap;
+}
+#appFrame #viewOperations .ops-entry-amount.is-expense {
+  color: var(--ledger-debit) !important;
+}
+#appFrame #viewOperations .ops-entry-date {
+  margin-top: 2px;
+}
 #appFrame #viewOperations .archive-filter-row { display: flex; flex-wrap: wrap; overflow: visible !important; gap: 5px; }
 #appFrame #viewOperations #opsSubViewArchive :is(.archive-filter-row,#archivePeriodFilterStrip,#archiveLogListContainer) { margin-inline: 0 !important; }
 @media (max-width: 380px) {

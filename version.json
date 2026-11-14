@@ -1,6 +1,6 @@
 {
-  "version": "v5.3.49",
-  "build": "202611141630",
-  "buildId": "202611141630",
-  "releaseNotes": "Redesigned statement & audit ledger modal with full transaction visibility, interactive attachments, multi-select wallets and operations, compact action buttons, fixed archive filters and inverted summary layout"
+  "version": "v5.3.50",
+  "build": "202611141640",
+  "buildId": "202611141640",
+  "releaseNotes": "Adaptive Visual Harmony & Contrast Engine: balances data, fonts, font families, category colors, and card themes with dynamic contrast and proportional typography scaling"
 }
