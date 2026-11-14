@@ -1,8 +1,13 @@
 {
-  "updatedAt": "2026-11-14T03:02:03.299854+00:00",
-  "checkedAt": "2026-11-14T03:02:03.299854+00:00",
-  "lastUpdateHuman": "2026-11-14 05:02 AM بتوقيت القاهرة",
-  "lastCheckedHuman": "2026-11-14 05:02 AM بتوقيت القاهرة",
+  "schemaVersion": 2,
+  "fxUpdatedAt": null,
+  "goldUpdatedAt": null,
+  "globalGoldUpdatedAt": "2026-11-14T06:37:54+00:00",
+  "updatedAt": "2026-11-14T06:37:57.958003+00:00",
+  "checkedAt": "2026-11-14T06:37:57.958003+00:00",
+  "sourceTimeNote": "وقت التحقق منفصل عن وقت السعر؛ الوقت غير المعلن من المصدر يظل غير معلن",
+  "lastUpdateHuman": "2026-11-14 08:37 AM بتوقيت القاهرة",
+  "lastCheckedHuman": "2026-11-14 08:37 AM بتوقيت القاهرة",
   "provider": "Ta3weem / بنك مصر / مركز المعلومات IDSC",
   "rateMode": "official",
   "fxProvider": "Ta3weem / بنك مصر",
@@ -29,7 +34,7 @@
       "name": "يورو أوروبي",
       "buy": 58.98,
       "sell": 59.22,
-      "chg": "0.270%",
+      "chg": "0%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "AED": {
@@ -81,7 +86,8 @@
       "buy": 48920.0,
       "sell": 49320.0,
       "chg": "0%",
-      "source": "مركز المعلومات IDSC / الصاغة"
+      "source": "مركز المعلومات IDSC / الصاغة",
+      "sourceUpdatedAt": null
     },
     "goldOunceUSD": 3887.6
   }
