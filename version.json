@@ -1,5 +1,5 @@
 {
-  "version": "v5.3.43",
-  "build": "202611141345",
-  "releaseNotes": "Re-engineered Application Settings modal with Antigravity design philosophy, segmented navigation tabs, glassmorphic UI, and full responsiveness"
+  "version": "v5.3.44",
+  "build": "202611141405",
+  "releaseNotes": "Zero-scroll ultra-compact settings modal layout: eliminated all empty voids, fixed font grid full width, 3 zero-scroll tabs with 3x3 matrices"
 }
