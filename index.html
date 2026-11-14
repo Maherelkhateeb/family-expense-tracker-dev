@@ -22,6 +22,83 @@
   <script>
 
     // دوال مساعدة عامة أساسية
+    
+    // =========================================================================
+    // محرك الموازنة البصرية الذكية للألوان والتباين (Visual Harmony Engine)
+    // يوازن لون المصروف والبنود مع خلفية الكارت والوضع الليلي/النهاري لضمان تباين فائق
+    // =========================================================================
+    function getHarmonizedCategoryColor(colorStr, isLight) {
+      let hex = (colorStr || '#38bdf8').trim();
+      if (hex.startsWith('rgb')) {
+        const nums = hex.match(/\d+/g);
+        if (nums && nums.length >= 3) {
+          hex = '#' + ((1 << 24) + (parseInt(nums[0]) << 16) + (parseInt(nums[1]) << 8) + parseInt(nums[2])).toString(16).slice(1);
+        } else {
+          hex = '#38bdf8';
+        }
+      }
+      if (!hex.startsWith('#')) hex = '#' + hex;
+      if (hex.length === 4) {
+        hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
+      }
+
+      let r = parseInt(hex.substring(1, 3), 16) || 56;
+      let g = parseInt(hex.substring(3, 5), 16) || 189;
+      let b = parseInt(hex.substring(5, 7), 16) || 248;
+
+      let rNorm = r / 255, gNorm = g / 255, bNorm = b / 255;
+      let max = Math.max(rNorm, gNorm, bNorm), min = Math.min(rNorm, gNorm, bNorm);
+      let h = 0, s = 0, l = (max + min) / 2;
+
+      if (max !== min) {
+        let d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case rNorm: h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0); break;
+          case gNorm: h = (bNorm - rNorm) / d + 2; break;
+          case bNorm: h = (rNorm - gNorm) / d + 4; break;
+        }
+        h /= 6;
+      }
+
+      // ضبط السطوع تلقائياً وفقاً للوضع (فاتح أم داكن) لتحقيق نسبة تباين WCAG AAA
+      let tunedL = isLight ? Math.min(0.36, Math.max(0.24, l * 0.52)) : Math.max(0.64, Math.min(0.78, l * 1.15));
+      let tunedS = Math.min(0.95, Math.max(0.65, s));
+
+      function hslToRgb(h, s, l) {
+        let r, g, b;
+        if (s === 0) {
+          r = g = b = l;
+        } else {
+          function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          }
+          let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          let p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1/3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1/3);
+        }
+        return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+      }
+
+      const [tX, tY, tZ] = hslToRgb(h, tunedS, tunedL);
+      const colorHex = '#' + ((1 << 24) + (tX << 16) + (tY << 8) + tZ).toString(16).slice(1);
+
+      return {
+        color: colorHex,
+        bg: isLight ? `rgba(${tX}, ${tY}, ${tZ}, 0.12)` : `rgba(${tX}, ${tY}, ${tZ}, 0.16)`,
+        border: isLight ? `rgba(${tX}, ${tY}, ${tZ}, 0.35)` : `rgba(${tX}, ${tY}, ${tZ}, 0.45)`,
+        badgeBorder: isLight ? `rgba(${tX}, ${tY}, ${tZ}, 0.28)` : `rgba(${tX}, ${tY}, ${tZ}, 0.38)`
+      };
+    }
+    window.getHarmonizedCategoryColor = getHarmonizedCategoryColor;
+
     function escapeHtml(t) {
       if (t === null || t === undefined) return '';
       const d = document.createElement('div');
@@ -183,7 +260,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.49';
+    var APP_VERSION = 'v5.3.50';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -15145,6 +15222,170 @@
 .project-budget-create{width:100%;padding:12px;margin-bottom:12px;border:1px solid #0ea5e9;border-radius:12px;background:#0369a1;color:white;font:inherit;font-weight:800;display:flex;justify-content:center;align-items:center}
 .project-budget-analysis{padding:12px;margin-bottom:14px;border:1px solid #64748b55;border-radius:14px;color:inherit}.project-budget-analysis h3{font-size:1rem;margin:0 0 6px}.project-budget-analysis p,.project-budget-note{font-size:.75rem;opacity:.85;margin:6px 0 12px}.project-budget-result{padding:12px;margin-top:10px;border:1px solid #10b98166;border-radius:12px}.project-budget-result.over{border-color:#f87171}.project-budget-result header{display:flex;justify-content:space-between;gap:8px}.project-budget-result strong,.project-budget-result small{overflow-wrap:anywhere}.project-budget-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0;text-align:center;font-size:.73rem}.project-budget-metrics b{display:block;overflow-wrap:anywhere;font-size:.85rem;margin-top:5px}.project-budget-result progress{width:100%;height:8px;accent-color:#10b981}.project-budget-result.over progress{accent-color:#ef4444}
 </style>
+
+  <!-- =========================================================================
+       محرك الموازنة البصرية واللونية الشامل (Antigravity Visual Harmony Engine)
+       يوازن الخطوط والأحجام والألوان والتباين لجميع الكروت والتسجيلات
+       ========================================================================= -->
+  <style id="antigravityVisualHarmonyEngine">
+    /* 1. التكيف مع أحجام الخطوط الستة */
+    html[data-font-size="micro"] {
+      --harmony-card-padding: 6px 8px;
+      --harmony-card-margin: 4px;
+      --harmony-card-radius: 9px;
+      --harmony-icon-size: 26px;
+      --harmony-icon-radius: 6px;
+      --harmony-icon-font: 0.74rem;
+      --harmony-title-size: 0.74rem;
+      --harmony-title-weight: 850;
+      --harmony-amount-size: 0.80rem;
+      --harmony-amount-weight: 900;
+      --harmony-meta-size: 0.60rem;
+      --harmony-badge-padding: 1px 5px;
+      --harmony-gap: 6px;
+      --harmony-total-max-width: 48%;
+      --harmony-total-flat-max-width: 125px;
+    }
+
+    html[data-font-size="small"] {
+      --harmony-card-padding: 7px 9px;
+      --harmony-card-margin: 5px;
+      --harmony-card-radius: 10px;
+      --harmony-icon-size: 28px;
+      --harmony-icon-radius: 7px;
+      --harmony-icon-font: 0.78rem;
+      --harmony-title-size: 0.80rem;
+      --harmony-title-weight: 800;
+      --harmony-amount-size: 0.86rem;
+      --harmony-amount-weight: 850;
+      --harmony-meta-size: 0.64rem;
+      --harmony-badge-padding: 2px 6px;
+      --harmony-gap: 7px;
+      --harmony-total-max-width: 45%;
+      --harmony-total-flat-max-width: 135px;
+    }
+
+    html[data-font-size="medium"], html:not([data-font-size]) {
+      --harmony-card-padding: 9px 10px;
+      --harmony-card-margin: 6px;
+      --harmony-card-radius: 11px;
+      --harmony-icon-size: 32px;
+      --harmony-icon-radius: 8px;
+      --harmony-icon-font: 0.86rem;
+      --harmony-title-size: 0.86rem;
+      --harmony-title-weight: 800;
+      --harmony-amount-size: 0.92rem;
+      --harmony-amount-weight: 850;
+      --harmony-meta-size: 0.68rem;
+      --harmony-badge-padding: 2px 6px;
+      --harmony-gap: 8px;
+      --harmony-total-max-width: 42%;
+      --harmony-total-flat-max-width: 150px;
+    }
+
+    html[data-font-size="large"] {
+      --harmony-card-padding: 11px 12px;
+      --harmony-card-margin: 7px;
+      --harmony-card-radius: 13px;
+      --harmony-icon-size: 36px;
+      --harmony-icon-radius: 9px;
+      --harmony-icon-font: 0.94rem;
+      --harmony-title-size: 0.96rem;
+      --harmony-title-weight: 800;
+      --harmony-amount-size: 1.04rem;
+      --harmony-amount-weight: 850;
+      --harmony-meta-size: 0.74rem;
+      --harmony-badge-padding: 3px 7px;
+      --harmony-gap: 10px;
+      --harmony-total-max-width: 44%;
+      --harmony-total-flat-max-width: 165px;
+    }
+
+    html[data-font-size="xlarge"] {
+      --harmony-card-padding: 13px 14px;
+      --harmony-card-margin: 8px;
+      --harmony-card-radius: 14px;
+      --harmony-icon-size: 40px;
+      --harmony-icon-radius: 10px;
+      --harmony-icon-font: 1.04rem;
+      --harmony-title-size: 1.06rem;
+      --harmony-title-weight: 800;
+      --harmony-amount-size: 1.16rem;
+      --harmony-amount-weight: 850;
+      --harmony-meta-size: 0.80rem;
+      --harmony-badge-padding: 3px 8px;
+      --harmony-gap: 11px;
+      --harmony-total-max-width: 46%;
+      --harmony-total-flat-max-width: 185px;
+    }
+
+    html[data-font-size="huge"] {
+      --harmony-card-padding: 15px 16px;
+      --harmony-card-margin: 10px;
+      --harmony-card-radius: 16px;
+      --harmony-icon-size: 44px;
+      --harmony-icon-radius: 12px;
+      --harmony-icon-font: 1.15rem;
+      --harmony-title-size: 1.18rem;
+      --harmony-title-weight: 850;
+      --harmony-amount-size: 1.28rem;
+      --harmony-amount-weight: 900;
+      --harmony-meta-size: 0.88rem;
+      --harmony-badge-padding: 4px 9px;
+      --harmony-gap: 12px;
+      --harmony-total-max-width: 48%;
+      --harmony-total-flat-max-width: 205px;
+    }
+
+    /* 2. التكيف البصري والمحاذاة الرأسية حسب نوع الخط */
+    html[data-font-family="cairo"] {
+      --harmony-line-height: 1.26;
+      --harmony-letter-spacing: -0.25px;
+    }
+    html[data-font-family="ibm"] {
+      --harmony-line-height: 1.36;
+      --harmony-letter-spacing: -0.35px;
+    }
+    html[data-font-family="tajawal"], html:not([data-font-family]) {
+      --harmony-line-height: 1.34;
+      --harmony-letter-spacing: 0px;
+    }
+    html[data-font-family="almarai"] {
+      --harmony-line-height: 1.32;
+      --harmony-letter-spacing: -0.15px;
+    }
+    html[data-font-family="readex"] {
+      --harmony-line-height: 1.28;
+      --harmony-letter-spacing: -0.2px;
+    }
+    html[data-font-family="alexandria"] {
+      --harmony-line-height: 1.35;
+      --harmony-letter-spacing: -0.2px;
+    }
+    html[data-font-family="changa"] {
+      --harmony-line-height: 1.25;
+      --harmony-letter-spacing: 0px;
+    }
+    html[data-font-family="noto"] {
+      --harmony-line-height: 1.38;
+      --harmony-letter-spacing: 0px;
+    }
+    html[data-font-family="rubik"] {
+      --harmony-line-height: 1.30;
+      --harmony-letter-spacing: 0px;
+    }
+
+    /* 3. تباين ألوان المصروفات والدخول في الأوضاع المختلفة */
+    body.light-theme {
+      --ledger-credit: #047857 !important;
+      --ledger-debit: #be123c !important;
+    }
+    body:not(.light-theme) {
+      --ledger-credit: #34d399 !important;
+      --ledger-debit: #f43f5e !important;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -18753,7 +18994,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.49</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.50</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -24479,12 +24720,14 @@ function generateRichDemoTransactions() {
           }
           const rawLabel = cleanLbl;
           const date = operationDate(tx);
+          const isLight = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+          const harm = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(cat.color, isLight) : { color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
 
           cardsHtml += `
-            <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="padding: 9px 10px; margin-bottom: 6px; cursor: pointer;">
+            <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harm.color} !important; cursor: pointer;">
               <div class="ops-entry ops-entry-flat">
                 <div class="ops-entry-main">
-                  <span class="ops-entry-icon" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
+                  <span class="ops-entry-icon" style="background: ${harm.bg} !important; border: 1px solid ${harm.border} !important; color: ${harm.color} !important;" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
                   <div class="ops-entry-body">
                     <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
                   </div>
@@ -24493,12 +24736,12 @@ function generateRichDemoTransactions() {
                   <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
                 </div>
                     <div class="ops-entry-meta">
-                      <span>${escapeHtml(memberName)}</span>
-                      ${walletName ? `<span>💳 ${escapeHtml(walletName)}</span>` : ''}
+                      <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
+                      ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
                       ${date ? `<time class="ops-entry-date" dir="ltr" datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
-                      <span>${escapeHtml(cat.name)}</span>
-                      ${projectName ? `<span>📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${tx.receipt ? '<span><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
+                      <span class="ops-meta-category" style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; font-weight: 800;">${escapeHtml(cat.name)}</span>
+                      ${projectName ? `<span class="ops-meta-project">📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${tx.receipt ? '<span class="ops-meta-receipt"><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
                     </div>
               </div>
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
@@ -24581,18 +24824,22 @@ function generateRichDemoTransactions() {
             }
             const rawLabel = cleanLbl;
 
+            const isLightFlat = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+            const harmFlat = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(cat.color, isLightFlat) : { color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
+
             cardsHtml += `
-              <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="padding: 9px 10px; margin-bottom: 6px; cursor: pointer;">
+              <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harmFlat.color} !important; cursor: pointer;">
               <div class="ops-entry">
                 <div class="ops-entry-main">
-                  <span class="ops-entry-icon" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
+                  <span class="ops-entry-icon" style="background: ${harmFlat.bg} !important; border: 1px solid ${harmFlat.border} !important; color: ${harmFlat.color} !important;" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
                   <div class="ops-entry-body">
                     <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
                     <div class="ops-entry-meta">
-                      <span>${escapeHtml(cat.name)}</span><span>${escapeHtml(memberName)}</span>
-                      ${projectName ? `<span>📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${walletName ? `<span>💳 ${escapeHtml(walletName)}</span>` : ''}
-                      ${tx.receipt ? '<span><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
+                      <span class="ops-meta-category" style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; font-weight: 800;">${escapeHtml(cat.name)}</span>
+                      <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
+                      ${projectName ? `<span class="ops-meta-project">📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
+                      ${tx.receipt ? '<span class="ops-meta-receipt"><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
                     </div>
                   </div>
                 </div>
@@ -27020,6 +27267,9 @@ function switchSettingsTab(tabName) {
       if (typeof renderUI === 'function') {
         renderUI();
       }
+      if (typeof filterOperationsList === 'function') filterOperationsList();
+      if (typeof renderActivityLogUI === 'function') renderActivityLogUI();
+      if (typeof renderSummaryDrawer === 'function') renderSummaryDrawer();
       try { window.dispatchEvent(new Event('resize')); } catch(e) {}
 
       if (notify) showToast(`🔠 تم تفعيل حجم الخط: ${labels[size]} وتكييف الشاشات تلقائياً`);
@@ -27096,6 +27346,9 @@ function switchSettingsTab(tabName) {
       if (typeof renderUI === 'function') {
         renderUI();
       }
+      if (typeof filterOperationsList === 'function') filterOperationsList();
+      if (typeof renderActivityLogUI === 'function') renderActivityLogUI();
+      if (typeof renderSummaryDrawer === 'function') renderSummaryDrawer();
       try { window.dispatchEvent(new Event('resize')); } catch(e) {}
       if (persist && typeof showToast === 'function') {
         showToast(`🔤 تم تطبيق خط (${selected.name}) وتنسيق الكروت بدقة`);
