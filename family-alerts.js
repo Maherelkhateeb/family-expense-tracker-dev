@@ -54,7 +54,7 @@ const familyAlerts = (() => {
         tx.type === 'transfer' || tx.category === 'transfer' ? 'بتسجيل تحويل' : tx.type === 'income' ? 'بإيداع' : 'بصرف';
       events.push({id:[kind,tx.id,at].join(':'),at,title:kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : tx.type === 'income' && tx.category !== 'transfer' ? 'إيداع مبلغ' : 'عملية جديدة',
         body:verb+' '+who+' '+action+' '+amount(tx.amount)+' · '+(getCategoryName(tx.category,tx.type) || 'بدون بند'),
-        tx, old, kind});
+        tx, old, kind, actor: who});
     };
     for (const [id, tx] of next) {
       const old = previous.get(id);
@@ -139,6 +139,17 @@ const familyAlerts = (() => {
     write(key,[...seen].filter(item=>retained.has(item)));
     render();
   }
+  function expenseMessage(item) {
+    const tx = item.tx;
+    if (!tx || tx.type !== 'expense' || tx.category === 'transfer' ||
+        (item.demo ? item.kind !== 'expense' : item.kind !== 'add')) return item.body;
+    const name = person(tx.author || item.actor || tx.member);
+    const female = ['أية','مريم','الحاجة'].includes(name);
+    const category = getCategoryName(tx.category,'expense') || 'غير محدد';
+    return (item.demo ? 'اختبار التنبيهات · ' : '') +
+      (female ? 'قامت ' : 'قام ') + name + ' بصرف ' + amount(tx.amount) +
+      ' بند ' + category + '، في ' + clock.format(item.at);
+  }
   function render() {
     const sound = document.getElementById('alertSoundButton');
     if (sound) sound.textContent = audio?.state === 'running' && read(soundKey,false) ? 'إيقاف الصوت' : 'تشغيل الصوت';
@@ -190,7 +201,8 @@ const familyAlerts = (() => {
       const main = document.createElement(item.tx || item.details ? 'button' : 'div');
       main.className = 'family-alert-main';
       if (item.tx || item.details) main.onclick = () => { openDetail=item; mark(item.id); };
-      for (const [tag,value] of [['strong',item.title],['span',item.body],['small',clock.format(item.at)]]) {
+      for (const [tag,value] of [['strong',item.title],['span',expenseMessage(item)],['small',expenseMessage(item) === item.body ? clock.format(item.at) : '']]) {
+        if (!value) continue;
         const element = document.createElement(tag); element.textContent=value; main.append(element);
       }
       card.append(main);
