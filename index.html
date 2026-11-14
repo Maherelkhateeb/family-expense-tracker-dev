@@ -149,30 +149,42 @@
           state.activityLog = [];
         }
       }
-      if (!state.activityLog) state.activityLog = [];
+      if (!Array.isArray(state.activityLog)) state.activityLog = [];
 
-      // إذا كان سجل الأرشيف فارغاً، يتم ملؤه تلقائياً بالحركات المسجلة ليعمل الأرشيف فورياً وبكفاءة
-      if (state.activityLog.length === 0 && state.transactions && state.transactions.length > 0) {
-        state.transactions.slice(0, 300).forEach(t => {
-          const isInc = t.type === 'income';
-          const amt = parseFloat(t.amount) || 0;
-          state.activityLog.push({
-            id: 'act-' + (t.id || (Date.now() + Math.random())),
-            timestamp: t.date ? (t.date + 'T12:00:00.000Z') : new Date().toISOString(),
-            date: t.date || new Date().toISOString().split('T')[0],
-            time: '12:00 م',
-            action: isInc ? 'إضافة دخل جديد' : 'تسجيل مصروف جديد',
-            type: isInc ? 'add_income' : 'add_expense',
-            label: t.label || (isInc ? 'دخل' : 'مصروف'),
-            amount: amt,
-            member: t.member || 'ماهر',
-            author: t.member || 'ماهر',
-            category: t.category || 'other',
-            sign: isInc ? '+' : '-',
-            wallet: t.walletId || t.wallet || 'cash'
-          });
+      // دمج وتحديث كامل لكافة حركات المعاملات حتى لا يخلو الأرشيف من أي عملية أبداً
+      if (Array.isArray(state.transactions) && state.transactions.length > 0) {
+        const existingTxIds = new Set(state.activityLog.map(a => a.txId || a.id));
+        let addedCount = 0;
+        state.transactions.forEach(t => {
+          if (!t || t.deleted) return;
+          const actId = 'act-tx-' + (t.id || (t.date + '-' + t.amount));
+          if (!existingTxIds.has(actId) && !existingTxIds.has(t.id)) {
+            const isInc = t.type === 'income';
+            const amt = parseFloat(t.amount) || 0;
+            state.activityLog.push({
+              id: actId,
+              txId: t.id,
+              timestamp: t.date ? (t.date + 'T12:00:00.000Z') : (t.createdAt || new Date().toISOString()),
+              date: t.date || (t.createdAt ? t.createdAt.split('T')[0] : new Date().toISOString().split('T')[0]),
+              time: t.time || '12:00 م',
+              action: isInc ? 'إضافة دخل جديد' : 'تسجيل مصروف جديد',
+              type: isInc ? 'add_income' : 'add_expense',
+              label: t.label || (isInc ? 'دخل' : 'مصروف'),
+              amount: amt,
+              member: t.member || 'ماهر',
+              author: t.member || 'ماهر',
+              category: t.category || 'other',
+              sign: isInc ? '+' : '-',
+              wallet: t.walletId || t.wallet || 'cash'
+            });
+            existingTxIds.add(actId);
+            addedCount++;
+          }
         });
-        saveActivityLog();
+        if (addedCount > 0 || state.activityLog.length > 0) {
+          state.activityLog.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
+          saveActivityLog();
+        }
       }
     }
 
@@ -260,7 +272,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.51';
+    var APP_VERSION = 'v5.3.52';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -9312,8 +9324,17 @@
     .flow-title.outflow-color { color: #f87171 !important; }
     body.light-theme .flow-title.outflow-color { color: #b91c1c !important; }
 
-    .flow-amount { font-weight: 950 !important; font-variant-numeric: tabular-nums !important; direction: rtl !important; font-size: clamp(1.15rem, 3.6vw, 1.40rem) !important; line-height: 1.1 !important;
-      letter-spacing: -0.3px !important;
+    .flow-amount { 
+      font-weight: 900 !important; 
+      font-variant-numeric: tabular-nums !important; 
+      direction: ltr !important; 
+      text-align: left !important;
+      unicode-bidi: isolate !important;
+      font-size: clamp(0.72rem, 2.1vw, 0.85rem) !important; 
+      line-height: 1.1 !important;
+      letter-spacing: -0.2px !important;
+      white-space: nowrap !important;
+      overflow: visible !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
     }
     .flow-amount.inflow-color { color: #34d399 !important; }
@@ -17461,14 +17482,7 @@
               <span class="calc-header-badge"><i class="fa-solid fa-circle-info"></i> سوق الصاغة</span>
             </div>
 
-            <!-- بطاقة الإجمالي التقديري الشاملة (Hero Card) -->
-            <div class="gold-calc-hero">
-              <div class="calc-hero-label">إجمالي الشراء التقديري:</div>
-              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
-              
-            </div>
-
-            <!-- اختيار نوع المشغولات أو السبيكة -->
+            <!-- 1. اختيار نوع المشغولات أو السبيكة (في الأعلى) -->
             <div class="calc-form-group">
               <label class="calc-field-label" for="calcAsset">
                 <i class="fa-solid fa-gem"></i> نوع الذهب / السبائك:
@@ -17487,7 +17501,7 @@
               </div>
             </div>
 
-            <!-- حقول الإدخال: الوزن والمصنعية جنباً إلى جنب -->
+            <!-- 2. حقول الإدخال: الوزن والمصنعية جنباً إلى جنب (في الأعلى) -->
             <div class="calc-inputs-grid">
               <div class="calc-input-box">
                 <label class="calc-field-label" id="lblCalcQty" for="calcQty">
@@ -17507,10 +17521,21 @@
               </div>
             </div>
 
-            <!-- ملاحظة سوق الصاغة الذكية -->
+            <!-- 3. أزرار الاختيارات السريعة للوزن والمصنعية -->
+            <div class="calc-presets-section">
+              <span class="calc-presets-label">خيارات جاهزة:</span>
+              <div class="gold-calc-presets">
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
+                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+              </div>
+            </div>
+
+            <!-- 4. ملاحظة سوق الصاغة الذكية -->
             <div id="calcWorkmanshipNote" class="calc-workmanship-note" style="display: none;"></div>
 
-            <!-- تفاصيل الحسبة المحاسبية والمالية (Financial Breakdown Card) -->
+            <!-- 5. تفاصيل الحسبة المحاسبية والمالية (Breakdown Card) -->
             <div class="gold-calc-breakdown-card">
               <div class="breakdown-row" id="rowCalcGoldRaw">
                 <span class="b-label"><i class="fa-solid fa-ring"></i> الذهب الخام:</span>
@@ -17531,18 +17556,13 @@
               </div>
             </div>
 
-            <!-- أزرار الاختيارات السريعة -->
-            <div class="calc-presets-section">
-              <span class="calc-presets-label">خيارات جاهزة:</span>
-              <div class="gold-calc-presets">
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
-                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
-                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
-              </div>
+            <!-- 6. بطاقة الإجمالي التقديري الشاملة (Hero Card في الأسفل قبل زر التسجيل) -->
+            <div class="gold-calc-hero" style="margin-top: 8px; margin-bottom: 8px;">
+              <div class="calc-hero-label">إجمالي الشراء التقديري:</div>
+              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
             </div>
 
-            <!-- زر تسجيل كمصروف في المحفظة -->
+            <!-- 7. زر تسجيل كمصروف في المحفظة (في الأسفل) -->
             <button type="button" onclick="applyCalcToExpense()" class="btn-gold-save-expense">
               <i class="fa-solid fa-cart-plus"></i>
               <span>تسجيل كمصروف في المحفظة</span>
@@ -19007,7 +19027,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.51</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.52</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -29507,37 +29527,30 @@ function switchSettingsTab(tabName) {
         list = list.filter(a => a.type && a.type.includes('delete'));
       }
 
-      // 1.5 فلترة الفترة الزمنية للأرشيف بحسب الفترة المحددة
-      const nowAct = new Date();
-      const todayActStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(nowAct) : nowAct.toISOString().split('T')[0];
-      const curPeriod = state.period || 'all';
-
-      if (curPeriod === 'today' || curPeriod === 'day') {
-        list = list.filter(a => (a.date || a.timestamp || '').startsWith(todayActStr));
-      } else if (curPeriod === 'week') {
-        const d7 = new Date(nowAct.getFullYear(), nowAct.getMonth(), nowAct.getDate() - 6);
-        const d7Str = typeof getLocalDateStr === 'function' ? getLocalDateStr(d7) : d7.toISOString().split('T')[0];
-        list = list.filter(a => {
-          const d = (a.date || a.timestamp || '').substring(0, 10);
-          return d >= d7Str && d <= todayActStr;
-        });
-      } else if (curPeriod === 'month') {
-        const startM = new Date(nowAct.getFullYear(), nowAct.getMonth(), 1);
-        const endM = new Date(nowAct.getFullYear(), nowAct.getMonth() + 1, 0);
-        const sMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(startM) : startM.toISOString().split('T')[0];
-        const eMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(endM) : endM.toISOString().split('T')[0];
-        list = list.filter(a => {
-          const d = (a.date || a.timestamp || '').substring(0, 10);
-          return d >= sMStr && d <= eMStr;
-        });
-      } else if (curPeriod === 'custom' && state.customDateRange) {
-        const { start, end } = state.customDateRange;
-        list = list.filter(a => {
-          const d = (a.date || a.timestamp || '').substring(0, 10);
-          if (start && d < start) return false;
-          if (end && d > end) return false;
-          return true;
-        });
+      // 1.5 فلترة الفترة الزمنية للأرشيف (إذا لم يحدد المستخدم فترة محددة في شريط الأرشيف، تُعرض كافة العمليات)
+      const archivePeriod = window.currentArchivePeriod || 'all';
+      if (archivePeriod !== 'all') {
+        const nowAct = new Date();
+        const todayActStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(nowAct) : nowAct.toISOString().split('T')[0];
+        if (archivePeriod === 'today' || archivePeriod === 'day') {
+          list = list.filter(a => (a.date || a.timestamp || '').startsWith(todayActStr));
+        } else if (archivePeriod === 'week') {
+          const d7 = new Date(nowAct.getFullYear(), nowAct.getMonth(), nowAct.getDate() - 6);
+          const d7Str = typeof getLocalDateStr === 'function' ? getLocalDateStr(d7) : d7.toISOString().split('T')[0];
+          list = list.filter(a => {
+            const d = (a.date || a.timestamp || '').substring(0, 10);
+            return d >= d7Str && d <= todayActStr;
+          });
+        } else if (archivePeriod === 'month') {
+          const startM = new Date(nowAct.getFullYear(), nowAct.getMonth(), 1);
+          const endM = new Date(nowAct.getFullYear(), nowAct.getMonth() + 1, 0);
+          const sMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(startM) : startM.toISOString().split('T')[0];
+          const eMStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(endM) : endM.toISOString().split('T')[0];
+          list = list.filter(a => {
+            const d = (a.date || a.timestamp || '').substring(0, 10);
+            return d >= sMStr && d <= eMStr;
+          });
+        }
       }
 
       // 2. فلترة البحث
