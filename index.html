@@ -159,7 +159,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.42';
+    var APP_VERSION = 'v5.3.43';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -15150,8 +15150,8 @@
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=20261114-gold1"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
-  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-settings-open">
-  <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
+  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
+  <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
@@ -18493,162 +18493,209 @@
         <!-- ==============================================================
          نافذة مركز الضبط الموحد والمظهر والمزامنة (Settings & Cloud Hub Modal)
          ============================================================== -->
-        <!-- ==============================================================
-         نافذة مركز الضبط الموحد والمزامنة (Unified Settings Modal)
+    <!-- ==============================================================
+         نافذة مركز الضبط الموحد والمظهر والمزامنة (Antigravity Settings Modal)
          ============================================================== -->
     <div class="modal-overlay modal-overlay-custom" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
-      <div class="modal-content-card settings-modal-shell" style="max-width: 500px; width: 95%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65); margin: auto;">
+      <div class="modal-content-card settings-modal-shell antigravity-settings-shell">
         
-        <!-- الرأس الفاخر للنافذة -->
-        <div class="modal-head settings-modal-head" style="padding: 10px 14px; margin: 0; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)); border: 1.2px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: #38bdf8;">
+        <!-- 1. الرأس الفاخر للنافذة (Antigravity Glass Header) -->
+        <div class="modal-head settings-modal-head antigravity-settings-head">
+          <div class="antigravity-head-brand">
+            <div class="antigravity-head-icon">
               <i class="fa-solid fa-sliders"></i>
             </div>
-            <div>
-              <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
-                <span>إعدادات التطبيق</span>
-                <span class="version-badge" id="settingsVersionBadge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;"></span>
-              </h3>
-              <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
+            <div class="antigravity-head-copy">
+              <div class="antigravity-head-title-row">
+                <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
+                <span class="version-badge" id="settingsVersionBadge">v5.3.43</span>
+              </div>
+              <div class="settings-modal-subtitle">تخصيص المظهر، إدارة المحافظ، والمزامنة السحابية</div>
             </div>
           </div>
           <!-- زر الإغلاق المدمج داخل رأس النافذة -->
-          <button type="button" class="btn-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; cursor: pointer; margin: 0;">&times;</button>
+          <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
-        <!-- محتوى الضبط الموحد الشامل -->
-        <div style="padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="settings-modal-scroll custom-scrollbar">
-
-          <section class="settings-pane" id="settingsPane_appearance" aria-label="المظهر">
-
-          <!-- زر عرض المستخدم وتبديله (يفتح فقط عند الضغط عليه ويغلق الضبط أولاً) -->
-          <div class="settings-user-card" id="settingsSec_users" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <img id="settingsCurrentMemberImg" src="" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; border: 1.5px solid #38bdf8;">
-              <div style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;">المستخدم النشط:</div>
-              <strong id="settingsCurrentMemberName" style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">ماهر</strong>
+        <!-- 2. كارت المستخدم النشط الفاخر (VIP User Strip) -->
+        <div class="antigravity-user-vip-strip" id="settingsSec_users">
+          <div class="antigravity-vip-avatar-wrap">
+            <img id="settingsCurrentMemberImg" src="assets/icon-192.png" alt="المستخدم" class="antigravity-vip-avatar">
+            <img id="settingsCurrentEmblemMini" src="" style="display: none;" alt="شعار">
+            <span class="antigravity-vip-status-dot" title="متصل"></span>
+          </div>
+          <div class="antigravity-vip-info">
+            <div class="antigravity-vip-label">
+              <span>المستخدم النشط:</span>
+              <span id="settingsMemberPinStatus" class="antigravity-vip-pin"><i class="fa-solid fa-shield-check" style="color: #34d399;"></i> حساب محمي</span>
+            </div>
+            <div class="antigravity-vip-name-row">
+              <strong id="settingsCurrentMemberName">ماهر</strong>
+              <span id="settingsCurrentMemberAvatar" style="display: none;">👨‍💼</span>
               <span id="settingsActiveUserNameTxt" style="display: none;">ماهر</span>
             </div>
-            <button type="button" onclick="closeModal('settingsModal'); openFullUserSelectionModal();" style="background: rgba(56, 189, 248, 0.18); border: 1.2px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 0.72rem; font-weight: 850; padding: 5px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s ease;">
-              <i class="fa-solid fa-arrows-rotate"></i>
-              <span>تبديل المستخدم</span>
-            </button>
           </div>
+          <button type="button" class="antigravity-switch-user-btn" onclick="closeModal('settingsModal'); openFullUserSelectionModal();">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>تبديل</span>
+          </button>
+        </div>
 
-          <!-- القسم 1: المظهر والتخصيص البصري -->
-          <div class="settings-unified-section" id="settingsSec_appearance" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
-            
-            <!-- لوحة المظهر الجديدة: وضع مستقل، لوحة ألوان، ومعاينة حيّة -->
-            <div class="appearance-settings-block">
-              <div class="appearance-section-heading">
-                <span><i class="fa-solid fa-palette" aria-hidden="true"></i> المظهر ولوحة الألوان</span>
-                <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
-              </div>
-              <div class="appearance-mode-row" role="group" aria-label="وضع العرض">
-                <button type="button" id="appearanceModeDark" class="appearance-mode-button" onclick="setAppColorMode('dark')" aria-pressed="true"><i class="fa-solid fa-moon" aria-hidden="true"></i> داكن</button>
-                <button type="button" id="appearanceModeLight" class="appearance-mode-button" onclick="setAppColorMode('light')" aria-pressed="false"><i class="fa-solid fa-sun" aria-hidden="true"></i> فاتح</button>
-              </div>
-              <div class="settings-live-preview" id="settingsThemePreview" aria-live="polite">
-                <div class="settings-live-preview-label"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>معاينة مباشرة</span><span id="appearanceContrastBadge" class="appearance-contrast-badge">تباين AA</span></div>
-                <div class="settings-live-preview-card">
-                  <span class="settings-live-preview-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
-                  <span class="settings-live-preview-copy"><strong>مصروفات العائلة</strong><small>الرصيد المتبقي</small></span>
-                  <strong class="settings-live-preview-value" dir="ltr">1,250 ج.م</strong>
-                </div>
-                <div class="appearance-preview-footnote">النصوص والأرقام محفوظة بتباين WCAG AA في الوضعين.</div>
-              </div>
-              <div class="appearance-subheading"><span>لوحات الألوان</span><small>10 اختيارات متوافقة</small></div>
-              <div class="theme-color-palette appearance-palette-grid" role="group" aria-label="لوحة الألوان">
-                <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true" aria-label="تطبيق لوحة كحلي ملكي"><span class="theme-color-dot" style="--theme-swatch:#0f2d55" aria-hidden="true"></span><span>كحلي ملكي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false" aria-label="تطبيق لوحة زمردي"><span class="theme-color-dot" style="--theme-swatch:#047857" aria-hidden="true"></span><span>زمردي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false" aria-label="تطبيق لوحة بنفسجي"><span class="theme-color-dot" style="--theme-swatch:#7e22ce" aria-hidden="true"></span><span>بنفسجي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false" aria-label="تطبيق لوحة وردي ياقوتي"><span class="theme-color-dot" style="--theme-swatch:#be123c" aria-hidden="true"></span><span>وردي ياقوتي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false" aria-label="تطبيق لوحة محيطي"><span class="theme-color-dot" style="--theme-swatch:#0e7490" aria-hidden="true"></span><span>محيطي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false" aria-label="تطبيق لوحة ذهبي"><span class="theme-color-dot" style="--theme-swatch:#a16207" aria-hidden="true"></span><span>ذهبي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false" aria-label="تطبيق لوحة رمادي تيتانيوم"><span class="theme-color-dot" style="--theme-swatch:#475569" aria-hidden="true"></span><span>رمادي تيتانيوم</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false" aria-label="تطبيق لوحة نيلي ليلي"><span class="theme-color-dot" style="--theme-swatch:#4338ca" aria-hidden="true"></span><span>نيلي ليلي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptForest" data-theme="forest" onclick="setAppTheme('forest')" aria-pressed="false" aria-label="تطبيق لوحة أخضر غابة"><span class="theme-color-dot" style="--theme-swatch:#166534" aria-hidden="true"></span><span>أخضر غابة</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false" aria-label="تطبيق لوحة ياقوت أزرق"><span class="theme-color-dot" style="--theme-swatch:#1d4ed8" aria-hidden="true"></span><span>ياقوت أزرق</span></button>
-              </div>
-            </div>
+        <!-- 3. شريط التنقل المقسّم (Antigravity Segmented Navigation) -->
+        <div class="antigravity-settings-nav" id="settingsSegmentedNav" role="tablist">
+          <button type="button" role="tab" class="antigravity-nav-pill active" id="settingsTabBtn_appearance" onclick="switchSettingsTab('appearance')" aria-selected="true">
+            <i class="fa-solid fa-palette"></i>
+            <span>المظهر والسمات</span>
+          </button>
+          <button type="button" role="tab" class="antigravity-nav-pill" id="settingsTabBtn_wallets" onclick="switchSettingsTab('wallets')" aria-selected="false">
+            <i class="fa-solid fa-wallet"></i>
+            <span>المحافظ والبيانات</span>
+          </button>
+          <button type="button" role="tab" class="antigravity-nav-pill" id="settingsTabBtn_sync" onclick="switchSettingsTab('sync')" aria-selected="false">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>السحابة والمزامنة</span>
+          </button>
+        </div>
 
-            <!-- 2. ألوان الأيقونات: 10 درجات واضحة لكل وضع -->
-            <div class="appearance-settings-block">
-              <div class="appearance-section-heading">
-                <span><i class="fa-solid fa-icons" aria-hidden="true"></i> ألوان الأيقونات</span>
-                <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
-              </div>
-              <div class="appearance-subheading"><span>اختر لونًا موحدًا وواضحًا</span><small>10 اختيارات</small></div>
-              <div class="appearance-icon-grid" role="group" aria-label="ألوان الأيقونات">
-                <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>فينتك</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>ذهبي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>زمردي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>محيطي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>بنفسجي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>روبي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>عنبر</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptTeal" data-icon-theme="teal" onclick="setAppIconTheme('teal')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>تركوازي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>نيلي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>وردي</span></button>
-              </div>
-            </div>
+        <!-- 4. محتوى النوافذ القابل للتمرير (Antigravity Scrollable Body) -->
+        <div class="settings-modal-scroll custom-scrollbar antigravity-settings-body">
 
-            <!-- 3. خط الكلمات والأرقام -->
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-font" style="color: #38bdf8; font-size: 0.88rem;"></i>
-                  <span>خط الكلمات والأرقام:</span>
+          <!-- ========================================== -->
+          <!-- تاب 1: المظهر والتخصيص البصري -->
+          <!-- ========================================== -->
+          <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_appearance" style="display: flex;">
+            <div class="settings-unified-section" id="settingsSec_appearance" data-compact-ready="true" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+              
+              <!-- بطاقة 1: الوضع والمعاينة الحية -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                    <span>وضع العرض والمعاينة</span>
+                  </div>
+                  <span id="appearanceContrastBadge" class="appearance-contrast-badge">تباين AA</span>
                 </div>
-                <span id="activeFontBadge" style="font-size: 0.63rem; color: #34d399; font-weight: 800; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); padding: 1px 7px; border-radius: 5px;">تاجوال (افتراضي)</span>
-              </div>
-              <div class="settings-font-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-                <button type="button" class="analytics-sec-btn font-choice-pill active" id="fontChoiceTajawal" onclick="setAppFont('tajawal')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Tajawal', sans-serif !important; border-radius: 8px;">
-                  ✨ تاجوال
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceCairo" onclick="setAppFont('cairo')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Cairo', sans-serif !important; border-radius: 8px;">
-                  🏛️ كايرو
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceIBM" onclick="setAppFont('ibm')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'IBM Plex Sans Arabic', sans-serif !important; border-radius: 8px;">
-                  🏢 IBM Plex
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlmarai" onclick="setAppFont('almarai')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Almarai', sans-serif !important; border-radius: 8px;">
-                  📱 المراعي
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceReadex" onclick="setAppFont('readex')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Readex Pro', sans-serif !important; border-radius: 8px;">
-                  📐 ريدكس
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlexandria" onclick="setAppFont('alexandria')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Alexandria', sans-serif !important; border-radius: 8px;">
-                  🏛️ الإسكندرية
-                </button>
-              </div>
-              <div class="settings-font-preview" id="settingsFontPreview" aria-live="polite">
-                <span class="settings-font-preview-label">معاينة الخط</span>
-                <span class="settings-font-preview-sample" id="settingsFontPreviewSample">مصروفات الأسرة ١٬٢٣٤٫٥٠ ج.م</span>
-              </div>
-            </div>
+                
+                <!-- أزرار تبديل الوضع (داكن / فاتح) -->
+                <div class="appearance-mode-row antigravity-mode-switcher" role="group" aria-label="وضع العرض">
+                  <button type="button" id="appearanceModeDark" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('dark')" aria-pressed="true">
+                    <i class="fa-solid fa-moon"></i>
+                    <span>داكن</span>
+                  </button>
+                  <button type="button" id="appearanceModeLight" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('light')" aria-pressed="false">
+                    <i class="fa-solid fa-sun"></i>
+                    <span>فاتح</span>
+                  </button>
+                </div>
 
-            <!-- 4. حجم الخط ونمط الكروت -->
-            <div class="settings-size-style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <!-- الحجم -->
-              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                  <span style="font-size: 0.70rem; font-weight: 850; color: #cbd5e1;"><i class="fa-solid fa-text-height" style="color: #38bdf8;"></i> حجم الخط:</span>
-                  <span id="activeFontSizeBadge" style="font-size: 0.58rem; color: #38bdf8; font-weight: 800;">وسط</span>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;">
-                  <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeSmall" onclick="setAppFontSize('small')" style="padding: 5px 2px; font-size: 0.66rem; border-radius: 6px;">صغير</button>
-                  <button type="button" class="analytics-sec-btn font-size-pill active" id="fontSizeMedium" onclick="setAppFontSize('medium')" style="padding: 5px 2px; font-size: 0.68rem; border-radius: 6px;">وسط</button>
-                  <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeLarge" onclick="setAppFontSize('large')" style="padding: 5px 2px; font-size: 0.70rem; border-radius: 6px;">كبير</button>
+                <!-- كارت المعاينة الحية -->
+                <div class="settings-live-preview antigravity-live-preview" id="settingsThemePreview" aria-live="polite">
+                  <div class="settings-live-preview-label">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>معاينة حية للمظهر المعتمد</span>
+                  </div>
+                  <div class="settings-live-preview-card antigravity-preview-card">
+                    <span class="settings-live-preview-icon"><i class="fa-solid fa-wallet"></i></span>
+                    <span class="settings-live-preview-copy">
+                      <strong>مصروفات العائلة</strong>
+                      <small>الرصيد المتبقي</small>
+                    </span>
+                    <strong class="settings-live-preview-value" dir="ltr">1,250 ج.م</strong>
+                  </div>
                 </div>
               </div>
-              <!-- النمط -->
-              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
-                <div style="margin-bottom: 5px; font-size: 0.70rem; font-weight: 850; color: #cbd5e1;">
-                  <i class="fa-solid fa-shapes" style="color: #38bdf8;"></i> نمط الكروت:
+
+              <!-- بطاقة 2: لوحات ألوان التطبيق (10 ألوان) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>لوحة ألوان التطبيق</span> <small style="font-size: 0.62rem; color: #94a3b8; margin-right: 4px;">(9 ألوان)</small>
+                  </div>
+                  <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
                 </div>
-                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid" role="group" aria-label="أنماط الكروت">
+                <div class="theme-color-palette appearance-palette-grid antigravity-palette-grid" role="group" aria-label="لوحة الألوان">
+                  <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true"><span class="theme-color-dot" style="--theme-swatch:#0f2d55"></span><span>كحلي ملكي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#047857"></span><span>زمردي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#7e22ce"></span><span>بنفسجي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#be123c"></span><span>وردي ياقوتي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#0e7490"></span><span>محيطي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#a16207"></span><span>ذهبي</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#475569"></span><span>رمادي تيتانيوم</span></button>
+                  <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#4338ca"></span><span>نيلي ليلي</span></button>
+                      <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false"><span class="theme-color-dot" style="--theme-swatch:#1d4ed8"></span><span>ياقوت أزرق</span></button>
+                </div>
+              </div>
+
+              <!-- بطاقة 3: ألوان الأيقونات (9 اختيارات متوازنة) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-icons"></i>
+                    <span>ألوان الأيقونات</span> <small style="font-size: 0.62rem; color: #94a3b8; margin-right: 4px;">(9 ألوان)</small>
+                  </div>
+                  <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
+                </div>
+                <div class="appearance-icon-grid antigravity-icon-grid" role="group" aria-label="ألوان الأيقونات">
+                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span class="icon-color-dots">● ● ●</span><span>فينتك</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>ذهبي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>زمردي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>محيطي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>بنفسجي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>روبي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>عنبر</span></button>
+                      <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>نيلي</span></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span class="icon-color-dots">● ● ●</span><span>وردي</span></button>
+                </div>
+              </div>
+
+              <!-- بطاقة 4: الخط وحجم النصوص -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-font"></i>
+                    <span>خط الكلمات والأرقام</span>
+                  </div>
+                  <span id="activeFontBadge" class="appearance-active-badge">تاجوال (افتراضي)</span>
+                </div>
+                <div class="settings-font-grid antigravity-font-grid">
+                  <button type="button" class="analytics-sec-btn font-choice-pill active" id="fontChoiceTajawal" onclick="setAppFont('tajawal')" style="font-family: 'Tajawal', sans-serif !important;">✨ تاجوال</button>
+                  <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceCairo" onclick="setAppFont('cairo')" style="font-family: 'Cairo', sans-serif !important;">🏛️ كايرو</button>
+                  <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceIBM" onclick="setAppFont('ibm')" style="font-family: 'IBM Plex Sans Arabic', sans-serif !important;">🏢 IBM Plex</button>
+                  <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlmarai" onclick="setAppFont('almarai')" style="font-family: 'Almarai', sans-serif !important;">📱 المراعي</button>
+                  <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceReadex" onclick="setAppFont('readex')" style="font-family: 'Readex Pro', sans-serif !important;">📐 ريدكس</button>
+                  <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlexandria" onclick="setAppFont('alexandria')" style="font-family: 'Alexandria', sans-serif !important;">🏛️ الإسكندرية</button>
+                </div>
+                <div class="settings-font-preview antigravity-font-preview" id="settingsFontPreview" aria-live="polite">
+                  <span class="settings-font-preview-label">معاينة الخط</span>
+                  <span class="settings-font-preview-sample" id="settingsFontPreviewSample">مصروفات الأسرة ١٬٢٣٤٫٥٠ ج.م</span>
+                </div>
+                
+                <!-- حجم الخط -->
+                <div class="antigravity-size-row" style="margin-top: 10px;">
+                  <div class="antigravity-sub-label">
+                    <span><i class="fa-solid fa-text-height"></i> حجم الخط:</span>
+                    <span id="activeFontSizeBadge" class="antigravity-mini-badge">وسط</span>
+                  </div>
+                  <div class="antigravity-segmented-triple">
+                    <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeSmall" onclick="setAppFontSize('small')">صغير</button>
+                    <button type="button" class="analytics-sec-btn font-size-pill active" id="fontSizeMedium" onclick="setAppFontSize('medium')">وسط</button>
+                    <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeLarge" onclick="setAppFontSize('large')">كبير</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- بطاقة 5: تصميم ونمط الكروت (10 أنماط) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>نمط وتصميم الكروت</span> <small style="font-size: 0.62rem; color: #94a3b8; margin-right: 4px;">(9 أنماط)</small>
+                  </div>
+                </div>
+                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid antigravity-card-style-grid" role="group" aria-label="أنماط الكروت">
                   <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>شفاف هادئ</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleMin" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>بسيط</strong><small>مسطح ونظيف</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleNeu" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>مجسّم</strong><small>عمق ناعم</small></button>
@@ -18657,65 +18704,178 @@
                   <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleCompact" data-card-style="compact" onclick="setAppDesignStyle('compact')" aria-pressed="false"><strong>مدمج</strong><small>زوايا صغيرة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleSoft" data-card-style="soft" onclick="setAppDesignStyle('soft')" aria-pressed="false"><strong>ناعم</strong><small>استدارة واسعة</small></button>
-                </div>
+                      <button type="button" class="analytics-sec-btn" id="designStyleSoft" data-card-style="soft" onclick="setAppDesignStyle('soft')" aria-pressed="false"><strong>ناعم</strong><small>استدارة واسعة</small></button>
                 </div>
               </div>
-            </div>
 
-          </div>
+            </div>
           </section>
 
-          <!-- القسم 2: إدارة المحافظ والنسخ الاحتياطي والمزامنة السحابية -->
-          <section class="settings-pane" id="settingsPane_data" aria-label="البيانات والمزامنة">
-          <div class="settings-unified-section" id="settingsSec_data" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-wallet" style="color: #10b981; font-size: 0.88rem;"></i>
-                <span>إدارة المحافظ والنسخ الاحتياطي:</span>
+          <!-- ========================================== -->
+          <!-- تاب 2: المحافظ والبيانات -->
+          <!-- ========================================== -->
+          <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_wallets" hidden style="display: none;">
+            <div class="settings-unified-section" id="settingsSec_data" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+              
+              <!-- بطاقة كوكبيت المحافظ ومطابقة الرصيد -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-wallet" style="color: #10b981;"></i>
+                    <span>حالة المحافظ وأرصدة الحسابات</span>
+                  </div>
+                  <span id="settingsWalletCountText" class="antigravity-emerald-badge">4 محافظ نشطة</span>
+                </div>
+                
+                <!-- بادج المطابقة المحاسبية والرياضية -->
+                <div id="settingsReconciliationDiffBadge" class="antigravity-audit-badge">
+                  <i class="fa-solid fa-circle-check" style="color: #34d399;"></i> مطابقة تامة (فرق الرصيد: 0.00 ج.م)
+                </div>
               </div>
-              <span id="settingsWalletCountText" style="font-size: 0.63rem; color: #10b981; font-weight: 800; background: rgba(16, 185, 129, 0.15); padding: 1px 6px; border-radius: 5px;">
-                4 محافظ نشطة
-              </span>
-            </div>
 
-            <!-- أزرار المحافظ والنسخ -->
-            <div class="settings-data-actions">
-              <button type="button" class="btn-submit-tx" onclick="closeModal('settingsModal'); openModal('walletModal');" style="margin: 0; height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-pen-to-square"></i> المحافظ
-              </button>
-              <button type="button" class="btn-export-tool excel-btn" onclick="closeModal('settingsModal'); openWalletStatementModal();" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-receipt"></i> كشف الحساب
-              </button>
-              <button type="button" class="btn-export-tool" onclick="downloadBackup()" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-download"></i> تصدير JSON
-              </button>
-              <button type="button" class="btn-export-tool" onclick="document.getElementById('settingsBackupFileInput').click()" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-upload"></i> استيراد JSON
-              </button>
-              <input type="file" id="settingsBackupFileInput" accept=".json" style="display: none;" onchange="handleBackupUpload(event)">
-            </div>
+              <!-- شبكة الإجراءات المالية -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-sliders" style="color: #38bdf8;"></i>
+                    <span>أدوات إدارة المحافظ والحسابات</span>
+                  </div>
+                </div>
+                
+                <div class="antigravity-action-grid">
+                  <!-- زر فتح نافذة المحافظ -->
+                  <div class="antigravity-action-tile" onclick="closeModal('settingsModal'); openModal('walletModal');">
+                    <div class="antigravity-action-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                      <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div class="antigravity-action-info">
+                      <strong>إدارة المحافظ والبطاقات</strong>
+                      <small>تعديل وإضافة المحافظ والحسابات البنكية</small>
+                    </div>
+                    <i class="fa-solid fa-chevron-left antigravity-action-arrow"></i>
+                  </div>
 
-            <!-- أزرار المزامنة الفورية وتحديث التطبيق -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px;">
-              <button type="button" class="btn-submit-tx" onclick="executeGoogleDriveSync()" style="margin: 0; height: 32px; background: linear-gradient(135deg, #10b981, #059669); font-size: 0.70rem; font-weight: 850; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                <i class="fa-solid fa-arrows-rotate" id="settingsDriveSyncIconSpin"></i> مزامنة فورية
-              </button>
-              <button type="button" class="btn-primary-custom" onclick="forcePurgeCacheAndReload()" style="height: 32px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 0.70rem; font-weight: 850; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                <i class="fa-solid fa-rotate"></i> تحديث التطبيق
-              </button>
+                  <!-- زر كشف الحساب -->
+                  <div class="antigravity-action-tile" onclick="closeModal('settingsModal'); openWalletStatementModal();">
+                    <div class="antigravity-action-icon" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">
+                      <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div class="antigravity-action-info">
+                      <strong>كشف حساب تفصيلي</strong>
+                      <small>عرض كشف الحساب الموحد والأرصدة</small>
+                    </div>
+                    <i class="fa-solid fa-chevron-left antigravity-action-arrow"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- بطاقة النسخ الاحتياطي والأرشفة -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-database" style="color: #a855f7;"></i>
+                    <span>النسخ الاحتياطي والأرشفة</span>
+                  </div>
+                </div>
+                <p class="antigravity-card-desc">احفظ نسخة من بيانات ومصروفات العائلة على جهازك بصيغة JSON، أو استرجع نسخة سابقة بأمان تام.</p>
+                
+                <div class="antigravity-dual-actions">
+                  <button type="button" class="antigravity-btn-backup" onclick="downloadBackup()">
+                    <i class="fa-solid fa-download"></i>
+                    <span>تصدير نسخة JSON</span>
+                  </button>
+                  <button type="button" class="antigravity-btn-restore" onclick="document.getElementById('settingsBackupFileInput').click()">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>استيراد واسترجاع JSON</span>
+                  </button>
+                  <input type="file" id="settingsBackupFileInput" accept=".json" style="display: none;" onchange="handleBackupUpload(event)">
+                </div>
+              </div>
+
             </div>
-          </div>
+          </section>
+
+          <!-- ========================================== -->
+          <!-- تاب 3: السحابة والمزامنة الفورية -->
+          <!-- ========================================== -->
+          <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_sync" hidden style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+              
+              <!-- بطاقة حالة سحابة جوجل درايف -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-brands fa-google-drive" style="color: #34d399;"></i>
+                    <span>سحابة Google Drive المشتركة</span>
+                  </div>
+                  <span class="antigravity-cloud-pulse-badge">متصل ولحظي</span>
+                </div>
+                
+                <div class="antigravity-cloud-account-box">
+                  <i class="fa-solid fa-envelope" style="color: #38bdf8;"></i>
+                  <span>الحساب السحابي المعتمد:</span>
+                  <strong id="settingsModalUserEmail">maher.easybakery@gmail.com</strong>
+                </div>
+
+                <!-- زر المزامنة الفورية الهيرو -->
+                <button type="button" class="antigravity-hero-sync-btn" onclick="executeGoogleDriveSync()">
+                  <i class="fa-solid fa-arrows-rotate" id="settingsDriveSyncIconSpin"></i>
+                  <span>بدء المزامنة الفورية مع السحابة الآن</span>
+                </button>
+              </div>
+
+              <!-- بطاقة تحديث ملفات التطبيق وتفريغ الكاش -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-rotate" style="color: #0284c7;"></i>
+                    <span>تحديث وتفريغ كاش التطبيق</span>
+                  </div>
+                  <span id="settingsAppUpdateStatusBadge" class="antigravity-mini-badge">أحدث إصدار جاهز</span>
+                </div>
+                <p class="antigravity-card-desc">تفريغ الكاش وتنزيل ملفات التحديث الجديدة فوراً ومزامنة Service Worker لإصلاح أي تعليق.</p>
+                
+                <button type="button" class="antigravity-hero-update-btn" onclick="forcePurgeCacheAndReload()">
+                  <i class="fa-solid fa-rotate" id="settingsAppUpdateIconSpin"></i>
+                  <span>تحديث ملفات التطبيق وتفريغ الكاش</span>
+                </button>
+              </div>
+
+              <!-- بطاقة معلومات النظام وPWA -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-shield-halved" style="color: #94a3b8;"></i>
+                    <span>معلومات النظام والجاهزية</span>
+                  </div>
+                </div>
+                <div class="antigravity-system-info-list">
+                  <div class="antigravity-system-info-item">
+                    <span>إصدار النظام الحالي:</span>
+                    <strong class="version-badge">v5.3.43</strong>
+                  </div>
+                  <div class="antigravity-system-info-item">
+                    <span>نمط التشغيل:</span>
+                    <strong>تطبيق ويب تقدمي مستقل (PWA)</strong>
+                  </div>
+                  <div class="antigravity-system-info-item">
+                    <span>محرك التصميم:</span>
+                    <strong style="color: #38bdf8;">Antigravity Engine Pro</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </section>
 
         </div>
 
-        <!-- تذييل النافذة المدمج تماماً داخل الكارت (بدون أي عنصر منفصل أو عائم) -->
-        <div style="padding: 8px 14px; background: rgba(15, 23, 42, 0.98); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-radius: 0 0 18px 18px;">
-          <span style="font-size: 0.65rem; color: #94a3b8;">مصروفات العائلة &copy; 2026</span>
-          <button type="button" class="btn-export-tool" onclick="closeModal('settingsModal')" style="padding: 5px 16px; font-size: 0.74rem; font-weight: 800; border-radius: 8px; background: rgba(255, 255, 255, 0.08); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.15);">
-            إغلاق
+        <!-- 5. تذييل النافذة المدمج بالكامل داخل الكارت -->
+        <div class="modal-footer settings-modal-footer antigravity-settings-footer">
+          <span class="antigravity-footer-copy">مصروفات العائلة &copy; 2026</span>
+          <button type="button" class="antigravity-footer-close-btn" onclick="closeModal('settingsModal')">
+            <i class="fa-solid fa-check"></i>
+            <span>تم وإغلاق</span>
           </button>
         </div>
 
@@ -18723,7 +18883,7 @@
     </div>
 
 
-  <div class="toast-msg" id="toastMsg">
+    <div class="toast-msg" id="toastMsg">
     <i class="fa-solid fa-circle-check" style="color: var(--primary);"></i>
     <span id="toastTxt">تم بنجاح!</span>
   </div>
@@ -26010,11 +26170,50 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       event.preventDefault();
       option.click();
     });
-function openSettingsModal(targetSection = '') {
+function switchSettingsTab(tabName) {
+      const tabs = ['appearance', 'wallets', 'sync'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('settingsTabBtn_' + t);
+        const pane = document.getElementById('settingsTabPane_' + t);
+        const active = (t === tabName);
+        if (btn) {
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        }
+        if (pane) {
+          if (active) {
+            pane.removeAttribute('hidden');
+            pane.style.setProperty('display', 'flex', 'important');
+            pane.classList.remove('antigravity-pane-enter');
+            void pane.offsetWidth;
+            pane.classList.add('antigravity-pane-enter');
+          } else {
+            pane.setAttribute('hidden', '');
+            pane.style.setProperty('display', 'none', 'important');
+          }
+        }
+      });
+      const scrollArea = document.querySelector('#settingsModal .settings-modal-scroll');
+      if (scrollArea) scrollArea.scrollTop = 0;
+    }
+
+    function openSettingsModal(targetSection = '') {
       updateSettingsModalDisplay();
-      document.getElementById('settingsVersionBadge').textContent = window.APP_VERSION;
+      const vBadge = document.getElementById('settingsVersionBadge');
+      if (vBadge) vBadge.textContent = window.APP_VERSION;
+
+      if (targetSection === 'data' || targetSection === 'wallets') {
+        switchSettingsTab('wallets');
+      } else if (targetSection === 'sync' || targetSection === 'cloud') {
+        switchSettingsTab('sync');
+      } else {
+        switchSettingsTab('appearance');
+      }
+
       openModal('settingsModal');
-      document.querySelector('#settingsModal .settings-modal-scroll').scrollTop = 0;
+      const scrollEl = document.querySelector('#settingsModal .settings-modal-scroll');
+      if (scrollEl) scrollEl.scrollTop = 0;
+
       if (targetSection === 'users') {
         setTimeout(() => {
           const sec = document.getElementById('settingsSec_users');
