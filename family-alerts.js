@@ -99,6 +99,7 @@ const familyAlerts = (() => {
         else limits.set(key,{label,limit:Number(limit),test});
       };
       for (const item of items) {
+      const body = expenseMessage(item);
         add('total',plan.project || plan.name || 'إجمالي الموازنة',item.amount,()=>true);
         if (item.category) {
           const category = getCategoryObj(item.category,'expense').id;
@@ -152,7 +153,14 @@ const familyAlerts = (() => {
   }
   function render() {
     const sound = document.getElementById('alertSoundButton');
-    if (sound) sound.textContent = audio?.state === 'running' && read(soundKey,false) ? 'إيقاف الصوت' : 'تشغيل الصوت';
+    if (sound) {
+      const enabled=audio?.state === 'running' && read(soundKey,false);
+      const label=enabled?'إيقاف الصوت':'تشغيل الصوت';
+      sound.textContent=enabled?'🔊':'🔇';
+      sound.setAttribute('aria-label',label);
+      sound.setAttribute('aria-pressed',String(enabled));
+      sound.title=label;
+    }
     const items = visible();
     const seen = new Set(read(readKey(),[]));
     const count = items.filter(item => !seen.has(item.id)).length;
@@ -201,7 +209,7 @@ const familyAlerts = (() => {
       const main = document.createElement(item.tx || item.details ? 'button' : 'div');
       main.className = 'family-alert-main';
       if (item.tx || item.details) main.onclick = () => { openDetail=item; mark(item.id); };
-      for (const [tag,value] of [['strong',item.title],['span',expenseMessage(item)],['small',expenseMessage(item) === item.body ? clock.format(item.at) : '']]) {
+      for (const [tag,value] of [['strong',item.title],['span',body],['small',body === item.body ? clock.format(item.at) : '']]) {
         if (!value) continue;
         const element = document.createElement(tag); element.textContent=value; main.append(element);
       }

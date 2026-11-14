@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.34';
-    var APP_BUILD_ID = 202611141207;
+    var APP_VERSION = 'v5.3.35';
+    var APP_BUILD_ID = 202611141208;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15055,8 +15055,8 @@
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
-  <script src="./family-alerts.js?v=20261114-alert-copy"></script>
-  <link rel="stylesheet" href="./family-alerts.css?v=20261114-alert-copy">
+  <script src="./family-alerts.js?v=20261114-alert-header"></script>
+  <link rel="stylesheet" href="./family-alerts.css?v=20261114-alert-header">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -36206,8 +36206,8 @@ window.filterArchiveType = filterArchiveType;
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button type="button" id="alertSoundButton" onclick="familyAlerts.toggleSound()">تشغيل الصوت</button>
-          <button type="button" onclick="markAllNotificationsRead()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; font-weight: 800; border-radius: 6px; padding: 3px 8px; cursor: pointer;">تحديد الكل كمقروء</button>
+          <button type="button" id="alertSoundButton" onclick="familyAlerts.toggleSound()" aria-label="تشغيل الصوت">🔇</button>
+          <button type="button" onclick="markAllNotificationsRead()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; font-weight: 800; border-radius: 6px; padding: 3px 8px; cursor: pointer;" aria-label="تحديد الكل كمقروء" title="تحديد الكل كمقروء">✓✓</button>
           <button type="button" aria-label="إغلاق التنبيهات" class="btn-modal-close" onclick="closeModal('notificationsModal')">&times;</button>
         </div>
       </div>
