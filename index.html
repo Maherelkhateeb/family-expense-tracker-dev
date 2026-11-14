@@ -159,7 +159,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.45';
+    var APP_VERSION = 'v5.3.46';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -170,10 +170,12 @@
         var it = localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
         document.documentElement.setAttribute('data-icon-theme', it);
         var fs = localStorage.getItem('family_expense_font_size') || 'medium';
+        var validSizes = ['micro', 'small', 'medium', 'large', 'xlarge', 'huge'];
+        if (!validSizes.includes(fs)) fs = 'medium';
         document.documentElement.setAttribute('data-font-size', fs);
         var cs = localStorage.getItem('family_monefy_design_style') || 'glass';
         document.documentElement.setAttribute('data-card-style', cs);
-        var fk = localStorage.getItem('family_expense_app_font') || 'ibm';
+        var fk = localStorage.getItem('family_expense_app_font') || 'tajawal';
         document.documentElement.setAttribute('data-font-family', fk);
         var fontMap = {
           tajawal: "'Tajawal', -apple-system, sans-serif",
@@ -181,7 +183,10 @@
           ibm: "'IBM Plex Sans Arabic', 'Tajawal', sans-serif",
           almarai: "'Almarai', 'Tajawal', sans-serif",
           readex: "'Readex Pro', 'Tajawal', sans-serif",
-          alexandria: "'Alexandria', 'Tajawal', sans-serif"
+          alexandria: "'Alexandria', 'Tajawal', sans-serif",
+          changa: "'Changa', 'Tajawal', sans-serif",
+          noto: "'Noto Sans Arabic', 'Tajawal', sans-serif",
+          rubik: "'Rubik', 'Tajawal', sans-serif"
         };
         if (fontMap[fk]) {
           document.documentElement.style.setProperty('--font-family', fontMap[fk], 'important');
@@ -11596,6 +11601,16 @@
       --app-cockpit-pill-val: clamp(0.78rem, 2.2vw, 0.88rem);
     }
 
+    /* 6 أحجام خطوط متدرجة باحترافية */
+    html[data-font-size="micro"], body[data-font-size="micro"] { font-size: 11.5px !important; --app-font-scale: 0.80 !important; }
+    html[data-font-size="small"], body[data-font-size="small"] { font-size: 12.8px !important; --app-font-scale: 0.90 !important; }
+    html[data-font-size="medium"], body[data-font-size="medium"] { font-size: 14px !important; --app-font-scale: 1.0 !important; }
+    html[data-font-size="large"], body[data-font-size="large"] { font-size: 15.5px !important; --app-font-scale: 1.10 !important; }
+    html[data-font-size="xlarge"], body[data-font-size="xlarge"] { font-size: 17px !important; --app-font-scale: 1.20 !important; }
+    html[data-font-size="huge"], body[data-font-size="huge"] { font-size: 18.5px !important; --app-font-scale: 1.30 !important; }
+
+
+
     /* تكيف شبكة المصروفات */
     .categories-monefy-grid, #catGrid {
       flex: 1 1 auto !important;
@@ -15084,7 +15099,7 @@
   </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=20261114-gold1"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=20261114-antigravity2">
+  <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
   <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
@@ -17318,71 +17333,103 @@
              TAB 3: حاسبة المصنعية والرسم البياني
              ============================================== -->
         <div class="gold-tab-pane" id="goldTabPane_tools">
-          <!-- حاسبة الصاغة والمصنعية -->
-          <div class="gold-market-section gold-calculator-section" style="margin-bottom: 8px;">
-            <div style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-              <span style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
-              <span style="font-size: 0.62rem; color: #38bdf8;"><i class="fa-solid fa-circle-info"></i> مصنعية الصاغة</span>
+          <!-- حاسبة الصاغة والمصنعية التقديرية (Antigravity Professional Calculator) -->
+          <div class="gold-market-section gold-calculator-section">
+            
+            <!-- ترويسة الحاسبة -->
+            <div class="calc-section-header">
+              <div class="calc-header-title">
+                <div class="calc-header-icon"><i class="fa-solid fa-calculator"></i></div>
+                <span>حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
+              </div>
+              <span class="calc-header-badge"><i class="fa-solid fa-circle-info"></i> سوق الصاغة</span>
             </div>
 
-            <div class="gold-calc-summary">
-              <div style="font-size: 0.65rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي الشراء التقديري شامل المصنعية:</div>
-              <div id="calcFinalTotal" style="font-size: 1.25rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">—</div>
+            <!-- بطاقة الإجمالي التقديري الشاملة (Hero Card) -->
+            <div class="gold-calc-hero">
+              <div class="calc-hero-label">إجمالي الشراء التقديري شامل المصنعية:</div>
+              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
+              <div class="calc-hero-sub">سعر الذهب الخام الصافي + إجمالي المصنعية والدمغة</div>
             </div>
 
-            <div class="form-group-custom" style="margin-bottom: 6px;">
-              <label class="form-label-custom" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">نوع المشغولات / السبائك / العملة:</label>
-              <select class="form-select-custom" id="calcAsset" onchange="onGoldAssetChange()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; font-size: 0.75rem; padding: 0 8px;">
-                <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
-                <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
-                <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
-                <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
-                <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
-                <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
-                <option value="usd">💵 دولار أمريكي (USDEGP)</option>
-                <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
-              </select>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
-              <div>
-                <label class="form-label-custom" id="lblCalcQty" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الوزن بالجرام / العدد:</label>
-                <input type="number" step="0.01" class="form-input-custom" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-weight: 900; font-size: 0.95rem; text-align: center;">
-              </div>
-              <div id="colCalcWorkmanship">
-                <label class="form-label-custom" style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">المصنعية المقدرة (ج.م/جم):</label>
-                <input type="number" step="5" class="form-input-custom" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()" style="width: 100%; height: 34px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255,255,255,0.18); color: #fbbf24; font-weight: 900; font-size: 0.95rem; text-align: center;">
-              </div>
-            </div>
-
-            <div class="gold-calc-breakdown">
-              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 2px;">
-                <span>قيمة الذهب الخام الصافي:</span>
-                <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">—</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 2px;">
-                <span>إجمالي المصنعية والدمغة:</span>
-                <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">—</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 0.66rem; color: #94a3b8; margin-bottom: 3px;">
-                <span>كاش باك مفترض عند إعادة البيع:</span>
-                <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">—</span>
-              </div>
-              <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8;">بعد خصم كاش باك مفترض:</span>
-                <span id="calcNetCostVal" style="font-size: 0.88rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">—</span>
+            <!-- اختيار نوع المشغولات أو السبيكة -->
+            <div class="calc-form-group">
+              <label class="calc-field-label" for="calcAsset">
+                <i class="fa-solid fa-gem"></i> نوع المشغولات / السبائك / العملة:
+              </label>
+              <div class="calc-select-wrapper">
+                <select class="calc-select" id="calcAsset" onchange="onGoldAssetChange()">
+                  <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
+                  <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
+                  <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
+                  <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
+                  <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
+                  <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
+                  <option value="usd">💵 دولار أمريكي (USDEGP)</option>
+                  <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
+                </select>
               </div>
             </div>
 
-            <div class="gold-calc-presets">
-              <button type="button" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
-              <button type="button" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
-              <button type="button" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
-              <button type="button" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+            <!-- حقول الإدخال: الوزن والمصنعية جنباً إلى جنب -->
+            <div class="calc-inputs-grid">
+              <div class="calc-input-box">
+                <label class="calc-field-label" id="lblCalcQty" for="calcQty">
+                  <i class="fa-solid fa-scale-balanced"></i> الوزن بالجرام / العدد:
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="0.01" class="calc-input" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()">
+                </div>
+              </div>
+              <div class="calc-input-box" id="colCalcWorkmanship">
+                <label class="calc-field-label" for="calcWorkmanshipPerGram">
+                  <i class="fa-solid fa-hammer"></i> المصنعية المقدرة (ج.م/جم):
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="5" class="calc-input" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()">
+                </div>
+              </div>
             </div>
 
-            <button type="button" onclick="applyCalcToExpense()" class="btn-primary" style="width: 100%; margin-top: 8px; height: 34px; border-radius: 8px; font-size: 0.74rem; font-weight: 800; background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-              <i class="fa-solid fa-cart-plus"></i> تسجيل كمصروف في المحفظة
+            <!-- ملاحظة سوق الصاغة الذكية -->
+            <div id="calcWorkmanshipNote" class="calc-workmanship-note" style="display: none;"></div>
+
+            <!-- تفاصيل الحسبة المحاسبية والمالية (Financial Breakdown Card) -->
+            <div class="gold-calc-breakdown-card">
+              <div class="breakdown-row" id="rowCalcGoldRaw">
+                <span class="b-label"><i class="fa-solid fa-ring"></i> قيمة الذهب الخام الصافي:</span>
+                <span class="b-val b-val-raw" id="calcGoldRawVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcWorkmanshipTotal">
+                <span class="b-label"><i class="fa-solid fa-tags"></i> إجمالي المصنعية والدمغة:</span>
+                <span class="b-val b-val-work" id="calcWorkmanshipTotalVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcCashback">
+                <span class="b-label"><i class="fa-solid fa-arrow-rotate-left"></i> كاش باك مسترد عند البيع:</span>
+                <span class="b-val b-val-cash" id="calcCashbackVal">—</span>
+              </div>
+              <div class="breakdown-divider"></div>
+              <div class="breakdown-row breakdown-row-total">
+                <span class="b-label b-label-net"><i class="fa-solid fa-shield-halved"></i> بعد خصم كاش باك مفترض:</span>
+                <span class="b-val b-val-net" id="calcNetCostVal">—</span>
+              </div>
+            </div>
+
+            <!-- أزرار الاختيارات السريعة -->
+            <div class="calc-presets-section">
+              <span class="calc-presets-label">خيارات جاهزة:</span>
+              <div class="gold-calc-presets">
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
+                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+              </div>
+            </div>
+
+            <!-- زر تسجيل كمصروف في المحفظة -->
+            <button type="button" onclick="applyCalcToExpense()" class="btn-gold-save-expense">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>تسجيل كمصروف في المحفظة</span>
             </button>
           </div>
 
@@ -18684,7 +18731,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.45</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.46</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -18831,17 +18878,40 @@
                   <button type="button" class="font-choice-pill" id="fontChoiceRubik" data-font="rubik" onclick="setAppFont('rubik')" style="font-family: 'Rubik', sans-serif;"><span>⚡ روبيك</span></button>
                 </div>
                 
-                <!-- محدد حجم الخط -->
-                <div class="antigravity-font-size-row" style="margin-top: 6px;">
-                  <div class="antigravity-size-label">
-                    <i class="fa-solid fa-text-height" style="color: #38bdf8;"></i>
-                    <span>حجم الخط:</span>
+                <!-- محدد حجم الخط الاحترافي (6 أحجام متوازنة) -->
+                <div class="antigravity-font-size-section" style="margin-top: 8px;">
+                  <div class="antigravity-size-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                    <div style="display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 850; color: var(--text-main, #f8fafc);">
+                      <i class="fa-solid fa-text-height" style="color: #38bdf8;"></i>
+                      <span>حجم الخط (6 أحجام):</span>
+                    </div>
                     <span id="activeFontSizeBadge" class="appearance-active-badge">وسط (الافتراضي)</span>
                   </div>
-                  <div class="antigravity-size-pills">
-                    <button type="button" class="antigravity-size-btn" id="fontSizeBtn_small" onclick="setAppFontSize('small')">صغير</button>
-                    <button type="button" class="antigravity-size-btn active" id="fontSizeBtn_medium" onclick="setAppFontSize('medium')">وسط</button>
-                    <button type="button" class="antigravity-size-btn" id="fontSizeBtn_large" onclick="setAppFontSize('large')">كبير</button>
+                  <div class="antigravity-size-track" role="group" aria-label="أحجام الخط">
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_micro" onclick="setAppFontSize('micro')">
+                      <span class="size-sample" style="font-size: 0.62rem;">A</span>
+                      <span class="size-name">دقيق</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_small" onclick="setAppFontSize('small')">
+                      <span class="size-sample" style="font-size: 0.70rem;">A</span>
+                      <span class="size-name">صغير</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill active" id="fontSizeBtn_medium" onclick="setAppFontSize('medium')">
+                      <span class="size-sample" style="font-size: 0.78rem;">A</span>
+                      <span class="size-name">وسط</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_large" onclick="setAppFontSize('large')">
+                      <span class="size-sample" style="font-size: 0.86rem;">A</span>
+                      <span class="size-name">كبير</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_xlarge" onclick="setAppFontSize('xlarge')">
+                      <span class="size-sample" style="font-size: 0.94rem;">A</span>
+                      <span class="size-name">عريض</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_huge" onclick="setAppFontSize('huge')">
+                      <span class="size-sample" style="font-size: 1.05rem;">A</span>
+                      <span class="size-name">ضخم</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -26877,7 +26947,7 @@ function switchSettingsTab(tabName) {
     }
 
     function setAppFontSize(size, persist = true, notify = false) {
-      const validSizes = ['small', 'medium', 'large'];
+      const validSizes = ['micro', 'small', 'medium', 'large', 'xlarge', 'huge'];
       if (!validSizes.includes(size)) size = 'medium';
 
       document.documentElement.setAttribute('data-font-size', size);
@@ -26890,22 +26960,31 @@ function switchSettingsTab(tabName) {
       }
 
       // تحديث حالة الأزرار في الإعدادات
-      document.querySelectorAll('.font-size-pill').forEach(btn => {
+      document.querySelectorAll('.antigravity-size-pill, .font-size-pill, .antigravity-size-btn').forEach(btn => {
         btn.classList.remove('active');
         btn.setAttribute('aria-pressed', 'false');
       });
-      const activeBtn = document.getElementById(
-        size === 'small' ? 'fontSizeSmall' : 
-        (size === 'large' ? 'fontSizeLarge' : 'fontSizeMedium')
-      );
+
+      const activeBtn = document.getElementById('fontSizeBtn_' + size) || document.getElementById('fontSize' + size.charAt(0).toUpperCase() + size.slice(1));
       if (activeBtn) {
         activeBtn.classList.add('active');
         activeBtn.setAttribute('aria-pressed', 'true');
       }
 
       const badge = document.getElementById('activeFontSizeBadge');
-      const labels = { small: 'صغير (مدمج)', medium: 'وسط (الافتراضي)', large: 'كبير (واضح وبارز)' };
-      if (badge) badge.textContent = labels[size] || 'وسط';
+      const labels = {
+        micro: 'دقيق (فائق الصغر)',
+        small: 'صغير (مدمج)',
+        medium: 'وسط (الافتراضي)',
+        large: 'كبير (واضح)',
+        xlarge: 'عريض (كبير جداً)',
+        huge: 'ضخم (فائق الوضوح)'
+      };
+      if (badge) badge.textContent = labels[size] || 'وسط (الافتراضي)';
+
+      if (notify && typeof showToast === 'function') {
+        showToast(`🔤 تم ضبط حجم الخط: ${labels[size] || size}`);
+      }
 
       // تحديث الشاشات والكروت تلقائياً لضبط التناسب مع الحجم الجديد
       if (typeof renderCategoriesGrid === 'function') {
@@ -27054,6 +27133,9 @@ function switchSettingsTab(tabName) {
       if (inpQty) inpQty.value = qty;
       if (inpWork) inpWork.value = workmanship;
       recalcGoldTotal();
+      document.querySelectorAll('#goldDrawerPanel .calc-preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(asset) && btn.getAttribute('onclick')?.includes(String(qty)));
+      });
     }
 
     // تسجيل مبلغ حاسبة الذهب مباشرة كمصروف
@@ -27918,7 +28000,7 @@ function switchSettingsTab(tabName) {
         if (colWorkmanship) colWorkmanship.style.display = 'block';
       }
 
-      if (noteEl) noteEl.textContent = preset.note;
+      if (noteEl) { noteEl.textContent = preset.note; noteEl.style.display = preset.note ? 'block' : 'none'; }
       recalcGoldTotal();
     }
 

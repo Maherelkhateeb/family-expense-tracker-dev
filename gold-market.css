@@ -722,33 +722,346 @@ body.light-theme #goldDrawerPanel .conv-res-card.highlight .res-card-val {
 }
 
 /* =========================================================================
-   TAB 3: Tools & Chart Styles
+   TAB 3: Tools & Chart Styles (Antigravity High-Fidelity Fintech UI)
    ========================================================================= */
 
-#goldDrawerPanel .gold-calc-summary {
-  background: var(--market-base) !important;
+#goldDrawerPanel .gold-calculator-section {
+  border-radius: 12px !important;
+  background: var(--market-surface) !important;
   border: 1px solid var(--market-line) !important;
-  border-radius: 9px !important;
-  padding: 7px !important;
-  margin-bottom: 7px !important;
-  text-align: center !important;
+  padding: 9px 11px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
 }
 
-#goldDrawerPanel .gold-calc-breakdown {
-  background: var(--market-base) !important;
-  border: 1px solid var(--market-line) !important;
-  border-radius: 8px !important;
-  padding: 6px 9px !important;
+#goldDrawerPanel .calc-section-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
   margin-bottom: 7px !important;
+}
+
+#goldDrawerPanel .calc-header-title {
+  font-size: 0.74rem !important;
+  font-weight: 850 !important;
+  color: var(--market-text) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#goldDrawerPanel .calc-header-icon {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 6px !important;
+  background: rgba(245, 158, 11, 0.18) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #fbbf24 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.70rem !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-header-icon {
+  background: rgba(180, 83, 9, 0.12) !important;
+  border-color: rgba(180, 83, 9, 0.3) !important;
+  color: #b45309 !important;
+}
+
+#goldDrawerPanel .calc-header-badge {
+  font-size: 0.58rem !important;
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.1) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  padding: 1px 6px !important;
+  border-radius: 999px !important;
+  font-weight: 700 !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-header-badge {
+  color: #0284c7 !important;
+  background: rgba(2, 132, 199, 0.08) !important;
+  border-color: rgba(2, 132, 199, 0.25) !important;
+}
+
+/* Hero Box */
+#goldDrawerPanel .gold-calc-hero {
+  background: radial-gradient(circle at 90% 0%, rgba(245, 158, 11, 0.18), transparent 45%), linear-gradient(135deg, rgba(20, 33, 54, 0.95), rgba(12, 21, 37, 0.98)) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
+  border-radius: 11px !important;
+  padding: 8px 12px !important;
+  text-align: center !important;
+  margin-bottom: 7px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.light-theme #goldDrawerPanel .gold-calc-hero {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+  border: 1.5px solid rgba(217, 119, 6, 0.45) !important;
+  box-shadow: 0 3px 10px rgba(180, 83, 9, 0.08) !important;
+}
+
+#goldDrawerPanel .calc-hero-label {
+  font-size: 0.63rem !important;
+  font-weight: 800 !important;
+  color: #fbbf24 !important;
+  margin-bottom: 2px !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-hero-label {
+  color: #92400e !important;
+}
+
+#goldDrawerPanel .calc-hero-amount {
+  font-size: 1.35rem !important;
+  font-weight: 900 !important;
+  color: #fde047 !important;
+  direction: rtl !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1.2 !important;
+  margin: 1px 0 !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-hero-amount {
+  color: #b45309 !important;
+}
+
+#goldDrawerPanel .calc-hero-sub {
+  font-size: 0.55rem !important;
+  color: var(--market-muted) !important;
+  font-weight: 600 !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-hero-sub {
+  color: #78350f !important;
+}
+
+/* Form Group & Select */
+#goldDrawerPanel .calc-form-group {
+  margin-bottom: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+#goldDrawerPanel .calc-field-label {
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  color: var(--market-text) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-field-label {
+  color: #334155 !important;
+}
+
+#goldDrawerPanel .calc-select {
+  width: 100% !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  color: #fbbf24 !important;
+  font-weight: 800 !important;
+  font-size: 0.74rem !important;
+  padding: 0 8px !important;
+  cursor: pointer !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-select {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #b45309 !important;
+}
+
+#goldDrawerPanel .calc-select:focus,
+#goldDrawerPanel .calc-input:focus {
+  border-color: #fbbf24 !important;
+  outline: none !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-select:focus,
+body.light-theme #goldDrawerPanel .calc-input:focus {
+  border-color: #d97706 !important;
+}
+
+/* Inputs Grid */
+#goldDrawerPanel .calc-inputs-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  margin-bottom: 6px !important;
+}
+
+#goldDrawerPanel .calc-input-box {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+}
+
+#goldDrawerPanel .calc-input-wrapper {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+#goldDrawerPanel .calc-input {
+  width: 100% !important;
+  height: 34px !important;
+  border-radius: 8px !important;
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  color: var(--market-text) !important;
+  font-weight: 900 !important;
+  font-size: 0.98rem !important;
+  text-align: center !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 0 6px !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-input {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Workmanship Note */
+#goldDrawerPanel .calc-workmanship-note {
+  font-size: 0.58rem !important;
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.08) !important;
+  border: 1px dashed rgba(56, 189, 248, 0.25) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  margin-bottom: 6px !important;
+  line-height: 1.4 !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-workmanship-note {
+  color: #0369a1 !important;
+  background: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+
+/* Financial Breakdown Card */
+#goldDrawerPanel .gold-calc-breakdown-card {
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+body.light-theme #goldDrawerPanel .gold-calc-breakdown-card {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+#goldDrawerPanel .breakdown-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-size: 0.65rem !important;
+}
+
+#goldDrawerPanel .b-label {
+  color: var(--market-muted) !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+
+body.light-theme #goldDrawerPanel .b-label {
+  color: #475569 !important;
+}
+
+#goldDrawerPanel .b-val {
+  font-weight: 900 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+#goldDrawerPanel .b-val-raw {
+  color: var(--market-text) !important;
+}
+
+body.light-theme #goldDrawerPanel .b-val-raw {
+  color: #0f172a !important;
+}
+
+#goldDrawerPanel .b-val-work {
+  color: #fbbf24 !important;
+}
+
+body.light-theme #goldDrawerPanel .b-val-work {
+  color: #b45309 !important;
+}
+
+#goldDrawerPanel .b-val-cash {
+  color: #34d399 !important;
+}
+
+body.light-theme #goldDrawerPanel .b-val-cash {
+  color: #059669 !important;
+}
+
+#goldDrawerPanel .breakdown-divider {
+  height: 1px !important;
+  background: var(--market-line) !important;
+  margin: 1px 0 !important;
+}
+
+#goldDrawerPanel .breakdown-row-total {
+  padding-top: 2px !important;
+}
+
+#goldDrawerPanel .b-label-net {
+  font-weight: 850 !important;
+  color: #38bdf8 !important;
+}
+
+body.light-theme #goldDrawerPanel .b-label-net {
+  color: #0284c7 !important;
+}
+
+#goldDrawerPanel .b-val-net {
+  font-size: 0.88rem !important;
+  font-weight: 900 !important;
+  color: #38bdf8 !important;
+}
+
+body.light-theme #goldDrawerPanel .b-val-net {
+  color: #0284c7 !important;
+}
+
+/* Quick Preset Buttons */
+#goldDrawerPanel .calc-presets-section {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  margin-bottom: 7px !important;
+}
+
+#goldDrawerPanel .calc-presets-label {
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  color: var(--market-muted) !important;
+  white-space: nowrap !important;
 }
 
 #goldDrawerPanel .gold-calc-presets {
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 3px !important;
+  gap: 4px !important;
+  flex: 1 !important;
 }
 
-#goldDrawerPanel .gold-calc-presets button {
+#goldDrawerPanel .calc-preset-btn {
   padding: 4px 2px !important;
   font-size: 0.62rem !important;
   font-weight: 800 !important;
@@ -757,11 +1070,53 @@ body.light-theme #goldDrawerPanel .conv-res-card.highlight .res-card-val {
   border: 1px solid var(--market-line) !important;
   color: var(--market-text) !important;
   cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  text-align: center !important;
 }
 
-#goldDrawerPanel .gold-calc-presets button:hover {
-  border-color: rgba(245, 158, 11, 0.4) !important;
+body.light-theme #goldDrawerPanel .calc-preset-btn {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+#goldDrawerPanel .calc-preset-btn:hover,
+#goldDrawerPanel .calc-preset-btn.active {
+  border-color: rgba(245, 158, 11, 0.5) !important;
   color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+}
+
+body.light-theme #goldDrawerPanel .calc-preset-btn:hover,
+body.light-theme #goldDrawerPanel .calc-preset-btn.active {
+  border-color: #d97706 !important;
+  color: #b45309 !important;
+  background: #fef3c7 !important;
+}
+
+/* Action Button */
+#goldDrawerPanel .btn-gold-save-expense {
+  width: 100% !important;
+  height: 36px !important;
+  border-radius: 9px !important;
+  font-size: 0.76rem !important;
+  font-weight: 900 !important;
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #000000 !important;
+  border: none !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+#goldDrawerPanel .btn-gold-save-expense:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45) !important;
+  filter: brightness(1.05) !important;
 }
 
 #goldDrawerPanel .gold-chart-section {

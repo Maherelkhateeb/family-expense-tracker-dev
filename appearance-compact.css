@@ -235,16 +235,20 @@ body.light-theme .antigravity-switch-user-btn {
 /* Antigravity Segmented Navigation - 3 Compact Tabs */
 .antigravity-settings-nav {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 4px !important;
-  padding: 3px !important;
-  margin: 2px 10px 6px !important;
-  background: rgba(15, 23, 42, 0.55) !important;
-  border: 1px solid rgba(255, 255, 255, 0.07) !important;
-  border-radius: 10px !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  padding: 4px !important;
+  margin: 3px 10px 8px !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
   flex-shrink: 0 !important;
-  height: 36px !important;
+  height: 40px !important;
   box-sizing: border-box !important;
+}
+body.light-theme .antigravity-settings-nav {
+  background: #e2e8f0 !important;
+  border-color: rgba(203, 213, 225, 0.95) !important;
 }
 body.light-theme .antigravity-settings-nav {
   background: #f1f5f9 !important;
@@ -1373,4 +1377,127 @@ body.light-theme #settingsModal .antigravity-font-grid .font-choice-pill.active 
   border-color: #0284c7 !important;
   color: #0284c7 !important;
   outline: 2px solid #0284c7 !important;
+}
+
+
+
+/* =========================================================================
+   Professional Font Size Selector (6 Balanced Micro-to-Huge Sizes)
+   ========================================================================= */
+.antigravity-font-size-section {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.antigravity-size-track {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  padding: 4px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.light-theme .antigravity-size-track {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.antigravity-size-pill {
+  height: 38px !important;
+  min-height: 38px !important;
+  border: 1px solid transparent !important;
+  background: rgba(30, 41, 59, 0.65) !important;
+  color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  padding: 2px !important;
+  box-sizing: border-box !important;
+  transition: all 0.16s ease !important;
+}
+
+body.light-theme .antigravity-size-pill {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+}
+
+.antigravity-size-pill .size-sample {
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #38bdf8 !important;
+}
+body.light-theme .antigravity-size-pill .size-sample {
+  color: #0284c7 !important;
+}
+
+.antigravity-size-pill .size-name {
+  font-size: 0.60rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+.antigravity-size-pill:hover {
+  transform: translateY(-1px) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.antigravity-size-pill.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25)) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+body.light-theme .antigravity-size-pill.active {
+  background: #f0f9ff !important;
+  border: 1.5px solid #0284c7 !important;
+  color: #0284c7 !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.25) !important;
+}
+
+/* Nav Pills 50/50 balanced styling */
+.antigravity-nav-pill {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  font-size: 0.76rem !important;
+  font-weight: 850 !important;
+  border-radius: 9px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.light-theme .antigravity-nav-pill {
+  color: #475569 !important;
+}
+
+.antigravity-nav-pill.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.28), rgba(99, 102, 241, 0.28)) !important;
+  border: 1.2px solid rgba(56, 189, 248, 0.6) !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+body.light-theme .antigravity-nav-pill.active {
+  background: #ffffff !important;
+  border: 1.2px solid rgba(14, 165, 233, 0.45) !important;
+  color: #0284c7 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1) !important;
 }
