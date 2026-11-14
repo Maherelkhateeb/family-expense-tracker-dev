@@ -159,8 +159,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.41';
-    var APP_BUILD_ID = 202611141315;
+    var APP_VERSION = 'v5.3.42';
+    var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -12918,7 +12918,7 @@
 
     /* الرصيد الفعلي الحالي: بطل رئيسي أكبر وأكثر بروزاً بوضوح تام بطريقة Antigravity */
     .cockpit-hero-side {
-      flex: 1.35 !important;
+      flex: 1.55 !important;
       min-width: 0 !important;
       display: flex !important;
       flex-direction: column !important;
@@ -12926,6 +12926,7 @@
       padding: 2px 4px !important;
       box-sizing: border-box !important;
       border-radius: 12px !important;
+      overflow: hidden !important;
     }
 
     .cockpit-hero-label {
@@ -12953,7 +12954,7 @@
     }
 
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
+      font-size: clamp(1.40rem, 4.6vw, 1.95rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -12966,6 +12967,19 @@
       max-width: 100% !important;
       overflow: visible !important;
       margin-top: 2px !important;
+    }
+
+    .cockpit-hero-value .tx-currency-label {
+      font-size: 0.58em !important;
+      font-weight: 800 !important;
+      opacity: 0.85 !important;
+      margin-right: 3px !important;
+    }
+
+    .cockpit-hero-value .tx-sign-symbol {
+      font-size: 0.82em !important;
+      font-weight: 900 !important;
+      margin-left: 2px !important;
     }
 
     body.light-theme .hero-wallet-icon-badge {
@@ -13008,14 +13022,43 @@
 
     /* كبسولات التدفقات التوأم: متسعة ومريحة بدون أي فراغات ميتة */
     .cockpit-flow-side {
-      flex: 1.05 !important;
-      min-width: 0 !important;
+      flex: 1.0 !important;
+      min-width: 120px !important;
+      max-width: 44% !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
       gap: 5px !important;
       box-sizing: border-box !important;
     }
+
+    /* الألوان الحصرية المتنوعة الدائمة لشبكة بنود المصروفات */
+    .cat-card.cat-theme-food { border-color: #10b981 !important; }
+    .cat-card.cat-theme-food .cat-icon-bubble { background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important; outline-color: #10b981 !important; }
+
+    .cat-card.cat-theme-daily { border-color: #f59e0b !important; }
+    .cat-card.cat-theme-daily .cat-icon-bubble { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%) !important; outline-color: #f59e0b !important; }
+
+    .cat-card.cat-theme-bills { border-color: #f97316 !important; }
+    .cat-card.cat-theme-bills .cat-icon-bubble { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%) !important; outline-color: #f97316 !important; }
+
+    .cat-card.cat-theme-transport { border-color: #0284c7 !important; }
+    .cat-card.cat-theme-transport .cat-icon-bubble { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; outline-color: #0284c7 !important; }
+
+    .cat-card.cat-theme-house { border-color: #8b5cf6 !important; }
+    .cat-card.cat-theme-house .cat-icon-bubble { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important; outline-color: #8b5cf6 !important; }
+
+    .cat-card.cat-theme-health { border-color: #ef4444 !important; }
+    .cat-card.cat-theme-health .cat-icon-bubble { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important; outline-color: #ef4444 !important; }
+
+    .cat-card.cat-theme-clothes { border-color: #ec4899 !important; }
+    .cat-card.cat-theme-clothes .cat-icon-bubble { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important; outline-color: #ec4899 !important; }
+
+    .cat-card.cat-theme-education { border-color: #3b82f6 !important; }
+    .cat-card.cat-theme-education .cat-icon-bubble { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; outline-color: #3b82f6 !important; }
+
+    .cat-card.cat-theme-other { border-color: #14b8a6 !important; }
+    .cat-card.cat-theme-other .cat-icon-bubble { background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%) !important; outline-color: #14b8a6 !important; }
 
     .cockpit-flow-pill {
       flex: 1 1 0 !important;
@@ -15088,11 +15131,11 @@
       border-style:var(--appearance-card-border-style) !important;
       border-width:var(--appearance-card-border-width) !important;
     }
-    body[data-card-style="glass"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="glass"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="glass"] #topKpiThreeStrip { backdrop-filter:blur(16px); }
-    body[data-card-style="neon"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="neon"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="neon"] #topKpiThreeStrip { border-color:var(--appearance-accent-text) !important; }
-    body[data-card-style="gradient"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="gradient"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="gradient"] #topKpiThreeStrip {
       background-image:linear-gradient(130deg,color-mix(in srgb,var(--appearance-accent-text) 8%,var(--appearance-card-bg)),var(--appearance-card-bg)) !important;
     }
@@ -23047,20 +23090,31 @@ function generateRichDemoTransactions() {
           elBal.style.color = actualBalance >= 0 ? '#38bdf8' : '#f43f5e';
         }
 
-        // تحجيم ذكي للأرقام الكبيرة حتى تكون أكبر وأبرز ومتناسبة مع حجم الكارت بطريقة Antigravity
+        // تحجيم ذكي ديناميكي متجاوب (Auto-Fit) يضمن بقاء الرقم ضخماً وبارزاً دون أي اقتصاص نهائياً
+        const container = elBal.parentElement; // .cockpit-hero-side
+        const maxW = (container ? container.clientWidth : 0) - 4;
         const balStr = elBal.textContent || '';
+        
+        let targetSize = 'clamp(1.40rem, 4.8vw, 1.95rem)';
         if (balStr.length > 22) {
-          elBal.style.setProperty('font-size', 'clamp(1.20rem, 3.8vw, 1.50rem)', 'important');
-          elBal.style.letterSpacing = '-0.5px';
-        } else if (balStr.length > 18) {
-          elBal.style.setProperty('font-size', 'clamp(1.45rem, 4.5vw, 1.80rem)', 'important');
-          elBal.style.letterSpacing = '-0.3px';
-        } else if (balStr.length > 13) {
-          elBal.style.setProperty('font-size', 'clamp(1.70rem, 5.4vw, 2.20rem)', 'important');
-          elBal.style.letterSpacing = '-0.2px';
+          targetSize = 'clamp(1.10rem, 3.4vw, 1.35rem)';
+        } else if (balStr.length > 17) {
+          targetSize = 'clamp(1.28rem, 4.0vw, 1.62rem)';
+        } else if (balStr.length > 12) {
+          targetSize = 'clamp(1.42rem, 4.6vw, 1.82rem)';
         } else {
-          elBal.style.setProperty('font-size', 'clamp(1.95rem, 6.0vw, 2.50rem)', 'important');
-          elBal.style.letterSpacing = '-0.2px';
+          targetSize = 'clamp(1.60rem, 5.2vw, 2.10rem)';
+        }
+        elBal.style.setProperty('font-size', targetSize, 'important');
+        elBal.style.letterSpacing = '-0.3px';
+        
+        // فحص أمان هندسي بالبكسل: إذا كان النص أوسع من الحاوية على الشاشات الصغيرة يتم تقليصه تدريجياً بدقة
+        if (maxW > 50) {
+          let curPx = parseFloat(window.getComputedStyle(elBal).fontSize) || 22;
+          while (elBal.scrollWidth > maxW && curPx > 14) {
+            curPx -= 0.5;
+            elBal.style.setProperty('font-size', curPx + 'px', 'important');
+          }
         }
 
         // تحجيم ذكي لكبسولتي الإيداعات والمصروفات لتكون أرقامها أكبر وأبرز دون أي خروج عن الكارت
@@ -23380,11 +23434,11 @@ function generateRichDemoTransactions() {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
-          const cardBg = pal.bgGrad(cardAccent);
-          const cardBorder = `2px solid ${pal.border(cardAccent)}`;
-          const cardShadow = pal.shadow(cardAccent);
-          const cardTopBg = getCardTopBackground(cardAccent);
+          const cardAccent = theme.accent; // ألوان متنوعة ومختلفة دائماً لكل بند مصروف
+          const cardBg = pal.bgGrad(theme.accent);
+          const cardBorder = `2px solid ${pal.border(theme.accent)}`;
+          const cardShadow = pal.shadow(theme.accent);
+          const cardTopBg = getCardTopBackground(theme.accent);
 
           const converted = convertAmount(spent);
           let numStr = '0.00';
@@ -23449,7 +23503,7 @@ function generateRichDemoTransactions() {
               
               <!-- بالون الرمز أكبر ومجسم يملأ مساحته بروعة متفاعل مع باليت الأيقونات -->
               <div class="cat-icon-bubble" 
-                   style="background: ${curIconPal ? curIconPal.gradient : theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${cardAccent}; flex-shrink: 0;">
+                   style="background: ${theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
                 <span style="font-size: clamp(1.45rem, 3.8vw, 1.75rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
@@ -23482,7 +23536,7 @@ function generateRichDemoTransactions() {
           if (!card) return;
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
           const theme = HIGH_CONTRAST_THEMES[cat.id] || { accent: cat.color || '#38bdf8' };
-          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
+          const cardAccent = theme.accent;
           const converted = convertAmount(spent);
           let numStr = '0.00';
           if (spent > 0) {
@@ -23505,17 +23559,17 @@ function generateRichDemoTransactions() {
           }
 
           // مزامنة الألوان الحية للبطاقة وبالون الأيقونة
-          card.style.setProperty('background', pal.bgGrad(curIconPal ? curIconPal.accent : theme.accent), 'important');
-          card.style.setProperty('border-color', pal.border(curIconPal ? curIconPal.accent : theme.accent), 'important');
-          card.style.setProperty('box-shadow', pal.shadow(curIconPal ? curIconPal.accent : theme.accent), 'important');
+          card.style.setProperty('background', pal.bgGrad(theme.accent), 'important');
+          card.style.setProperty('border-color', pal.border(theme.accent), 'important');
+          card.style.setProperty('box-shadow', pal.shadow(theme.accent), 'important');
           const topHalf = card.querySelector('.cat-card-top-half');
-          if (topHalf) topHalf.style.background = getCardTopBackground(curIconPal ? curIconPal.accent : theme.accent);
+          if (topHalf) topHalf.style.background = getCardTopBackground(theme.accent);
 
           const bubble = card.querySelector('.cat-icon-bubble');
           if (bubble) {
-            bubble.style.background = curIconPal ? curIconPal.gradient : theme.gradient;
-            bubble.style.outline = '1.8px solid ' + cardAccent;
-            bubble.style.boxShadow = `0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
+            bubble.style.background = theme.gradient;
+            bubble.style.outline = '1.8px solid ' + theme.accent;
+            bubble.style.boxShadow = `0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
           }
 
           const lowerHalf = card.querySelector('.cat-card-bottom-half');
