@@ -5,6 +5,8 @@
 - **الإصدار الأساسي (Baseline)**: `v5.3.36` (Build `202611141209`)
 - **تاريخ إنشاء المستودع**: 14 نوفمبر 2026
 - **المستودع المرجعي السابق**: [family-expense-tracker-dev](https://github.com/Maherelkhateeb/family-expense-tracker-dev)
+- **رابط التطبيق المباشر (GitHub Pages)**: [family-expense-tracker-next](https://maherelkhateeb.github.io/family-expense-tracker-next/)
+- **رابط مستودع الكود**: [family-expense-tracker-next on GitHub](https://github.com/Maherelkhateeb/family-expense-tracker-next)
 
 ---
 

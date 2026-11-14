@@ -16,7 +16,11 @@
   return {schemaVersion:2,checkedAt:new Date().toISOString(),updatedAt:new Date(Math.min(Date.parse(fxAt),Date.parse(goldAt))).toISOString(),rateMode:'estimated',provider:'تقدير عالمي من Gold API وExchangeRate-API',fxProvider:'ExchangeRate-API · مرجع يومي',goldProvider:'Gold API · أونصة عالمية',fxUpdatedAt:fxAt,goldUpdatedAt:goldAt,globalGoldUpdatedAt:goldAt,currencies,gold:{gold24:quote(raw),gold21:quote(raw*21/24),gold18:quote(raw*18/24),goldPound:quote(raw*7),goldOunceUSD:Number(gold.price)}};
  }
  async function load(storage,force){
-  const urls=['https://raw.githubusercontent.com/Maherelkhateeb/family-expense-tracker-dev/market-rates/market_rates.json?_t='+Date.now(),'market_rates.json?_t='+Date.now()];
+  const urls=[
+    'https://raw.githubusercontent.com/Maherelkhateeb/family-expense-tracker-next/market-rates/market_rates.json?_t='+Date.now(),
+    'https://raw.githubusercontent.com/Maherelkhateeb/family-expense-tracker-dev/market-rates/market_rates.json?_t='+Date.now(),
+    'market_rates.json?_t='+Date.now()
+  ];
   const results=await Promise.allSettled(urls.map(u=>json(u)));
   const candidates=results.filter(r=>r.status==='fulfilled'&&valid(r.value)).map(r=>({feed:r.value,offline:false}));
   try{const saved=JSON.parse(storage.getItem('family_market_feed_v2')||'null');if(valid(saved))candidates.push({feed:saved,offline:true});}catch(e){}
