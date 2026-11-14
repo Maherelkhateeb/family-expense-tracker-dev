@@ -473,6 +473,16 @@ const familyAlerts = (() => {
         body: `تم إعداد موازنة شهر ${record.month} بواسطة ${who}`,
         at: now
       }]);
+        } else if (kind === 'backup') {
+      addAlerts([{
+        id: `backup:${record.id || now}`,
+        kind: 'backup',
+        title: record.title || 'النسخ الاحتياطي السحابي',
+        body: record.message || 'تم حفظ نسخة احتياطية على Google Drive بنجاح وحذف نسخة الأمس تلقائياً.',
+        at: now,
+        backup: record
+      }]);
+    }
     } else if (kind === 'task') {
       addAlerts([{
         id: `task:${record.id}:${now}`,

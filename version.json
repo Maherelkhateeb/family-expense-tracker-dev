@@ -1,6 +1,6 @@
 {
-  "version": "v5.3.47",
-  "build": "202611141555",
-  "buildId": "202611141555",
-  "releaseNotes": "Removed sapphire blue theme for balanced 8-color matrix with zero orphan elements"
+  "version": "v5.3.49",
+  "build": "202611141630",
+  "buildId": "202611141630",
+  "releaseNotes": "Redesigned statement & audit ledger modal with full transaction visibility, interactive attachments, multi-select wallets and operations, compact action buttons, fixed archive filters and inverted summary layout"
 }
