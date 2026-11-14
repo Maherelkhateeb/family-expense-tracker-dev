@@ -1,6 +1,6 @@
 {
-  "version": "v5.3.50",
-  "build": "202611141640",
-  "buildId": "202611141640",
-  "releaseNotes": "Adaptive Visual Harmony & Contrast Engine: balances data, fonts, font families, category colors, and card themes with dynamic contrast and proportional typography scaling"
+  "version": "v5.3.51",
+  "build": "202611141700",
+  "buildId": "202611141700",
+  "releaseNotes": "Fixed alerts and CSV syntax errors, activated comprehensive Visual Harmony & Typography Engine across category cards, operations, summary drawer, and audit ledger with instant adaptive scaling"
 }

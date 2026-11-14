@@ -260,7 +260,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.50';
+    var APP_VERSION = 'v5.3.51';
     var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -12922,18 +12922,31 @@
       --app-card-amt-size: clamp(0.70rem, 2vw, 0.84rem) !important;
     }
 
-    /* --- 2. Font Size Scaling: Strict Proportional Containment --- */
-    html[data-font-size="small"], body[data-font-size="small"] {
-      font-size: 13px !important;
-      --app-font-scale: 0.92;
+    /* --- 2. Font Size Scaling: Universal 6-Tier Proportional Scaling --- */
+    html[data-font-size="micro"], body[data-font-size="micro"] {
+      font-size: 11.5px !important;
+      --app-font-scale: 0.80 !important;
     }
-    html[data-font-size="medium"], body[data-font-size="medium"] {
+    html[data-font-size="small"], body[data-font-size="small"] {
+      font-size: 12.8px !important;
+      --app-font-scale: 0.90 !important;
+    }
+    html[data-font-size="medium"], body[data-font-size="medium"],
+    html:not([data-font-size]), body:not([data-font-size]) {
       font-size: 14px !important;
-      --app-font-scale: 1;
+      --app-font-scale: 1.0 !important;
     }
     html[data-font-size="large"], body[data-font-size="large"] {
-      font-size: 15px !important;
-      --app-font-scale: 1.07;
+      font-size: 15.6px !important;
+      --app-font-scale: 1.12 !important;
+    }
+    html[data-font-size="xlarge"], body[data-font-size="xlarge"] {
+      font-size: 17.2px !important;
+      --app-font-scale: 1.24 !important;
+    }
+    html[data-font-size="huge"], body[data-font-size="huge"] {
+      font-size: 19px !important;
+      --app-font-scale: 1.36 !important;
     }
 
     /* أنماط الكروت الفاخرة المحدثة */
@@ -18994,7 +19007,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.50</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.51</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -23969,13 +23982,20 @@ function generateRichDemoTransactions() {
         : `linear-gradient(145deg, ${accent}60 0%, ${accent}3c 56%, ${accent}25 100%)`;
 
       const existingCards = grid.querySelectorAll('.cat-card');
+      const curFontSize = document.documentElement.getAttribute('data-font-size') || 'medium';
+      const curFontFamily = document.documentElement.getAttribute('data-font-family') || 'tajawal';
       const needRebuild = (existingCards.length !== EXPENSE_CATEGORIES.length) || 
                           (grid.dataset.theme !== activeTheme) ||
-                          (grid.dataset.iconTheme !== activeIconTheme);
+                          (grid.dataset.iconTheme !== activeIconTheme) ||
+                          (grid.dataset.fontSize !== curFontSize) ||
+                          (grid.dataset.fontFamily !== curFontFamily);
 
       if (needRebuild) {
         grid.innerHTML = '';
-        grid.dataset.theme = activeTheme; grid.dataset.iconTheme = activeIconTheme;
+        grid.dataset.theme = activeTheme;
+        grid.dataset.iconTheme = activeIconTheme;
+        grid.dataset.fontSize = curFontSize;
+        grid.dataset.fontFamily = curFontFamily;
 
         EXPENSE_CATEGORIES.forEach(cat => {
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
@@ -27785,18 +27805,20 @@ function switchSettingsTab(tabName) {
         categoryTotals.set(key, (categoryTotals.get(key) || 0) + Math.abs(Number(tx.amount) || 0));
       });
       const categories = Array.from(categoryTotals.entries()).sort((a, b) => b[1] - a[1]);
+      const isLightSum = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
       const categoryRows = categories.map(([categoryId, amount]) => {
         const category = typeof getCategoryObj === 'function' ? getCategoryObj(categoryId, 'expense') : { name: categoryId, color: '#38bdf8', icon: 'fa-receipt' };
         const name = String(category && category.name || categoryId);
         const colorValue = String(category && category.color || '#38bdf8');
         const color = /^#[0-9a-f]{3,8}$/i.test(colorValue) ? colorValue : '#38bdf8';
+        const harm = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(color, isLightSum) : { color: color, bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
         const icon = summaryCategoryIcon(category && category.icon);
         const share = expenseTotal > 0 ? ((amount / expenseTotal) * 100).toFixed(1) : '0.0';
-        return '<button type="button" class="summary-category-row" data-category-id="' + summaryEscapeHtml(categoryId) + '" data-category-name="' + summaryEscapeHtml(name) + '" onclick="drillDownFromSummaryElement(this)">' +
-          '<span class="summary-category-icon" style="--summary-category-color:' + color + '"><i class="fa-solid ' + icon + '"></i></span>' +
-          '<span class="summary-category-main"><span class="summary-category-title">' + summaryEscapeHtml(name) + '</span>' +
+        return '<button type="button" class="summary-category-row" data-category-id="' + summaryEscapeHtml(categoryId) + '" data-category-name="' + summaryEscapeHtml(name) + '" onclick="drillDownFromSummaryElement(this)" style="border-right: 3.5px solid ' + harm.color + ' !important;">' +
+          '<span class="summary-category-icon" style="background:' + harm.bg + ' !important; border:1px solid ' + harm.border + ' !important; color:' + harm.color + ' !important;"><i class="fa-solid ' + icon + '"></i></span>' +
+          '<span class="summary-category-main"><span class="summary-category-title" style="color:' + harm.color + ' !important; font-weight:800;">' + summaryEscapeHtml(name) + '</span>' +
           '<span class="summary-category-meta">' + share + '% · عرض الحركات</span></span>' +
-          '<span class="summary-category-value">− ' + summaryEscapeHtml(summaryFormatAmount(amount)) + '</span></button>';
+          '<span class="summary-category-value" style="color: var(--ledger-debit, #f43f5e) !important; font-weight:850;">− ' + summaryEscapeHtml(summaryFormatAmount(amount)) + '</span></button>';
       }).join('');
 
       const customPending = currentSummaryPeriod === 'custom' && range.valid === false;
@@ -35503,8 +35525,7 @@ window.resetAuditFilters = resetAuditFilters;
 
 function exportAuditLedgerCSV() {
   const txs = window.lastAuditFilteredTxs || (state.transactions || []).slice();
-  let csv = "﻿# التاريخ,البيان,العضو,التصنيف,المحفظة,المبلغ,النوع,الرصيد التراكمي,المرفق
-";
+  let csv = "\ufeff# التاريخ,البيان,العضو,التصنيف,المحفظة,المبلغ,النوع,الرصيد التراكمي,المرفق\r\n";
   txs.forEach((t, i) => {
     const catInfo = getCategoryArabicInfo(t.category, t.type);
     const amt = parseFloat(t.amount) || 0;
