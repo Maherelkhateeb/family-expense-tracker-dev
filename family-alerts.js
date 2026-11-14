@@ -195,7 +195,7 @@ const familyAlerts = (() => {
       }
       card.append(main);
       if (!seen.has(item.id)) {
-        const button=document.createElement('button'); button.textContent='تحديد كمقروء'; button.onclick=()=>mark(item.id); card.append(button);
+        const button=document.createElement('button'); button.textContent='✓'; button.setAttribute('aria-label','تحديد كمقروء'); button.title='تحديد كمقروء'; button.onclick=()=>mark(item.id); card.append(button);
       }
       list.append(card);
     }
