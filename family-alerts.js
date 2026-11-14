@@ -1,7 +1,6 @@
 const familyAlerts = (() => {
   const prefix = 'family_alerts_v1';
   let previous = null;
-  let openDetail = null;
   const person = name => ['آية','اية','أية'].includes(name) ? 'أية' : (name || 'البيت');
   const clock = new Intl.DateTimeFormat('ar-EG', {hour:'numeric',minute:'2-digit',day:'numeric',month:'long',year:'numeric'});
   const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits:2});
@@ -20,6 +19,7 @@ const familyAlerts = (() => {
   }]));
   const soundKey = prefix+'_sound';
   let audio;
+
   function ring() {
     if (!read(soundKey,false) || !audio || audio.state !== 'running') return;
     for (const [index, frequency] of [660,880].entries()) {
@@ -28,6 +28,7 @@ const familyAlerts = (() => {
       oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start+.17);
     }
   }
+
   async function toggleSound() {
     if (read(soundKey,false) && audio?.state === 'running') {write(soundKey,false);render();return;}
     try {
@@ -35,6 +36,7 @@ const familyAlerts = (() => {
       await audio.resume(); write(soundKey,true); ring(); render();
     } catch {showToast('تعذر تشغيل الصوت في هذا المتصفح');}
   }
+
   function store(events) {
     if (!events.length) return;
     const saved = rows();
@@ -42,6 +44,165 @@ const familyAlerts = (() => {
     const added = events.filter(item => !known.has(item.id) && known.add(item.id));
     if (added.length) { write(prefix, [...added, ...saved].sort((a,b) => b.at-a.at).slice(0,1500)); ring(); }
   }
+
+  function formatAlertDate(dateInput) {
+    if (!dateInput) return '';
+    if (typeof dateInput === 'string' && dateInput.includes('-')) {
+      const parts = dateInput.split('T')[0].split('-');
+      if (parts.length === 3) {
+        return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+      }
+    }
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return String(dateInput);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function formatAlertDateTime(timestamp, tx) {
+    let dateObj = null;
+    if (tx?.date) {
+      const timePart = tx.time || '12:00';
+      const dateParts = tx.date.split('-');
+      if (dateParts.length === 3) {
+        const timeParts = timePart.split(':');
+        const h = parseInt(timeParts[0], 10) || 12;
+        const m = parseInt(timeParts[1], 10) || 0;
+        dateObj = new Date(parseInt(dateParts[0], 10), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[2], 10), h, m);
+      }
+    }
+    if (!dateObj || isNaN(dateObj.getTime())) {
+      dateObj = new Date(Number(timestamp) || Date.now());
+    }
+
+    let h = dateObj.getHours();
+    const m = dateObj.getMinutes();
+    const period = h >= 12 ? 'مساء' : 'صباحا';
+    h = h % 12 || 12;
+    const hStr = number.format(h);
+    const mStr = m > 0 ? ':' + (m < 10 ? '٠' + number.format(m) : number.format(m)) : '';
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const dateStr = `${day}/${month}/${year}`;
+
+    return `الساعة ${hStr}${mStr} ${period} ${dateStr}`;
+  }
+
+  function expenseMessage(item) {
+    const tx = item.tx;
+    if (!tx) return item.body;
+
+    const rawAuthor = tx.author || item.actor || state.currentUser || 'اية';
+    const author = person(rawAuthor);
+    const isFemale = ['أية','اية','آية','مريم','الحاجة'].includes(author);
+    const verb = isFemale ? 'قامت' : 'قام';
+    const amtStr = number.format(Number(tx.amount) || 0) + ' جنيه';
+    const dtStr = formatAlertDateTime(item.at, tx);
+
+    let memberStr = '';
+    if (tx.member && tx.member !== 'البيت' && tx.member !== 'all' && tx.member !== 'الكل') {
+      memberStr = ' ل ' + person(tx.member);
+    } else if (tx.member === 'البيت') {
+      memberStr = ' للبيت';
+    }
+
+    if (item.kind === 'delete') {
+      const cat = getCategoryName(tx.category, tx.type) || 'عام';
+      return `${verb} ${author} بحذف عملية بمبلغ ${amtStr} بند ${cat}${memberStr} ${dtStr}`;
+    }
+    if (item.kind === 'edit') {
+      const cat = getCategoryName(tx.category, tx.type) || 'عام';
+      return `${verb} ${author} بتعديل عملية بمبلغ ${amtStr} بند ${cat}${memberStr} ${dtStr}`;
+    }
+    if (tx.type === 'transfer' || tx.category === 'transfer' || item.kind === 'transfer') {
+      const fromW = getWalletName(tx.from || tx.walletId) || 'المحفظة';
+      const toW = getWalletName(tx.to || tx.toWalletId) || 'محفظة أخرى';
+      return `${verb} ${author} بتحويل مبلغ ${amtStr} من ${fromW} إلى ${toW} ${dtStr}`;
+    }
+    if (tx.type === 'income' || item.kind === 'income') {
+      const cat = getCategoryName(tx.category, 'income') || 'إيداع';
+      return `${verb} ${author} بإيداع مبلغ ${amtStr} بند ${cat}${memberStr} ${dtStr}`;
+    }
+
+    // Default Expense: Exactly matches:
+    // "قامت اية بصرف مبلغ ١٠٠ جنيه بند مصروف يومى ل محمد الساعة ١٢ مساء 22/10/2026"
+    const cat = getCategoryName(tx.category, 'expense') || 'مصروف يومي';
+    return `${verb} ${author} بصرف مبلغ ${amtStr} بند ${cat}${memberStr} ${dtStr}`;
+  }
+
+  function handleAlertClick(item) {
+    if (!item) return;
+    mark(item.id);
+    if (typeof closeModal === 'function') closeModal('notificationsModal');
+
+    // 1. Transaction Alert (صرف، إيداع، تحويل، تعديل، حذف)
+    if (item.tx || item.kind === 'expense' || item.kind === 'income' || item.kind === 'transfer' || item.kind === 'edit' || item.kind === 'delete' || String(item.id).startsWith('add:') || String(item.id).startsWith('edit:') || String(item.id).startsWith('delete:') || String(item.id).startsWith('alert-demo-tx-')) {
+      const txId = item.tx?.id || (item.id && String(item.id).split(':')[1]);
+      if (typeof switchAppPage === 'function') switchAppPage('operations');
+      if (txId) {
+        const found = (state.transactions || []).find(t => t.id === txId);
+        if (found) {
+          if (typeof editTx === 'function') editTx(found.id);
+        } else {
+          if (typeof showToast === 'function') {
+            showToast(item.kind === 'delete' ? 'تم حذف هذه العملية سابقاً' : 'العملية غير موجودة في السجل الحالي', 'info');
+          }
+        }
+      }
+      return;
+    }
+
+    // 2. Commitments / Obligations / Bills / Debts (استحقاق التزامات أو فواتير)
+    if (item.commitmentId || String(item.id).startsWith('due:') || item.kind === 'due') {
+      const commitmentId = item.commitmentId || (String(item.id).startsWith('due:') ? String(item.id).split(':')[1] : null);
+      if (typeof switchAppPage === 'function') switchAppPage('expected');
+      if (commitmentId) {
+        const target = (state.expectedExpenses || []).find(e => e.id === commitmentId) ||
+                       (state.debts || []).find(e => e.id === commitmentId);
+        if (target) {
+          if (typeof openEditCommitmentModal === 'function') {
+            openEditCommitmentModal(target.id);
+          }
+        } else {
+          if (typeof showToast === 'function') showToast('تم الانتقال إلى قسم الالتزامات والفواتير', 'info');
+        }
+      }
+      return;
+    }
+
+    // 3. Money Requests
+    if (item.requestId || String(item.id).startsWith('request:')) {
+      if (typeof switchAppPage === 'function') switchAppPage('requests');
+      return;
+    }
+
+    // 4. Budgets
+    if (item.budgetId || String(item.id).startsWith('budget:')) {
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('expected');
+        if (typeof switchExpectedTopSection === 'function') switchExpectedTopSection('budgets');
+      }
+      return;
+    }
+
+    // 5. Tasks
+    if (item.taskId || String(item.id).startsWith('task:')) {
+      if (typeof openTasksFullScreenModal === 'function') openTasksFullScreenModal();
+      else if (typeof openTasksModal === 'function') openTasksModal();
+      return;
+    }
+
+    // Fallback for general expense reminder
+    if (String(item.id).startsWith('expense:')) {
+      if (typeof switchAppPage === 'function') switchAppPage('expenses');
+      return;
+    }
+  }
+
   function observe(transactions, actor, baseline = false) {
     const next = snapshot(transactions);
     if (!previous || baseline) { previous = next; refresh(); return; }
@@ -49,12 +210,21 @@ const familyAlerts = (() => {
     const events = [];
     const record = (kind, tx, old) => {
       const who = person(kind === 'add' ? tx.author || actor || tx.member : actor || tx.author);
-      const verb = who === 'أية' ? 'قامت' : 'قام';
+      const isFemale = ['أية','اية','آية','مريم','الحاجة'].includes(who);
+      const verb = isFemale ? 'قامت' : 'قام';
       const action = kind === 'edit' ? 'بتعديل عملية' : kind === 'delete' ? 'بحذف عملية' :
         tx.type === 'transfer' || tx.category === 'transfer' ? 'بتسجيل تحويل' : tx.type === 'income' ? 'بإيداع' : 'بصرف';
-      events.push({id:[kind,tx.id,at].join(':'),at,title:kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : tx.type === 'income' && tx.category !== 'transfer' ? 'إيداع مبلغ' : 'عملية جديدة',
-        body:verb+' '+who+' '+action+' '+amount(tx.amount)+' · '+(getCategoryName(tx.category,tx.type) || 'بدون بند'),
-        tx, old, kind, actor: who});
+      const title = kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : tx.type === 'income' && tx.category !== 'transfer' ? 'إيداع مبلغ' : 'عملية جديدة';
+      events.push({
+        id: [kind, tx.id, at].join(':'),
+        at,
+        title,
+        body: verb + ' ' + who + ' ' + action + ' ' + amount(tx.amount) + ' · ' + (getCategoryName(tx.category, tx.type) || 'بدون بند'),
+        tx,
+        old,
+        kind,
+        actor: who
+      });
     };
     for (const [id, tx] of next) {
       const old = previous.get(id);
@@ -66,11 +236,12 @@ const familyAlerts = (() => {
     store(events);
     refresh();
   }
+
   function reminders(now = new Date()) {
     const today = getLocalDateStr(now);
     const at = now.getTime();
     const events = [];
-    const push = (id,title,body,target) => events.push({id,title,body,target,at});
+    const push = (id,title,body,target,extra={}) => events.push({id,title,body,target,at,...extra});
     const expenses = (state.transactions || []).filter(tx => tx && !tx.deleted && tx.type === 'expense' && tx.category !== 'transfer');
     if (!expenses.some(tx => dateOf(tx) === today && person(tx.author || tx.member) === 'أية')) {
       const slot = [12,17,21].filter(hour => now.getHours() >= hour).at(-1);
@@ -85,7 +256,10 @@ const familyAlerts = (() => {
       const days = daysUntil(item.dueDate);
       if (!(remaining > 0) || ![7,3,1,0,-1].includes(days)) continue;
       const timing = days < 0 ? 'متأخر عن موعده' : days === 0 ? 'يستحق اليوم' : 'يستحق خلال '+number.format(days)+' يوم';
-      push('due:'+item.id+':'+item.dueDate+':'+days,'تذكير استحقاق', (item.title || item.label || 'فاتورة أو دين')+' · '+timing+' · '+item.dueDate+' · المتبقي '+amount(remaining));
+      const obligationTitle = item.title || item.label || 'فاتورة أو التزام';
+      const dueDateFormatted = formatAlertDate(item.dueDate);
+      const obligationBody = `تذكير استحقاق: ${obligationTitle} بمبلغ ${amount(remaining)} (${timing} في ${dueDateFormatted})`;
+      push('due:'+item.id+':'+item.dueDate+':'+days, 'تذكير استحقاق', obligationBody, undefined, { commitmentId: item.id, commitment: item });
     }
     for (const plan of state.monthlyBudgets || []) {
       if (String(plan.id).startsWith('alert-demo-') || plan.month !== today.slice(0,7)) continue;
@@ -112,12 +286,13 @@ const familyAlerts = (() => {
         if (spent < limit.limit*.8) continue;
         const level = spent >= limit.limit ? 100 : 80;
         push(['budget',plan.id || plan.name || plan.project,plan.month,key,level].join(':'),level === 100 ? (spent > limit.limit ? 'تجاوز حد الموازنة' : 'بلوغ حد الموازنة') : 'اقتراب من حد الموازنة',
-          limit.label+' · '+amount(spent)+' من '+amount(limit.limit)+' · '+plan.month);
+          limit.label+' · '+amount(spent)+' من '+amount(limit.limit)+' · '+plan.month, undefined, { budgetId: plan.id });
       }
     }
     store(events);
     render();
   }
+
   function created(kind, record) {
     const who = person(state.currentUser);
     const title = {request:'طلب مبلغ', budget:'موازنة جديدة', task:'مهمة جديدة'}[kind];
@@ -127,10 +302,13 @@ const familyAlerts = (() => {
         ? [record.name, 'الشهر: '+record.month, record.project ? 'المشروع: '+record.project : '', 'المصروف المقدّر: '+amount((record.items || []).reduce((sum,item)=>sum+(Number(item.amount)||0),0))]
         : [record.title, 'المسؤول: '+person(record.assignedMember), 'الموعد: '+[record.dueDate,record.dueTime,record.dueTimeZone].filter(Boolean).join(' · '),
           'التصنيفات: '+getTaskTags(record).map(tag=>({general:'عامة',important:'عاجلة',shopping:'مشتريات',bills:'فواتير',health:'صحة',work:'عمل',home:'منزلية',my_day:'يومي',planned:'مجدولة'})[tag]||tag).join('، ')];
-    store([{id:kind+':'+record.id,title,body:who+' · '+(fields[0] || title),at:Date.now(),details:[title, ...fields, 'سجّلها: '+who].filter(Boolean)}]);
+    const extra = kind === 'request' ? { requestId: record.id } : kind === 'budget' ? { budgetId: record.id } : { taskId: record.id };
+    store([{id:kind+':'+record.id,title,body:who+' · '+(fields[0] || title),at:Date.now(),details:[title, ...fields, 'سجّلها: '+who].filter(Boolean), ...extra}]);
     render();
   }
+
   const visible = () => rows().filter(item => !item.target || item.target === profile());
+
   function mark(id) {
     const key = readKey();
     const seen = new Set(read(key,[]));
@@ -139,17 +317,7 @@ const familyAlerts = (() => {
     write(key,[...seen].filter(item=>retained.has(item)));
     render();
   }
-  function expenseMessage(item) {
-    const tx = item.tx;
-    if (!tx || tx.type !== 'expense' || tx.category === 'transfer' ||
-        (item.demo ? item.kind !== 'expense' : item.kind !== 'add')) return item.body;
-    const name = person(tx.author || item.actor || tx.member);
-    const female = ['أية','مريم','الحاجة'].includes(name);
-    const category = getCategoryName(tx.category,'expense') || 'غير محدد';
-    return (item.demo ? 'اختبار التنبيهات · ' : '') +
-      (female ? 'قامت ' : 'قام ') + name + ' بصرف ' + amount(tx.amount) +
-      ' بند ' + category + '، في ' + clock.format(item.at);
-  }
+
   function render() {
     const sound = document.getElementById('alertSoundButton');
     if (sound) {
@@ -170,56 +338,50 @@ const familyAlerts = (() => {
     const list = document.getElementById('notificationsListContainer');
     if (!list || !document.getElementById('notificationsModal')?.classList.contains('active')) return;
     list.replaceChildren();
-    if (openDetail && items.some(item => item.id === openDetail.id)) {
-      const back = document.createElement('button');
-      back.textContent = 'العودة إلى التنبيهات';
-      back.onclick = () => { openDetail = null; render(); };
-      list.append(back);
-      if (openDetail.details) {
-        const detail=document.createElement('article');
-        detail.className='family-alert';
-        for(const field of [...openDetail.details,clock.format(openDetail.at)]) {
-          const p=document.createElement('p'); p.textContent=field; detail.append(p);
-        }
-        list.append(detail);
-        return;
-      }
-      const live = (state.transactions || []).find(tx=>tx.id===openDetail.tx.id && !tx.deleted);
-      const tx = live ? snapshot([live]).get(live.id) : openDetail.tx;
-      const detail = document.createElement('article');
-      detail.className = 'family-alert';
-      const fields = [openDetail.kind === 'delete' ? 'تفاصيل العملية المحذوفة' : 'تفاصيل العملية', tx.label,
-        amount(tx.amount)+' · '+getCategoryName(tx.category,tx.type),
-        [tx.date,tx.time].filter(Boolean).join(' · '), 'الفرد: '+person(tx.member),
-        tx.walletId ? 'المحفظة: '+getWalletName(tx.walletId) : '',
-        tx.to ? 'من '+getWalletName(tx.from || tx.walletId)+' إلى '+getWalletName(tx.to) : '',
-        tx.project ? 'المشروع: '+tx.project : '',
-        openDetail.old ? 'وقت التعديل: '+clock.format(openDetail.at)+' · المبلغ قبل التعديل: '+amount(openDetail.old.amount) : 'وقت التنبيه: '+clock.format(openDetail.at)];
-      for (const field of fields.filter(Boolean)) {const p=document.createElement('p');p.textContent=field;detail.append(p);}
-      if (live?.receipt) {const receipt=document.createElement('button');receipt.textContent='عرض الإيصال';receipt.onclick=()=>{closeModal('notificationsModal');viewReceiptImage(live.receipt);};detail.append(receipt);}
-      list.append(detail);
+
+    if (!items.length) {
+      list.textContent = 'لا توجد تنبيهات حتى الآن.';
       return;
     }
-    if (!items.length) list.textContent='لا توجد تنبيهات حتى الآن.';
+
     for (const item of items) {
       const body = expenseMessage(item);
       const card = document.createElement('article');
       card.className = 'family-alert';
       card.dataset.unread = String(!seen.has(item.id));
-      const main = document.createElement(item.tx || item.details ? 'button' : 'div');
+
+      const main = document.createElement('button');
       main.className = 'family-alert-main';
-      if (item.tx || item.details) main.onclick = () => { openDetail=item; mark(item.id); };
-      for (const [tag,value] of [['strong',item.title],['span',body],['small',body === item.body ? clock.format(item.at) : '']]) {
-        if (!value) continue;
-        const element = document.createElement(tag); element.textContent=value; main.append(element);
-      }
+      main.type = 'button';
+      main.title = 'فتح العملية الأصلية';
+      main.onclick = () => handleAlertClick(item);
+
+      const titleEl = document.createElement('strong');
+      titleEl.textContent = item.title;
+      main.append(titleEl);
+
+      const bodyEl = document.createElement('span');
+      bodyEl.textContent = body;
+      main.append(bodyEl);
+
       card.append(main);
+
       if (!seen.has(item.id)) {
-        const button=document.createElement('button'); button.textContent='✓'; button.setAttribute('aria-label','تحديد كمقروء'); button.title='تحديد كمقروء'; button.onclick=()=>mark(item.id); card.append(button);
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = '✓';
+        button.setAttribute('aria-label', 'تحديد كمقروء');
+        button.title = 'تحديد كمقروء دون مغادرة التنبيهات';
+        button.onclick = (e) => {
+          e.stopPropagation();
+          mark(item.id);
+        };
+        card.append(button);
       }
       list.append(card);
     }
   }
+
   function demo() {
     if (rows().some(row=>row.demo)) { showToast('الحالات التجريبية مسجلة بالفعل'); return; }
     const at=Date.now(), today=getLocalDateStr(new Date(at)), month=today.slice(0,7);
@@ -228,46 +390,62 @@ const familyAlerts = (() => {
     const events=[];
     const add=(title, body, extra={})=>{
       const n=events.length+1;
-      events.push({id:'alert-demo:'+n,at:at+n,demo:true,title,body:'اختبار التنبيهات '+n+' · '+body,...extra});
+      events.push({id:'alert-demo:'+n,at:at+n,demo:true,title,body,...extra});
     };
-    const tx=(id,type,value,author,category='daily')=>({id:'alert-demo-tx-'+at+'-'+id,type,amount:value,author,member:author,category,date:today,walletId:wallet,label:'اختبار التنبيهات · '+id,createdAt:new Date(at).toISOString()});
     const actors=['أية','ماهر','محمد','مريم'];
+    const tx=(id,type,value,author,member,category='daily')=>({
+      id:'alert-demo-tx-'+at+'-'+id,
+      type,
+      amount:value,
+      author,
+      member: member || author,
+      category,
+      date: today,
+      time: '12:00',
+      walletId: wallet,
+      label: 'اختبار التنبيهات · '+id,
+      createdAt: new Date(at).toISOString()
+    });
+
     for (const [kind,count] of [['expense',12],['income',6],['transfer',4],['edit',4],['delete',4]]) {
       for(let i=0;i<count;i++) {
-        const author=actors[i%actors.length], item=tx(events.length+1,kind==='income'?'income':kind==='transfer'&&state.wallets.length>1?'transfer':'expense',50+i*15,author,kind==='income'?'salary':kind==='transfer'?'transfer':'daily');
+        const author=actors[i%actors.length];
+        const beneficiary=actors[(i+1)%actors.length];
+        const item=tx(events.length+1,kind==='income'?'income':kind==='transfer'&&state.wallets.length>1?'transfer':'expense',50+i*15,author,beneficiary,kind==='income'?'salary':kind==='transfer'?'transfer':'daily');
         if(item.type==='transfer'){item.fromWalletId=wallet;item.toWalletId=state.wallets[1].id;}
         if(kind!=='delete' && (kind!=='transfer' || item.type==='transfer')) state.transactions.unshift(item);
         const titles={expense:'مصروف جديد',income:'إيداع مبلغ',transfer:'تحويل بين المحافظ',edit:'تعديل عملية',delete:'حذف عملية'};
         const snapshotItem=snapshot([item]).get(item.id);
-        add(titles[kind],author+' · '+amount(item.amount)+' · '+getCategoryName(item.category,item.type),{tx:snapshotItem,kind,old:kind==='edit'?{...snapshotItem,amount:item.amount-10}:undefined});
+        add(titles[kind],'',{tx:snapshotItem,kind,old:kind==='edit'?{...snapshotItem,amount:item.amount-10}:undefined});
       }
     }
     for(let i=0;i<4;i++) {
       const member=actors[i], value=200+50*i, reason='اختبار التنبيهات · طلب '+(i+1);
       state.moneyRequests.unshift({id:'alert-demo-request-'+at+'-'+i,member,amount:value,reason,date:today,status:'pending',allocations:[{amount:value,category:'daily',member}],createdBy:member});
-      add('طلب مبلغ',member+' · '+amount(value),{details:[reason,member,amount(value),today]});
+      add('طلب مبلغ',member+' · '+amount(value),{requestId:'alert-demo-request-'+at+'-'+i});
     }
     for(let i=0;i<3;i++) {
       const name='اختبار التنبيهات · موازنة '+(i+1), value=400+i*50;
       state.monthlyBudgets.unshift({id:'alert-demo-budget-'+at+'-'+i,name,month,project:'مشروع اختبار '+(i+1),items:[{amount:value,category:'daily',members:['أية']}],incomes:[],categories:{}});
-      add('موازنة جديدة',name,{details:[name,month,amount(value)]});
+      add('موازنة جديدة',name,{budgetId:'alert-demo-budget-'+at+'-'+i});
     }
     const tasks=getTodoTasks();
     for(let i=0;i<3;i++) {
       const title='اختبار التنبيهات · مهمة '+(i+1);
       tasks.unshift({id:'alert-demo-task-'+at+'-'+i,title,dueDate:today,assignedMember:actors[i],tag:'general',completed:false,subtasks:[]});
-      add('مهمة جديدة',title,{details:[title,actors[i],today]});
+      add('مهمة جديدة',title,{taskId:'alert-demo-task-'+at+'-'+i});
     }
     for(const [offset,timing] of [[7,'قبل ٧ أيام'],[3,'قبل ٣ أيام'],[1,'قبل يوم'],[0,'يوم الاستحقاق'],[-1,'بعد الاستحقاق']]) {
       const date=new Date(at); date.setDate(date.getDate()+offset);
       const dueDate=getLocalDateStr(date), title='اختبار التنبيهات · '+(offset%2?'دين':'فاتورة')+' '+timing;
-      state.expectedExpenses.unshift({id:'alert-demo-due-'+at+'-'+offset,title,amount:250,paidAmount:0,dueDate,status:'upcoming',type:offset%2?'debt_on_us':'upcoming_bill'});
-      add('تذكير استحقاق',title,{details:[title,dueDate,amount(250)]});
+      const dueId = 'alert-demo-due-'+at+'-'+offset;
+      state.expectedExpenses.unshift({id:dueId,title,amount:250,paidAmount:0,dueDate,status:'upcoming',type:offset%2?'debt_on_us':'upcoming_bill'});
+      add('تذكير استحقاق',`${title} بمبلغ ${amount(250)} (${timing} في ${formatAlertDate(dueDate)})`,{commitmentId:dueId});
     }
     for(const [scope,spent,limit] of [['بند مصروف يومي',85,100],['مصروف أية',125,100],['مشروع اختبار',445,500],['إجمالي الموازنة',590,500]]) {
-      add(spent>=limit?'تجاوز حد الموازنة':'اقتراب من حد الموازنة',scope,{details:[scope,amount(spent)+' من '+amount(limit),month]});
+      add(spent>=limit?'تجاوز حد الموازنة':'اقتراب من حد الموازنة',`${scope} · ${amount(spent)} من ${amount(limit)} · ${month}`);
     }
-    add('تذكير لأية بتسجيل المصروفات','مثال على التذكير اليومي',{details:['سجّلي مصروفات اليوم إذا لم تسجّليها بعد.',today]});
+    add('تذكير لأية بتسجيل المصروفات','لو فيه مصروفات اليوم، سجّليها في صفحة المصاريف.');
     saveTodoTasks(tasks);
     saveMoneyRequests();
     localStorage.setItem('family_monefy_monthly_budgets',JSON.stringify(state.monthlyBudgets));
@@ -275,15 +453,15 @@ const familyAlerts = (() => {
     previous=snapshot(state.transactions);
     saveTx();
     store(events);
-    openDetail=null;
     render();
     showToast('تم تسجيل ٥٠ حالة تجريبية');
   }
+
   function refresh() { reminders(); }
-  function open() { openDetail=null; openModal('notificationsModal'); refresh(); }
+  function open() { openModal('notificationsModal'); refresh(); }
   window.addEventListener('storage',event=>{ if(event.key?.startsWith(prefix)) render(); });
   document.addEventListener('visibilitychange',()=>{ if(previous && !document.hidden) refresh(); });
   window.addEventListener('focus',()=>{ if(previous) refresh(); });
   setInterval(()=>{ if(previous && !document.hidden) refresh(); },60000);
-  return {observe,refresh,open,mark,created,demo,toggleSound};
+  return {observe,refresh,open,mark,created,demo,toggleSound,handleAlertClick,formatAlertDateTime,expenseMessage};
 })();

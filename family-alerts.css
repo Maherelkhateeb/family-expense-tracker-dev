@@ -6,7 +6,8 @@ body.light-theme #notificationsModal{--alert-panel:#fff;--alert-row:#edf3f9;--al
 #notificationsModal button{color:var(--alert-accent)!important}
 .family-alert{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:10px;padding:8px;display:grid;gap:5px;color:var(--alert-text)}
 .family-alert[data-unread=true]{border-inline-start:3px solid var(--alert-accent)}
-.family-alert-main{display:grid;gap:4px;width:100%;text-align:start;background:none;border:0;padding:2px;font:inherit;color:var(--alert-text)!important}
+.family-alert-main{display:grid;gap:4px;width:100%;text-align:start;background:none;border:0;padding:2px;font:inherit;color:var(--alert-text)!important;cursor:pointer;transition:transform .12s ease,opacity .12s ease}
+.family-alert-main:active{transform:scale(0.99);opacity:.8}
 .family-alert small{color:var(--alert-muted)}
 .family-alert button,.family-alert-main:is(button){cursor:pointer}
 .family-alert>button,#notificationsListContainer>button{justify-self:start;min-height:32px;background:var(--alert-panel);border:1px solid var(--alert-line);border-radius:6px;padding:4px 8px}

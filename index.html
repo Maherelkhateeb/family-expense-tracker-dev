@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.36';
-    var APP_BUILD_ID = 202611141209;
+    var APP_VERSION = 'v5.3.37';
+    var APP_BUILD_ID = 202611141235;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15055,8 +15055,8 @@
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
-  <script src="./family-alerts.js?v=20261114-alert-header"></script>
-  <link rel="stylesheet" href="./family-alerts.css?v=20261114-alert-header">
+  <script src="./family-alerts.js?v=20261114-open-native-tx"></script>
+  <link rel="stylesheet" href="./family-alerts.css?v=20261114-open-native-tx">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -29926,7 +29926,7 @@ function openSettingsModal(targetSection = '') {
     // محرك تعديل الالتزامات والديون الفاخر (Commitments Edit Engine)
     // =========================================================================
     function openEditCommitmentModal(id) {
-      const exp = (state.expectedExpenses || []).find(e => e.id === id);
+      const exp = (state.expectedExpenses || []).find(e => e.id === id) || (state.debts || []).find(d => d.id === id);
       if (!exp) return;
 
       const idInp = document.getElementById('inpEditCommitmentId');
