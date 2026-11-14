@@ -99,7 +99,6 @@ const familyAlerts = (() => {
         else limits.set(key,{label,limit:Number(limit),test});
       };
       for (const item of items) {
-      const body = expenseMessage(item);
         add('total',plan.project || plan.name || 'إجمالي الموازنة',item.amount,()=>true);
         if (item.category) {
           const category = getCategoryObj(item.category,'expense').id;
@@ -203,6 +202,7 @@ const familyAlerts = (() => {
     }
     if (!items.length) list.textContent='لا توجد تنبيهات حتى الآن.';
     for (const item of items) {
+      const body = expenseMessage(item);
       const card = document.createElement('article');
       card.className = 'family-alert';
       card.dataset.unread = String(!seen.has(item.id));
