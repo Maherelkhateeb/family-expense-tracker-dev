@@ -482,7 +482,6 @@ const familyAlerts = (() => {
         at: now,
         backup: record
       }]);
-    }
     } else if (kind === 'task') {
       addAlerts([{
         id: `task:${record.id}:${now}`,
