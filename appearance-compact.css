@@ -13,8 +13,6 @@
 #settingsModal .settings-modal-subtitle { font-size: .60rem !important; line-height: 1.3 !important; margin-top: 2px !important; }
 #settingsModal .version-badge { font-size: .49rem !important; padding: 1px 4px !important; }
 #settingsModal .settings-modal-scroll { padding: 7px 9px !important; gap: 7px !important; overscroll-behavior: contain; }
-#settingsModal .settings-tabs-strip { gap: 5px !important; margin-bottom: 0 !important; }
-#settingsModal .settings-tabs-strip button { min-height: 35px !important; padding: 6px 8px !important; font-size: .72rem !important; }
 #settingsModal .settings-user-card { padding: 5px 8px !important; border-radius: 10px !important; margin-bottom: 6px !important; }
 #settingsModal .settings-user-card img { width: 25px !important; height: 25px !important; }
 #settingsModal .settings-user-card button { padding: 5px 7px !important; font-size: .63rem !important; }
@@ -28,16 +26,12 @@
   background: var(--appearance-panel-soft, #17243a) !important;
   overflow: hidden; margin: 0 !important; min-width: 0;
 }
-#settingsSec_appearance .compact-appearance-toggle {
+#settingsSec_appearance .compact-appearance-heading {
   color: var(--appearance-text, #f8fafc) !important;
   background: transparent !important; border: 0 !important;
-  width: 100%; min-height: 43px; cursor: pointer;
+  width: 100%; min-height: 37px; margin: 0;
   padding: 7px 10px !important; display: flex; align-items: center; text-align: right;
   gap: 7px; font: inherit; font-size: .73rem !important; font-weight: 850;
-}
-#settingsSec_appearance .compact-appearance-toggle:focus-visible {
-  outline: 2px solid var(--appearance-accent-text, #7dd3fc);
-  outline-offset: -3px;
 }
 #settingsSec_appearance .compact-appearance-heading-icon { font-size: .82rem; color: var(--appearance-accent-text, #7dd3fc); width: 17px; flex: 0 0 17px; }
 #settingsSec_appearance .compact-appearance-title { min-width: 0; flex: 1; }
@@ -47,13 +41,10 @@
   color: var(--appearance-accent-text, #7dd3fc) !important;
   padding: 3px 6px; border-radius: 7px; border: 1px solid var(--appearance-border, #40516b);
 }
-#settingsSec_appearance .compact-appearance-chevron { font-size: .72rem; color: var(--appearance-muted, #cbd5e1); transition: transform .16s ease; }
-#settingsSec_appearance .compact-appearance-section.is-open .compact-appearance-chevron { transform: rotate(180deg); }
 #settingsSec_appearance .compact-appearance-panel {
   padding: 0 9px 9px !important; display: flex !important; flex-direction: column !important; gap: 7px !important;
   min-width: 0; border-top: 1px solid var(--appearance-border, #40516b);
 }
-#settingsSec_appearance .compact-appearance-panel[hidden] { display: none !important; }
 #settingsSec_appearance .appearance-mode-row { margin: 8px 0 0 !important; gap: 6px !important; }
 #settingsSec_appearance .appearance-mode-button {
   min-height: 33px !important; font-size: .69rem !important; padding: 5px 8px !important; border-radius: 9px !important;
@@ -116,7 +107,38 @@
 #settingsSec_appearance #cardStyleButtonsContainer small { font-size: .53rem !important; line-height: 1.1 !important; }
 #settingsSec_appearance .compact-appearance-size { margin-top: 0 !important; }
 #settingsSec_appearance .compact-appearance-card-tile > div:first-child { display: none !important; }
-#settingsModal .settings-pane[hidden] { display: none !important; }
+#settingsModal .settings-pane { flex: 0 0 auto; }
+#settingsSec_data .settings-data-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+#settingsSec_data .settings-data-actions button { min-width: 0; }
+
+.ops-project-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+#btnOpsClearFilters {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--appearance-panel-soft, #17243a);
+  color: var(--appearance-text, #f8fafc);
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+body.light-theme #btnOpsClearFilters { background: #eef5ff; color: #17476d; }
 @media(max-width:365px) {
   #settingsModal .settings-modal-shell { width: 98vw !important; }
   #settingsSec_appearance .appearance-palette-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
@@ -125,9 +147,6 @@
 }
 @media(min-width:550px) {
   #settingsModal .settings-modal-shell { max-width: 510px !important; }
-}
-@media (prefers-reduced-motion: reduce) {
-  #settingsSec_appearance .compact-appearance-chevron { transition: none !important; }
 }
 
 /* Respect hidden typography label despite its legacy inline display style. */

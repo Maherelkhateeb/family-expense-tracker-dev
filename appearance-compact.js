@@ -30,53 +30,36 @@
     var sizeTile = sizeStyle.children[0];
     var styleTile = sizeStyle.children[1];
 
-    function makeSection(name, label, icon, selected, initiallyOpen) {
+    function makeSection(name, label, icon, selected) {
       var section = document.createElement('section');
-      section.className = 'compact-appearance-section' + (initiallyOpen ? ' is-open' : '');
+      section.className = 'compact-appearance-section';
       section.dataset.appearanceSection = name;
 
-      var toggle = document.createElement('button');
-      toggle.type = 'button';
-      toggle.className = 'compact-appearance-toggle';
-      toggle.id = 'compactAppearanceToggle-' + name;
-      toggle.setAttribute('aria-controls', 'compactAppearancePanel-' + name);
-      toggle.setAttribute('aria-expanded', initiallyOpen ? 'true' : 'false');
-      toggle.innerHTML =
+      var heading = document.createElement('h4');
+      heading.className = 'compact-appearance-heading';
+      heading.id = 'compactAppearanceHeading-' + name;
+      heading.innerHTML =
         '<i class="compact-appearance-heading-icon fa-solid ' + icon + '" aria-hidden="true"></i>' +
         '<span class="compact-appearance-title">' + label + '</span>';
 
       var summary = selected || document.createElement('span');
       summary.classList.add('compact-appearance-summary');
-      toggle.appendChild(summary);
-
-      var chevron = document.createElement('i');
-      chevron.className = 'compact-appearance-chevron fa-solid fa-chevron-down';
-      chevron.setAttribute('aria-hidden', 'true');
-      toggle.appendChild(chevron);
+      heading.appendChild(summary);
 
       var panel = document.createElement('div');
       panel.className = 'compact-appearance-panel compact-appearance-' + name + '-panel';
       panel.id = 'compactAppearancePanel-' + name;
-      panel.setAttribute('role', 'region');
-      panel.setAttribute('aria-labelledby', toggle.id);
-      panel.hidden = !initiallyOpen;
+      section.setAttribute('aria-labelledby', heading.id);
 
-      toggle.addEventListener('click', function () {
-        var shouldOpen = panel.hidden;
-        panel.hidden = !shouldOpen;
-        section.classList.toggle('is-open', shouldOpen);
-        toggle.setAttribute('aria-expanded', String(shouldOpen));
-      });
-
-      section.append(toggle, panel);
-      return { section: section, panel: panel, summary: summary, toggle: toggle };
+      section.append(heading, panel);
+      return { section: section, panel: panel, summary: summary };
     }
 
-    var basics = makeSection('basics', 'الوضع والمعاينة', 'fa-circle-half-stroke', null, true);
-    var colors = makeSection('colors', 'ألوان التطبيق', 'fa-palette', paletteBadge, false);
-    var iconColors = makeSection('icons', 'ألوان الأيقونات', 'fa-icons', iconBadge, false);
-    var typography = makeSection('font', 'الخط وحجم النص', 'fa-font', fontBadge, false);
-    var cards = makeSection('cards', 'تصميم الكروت', 'fa-layer-group', null, false);
+    var basics = makeSection('basics', 'الوضع والمعاينة', 'fa-circle-half-stroke');
+    var colors = makeSection('colors', 'ألوان التطبيق', 'fa-palette', paletteBadge);
+    var iconColors = makeSection('icons', 'ألوان الأيقونات', 'fa-icons', iconBadge);
+    var typography = makeSection('font', 'الخط وحجم النص', 'fa-font', fontBadge);
+    var cards = makeSection('cards', 'تصميم الكروت', 'fa-layer-group');
 
     // Move rather than recreate: the original inline onClick handlers and IDs survive.
     basics.panel.append(mode, preview);

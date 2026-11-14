@@ -102,9 +102,23 @@ try {
     assert.equal(await page.locator('#customDatePickerDrawer').isVisible(),false);
     await page.screenshot({path:'screenshots/'+viewport.name+'-summary.png',fullPage:false});
     await page.evaluate(()=>window.closeSummaryLeftDrawer());
+    await page.evaluate(() => window.openOperationsFiltered({
+      resetFilters: true, type: 'expense', category: 'food', member: 'ماهر',
+      project: '__no_project__', dateFrom: '2026-11-01', dateTo: '2026-11-02'
+    }));
+    await page.locator('#opsSearchInput').fill('عبارة بحث للاختبار');
+    await page.locator('#btnOpsClearFilters').click();
+    assert.equal(await page.locator('#opsSearchInput').inputValue(), '');
+    for (const id of ['opsFilterCategory', 'opsFilterMember', 'opsFilterProject', 'activeWalletSelect']) {
+      assert.equal(await page.locator('#'+id).inputValue(), 'all', id);
+    }
+    assert.ok(await page.locator('#btnOpsFilterAll').evaluate(el => el.classList.contains('active')));
+    assert.ok(await page.locator('.ops-period-pill[data-period="all"]').evaluate(el => el.classList.contains('active')));
+    assert.equal(await page.evaluate(() => state.customDateRange), null);
+    assert.equal(await page.evaluate(() => state.currentMemberFilter), 'الكل');
     await page.evaluate(()=>window.openSettingsModal());
     await page.locator('#settingsModal').waitFor({state:'visible',timeout:25000});
-    await page.locator('#compactAppearanceToggle-cards').click();
+    assert.ok(await page.locator('#compactAppearancePanel-cards').isVisible());
     const cardRows=await page.evaluate(()=>{
       const grid=document.getElementById('cardStyleButtonsContainer');
       const buttons=[...grid.querySelectorAll('button[data-card-style]')];

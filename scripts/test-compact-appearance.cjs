@@ -23,7 +23,9 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
         const accordions=Array.from(root.querySelectorAll('.compact-appearance-section'));
         return {
           count:accordions.length, keys:accordions.map(x=>x.dataset.appearanceSection),
-          expanded:accordions.filter(x=>x.querySelector('.compact-appearance-toggle').getAttribute('aria-expanded')==='true').map(x=>x.dataset.appearanceSection),
+          expanded:accordions.filter(x=>x.querySelector('.compact-appearance-panel').getBoundingClientRect().height>0).map(x=>x.dataset.appearanceSection),
+          collapseControls:root.querySelectorAll('[aria-expanded]').length,
+          dataVisible:document.getElementById('settingsPane_data').getBoundingClientRect().height>0,
           height:Math.round(root.getBoundingClientRect().height),
           width:root.clientWidth, contentWidth:root.scrollWidth,
           viewportWidth:innerWidth, scrollWidth:document.documentElement.scrollWidth,
@@ -34,22 +36,14 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
       });
       console.log('COMPACT_INITIAL '+size.name+' '+JSON.stringify(initial));
       assert.deepEqual(initial.keys,['basics','colors','icons','font','cards']);
-      assert.deepEqual(initial.expanded,['basics']);
+      assert.deepEqual(initial.expanded,initial.keys);
+      assert.equal(initial.collapseControls,0);
+      assert.equal(initial.dataVisible,true);
       assert.equal(initial.palettes,10);
       assert.equal(initial.icons,10);
       assert.equal(initial.cards,10);
-      assert.ok(initial.height<530,'Too tall while collapsed: '+initial.height);
       assert.ok(initial.contentWidth<=initial.width+2,'Appearance panel horizontal overflow');
       assert.ok(initial.scrollWidth<=initial.viewportWidth+2,'Document horizontal overflow');
-
-      // Genuine settings modal in an isolated blank profile, with no user data.
-      await page.screenshot({path:'screenshots/'+size.name+'-closed.png',fullPage:false});
-      for(const name of ['colors','icons','font','cards']){
-        const toggle=page.locator('#compactAppearanceToggle-'+name);
-        await toggle.click();
-        assert.equal(await toggle.getAttribute('aria-expanded'),'true');
-        assert.equal(await page.locator('#compactAppearancePanel-'+name).getAttribute('hidden'),null);
-      }
 
       // Prevent the exact blank-tail rows reported by the user in appearance
       // options, at every viewport and in both light and dark modes.
@@ -125,8 +119,8 @@ const sizes=[{name:'mobile-360',width:360,height:780},{name:'mobile-390',width:3
         card:document.body.dataset.cardStyle,
         fontSize:document.body.dataset.fontSize,
         light:document.body.classList.contains('light-theme'),
-        cardsSummary:document.querySelector('#compactAppearanceToggle-cards .compact-appearance-summary')?.textContent?.trim(),
-        modeSummary:document.querySelector('#compactAppearanceToggle-basics .compact-appearance-summary')?.textContent?.trim()
+        cardsSummary:document.querySelector('#compactAppearanceHeading-cards .compact-appearance-summary')?.textContent?.trim(),
+        modeSummary:document.querySelector('#compactAppearanceHeading-basics .compact-appearance-summary')?.textContent?.trim()
       }));
       console.log('COMPACT_SELECTED '+size.name+' '+JSON.stringify(selected));
       assert.equal(selected.theme,'rose');

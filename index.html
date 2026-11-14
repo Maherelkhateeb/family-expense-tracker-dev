@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.26';
-    var APP_BUILD_ID = 202611140945;
+    var APP_VERSION = 'v5.3.27';
+    var APP_BUILD_ID = 202611141050;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15051,8 +15051,16 @@
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=20261114-gold1"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
-  <link rel="stylesheet" href="./appearance-compact.css?v=20261113-summary-inline5">
-  <script src="./appearance-compact.js?v=20261113-gapfix1" defer></script>
+  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-settings-open">
+  <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
+<style>
+.project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
+.project-budget-field { margin-bottom: 12px; }
+.project-budget-field label { display: block; font-weight: 800; margin-bottom: 4px; }
+.project-budget-field small, .project-budget-status { font-size: .76rem; }
+.project-budget-create{width:100%;padding:12px;margin-bottom:12px;border:1px solid #0ea5e9;border-radius:12px;background:#0369a1;color:white;font:inherit;font-weight:800;display:flex;justify-content:center;align-items:center}
+.project-budget-analysis{padding:12px;margin-bottom:14px;border:1px solid #64748b55;border-radius:14px;color:inherit}.project-budget-analysis h3{font-size:1rem;margin:0 0 6px}.project-budget-analysis p,.project-budget-note{font-size:.75rem;opacity:.85;margin:6px 0 12px}.project-budget-result{padding:12px;margin-top:10px;border:1px solid #10b98166;border-radius:12px}.project-budget-result.over{border-color:#f87171}.project-budget-result header{display:flex;justify-content:space-between;gap:8px}.project-budget-result strong,.project-budget-result small{overflow-wrap:anywhere}.project-budget-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0;text-align:center;font-size:.73rem}.project-budget-metrics b{display:block;overflow-wrap:anywhere;font-size:.85rem;margin-top:5px}.project-budget-result progress{width:100%;height:8px;accent-color:#10b981}.project-budget-result.over progress{accent-color:#ef4444}
+</style>
 </head>
 <body>
 
@@ -15443,11 +15451,14 @@
                 <option value="أخرى">أخرى</option>
               </select>
             </div>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 6px; align-items: center; width: 100%; box-sizing: border-box; margin-bottom: 2px;">
+            <div class="ops-project-filter-row">
               <select id="opsFilterProject" class="form-input-custom" onchange="setProjectFilter(this.value)" aria-label="تصفية حسب المشروع" style="width: 100%; height: 36px; padding: 4px 8px; font-size: 0.78rem; font-weight: 800; border-radius: 10px;">
                 <option value="all">📌 كل المشاريع</option>
                 <option value="__no_project__">بدون مشروع</option>
               </select>
+              <button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()">
+                <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><span>مسح الفلاتر</span>
+              </button>
             </div>
             <div style="display: flex; gap: 6px; align-items: center;" id="opsTypeFilterPills">
               <button id="btnOpsFilterAll" class="btn-export-tool active" onclick="setOpsTypeFilter('all', this)" style="border-radius: 10px; font-weight: 800; padding: 6px 14px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">
@@ -15805,6 +15816,7 @@
              القسم الثاني: المقارنات والرقابة المالية (Comparisons & Control)
              ============================================================ -->
         <div id="sectionComparisons" style="display: none; padding: 0 8px 24px;">
+          <section id="projectBudgetAnalysis" class="project-budget-analysis" aria-label="المتوقع والفعلي للمشاريع"></section>
           
           <!-- ترويسة الرقابة والمقارنات -->
           <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -16714,6 +16726,7 @@
 
 <div id="panelMonthlyBudget" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
           
+          <button type="button" class="project-budget-create" onclick="openNewBudgetPlanModal(true)">＋ موازنة تقديرية للمشروع</button>
           <!-- شريط إدارة الخطط والميزانيات التقديرية -->
           <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
@@ -16739,6 +16752,7 @@
             </select>
           </div>
 
+          <div id="activeBudgetProjectInfo" class="project-budget-note" hidden></div>
           <!-- بيانات الميزانية المحددة: الاسم والشهر المستهدف -->
           <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 8px; margin-bottom: 10px;">
             <div>
@@ -18466,19 +18480,10 @@
         <!-- محتوى الضبط الموحد الشامل -->
         <div style="padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="settings-modal-scroll custom-scrollbar">
 
-          <nav class="settings-tabs-strip" role="tablist" aria-label="أقسام الإعدادات">
-            <button type="button" class="settings-tab-btn active" id="settingsTabAppearance" role="tab" aria-selected="true" aria-controls="settingsPane_appearance" data-tab="appearance" onclick="switchSettingsTab('appearance')">
-              <i class="fa-solid fa-palette" aria-hidden="true"></i><span>المظهر</span>
-            </button>
-            <button type="button" class="settings-tab-btn" id="settingsTabData" role="tab" aria-selected="false" aria-controls="settingsPane_data" data-tab="data" tabindex="-1" onclick="switchSettingsTab('data')">
-              <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i><span>البيانات والمزامنة</span>
-            </button>
-          </nav>
-
-          <section class="settings-pane" id="settingsPane_appearance" role="tabpanel" aria-labelledby="settingsTabAppearance">
+          <section class="settings-pane" id="settingsPane_appearance" aria-label="المظهر">
 
           <!-- زر عرض المستخدم وتبديله (يفتح فقط عند الضغط عليه ويغلق الضبط أولاً) -->
-          <div class="settings-user-card" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
+          <div class="settings-user-card" id="settingsSec_users" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <img id="settingsCurrentMemberImg" src="" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; border: 1.5px solid #38bdf8;">
               <div style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;">المستخدم النشط:</div>
@@ -18623,7 +18628,7 @@
           </section>
 
           <!-- القسم 2: إدارة المحافظ والنسخ الاحتياطي والمزامنة السحابية -->
-          <section class="settings-pane" id="settingsPane_data" role="tabpanel" aria-labelledby="settingsTabData" hidden style="display: none;">
+          <section class="settings-pane" id="settingsPane_data" aria-label="البيانات والمزامنة">
           <div class="settings-unified-section" id="settingsSec_data" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
@@ -18636,7 +18641,7 @@
             </div>
 
             <!-- أزرار المحافظ والنسخ -->
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+            <div class="settings-data-actions">
               <button type="button" class="btn-submit-tx" onclick="closeModal('settingsModal'); openModal('walletModal');" style="margin: 0; height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
                 <i class="fa-solid fa-pen-to-square"></i> المحافظ
               </button>
@@ -19495,6 +19500,7 @@
     }
 
     function renderComparisonsSection() {
+      renderProjectBudgetAnalysis();
       const filtered = getFilteredTransactions();
       const allRequests = state.moneyRequests || [];
 
@@ -22114,7 +22120,7 @@
     // =========================================================================
     // محرك الفترات الزمنية الموحد (Unified Period Engine)
     // =========================================================================
-    function setAppPeriod(p) {
+    function setAppPeriod(p, notify = true) {
       state.period = p;
 
       // 1. تحديث أزرار شريط الفترات في صفحة المصاريف الأولى
@@ -22173,7 +22179,7 @@
       if (typeof renderAnalyticsUI === "function") renderAnalyticsUI();
       if (typeof renderExecutiveKPIs === "function") renderExecutiveKPIs();
       if (typeof renderExecutiveCharts === "function") renderExecutiveCharts();
-      showToast(`📅 تم تطبيق الفترة: ${periodLabels[p] || p}`);
+      if (notify) showToast(`📅 تم تطبيق الفترة: ${periodLabels[p] || p}`);
     }
 
     // =========================================================================
@@ -23811,21 +23817,31 @@ function generateRichDemoTransactions() {
     }
 
     function clearOpsFilter() {
-      const searchInp = document.getElementById('opsSearchInput');
-      if (searchInp) searchInp.value = '';
-      const catSel = document.getElementById('opsFilterCategory');
-      if (catSel) catSel.value = 'all';
-      const memSel = document.getElementById('opsFilterMember');
-      if (memSel) memSel.value = 'all';
+      document.getElementById('opsSearchInput').value = '';
+      document.getElementById('opsFilterCategory').value = 'all';
+      document.getElementById('opsFilterMember').value = 'all';
+      state.searchQuery = '';
       state.projectFilter = 'all';
-      refreshProjectSelectors();
-      setOpsTypeFilter('all');
-      filterOperationsList();
-      if (typeof renderActivityLogUI === 'function') renderActivityLogUI();
-      showToast('تمت إعادة ضبط فلاتر العمليات بالكامل');
+      state.currentWalletId = 'all';
+      state.currentMemberFilter = 'الكل';
+      state.selectedMember = 'الكل';
+      state.customDateRange = null;
+      state.customDate = state.customDateFrom = state.customDateTo = '';
+      customRangePickerDraftReady = false;
+      document.getElementById('activeWalletSelect').value = 'all';
+      document.getElementById('inpAnalyticsDateFrom').value = '';
+      document.getElementById('inpAnalyticsDateTo').value = '';
+      document.getElementById('analyticsCustomRangeBox').style.display = 'none';
+      document.querySelectorAll('.avatar-card').forEach(card => {
+        card.classList.toggle('active', card.dataset.member === 'الكل');
+      });
+      updateUserAndDefaultDisplay();
+      setOpsTypeFilter('all', document.getElementById('btnOpsFilterAll'), false);
+      setAppPeriod('all', false);
+      showToast('تم مسح الفلاتر · عرض كافة العمليات');
     }
 
-    function setOpsTypeFilter(type, btn) {
+    function setOpsTypeFilter(type, btn, render = true) {
       opsTypeFilterState = type;
       const pillBox = document.getElementById('opsTypeFilterPills');
       if (pillBox) {
@@ -23838,6 +23854,7 @@ function generateRichDemoTransactions() {
         btn.classList.add('active');
         btn.style.background = (type === 'expense') ? 'rgba(244, 63, 94, 0.2)' : ((type === 'income') ? 'rgba(16, 185, 129, 0.2)' : 'rgba(56, 189, 248, 0.2)');
       }
+      if (!render) return;
       filterOperationsList();
       if (typeof renderActivityLogUI === 'function') renderActivityLogUI();
     }
@@ -24359,6 +24376,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         const key = name.toLocaleLowerCase();
         if (!namesByKey.has(key)) namesByKey.set(key, name);
       };
+      (state.monthlyBudgets || []).forEach(b => addProjectName(b?.project));
       (state.transactions || []).forEach(tx => {
         addProjectName(getTransactionProjectName(tx));
       });
@@ -25973,24 +25991,6 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       triggerDriveAutoSync();
     }
 
-    function switchSettingsTab(tabKey) {
-      const validTabs = ['appearance', 'data'];
-      const activeTab = validTabs.includes(tabKey) ? tabKey : 'appearance';
-      document.querySelectorAll('#settingsModal .settings-tab-btn').forEach(btn => {
-        const selected = btn.getAttribute('data-tab') === activeTab;
-        btn.classList.toggle('active', selected);
-        btn.setAttribute('aria-selected', selected ? 'true' : 'false');
-        btn.tabIndex = selected ? 0 : -1;
-      });
-      validTabs.forEach(tab => {
-        const pane = document.getElementById('settingsPane_' + tab);
-        if (!pane) return;
-        const selected = tab === activeTab;
-        pane.hidden = !selected;
-        pane.style.display = selected ? 'flex' : 'none';
-      });
-    }
-
     function initializeSettingsControlAccessibility() {
       document.querySelectorAll('.theme-pill-option, .icon-theme-pill, .theme-card-box').forEach(option => {
         option.setAttribute('role', 'button');
@@ -26012,23 +26012,10 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       event.preventDefault();
       option.click();
     });
-    document.querySelectorAll('#settingsModal .settings-tab-btn').forEach((tab, index, tabs) => {
-      tab.addEventListener('keydown', event => {
-        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-        event.preventDefault();
-        const direction = event.key === 'ArrowLeft' ? 1 : -1;
-        const next = tabs[(index + direction + tabs.length) % tabs.length];
-        next.focus();
-        switchSettingsTab(next.getAttribute('data-tab'));
-      });
-    });
-
 function openSettingsModal(targetSection = '') {
       updateSettingsModalDisplay();
       openModal('settingsModal');
-      const activeBtn = document.querySelector('#settingsModal .settings-tab-btn.active');
-      const activeTab = activeBtn ? activeBtn.getAttribute('data-tab') : 'appearance';
-      switchSettingsTab(activeTab || 'appearance');
+      document.querySelector('#settingsModal .settings-modal-scroll').scrollTop = 0;
       if (targetSection === 'users') {
         setTimeout(() => {
           const sec = document.getElementById('settingsSec_users');
@@ -27515,10 +27502,6 @@ function openSettingsModal(targetSection = '') {
     };
 
     function onGoldAssetChange() {
-      if (!state.market || !MarketData.stamp(state.market.checkedAt || state.market.updatedAt) || !MarketData.positive(state.market.gold21)) {
-        for (const id of ['calcFinalTotal','calcGoldRawVal','calcWorkmanshipTotalVal','calcCashbackVal','calcNetCostVal','goldValuationText']) {const el=document.getElementById(id);if(el)el.textContent='السعر غير متاح';}
-        return;
-      }
       const asset = (document.getElementById('calcAsset') ? document.getElementById('calcAsset').value : 'gold21_jewelry') || 'gold21_jewelry';
       const preset = WORKMANSHIP_PRESETS[asset] || WORKMANSHIP_PRESETS['gold21_jewelry'];
 
@@ -27552,49 +27535,26 @@ function openSettingsModal(targetSection = '') {
     function updateCalcDisplay() { recalcGoldTotal(); }
 
     function recalcGoldTotal() {
-      const asset = (document.getElementById('calcAsset') ? document.getElementById('calcAsset').value : 'gold21_jewelry') || 'gold21_jewelry';
-      const preset = WORKMANSHIP_PRESETS[asset] || WORKMANSHIP_PRESETS['gold21_jewelry'];
-      const qty = parseFloat(document.getElementById('calcQty') ? document.getElementById('calcQty').value : 10) || 0;
-      const workmanshipPerGram = parseFloat(document.getElementById('calcWorkmanshipPerGram') ? document.getElementById('calcWorkmanshipPerGram').value : preset.fee) || 0;
-
-      const g21 = (state.market && state.market.gold21) || 6395;
-      const g24 = (state.market && state.market.gold24) || 7308.5;
-      const g18 = (state.market && state.market.gold18) || (g24 * (18 / 24));
-      const usd = (state.market && state.market.usdEgp) || 55.84;
-      const sar = (state.market && state.market.sarEgp) || 14.87;
-
-      let rawTotal = 0;
-      let workmanshipTotal = 0;
-      let cashbackTotal = 0;
-
-      if (asset === 'gold21_jewelry') {
-        rawTotal = qty * g21;
-        workmanshipTotal = qty * workmanshipPerGram;
-      } else if (asset === 'gold18_jewelry') {
-        rawTotal = qty * g18;
-        workmanshipTotal = qty * workmanshipPerGram;
-      } else if (asset === 'gold_pound') {
-        // جنيه الذهب وزن 8 جرام
-        rawTotal = qty * (g21 * 8);
-        workmanshipTotal = qty * (8 * workmanshipPerGram);
-        cashbackTotal = qty * (8 * (preset.cashback || 0));
-      } else if (asset === 'gold24_bar_small' || asset === 'gold24_bar_large') {
-        rawTotal = qty * g24;
-        workmanshipTotal = qty * workmanshipPerGram;
-        cashbackTotal = qty * (preset.cashback || 0);
-      } else if (asset === 'gold21_raw') {
-        rawTotal = qty * g21;
-        workmanshipTotal = 0;
-      } else if (asset === 'gold24_raw') {
-        rawTotal = qty * g24;
-        workmanshipTotal = 0;
-      } else if (asset === 'usd') {
-        rawTotal = qty * usd;
-        workmanshipTotal = 0;
-      } else if (asset === 'sar') {
-        rawTotal = qty * sar;
-        workmanshipTotal = 0;
+      const asset = document.getElementById('calcAsset')?.value || 'gold21_jewelry';
+      const preset = WORKMANSHIP_PRESETS[asset] || WORKMANSHIP_PRESETS.gold21_jewelry;
+      const qty = parseFloat(document.getElementById('calcQty')?.value) || 0;
+      const workmanshipPerGram = parseFloat(document.getElementById('calcWorkmanshipPerGram')?.value) || 0;
+      const market = state.market;
+      const rate = market?.[asset === 'usd' ? 'usdEgp' : asset === 'sar' ? 'sarEgp'
+        : asset === 'gold_pound' ? 'goldPound' : `gold${preset.karat}`];
+      if (!MarketData.stamp(market?.checkedAt || market?.updatedAt) || !MarketData.positive(rate)) {
+        for (const id of ['calcFinalTotal', 'calcGoldRawVal', 'calcWorkmanshipTotalVal', 'calcCashbackVal', 'calcNetCostVal']) {
+          const el = document.getElementById(id);
+          if (el) el.textContent = 'السعر غير متاح';
+        }
+        return;
       }
+
+      const rawTotal = qty * rate;
+      const weightInGrams = asset === 'gold_pound' ? qty * 8 : qty;
+      const hasWorkmanship = preset.isGold && preset.fee > 0;
+      const workmanshipTotal = hasWorkmanship ? weightInGrams * workmanshipPerGram : 0;
+      const cashbackTotal = weightInGrams * (preset.cashback || 0);
 
       const finalTotal = rawTotal + workmanshipTotal;
       const netCost = finalTotal - cashbackTotal;
@@ -30584,7 +30544,7 @@ function initMonthlyBudgetUI() {
 
       sel.innerHTML = state.monthlyBudgets.map(b => {
         const totalExp = (b.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
-        return `<option value="${escapeHtml(String(b.id || ''))}" ${b.id === state.activeBudgetId ? 'selected' : ''}>📋 ${escapeHtml(b.name)} [${escapeHtml(String(b.month || ''))}] - مقدر: ${formatMoney(totalExp)}</option>`;
+        return `<option value="${escapeHtml(String(b.id || ''))}" ${b.id === state.activeBudgetId ? 'selected' : ''}>📋 ${escapeHtml(b.name)}${b.project ? ` · ${escapeHtml(b.project)}` : ''} [${escapeHtml(String(b.month || ''))}] - مقدر: ${formatMoney(totalExp)}</option>`;
       }).join('');
     }
 
@@ -30593,6 +30553,7 @@ function initMonthlyBudgetUI() {
         initMonthlyBudgetUI();
         if (!Array.isArray(state.monthlyBudgets) || state.monthlyBudgets.length === 0) {
           currentBudgetMonthData = null;
+          document.getElementById('activeBudgetProjectInfo').hidden = true;
           state.activeBudgetId = null;
           populateBudgetPlanSelector();
           renderBudgetMembersMultiPicker();
@@ -30626,6 +30587,9 @@ function initMonthlyBudgetUI() {
       }
 
       currentBudgetMonthData = activePlan;
+      const projectInfo = document.getElementById('activeBudgetProjectInfo');
+      projectInfo.hidden = !activePlan.project;
+      projectInfo.textContent = activePlan.project ? `موازنة المشروع: ${activePlan.project} · التقديرات بالجنيه المصري` : '';
       ensureBudgetItems(currentBudgetMonthData);
 
       const inpName = document.getElementById('inpBudgetName');
@@ -30884,7 +30848,10 @@ function initMonthlyBudgetUI() {
       renderBudgetMemberFilterPills();
 
       const targetMonth = currentBudgetMonthData.month || '2026-11';
-      const monthExpenses = (state.transactions || []).filter(t => t.type === 'expense' && t.date && t.date.startsWith(targetMonth));
+      const project = currentBudgetMonthData.project;
+      const monthExpenses = project
+        ? getProjectBudgetExpenses(currentBudgetMonthData, state.transactions)
+        : (state.transactions || []).filter(t => t.type === 'expense' && t.date?.startsWith(targetMonth));
       const allItems = currentBudgetMonthData.items || [];
 
       // فلترة البنود بحسب العضو المحدد إن لم يكن "الكل"
@@ -30902,6 +30869,12 @@ function initMonthlyBudgetUI() {
         totalActualFiltered += matches.reduce((s, t) => s + (Number(t.amount) || 0), 0);
       });
 
+      if (project) {
+        // Count every operation once, including expenses without a matching budget line.
+        totalActualFiltered = monthExpenses
+          .filter(t => currentBudgetMemberFilter === 'all' || (t.member || t.author || 'البيت').trim() === currentBudgetMemberFilter)
+          .reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      }
       // تحديث شريط الرقابة المالية الإجمالي
       const summaryTxt = document.getElementById('budgetActualSummaryTxt');
       const progBar = document.getElementById('budgetActualProgressBar');
@@ -31159,6 +31132,51 @@ function initMonthlyBudgetUI() {
       renderMonthlyBudgetAllocations();
     }
 
+    function getProjectBudgetExpenses(plan, transactions) {
+      const project = plan.project.trim().toLocaleLowerCase();
+      return (transactions || []).filter(t => t.type === 'expense' && t.category !== 'transfer'
+        && String(t.date || '').slice(0, 7) === plan.month
+        && getTransactionProjectName(t).toLocaleLowerCase() === project);
+    }
+
+    function projectBudgetMetrics(plan, transactions) {
+      const expected = (plan.items || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+      const actual = getProjectBudgetExpenses(plan, transactions).reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+      return { expected, actual, remaining: expected - actual, percent: expected > 0 ? actual / expected * 100 : null };
+    }
+
+    function renderProjectBudgetAnalysis() {
+      const host = document.getElementById('projectBudgetAnalysis');
+      if (!host) return;
+      const project = state.projectFilter || 'all';
+      const plans = (state.monthlyBudgets || []).filter(b => b?.project &&
+        (project === 'all' || b.project.trim().toLocaleLowerCase() === project.toLocaleLowerCase()));
+      const header = '<h3>موازنات المشاريع · المتوقع والفعلي</h3>';
+      if (!plans.length) {
+        host.innerHTML = header + '<p>لا توجد موازنات مشاريع في هذا العرض. يمكنك إنشاء موازنة من قسم الميزانيات.</p>';
+        return;
+      }
+      const cards = plans.map(plan => {
+        const { expected, actual, remaining, percent } = projectBudgetMetrics(plan, state.transactions);
+        const exceeded = expected > 0 && remaining < 0;
+        const differenceLabel = expected <= 0 ? 'الفرق' : exceeded ? 'التجاوز' : 'المتبقي';
+        const status = percent === null ? 'أضف تقديرات الإنفاق لحساب نسبة الاستخدام'
+          : `${percent.toLocaleString('ar-EG', { maximumFractionDigits: 1 })}٪ استخدام · ${exceeded ? 'تجاوز الموازنة' : remaining === 0 ? 'استُخدمت الموازنة بالكامل' : 'ضمن الموازنة'}`;
+        return `<article class="project-budget-result ${exceeded ? 'over' : ''}">
+          <header><strong>${escapeHtml(plan.project)}</strong><time datetime="${escapeHtml(plan.month || '')}" dir="ltr">${escapeHtml(plan.month || '')}</time></header>
+          <small>${escapeHtml(plan.name || '')}</small>
+          <div class="project-budget-metrics">
+            <div>المتوقع<b>${formatMoney(expected)}</b></div>
+            <div>الفعلي<b>${formatMoney(actual)}</b></div>
+            <div>${differenceLabel}<b>${expected > 0 ? formatMoney(Math.abs(remaining)) : '—'}</b></div>
+          </div>
+          ${percent === null ? '' : `<progress max="100" value="${Math.min(100, Math.max(0, percent))}" aria-label="نسبة استخدام الموازنة"></progress>`}
+          <div class="project-budget-status">${status}</div>
+        </article>`;
+      });
+      host.innerHTML = header + '<p>تغطي كل بطاقة شهر الموازنة بالكامل.</p>' + cards.join('');
+    }
+
     function updateBudgetKpis() {
       if (!currentBudgetMonthData) return;
 
@@ -31195,12 +31213,19 @@ function initMonthlyBudgetUI() {
       } catch(e) {}
 
       populateBudgetPlanSelector();
+      renderProjectBudgetAnalysis();
       playNotificationChime();
       showToast(`💾 تم حفظ وتثبيت خطة (${currentBudgetMonthData.name}) بنجاح! ✨`);
       triggerDriveAutoSync();
     }
 
-    function openNewBudgetPlanModal() {
+    function openNewBudgetPlanModal(forProject = false) {
+      const field = document.getElementById('newPlanProjectInput');
+      field.value = '';
+      field.required = forProject;
+      document.getElementById('newPlanProjectGroup').hidden = !forProject;
+      document.getElementById('newBudgetPlanTitle').textContent = forProject ? 'موازنة تقديرية للمشروع' : 'إنشاء ميزانية تقديرية جديدة';
+      document.getElementById('budgetProjectNames').replaceChildren(...getKnownProjects().map(name => new Option(name, name)));
       const monthInp = document.getElementById('newPlanMonthInput');
       const nameInp = document.getElementById('newPlanNameInput');
       const incInp = document.getElementById('newPlanTargetIncomeInput');
@@ -31208,11 +31233,11 @@ function initMonthlyBudgetUI() {
 
       const nextMonth = new Date();
       nextMonth.setDate(1);
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      if (!forProject) nextMonth.setMonth(nextMonth.getMonth() + 1);
       const yyyyMm = `${nextMonth.getFullYear()}-${String(nextMonth.getMonth() + 1).padStart(2, '0')}`;
 
       if (monthInp) monthInp.value = yyyyMm;
-      if (nameInp) nameInp.value = `ميزانية شهر ${yyyyMm} التقديرية`;
+      if (nameInp) nameInp.value = forProject ? '' : `ميزانية شهر ${yyyyMm} التقديرية`;
       if (incInp) incInp.value = '';
 
       if (cloneSel) {
@@ -31221,16 +31246,29 @@ function initMonthlyBudgetUI() {
       }
 
       openModal('newBudgetPlanModal');
+      if (forProject) field.focus();
     }
 
     function submitNewBudgetPlan() {
+      const projectField = document.getElementById('newPlanProjectInput');
+      const project = projectField.required ? projectField.value.trim() : '';
       const monthInp = document.getElementById('newPlanMonthInput');
       const nameInp = document.getElementById('newPlanNameInput');
       const incInp = document.getElementById('newPlanTargetIncomeInput');
       const cloneSel = document.getElementById('newPlanCloneSourceSelect');
 
-      const month = monthInp && monthInp.value ? monthInp.value : '2026-12';
-      const name = nameInp && nameInp.value.trim() ? nameInp.value.trim() : `ميزانية شهر ${month}`;
+      if (projectField.required && (!project || ['all', '__new_project__', '__no_project__'].includes(project))) {
+        showToast('أدخل اسماً صالحاً للمشروع', 'error');
+        projectField.focus();
+        return;
+      }
+      const month = monthInp.value;
+      if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) {
+        showToast('اختر شهر الموازنة', 'error');
+        monthInp.focus();
+        return;
+      }
+      const name = nameInp.value.trim() || (project ? `موازنة ${project}` : `ميزانية شهر ${month}`);
       const targetIncomeValue = parseFloat(incInp?.value || '0');
       if (!Number.isFinite(targetIncomeValue) || targetIncomeValue < 0) {
         showToast('يرجى إدخال دخل مستهدف صحيح أو تركه فارغاً', 'error');
@@ -31256,6 +31294,7 @@ function initMonthlyBudgetUI() {
 
       const newPlan = {
         id: 'bgt-' + month + '-' + Date.now(),
+        project,
         name: name,
         month: month,
         items: items,
@@ -31275,6 +31314,7 @@ function initMonthlyBudgetUI() {
       } catch(e) {}
 
       closeModal('newBudgetPlanModal');
+      refreshProjectSelectors();
       loadActiveBudgetPlan();
       showToast(`🎉 تم إنشاء وتفعيل الخطة التقديرية الجديدة: (${name})`);
       triggerDriveAutoSync();
@@ -31299,23 +31339,25 @@ function initMonthlyBudgetUI() {
 
       loadActiveBudgetPlan();
       showToast(`📑 تم استنساخ الخطة بنجاح`);
+      triggerDriveAutoSync();
     }
 
     function deleteCurrentBudgetPlan() {
       if (!currentBudgetMonthData) return;
-      if ((state.monthlyBudgets || []).length <= 1) {
+      if (!currentBudgetMonthData.project && (state.monthlyBudgets || []).length <= 1) {
         showToast('⚠️ لا يمكن حذف الخطة الوحيدة المتبقية في النظام');
         return;
       }
 
       if (confirm(`هل أنت متأكد من حذف خطة "${currentBudgetMonthData.name}" نهائياً؟`)) {
         state.monthlyBudgets = state.monthlyBudgets.filter(b => b.id !== currentBudgetMonthData.id);
-        state.activeBudgetId = state.monthlyBudgets[0].id;
+        state.activeBudgetId = state.monthlyBudgets[0]?.id || null;
         try {
           localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
         } catch(e) {}
         loadActiveBudgetPlan();
         showToast('🗑️ تم حذف الخطة بنجاح');
+        triggerDriveAutoSync();
       }
     }
 
@@ -31344,7 +31386,7 @@ function initMonthlyBudgetUI() {
                   ${isActive ? '<span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 1px 6px; border-radius: 5px;">الخطة النشطة</span>' : ''}
                 </div>
                 <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 2px;">
-                  الشهر: <strong style="color: #cbd5e1;">${escapeHtml(String(b.month || ''))}</strong> • عدد البنود: <strong style="color: #38bdf8;">${(b.items || []).length} بند</strong>
+                  ${b.project ? `المشروع: ${escapeHtml(b.project)} · ` : ''}الشهر: <strong style="color: #cbd5e1;">${escapeHtml(String(b.month || ''))}</strong> • عدد البنود: <strong style="color: #38bdf8;">${(b.items || []).length} بند</strong>
                 </div>
               </div>
 
@@ -31398,25 +31440,28 @@ function initMonthlyBudgetUI() {
     }
 
     function deleteBudgetFromHistory(budgetId) {
-      if ((state.monthlyBudgets || []).length <= 1) {
+      const plan = (state.monthlyBudgets || []).find(b => b.id === budgetId);
+      if (!plan) return;
+      if (!plan.project && state.monthlyBudgets.length <= 1) {
         showToast('⚠️ لا يمكن حذف الخطة الوحيدة المتبقية في النظام');
         return;
       }
       if (confirm('هل أنت متأكد من حذف هذه الخطة من السجل؟')) {
         state.monthlyBudgets = state.monthlyBudgets.filter(b => b.id !== budgetId);
         if (state.activeBudgetId === budgetId) {
-          state.activeBudgetId = state.monthlyBudgets[0].id;
+          state.activeBudgetId = state.monthlyBudgets[0]?.id || null;
         }
         try {
           localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
         } catch(e) {}
         renderBudgetHistory();
         showToast('🗑️ تم حذف الخطة من السجل');
+        triggerDriveAutoSync();
       }
     }
 
     function getProratedBudgetForPeriod(periodStr) {
-      if (!currentBudgetMonthData) return 0;
+      if (!currentBudgetMonthData || currentBudgetMonthData.project) return 0;
       ensureBudgetItems(currentBudgetMonthData);
       const totalBudget = (currentBudgetMonthData.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
       if (periodStr === 'month') return totalBudget;
@@ -35674,11 +35719,17 @@ window.filterArchiveType = filterArchiveType;
       <div class="modal-head">
         <h3 class="modal-title-custom">
           <i class="fa-solid fa-calculator" style="color: #38bdf8;"></i>
-          <span>إنشاء ميزانية تقديرية جديدة</span>
+          <span id="newBudgetPlanTitle">إنشاء ميزانية تقديرية جديدة</span>
         </h3>
         <button type="button" class="btn-modal-close" onclick="closeModal('newBudgetPlanModal')" aria-label="إغلاق">&times;</button>
       </div>
       <div style="padding: 14px 16px;">
+        <div id="newPlanProjectGroup" class="form-group-custom project-budget-field" hidden>
+          <label for="newPlanProjectInput">اسم المشروع</label>
+          <input id="newPlanProjectInput" class="form-input-custom" list="budgetProjectNames" maxlength="120" placeholder="اختر مشروعاً أو اكتب اسمه">
+          <datalist id="budgetProjectNames"></datalist>
+          <small>تُقارن مصروفات هذا المشروع خلال الشهر المحدد. أدخل التقديرات بالجنيه المصري.</small>
+        </div>
         <div class="form-group-custom" style="margin-bottom: 12px;">
           <label class="form-label-custom">مسمى الميزانية التقديرية <span class="req">*</span></label>
           <input type="text" id="newPlanNameInput" class="form-input-custom" placeholder="مثال: ميزانية شهر ديسمبر 2026، ميزانية رمضان، مصيف...">
