@@ -35,7 +35,7 @@ const familyAlerts = (() => {
       const verb = who === 'أية' ? 'قامت' : 'قام';
       const action = kind === 'edit' ? 'بتعديل عملية' : kind === 'delete' ? 'بحذف عملية' :
         tx.type === 'transfer' || tx.category === 'transfer' ? 'بتسجيل تحويل' : tx.type === 'income' ? 'بإيداع' : 'بصرف';
-      events.push({id:[kind,tx.id,at].join(':'),at,title:kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : 'عملية جديدة',
+      events.push({id:[kind,tx.id,at].join(':'),at,title:kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : tx.type === 'income' && tx.category !== 'transfer' ? 'إيداع مبلغ' : 'عملية جديدة',
         body:verb+' '+who+' '+action+' '+amount(tx.amount)+' · '+(getCategoryName(tx.category,tx.type) || 'بدون بند'),
         tx, old, kind});
     };
@@ -101,6 +101,18 @@ const familyAlerts = (() => {
     store(events);
     render();
   }
+  function created(kind, record) {
+    const who = person(state.currentUser);
+    const title = {request:'طلب مبلغ', budget:'موازنة جديدة', task:'مهمة جديدة'}[kind];
+    const fields = kind === 'request'
+      ? [record.reason, amount(record.amount), 'مقدم الطلب: '+person(record.member), 'التاريخ: '+record.date]
+      : kind === 'budget'
+        ? [record.name, 'الشهر: '+record.month, record.project ? 'المشروع: '+record.project : '', 'المصروف المقدّر: '+amount((record.items || []).reduce((sum,item)=>sum+(Number(item.amount)||0),0))]
+        : [record.title, 'المسؤول: '+person(record.assignedMember), 'الموعد: '+[record.dueDate,record.dueTime,record.dueTimeZone].filter(Boolean).join(' · '),
+          'التصنيفات: '+getTaskTags(record).map(tag=>({general:'عامة',important:'عاجلة',shopping:'مشتريات',bills:'فواتير',health:'صحة',work:'عمل',home:'منزلية',my_day:'يومي',planned:'مجدولة'})[tag]||tag).join('، ')];
+    store([{id:kind+':'+record.id,title,body:who+' · '+(fields[0] || title),at:Date.now(),details:[title, ...fields, 'سجّلها: '+who].filter(Boolean)}]);
+    render();
+  }
   const visible = () => rows().filter(item => !item.target || item.target === profile());
   function mark(id) {
     const key = readKey();
@@ -126,6 +138,15 @@ const familyAlerts = (() => {
       back.textContent = 'العودة إلى التنبيهات';
       back.onclick = () => { openDetail = null; render(); };
       list.append(back);
+      if (openDetail.details) {
+        const detail=document.createElement('article');
+        detail.className='family-alert';
+        for(const field of [...openDetail.details,clock.format(openDetail.at)]) {
+          const p=document.createElement('p'); p.textContent=field; detail.append(p);
+        }
+        list.append(detail);
+        return;
+      }
       const live = (state.transactions || []).find(tx=>tx.id===openDetail.tx.id && !tx.deleted);
       const tx = live ? snapshot([live]).get(live.id) : openDetail.tx;
       const detail = document.createElement('article');
@@ -147,9 +168,9 @@ const familyAlerts = (() => {
       const card = document.createElement('article');
       card.className = 'family-alert';
       card.dataset.unread = String(!seen.has(item.id));
-      const main = document.createElement(item.tx ? 'button' : 'div');
+      const main = document.createElement(item.tx || item.details ? 'button' : 'div');
       main.className = 'family-alert-main';
-      if (item.tx) main.onclick = () => { openDetail=item; mark(item.id); };
+      if (item.tx || item.details) main.onclick = () => { openDetail=item; mark(item.id); };
       for (const [tag,value] of [['strong',item.title],['span',item.body],['small',clock.format(item.at)]]) {
         const element = document.createElement(tag); element.textContent=value; main.append(element);
       }
@@ -166,5 +187,5 @@ const familyAlerts = (() => {
   document.addEventListener('visibilitychange',()=>{ if(previous && !document.hidden) refresh(); });
   window.addEventListener('focus',()=>{ if(previous) refresh(); });
   setInterval(()=>{ if(previous && !document.hidden) refresh(); },60000);
-  return {observe,refresh,open,mark};
+  return {observe,refresh,open,mark,created};
 })();

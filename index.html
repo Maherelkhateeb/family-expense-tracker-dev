@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.30';
-    var APP_BUILD_ID = 202611141145;
+    var APP_VERSION = 'v5.3.31';
+    var APP_BUILD_ID = 202611141150;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15055,7 +15055,7 @@
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
-  <script src="./family-alerts.js?v=20261114"></script>
+  <script src="./family-alerts.js?v=20261114-events"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -25315,6 +25315,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       };
 
       state.moneyRequests.unshift(newReq);
+      familyAlerts.created('request', newReq);
       try {
         localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
       } catch(e) {}
@@ -31130,6 +31131,7 @@ function initMonthlyBudgetUI() {
         state.monthlyBudgets[idx] = currentBudgetMonthData;
       } else {
         state.monthlyBudgets.push(currentBudgetMonthData);
+        familyAlerts.created('budget', currentBudgetMonthData);
       }
 
       try {
@@ -31232,6 +31234,7 @@ function initMonthlyBudgetUI() {
 
       if (!state.monthlyBudgets) state.monthlyBudgets = [];
       state.monthlyBudgets.unshift(newPlan);
+      familyAlerts.created('budget', newPlan);
       state.activeBudgetId = newPlan.id;
 
       try {
@@ -31256,6 +31259,7 @@ function initMonthlyBudgetUI() {
       clone.updatedAt = new Date().toISOString();
 
       state.monthlyBudgets.unshift(clone);
+      familyAlerts.created('budget', clone);
       state.activeBudgetId = clone.id;
 
       try {
@@ -32890,6 +32894,7 @@ function handleQuickTaskAdd() {
       return false;
     }
     isSaved = true;
+    familyAlerts.created('task', newTask);
 
     if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
     clearTaskPendingPhoto();
@@ -34711,7 +34716,7 @@ function createTaskFromDateTimeForm(titleId, target) {
   };
   const tasks = getTodoTasks();
   tasks.unshift(task);
-  saveTodoTasks(tasks);
+  if (saveTodoTasks(tasks)) familyAlerts.created('task', task);
   titleInput.value = '';
   if (fields.dateTime) fields.dateTime.value = '';
   if (fields.second) fields.second.value = '00';
@@ -35104,6 +35109,7 @@ function handleSaveDirectIncome() {
     id: 'tx-' + Date.now(),
     type: 'income',
     amount: amount,
+    author: state.currentUser,
     label: descriptionInput?.value.trim() || 'دخل مباشر',
     category: categoryInput?.value || 'salary',
     walletId: walletId,
