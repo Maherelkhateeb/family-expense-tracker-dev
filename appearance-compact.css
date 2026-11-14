@@ -392,22 +392,22 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
   text-indent: 0 !important;
 }
 #summaryLeftDrawer .summary-kpi-grid {
-  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 6px !important;
 }
 #summaryLeftDrawer .summary-kpi {
   flex-direction: row !important;
   align-items: baseline !important;
   flex-wrap: nowrap !important;
-  gap: 8px !important;
-  padding: 9px 10px !important;
+  gap: 4px !important;
+  padding: 8px 5px !important;
   overflow-x: auto;
 }
 #summaryLeftDrawer .summary-kpi > span,
 #summaryLeftDrawer .summary-kpi > strong,
 #summaryLeftDrawer .summary-kpi > small {
   flex: 0 0 auto;
-  font-size: .72rem !important;
+  font-size: clamp(8px, 2.25vw, 10px) !important;
   line-height: 1.5 !important;
   white-space: nowrap;
 }
@@ -440,3 +440,36 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 #summaryLeftDrawer .summary-inline-picker .range-date-summary,
 #summaryLeftDrawer .summary-inline-picker .range-calendar-nav,
 #summaryLeftDrawer .summary-inline-picker .range-date-hint { flex-shrink: 0; }
+
+#summaryLeftDrawer .summary-kpi > span { gap: 2px !important; }
+#summaryLeftDrawer .summary-kpi > span > i { display: none; }
+
+/* Controls opt into centered labels. Prose, fields, and ledger rows keep RTL alignment.
+   The universal reset now inherits alignment instead of overriding every child. */
+button, input[type="button"], input[type="submit"], [role="tab"] {
+  text-align: center;
+}
+:is(.btn-modal-close, .summary-close-btn, .range-calendar-nav button,
+    .task-picker-month-heading button, .task-picker-stepper button,
+    .cockpit-privacy-btn, .btn-close, .close-btn) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
+  flex-shrink: 0 !important;
+}
+:is(.period-filter-pill, .summary-member-btn, .summary-period-btn,
+    .theme-pill-option, .icon-theme-pill, .font-size-pill,
+    .appearance-mode-button, .summary-currency-btn) {
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+:is(.btn-modal-close, .summary-close-btn, .range-calendar-nav button,
+    .task-picker-month-heading button, .task-picker-stepper button) > :is(i, span, svg) {
+  margin: 0 !important;
+  text-align: center !important;
+}

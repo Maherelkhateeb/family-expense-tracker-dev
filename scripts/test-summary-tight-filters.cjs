@@ -79,6 +79,7 @@ try {
       return Math.max(...boxes.map(r=>r.top)) < Math.min(...boxes.map(r=>r.bottom));
     }));
     assert.ok(compactRows,'Financial totals must share one line');
+    assert.ok(await page.locator('.summary-kpi').evaluateAll(cards=>Math.abs(cards[0].getBoundingClientRect().top-cards[1].getBoundingClientRect().top)<2),'Expense and income cards must be side by side');
     assert.equal(await page.locator('.summary-member-btn').first().evaluate(e=>getComputedStyle(e).justifyContent),'center');
     await page.locator('.summary-period-btn[data-period="custom"]').click();
     await page.locator('#summaryInlineCalendar #customDatePickerDrawer').waitFor({state:'visible'});
