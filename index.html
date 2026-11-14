@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.54';
-    var APP_BUILD_ID = 202611141805;
+    var APP_VERSION = 'v5.3.55';
+    var APP_BUILD_ID = 202611141815;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15972,21 +15972,28 @@
                 <i class="fa-solid fa-calendar-check"></i> مخصص
               </button>
             </div>
-        <div class="ops-view-mode-bar" id="opsViewModeToggleBar">
-          <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
-            <i class="fa-solid fa-calendar-day"></i>
-            <span>حسب اليوم</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>مجمع</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
-            <i class="fa-solid fa-folder-tree"></i>
-            <span>حسب المشروع</span>
-          </button>
+        <div class="ops-view-mode-bar" id="opsViewModeToggleBar" style="display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 2px 4px;">
+          <div style="display: flex; align-items: center; gap: 3px; flex: 1; min-width: 0;">
+            <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
+              <i class="fa-solid fa-calendar-day"></i>
+              <span>حسب اليوم</span>
+            </button>
+            <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
+              <i class="fa-solid fa-layer-group"></i>
+              <span>مجمع</span>
+            </button>
+            <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
+              <i class="fa-solid fa-folder-tree"></i>
+              <span>حسب المشروع</span>
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+            <span id="opsResultCount" role="status" style="font-size: 0.68rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); padding: 2px 6px; border-radius: 6px; white-space: nowrap;"></span>
+            <button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()" style="background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.32); color: #f43f5e; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px; min-height: 28px; height: 28px;">
+              <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> مسح الفلاتر
+            </button>
+          </div>
         </div>
-            <div class="ops-filter-footer"><span id="opsResultCount" role="status"></span><button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> مسح الفلاتر</button></div>
           </div>
           <div id="txOperationsList" class="ops-feed-container"></div>
         </div>
@@ -19217,7 +19224,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.54</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.55</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">

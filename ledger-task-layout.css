@@ -71,7 +71,7 @@ body.light-theme #appFrame #viewOperations {
   color: var(--ledger-text);
 }
 #appFrame #viewOperations .ops-search-row,
-#appFrame #viewOperations .ops-filter-footer { display: flex; gap: 4px; align-items: center; }
+#appFrame #viewOperations .ops-filter-footer { display: none !important; }
 #appFrame #viewOperations .ops-search-row label { min-width: 0; flex: 1; position: relative; }
 #appFrame #viewOperations .ops-search-row label > i { position: absolute; inset-inline-start: 9px; top: 50%; transform: translateY(-50%); color: var(--ledger-muted); pointer-events: none; font-size: .72rem; }
 #appFrame #viewOperations #opsSearchInput {
@@ -118,7 +118,7 @@ body.light-theme #appFrame #viewOperations {
   color: var(--ledger-accent); cursor: pointer; font: inherit; font-size: .75rem; font-weight: 800;
 }
 #appFrame #viewOperations .ops-picker-actions button:disabled { opacity: .48; cursor: default; }
-#appFrame #viewOperations .ops-filter-footer { justify-content: space-between; color: var(--ledger-muted); font-size: .76rem; }
+#appFrame #viewOperations .ops-filter-footer { display: none !important; }
 #appFrame #viewOperations #btnOpsClearFilters { min-height: 34px; }
 #appFrame #viewOperations :is(button,input,summary):focus-visible { outline: 2px solid var(--ledger-accent); outline-offset: 1px; }
 #appFrame #viewOperations .ops-date-group-header {
