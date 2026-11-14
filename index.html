@@ -159,8 +159,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.40';
-    var APP_BUILD_ID = 202611141300;
+    var APP_VERSION = 'v5.3.41';
+    var APP_BUILD_ID = 202611141315;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -9100,7 +9100,7 @@
       color: #0284c7 !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -9109,7 +9109,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -10490,22 +10490,23 @@
       font-size: 0.78rem !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.35rem, 4.6vw, 1.85rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
       direction: rtl !important;
       text-align: right !important;
       font-variant-numeric: tabular-nums !important;
-      line-height: 1.18 !important;
+      line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 18px rgba(56, 189, 248, 0.65) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
     body.light-theme .cockpit-hero-value {
       color: #0284c7 !important;
       text-shadow: none !important;
+      filter: drop-shadow(0 1px 1px rgba(2, 132, 199, 0.15)) !important;
     }
     .cockpit-hero-sub {
       font-size: 0.62rem !important;
@@ -12486,7 +12487,7 @@
     }
 
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -12495,7 +12496,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -12899,46 +12900,60 @@
     /* --- 4. Executive Wealth Cockpit: Zero-Dead-Space Master Layout --- */
     .kpi-master-wealth-cockpit {
       width: calc(100% - 10px) !important;
-      margin: 2px 5px 4px !important;
-      min-height: 82px !important;
+      margin: 2px 5px 6px !important;
+      min-height: 88px !important;
       height: auto !important;
       max-height: none !important;
       box-sizing: border-box !important;
       display: flex !important;
       align-items: stretch !important;
       justify-content: space-between !important;
-      padding: 5px 8px !important;
-      gap: 6px !important;
+      padding: 6px 10px !important;
+      gap: 8px !important;
       position: relative !important;
       overflow: hidden !important;
+      border-radius: 16px !important;
       transition: all 0.25s ease !important;
     }
 
-    /* الرصيد الفعلي الحالي: بطل رئيسي أكبر وأكثر بروزاً بوضوح تام */
+    /* الرصيد الفعلي الحالي: بطل رئيسي أكبر وأكثر بروزاً بوضوح تام بطريقة Antigravity */
     .cockpit-hero-side {
-      flex: 1.25 !important;
+      flex: 1.35 !important;
       min-width: 0 !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      padding: 2px 5px !important;
+      padding: 2px 4px !important;
       box-sizing: border-box !important;
       border-radius: 12px !important;
     }
 
     .cockpit-hero-label {
-      font-size: clamp(0.68rem, 2.0vw, 0.74rem) !important;
+      font-size: clamp(0.70rem, 2.1vw, 0.78rem) !important;
       font-weight: 800 !important;
       color: #94a3b8 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
+      gap: 6px !important;
       white-space: nowrap !important;
       line-height: 1.2 !important;
     }
 
+    .hero-wallet-icon-badge {
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(56, 189, 248, 0.18) !important;
+      color: #38bdf8 !important;
+      font-size: 0.85rem !important;
+      flex-shrink: 0 !important;
+    }
+
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -12947,9 +12962,25 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
+      margin-top: 2px !important;
+    }
+
+    body.light-theme .hero-wallet-icon-badge {
+      background: rgba(2, 132, 199, 0.12) !important;
+      color: #0284c7 !important;
+    }
+
+    body.light-theme .cockpit-hero-label {
+      color: #334155 !important;
+    }
+
+    body.light-theme .cockpit-hero-value {
+      color: #0284c7 !important;
+      text-shadow: none !important;
+      filter: drop-shadow(0 1px 1px rgba(2, 132, 199, 0.15)) !important;
     }
 
     .cockpit-hero-sub {
@@ -12968,18 +12999,21 @@
       width: 1px !important;
       align-self: stretch !important;
       margin: 2px 0 !important;
-      background: rgba(255, 255, 255, 0.12) !important;
+      background: linear-gradient(180deg, transparent, rgba(56, 189, 248, 0.3) 15%, rgba(56, 189, 248, 0.3) 85%, transparent) !important;
       flex-shrink: 0 !important;
+    }
+    body.light-theme .cockpit-divider {
+      background: linear-gradient(180deg, transparent, rgba(203, 213, 225, 0.9) 15%, rgba(203, 213, 225, 0.9) 85%, transparent) !important;
     }
 
     /* كبسولات التدفقات التوأم: متسعة ومريحة بدون أي فراغات ميتة */
     .cockpit-flow-side {
-      flex: 1.10 !important;
+      flex: 1.05 !important;
       min-width: 0 !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      gap: 4px !important;
+      gap: 5px !important;
       box-sizing: border-box !important;
     }
 
@@ -13050,7 +13084,7 @@
       line-height: 1.1 !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -13059,7 +13093,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -13910,21 +13944,29 @@
       text-wrap: balance;
     }
 
-    /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة */
+    /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة بطريقة Antigravity */
     #viewExpenses #topKpiThreeStrip {
       height: auto !important;
-      min-height: 100px !important;
-      padding-bottom: 8px !important;
-      overflow: visible !important;
+      min-height: 88px !important;
+      padding: 6px 10px !important;
+      overflow: hidden !important;
+      border-radius: 16px !important;
     }
     #viewExpenses .cockpit-hero-value {
-      font-size: clamp(2.20rem, 6.8vw, 2.95rem) !important;
-      font-weight: 1000 !important;
-      -webkit-text-stroke: 0.25px rgba(186, 230, 253, 0.65) !important;
-      text-shadow: 0 0 7px rgba(56, 189, 248, 0.62), 0 2px 24px rgba(56, 189, 248, 0.88) !important;
-      transform: translateY(-3px) scaleX(1.08) scaleY(1.30) !important;
-      transform-origin: right center !important;
-      line-height: 1.20 !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
+      font-weight: 950 !important;
+      -webkit-text-stroke: 0 !important;
+      text-shadow: 0 2px 14px rgba(56, 189, 248, 0.45) !important;
+      transform: none !important;
+      line-height: 1.15 !important;
+      letter-spacing: -0.3px !important;
+    }
+    body.light-theme #viewExpenses .cockpit-hero-value {
+      color: #0284c7 !important;
+      -webkit-text-stroke: 0 !important;
+      text-shadow: none !important;
+      filter: none !important;
+      transform: none !important;
     }
     #viewExpenses .cockpit-flow-side {
       align-items: stretch !important;
@@ -15337,41 +15379,17 @@
 
         </div>
 
-        <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + الذهب والبورصة + زر العملة المطور -->
-        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; width: calc(100% - 12px); box-sizing: border-box;">
+        <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + زر العملة المطور -->
+        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: calc(100% - 12px); box-sizing: border-box;">
           
           <!-- كلاستر المحفظة الموسع: أيقونة + قائمة موسعة لعرض كامل الاسم دون اقتصاص -->
-          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 175px; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
+          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 0; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
             <i class="fa-solid fa-wallet" style="color: #38bdf8; font-size: 1.05rem; flex-shrink: 0;"></i>
-            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.88rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
+            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.92rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
-          <!-- زر درج ملخص النشاط المالي الشامل (يفتح الشاشة الجانبية اليسرى) -->
-          <button type="button" class="tool-pill-action" id="btnOpenSummaryDrawer" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات والنشاط المالي" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.9)); color: #38bdf8; flex-shrink: 0;">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>ملخص</span>
-          </button>
-
-          <!-- زر شاشة الذهب والبورصة والعملات (يفتح الشاشة الجانبية اليمنى) -->
-          <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="openGoldDrawer()" title="الشاشة الجانبية اليمنى: شارت الذهب وأسعار العملات" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.9)); color: #fbbf24; flex-shrink: 0;">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>الذهب</span>
-          </button>
-
-          <!-- زر درج المهام والالتزامات العائلية (1-tap shortcut) -->
-          <button type="button" class="tool-pill-action" id="btnOpenTasksDrawer" onclick="openTasksFullScreenModal()" title="إدارة المهام والالتزامات العائلية والخطوات الفرعية" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(168, 85, 247, 0.5); background: linear-gradient(135deg, rgba(168, 85, 247, 0.20), rgba(15, 23, 42, 0.9)); color: #c084fc; flex-shrink: 0;">
-            <i class="fa-solid fa-list-check" style="color: #c084fc;"></i>
-            <span>المهام</span>
-          </button>
-
-          
-
-          
-
-
-
           <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 8px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: rgba(30, 41, 59, 0.85); color: #fbbf24; flex-shrink: 0;">
+          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 12px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: rgba(30, 41, 59, 0.85); color: #fbbf24; flex-shrink: 0;">
             <i class="fa-solid fa-coins"></i>
             <span id="activeCurrencyText">EGP</span>
           </div>
@@ -23029,19 +23047,19 @@ function generateRichDemoTransactions() {
           elBal.style.color = actualBalance >= 0 ? '#38bdf8' : '#f43f5e';
         }
 
-        // تحجيم ذكي للأرقام الكبيرة حتى تكون أكبر وأبرز ولا تتجاوز حدود البطاقة نهائياً
+        // تحجيم ذكي للأرقام الكبيرة حتى تكون أكبر وأبرز ومتناسبة مع حجم الكارت بطريقة Antigravity
         const balStr = elBal.textContent || '';
         if (balStr.length > 22) {
-          elBal.style.setProperty('font-size', 'clamp(1.00rem, 3.2vw, 1.25rem)', 'important');
+          elBal.style.setProperty('font-size', 'clamp(1.20rem, 3.8vw, 1.50rem)', 'important');
           elBal.style.letterSpacing = '-0.5px';
-        } else if (balStr.length > 16) {
-          elBal.style.setProperty('font-size', 'clamp(1.18rem, 3.8vw, 1.45rem)', 'important');
+        } else if (balStr.length > 18) {
+          elBal.style.setProperty('font-size', 'clamp(1.45rem, 4.5vw, 1.80rem)', 'important');
           elBal.style.letterSpacing = '-0.3px';
-        } else if (balStr.length > 11) {
-          elBal.style.setProperty('font-size', 'clamp(1.32rem, 4.2vw, 1.65rem)', 'important');
+        } else if (balStr.length > 13) {
+          elBal.style.setProperty('font-size', 'clamp(1.70rem, 5.4vw, 2.20rem)', 'important');
           elBal.style.letterSpacing = '-0.2px';
         } else {
-          elBal.style.setProperty('font-size', 'clamp(1.45rem, 4.8vw, 1.90rem)', 'important');
+          elBal.style.setProperty('font-size', 'clamp(1.95rem, 6.0vw, 2.50rem)', 'important');
           elBal.style.letterSpacing = '-0.2px';
         }
 
