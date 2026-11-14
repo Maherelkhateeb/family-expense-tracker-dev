@@ -1,0 +1,494 @@
+
+/* Compact, accessible, mobile-first appearance settings. No data-layer selectors. */
+#settingsModal .settings-modal-shell {
+  width: min(96vw, 520px) !important;
+  max-height: min(92dvh, 940px) !important;
+  border-radius: 16px !important;
+}
+#settingsModal .settings-modal-head {
+  padding: 8px 11px !important;
+  min-height: 53px !important;
+}
+#settingsModal #settingsModalTitle { font-size: .82rem !important; }
+#settingsModal .settings-modal-subtitle { font-size: .60rem !important; line-height: 1.3 !important; margin-top: 2px !important; }
+#settingsModal .version-badge { font-size: .49rem !important; padding: 1px 4px !important; }
+#settingsModal .settings-modal-scroll { padding: 7px 9px !important; gap: 7px !important; overscroll-behavior: contain; }
+#settingsModal .settings-user-card { padding: 5px 8px !important; border-radius: 10px !important; margin-bottom: 6px !important; }
+#settingsModal .settings-user-card img { width: 25px !important; height: 25px !important; }
+#settingsModal .settings-user-card button { padding: 5px 7px !important; font-size: .63rem !important; }
+#settingsSec_appearance[data-compact-ready="true"] {
+  padding: 0 !important; gap: 6px !important; border: 0 !important;
+  background: transparent !important; display: flex !important; flex-direction: column !important;
+}
+#settingsSec_appearance .compact-appearance-section {
+  border: 1px solid var(--appearance-border, #40516b) !important;
+  border-radius: 12px !important;
+  background: var(--appearance-panel-soft, #17243a) !important;
+  overflow: hidden; margin: 0 !important; min-width: 0;
+}
+#settingsSec_appearance .compact-appearance-heading {
+  color: var(--appearance-text, #f8fafc) !important;
+  background: transparent !important; border: 0 !important;
+  width: 100%; min-height: 37px; margin: 0;
+  padding: 7px 10px !important; display: flex; align-items: center; text-align: right;
+  gap: 7px; font: inherit; font-size: .73rem !important; font-weight: 850;
+}
+#settingsSec_appearance .compact-appearance-heading-icon { font-size: .82rem; color: var(--appearance-accent-text, #7dd3fc); width: 17px; flex: 0 0 17px; }
+#settingsSec_appearance .compact-appearance-title { min-width: 0; flex: 1; }
+#settingsSec_appearance .compact-appearance-summary {
+  font-size: .61rem !important; font-weight: 800 !important; min-width: 0;
+  max-width: 34%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  color: var(--appearance-accent-text, #7dd3fc) !important;
+  padding: 3px 6px; border-radius: 7px; border: 1px solid var(--appearance-border, #40516b);
+}
+#settingsSec_appearance .compact-appearance-panel {
+  padding: 0 9px 9px !important; display: flex !important; flex-direction: column !important; gap: 7px !important;
+  min-width: 0; border-top: 1px solid var(--appearance-border, #40516b);
+}
+#settingsSec_appearance .appearance-mode-row { margin: 8px 0 0 !important; gap: 6px !important; }
+#settingsSec_appearance .appearance-mode-button {
+  min-height: 33px !important; font-size: .69rem !important; padding: 5px 8px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance #settingsThemePreview {
+  margin: 0 !important; padding: 6px 8px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance .settings-live-preview-label { margin: 0 0 4px !important; font-size: .59rem !important; }
+#settingsSec_appearance .settings-live-preview-card {
+  padding: 6px 8px !important; min-height: 44px !important; gap: 7px !important; border-radius: 9px !important;
+}
+#settingsSec_appearance .settings-live-preview-icon { width: 27px !important; height: 27px !important; flex-basis: 27px !important; border-radius: 7px !important; }
+#settingsSec_appearance .settings-live-preview-copy strong { font-size: .68rem !important; }
+#settingsSec_appearance .settings-live-preview-copy small { font-size: .57rem !important; }
+#settingsSec_appearance .settings-live-preview-value { font-size: .65rem !important; }
+#settingsSec_appearance .appearance-preview-footnote { display: none !important; }
+#settingsSec_appearance .appearance-palette-grid {
+  margin: 8px 0 0 !important; display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
+}
+#settingsSec_appearance .theme-pill-option {
+  min-width: 0; min-height: 38px !important; border-radius: 8px !important;
+  padding: 5px 5px !important; font-size: .62rem !important;
+  line-height: 1.25 !important; gap: 4px !important;
+}
+#settingsSec_appearance .theme-color-dot {
+  width: 13px !important; height: 13px !important; flex-basis: 13px !important; border-radius: 50% !important;
+}
+#settingsSec_appearance .appearance-icon-grid {
+  margin-top: 8px !important; display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important;
+}
+#settingsSec_appearance .icon-theme-pill {
+  min-height: 39px !important; border-radius: 8px !important;
+  padding: 4px 3px !important; font-size: .62rem !important; line-height: 1.22 !important; gap: 1px !important;
+}
+#settingsSec_appearance .icon-color-dots { font-size: .60rem !important; letter-spacing: 0 !important; }
+#settingsSec_appearance .settings-font-grid {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
+  margin-top: 8px !important;
+}
+#settingsSec_appearance .settings-font-grid button {
+  min-width: 0; min-height: 34px !important; padding: 4px 3px !important;
+  border-radius: 8px !important; font-size: .62rem !important;
+}
+#settingsSec_appearance .settings-font-preview { padding: 6px 8px !important; margin: 0 !important; border-radius: 8px !important; }
+#settingsSec_appearance .settings-font-preview-label { font-size: .58rem !important; }
+#settingsSec_appearance .settings-font-preview-sample { font-size: .74rem !important; }
+#settingsSec_appearance .settings-control-tile { margin: 0 !important; padding: 6px 7px !important; border-radius: 9px !important; }
+#settingsSec_appearance .settings-control-tile > div:first-child { margin-bottom: 4px !important; }
+#settingsSec_appearance .settings-control-tile button { font-size: .63rem !important; min-height: 32px !important; padding: 4px 3px !important; }
+#settingsSec_appearance #cardStyleButtonsContainer {
+  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important; margin-top: 8px !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer button {
+  min-height: 42px !important; padding: 4px 3px !important; border-radius: 9px !important; gap: 1px !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer strong { font-size: .66rem !important; line-height: 1.2 !important; }
+#settingsSec_appearance #cardStyleButtonsContainer small { font-size: .53rem !important; line-height: 1.1 !important; }
+#settingsSec_appearance .compact-appearance-size { margin-top: 0 !important; }
+#settingsSec_appearance .compact-appearance-card-tile > div:first-child { display: none !important; }
+#settingsModal .settings-pane { flex: 0 0 auto; }
+#settingsSec_data .settings-data-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+#settingsSec_data .settings-data-actions button { min-width: 0; }
+
+.ops-project-filter-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+#btnOpsClearFilters {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--appearance-panel-soft, #17243a);
+  color: var(--appearance-text, #f8fafc);
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+body.light-theme #btnOpsClearFilters { background: #eef5ff; color: #17476d; }
+@media(max-width:365px) {
+  #settingsModal .settings-modal-shell { width: 98vw !important; }
+  #settingsSec_appearance .appearance-palette-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+  #settingsSec_appearance .appearance-icon-grid { grid-template-columns: repeat(3,minmax(0,1fr)) !important; }
+  #settingsSec_appearance .compact-appearance-summary { max-width: 29%; }
+}
+@media(min-width:550px) {
+  #settingsModal .settings-modal-shell { max-width: 510px !important; }
+}
+
+/* Respect hidden typography label despite its legacy inline display style. */
+#settingsSec_appearance .compact-appearance-font-panel > div:first-child > div:first-child[hidden] { display: none !important; }
+
+
+/* 2026-11-13: Fill incomplete last rows without fake blank cells.
+   Ten palettes: 3 + 3 + 2 + 2. Ten icons: 4 + 4 + 2.
+   Keep options, click handlers, and compact accordion height intact. */
+#settingsSec_appearance .appearance-palette-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option {
+  grid-column: span 2;
+}
+#settingsSec_appearance .appearance-palette-grid > .theme-pill-option:nth-child(n+7) {
+  grid-column: span 3;
+}
+#settingsSec_appearance .appearance-icon-grid > .icon-theme-pill:nth-last-child(-n+2) {
+  grid-column: span 2;
+}
+@media (max-width: 365px) {
+  #settingsSec_appearance .appearance-palette-grid,
+  #settingsSec_appearance .appearance-icon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #settingsSec_appearance .appearance-palette-grid > .theme-pill-option,
+  #settingsSec_appearance .appearance-icon-grid > .icon-theme-pill {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Financial numerals stay readable regardless of the chosen palette.
+   Fixes the dark amount-on-dark footer seen on light-theme expense cards.
+   Only touches the expense-category amount strip, not user data or branding. */
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #f8fafc !important;
+  border-top-color: #cbd5e1 !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half {
+  background: #111e34 !important;
+  border-top-color: #475569 !important;
+}
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-number-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-currency-label,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-sign {
+  color: #172033 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-number-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-currency-label,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half .cat-amount-sign {
+  color: #f8fafc !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-number-val,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-currency-label,
+body.light-theme #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-sign {
+  color: #b91c1c !important;
+}
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-number-val,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-currency-label,
+body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.has-spent .cat-amount-sign {
+  color: #fecaca !important;
+}
+
+/* Avoid dark-to-light background interpolation that briefly hides amounts. */
+#appFrame #viewExpenses .cat-card .cat-card-bottom-half { transition: none !important; }
+
+
+/* 2026-11-13 | Summary filters: compact, complete, single-row controls.
+   Dedicated summary rules avoid changing the main expense screen or data. */
+#summaryLeftDrawer.summary-rebuilt-drawer {
+  display: flex !important;
+  flex-direction: column !important;
+}
+#summaryLeftDrawer .summary-rebuilt-header {
+  padding: 9px 12px !important;
+  gap: 7px !important;
+}
+#summaryLeftDrawer .summary-header-icon {
+  width: 32px !important;
+  height: 32px !important;
+  flex-basis: 32px !important;
+}
+#summaryLeftDrawer .summary-rebuilt-controls {
+  flex: 0 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  padding: 6px 9px 8px !important;
+  min-height: 0 !important;
+}
+#summaryLeftDrawer .summary-group-mode {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+}
+#summaryLeftDrawer .summary-group-mode-btn {
+  height: 32px !important;
+  min-height: 32px !important;
+  font-size: .68rem !important;
+  padding: 2px 6px !important;
+}
+/* Auto flow accommodates the eight existing relatives + All in one RTL row.
+   An additional future member scrolls horizontally on very narrow screens,
+   never creates a second row or truncates the available controls. */
+#summaryLeftDrawer #summaryMemberSelector.summary-member-selector {
+  display: grid;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(34px, 1fr) !important;
+  grid-template-columns: none !important;
+  grid-template-rows: 27px !important;
+  align-items: stretch !important;
+  gap: 3px !important;
+  padding: 0 1px 2px !important;
+  margin: 0 !important;
+  max-width: 100%;
+  min-height: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+#summaryLeftDrawer #summaryMemberSelector.summary-member-selector::-webkit-scrollbar { display: none; }
+#summaryLeftDrawer .summary-member-selector .summary-member-btn {
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 27px !important;
+  min-height: 27px !important;
+  padding: 2px 1px !important;
+  border-radius: 7px !important;
+  font-size: clamp(9px, 2.35vw, 10.5px) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+}
+#summaryLeftDrawer .summary-period-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+#summaryLeftDrawer .summary-period-grid .summary-period-btn {
+  width: 100% !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  min-width: 0 !important;
+  padding: 3px 1px !important;
+  border-radius: 7px !important;
+  font-size: clamp(9px, 2.5vw, 11px) !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+  letter-spacing: -.16px;
+}
+#summaryLeftDrawer .summary-custom-date-row { margin: 0 !important; gap: 4px !important; }
+#summaryLeftDrawer .summary-currency-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  width: 100% !important;
+  min-height: 35px !important;
+  padding: 4px 6px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+#summaryLeftDrawer .summary-currency-row > span {
+  flex: 0 0 auto;
+  font-size: .65rem !important;
+}
+#summaryLeftDrawer .summary-currency-row > div {
+  display: flex !important;
+  flex: 0 1 auto !important;
+  align-items: center !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+#summaryLeftDrawer .summary-currency-btn {
+  padding: 3px 6px !important;
+  min-height: 26px !important;
+  font-size: .61rem !important;
+}
+#summaryLeftDrawer #summaryDrawerContent.summary-rebuilt-content {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 8px 10px 16px !important;
+  overflow-y: auto !important;
+}
+#summaryLeftDrawer .summary-selected-card { padding: 8px 10px !important; min-height: 0 !important; }
+#summaryLeftDrawer .summary-kpi { padding: 8px !important; gap: 3px !important; }
+#summaryLeftDrawer .summary-empty-state { min-height: 54px !important; padding: 9px 8px !important; gap: 4px !important; }
+#summaryLeftDrawer .summary-section { margin: 0 !important; }
+@media (max-width: 375px) {
+  #summaryLeftDrawer .summary-rebuilt-controls { padding-inline: 6px !important; }
+  #summaryLeftDrawer .summary-member-selector .summary-member-btn { font-size: 9px !important; }
+  #summaryLeftDrawer .summary-period-grid .summary-period-btn { font-size: .52rem !important; }
+}
+
+/* Card choices: 10 items fill rows 3 + 3 + 4 with no two empty cells.
+   Preserve every original selectable card style and its click handler. */
+#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  align-content: start !important;
+  align-items: stretch !important;
+  margin: 4px 0 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
+  grid-column: span 4;
+  min-width: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style]:nth-child(n+7) {
+  grid-column: span 3;
+}
+#settingsSec_appearance .compact-appearance-cards-panel,
+#settingsSec_appearance .compact-appearance-card-tile {
+  min-height: 0 !important;
+  height: auto !important;
+  align-content: start !important;
+  justify-content: flex-start !important;
+}
+#settingsSec_appearance .compact-appearance-cards-panel {
+  padding-bottom: 7px !important;
+}
+@media (max-width: 365px) {
+  #settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  #settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
+    grid-column: span 1 !important;
+  }
+}
+
+/* Summary: centered filters, inline range calendar, and single-line totals. */
+#summaryLeftDrawer .summary-member-btn,
+#summaryLeftDrawer .summary-period-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  text-indent: 0 !important;
+}
+#summaryLeftDrawer .summary-kpi-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+#summaryLeftDrawer .summary-kpi {
+  flex-direction: row !important;
+  align-items: baseline !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  padding: 8px 5px !important;
+  overflow-x: auto;
+}
+#summaryLeftDrawer .summary-kpi > span,
+#summaryLeftDrawer .summary-kpi > strong,
+#summaryLeftDrawer .summary-kpi > small {
+  flex: 0 0 auto;
+  font-size: clamp(8px, 2.25vw, 10px) !important;
+  line-height: 1.5 !important;
+  white-space: nowrap;
+}
+#summaryLeftDrawer .summary-kpi > small { margin-inline-start: auto; }
+#summaryInlineCalendar { display: none; }
+#summaryLeftDrawer.is-picking-dates #summaryInlineCalendar {
+  display: flex; flex: 1 1 auto; min-height: 0; padding: 0 9px 9px;
+  overflow-y: auto;
+}
+#summaryLeftDrawer.is-picking-dates #summaryDrawerContent { display: none !important; }
+#summaryLeftDrawer #customDatePickerDrawer.summary-inline-picker {
+  position: static !important; inset: auto !important;
+  width: 100% !important; height: auto !important; min-height: 0;
+  padding: 0 !important; background: transparent !important;
+  backdrop-filter: none !important; z-index: auto !important;
+  align-items: stretch !important;
+}
+#summaryLeftDrawer .summary-inline-picker .custom-date-sheet-card {
+  width: 100% !important; max-width: none !important;
+  max-height: none !important; min-height: 0;
+  padding: 10px !important; gap: 7px !important;
+  border-radius: 12px !important; box-shadow: none !important;
+  transform: none !important;
+}
+#summaryLeftDrawer .summary-inline-picker .range-calendar-months {
+  flex: 1 1 auto; min-height: 70px; max-height: none;
+}
+#summaryLeftDrawer .summary-inline-picker .custom-date-sheet-actions,
+#summaryLeftDrawer .summary-inline-picker .custom-date-sheet-head,
+#summaryLeftDrawer .summary-inline-picker .range-date-summary,
+#summaryLeftDrawer .summary-inline-picker .range-calendar-nav,
+#summaryLeftDrawer .summary-inline-picker .range-date-hint { flex-shrink: 0; }
+
+#summaryLeftDrawer .summary-kpi > span { gap: 2px !important; }
+#summaryLeftDrawer .summary-kpi > span > i { display: none; }
+
+/* Controls opt into centered labels. Prose, fields, and ledger rows keep RTL alignment.
+   The universal reset now inherits alignment instead of overriding every child. */
+button, input[type="button"], input[type="submit"], [role="tab"] {
+  text-align: center;
+}
+:is(.btn-modal-close, .summary-close-btn, .range-calendar-nav button,
+    .task-picker-month-heading button, .task-picker-stepper button,
+    .cockpit-privacy-btn, .btn-close, .close-btn) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  text-indent: 0 !important;
+  flex-shrink: 0 !important;
+}
+:is(.period-filter-pill, .summary-member-btn, .summary-period-btn,
+    .theme-pill-option, .icon-theme-pill, .font-size-pill,
+    .appearance-mode-button, .summary-currency-btn) {
+  text-align: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+:is(.btn-modal-close, .summary-close-btn, .range-calendar-nav button,
+    .task-picker-month-heading button, .task-picker-stepper button) > :is(i, span, svg) {
+  margin: 0 !important;
+  text-align: center !important;
+}

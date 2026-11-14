@@ -1,0 +1,401 @@
+      <div class="page-view" id="viewAnalytics" style="display: none;">
+
+        <!-- 1. الترويسة الرئيسية: زران كبيران فاخران للتبديل بين التحليل الفعلي وميزان المقارنات -->
+        <div class="analytics-main-tabs-bar" style="margin: 6px 8px 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="analytics-main-tab-btn active" id="btnTabActualAnalytics" onclick="switchAnalyticsMainTab('actual')" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 0.86rem;">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>تحليل المصروفات الفعلية</span>
+          </button>
+          <button class="analytics-main-tab-btn" id="btnTabComparisons" onclick="switchAnalyticsMainTab('comparisons')" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 0.86rem;">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>مقارنات ورقابة مالية</span>
+          </button>
+        </div>
+
+        <!-- 2. لوحة التحكم بالفترة الزمنية للمؤشرات: واضحة وثابتة لكافة الأقسام -->
+        <div class="analytics-control-panel" style="margin: 0 8px 10px; background: rgba(15, 23, 42, 0.9); border: 1.4px solid var(--border); border-radius: 14px; padding: 8px 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 0.80rem; font-weight: 800; color: #cbd5e1;"><i class="fa-regular fa-calendar-check" style="color: #38bdf8;"></i> الفترة الزمنية للتحليل:</span>
+            <span class="period-active-pill" id="analyticsPeriodActivePill" style="font-size: 0.74rem; padding: 2px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 800;">الشهر الحالي</span>
+          </div>
+          <div class="analytics-period-bar" style="display: flex; gap: 4px; width: 100%;">
+            <button class="analytics-period-btn" data-period="day" onclick="setAnalyticsPeriod('day')">اليوم</button>
+            <button class="analytics-period-btn" data-period="week" onclick="setAnalyticsPeriod('week')">الأسبوع</button>
+            <button class="analytics-period-btn active" data-period="month" onclick="setAnalyticsPeriod('month')">الشهر</button>
+            <button class="analytics-period-btn" data-period="all" onclick="setAnalyticsPeriod('all')">الكل</button>
+            <button class="analytics-period-btn" data-period="custom" onclick="toggleAnalyticsCustomRange()">مخصص ▾</button>
+          </div>
+          <div class="analytics-custom-range-box" id="analyticsCustomRangeBox" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
+              <input type="date" id="inpAnalyticsDateFrom" class="form-input-custom" style="padding: 4px 8px; font-size: 0.74rem; flex: 1;">
+              <span style="color: #64748b; font-size: 0.74rem;">إلى</span>
+              <input type="date" id="inpAnalyticsDateTo" class="form-input-custom" style="padding: 4px 8px; font-size: 0.74rem; flex: 1;">
+              <button class="btn-export-tool" onclick="applyAnalyticsCustomDate()" style="background: #0284c7; color: #fff; padding: 4px 12px; font-size: 0.74rem; font-weight: 800; border-radius: 8px;">تطبيق</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             القسم الأول: تحليل المصروفات الفعلية (Actual Expenses Suite)
+             ============================================================ -->
+        <div id="sectionActualAnalytics" style="display: block; padding: 0 8px 24px;">
+
+          <!-- 3. شريط فلاتر الأقسام الأساسية في منتصف الصفحة (ثابت وبارز ومستحيل يختفي أبداً) -->
+          <div class="analytics-section-nav" id="analyticsStickyNav" style="display: flex !important; gap: 6px !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.4px solid rgba(56, 189, 248, 0.3) !important; padding: 6px !important; border-radius: 14px !important; overflow-x: auto !important; scrollbar-width: none !important; margin: 0 0 12px 0 !important; width: 100% !important; box-sizing: border-box !important; position: static !important;">
+            <button class="analytics-sec-btn active" data-sec="categories" onclick="switchAnalyticsSection('categories')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-pie" style="color: #10b981;"></i> التصنيفات
+            </button>
+            <button class="analytics-sec-btn" data-sec="members" onclick="switchAnalyticsSection('members')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-users" style="color: #38bdf8;"></i> أفراد العائلة
+            </button>
+            <button class="analytics-sec-btn" data-sec="timeline" onclick="switchAnalyticsSection('timeline')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-line" style="color: #fbbf24;"></i> المسار اليومي
+            </button>
+            <button class="analytics-sec-btn" data-sec="monthly" onclick="switchAnalyticsSection('monthly')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-column" style="color: #8b5cf6;"></i> مقارنة الشهور
+            </button>
+            <button class="analytics-sec-btn" data-sec="wallets" onclick="switchAnalyticsSection('wallets')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-wallet" style="color: #ec4899;"></i> قنوات الدفع
+            </button>
+          </div>
+
+          <!-- 4. شبكة المؤشرات المالية الستة التنفيذية المتطورة -->
+          <div class="kpi-master-grid-lux-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+            <!-- 1. إجمالي المصروفات -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(244, 63, 94, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>إجمالي المنصرف الفعلي</span><i class="fa-solid fa-arrow-trend-down" style="color: #ef4444;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxExpense" style="color: #ef4444; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+              <div class="kpi-lux-sub" id="kpiLuxExpenseSub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">المنصرف الحقيقي للفترة</div>
+            </div>
+            <!-- 2. متوسط الصرف اليومي -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>المعدل اليومي</span><i class="fa-solid fa-chart-line" style="color: #fbbf24;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxDailyAverage" style="color: #fbbf24; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+              <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">متوسط الاستهلاك اليومي</div>
+            </div>
+            <!-- 3. أعلى يوم إنفاقاً -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(249, 115, 22, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>أعلى يوم إنفاقاً</span><i class="fa-solid fa-fire" style="color: #f97316;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxPeakDay" style="color: #f97316; font-size: 0.90rem; font-weight: 900; direction: rtl;">-</div>
+              <div class="kpi-lux-sub" id="kpiLuxPeakDaySub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">تاريخ الذروة الاستهلاكية</div>
+            </div>
+            <!-- 4. أكبر حركة صرف فردية -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(236, 72, 153, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>أكبر حركة صرف</span><i class="fa-solid fa-receipt" style="color: #ec4899;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxLargestTx" style="color: #ec4899; font-size: 0.90rem; font-weight: 900; direction: rtl;">-</div>
+              <div class="kpi-lux-sub" id="kpiLuxLargestTxSub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">أكبر فاتورة مسجلة</div>
+            </div>
+            <!-- 5. سرعة الحركات والنشاط -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>حجم المعاملات</span><i class="fa-solid fa-bolt" style="color: #38bdf8;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxTxStats" style="color: #38bdf8; font-size: 0.90rem; font-weight: 900; direction: rtl;">0 حركة</div>
+              <div class="kpi-lux-sub" id="kpiLuxTxStatsSub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">إجمالي فواتير الفترة</div>
+            </div>
+            <!-- 6. نسبة التغطية والأمان النقدي -->
+            <div class="kpi-lux-card" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #94a3b8; margin-bottom: 2px;">
+                <span>صافي التدفق والأمان</span><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiLuxCoverageRate" style="color: #10b981; font-size: 0.90rem; font-weight: 900; direction: rtl;">100%</div>
+              <div class="kpi-lux-sub" id="kpiLuxCoverageSub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">فائض سيولة وتغطية</div>
+            </div>
+          </div>
+
+          <!-- 5. ألواح العرض والشارتات الخمسة التفاعلية -->
+
+          <!-- (أ) لوح التصنيفات -->
+          <div class="analytics-content-pane active" id="paneCategories" style="display: block;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+              <div class="chart-glass-head" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-chart-pie" style="color: #10b981;"></i>
+                    <span>توزيع المصروفات حسب التصنيف</span>
+                  </div>
+                </div>
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                  <button type="button" class="btn-export-tool active" id="btnChartTypePie" onclick="switchCategoryChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-pie"></i> دائري
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypeDoughnut" onclick="switchCategoryChartFormat('doughnut', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-circle-notch"></i> دونات
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypeBar" onclick="switchCategoryChartFormat('bar', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-column"></i> أعمدة
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypePolar" onclick="switchCategoryChartFormat('polarArea', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-compass"></i> قطبي
+                  </button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 330px; position: relative;">
+                <canvas id="executiveCategoryCanvas"></canvas>
+              </div>
+              <div class="cat-breakdown-legend" id="categoryBreakdownLegend" style="margin-top: 12px;"></div>
+            </div>
+          </div>
+
+          <!-- (ب) لوح أفراد العائلة والبيت -->
+          <div class="analytics-content-pane" id="paneMembers" style="display: none;">
+            
+            <!-- 1. التحليل العام لأفراد العائلة مع شريط تبديل أشكال الشارت -->
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
+              <div class="chart-glass-head" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-users"></i>
+                    <span>توزيع المصروفات بين أفراد الأسرة والبيت</span>
+                  </div>
+                </div>
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                  <button type="button" class="btn-export-tool active" id="btnMemChartTypePie" onclick="switchMemberChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-pie"></i> دائري
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypeDoughnut" onclick="switchMemberChartFormat('doughnut', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-circle-notch"></i> دونات
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypeBar" onclick="switchMemberChartFormat('bar', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-column"></i> أعمدة
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypePolar" onclick="switchMemberChartFormat('polarArea', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-compass"></i> قطبي
+                  </button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 230px; position: relative; margin-bottom: 12px;">
+                <canvas id="anaMembersCanvas"></canvas>
+              </div>
+              <div class="member-lux-grid" id="memberAnalyticsLuxGrid"></div>
+            </div>
+
+            <!-- 2. التحليل الخاص للفرد بنوع المصروف -->
+            <div class="chart-glass-panel" id="panelMemberCatBreakdown" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 8px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f59e0b; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-tags"></i>
+                  <span>التحليل التفصيلي بنوع المصروف لكل شخص</span>
+                </div>
+              </div>
+
+              <!-- شريط كبسولات اختيار الشخص -->
+              <div class="member-selector-strip" id="memberAnalyticsSelectorStrip" style="display: flex; gap: 8px; overflow-x: auto; padding: 6px 2px 10px; margin-bottom: 8px;"></div>
+
+              <div id="memberSelectedHeroCard" style="margin-bottom: 10px;"></div>
+
+              <div class="chart-canvas-wrap" style="height: 200px; position: relative; margin-bottom: 12px;">
+                <canvas id="memberCatChartCanvas"></canvas>
+              </div>
+
+              <div class="chart-glass-head" style="padding: 6px 10px; background: rgba(56, 189, 248, 0.08); border-radius: 8px; margin-bottom: 8px;">
+                <span style="font-size: 0.80rem; font-weight: 800; color: #38bdf8;" id="memberCatBreakdownTitle">
+                  <i class="fa-solid fa-list-check"></i> التوزيع المحاسبي التفصيلي حسب البنود:
+                </span>
+              </div>
+              <div class="member-cat-rank-list" id="memberCatRankList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+            </div>
+
+          </div>
+
+          <!-- (ج) لوح المسار الزمني والمنحنى اليومي -->
+          <div class="analytics-content-pane" id="paneTimeline" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span>منحنى ومسار الإنفاق اليومي طوال الفترة</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+                <canvas id="dailyTimelineCanvas"></canvas>
+              </div>
+              <div id="timelineInsightsBox" style="margin-top: 10px;"></div>
+            </div>
+          </div>
+
+          <!-- (د) لوح مقارنة الشهور -->
+          <div class="analytics-content-pane" id="paneMonthly" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #8b5cf6; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-chart-column"></i>
+                  <span>مقارنة المصروفات عبر الشهور</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+                <canvas id="monthlyCompareCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- (هـ) لوح قنوات الدفع والمحافظ -->
+          <div class="analytics-content-pane" id="paneWallets" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #ec4899; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-wallet"></i>
+                  <span>توزيع المصروفات بحسب قنوات الدفع والمحافظ</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 330px; position: relative;">
+                <canvas id="walletsDistributionCanvas"></canvas>
+              </div>
+              <div id="walletsBreakdownLegend" style="margin-top: 10px;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================================
+             القسم الثاني: المقارنات والرقابة المالية (Comparisons & Control)
+             ============================================================ -->
+        <div id="sectionComparisons" style="display: none; padding: 0 8px 24px;">
+          
+          <!-- ترويسة الرقابة والمقارنات -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <div style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <span>مقارنة المصروفات الفعلية والتقديرية والمبالغ المستلمة</span>
+              </div>
+
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-export-tool excel-btn" onclick="exportComparisonsAuditExcel()" title="تصدير تقرير المقارنات لإكسيل" style="padding: 4px 8px; font-size: 0.74rem;">
+                <i class="fa-solid fa-file-excel"></i> إكسيل
+              </button>
+              <button class="btn-export-tool pdf-btn" onclick="window.print()" title="طباعة كشف المقارنة" style="padding: 4px 8px; font-size: 0.74rem;">
+                <i class="fa-solid fa-file-pdf"></i> PDF
+              </button>
+            </div>
+          </div>
+
+          <!-- بطاقات المقارنة التنفيذية -->
+          <div class="kpi-master-grid-lux-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+            <div class="kpi-lux-card" style="border: 1.2px solid rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                <span style="color: #34d399;">المبالغ المستلمة (الدخل)</span><i class="fa-solid fa-arrow-down-left" style="color: #10b981;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiCompReceived" style="color: #10b981; font-size: 0.95rem; font-weight: 900; direction: rtl;">+ 0.00 ج.م</div>
+              <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">إجمالي الوارد والسيولة</div>
+            </div>
+
+            <div class="kpi-lux-card" style="border: 1.2px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                <span style="color: #fbbf24;">المصروفات التقديرية</span><i class="fa-solid fa-hand-holding-dollar" style="color: #f59e0b;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiCompEstimated" style="color: #fbbf24; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+              <div class="kpi-lux-sub" id="kpiCompEstimatedSub" style="font-size: 0.65rem; color: #64748b;">طلبات الصرف المعتمدة</div>
+            </div>
+
+            <div class="kpi-lux-card" style="border: 1.2px solid rgba(244, 63, 94, 0.35); background: rgba(244, 63, 94, 0.08); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                <span style="color: #f87171;">المصروفات الفعلية</span><i class="fa-solid fa-arrow-up-right" style="color: #f43f5e;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiCompActual" style="color: #f43f5e; font-size: 0.95rem; font-weight: 900; direction: rtl;">- 0.00 ج.م</div>
+              <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">المنصرف الحقيقي الموثق</div>
+            </div>
+
+            <div class="kpi-lux-card" style="border: 1.2px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.08); border-radius: 12px; padding: 8px 10px;">
+              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                <span style="color: #38bdf8;">فائض / عجز السيولة</span><i class="fa-solid fa-vault" style="color: #38bdf8;"></i>
+              </div>
+              <div class="kpi-lux-value" id="kpiCompCashMargin" style="color: #38bdf8; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+              <div class="kpi-lux-sub" id="kpiCompCashMarginSub" style="font-size: 0.65rem; color: #64748b;">الفارق بين الدخل والمنصرف</div>
+            </div>
+          </div>
+
+          <!-- شارت المقارنة الثلاثي -->
+          <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+            <div class="chart-glass-head" style="margin-bottom: 10px;">
+              <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-chart-column"></i>
+                <span>مقارنة المحاور الثلاثة (مستلم مقابل تقديري مقابل فعلي)</span>
+              </div>
+            </div>
+            <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+              <canvas id="anaThreePillarCompareCanvas"></canvas>
+            </div>
+          </div>
+
+          <!-- أزرار أبعاد المقارنة التفصيلية -->
+          <div style="display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto;">
+            <button class="btn-export-tool active" id="btnCompDimCat" onclick="switchComparisonDimension('category')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+              <i class="fa-solid fa-tags"></i> حسب التصنيفات
+            </button>
+            <button class="btn-export-tool" id="btnCompDimMem" onclick="switchComparisonDimension('member')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+              <i class="fa-solid fa-users"></i> حسب الأشخاص والبيت
+            </button>
+            <button class="btn-export-tool" id="btnCompDimMo" onclick="switchComparisonDimension('month')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+              <i class="fa-solid fa-calendar-days"></i> مقارنة الشهور
+            </button>
+          </div>
+
+          <!-- جداول المقارنة التفصيلية -->
+          <div id="comparisonsCatTableContainer" style="overflow-x: auto; margin-top: 8px;"></div>
+          <div id="comparisonsMemberTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
+          <div id="comparisonsMonthTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
+
+        </div>
+
+      </div><div class="page-view" id="viewRequests" style="display: none;">
+        
+        <!-- ============================================================
+             شريط الأزرار الثلاثة الرئيسية المنفصلة لصفحة طلب
+             ============================================================ -->
+        <div class="requests-view-switcher" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 2px 0 10px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 14px; border: 1.2px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);">
+          <!-- الزر الأول: طلب وسجل الطلبات -->
+          <button type="button" id="btnMainTabRequests" onclick="switchRequestMainSection('requests')" class="req-main-tab-btn active" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; box-shadow: 0 3px 10px rgba(236, 72, 153, 0.35);">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+            <span>الطلبات والسجل</span>
+          </button>
+
+          <!-- الزر الثاني: تسجيل الدخل وعرض التسجيلات السابقة -->
+          <button type="button" id="btnMainTabIncome" onclick="switchRequestMainSection('income')" class="req-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
+            <i class="fa-solid fa-circle-dollar-to-slot" style="color: #10b981;"></i>
+            <span>تسجيل الدخل</span>
+          </button>
+
+          <!-- الزر الثالث: المحافظ والحركات والتحليل والتصدير -->
+          <button type="button" id="btnMainTabWallets" onclick="switchRequestMainSection('wallets')" class="req-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 800; font-size: 0.74rem; display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: #94a3b8;">
+            <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
+            <span>المحافظ والحركات</span>
+          </button>
+        </div>
+
+
+        <!-- ============================================================
+             القسم الأول: الطلبات وسجل الطلبات (#secReqRequests)
+             ============================================================ -->
+        <div id="secReqRequests" style="display: block;">
+          
+          <!-- شريط التبديل الفرعي بين إنشاء طلب وسجل الطلبات -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+            <button type="button" id="btnSubReqNew" onclick="switchRequestSubTab('new')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <i class="fa-solid fa-file-circle-plus"></i>
+              <span>إنشاء طلب مصروف جديد</span>
+            </button>
+            <button type="button" id="btnSubReqList" onclick="switchRequestSubTab('list')" style="padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: transparent; color: #94a3b8; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <span>سجل متابعة الطلبات</span>
+              <span class="badge" id="reqPendingCountBadge" style="background: rgba(236, 72, 153, 0.25); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.4); padding: 1px 6px; border-radius: 8px; font-size: 0.64rem;">0 معلق</span>
+            </button>
+          </div>
+
+          <!-- لوحة نموذج إنشاء طلب جديد -->
+          <div id="panelReqNewForm" class="app-card-panel" style="padding: 12px 14px; border-radius: 16px; margin: 0; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95)); border: 1.4px solid rgba(236, 72, 153, 0.35); box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <div style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-hand-holding-dollar"></i>
+                <span>طلب مبلغ مالي جديد</span>
+              </div>
+              <span id="lblReqCurrentMember" style="font-size: 0.70rem; font-weight: 900; color: #38bdf8;">أية</span>

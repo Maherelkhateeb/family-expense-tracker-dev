@@ -1,0 +1,168 @@
+id="tasksFullScreenModal" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 100050; background: var(--bg-main, #0b1329); overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0; margin: 0; box-sizing: border-box; direction: rtl;" dir="rtl">
+    
+    <!-- شريط علوي ذكي وثابت للشاشة الكاملة -->
+    <header style="position: sticky; top: 0; z-index: 100; background: rgba(11, 19, 41, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1.2px solid rgba(168, 85, 247, 0.35); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+      <!-- زر إغلاق صريح وبارز جداً للرجوع للرئيسية بلمسة واحدة -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" onclick="closeTasksFullScreenModal()" style="height: 36px; padding: 0 14px; border-radius: 9px; background: rgba(244, 63, 94, 0.18); border: 1.2px solid rgba(244, 63, 94, 0.45); color: #f43f5e; font-size: 0.82rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(244, 63, 94, 0.25); transition: all 0.2s;">
+          <i class="fa-solid fa-xmark" style="font-size: 1rem;"></i>
+          <span>إغلاق</span>
+        </button>
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <div style="width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, #a855f7, #6366f1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.05rem; box-shadow: 0 3px 10px rgba(168, 85, 247, 0.35);">
+            <i class="fa-solid fa-calendar-check"></i>
+          </div>
+          <div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- شريط التبديل الثلاثي الرئيسي: المهام / التقويم / الإنتاجية -->
+      <div style="display: flex; gap: 4px; background: rgba(15, 23, 42, 0.9); padding: 3px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <button type="button" id="btnTaskTabList" onclick="switchTasksViewMode('list')" class="btn-tasks-nav-tab active" style="padding: 5px 12px; border-radius: 8px; font-size: 0.74rem; font-weight: 900; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4); transition: all 0.2s;">
+          <i class="fa-solid fa-list-check"></i> <span>المهام</span>
+        </button>
+        <button type="button" id="btnTaskTabCalendar" onclick="switchTasksViewMode('calendar')" class="btn-tasks-nav-tab" style="padding: 5px 12px; border-radius: 8px; font-size: 0.74rem; font-weight: 900; border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; background: transparent; color: #94a3b8; transition: all 0.2s;">
+          <i class="fa-solid fa-calendar-days"></i> <span>التقويم</span>
+        </button>
+        <!-- تم دمج الإنتاجية وتثبيتها أعلى قائمة المهام -->
+      </div>
+
+      <!-- مدخلات رفع الصور المخفية للمهام والمهام الفرعية -->
+      <input type="file" id="primaryTaskPhotoFileInput" accept="image/*" capture="environment" style="display: none;" onchange="handlePrimaryTaskPhotoChosen(event)">
+      <input type="file" id="subtaskPhotoFileInput" accept="image/*" capture="environment" style="display: none;" onchange="handleSubtaskPhotoChosen(event)">
+
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button type="button" onclick="openOrToggleUnifiedTaskCreator()" style="height: 36px; padding: 0 14px; border-radius: 9px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.4);">
+          <i class="fa-solid fa-circle-plus"></i>
+          <span>+ إضافة مهمة جديدة</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- المحتوى الرئيسي للمهام -->
+    <main style="max-width: 920px; margin: 0 auto; padding: 12px 12px 80px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;">
+      
+      <!-- ==========================================================
+           1. التبويب الأول: شاشة المهام والقوائم (tasksTabListView)
+           ========================================================== -->
+      <div id="tasksTabListView" style="display: flex; flex-direction: column; gap: 10px;">
+        <!-- كارت مؤشرات الإنتاجية الذكي والمثبت دائماً أعلى قائمة المهام -->
+        <div id="tasksProductivityPinnedCard" style="background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); border-radius: 14px; padding: 10px 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="font-size: 0.80rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-chart-line" style="color: #c084fc;"></i>
+              <span>مؤشرات الإنتاجية والإنجاز:</span>
+            </div>
+            <span id="pinnedTasksCompletionRateBadge" style="font-size: 0.72rem; font-weight: 950; color: #34d399; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); padding: 1px 8px; border-radius: 8px;">0%</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center; margin-bottom: 6px;">
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 4px; border-radius: 7px;">
+              <div style="font-size: 0.60rem; color: #94a3b8;">إجمالي</div>
+              <div id="pinnedTasksTotalCount" style="font-size: 0.82rem; font-weight: 900; color: #38bdf8;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 4px; border-radius: 7px;">
+              <div style="font-size: 0.60rem; color: #94a3b8;">مكتمل</div>
+              <div id="pinnedTasksDoneCount" style="font-size: 0.82rem; font-weight: 900; color: #34d399;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 4px; border-radius: 7px;">
+              <div style="font-size: 0.60rem; color: #94a3b8;">متبقي</div>
+              <div id="pinnedTasksPendingCount" style="font-size: 0.82rem; font-weight: 900; color: #fbbf24;">0</div>
+            </div>
+            <div style="background: rgba(30, 41, 59, 0.6); padding: 4px; border-radius: 7px;">
+              <div style="font-size: 0.60rem; color: #94a3b8;">متأخر</div>
+              <div id="pinnedTasksOverdueCount" style="font-size: 0.82rem; font-weight: 900; color: #f43f5e;">0</div>
+            </div>
+          </div>
+          <div style="width: 100%; height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
+            <div id="pinnedTasksProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #10b981); transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+
+        
+        <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة) -->
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98)); border: 1.5px solid rgba(168, 85, 247, 0.45); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transition: all 0.3s ease;">
+          
+          <!-- هيدر كارت الإضافة الموحد مع شارة التاج النشط وحالة الشاشة الموحدة -->
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #a855f7, #6366f1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </div>
+              <span style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
+              <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.70rem; color: #34d399; font-weight: 850; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 6px;">✓ إدخال وتحديد مباشر</span>
+            </div>
+          </div>
+
+          <!-- 1. بيان المهمة (عنوان / تفاصيل) -->
+          <div style="display: flex; flex-direction: column; gap: 5px;">
+            <label for="quickTaskTitleInput" style="font-size: 0.75rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-align-right" style="color: #a855f7;"></i>
+              <span>بيان المهمة / التفاصيل:</span>
+            </label>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <input type="text" id="quickTaskTitleInput" placeholder="اكتب بيان المهمة هنا... (مثال: سداد فاتورة الكهرباء والإنترنت)" style="flex: 1; height: 42px; border-radius: 11px; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); color: #fff; font-size: 0.86rem; font-weight: 800; padding: 0 14px; outline: none; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#c084fc'" onblur="this.style.borderColor='rgba(168, 85, 247, 0.4)'" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
+              <button type="button" onclick="handleQuickTaskAdd()" style="height: 42px; padding: 0 16px; border-radius: 11px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.84rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.45); flex-shrink: 0; transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
+                <i class="fa-solid fa-plus"></i>
+                <span>إضافة</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.74rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
+                <span>اختر التاج / الوسم:</span>
+              </span>
+              <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">(اضغط للتبديل الفوري)</span>
+            </div>
+            <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
+              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
+              <button type="button" class="btn-unified-tag-chip active" data-tag="general" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="planned" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="home" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="bills" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="health" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
+              <button type="button" class="btn-unified-tag-chip" data-tag="work" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
+            </div>
+          </div>
+
+          <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
+          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
+                <span>تحديد موعد المهمة (التاريخ والساعة معاً من نفس الشاشة):</span>
+              </span>
+              <span id="lblUnifiedTaskDateTimeDisplay" style="font-size: 0.68rem; font-weight: 850; color: #38bdf8;">اليوم</span>
+            </div>
+
+            <!-- شبكة التاريخ والساعة -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <!-- عمود التاريخ -->
+              <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">📅 التاريخ:</label>
+                <!-- اختصارات سريعة للأيام -->
+                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
+                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
+                </div>
+                <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
+                <input type="date" id="inlineTaskDueDate" style="height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box; width: 100%;" onchange="onInlineDateCustomChange(this.value)">
+              </div>
+
+              <!-- عمود الساعة / الوقت -->
+              <div style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">⏰ التوقيت (الساعة):</label>
+                <!-- اختصارات سريعة للساعات -->
+                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup">
+                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00'

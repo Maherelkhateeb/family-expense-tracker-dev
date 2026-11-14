@@ -1,0 +1,43 @@
+/* Scoped market workspace, respecting the user's light/dark mode. */
+#goldDrawerPanel { --market-surface:#142136; --market-base:#0c1525; --market-text:#f1f5f9; --market-muted:#b0bdcf; --market-line:#314258; --market-accent:#f5cc76; width:min(100vw,480px)!important; height:100dvh!important; max-height:100dvh!important; border-radius:0!important; background:var(--market-base)!important; color:var(--market-text); }
+body.light-theme #goldDrawerPanel { --market-surface:#fff; --market-base:#f3f6fa; --market-text:#172539; --market-muted:#53647a; --market-line:#dce3ec; --market-accent:#835700; }
+#goldDrawerPanel .gold-market-topbar { background:var(--market-surface)!important; padding:12px!important; border-bottom:1px solid var(--market-line)!important; }
+#goldDrawerPanel .drawer-main-title { color:var(--market-text)!important; font-size:1rem!important; }
+#goldDrawerPanel .gold-market-toolbar {display:grid!important;grid-template-columns:1fr auto;gap:8px!important;align-items:start!important;}
+#goldDrawerPanel .gold-market-source-chips {gap:5px!important;}
+#goldDrawerPanel .market-source-pill-chart {display:none;}
+#goldDrawerPanel .market-update-status {font-size:.65rem!important;flex-basis:100%;color:var(--market-muted)!important;background:none!important;padding:0!important;line-height:1.6;}
+#goldDrawerPanel .market-update-status[data-status=stale] {color:#e37f7f!important;}
+body.light-theme #goldDrawerPanel .market-update-status[data-status=stale] {color:#a72e36!important;}
+#goldDrawerPanel .gold-refresh-btn {min-height:36px!important;display:flex;align-items:center;justify-content:center;gap:5px;}
+#goldDrawerPanel .btn-close-drawer {display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:1!important;padding:0!important;color:var(--market-text)!important;border-color:var(--market-line)!important;flex-shrink:0;}
+#goldDrawerPanel .gold-market-content {padding:10px 12px 24px!important;gap:10px!important;}
+#goldDrawerPanel .gold-market-section {background:var(--market-surface)!important;border:1px solid var(--market-line)!important;border-radius:14px!important;box-shadow:none!important;padding:12px!important;}
+#goldDrawerPanel .market-section-heading {color:var(--market-text)!important;gap:8px;align-items:center!important;font-size:.78rem!important;}
+#goldDrawerPanel #goldRatesFreshnessHint {font-size:.58rem!important;white-space:nowrap;color:var(--market-muted)!important;}
+#goldDrawerPanel .market-box {min-width:0;background:var(--market-base)!important;border:1px solid var(--market-line)!important;border-radius:10px!important;padding:10px 8px!important;box-shadow:none!important;}
+#goldDrawerPanel .market-box::after {display:none!important;}
+#goldDrawerPanel .market-box-title {color:var(--market-muted)!important;justify-content:center!important;text-align:center!important;font-size:.7rem!important;min-height:0!important;}
+#goldDrawerPanel .market-box-val {color:var(--market-text)!important;font-size:clamp(.95rem,4vw,1.15rem)!important;text-align:center!important;line-height:1.6!important;margin:3px 0!important;white-space:nowrap;}
+#goldDrawerPanel .gold-21-box {border-color:var(--market-accent)!important;}
+#goldDrawerPanel .market-box-sub {color:var(--market-muted)!important;font-size:.6rem!important;gap:4px!important;flex-wrap:wrap;justify-content:center!important;text-align:center;}
+#goldDrawerPanel .market-buy-price {text-align:center;font-size:.6rem;color:var(--market-muted);margin-top:5px;line-height:1.5;}
+#goldDrawerPanel .change-tag[hidden] {display:none!important;}
+#goldDrawerPanel .global-ounce-card {grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:3px;}
+#goldDrawerPanel #tvGoldOunceTime {grid-column:1/-1;text-align:center;}
+#goldDrawerPanel .market-provenance {font-size:.64rem;line-height:1.7;color:var(--market-muted);padding:0 2px;}
+#goldDrawerPanel .market-provenance p {margin:0 0 3px;}
+#goldDrawerPanel .market-source-links {display:flex;gap:12px;flex-wrap:wrap;}
+#goldDrawerPanel .market-source-links a {color:var(--market-accent);text-decoration:underline;}
+#goldDrawerPanel .gold-tool-panel {border:1px solid var(--market-line);border-radius:12px;background:var(--market-surface);}
+#goldDrawerPanel .gold-tool-panel>summary {padding:12px;cursor:pointer;font-size:.78rem;font-weight:800;color:var(--market-text);}
+#goldDrawerPanel .gold-tool-panel .gold-market-section {border:0!important;padding-top:0!important;}
+#goldDrawerPanel .gold-calc-summary,#goldDrawerPanel .gold-calc-breakdown {background:var(--market-base)!important;border-color:var(--market-line)!important;box-shadow:none!important;}
+#goldDrawerPanel .gold-calculator-section :is(label,span),#goldDrawerPanel .gold-valuation-section div {color:var(--market-text)!important;}
+#goldDrawerPanel .gold-calculator-section :is(input,select,button) {background:var(--market-base)!important;color:var(--market-text)!important;border-color:var(--market-line)!important;}
+#goldDrawerPanel :is(#calcFinalTotal,#calcNetCostVal,#goldValuationText) {color:var(--market-accent)!important;}
+#goldDrawerPanel .gold-calc-presets {display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));}
+#goldDrawerPanel iframe {max-width:100%;}
+@media(max-width:360px){#goldDrawerPanel .gold-market-content{padding-inline:8px!important;}#goldDrawerPanel .gold-market-section{padding:9px!important;}#goldDrawerPanel .market-box{padding:8px 5px!important;}}
+#goldDrawerPanel .gold-calc-summary > div {color:var(--market-accent)!important;}
+#goldDrawerPanel .gold-calculator-section > div:first-child {color:var(--market-text)!important;flex-wrap:wrap;gap:5px;}

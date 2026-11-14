@@ -1,0 +1,40 @@
+<div class="modal-overlay modal-overlay-custom" id="newBudgetPlanModal">
+    <div class="modal-content-card" style="max-width: 480px;">
+      <div class="modal-head">
+        <h3 class="modal-title-custom">
+          <i class="fa-solid fa-calculator" style="color: #38bdf8;"></i>
+          <span>إنشاء ميزانية تقديرية جديدة</span>
+        </h3>
+        <button type="button" class="btn-modal-close" onclick="closeModal('newBudgetPlanModal')" aria-label="إغلاق">&times;</button>
+      </div>
+      <div style="padding: 14px 16px;">
+        <div class="form-group-custom" style="margin-bottom: 12px;">
+          <label class="form-label-custom">مسمى الميزانية التقديرية <span class="req">*</span></label>
+          <input type="text" id="newPlanNameInput" class="form-input-custom" placeholder="مثال: ميزانية شهر ديسمبر 2026، ميزانية رمضان، مصيف...">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+          <div class="form-group-custom">
+            <label class="form-label-custom">الشهر المستهدف <span class="req">*</span></label>
+            <input type="month" id="newPlanMonthInput" class="form-input-custom">
+          </div>
+          <div class="form-group-custom">
+            <label class="form-label-custom">الدخل المبدئي المتوقع (ج.م)</label>
+            <input type="number" step="500" id="newPlanTargetIncomeInput" class="form-input-custom" placeholder="85000">
+          </div>
+        </div>
+        <div class="form-group-custom" style="margin-bottom: 16px;">
+          <label class="form-label-custom">استنساخ البنود والتقديرات من خطة سابقة:</label>
+          <select id="newPlanCloneSourceSelect" class="form-select-custom" style="width: 100%;">
+            <option value="none">✨ خطة فارغة جديدة (قيم افتراضية متوازنة)</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn-submit-tx" onclick="submitNewBudgetPlan()" style="flex: 1; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; padding: 10px; border-radius: 10px; color: #fff; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <i class="fa-solid fa-plus-circle"></i> إنشاء وتفعيل الميزانية
+          </button>
+          <button type="button" onclick="closeModal('newBudgetPlanModal')" style="padding: 10px 16px; border-radius: 10px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-weight: 800; cursor: pointer;">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>

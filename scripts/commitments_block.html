@@ -1,0 +1,269 @@
+er; justify-content: center; gap: 5px; transition: all 0.2s; background: rgba(255, 255, 255, 0.03); color: #94a3b8;">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span>سجل الميزانيات</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             1. قسم الالتزامات والديون والمصاريف القادمة (subViewCommitments)
+             ========================================================== -->
+        <div id="subViewCommitments">
+          <!-- كروت المؤشرات المالية الأربعة للالتزامات (في صف واحد فائق الرشاقة والتنسيق) -->
+          <!-- كروت المؤشرات الأربعة في صف واحد فائق الدقة والتناسق (الالتزامات والديون) -->
+          <div class="expected-kpi-cockpit" id="expectedKpiCockpit">
+            <!-- 1. مصاريف قادمة -->
+            <div class="exp-kpi-card exp-card-amber" id="cardExpUpcoming" onclick="toggleExpectedFilter('upcoming_bill')" title="فواتير قادمة" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #fbbf24;"><i class="fa-solid fa-clock"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #fde047; white-space: nowrap;">مصاريف قادمة</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountUpcoming" style="font-size: 0.62rem; background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 بند</span>
+              </div>
+              <div class="exp-kpi-val" id="expectedTotalUpcoming" style="font-size: clamp(0.86rem, 2.6vw, 1.05rem); font-weight: 950; color: #fbbf24; line-height: 1.2; font-variant-numeric: tabular-nums; text-align: center; margin: 2px auto 0; direction: rtl;">0.00 ج.م</div>
+            </div>
+
+            <!-- 2. ديون علينا للغير -->
+            <div class="exp-kpi-card exp-card-rose" id="cardExpDebtsOnUs" onclick="toggleExpectedFilter('debt_on_us')" title="ديون علينا" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #f43f5e;"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #fca5a5; white-space: nowrap;">ديون علينا</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountDebtsOnUs" style="font-size: 0.62rem; background: rgba(244, 63, 94, 0.25); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 بند</span>
+              </div>
+              <div class="exp-kpi-val" id="expectedTotalDebtsOnUs" style="font-size: clamp(0.86rem, 2.6vw, 1.05rem); font-weight: 950; color: #f43f5e; line-height: 1.2; font-variant-numeric: tabular-nums; text-align: center; margin: 2px auto 0; direction: rtl;">- 0.00 ج.م</div>
+            </div>
+
+            <!-- 3. ديون لنا عند الغير -->
+            <div class="exp-kpi-card exp-card-emerald" id="cardExpDebtsForUs" onclick="toggleExpectedFilter('debt_for_us')" title="ديون لنا" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #34d399;"><i class="fa-solid fa-sack-dollar"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #86efac; white-space: nowrap;">ديون لنا</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountDebtsForUs" style="font-size: 0.62rem; background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 بند</span>
+              </div>
+              <div class="exp-kpi-val" id="expectedTotalDebtsForUs" style="font-size: clamp(0.86rem, 2.6vw, 1.05rem); font-weight: 950; color: #34d399; line-height: 1.2; font-variant-numeric: tabular-nums; text-align: center; margin: 2px auto 0; direction: rtl;">+ 0.00 ج.م</div>
+            </div>
+
+            <!-- 4. تم سداده / تحصيله -->
+            <div class="exp-kpi-card exp-card-cyan" id="cardExpPaid" onclick="toggleExpectedFilter('paid')" title="انقر لتصفية الحركات المنتهية والمسددة" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10px 8px; border-radius: 13px;">
+              <div class="exp-card-header" style="display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;">
+                <span style="font-size: 0.86rem; color: #38bdf8;"><i class="fa-solid fa-circle-check"></i></span>
+                <span class="exp-kpi-title" style="font-size: clamp(0.80rem, 2.3vw, 0.92rem); font-weight: 900; color: #7dd3fc; white-space: nowrap;">تم السداد</span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; margin: 4px auto 2px; width: 100%;">
+                <span class="exp-kpi-badge" id="expectedCountPaid" style="font-size: 0.62rem; background: rgba(56, 189, 248, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 2px 8px; border-radius: 6px; font-weight: 800; text-align: center;">0 مكتمل</span>
+              </div>
+              <div class="exp-kpi-val" id="expectedTotalPaid" style="font-size: clamp(0.86rem, 2.6vw, 1.05rem); font-weight: 950; color: #38bdf8; line-height: 1.2; font-variant-numeric: tabular-nums; text-align: center; margin: 2px auto 0; direction: rtl;">0.00 ج.م</div>
+            </div>
+          </div>
+
+          <!-- شريط صافي الالتزامات المستقبلية -->
+          <div class="expected-net-position-banner" id="expectedNetPositionBanner" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px 12px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-scale-unbalanced" style="color: #38bdf8;"></i>
+              <span style="font-size: 0.76rem; font-weight: 800; color: #cbd5e1;">صافي الالتزامات المستقبلية المطلوب تدبيرها:</span>
+            </div>
+            <div id="expectedNetPositionVal" style="font-size: 0.92rem; font-weight: 900; color: #f43f5e; direction: ltr;">- 0.00 ج.م</div>
+          </div>
+
+          <!-- شريط التبديل الثلاثي: إضافة التزام / فواتير مصورة / قائمة الالتزامات -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 6px; margin-bottom: 12px;">
+            <!-- 1. سداد / إضافة التزام مالي -->
+            <button type="button" id="btnTabNewExpected" onclick="switchExpectedTab('new')" class="exp-tab-btn" style="padding: 9px 6px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.06); color: #94a3b8; transition: all 0.2s ease;">
+              <i class="fa-solid fa-hand-holding-dollar" style="color: #38bdf8;"></i> <span>إضافة التزام</span>
+            </button>
+
+            <!-- 2. زر فواتير الجديد المخصص لتسجيل الفواتير بالتواريخ وربطها بمصروف وشخص والصور -->
+            <button type="button" id="btnTabBillsExpected" onclick="switchExpectedTab('bills')" class="exp-tab-btn" style="padding: 9px 6px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.14); color: #fbbf24; transition: all 0.2s ease;">
+              <i class="fa-solid fa-file-invoice"></i> <span>فواتير</span>
+              <span class="badge-req-counter" id="billsCountBadgeTab" style="background: rgba(245, 158, 11, 0.35); color: #fbbf24; padding: 1px 6px; border-radius: 8px; font-size: 0.65rem; font-weight: 900;">0</span>
+            </button>
+
+            <!-- 3. قائمة الالتزامات -->
+            <button type="button" id="btnTabListExpected" onclick="switchExpectedTab('list')" class="exp-tab-btn active" style="padding: 9px 6px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer; border: none; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35); transition: all 0.2s ease;">
+              <i class="fa-solid fa-table-list"></i> <span>قائمة الالتزامات</span>
+              <span class="badge-req-counter" id="expectedPendingBadgeTab" style="background: rgba(255, 255, 255, 0.25); color: #fff; padding: 1px 7px; border-radius: 8px; font-size: 0.70rem;">0</span>
+            </button>
+          </div>
+
+          <!-- لوحة النموذج: تسجيل التزام مالي أو دين قادم -->
+          <div id="panelNewExpected" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 14px; padding: 14px; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(56, 189, 248, 0.25); padding-bottom: 6px;">
+              <div style="font-size: 0.88rem; font-weight: 900; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-file-invoice-dollar"></i> <span>تسجيل التزام مالي أو دين جديد:</span>
+              </div>
+              <button type="button" onclick="switchExpectedTab('list')" title="إغلاق والعودة للقائمة" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; width: 28px; height: 28px; line-height: 26px; text-align: center; color: #cbd5e1; font-size: 1.1rem; cursor: pointer;">&times;</button>
+            </div>
+
+            <!-- اختيار نوع الالتزام -->
+            <div class="form-group-custom" style="margin-bottom: 8px;">
+              <label class="form-label-custom" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">نوع الحركة <span class="req">*</span></label>
+              <select id="inpExpType" class="form-select-custom" onchange="onExpectedTypeChange(this.value)" style="height: 38px; font-weight: 800; font-size: 0.82rem; width: 100%;">
+                <option value="upcoming_bill">⚡ فاتورة أو مصروف أو قسط قادم (مستقبلي)</option>
+                <option value="debt_on_us">🔻 دين علينا للغير (واجب السداد)</option>
+                <option value="debt_for_us">🔺 دين لنا عند الغير (مستحق التحصيل والإيداع)</option>
+              </select>
+            </div>
+
+            <!-- بيان الالتزام والمبلغ -->
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 8px; margin-bottom: 8px;">
+              <div class="form-group-custom" style="margin-bottom: 0;">
+                <label class="form-label-custom" id="lblExpTitle" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">البيان / الوصف <span class="req">*</span></label>
+                <input type="text" id="inpExpTitle" class="form-input-custom" placeholder="مثال: قسط مدرسة" style="height: 38px; font-size: 0.82rem; font-weight: 800;">
+              </div>
+              <div class="form-group-custom" style="margin-bottom: 0;">
+                <label class="form-label-custom" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">المبلغ (ج.م) <span class="req">*</span></label>
+                <input type="number" id="inpExpAmount" step="10" class="form-input-custom" placeholder="0.00" style="height: 38px; font-size: 1rem; font-weight: 900; text-align: center; color: #f87171;">
+              </div>
+            </div>
+
+            <!-- تاريخ الاستحقاق والأولوية -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+              <div class="form-group-custom" style="margin-bottom: 0;">
+                <label class="form-label-custom" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">تاريخ الاستحقاق المحدد</label>
+                <input type="date" id="inpExpDueDate" class="form-input-custom" style="height: 38px; font-size: 0.82rem; font-weight: 800;">
+              </div>
+              <div class="form-group-custom" style="margin-bottom: 0;">
+                <label class="form-label-custom" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">الأولوية</label>
+                <select id="inpExpPriority" class="form-select-custom" style="height: 38px; font-weight: 800; font-size: 0.82rem; width: 100%;">
+                  <option value="normal">عادي (اعتيادي)</option>
+                  <option value="important">⭐ هام</option>
+                  <option value="urgent">🔥 عاجل وطارئ</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- يخص من في الأسرة -->
+            <div class="form-group-custom" style="margin-bottom: 10px;">
+              <label class="form-label-custom" style="font-size: 0.72rem; font-weight: 800; margin-bottom: 4px; display: block;">يخص من في الأسرة؟</label>
+              <select id="inpExpMember" class="form-select-custom" style="height: 38px; font-weight: 800; font-size: 0.84rem; width: 100%;">
+                <option value="البيت">🏠 البيت (مشترك)</option>
+                <option value="ماهر">👤 ماهر</option>
+                <option value="أية">🧕 أية</option>
+                <option value="محمد">👦 محمد</option>
+                <option value="مريم">👧 مريم</option>
+                <option value="الحاجة">👵 الحاجة</option>
+                <option value="النونو">👶 النونو</option>
+                <option value="أخرى">📦 أخرى</option>
+              </select>
+            </div>
+
+            <!-- إرفاق صورة أو مستند للالتزام المالي -->
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px dashed rgba(56, 189, 248, 0.35); border-radius: 10px; padding: 8px 10px; margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: flex; align-items: center; gap: 5px; margin: 0;">
+                  <i class="fa-solid fa-paperclip" style="color: #38bdf8;"></i> إرفاق صورة أو مستند (فاتورة / وصل / إيصال):
+                </label>
+                <span id="expectedPhotoAttachedBadge" style="display: none; font-size: 0.62rem; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 1px 6px; border-radius: 5px; font-weight: 800;">
+                  <i class="fa-solid fa-circle-check"></i> تم إرفاق مستند
+                </span>
+              </div>
+
+              <!-- حقول الملفات المخفية -->
+              <input type="file" id="inpExpReceipt" accept="image/*,.pdf" style="display:none;" onchange="handleExpectedPhotoUpload(event)">
+              <input type="file" id="inpExpReceiptCamera" accept="image/*" capture="environment" style="display:none;" onchange="handleExpectedPhotoUpload(event)">
+
+              <!-- زرا التصوير والاختيار -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <button type="button" onclick="document.getElementById('inpExpReceiptCamera').click()" style="height: 36px; font-size: 0.76rem; font-weight: 800; border-radius: 8px; background: rgba(56, 189, 248, 0.18); border: 1.2px solid #38bdf8; color: #38bdf8; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer;">
+                  <i class="fa-solid fa-camera"></i> تصوير بالكاميرا 📷
+                </button>
+                <button type="button" onclick="document.getElementById('inpExpReceipt').click()" style="height: 36px; font-size: 0.76rem; font-weight: 800; border-radius: 8px; background: rgba(16, 185, 129, 0.18); border: 1.2px solid #10b981; color: #34d399; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer;">
+                  <i class="fa-solid fa-paperclip"></i> رفع ملف / صورة 📁
+                </button>
+              </div>
+
+              <!-- معاينة المستند المرفق -->
+              <div id="expectedPhotoPreviewContainer" style="display: none; margin-top: 8px; text-align: center; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 6px;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                  <img id="expectedPhotoPreviewImg" src="" onclick="openReceiptLightbox(this.src, 'مرفق الالتزام')" style="max-height: 80px; max-width: 140px; border-radius: 6px; border: 1px solid rgba(56, 189, 248, 0.5); object-fit: cover; cursor: pointer;" title="انقر للتكبير">
+                  <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+                    <span style="font-size: 0.68rem; color: #38bdf8; font-weight: 800;"><i class="fa-solid fa-magnifying-glass-plus"></i> انقر للتكبير</span>
+                    <button type="button" onclick="removeExpectedPhoto()" style="padding: 4px 8px; border-radius: 6px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 0.68rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                      <i class="fa-solid fa-trash-can"></i> إزالة المرفق
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- زرا حفظ الالتزام والإلغاء -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px; margin-top: 6px;">
+              <button type="button" class="btn-submit-tx" onclick="submitExpectedExpense()" style="background: linear-gradient(135deg, #10b981, #059669); border: none; height: 42px; border-radius: 10px; color: #fff; font-weight: 900; font-size: 0.88rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);">
+                <i class="fa-solid fa-check-circle"></i> تثبيت وحفظ الالتزام
+              </button>
+              <button type="button" onclick="switchExpectedTab('list')" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); height: 42px; border-radius: 10px; color: #94a3b8; font-weight: 800; font-size: 0.82rem; cursor: pointer;">
+                إلغاء / إغلاق
+              </button>
+            </div>
+          </div>
+
+          <!-- لوحة الجدول: عرض وتصفية كافة الالتزامات -->
+          <!-- قسم الفواتير والمستندات المصورة (panelBillsExpected) المعاد بناؤه باحترافية كاملة -->
+          <div id="panelBillsExpected" class="app-card-panel" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.5); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1.2px solid rgba(245, 158, 11, 0.3); padding-bottom: 8px;">
+              <div style="font-size: 0.92rem; font-weight: 900; color: #fbbf24; display: flex; align-items: center; gap: 8px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; color: #fbbf24;">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </div>
+                <span>تسجيل ومتابعة الفواتير المصورة:</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="billsCountSummaryBadge" style="font-size: 0.68rem; background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 3px 10px; border-radius: 8px; font-weight: 800; border: 1px solid rgba(245, 158, 11, 0.35);">0 فاتورة مسجلة</span>
+                <button type="button" onclick="switchExpectedTab('list')" title="العودة للقائمة" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; width: 28px; height: 28px; line-height: 26px; text-align: center; color: #cbd5e1; font-size: 1.1rem; cursor: pointer;">&times;</button>
+              </div>
+            </div>
+
+            <!-- نموذج إضافة فاتورة جديدة متكامل مع المصروف والشخص والتاريخ والصورة/الكاميرا -->
+            <form onsubmit="event.preventDefault(); saveNewBill();" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; background: rgba(15, 23, 42, 0.7); padding: 14px; border-radius: 12px; border: 1.2px solid rgba(245, 158, 11, 0.35);">
+              
+              <!-- 1. بيان الفاتورة والمبلغ -->
+              <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 10px;">
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                    <i class="fa-solid fa-tag" style="color: #fbbf24;"></i> بيان / اسم الفاتورة <span class="req" style="color: #f43f5e;">*</span>
+                  </label>
+                  <input type="text" id="inpBillName" class="form-input-custom" placeholder="مثال: فاتورة كهرباء، غاز، إنترنت..." required style="height: 38px; font-size: 0.82rem; font-weight: 800;">
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                    <i class="fa-solid fa-coins" style="color: #38bdf8;"></i> المبلغ (ج.م) <span class="req" style="color: #f43f5e;">*</span>
+                  </label>
+                  <input type="number" step="0.01" id="inpBillAmount" class="form-input-custom" placeholder="0.00" required style="height: 38px; font-size: 0.98rem; font-weight: 900; color: #38bdf8; text-align: center;">
+                </div>
+              </div>
+
+              <!-- 2. تاريخ الفاتورة / الاستحقاق، والشخص، والمصروف المرتبط -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <div>
+                  <label style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                    <i class="fa-regular fa-calendar" style="color: #38bdf8;"></i> تاريخ الفاتورة:
+                  </label>
+                  <input type="date" id="inpBillDueDate" class="form-input-custom" style="height: 38px; font-size: 0.78rem; font-weight: 800;">
+                </div>
+                <div>
+                  <label style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                    <i class="fa-solid fa-user-check" style="color: #a855f7;"></i> تخص من بالعائلة:
+                  </label>
+                  <select id="inpBillMember" class="form-select-custom" style="height: 38px; font-size: 0.78rem; font-weight: 800; width: 100%;">
+                    <option value="البيت">🏠 البيت / العائلة</option>
+                    <option value="ماهر">ماهر</option>
+                    <option value="أية">أية</option>
+                    <option value="محمد">محمد</option>
+                    <option value="مريم">مريم</option>
+                    <option value="الحاجة">الحاجة</option>
+                    <option value="النونو">النونو</option>
+                    <option value="أخرى">أخرى</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                    <i class="fa-solid fa-tags" style="color: #10b981;"></i> ربط بمصروف معين:
+                  </label>
+                  <select id="inpBillCategory" class="form-select-custom" style="height: 38px; font-size: 0.78rem; font-weight: 800; width: 100%;">
+                    <option value="bills">⚡ فواتير والتزامات</option>
+                    <option value="house">🛋️ مستلزمات منزل</option>
+                    <option value="food">🛒 طعام 

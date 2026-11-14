@@ -1,0 +1,72 @@
+id="newTaskDrawerModal" style="display: none; z-index: 100030 !important; align-items: center !important; justify-content: center !important; padding: 14px; direction: rtl;" dir="rtl" onclick="if(event.target === this) closeModal('newTaskDrawerModal')">
+    <div class="modal-content-card" style="max-width: 480px; width: 100%; max-height: 90vh; overflow-y: auto; background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98)); border: 1.5px solid rgba(168, 85, 247, 0.45); border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.85); padding: 18px; box-sizing: border-box;">
+      
+      <!-- هيدر النافذة -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 36px; height: 36px; border-radius: 12px; background: rgba(168, 85, 247, 0.2); border: 1.2px solid rgba(168, 85, 247, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #c084fc;">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h3 style="font-size: 0.98rem; font-weight: 900; color: #f8fafc; margin: 0;">إضافة مهمة ذكية جديدة</h3>
+            
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="closeModal('newTaskDrawerModal')">&times;</button>
+      </div>
+
+      <!-- 1. بيان وعنوان المهمة -->
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.74rem; font-weight: 800; color: #cbd5e1; margin-bottom: 5px;">بيان أو عنوان المهمة:</label>
+        <input type="text" id="drawerNewTaskTitleInput" placeholder="اكتب عنوان المهمة... (مثال: سداد قسط المدرسة)" style="width: 100%; height: 42px; border-radius: 10px; background: rgba(30, 41, 59, 0.85); border: 1.2px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.84rem; font-weight: 800; padding: 0 12px; outline: none; box-sizing: border-box;">
+      </div>
+
+      <!-- 2. موعد وتاريخ وساعة التنبيه في نفس الاختيار الموحد -->
+      <div style="margin-bottom: 12px;">
+        <label style="display: block; font-size: 0.74rem; font-weight: 800; color: #cbd5e1; margin-bottom: 5px;">موعد وتاريخ التنبيه (في نفس الاختيار):</label>
+        <div style="position: relative;">
+          <span style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: #a855f7; pointer-events: none;">
+            <i class="fa-regular fa-clock"></i>
+          </span>
+          <input type="datetime-local" id="drawerNewTaskDateTimeInput" class="task-datetime-input" style="width: 100%; height: 42px; border-radius: 10px; background: rgba(30, 41, 59, 0.85); border: 1.2px solid rgba(168, 85, 247, 0.35); color: #cbd5e1; font-size: 0.80rem; font-weight: 700; padding: 0 36px 0 10px; outline: none; box-sizing: border-box;">
+        </div>
+
+        <!-- أزرار الاختصارات الذكية للموعد -->
+        <div style="display: flex; gap: 5px; overflow-x: auto; padding: 8px 0 2px;" class="custom-scrollbar">
+          <button type="button" class="task-preset-chip" onclick="setTaskDateTimePreset('today_evening')">⚡ اليوم 8:00 م</button>
+          <button type="button" class="task-preset-chip" onclick="setTaskDateTimePreset('tomorrow_morning')">☀️ غداً 10:00 ص</button>
+          <button type="button" class="task-preset-chip" onclick="setTaskDateTimePreset('after_two_days')">📅 بعد يومين</button>
+          <button type="button" class="task-preset-chip" onclick="setTaskDateTimePreset('weekend')">🗓️ عطلة الأسبوع</button>
+          <button type="button" class="task-preset-chip" onclick="setTaskDateTimePreset('clear')" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.1);">❌ مسح</button>
+        </div>
+      </div>
+
+      <!-- 3. الأولوية والتصنيف -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 800; color: #cbd5e1; margin-bottom: 5px;">مستوى الأولوية:</label>
+          <select id="drawerNewTaskPriority" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(168, 85, 247, 0.3); color: #cbd5e1; font-size: 0.76rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box;">
+            <option value="normal">🟢 أولوية عادية</option>
+            <option value="medium">🟡 أولوية متوسطة</option>
+            <option value="high">🔴 أولوية قصوى</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.72rem; font-weight: 800; color: #cbd5e1; margin-bottom: 5px;">التصنيف / الوسم:</label>
+          <select id="drawerNewTaskTag" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(168, 85, 247, 0.3); color: #cbd5e1; font-size: 0.76rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box;">
+            <option value="general">📋 عام</option>
+            <option value="bills">📄 فواتير والتزامات</option>
+            <option value="shopping">🛒 مشتريات وسوبرماركت</option>
+            <option value="home">🏠 مستلزمات منزل</option>
+            <option value="family">👨‍👩‍👧 أسرة وشخصي</option>
+            <option value="work">💼 عمل ودراسة</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 4. إرفاق صورة -->
+      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1;">
+            <i class="fa-solid fa-paperclip" style="color: #38bdf8;"></i> إرفاق صورة أو مس

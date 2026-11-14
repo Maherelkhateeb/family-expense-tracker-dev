@@ -1,0 +1,1099 @@
+
+=================== HUNK #0 ===================
+
+
+--- a/index.html
++++ b/index.html
+
+
+=================== HUNK #1 ===================
+ -142,10 +142,10 @@
+-    var APP_VERSION = 'v5.2.6';
+-    var APP_BUILD_ID = 202611081720;
+-    window\.APP_VERSION = 'v5.2.6';
+-    window\.APP_BUILD_ID = 202611081720;
++    var APP_VERSION = 'v5.2.7';
++    var APP_BUILD_ID = 202611081730;
++    window.APP_VERSION = 'v5.2.7';
++    window.APP_BUILD_ID = 202611081730;
+
+
+=================== HUNK #2 ===================
+ -9025,6 +9025,73 @@
++    /* تنسيقات لوحة إضافة وتسجيل المهام الموحدة والشاملة من نفس الشاشة */
++    .tasks-unified-creator-card {
++      box-sizing: border-box;
++    }
++    .btn-unified-tag-chip {
++      padding: 5px 12px;
++      border-radius: 8px;
++      font-size: 0.74rem;
++      font-weight: 850;
++      white-space: nowrap;
++      background: rgba(30, 41, 59, 0.75);
++      border: 1.2px solid rgba(255, 255, 255, 0.12);
++      color: #cbd5e1;
++      cursor: pointer;
++      display: inline-flex;
++      align-items: center;
++      gap: 5px;
++      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
++    }
++    .btn-unified-tag-chip:hover {
++      background: rgba(168, 85, 247, 0.2);
++      border-color: rgba(168, 85, 247, 0.4);
++      color: #fff;
++    }
++    .btn-unified-tag-chip.active {
++      background: linear-gradient(135deg, #a855f7, #6366f1) !important;
++      border-color: #c084fc !important;
++      color: #ffffff !important;
++      box-shadow: 0 2px 10px rgba(168, 85, 247, 0.45);
++      font-weight: 950;
++    }
++    .btn-inline-dt-preset {
++      background: rgba(30, 41, 59, 0.85);
++      border: 1px solid rgba(255, 255, 255, 0.12);
++      color: #cbd5e1;
++      font-weight: 800;
++      cursor: pointer;
++      transition: all 0.2s;
++    }
++    .btn-inline-dt-preset:hover {
++      border-color: rgba(168, 85, 247, 0.4);
++      color: #fff;
++    }
++    .btn-inline-dt-preset.active {
++      background: rgba(168, 85, 247, 0.35) !important;
++      border-color: #a855f7 !important;
++      color: #e9d5ff !important;
++      box-shadow: 0 1px 6px rgba(168, 85, 247, 0.3);
++    }
++    .btn-inline-member-chip {
++      padding: 3px 8px;
++      border-radius: 6px;
++      font-size: 0.68rem;
++      font-weight: 800;
++      background: rgba(30, 41, 59, 0.7);
++      border: 1px solid rgba(255, 255, 255, 0.1);
++      color: #94a3b8;
++      cursor: pointer;
++      transition: all 0.2s;
++    }
++    .btn-inline-member-chip.active {
++      background: rgba(56, 189, 248, 0.25) !important;
++      border-color: #38bdf8 !important;
++      color: #38bdf8 !important;
++      font-weight: 900;
++    }
++
+
+
+=================== HUNK #3 ===================
+ -9062,17 +9129,16 @@
+-  <script>
+-    // إلغاء أي Service Worker قديم ومسح التخزين المؤقت فوراً
++    <script>
++    // تسجيل Service Worker للعمل أوفلاين وتحديث الكاش تلقائياً بصيغة PWA
+-      navigator.serviceWorker.getRegistrations().then(function(regs) {
+-        for (let r of regs) r.unregister();
+-      }).catch(function(e) {});
+-    }
+-    if ('caches' in window) {
+-      caches.keys().then(function(keys) {
+-        for (let k of keys) caches.delete(k);
+-      }).catch(function(e) {});
++      window.addEventListener('load', function() {
++        navigator.serviceWorker.register('./sw.js').then(function(reg) {
++          console.log('[SW] PWA ServiceWorker active with scope:', reg.scope);
++        }).catch(function(err) {
++          console.warn('[SW] Registration failed:', err);
++        });
++      });
+
+
+=================== HUNK #4 ===================
+ -14828,9 +14894,9 @@
+-        <button type="button" onclick="openNewTaskDrawerModal()" style="height: 36px; padding: 0 14px; border-radius: 9px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.4);">
++        <button type="button" onclick="openOrToggleUnifiedTaskCreator()" style="height: 36px; padding: 0 14px; border-radius: 9px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.4);">
+-          <span>+ مهمة مفصلة</span>
++          <span>+ إضافة مهمة جديدة</span>
+
+
+=================== HUNK #5 ===================
+ -14875,31 +14941,140 @@
+-        <!-- شريط الإضافة السريع والمطور مع آلية اختيار الوقت واليوم والاختصارات الذكية -->
+-        <!-- شاشة الإضافة الفورية الموحدة المتناسقة للموبايل (عنوان + يوم + ساعة بدون نوافذ منبثقة أو تداخل أرقام) -->
+-        <div class="tasks-mobile-single-add-card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1.2px solid rgba(168, 85, 247, 0.45); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+-          <!-- السطر 1: عنوان المهمة + زر الإضافة الفوري -->
+-          <div style="display: flex; gap: 6px; align-items: center;">
+-            <input type="text" id="quickTaskTitleInput" placeholder="+ اكتب مهمة جديدة واضغط إضافة..." style="flex: 1; height: 40px; border-radius: 10px; background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 0.85rem; font-weight: 800; padding: 0 12px; outline: none; box-sizing: border-box;" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
+-            <button type="button" onclick="handleQuickTaskAdd()" style="height: 40px; padding: 0 16px; border-radius: 10px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.82rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.45); flex-shrink: 0;">
+-              <i class="fa-solid fa-plus"></i>
+-              <span>إضافة</span>
+-            </button>
++        <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة) -->
++        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 0.98)); border: 1.5px solid rgba(168, 85, 247, 0.45); border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transition: all 0.3s ease;">
++          
++          <!-- هيدر كارت الإضافة الموحد مع شارة التاج النشط وحالة الشاشة الموحدة -->
++          <div style="display: flex; justify-content: space-between; align-items: center;">
++            <div style="display: flex; align-items: center; gap: 8px;">
++              <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #a855f7, #6366f1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.92rem; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);">
++                <i class="fa-solid fa-pen-to-square"></i>
++              </div>
++              <span style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
++              <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
++            </div>
++            <div style="display: flex; align-items: center; gap: 6px;">
++              <span style="font-size: 0.70rem; color: #34d399; font-weight: 850; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 8px; border-radius: 6px;">✓ إدخال وتحديد مباشر</span>
++            </div>
++          </div>
++
++          <!-- 1. بيان المهمة (عنوان / تفاصيل) -->
++          <div style="display: flex; flex-direction: column; gap: 5px;">
++            <label for="quickTaskTitleInput" style="font-size: 0.75rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
++              <i class="fa-solid fa-align-right" style="color: #a855f7;"></i>
++              <span>بيان المهمة / التفاصيل:</span>
++            </label>
++            <div style="display: flex; gap: 6px; align-items: center;">
++              <input type="text" id="quickTaskTitleInput" placeholder="اكتب بيان المهمة هنا... (مثال: سداد فاتورة الكهرباء والإنترنت)" style="flex: 1; height: 42px; border-radius: 11px; background: rgba(15, 23, 42, 0.92); border: 1.2px solid rgba(168, 85, 247, 0.4); color: #fff; font-size: 0.86rem; font-weight: 800; padding: 0 14px; outline: none; box-sizing: border-box; transition: border-color 0.2s;" onfocus="this.style.borderColor='#c084fc'" onblur="this.style.borderColor='rgba(168, 85, 247, 0.4)'" onkeydown="if(event.key==='Enter') handleQuickTaskAdd()">
++              <button type="button" onclick="handleQuickTaskAdd()" style="height: 42px; padding: 0 16px; border-radius: 11px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.84rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.45); flex-shrink: 0; transition: transform 0.15s;" onmousedown="this.style.transform='scale(0.96)'" onmouseup="this.style.transform='scale(1)'">
++                <i class="fa-solid fa-plus"></i>
++                <span>إضافة</span>
++              </button>
++            </div>
++          </div>
++
++          <!-- 2. اختيار التاجات (يومي، عامة، مجدولة، هامة، مشتريات، منزلية، فواتير، صحة، عمل) -->
++          <div style="display: flex; flex-direction: column; gap: 6px;">
++            <div style="display: flex; align-items: center; justify-content: space-between;">
++              <span style="font-size: 0.74rem; font-weight: 850; color: #cbd5e1; display: flex; align-items: center; gap: 5px;">
++                <i class="fa-solid fa-tags" style="color: #38bdf8;"></i>
++                <span>اختر التاج / الوسم:</span>
++              </span>
++              <span style="font-size: 0.66rem; color: #94a3b8; font-weight: 700;">(اضغط للتبديل الفوري)</span>
++            </div>
++            <div id="unifiedTaskTagChipsList" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0 6px;" class="custom-scrollbar">
++              <button type="button" class="btn-unified-tag-chip" data-tag="my_day" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
++              <button type="button" class="btn-unified-tag-chip active" data-tag="general" onclick="selectTaskInlineTag('general', this)">🌐 عامة</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="planned" onclick="selectTaskInlineTag('planned', this)">📅 مجدولة</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="important" onclick="selectTaskInlineTag('important', this)" style="border-color: rgba(244,63,94,0.35);">⭐ هامة / عاجلة</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="shopping" onclick="selectTaskInlineTag('shopping', this)">🛒 مشتريات</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="home" onclick="selectTaskInlineTag('home', this)">🛋️ منزلية</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="bills" onclick="selectTaskInlineTag('bills', this)">⚡ فواتير</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="health" onclick="selectTaskInlineTag('health', this)">🩺 صحة</button>
++              <button type="button" class="btn-unified-tag-chip" data-tag="work" onclick="selectTaskInlineTag('work', this)">💼 عمل</button>
++            </div>
++          </div>
++
++          <!-- 3. تحديد التاريخ والساعة من نفس الشاشة بدون أي نوافذ منبثقة -->
++          <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
++            <div style="display: flex; align-items: center; justify-content: space-between;">
++              <span style="font-size: 0.74rem; font-weight: 850; color: #e2e8f0; display: flex; align-items: center; gap: 6px;">
++                <i class="fa-regular fa-calendar-check" style="color: #c084fc;"></i>
++                <span>تحديد موعد المهمة (التاريخ والساعة معاً من نفس الشاشة):</span>
++              </span>
++              <span id="lblUnifiedTaskDateTimeDisplay" style="font-size: 0.68rem; font-weight: 850; color: #38bdf8;">اليوم</span>
++            </div>
++
++            <!-- شبكة التاريخ والساعة -->
++            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
++              <!-- عمود التاريخ -->
++              <div style="display: flex; flex-direction: column; gap: 5px;">
++                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">📅 التاريخ:</label>
++                <!-- اختصارات سريعة للأيام -->
++                <div style="display: flex; gap: 4px;" id="inlineDatePresetGroup">
++                  <button type="button" class="btn-inline-dt-preset active" data-preset="today" onclick="selectInlineDatePreset('today', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">اليوم</button>
++                  <button type="button" class="btn-inline-dt-preset" data-preset="tomorrow" onclick="selectInlineDatePreset('tomorrow', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">غداً</button>
++                  <button type="button" class="btn-inline-dt-preset" data-preset="after_two_days" onclick="selectInlineDatePreset('after_two_days', this)" style="flex: 1; padding: 4px 6px; font-size: 0.68rem; border-radius: 6px;">+ يومين</button>
++                </div>
++                <!-- حقل إدخال التاريخ المباشر من نفس الشاشة -->
++                <input type="date" id="inlineTaskDueDate" style="height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box; width: 100%;" onchange="onInlineDateCustomChange(this.value)">
++              </div>
++
++              <!-- عمود الساعة / الوقت -->
++              <div style="display: flex; flex-direction: column; gap: 5px;">
++                <label style="font-size: 0.68rem; font-weight: 800; color: #94a3b8;">⏰ التوقيت (الساعة):</label>
++                <!-- اختصارات سريعة للساعات -->
++                <div style="display: flex; gap: 3px; overflow-x: auto;" class="custom-scrollbar" id="inlineTimePresetGroup">
++                  <button type="button" class="btn-inline-dt-preset" data-time="09:00" onclick="selectInlineTimePreset('09:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 ص</button>
++                  <button type="button" class="btn-inline-dt-preset" data-time="13:00" onclick="selectInlineTimePreset('13:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">01:00 م</button>
++                  <button type="button" class="btn-inline-dt-preset" data-time="17:00" onclick="selectInlineTimePreset('17:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">05:00 م</button>
++                  <button type="button" class="btn-inline-dt-preset" data-time="21:00" onclick="selectInlineTimePreset('21:00', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap;">09:00 م</button>
++                  <button type="button" class="btn-inline-dt-preset" data-time="" onclick="selectInlineTimePreset('', this)" style="padding: 4px 5px; font-size: 0.66rem; border-radius: 6px; white-space: nowrap; color: #f43f5e;" title="بدون وقت">بدون</button>
++                </div>
++                <!-- حقل إدخال الساعة المباشر من نفس الشاشة -->
++                <input type="time" id="inlineTaskDueTime" style="height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(168, 85, 247, 0.35); color: #fff; font-size: 0.78rem; font-weight: 800; padding: 0 8px; outline: none; box-sizing: border-box; width: 100%;" onchange="onInlineTimeCustomChange(this.value)">
++              </div>
++            </div>
+-          <!-- السطر 2: زر تحديد التاريخ والساعة معاً (بلمسة واحدة) + زر تصوير مرفق الكاميرا المباشر -->
+-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+-            <button type="button" class="btn-quick-task-dt-trigger" id="btnQuickTaskDateTimeTrigger" onclick="openTaskDateTimePickerModal()" style="height: 36px; padding: 0 14px; border-radius: 10px; background: rgba(168, 85, 247, 0.22); border: 1.2px solid rgba(168, 85, 247, 0.55); color: #e9d5ff; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25); transition: all 0.2s;">
+-              <i class="fa-regular fa-clock" style="color: #c084fc;"></i>
+-              <span id="lblQuickTaskDateTimeTrigger">📅 تحديد التاريخ والساعة معاً</span>
++          <!-- 4. المسؤول + إرفاق صورة بالكاميرا والمرفقات -->
++          <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
++            <!-- اختيار فرد العائلة المسؤول -->
++            <div style="display: flex; align-items: center; gap: 5px;">
++              <span style="font-size: 0.70rem; font-weight: 800; color: #cbd5e1;">👤 المسؤول:</span>
++              <div style="display: flex; gap: 3px;" id="inlineTaskMemberGroup">
++                <button type="button" class="btn-inline-member-chip active" data-member="البيت" onclick="selectInlineTaskMember('البيت', this)">البيت</button>
++                <button type="button" class="btn-inline-member-chip" data-member="ماهر" onclick="selectInlineTaskMember('ماهر', this)">ماهر</button>
++                <button type="button" class="btn-inline-member-chip" data-member="آية" onclick="selectInlineTaskMember('آية', this)">آية</button>
++                <button type="button" class="btn-inline-member-chip" data-member="محمد" onclick="selectInlineTaskMember('محمد', this)">محمد</button>
++                <button type="button" class="btn-inline-member-chip" data-member="مريم" onclick="selectInlineTaskMember('مريم', this)">مريم</button>
++              </div>
++            </div>
++
++            <!-- زر تصوير الكاميرا الفوري -->
++            <div style="display: flex; gap: 6px; align-items: center;">
++              <button type="button" onclick="triggerTaskCameraOnly()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.45); color: #38bdf8; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
++                <i class="fa-solid fa-camera"></i>
++                <span>تصوير بالكاميرا</span>
++              </button>
++              <input type="file" id="quickTaskCameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleTaskCameraOnlyChosen(event)">
++              <div id="quickTaskPhotoPreviewBar" style="display: none; align-items: center; gap: 6px;"></div>
++            </div>
++          </div>
++
++          <!-- 5. زر الحفظ الرئيسي الشامل الموحد -->
++          <div style="display: flex; gap: 8px; align-items: center;">
++            <button type="button" id="btnSubmitUnifiedTask" onclick="handleQuickTaskAdd()" style="flex: 1; height: 42px; border-radius: 11px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.86rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
++              <i class="fa-solid fa-check-double"></i>
++              <span>✨ حفظ وإضافة المهمة</span>
+-            <button type="button" onclick="triggerTaskCameraOnly()" style="height: 36px; padding: 0 14px; border-radius: 10px; background: rgba(56, 189, 248, 0.18); border: 1.2px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2);">
+-              <i class="fa-solid fa-camera"></i>
+-              <span>تصوير مرفق بالكاميرا</span>
++            <button type="button" onclick="resetUnifiedTaskForm()" style="height: 42px; padding: 0 14px; border-radius: 11px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #94a3b8; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
++              <i class="fa-solid fa-arrow-rotate-right"></i>
++              <span>مسح</span>
+-            <input type="file" id="quickTaskCameraInput" accept="image/*" capture="environment" style="display: none;" onchange="handleTaskCameraOnlyChosen(event)">
+-            <div id="quickTaskPhotoPreviewBar" style="display: none; align-items: center; gap: 6px;"></div>
++
++        </div>
+
+
+=================== HUNK #6 ===================
+ -14908,12 +15083,12 @@
+-            <button type="button" class="btn-export-tool active exp-filter-pill" id="btnFullTodoMyDay" onclick="switchTodoSection('my_day')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap;">☀️ يومي</button>
+-            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoImportant" onclick="switchTodoSection('important')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #fde047;">⭐ الهامة</button>
+-            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoPlanned" onclick="switchTodoSection('planned')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #38bdf8;">📅 المجدولة</button>
+-            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoShopping" onclick="switchTodoSection('shopping')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #34d399;">🛒 مشتريات</button>
+-            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoOverdue" onclick="switchTodoSection('overdue')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #f87171;">⚠️ متأخرة</button>
+-            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoCompleted" onclick="switchTodoSection('completed')" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #10b981;">✅ المكتملة</button>
++            <button type="button" class="btn-export-tool active exp-filter-pill" id="btnFullTodoMyDay" onclick="switchTodoSection('my_day', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap;">☀️ يومي</button>
++            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoImportant" onclick="switchTodoSection('important', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #fde047;">⭐ الهامة</button>
++            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoPlanned" onclick="switchTodoSection('planned', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #38bdf8;">📅 المجدولة</button>
++            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoShopping" onclick="switchTodoSection('shopping', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #34d399;">🛒 مشتريات</button>
++            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoOverdue" onclick="switchTodoSection('overdue', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #f87171;">⚠️ متأخرة</button>
++            <button type="button" class="btn-export-tool exp-filter-pill" id="btnFullTodoCompleted" onclick="switchTodoSection('completed', this)" style="padding: 4px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 800; white-space: nowrap; color: #10b981;">✅ المكتملة</button>
+
+
+=================== HUNK #7 ===================
+ -15176,7 +15351,7 @@
+-              <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.2.6 • متزامن</span>
++              <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.2.7 • متزامن</span>
+
+
+=================== HUNK #8 ===================
+ -15779,8 +15954,8 @@
+-      const APP_VERSION = 'v5.2.6';;
+-      const APP_BUILD_ID = 202611081720;;
++      const APP_VERSION = 'v5.2.7';;
++      const APP_BUILD_ID = 202611081730;;
+
+
+=================== HUNK #9 ===================
+ -21854,265 +22029,13 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
+-      const container = document.getElementById('expectedListContainer');
+-      const elUp = document.getElementById('expectedTotalUpcoming');
+-      const elDebOnUs = document.getElementById('expectedTotalDebtsOnUs');
+-      const elDebForUs = document.getElementById('expectedTotalDebtsForUs');
+-      const elPaid = document.getElementById('expectedTotalPaid');
+-
+-      const cntUp = document.getElementById('expectedCountUpcoming');
+-      const cntDebOnUs = document.getElementById('expectedCountDebtsOnUs');
+-      const cntDebForUs = document.getElementById('expectedCountDebtsForUs');
+-      const cntPaid = document.getElementById('expectedCountPaid');
+-
+-      const badgeTab = document.getElementById('expectedPendingBadgeTab');
+-      const netLabel = document.getElementById('expectedNetPositionLabel');
+-      const netVal = document.getElementById('expectedNetPositionVal');
+-
+-      if (!container) return;
+-      if (!state.expectedExpenses) state.expectedExpenses = [];
+-
+-      state.expectedExpenses.forEach(e => {
+-        if (e.type === 'debt') e.type = 'debt_on_us';
+-        if (!e.status) e.status = 'upcoming';
+-      });
+-
+-      const memberFilter = document.getElementById('selExpectedMemberFilter')?.value || 'all';
+-
+-      // 1. حساب الإجماليات بدقة محاسبية صارمة 0.00
+-      let totUpcoming = 0, countUpcoming = 0;
+-      let totDebtsOnUs = 0, countDebtsOnUs = 0;
+-      let totDebtsForUs = 0, countDebtsForUs = 0;
+-      let totPaid = 0, countPaid = 0;
+-
+-      state.expectedExpenses.forEach(e => {
+-        const amt = Number(e.amount) || 0;
+-        if (e.status === 'paid') {
+-          totPaid += amt;
+-          countPaid++;
+-        } else if (e.type === 'upcoming_bill') {
+-          totUpcoming += amt;
+-          countUpcoming++;
+-        } else if (e.type === 'debt_on_us') {
+-          totDebtsOnUs += amt;
+-          countDebtsOnUs++;
+-        } else if (e.type === 'debt_for_us') {
+-          totDebtsForUs += amt;
+-          countDebtsForUs++;
+-        }
+-      });
+-
+-      const curr = typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : (state.currency || 'ج.م');
+-      const isGold = state.currency === 'GOLD21';
+-      const fmtNum = (val) => {
+-        const converted = typeof convertAmount === 'function' ? convertAmount(val) : val;
+-        return converted.toLocaleString('en-US', {
+-          minimumFractionDigits: 2,
+-          maximumFractionDigits: isGold ? 3 : 2
+-        });
+-      };
+-
+-      if (elUp) elUp.textContent = fmtNum(totUpcoming);
+-      if (elDebOnUs) elDebOnUs.textContent = '- ' + fmtNum(totDebtsOnUs);
+-      if (elDebForUs) elDebForUs.textContent = '+ ' + fmtNum(totDebtsForUs);
+-      if (elPaid) elPaid.textContent = fmtNum(totPaid);
+-
+-      if (cntUp) cntUp.textContent = `${countUpcoming}`;
+-      if (cntDebOnUs) cntDebOnUs.textContent = `${countDebtsOnUs}`;
+-      if (cntDebForUs) cntDebForUs.textContent = `${countDebtsForUs}`;
+-      if (cntPaid) cntPaid.textContent = `${countPaid}`;
+-
+-      const totalPendingCount = countUpcoming + countDebtsOnUs + countDebtsForUs;
+-      if (badgeTab) badgeTab.textContent = totalPendingCount;
+-
+-      // صافي الموقف المالي: (فواتير + ديون علينا) - ديون لنا
+-      const netDue = (totUpcoming + totDebtsOnUs) - totDebtsForUs;
+-      if (netVal) {
+-        if (netDue > 0.0001) {
+-          if (netLabel) netLabel.textContent = 'صافي الالتزامات المطلوب تدبيرها:';
+-          netVal.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 4px; direction: rtl; color: #f43f5e;"><span style="font-size: 0.9em;">-</span><span>${fmtNum(netDue)}</span><span style="font-size: 0.74rem; opacity: 0.9;">${curr}</span></span>`;
+-        } else if (netDue < -0.0001) {
+-          if (netLabel) netLabel.textContent = 'صافي الفائض (ديون مستحقة لنا):';
+-          netVal.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 4px; direction: rtl; color: #34d399;"><span style="font-size: 0.9em;">+</span><span>${fmtNum(Math.abs(netDue))}</span><span style="font-size: 0.74rem; opacity: 0.9;">${curr}</span></span>`;
+-        } else {
+-          if (netLabel) netLabel.textContent = 'الموقف المالي متزن:';
+-          netVal.innerHTML = `<span style="display: inline-flex; align-items: center; gap: 4px; direction: rtl; color: #38bdf8;"><span>0.00</span><span style="font-size: 0.74rem; opacity: 0.9;">${curr}</span></span>`;
+-        }
+-      }
+-
+-      // تمييز الكروت النشطة في الكوكتيل
+-      const cardUp = document.getElementById('cardExpUpcoming');
+-      const cardDebOnUs = document.getElementById('cardExpDebtsOnUs');
+-      const cardDebForUs = document.getElementById('cardExpDebtsForUs');
+-      const cardPaid = document.getElementById('cardExpPaid');
+-
+-      if (cardUp) cardUp.classList.toggle('active-filter', state.expectedTypeFilter === 'upcoming_bill');
+-      if (cardDebOnUs) cardDebOnUs.classList.toggle('active-filter', state.expectedTypeFilter === 'debt_on_us');
+-      if (cardDebForUs) cardDebForUs.classList.toggle('active-filter', state.expectedTypeFilter === 'debt_for_us');
+-      if (cardPaid) cardPaid.classList.toggle('active-filter', state.expectedTypeFilter === 'paid');
+-
+-      // 2. تطبيق التصفية
+-      let list = state.expectedExpenses.slice();
+-
+-      const activeFilter = state.expectedTypeFilter || 'all';
+-      if (activeFilter === 'upcoming_bill') {
+-        list = list.filter(e => e.status !== 'paid' && e.type === 'upcoming_bill');
+-      } else if (activeFilter === 'debt_on_us') {
+-        list = list.filter(e => e.status !== 'paid' && e.type === 'debt_on_us');
+-      } else if (activeFilter === 'debt_for_us') {
+-        list = list.filter(e => e.status !== 'paid' && e.type === 'debt_for_us');
+-      } else if (activeFilter === 'paid') {
+-        list = list.filter(e => e.status === 'paid');
+-      }
+-
+-      if (memberFilter !== 'all') {
+-        list = list.filter(e => e.member === memberFilter || (memberFilter === 'ماهر' && (e.member === 'ماهر' || e.member === 'أنا')));
+-      }
+-
+-      // فرز حسب تاريخ الاستحقاق
+-      list.sort((a, b) => {
+-        if (a.status === 'paid' && b.status !== 'paid') return 1;
+-        if (a.status !== 'paid' && b.status === 'paid') return -1;
+-        if (a.priority === 'urgent' && b.priority !== 'urgent') return -1;
+-        if (a.priority !== 'urgent' && b.priority === 'urgent') return 1;
+-        return (a.dueDate || '9999').localeCompare(b.dueDate || '9999');
+-      });
+-
+-      if (list.length === 0) {
+-        container.innerHTML = `
+-          <div class="empty-state" style="padding: 24px 10px; text-align: center; background: rgba(15, 23, 42, 0.4); border-radius: 14px; border: 1px dashed rgba(255, 255, 255, 0.1);">
+-            <i class="fa-solid fa-calendar-check" style="color: #38bdf8; font-size: 2rem; margin-bottom: 8px; opacity: 0.6;"></i>
+-            <div class="empty-title" style="font-weight: 800; color: #cbd5e1; font-size: 0.88rem;">لا توجد التزامات مسجلة في هذا القسم</div>
+-            <div class="empty-desc" style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">يمكنك إضافة مصروف قادم أو دين جديد بالضغط على زر "إضافة التزام"</div>
+-          </div>
+-        `;
+-        return;
++      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.2.7
++      if (typeof renderCommitmentsPageUI === 'function') {
++        renderCommitmentsPageUI();
++    }
+-      container.innerHTML = '';
+-      list.forEach(item => {
+-        const card = document.createElement('div');
+-        const isPaid = item.status === 'paid';
+-        const isUpcoming = item.type === 'upcoming_bill';
+-        const isDebtOnUs = item.type === 'debt_on_us';
+-        const isDebtForUs = item.type === 'debt_for_us';
+-        const isSelected = (window.selectedExpectedRowId === item.id);
+-
+-        let iconClass = 'fa-solid fa-receipt';
+-        let iconColor = '#fbbf24';
+-        let typeName = 'مصروف قادم';
+-        let sign = '-';
+-        let amtColor = '#fbbf24';
+-
+-        if (isDebtOnUs) {
+-          iconClass = 'fa-solid fa-arrow-down-long';
+-          iconColor = '#f87171';
+-          typeName = 'دين علينا';
+-          sign = '-';
+-          amtColor = '#f87171';
+-        } else if (isDebtForUs) {
+-          iconClass = 'fa-solid fa-arrow-up-long';
+-          iconColor = '#34d399';
+-          typeName = 'دين لنا';
+-          sign = '+';
+-          amtColor = '#34d399';
+-        }
+-        if (isPaid) {
+-          iconClass = 'fa-solid fa-circle-check';
+-          iconColor = '#38bdf8';
+-          typeName = 'مسدد';
+-          amtColor = '#94a3b8';
+-        }
+-
+-        const numFormatted = fmtNum(Number(item.amount) || 0);
+-
+-        card.className = 'expected-clean-card';
+-        card.setAttribute('data-exp-id', item.id);
+-        card.onclick = () => toggleSelectExpectedRow(item.id);
+-        card.style.cssText = `
+-          background: ${isSelected ? 'rgba(56, 189, 248, 0.08)' : 'rgba(15, 23, 42, 0.75)'};
+-          border: 1px solid ${isSelected ? '#38bdf8' : (isPaid ? 'rgba(255, 255, 255, 0.06)' : 'rgba(255, 255, 255, 0.08)')};
+-          border-radius: 12px;
+-          padding: 10px 12px;
+-          margin-bottom: 7px;
+-          cursor: pointer;
+-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+-          display: flex;
+-          flex-direction: column;
+-          gap: 6px;
+-        `;
+-
+-        // الصف الرئيسي النظيف: العملية والبيان | الرقم والتاريخ
+-        const mainRowHtml = `
+-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+-            <!-- العملية + البيان -->
+-            <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+-              <div style="width: 38px; height: 38px; border-radius: 10px; background: ${iconColor}22; border: 1px solid ${iconColor}55; color: ${iconColor}; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
+-                <i class="${iconClass}"></i>
+-              </div>
+-              <div style="min-width: 0; flex: 1;">
+-                <div style="font-size: 0.88rem; font-weight: 850; color: #f8fafc; line-height: 1.35; word-break: break-word;" title="${escapeHtml(item.title || typeName)}">
+-                  ${escapeHtml(item.title || typeName)}
+-                </div>
+-                <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 1px; display: flex; align-items: center; gap: 6px;">
+-                  <span style="color: ${iconColor}; font-weight: 750;">${typeName}</span>
+-                  <span>•</span>
+-                  <span>👤 ${escapeHtml(item.member || 'البيت')}</span>
+-                  ${item.priority === 'urgent' ? '<span style="color: #f87171; font-size: 0.62rem;"><i class="fa-solid fa-bolt"></i> عاجل</span>' : ''}
+-                </div>
+-              </div>
+-            </div>
+-
+-            <!-- الرقم + تاريخ الاستحقاق -->
+-            <div style="text-align: left; display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0;">
+-              <div style="color: ${amtColor}; font-weight: 950; font-size: 0.95rem; font-family: var(--font-numbers); direction: ltr; unicode-bidi: isolate;">
+-                ${sign} ${numFormatted} <span style="font-size: 0.72rem; opacity: 0.9;">${curr}</span>
+-              </div>
+-              <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; margin-top: 2px;">
+-                📅 ${item.dueDate || 'بدون موعد'}
+-              </div>
+-            </div>
+-          </div>
+-        `;
+-
+-        // شريط الخيارات والإجراءات: يظهر فقط عند النقر واختيار الالتزام
+-        const photoUri = item.settleReceipt || item.photo;
+-        const actionsDrawerHtml = `
+-          <div class="expected-row-actions-drawer" data-drawer-exp-id="${item.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.12); flex-wrap: wrap; gap: 6px;">
+-            <div style="font-size: 0.68rem; color: #94a3b8;">
+-              ${item.notes ? `<span>📝 ${escapeHtml(item.notes)}</span>` : `<span>الحالة: ${isPaid ? 'مسدد بالكامل ✅' : 'مستحق السداد ⏳'}</span>`}
+-            </div>
+-            <div style="display: flex; align-items: center; gap: 6px;">
+-              ${photoUri ? `
+-                <button type="button" onclick="event.stopPropagation(); openReceiptLightbox('${photoUri}', 'مستند: ${escapeHtml(item.title)}')" style="padding: 4px 9px; border-radius: 7px; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.70rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+-                  <i class="fa-solid fa-paperclip"></i>
+-                  <span>مستند</span>
+-                </button>
+-              ` : ''}
+-              ${!isPaid ? `
+-                <button type="button" onclick="event.stopPropagation(); ${isDebtForUs ? `collectDebtForUs('${item.id}')` : `openSettleExpectedModal('${item.id}')`}" style="padding: 5px 12px; border-radius: 7px; background: linear-gradient(135deg, ${isDebtForUs ? '#059669, #047857' : '#0284c7, #0369a1'}); border: none; color: #fff; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+-                  <i class="fa-solid fa-circle-check"></i>
+-                  <span>${isDebtForUs ? 'تحصيل وإيداع' : 'سداد وصرف'}</span>
+-                </button>
+-              ` : ''}
+-              <button type="button" onclick="event.stopPropagation(); openEditExpectedModal('${item.id}')" style="padding: 4px 9px; border-radius: 7px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 0.70rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+-                <i class="fa-solid fa-pen-to-square"></i>
+-                <span>تعديل</span>
+-              </button>
+-              <button type="button" onclick="event.stopPropagation(); deleteExpectedItem('${item.id}')" style="padding: 4px 9px; border-radius: 7px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; font-size: 0.70rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+-                <i class="fa-solid fa-trash-can"></i>
+-                <span>حذف</span>
+-              </button>
+-            </div>
+-          </div>
+-        `;
+-
+-        card.innerHTML = mainRowHtml + actionsDrawerHtml;
+-        container.appendChild(card);
+-      });
+-    }
+
+
+=================== HUNK #10 ===================
+ -22688,7 +22611,7 @@ function openSettingsModal(targetSection = '') {
+-          version: 'v5.2.6',
++          version: 'v5.2.7',
+
+
+=================== HUNK #11 ===================
+ -23812,77 +23735,7 @@ function openSettingsModal(targetSection = '') {
+-    // =========================================================================
+-    // محرك التحديث والمزامنة الشامل الموحد (Master Unified Sync & Update Engine)
+-    // يقوم بكل شيء بنقرة واحدة: مزامنة Google Drive + أسعار الذهب + كود التطبيق
+-    // =========================================================================
+-    let isMasterSyncRunning = false;
+-
+-    async function executeMasterUnifiedSyncAndRefresh(isManual = false) {
+-      if (isMasterSyncRunning) return;
+-      isMasterSyncRunning = true;
+-
+-      const spinIcons = document.querySelectorAll('.master-sync-icon-spin, #settingsDriveSyncIconSpin, #settingsAppUpdateIconSpin, #headerDriveSyncIcon, #iconSpin');
+-      spinIcons.forEach(icon => { if (icon) icon.classList.add('fa-spin'); });
+-
+-      const syncStatusText = document.getElementById('topDriveSyncStatusText');
+-      if (syncStatusText) {
+-        syncStatusText.textContent = 'جاري التحديث...';
+-        syncStatusText.style.color = '#38bdf8';
+-      }
+-
+-      if (isManual) {
+-        showToast('🔄 جاري التحديث الشامل وموازنة الحسابات وأسعار الذهب والعملات...', 'info', 3500);
+-      }
+-
+-      try {
+-        console.log('🚀 [MasterSync] 1. فحص كود البرنامج...');
+-        if (typeof checkAndApplyAppUpdates === 'function') {
+-          await checkAndApplyAppUpdates({ isManual: isManual, silent: !isManual });
+-        }
+-
+-        console.log('💰 [MasterSync] 2. تحديث أسعار الذهب والعملات...');
+-        if (typeof fetchTradingViewRates === 'function') {
+-          await fetchTradingViewRates(isManual);
+-        }
+-
+-        console.log('☁️ [MasterSync] 3. المزامنة السحابية ومطابقة الحركات...');
+-        if (typeof executeGoogleDriveSync === 'function') {
+-          await executeGoogleDriveSync(isManual);
+-        }
+-
+-        console.log('⚖️ [MasterSync] 4. موازنة الأرصدة...');
+-        if (typeof auditAndRecomputeAllWalletBalances === 'function') {
+-          auditAndRecomputeAllWalletBalances();
+-        }
+-
+-        if (typeof renderUI === 'function') renderUI();
+-        if (typeof updateDriveSyncStatusDisplay === 'function') updateDriveSyncStatusDisplay();
+-
+-        if (syncStatusText) {
+-          syncStatusText.textContent = 'متزامن ✓';
+-          syncStatusText.style.color = '#34d399';
+-        }
+-
+-        if (isManual) {
+-          showToast('✨ تم التحديث الشامل وموازنة الحسابات والذهب بنجاح', 'success', 4000);
+-          if (typeof playNotificationChime === 'function') playNotificationChime();
+-        }
+-      } catch(err) {
+-        console.warn('[MasterSync] Notice during unified sync:', err);
+-        if (syncStatusText) {
+-          syncStatusText.textContent = 'متزامن ✓';
+-          syncStatusText.style.color = '#34d399';
+-        }
+-        if (isManual) {
+-          showToast('✅ اكتمل التحديث والموازنة بنجاح', 'success');
+-        }
+-      } finally {
+-        isMasterSyncRunning = false;
+-        spinIcons.forEach(icon => { if (icon) icon.classList.remove('fa-spin'); });
+-      }
+-    }
+-
++    // [Unified Master Sync is consolidated in Script #4]
+
+
+=================== HUNK #12 ===================
+ -25872,7 +25725,7 @@ function openSettingsModal(targetSection = '') {
+-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.2.6');
++          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.2.7');
+
+
+=================== HUNK #13 ===================
+ -25908,7 +25761,7 @@ function openSettingsModal(targetSection = '') {
+-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.2.6');
++            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.2.7');
+
+
+=================== HUNK #14 ===================
+ -27634,115 +27487,6 @@ function switchCategoryChartFormat(format, btnEl) {
+-    // دوال إدارة شاشة المهام الموحدة للموبايل (Inline Date & Time Picker Handlers)
+-    // =========================================================================
+-    let inlineTaskDateVal = getLocalDateStr(new Date());
+-    let inlineTaskTimeVal = '10:00';
+-
+-    function setInlineQuickTaskDate(preset, btn) {
+-      const now = new Date();
+-      const chips = document.querySelectorAll('.btn-quick-date-chip');
+-      chips.forEach(c => {
+-        c.classList.remove('active');
+-        c.style.background = 'transparent';
+-        c.style.color = '#94a3b8';
+-        c.style.borderColor = 'rgba(255,255,255,0.12)';
+-      });
+-
+-      if (btn) {
+-        btn.classList.add('active');
+-        btn.style.background = 'rgba(168, 85, 247, 0.25)';
+-        btn.style.color = '#c084fc';
+-        btn.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+-      }
+-
+-      const lbl = document.getElementById('quickTaskSelectedDateLabel');
+-      const dateInp = document.getElementById('quickTaskInlineDate');
+-
+-      if (preset === 'today') {
+-        inlineTaskDateVal = getLocalDateStr(now);
+-        if (lbl) lbl.textContent = 'اليوم';
+-        if (dateInp) dateInp.value = inlineTaskDateVal;
+-      } else if (preset === 'tomorrow') {
+-        const tom = new Date(now);
+-        tom.setDate(now.getDate() + 1);
+-        inlineTaskDateVal = getLocalDateStr(tom);
+-        if (lbl) lbl.textContent = 'غداً';
+-        if (dateInp) dateInp.value = inlineTaskDateVal;
+-      } else if (preset === 'after2') {
+-        const aft = new Date(now);
+-        aft.setDate(now.getDate() + 2);
+-        inlineTaskDateVal = getLocalDateStr(aft);
+-        if (lbl) lbl.textContent = 'بعد يومين';
+-        if (dateInp) dateInp.value = inlineTaskDateVal;
+-      } else if (preset === 'friday') {
+-        const fri = new Date(now);
+-        const day = fri.getDay();
+-        const diff = (5 - day + 7) % 7 || 7;
+-        fri.setDate(fri.getDate() + diff);
+-        inlineTaskDateVal = getLocalDateStr(fri);
+-        if (lbl) lbl.textContent = 'الجمعة القادمة';
+-        if (dateInp) dateInp.value = inlineTaskDateVal;
+-      } else if (preset === 'none') {
+-        inlineTaskDateVal = '';
+-        if (lbl) lbl.textContent = 'بدون تاريخ';
+-        if (dateInp) dateInp.value = '';
+-      }
+-    }
+-
+-    function onInlineQuickTaskCustomDate(val) {
+-      inlineTaskDateVal = val;
+-      const lbl = document.getElementById('quickTaskSelectedDateLabel');
+-      if (lbl) lbl.textContent = val || 'محدد';
+-      const chips = document.querySelectorAll('.btn-quick-date-chip');
+-      chips.forEach(c => {
+-        c.classList.remove('active');
+-        c.style.background = 'transparent';
+-        c.style.color = '#94a3b8';
+-        c.style.borderColor = 'rgba(255,255,255,0.12)';
+-      });
+-    }
+-
+-    function setInlineQuickTaskTime(timeStr, btn) {
+-      inlineTaskTimeVal = timeStr;
+-      const chips = document.querySelectorAll('.btn-quick-time-chip');
+-      chips.forEach(c => {
+-        c.classList.remove('active');
+-        c.style.background = 'transparent';
+-        c.style.color = '#94a3b8';
+-        c.style.borderColor = 'rgba(255,255,255,0.12)';
+-      });
+-
+-      if (btn) {
+-        btn.classList.add('active');
+-        btn.style.background = 'rgba(56, 189, 248, 0.22)';
+-        btn.style.color = '#38bdf8';
+-        btn.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+-      }
+-
+-      const lbl = document.getElementById('quickTaskSelectedTimeLabel');
+-      const timeInp = document.getElementById('quickTaskInlineTime');
+-      if (timeInp) timeInp.value = timeStr;
+-      if (lbl) {
+-        const tMap = { '10:00': '10:00 ص', '14:00': '02:00 م', '18:00': '06:00 م', '21:00': '09:00 م' };
+-        lbl.textContent = tMap[timeStr] || timeStr;
+-      }
+-    }
+-
+-    function onInlineQuickTaskCustomTime(val) {
+-      inlineTaskTimeVal = val;
+-      const lbl = document.getElementById('quickTaskSelectedTimeLabel');
+-      if (lbl) lbl.textContent = val;
+-      const chips = document.querySelectorAll('.btn-quick-time-chip');
+-      chips.forEach(c => {
+-        c.classList.remove('active');
+-        c.style.background = 'transparent';
+-        c.style.color = '#94a3b8';
+-        c.style.borderColor = 'rgba(255,255,255,0.12)';
+-      });
+-    }
+-
+-// =========================================================================
+
+
+=================== HUNK #15 ===================
+ -28005,7 +27749,23 @@ function saveTodoTasks(tasks) {
++function openNewTaskDrawerModal() {
++  openTasksFullScreenModal();
++  const inp = document.getElementById('quickTaskTitleInput');
++  if (inp) {
++    setTimeout(() => {
++      inp.focus();
++      inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
++    }, 120);
++  }
++}
++window.openNewTaskDrawerModal = openNewTaskDrawerModal;
++
++  const inlineDate = document.getElementById('inlineTaskDueDate');
++  if (inlineDate && !inlineDate.value) {
++    inlineDate.value = new Date().toISOString().slice(0, 10);
++  }
+
+
+=================== HUNK #16 ===================
+ -28140,27 +27900,258 @@ function clearTaskPendingPhoto() {
++
++/* ==========================================================
++   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.2.7)
++   دمج بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة
++   ========================================================== */
++window._selectedTaskTag = 'general';
++window._selectedTaskPriority = 'medium';
++window._selectedTaskMember = 'البيت';
++
++function selectTaskInlineTag(tagKey, element) {
++  window._selectedTaskTag = tagKey;
++  const chips = document.querySelectorAll('#unifiedTaskTagChipsList .btn-unified-tag-chip');
++  chips.forEach(c => c.classList.remove('active'));
++  if (element) element.classList.add('active');
++
++  const badge = document.getElementById('unifiedCreatorActiveTagBadge');
++  const tagLabels = {
++    'my_day': '☀️ يومي',
++    'general': '🌐 عامة',
++    'planned': '📅 مجدولة',
++    'important': '⭐ هامة / عاجلة',
++    'shopping': '🛒 مشتريات',
++    'home': '🛋️ منزلية',
++    'bills': '⚡ فواتير',
++    'health': '🩺 صحة',
++    'work': '💼 عمل'
++  };
++  if (badge) badge.textContent = tagLabels[tagKey] || tagKey;
++
++  const todayStr = new Date().toISOString().slice(0, 10);
++  const dateInp = document.getElementById('inlineTaskDueDate');
++
++  if (tagKey === 'my_day') {
++    if (dateInp) dateInp.value = todayStr;
++    const todayBtn = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
++    if (todayBtn) selectInlineDatePreset('today', todayBtn);
++  } else if (tagKey === 'planned') {
++    if (dateInp && dateInp.value === todayStr) {
++      const tomorrow = new Date();
++      tomorrow.setDate(tomorrow.getDate() + 1);
++      const tomorrowStr = tomorrow.toISOString().slice(0, 10);
++      dateInp.value = tomorrowStr;
++      const tmrwBtn = document.querySelector('#inlineDatePresetGroup [data-preset="tomorrow"]');
++      if (tmrwBtn) selectInlineDatePreset('tomorrow', tmrwBtn);
++    }
++  }
++
++  if (tagKey === 'important') {
++    window._selectedTaskPriority = 'high';
++  } else {
++    window._selectedTaskPriority = 'medium';
++  }
++}
++
++function selectInlineDatePreset(preset, element) {
++  const chips = document.querySelectorAll('#inlineDatePresetGroup .btn-inline-dt-preset');
++  chips.forEach(c => c.classList.remove('active'));
++  if (element) element.classList.add('active');
++
++  const now = new Date();
++  let targetStr = now.toISOString().slice(0, 10);
++
++  if (preset === 'tomorrow') {
++    now.setDate(now.getDate() + 1);
++    targetStr = now.toISOString().slice(0, 10);
++  } else if (preset === 'after_two_days') {
++    now.setDate(now.getDate() + 2);
++    targetStr = now.toISOString().slice(0, 10);
++  }
++
++  const dateInp = document.getElementById('inlineTaskDueDate');
++  if (dateInp) dateInp.value = targetStr;
++
++  updateUnifiedTaskDateTimeLabel();
++}
++
++function onInlineDateCustomChange(val) {
++  const chips = document.querySelectorAll('#inlineDatePresetGroup .btn-inline-dt-preset');
++  chips.forEach(c => c.classList.remove('active'));
++
++  const todayStr = new Date().toISOString().slice(0, 10);
++  const tomorrow = new Date();
++  tomorrow.setDate(tomorrow.getDate() + 1);
++  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
++
++  if (val === todayStr) {
++    const b = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
++    if (b) b.classList.add('active');
++  } else if (val === tomorrowStr) {
++    const b = document.querySelector('#inlineDatePresetGroup [data-preset="tomorrow"]');
++    if (b) b.classList.add('active');
++  }
++
++  updateUnifiedTaskDateTimeLabel();
++}
++
++function selectInlineTimePreset(timeStr, element) {
++  const chips = document.querySelectorAll('#inlineTimePresetGroup .btn-inline-dt-preset');
++  chips.forEach(c => c.classList.remove('active'));
++  if (element) element.classList.add('active');
++
++  const timeInp = document.getElementById('inlineTaskDueTime');
++  if (timeInp) timeInp.value = timeStr;
++
++  updateUnifiedTaskDateTimeLabel();
++}
++
++function onInlineTimeCustomChange(val) {
++  const chips = document.querySelectorAll('#inlineTimePresetGroup .btn-inline-dt-preset');
++  chips.forEach(c => c.classList.remove('active'));
++  chips.forEach(c => {
++    if (c.getAttribute('data-time') === val) c.classList.add('active');
++  });
++
++  updateUnifiedTaskDateTimeLabel();
++}
++
++function updateUnifiedTaskDateTimeLabel() {
++  const dateInp = document.getElementById('inlineTaskDueDate');
++  const timeInp = document.getElementById('inlineTaskDueTime');
++  const lbl = document.getElementById('lblUnifiedTaskDateTimeDisplay');
++  if (!lbl) return;
++
++  const dateVal = dateInp ? dateInp.value : '';
++  const timeVal = timeInp ? timeInp.value : '';
++
++  const todayStr = new Date().toISOString().slice(0, 10);
++  const tomorrow = new Date();
++  tomorrow.setDate(tomorrow.getDate() + 1);
++  const tomorrowStr = tomorrow.toISOString().slice(0, 10);
++
++  let dateText = dateVal;
++  if (dateVal === todayStr) dateText = 'اليوم';
++  else if (dateVal === tomorrowStr) dateText = 'غداً';
++
++  let timeText = '';
++  if (timeVal) {
++    timeText = ' • ' + formatTime12hArabic(timeVal);
++  }
++
++  lbl.textContent = `${dateText || 'اليوم'}${timeText}`;
++}
++
++function formatTime12hArabic(val) {
++  if (!val) return '';
++  const parts = val.split(':');
++  let h = parseInt(parts[0], 10);
++  const m = parts[1] || '00';
++  const period = h >= 12 ? 'م' : 'ص';
++  if (h === 0) h = 12;
++  else if (h > 12) h -= 12;
++  return `${h}:${m} ${period}`;
++}
++
++function selectInlineTaskMember(member, element) {
++  window._selectedTaskMember = member;
++  const chips = document.querySelectorAll('#inlineTaskMemberGroup .btn-inline-member-chip');
++  chips.forEach(c => c.classList.remove('active'));
++  if (element) element.classList.add('active');
++}
++
++function openOrToggleUnifiedTaskCreator() {
++  const card = document.getElementById('tasksUnifiedCreatorCard');
++  if (card) {
++    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
++    const inp = document.getElementById('quickTaskTitleInput');
++    if (inp) inp.focus();
++  }
++}
++
++function openNewTaskDrawerModal() {
++  openOrToggleUnifiedTaskCreator();
++}
++
++function resetUnifiedTaskForm() {
++  const titleInp = document.getElementById('quickTaskTitleInput');
++  if (titleInp) titleInp.value = '';
++
++  const defaultTagBtn = document.querySelector('#unifiedTaskTagChipsList [data-tag="general"]');
++  if (defaultTagBtn) selectTaskInlineTag('general', defaultTagBtn);
++
++  const defaultDateBtn = document.querySelector('#inlineDatePresetGroup [data-preset="today"]');
++  if (defaultDateBtn) selectInlineDatePreset('today', defaultDateBtn);
++
++  const defaultTimeBtn = document.querySelector('#inlineTimePresetGroup [data-time=""]');
++  if (defaultTimeBtn) selectInlineTimePreset('', defaultTimeBtn);
++
++  const defaultMemberBtn = document.querySelector('#inlineTaskMemberGroup [data-member="البيت"]');
++  if (defaultMemberBtn) selectInlineTaskMember('البيت', defaultMemberBtn);
++
++  clearTaskPendingPhoto();
++}
++
++function renderTaskTagBadge(task) {
++  const tagKey = task.tag || task.category || 'general';
++  const tagConfigs = {
++    'my_day': { label: '☀️ يومي', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)' },
++    'general': { label: '🌐 عامة', color: '#c084fc', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' },
++    'planned': { label: '📅 مجدولة', color: '#6366f1', bg: 'rgba(99, 102, 241, 0.15)', border: 'rgba(99, 102, 241, 0.4)' },
++    'important': { label: '⭐ هامة', color: '#f43f5e', bg: 'rgba(244, 63, 94, 0.15)', border: 'rgba(244, 63, 94, 0.4)' },
++    'shopping': { label: '🛒 مشتريات', color: '#10b981', bg: 'rgba(16, 185, 129, 0.15)', border: 'rgba(16, 185, 129, 0.4)' },
++    'home': { label: '🛋️ منزلية', color: '#a855f7', bg: 'rgba(168, 85, 247, 0.15)', border: 'rgba(168, 85, 247, 0.4)' },
++    'bills': { label: '⚡ فواتير', color: '#ec4899', bg: 'rgba(236, 72, 153, 0.15)', border: 'rgba(236, 72, 153, 0.4)' },
++    'health': { label: '🩺 صحة', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.15)', border: 'rgba(6, 182, 212, 0.4)' },
++    'work': { label: '💼 عمل', color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59, 130, 246, 0.4)' },
++  };
++  const cfg = tagConfigs[tagKey] || tagConfigs['general'];
++  return `<span style="font-size: 0.65rem; font-weight: 850; padding: 1px 7px; border-radius: 6px; color: ${cfg.color}; background: ${cfg.bg}; border: 1px solid ${cfg.border};">${cfg.label}</span>`;
++}
++
++window.selectTaskInlineTag = selectTaskInlineTag;
++window.selectInlineDatePreset = selectInlineDatePreset;
++window.onInlineDateCustomChange = onInlineDateCustomChange;
++window.selectInlineTimePreset = selectInlineTimePreset;
++window.onInlineTimeCustomChange = onInlineTimeCustomChange;
++window.selectInlineTaskMember = selectInlineTaskMember;
++window.openOrToggleUnifiedTaskCreator = openOrToggleUnifiedTaskCreator;
++window.openNewTaskDrawerModal = openNewTaskDrawerModal;
++window.resetUnifiedTaskForm = resetUnifiedTaskForm;
++window.renderTaskTagBadge = renderTaskTagBadge;
++window.updateUnifiedTaskDateTimeLabel = updateUnifiedTaskDateTimeLabel;
++
++
+-    if (typeof showToast === 'function') showToast('يرجى إدخال عنوان المهمة أولاً');
++    if (typeof showToast === 'function') showToast('يرجى إدخال بيان المهمة أولاً');
+-  const dueDate = window._activeQuickTaskDate || now.toISOString().slice(0, 10);
+-  const dueTime = window._activeQuickTaskTime || '';
++  const dateInp = document.getElementById('inlineTaskDueDate');
++  const timeInp = document.getElementById('inlineTaskDueTime');
++
++  const dueDate = (dateInp && dateInp.value) ? dateInp.value : now.toISOString().slice(0, 10);
++  const dueTime = (timeInp && timeInp.value) ? timeInp.value : '';
++
++  const tag = window._selectedTaskTag || 'general';
++  const member = window._selectedTaskMember || (window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت');
++  const priority = tag === 'important' ? 'high' : (window._selectedTaskPriority || 'medium');
+-    category: window.currentTaskCategoryFilter !== 'all' ? window.currentTaskCategoryFilter : 'general',
+-    assignedMember: window.currentTaskMemberFilter !== 'all' ? window.currentTaskMemberFilter : 'البيت',
+-    priority: 'medium',
++    tag: tag,
++    category: tag, // Ensures seamless matching with category filters
++    assignedMember: member,
++    priority: priority,
+
+
+=================== HUNK #17 ===================
+ -28173,7 +28164,6 @@ function handleQuickTaskAdd() {
+-  clearTaskDateTimePicker();
+
+
+=================== HUNK #18 ===================
+ -28315,6 +28305,37 @@ function setTasksCategoryFilter(cat, btn) {
++function renderTasksMemberFilterPills() {
++  const container = document.getElementById('tasksMemberFilterPills');
++  if (!container) return;
++
++  const defaultMembers = ['الكل', 'ماهر', 'آية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'البيت'];
++  const memberSet = new Set(defaultMembers);
++
++  document.querySelectorAll('.avatar-card[data-member]').forEach(card => {
++    const mem = card.getAttribute('data-member');
++    if (mem && mem !== 'الكل') memberSet.add(mem);
++  });
++
++  const tasks = (typeof getTodoTasks === 'function') ? getTodoTasks() : [];
++  tasks.forEach(t => {
++    if (t.assignedMember && t.assignedMember !== 'all') memberSet.add(t.assignedMember);
++  });
++
++  const active = window.currentTaskMemberFilter || 'all';
++  const members = Array.from(memberSet);
++
++  container.innerHTML = members.map(m => {
++    const val = (m === 'الكل') ? 'all' : m;
++    const isActive = (active === val || (active === 'all' && val === 'all'));
++    const activeStyle = isActive
++      ? 'background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; font-weight: 800;'
++      : 'background: rgba(255,255,255,0.06); color: #94a3b8;';
++    return `<button type="button" class="btn-export-tool ${isActive ? 'active' : ''}" onclick="setTasksMemberFilter('${val}', this)" style="padding: 3px 8px; border-radius: 6px; font-size: 0.68rem; flex-shrink: 0; ${activeStyle}">${m}</button>`;
++  }).join('');
++}
++window.renderTasksMemberFilterPills = renderTasksMemberFilterPills;
++
+
+
+=================== HUNK #19 ===================
+ -28434,6 +28455,7 @@ function renderTasksProList() {
++              ${renderTaskTagBadge(t)}
+
+
+=================== HUNK #20 ===================
+ -29628,19 +29650,19 @@ window.selectTasksCalendarDay = selectTasksCalendarDay;
+-        <button type="button" class="exp-tab-btn active" id="btnTodoTabMyDay" onclick="switchTodoSection('my_day')" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: none; background: rgba(168, 85, 247, 0.25); color: #c084fc; cursor: pointer;">
++        <button type="button" class="exp-tab-btn active" id="btnTodoTabMyDay" onclick="switchTodoSection('my_day', this)" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: none; background: rgba(168, 85, 247, 0.25); color: #c084fc; cursor: pointer;">
+-        <button type="button" class="exp-tab-btn" id="btnTodoTabImportant" onclick="switchTodoSection('important')" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
++        <button type="button" class="exp-tab-btn" id="btnTodoTabImportant" onclick="switchTodoSection('important', this)" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
+-        <button type="button" class="exp-tab-btn" id="btnTodoTabPlanned" onclick="switchTodoSection('planned')" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
++        <button type="button" class="exp-tab-btn" id="btnTodoTabPlanned" onclick="switchTodoSection('planned', this)" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
+-        <button type="button" class="exp-tab-btn" id="btnTodoTabCompleted" onclick="switchTodoSection('completed')" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
++        <button type="button" class="exp-tab-btn" id="btnTodoTabCompleted" onclick="switchTodoSection('completed', this)" style="padding: 5px 10px; font-size: 0.70rem; font-weight: 800; border-radius: 8px; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; cursor: pointer;">
+

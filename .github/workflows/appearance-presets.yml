@@ -1,0 +1,29 @@
+name: Appearance presets validation
+
+on:
+  push:
+    branches:
+      - codex/appearance-settings-rebuild
+    paths:
+      - index.html
+      - scripts/test-appearance-presets.js
+      - .github/workflows/appearance-presets.yml
+  pull_request:
+    paths:
+      - index.html
+      - scripts/test-appearance-presets.js
+      - .github/workflows/appearance-presets.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate-appearance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify appearance presets and contrast
+        run: node scripts/test-appearance-presets.js

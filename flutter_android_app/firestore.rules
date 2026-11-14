@@ -1,0 +1,48 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isMaherOwner() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'maher@family.com' || 
+        request.auth.uid == 'maher_owner_uid'
+      );
+    }
+
+    function isAya() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'aya@family.com' ||
+        request.auth.uid == 'aya_member_uid'
+      );
+    }
+
+    // Permissions configuration document managed exclusively by Maher
+    match /config/family_permissions {
+      allow read: if isAuthenticated();
+      allow write: if isMaherOwner();
+    }
+
+    // Expense Transactions Collection
+    match /transactions/{txId} {
+      // Maher can read and write all
+      allow read, write: if isMaherOwner();
+
+      // Aya permissions: can create if ayaCanAdd is true in permissions config
+      allow create: if isAya() && 
+        get(/databases/$(database)/documents/config/family_permissions).data.ayaCanAdd == true &&
+        request.resource.data.label != null && request.resource.data.label != '' &&
+        request.resource.data.amount > 0;
+
+      // Aya can read if ayaCanViewAll is true or if the expense belongs to her
+      allow read: if isAya() && (
+        get(/databases/$(database)/documents/config/family_permissions).data.ayaCanViewAll == true ||
+        resource.data.member == 'أية'
+      );
+    }
+  }
+}

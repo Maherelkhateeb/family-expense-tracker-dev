@@ -1,0 +1,41 @@
+class="expected-top-hero" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)); border: 1.5px solid rgba(56, 189, 248, 0.25); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: nowrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)); border: 1.2px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #38bdf8;">
+                <i class="fa-solid fa-scale-balanced"></i>
+              </div>
+              <div>
+                <h2 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>التخطيط المالي والالتزامات والميزانية</span>
+                </h2>
+                
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <button type="button" onclick="switchExpectedTab('bills')" class="btn-wallet-action-pill" style="height: 32px; font-size: 0.72rem; padding: 0 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; font-weight: 900; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); flex-shrink: 0;">
+                <i class="fa-solid fa-file-invoice"></i> <span>فواتير</span>
+              </button>
+              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 32px; font-size: 0.72rem; padding: 0 10px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-weight: 800; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35); flex-shrink: 0;">
+                <i class="fa-solid fa-book-open"></i> <span>الملاحظات</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط التبويب الرئيسي الثلاثي الفاخر والمستقل تماماً -->
+          <div class="expected-main-tabs-strip" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; background: rgba(15, 23, 42, 0.92); padding: 5px; border-radius: 14px; border: 1.2px solid rgba(255, 255, 255, 0.08);">
+            <button type="button" id="tabExpectedCommitments" onclick="switchExpectedMainTab('commitments')" class="exp-main-tab-btn active" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
+              <i class="fa-solid fa-thumbtack"></i> <span>الالتزامات والديون</span>
+            </button>
+            <button type="button" id="tabExpectedMonthlyBudget" onclick="switchExpectedMainTab('monthly_budget')" class="exp-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: rgba(255, 255, 255, 0.03); color: #94a3b8;">
+              <i class="fa-solid fa-calculator"></i> <span>الميزانية التقديرية</span>
+            </button>
+            <button type="button" id="tabExpectedBudgetHistory" onclick="switchExpectedMainTab('budget_history')" class="exp-main-tab-btn" style="padding: 9px 4px; border-radius: 10px; font-weight: 900; font-size: 0.76rem; border: 1px solid rgba(255, 255, 255, 0.06); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; background: rgba(255, 255, 255, 0.03); color: #94a3b8;">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span>سجل الميزانيات</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             1. قسم الالتزامات والديون والمصاريف القادمة (subViewCommitments)
+             ========================================================== -->
+        <div 

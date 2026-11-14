@@ -1,0 +1,63 @@
+name: Refresh market rate feed
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/update-market-rates.yml'
+      - 'scripts/fetch_ta3weem_rates.py'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: market-rates-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the application
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Fetch current Egyptian rates
+        run: python3 scripts/fetch_ta3weem_rates.py
+
+      - name: Publish the public rate feed
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp market_rates.json "$RUNNER_TEMP/market_rates.json"
+          # The fetcher may have refreshed the main-branch worktree; clear that
+          # edit before switching to the dedicated public feed branch.
+          git checkout -- market_rates.json
+
+          if git ls-remote --exit-code --heads origin market-rates >/dev/null 2>&1; then
+            git fetch --no-tags origin market-rates
+            git checkout -B market-rates origin/market-rates
+            cp "$RUNNER_TEMP/market_rates.json" market_rates.json
+            git add market_rates.json
+            if git diff --cached --quiet; then
+              echo "Market prices are unchanged; the published feed is already current."
+              exit 0
+            fi
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: refresh market rate feed"
+          else
+            git checkout -b market-rates "$GITHUB_SHA"
+            cp "$RUNNER_TEMP/market_rates.json" market_rates.json
+            git add market_rates.json
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "chore: initialize market rate feed"
+          fi
+
+          git push origin HEAD:market-rates
