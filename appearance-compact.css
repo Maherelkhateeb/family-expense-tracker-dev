@@ -1,183 +1,717 @@
+/* =========================================================================
+   Antigravity Ultra-Compact Zero-Scroll Settings Modal (Max Fit, No Voids)
+   ========================================================================= */
 
-/* Compact, accessible, mobile-first appearance settings. No data-layer selectors. */
-#settingsModal .settings-modal-shell {
-  width: min(96vw, 520px) !important;
-  max-height: min(92dvh, 940px) !important;
-  border-radius: 16px !important;
+#settingsModal.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.75) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 8px !important;
 }
-#settingsModal .settings-modal-head {
-  padding: 8px 11px !important;
-  min-height: 53px !important;
+#settingsModal.modal-overlay.active {
+  display: flex !important;
 }
-#settingsModal #settingsModalTitle { font-size: .82rem !important; }
-#settingsModal .settings-modal-subtitle { font-size: .60rem !important; line-height: 1.3 !important; margin-top: 2px !important; }
-#settingsModal .version-badge { font-size: .49rem !important; padding: 1px 4px !important; }
-#settingsModal .settings-modal-scroll { padding: 7px 9px !important; gap: 7px !important; overscroll-behavior: contain; }
-#settingsModal .settings-user-card { padding: 5px 8px !important; border-radius: 10px !important; margin-bottom: 6px !important; }
-#settingsModal .settings-user-card img { width: 25px !important; height: 25px !important; }
-#settingsModal .settings-user-card button { padding: 5px 7px !important; font-size: .63rem !important; }
-#settingsSec_appearance[data-compact-ready="true"] {
-  padding: 0 !important; gap: 6px !important; border: 0 !important;
-  background: transparent !important; display: flex !important; flex-direction: column !important;
-}
-#settingsSec_appearance .compact-appearance-section {
-  border: 1px solid var(--appearance-border, #40516b) !important;
-  border-radius: 12px !important;
-  background: var(--appearance-panel-soft, #17243a) !important;
-  overflow: hidden; margin: 0 !important; min-width: 0;
-}
-#settingsSec_appearance .compact-appearance-heading {
-  color: var(--appearance-text, #f8fafc) !important;
-  background: transparent !important; border: 0 !important;
-  width: 100%; min-height: 37px; margin: 0;
-  padding: 7px 10px !important; display: flex; align-items: center; text-align: right;
-  gap: 7px; font: inherit; font-size: .73rem !important; font-weight: 850;
-}
-#settingsSec_appearance .compact-appearance-heading-icon { font-size: .82rem; color: var(--appearance-accent-text, #7dd3fc); width: 17px; flex: 0 0 17px; }
-#settingsSec_appearance .compact-appearance-title { min-width: 0; flex: 1; }
-#settingsSec_appearance .compact-appearance-summary {
-  font-size: .61rem !important; font-weight: 800 !important; min-width: 0;
-  max-width: 34%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  color: var(--appearance-accent-text, #7dd3fc) !important;
-  padding: 3px 6px; border-radius: 7px; border: 1px solid var(--appearance-border, #40516b);
-}
-#settingsSec_appearance .compact-appearance-panel {
-  padding: 0 9px 9px !important; display: flex !important; flex-direction: column !important; gap: 7px !important;
-  min-width: 0; border-top: 1px solid var(--appearance-border, #40516b);
-}
-#settingsSec_appearance .appearance-mode-row { margin: 8px 0 0 !important; gap: 6px !important; }
-#settingsSec_appearance .appearance-mode-button {
-  min-height: 33px !important; font-size: .69rem !important; padding: 5px 8px !important; border-radius: 9px !important;
-}
-#settingsSec_appearance #settingsThemePreview {
-  margin: 0 !important; padding: 6px 8px !important; border-radius: 9px !important;
-}
-#settingsSec_appearance .settings-live-preview-label { margin: 0 0 4px !important; font-size: .59rem !important; }
-#settingsSec_appearance .settings-live-preview-card {
-  padding: 6px 8px !important; min-height: 44px !important; gap: 7px !important; border-radius: 9px !important;
-}
-#settingsSec_appearance .settings-live-preview-icon { width: 27px !important; height: 27px !important; flex-basis: 27px !important; border-radius: 7px !important; }
-#settingsSec_appearance .settings-live-preview-copy strong { font-size: .68rem !important; }
-#settingsSec_appearance .settings-live-preview-copy small { font-size: .57rem !important; }
-#settingsSec_appearance .settings-live-preview-value { font-size: .65rem !important; }
-#settingsSec_appearance .appearance-preview-footnote { display: none !important; }
-#settingsSec_appearance .appearance-palette-grid {
-  margin: 8px 0 0 !important; display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
-}
-#settingsSec_appearance .theme-pill-option {
-  min-width: 0; min-height: 38px !important; border-radius: 8px !important;
-  padding: 5px 5px !important; font-size: .62rem !important;
-  line-height: 1.25 !important; gap: 4px !important;
-}
-#settingsSec_appearance .theme-color-dot {
-  width: 13px !important; height: 13px !important; flex-basis: 13px !important; border-radius: 50% !important;
-}
-#settingsSec_appearance .appearance-icon-grid {
-  margin-top: 8px !important; display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important;
-}
-#settingsSec_appearance .icon-theme-pill {
-  min-height: 39px !important; border-radius: 8px !important;
-  padding: 4px 3px !important; font-size: .62rem !important; line-height: 1.22 !important; gap: 1px !important;
-}
-#settingsSec_appearance .icon-color-dots { font-size: .60rem !important; letter-spacing: 0 !important; }
-#settingsSec_appearance .settings-font-grid {
-  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 5px !important;
-  margin-top: 8px !important;
-}
-#settingsSec_appearance .settings-font-grid button {
-  min-width: 0; min-height: 34px !important; padding: 4px 3px !important;
-  border-radius: 8px !important; font-size: .62rem !important;
-}
-#settingsSec_appearance .settings-font-preview { padding: 6px 8px !important; margin: 0 !important; border-radius: 8px !important; }
-#settingsSec_appearance .settings-font-preview-label { font-size: .58rem !important; }
-#settingsSec_appearance .settings-font-preview-sample { font-size: .74rem !important; }
-#settingsSec_appearance .settings-control-tile { margin: 0 !important; padding: 6px 7px !important; border-radius: 9px !important; }
-#settingsSec_appearance .settings-control-tile > div:first-child { margin-bottom: 4px !important; }
-#settingsSec_appearance .settings-control-tile button { font-size: .63rem !important; min-height: 32px !important; padding: 4px 3px !important; }
-#settingsSec_appearance #cardStyleButtonsContainer {
-  display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 5px !important; margin-top: 8px !important;
-}
-#settingsSec_appearance #cardStyleButtonsContainer button {
-  min-height: 42px !important; padding: 4px 3px !important; border-radius: 9px !important; gap: 1px !important;
-}
-#settingsSec_appearance #cardStyleButtonsContainer strong { font-size: .66rem !important; line-height: 1.2 !important; }
-#settingsSec_appearance #cardStyleButtonsContainer small { font-size: .53rem !important; line-height: 1.1 !important; }
-#settingsSec_appearance .compact-appearance-size { margin-top: 0 !important; }
-#settingsSec_appearance .compact-appearance-card-tile > div:first-child { display: none !important; }
-#settingsModal .settings-pane { flex: 0 0 auto; }
-#settingsSec_data .settings-data-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-}
-#settingsSec_data .settings-data-actions button { min-width: 0; }
 
-.ops-project-filter-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+#settingsModal .settings-modal-shell.antigravity-settings-shell {
+  width: min(96vw, 500px) !important;
+  max-height: min(94dvh, 680px) !important;
+  border-radius: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0 !important;
+  margin: auto !important;
+  overflow: hidden !important;
+  background: linear-gradient(165deg, rgba(20, 29, 47, 0.98), rgba(11, 18, 33, 0.99)) !important;
+  border: 1.2px solid rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.75), 0 0 25px rgba(56, 189, 248, 0.12) !important;
+  animation: antigravityPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.light-theme #settingsModal .settings-modal-shell.antigravity-settings-shell {
+  background: linear-gradient(165deg, #ffffff, #f8fafc) !important;
+  border: 1.2px solid rgba(203, 213, 225, 0.95) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 0 25px rgba(14, 165, 233, 0.08) !important;
+}
+
+@keyframes antigravityPop {
+  0% { opacity: 0; transform: scale(0.96) translateY(8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Neutralize legacy section boxes so cards float weightlessly */
+#settingsModal .settings-unified-section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+body.light-theme #settingsModal .settings-unified-section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Modal Header - Ultra Compact */
+#settingsModal .antigravity-settings-head {
+  padding: 8px 14px !important;
+  min-height: 46px !important;
+  height: 46px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.96)) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  flex-shrink: 0 !important;
+}
+body.light-theme #settingsModal .antigravity-settings-head {
+  background: linear-gradient(135deg, #ffffff, #f1f5f9) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95) !important;
+}
+
+.antigravity-head-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.antigravity-head-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  font-size: 0.86rem;
+}
+.antigravity-head-copy {
+  display: flex;
   align-items: center;
   gap: 6px;
 }
-#btnOpsClearFilters {
+#settingsModal #settingsModalTitle {
+  font-size: 0.88rem !important;
+  font-weight: 900 !important;
+  color: #f8fafc !important;
+  margin: 0 !important;
+}
+body.light-theme #settingsModal #settingsModalTitle {
+  color: #0f172a !important;
+}
+#settingsModal .version-badge {
+  font-size: 0.58rem !important;
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+  padding: 1px 6px !important;
+  border-radius: 5px !important;
+  font-weight: 800 !important;
+}
+body.light-theme #settingsModal .version-badge {
+  background: rgba(16, 185, 129, 0.12) !important;
+  color: #059669 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+.antigravity-modal-close {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
+  color: #f87171 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.85rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  margin: 0 !important;
+}
+.antigravity-modal-close:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Fixed VIP User Strip - Compact Single Row */
+.antigravity-user-vip-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 10px !important;
+  margin: 6px 10px 4px !important;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.28) !important;
+  border-radius: 11px !important;
+  flex-shrink: 0 !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+body.light-theme .antigravity-user-vip-strip {
+  background: linear-gradient(135deg, #ffffff, #f8fafc) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+}
+.antigravity-vip-avatar-wrap {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+.antigravity-vip-avatar {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 7px !important;
+  object-fit: cover !important;
+  border: 1.5px solid #38bdf8 !important;
+}
+.antigravity-vip-status-dot {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 1.5px solid #0f172a;
+}
+body.light-theme .antigravity-vip-status-dot {
+  border-color: #ffffff;
+}
+.antigravity-vip-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  margin: 0 8px;
+  min-width: 0;
+}
+.antigravity-vip-name-row strong {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #f8fafc;
+}
+body.light-theme .antigravity-vip-name-row strong {
+  color: #0f172a;
+}
+.antigravity-vip-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+body.light-theme .antigravity-vip-label {
+  color: #64748b;
+}
+.antigravity-switch-user-btn {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  color: #38bdf8 !important;
+  font-size: 0.66rem !important;
+  font-weight: 850 !important;
+  padding: 3px 9px !important;
+  border-radius: 7px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+}
+body.light-theme .antigravity-switch-user-btn {
+  background: rgba(14, 165, 233, 0.1) !important;
+  border-color: rgba(14, 165, 233, 0.35) !important;
+  color: #0284c7 !important;
+}
+
+/* Antigravity Segmented Navigation - 3 Compact Tabs */
+.antigravity-settings-nav {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+  padding: 4px !important;
+  margin: 3px 10px 8px !important;
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  flex-shrink: 0 !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
+}
+body.light-theme .antigravity-settings-nav {
+  background: #e2e8f0 !important;
+  border-color: rgba(203, 213, 225, 0.95) !important;
+}
+body.light-theme .antigravity-settings-nav {
+  background: #f1f5f9 !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+.antigravity-nav-pill {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  padding: 4px 2px !important;
+  font-size: 0.70rem !important;
+  font-weight: 850 !important;
+  border-radius: 7px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  height: 28px !important;
+}
+body.light-theme .antigravity-nav-pill {
+  color: #64748b !important;
+}
+.antigravity-nav-pill.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.22)) !important;
+  border: 1.2px solid rgba(56, 189, 248, 0.6) !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 2px 8px rgba(56, 189, 248, 0.2) !important;
+}
+body.light-theme .antigravity-nav-pill.active {
+  background: #ffffff !important;
+  border: 1.2px solid rgba(14, 165, 233, 0.5) !important;
+  color: #0284c7 !important;
+  box-shadow: 0 2px 6px rgba(14, 165, 233, 0.12) !important;
+}
+
+/* Scroll Container */
+#settingsModal .settings-modal-scroll,
+#settingsModal .antigravity-scroll-body,
+#settingsModal .antigravity-settings-body {
+  padding: 4px 10px 8px !important;
+  gap: 8px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Tab Panes */
+.antigravity-tab-pane {
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+#settingsModal .antigravity-tab-pane[hidden] {
+  display: none !important;
+}
+#settingsModal .antigravity-tab-pane:not([hidden]) {
+  display: flex !important;
+}
+
+/* Card Block - Compact, Zero Wasted Padding */
+.antigravity-card-block {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  box-sizing: border-box !important;
+}
+body.light-theme .antigravity-card-block {
+  background: #ffffff !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
+}
+.antigravity-card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.antigravity-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 0.76rem !important;
+  font-weight: 850 !important;
+  color: #f8fafc !important;
+}
+body.light-theme .antigravity-card-title {
+  color: #0f172a !important;
+}
+.antigravity-card-title i {
+  color: #38bdf8;
+  font-size: 0.82rem;
+}
+
+/* Badges */
+.appearance-active-badge,
+.antigravity-emerald-badge {
+  font-size: 0.60rem !important;
+  font-weight: 800 !important;
+  padding: 1px 7px !important;
+  border-radius: 5px !important;
+}
+.appearance-active-badge {
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.14) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+body.light-theme .appearance-active-badge {
+  color: #0284c7 !important;
+  background: rgba(14, 165, 233, 0.1) !important;
+  border-color: rgba(14, 165, 233, 0.3) !important;
+}
+.antigravity-emerald-badge {
+  color: #34d399 !important;
+  background: rgba(52, 211, 153, 0.14) !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+}
+body.light-theme .antigravity-emerald-badge {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* Mode Switcher - Tight inline 30px */
+.antigravity-mode-switcher {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 6px !important;
+}
+.antigravity-mode-btn {
+  height: 30px !important;
+  border-radius: 8px !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(30, 41, 59, 0.6) !important;
+  color: #cbd5e1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+}
+body.light-theme .antigravity-mode-btn {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+.antigravity-mode-btn[aria-pressed="true"] {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25)) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+body.light-theme .antigravity-mode-btn[aria-pressed="true"] {
+  background: #ffffff !important;
+  border: 1.5px solid #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+/* Grids for Color Themes, Icons & Cards: Exact 3x3 Balanced Matrix */
+.antigravity-palette-grid,
+.antigravity-icon-grid,
+.antigravity-card-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Legacy chunk removed - using rich vibrant gradients */
+
+/* Card Styles Grid - 3x3 Compact */
+#settingsModal .antigravity-card-style-grid button {
+  min-height: 38px !important;
+  height: 38px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(30, 41, 59, 0.55) !important;
+  color: #cbd5e1 !important;
+  padding: 2px 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+body.light-theme #settingsModal .antigravity-card-style-grid button {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+#settingsModal .antigravity-card-style-grid button.active {
+  border: 1.5px solid #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.18) !important;
+  color: #38bdf8 !important;
+}
+body.light-theme #settingsModal .antigravity-card-style-grid button.active {
+  border-color: #0284c7 !important;
+  background: #f0f9ff !important;
+  color: #0284c7 !important;
+}
+#settingsModal .antigravity-card-style-grid button strong {
+  font-size: 0.68rem !important;
+  line-height: 1.1 !important;
+}
+#settingsModal .antigravity-card-style-grid button small {
+  font-size: 0.52rem !important;
+  color: #94a3b8 !important;
+  line-height: 1 !important;
+}
+body.light-theme #settingsModal .antigravity-card-style-grid button small {
+  color: #64748b !important;
+}
+
+/* Font Grid - Mandatory 3 columns, 100% width, no vertical single column! */
+#settingsModal .settings-font-grid,
+#settingsModal .antigravity-font-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 5px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+#settingsModal .settings-font-grid button,
+#settingsModal .font-choice-pill {
+  height: 32px !important;
+  min-height: 32px !important;
+  border-radius: 7px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(30, 41, 59, 0.5) !important;
+  color: #cbd5e1 !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+}
+body.light-theme #settingsModal .settings-font-grid button,
+body.light-theme #settingsModal .font-choice-pill {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+#settingsModal .settings-font-grid button.active,
+#settingsModal .font-choice-pill.active {
+  border: 1.5px solid #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.18) !important;
+  color: #38bdf8 !important;
+}
+body.light-theme #settingsModal .settings-font-grid button.active,
+body.light-theme #settingsModal .font-choice-pill.active {
+  border-color: #0284c7 !important;
+  background: #f0f9ff !important;
+  color: #0284c7 !important;
+}
+
+/* Font Size Row - Inline Compact */
+.antigravity-size-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 6px;
-  min-height: 36px;
-  padding: 4px 9px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--appearance-panel-soft, #17243a);
-  color: var(--appearance-text, #f8fafc);
-  font: inherit;
-  font-size: .76rem;
-  font-weight: 800;
-  white-space: nowrap;
+  padding: 2px 0;
+}
+.antigravity-sub-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 850;
+  color: #cbd5e1;
+}
+body.light-theme .antigravity-sub-label {
+  color: #475569;
+}
+.antigravity-segmented-triple {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  width: 150px;
+}
+.antigravity-segmented-triple button {
+  height: 26px !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(30, 41, 59, 0.5) !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+}
+body.light-theme .antigravity-segmented-triple button {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #64748b !important;
+}
+.antigravity-segmented-triple button.active {
+  border-color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.2) !important;
+  color: #38bdf8 !important;
+}
+body.light-theme .antigravity-segmented-triple button.active {
+  border-color: #0284c7 !important;
+  background: #f0f9ff !important;
+  color: #0284c7 !important;
+}
+
+/* Wallets & Data Actions - Compact 2-column Grid */
+.antigravity-compact-action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+.antigravity-action-btn {
+  height: 34px;
+  border-radius: 8px;
+  font-size: 0.70rem;
+  font-weight: 850;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 41, 59, 0.6);
+  color: #f8fafc;
+  transition: all 0.2s ease;
+}
+body.light-theme .antigravity-action-btn {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+.antigravity-action-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+}
+
+/* Cloud Strip - Compact */
+.antigravity-cloud-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background: rgba(2, 6, 23, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  font-size: 0.66rem;
+  color: #94a3b8;
+}
+body.light-theme .antigravity-cloud-strip {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+.antigravity-cloud-strip strong {
+  color: #38bdf8;
+}
+body.light-theme .antigravity-cloud-strip strong {
+  color: #0284c7;
+}
+
+/* Hero Action Buttons */
+.antigravity-btn-sync-hero {
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   cursor: pointer;
 }
-body.light-theme #btnOpsClearFilters { background: #eef5ff; color: #17476d; }
-@media(max-width:365px) {
-  #settingsModal .settings-modal-shell { width: 98vw !important; }
-  #settingsSec_appearance .appearance-palette-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
-  #settingsSec_appearance .appearance-icon-grid { grid-template-columns: repeat(3,minmax(0,1fr)) !important; }
-  #settingsSec_appearance .compact-appearance-summary { max-width: 29%; }
-}
-@media(min-width:550px) {
-  #settingsModal .settings-modal-shell { max-width: 510px !important; }
+.antigravity-btn-update-hero {
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border: none;
+  color: #ffffff;
+  font-size: 0.70rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
 }
 
-/* Respect hidden typography label despite its legacy inline display style. */
-#settingsSec_appearance .compact-appearance-font-panel > div:first-child > div:first-child[hidden] { display: none !important; }
+/* Audit badge */
+.antigravity-audit-badge {
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  color: #34d399 !important;
+  background: rgba(34, 197, 94, 0.1) !important;
+  border: 1px solid rgba(34, 197, 94, 0.25) !important;
+  padding: 4px 8px !important;
+  border-radius: 7px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
 
+/* Modal Footer - Compact */
+#settingsModal .antigravity-settings-footer {
+  padding: 8px 14px !important;
+  background: rgba(15, 23, 42, 0.98) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  border-radius: 0 0 18px 18px !important;
+  height: 42px !important;
+  box-sizing: border-box !important;
+}
+body.light-theme #settingsModal .antigravity-settings-footer {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(226, 232, 240, 0.95) !important;
+}
+.antigravity-footer-copy {
+  font-size: 0.65rem !important;
+  color: #94a3b8 !important;
+}
+body.light-theme .antigravity-footer-copy {
+  color: #64748b !important;
+}
+.antigravity-footer-close-btn {
+  padding: 4px 14px !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+}
+body.light-theme .antigravity-footer-close-btn {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
 
-/* 2026-11-13: Fill incomplete last rows without fake blank cells.
-   Ten palettes: 3 + 3 + 2 + 2. Ten icons: 4 + 4 + 2.
-   Keep options, click handlers, and compact accordion height intact. */
-#settingsSec_appearance .appearance-palette-grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
-}
-#settingsSec_appearance .appearance-palette-grid > .theme-pill-option {
-  grid-column: span 2;
-}
-#settingsSec_appearance .appearance-palette-grid > .theme-pill-option:nth-child(n+7) {
-  grid-column: span 3;
-}
-#settingsSec_appearance .appearance-icon-grid > .icon-theme-pill:nth-last-child(-n+2) {
-  grid-column: span 2;
-}
-@media (max-width: 365px) {
-  #settingsSec_appearance .appearance-palette-grid,
-  #settingsSec_appearance .appearance-icon-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-  #settingsSec_appearance .appearance-palette-grid > .theme-pill-option,
-  #settingsSec_appearance .appearance-icon-grid > .icon-theme-pill {
-    grid-column: span 1 !important;
-  }
-}
 
 /* Financial numerals stay readable regardless of the chosen palette.
    Fixes the dark amount-on-dark footer seen on light-theme expense cards.
@@ -363,24 +897,23 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
 
 /* Card choices: 10 items fill rows 3 + 3 + 4 with no two empty cells.
    Preserve every original selectable card style and its click handler. */
-#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
+#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid,
+#settingsSec_appearance #cardStyleButtonsContainer.antigravity-card-style-grid {
   display: grid !important;
-  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
-  gap: 5px !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
   align-content: start !important;
   align-items: stretch !important;
   margin: 4px 0 0 !important;
   padding: 0 !important;
   min-height: 0 !important;
+  width: 100% !important;
 }
 #settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
-  grid-column: span 4;
+  grid-column: auto !important;
   min-width: 0 !important;
   width: 100% !important;
   margin: 0 !important;
-}
-#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style]:nth-child(n+7) {
-  grid-column: span 3;
 }
 #settingsSec_appearance .compact-appearance-cards-panel,
 #settingsSec_appearance .compact-appearance-card-tile {
@@ -491,4 +1024,480 @@ button, input[type="button"], input[type="submit"], [role="tab"] {
     .task-picker-month-heading button, .task-picker-stepper button) > :is(i, span, svg) {
   margin: 0 !important;
   text-align: center !important;
+}
+
+
+
+/* =========================================================================
+   Unified 3x3 Matrices: Choices represent the actual colors and styles
+   ========================================================================= */
+
+/* 1. App Color Themes (9 Colors - 3x3 Rows - Each Choice IS The Color) */
+.antigravity-palette-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option {
+  height: 35px !important;
+  min-height: 35px !important;
+  border-radius: 9px !important;
+  padding: 2px 6px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, outline 0.16s ease !important;
+  position: relative !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option span {
+  font-size: 0.69rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option .theme-active-check {
+  display: none;
+  font-size: 0.62rem !important;
+  color: #ffffff !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option.active .theme-active-check {
+  display: inline-block !important;
+}
+
+/* Specific vibrant backgrounds representing each color itself */
+#settingsModal .theme-pill-option[data-theme="navy"] { background: linear-gradient(135deg, #0b1f3a, #163e72) !important; }
+#settingsModal .theme-pill-option[data-theme="emerald"] { background: linear-gradient(135deg, #064e3b, #059669) !important; }
+#settingsModal .theme-pill-option[data-theme="purple"] { background: linear-gradient(135deg, #581c87, #7c3aed) !important; }
+#settingsModal .theme-pill-option[data-theme="rose"] { background: linear-gradient(135deg, #881337, #be123c) !important; }
+#settingsModal .theme-pill-option[data-theme="ocean"] { background: linear-gradient(135deg, #155e75, #0891b2) !important; }
+#settingsModal .theme-pill-option[data-theme="gold"] { background: linear-gradient(135deg, #78350f, #b45309) !important; }
+#settingsModal .theme-pill-option[data-theme="slate"] { background: linear-gradient(135deg, #334155, #475569) !important; }
+#settingsModal .theme-pill-option[data-theme="midnight"] { background: linear-gradient(135deg, #312e81, #4338ca) !important; }
+#settingsModal .theme-pill-option[data-theme="sapphire"] { background: linear-gradient(135deg, #1e3a8a, #2563eb) !important; }
+
+#settingsModal .antigravity-palette-grid .theme-pill-option:hover {
+  transform: translateY(-1.5px) scale(1.02) !important;
+  filter: brightness(1.12) !important;
+}
+
+#settingsModal .antigravity-palette-grid .theme-pill-option.active {
+  outline: 2.5px solid #ffffff !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1.5px) scale(1.03) !important;
+}
+
+body.light-theme #settingsModal .antigravity-palette-grid .theme-pill-option.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1.5px !important;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.6), 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 2. Icon Themes (9 Colors - 3x3 Rows - Each Choice IS The Color) */
+.antigravity-icon-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill {
+  height: 35px !important;
+  min-height: 35px !important;
+  border-radius: 9px !important;
+  padding: 2px 6px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, outline 0.16s ease !important;
+  position: relative !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill span {
+  font-size: 0.69rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65) !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill .icon-active-check {
+  display: none;
+  font-size: 0.62rem !important;
+  color: #ffffff !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill.active .icon-active-check {
+  display: inline-block !important;
+}
+
+/* Specific vibrant gradients for icon themes */
+#settingsModal .icon-theme-pill[data-icon-theme="vibrant"] { background: linear-gradient(135deg, #0284c7, #06b6d4) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="gold"] { background: linear-gradient(135deg, #b45309, #f59e0b) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="emerald"] { background: linear-gradient(135deg, #047857, #10b981) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="ocean"] { background: linear-gradient(135deg, #0e7490, #06b6d4) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="purple"] { background: linear-gradient(135deg, #6d28d9, #8b5cf6) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="ruby"] { background: linear-gradient(135deg, #be123c, #f43f5e) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="amber"] { background: linear-gradient(135deg, #c2410c, #f97316) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="indigo"] { background: linear-gradient(135deg, #3730a3, #6366f1) !important; }
+#settingsModal .icon-theme-pill[data-icon-theme="rose"] { background: linear-gradient(135deg, #be185d, #ec4899) !important; }
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill:hover {
+  transform: translateY(-1.5px) scale(1.02) !important;
+  filter: brightness(1.12) !important;
+}
+
+#settingsModal .antigravity-icon-grid .icon-theme-pill.active {
+  outline: 2.5px solid #ffffff !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.75), 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1.5px) scale(1.03) !important;
+}
+
+body.light-theme #settingsModal .antigravity-icon-grid .icon-theme-pill.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1.5px !important;
+  box-shadow: 0 0 14px rgba(2, 132, 199, 0.6), 0 4px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* 3. Card Styles (9 Styles - 3x3 Rows - Each Choice Demonstrates Its Style) */
+.antigravity-card-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-card-style-grid button {
+  height: 38px !important;
+  min-height: 38px !important;
+  border-radius: 9px !important;
+  padding: 3px 5px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  line-height: 1.15 !important;
+  color: #f8fafc !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease !important;
+}
+
+#settingsModal .antigravity-card-style-grid button strong {
+  font-size: 0.70rem !important;
+  font-weight: 850 !important;
+}
+#settingsModal .antigravity-card-style-grid button small {
+  font-size: 0.58rem !important;
+  opacity: 0.8 !important;
+}
+
+body.light-theme #settingsModal .antigravity-card-style-grid button {
+  color: #1e293b !important;
+}
+
+#settingsModal #designStyleGlass {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
+#settingsModal #designStyleMin {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+#settingsModal #designStyleNeu {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.15), 2px 2px 6px rgba(0, 0, 0, 0.45) !important;
+}
+#settingsModal #designStyleNeon {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
+}
+#settingsModal #designStyleClear {
+  background: transparent !important;
+  border: 2px solid #94a3b8 !important;
+}
+#settingsModal #designStyleElevated {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.6) !important;
+}
+#settingsModal #designStyleOutlined {
+  background: transparent !important;
+  border: 1.5px dashed #94a3b8 !important;
+}
+#settingsModal #designStyleGradient {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+}
+#settingsModal #designStyleSoft {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+}
+
+/* Light Theme Card Styles */
+body.light-theme #settingsModal #designStyleGlass {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border: 1px solid rgba(203, 213, 225, 0.85) !important;
+}
+body.light-theme #settingsModal #designStyleMin {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+}
+body.light-theme #settingsModal #designStyleNeu {
+  background: #f1f5f9 !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: inset 1px 1px 2px #ffffff, 2px 2px 4px rgba(15, 23, 42, 0.12) !important;
+}
+body.light-theme #settingsModal #designStyleNeon {
+  background: #f0f9ff !important;
+  border: 1.5px solid #0284c7 !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.35) !important;
+}
+body.light-theme #settingsModal #designStyleClear {
+  background: #ffffff !important;
+  border: 2px solid #475569 !important;
+}
+body.light-theme #settingsModal #designStyleElevated {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 8px 16px -2px rgba(15, 23, 42, 0.15) !important;
+}
+body.light-theme #settingsModal #designStyleOutlined {
+  background: #ffffff !important;
+  border: 1.5px dashed #64748b !important;
+}
+body.light-theme #settingsModal #designStyleGradient {
+  background: linear-gradient(135deg, rgba(224, 242, 254, 0.8), rgba(243, 232, 255, 0.8)) !important;
+  border: 1px solid rgba(14, 165, 233, 0.4) !important;
+}
+body.light-theme #settingsModal #designStyleSoft {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 16px !important;
+}
+
+#settingsModal .antigravity-card-style-grid button.active {
+  outline: 2.5px solid #38bdf8 !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
+  transform: translateY(-1.5px) scale(1.02) !important;
+}
+body.light-theme #settingsModal .antigravity-card-style-grid button.active {
+  outline: 2.5px solid #0284c7 !important;
+  outline-offset: 1px !important;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.45) !important;
+}
+
+/* 4. Fonts Grid (9 Fonts - 3x3 Rows - Each Choice In Its Own Font) */
+.antigravity-font-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill {
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 9px !important;
+  padding: 3px 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(30, 41, 59, 0.65) !important;
+  color: #f1f5f9 !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease !important;
+}
+
+body.light-theme #settingsModal .antigravity-font-grid .font-choice-pill {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill:hover {
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+#settingsModal .antigravity-font-grid .font-choice-pill.active {
+  background: rgba(56, 189, 248, 0.22) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3) !important;
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 1px !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+body.light-theme #settingsModal .antigravity-font-grid .font-choice-pill.active {
+  background: #f0f9ff !important;
+  border-color: #0284c7 !important;
+  color: #0284c7 !important;
+  outline: 2px solid #0284c7 !important;
+}
+
+
+
+/* =========================================================================
+   Professional Font Size Selector (6 Balanced Micro-to-Huge Sizes)
+   ========================================================================= */
+.antigravity-font-size-section {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.antigravity-size-track {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  padding: 4px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body.light-theme .antigravity-size-track {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+.antigravity-size-pill {
+  height: 38px !important;
+  min-height: 38px !important;
+  border: 1px solid transparent !important;
+  background: rgba(30, 41, 59, 0.65) !important;
+  color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  padding: 2px !important;
+  box-sizing: border-box !important;
+  transition: all 0.16s ease !important;
+}
+
+body.light-theme .antigravity-size-pill {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+}
+
+.antigravity-size-pill .size-sample {
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #38bdf8 !important;
+}
+body.light-theme .antigravity-size-pill .size-sample {
+  color: #0284c7 !important;
+}
+
+.antigravity-size-pill .size-name {
+  font-size: 0.60rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+.antigravity-size-pill:hover {
+  transform: translateY(-1px) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.antigravity-size-pill.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.25)) !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3) !important;
+  transform: translateY(-1px) scale(1.02) !important;
+}
+
+body.light-theme .antigravity-size-pill.active {
+  background: #f0f9ff !important;
+  border: 1.5px solid #0284c7 !important;
+  color: #0284c7 !important;
+  box-shadow: 0 0 10px rgba(2, 132, 199, 0.25) !important;
+}
+
+/* Nav Pills 50/50 balanced styling */
+.antigravity-nav-pill {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  font-size: 0.76rem !important;
+  font-weight: 850 !important;
+  border-radius: 9px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 32px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body.light-theme .antigravity-nav-pill {
+  color: #475569 !important;
+}
+
+.antigravity-nav-pill.active {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.28), rgba(99, 102, 241, 0.28)) !important;
+  border: 1.2px solid rgba(56, 189, 248, 0.6) !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+body.light-theme .antigravity-nav-pill.active {
+  background: #ffffff !important;
+  border: 1.2px solid rgba(14, 165, 233, 0.45) !important;
+  color: #0284c7 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1) !important;
 }

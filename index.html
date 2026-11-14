@@ -17,7 +17,7 @@
   <!-- الخطوط والأيقونات -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Almarai:wght@300;400;700;800&family=Readex+Pro:wght@300;400;500;600;700&family=Alexandria:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Almarai:wght@300;400;700;800&family=Readex+Pro:wght@300;400;500;600;700&family=Alexandria:wght@400;600;700;800;900&family=Changa:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&family=Rubik:wght@400;600;700;800&display=swap" rel="stylesheet">
   <!-- Early CSS Customization Restorer to prevent FOUS -->
   <script>
 
@@ -114,6 +114,20 @@
           }
         } catch(e) {}
       }
+
+      // الرجوع التلقائي إلى نافذة التنبيهات إذا تم الفتح منها
+      if (id === 'editTxModal' || id === 'editCommitmentModal' || id === 'tasksFullScreenModal' || id === 'taskModal') {
+        if (window._returnToNotificationsOnClose) {
+          window._returnToNotificationsOnClose = false;
+          setTimeout(() => {
+            if (typeof familyAlerts !== 'undefined' && typeof familyAlerts.open === 'function') {
+              familyAlerts.open();
+            } else if (typeof openNotificationsModal === 'function') {
+              openNotificationsModal();
+            }
+          }, 60);
+        }
+      }
     }
 
     function openModal(id) {
@@ -145,8 +159,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.36';
-    var APP_BUILD_ID = 202611141209;
+    var APP_VERSION = 'v5.3.46';
+    var APP_BUILD_ID = 202611141330;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -156,10 +170,12 @@
         var it = localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
         document.documentElement.setAttribute('data-icon-theme', it);
         var fs = localStorage.getItem('family_expense_font_size') || 'medium';
+        var validSizes = ['micro', 'small', 'medium', 'large', 'xlarge', 'huge'];
+        if (!validSizes.includes(fs)) fs = 'medium';
         document.documentElement.setAttribute('data-font-size', fs);
         var cs = localStorage.getItem('family_monefy_design_style') || 'glass';
         document.documentElement.setAttribute('data-card-style', cs);
-        var fk = localStorage.getItem('family_expense_app_font') || 'ibm';
+        var fk = localStorage.getItem('family_expense_app_font') || 'tajawal';
         document.documentElement.setAttribute('data-font-family', fk);
         var fontMap = {
           tajawal: "'Tajawal', -apple-system, sans-serif",
@@ -167,7 +183,10 @@
           ibm: "'IBM Plex Sans Arabic', 'Tajawal', sans-serif",
           almarai: "'Almarai', 'Tajawal', sans-serif",
           readex: "'Readex Pro', 'Tajawal', sans-serif",
-          alexandria: "'Alexandria', 'Tajawal', sans-serif"
+          alexandria: "'Alexandria', 'Tajawal', sans-serif",
+          changa: "'Changa', 'Tajawal', sans-serif",
+          noto: "'Noto Sans Arabic', 'Tajawal', sans-serif",
+          rubik: "'Rubik', 'Tajawal', sans-serif"
         };
         if (fontMap[fk]) {
           document.documentElement.style.setProperty('--font-family', fontMap[fk], 'important');
@@ -9086,7 +9105,7 @@
       color: #0284c7 !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -9095,7 +9114,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -10476,22 +10495,23 @@
       font-size: 0.78rem !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.35rem, 4.6vw, 1.85rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
       direction: rtl !important;
       text-align: right !important;
       font-variant-numeric: tabular-nums !important;
-      line-height: 1.18 !important;
+      line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 18px rgba(56, 189, 248, 0.65) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
     body.light-theme .cockpit-hero-value {
       color: #0284c7 !important;
       text-shadow: none !important;
+      filter: drop-shadow(0 1px 1px rgba(2, 132, 199, 0.15)) !important;
     }
     .cockpit-hero-sub {
       font-size: 0.62rem !important;
@@ -11581,6 +11601,16 @@
       --app-cockpit-pill-val: clamp(0.78rem, 2.2vw, 0.88rem);
     }
 
+    /* 6 أحجام خطوط متدرجة باحترافية */
+    html[data-font-size="micro"], body[data-font-size="micro"] { font-size: 11.5px !important; --app-font-scale: 0.80 !important; }
+    html[data-font-size="small"], body[data-font-size="small"] { font-size: 12.8px !important; --app-font-scale: 0.90 !important; }
+    html[data-font-size="medium"], body[data-font-size="medium"] { font-size: 14px !important; --app-font-scale: 1.0 !important; }
+    html[data-font-size="large"], body[data-font-size="large"] { font-size: 15.5px !important; --app-font-scale: 1.10 !important; }
+    html[data-font-size="xlarge"], body[data-font-size="xlarge"] { font-size: 17px !important; --app-font-scale: 1.20 !important; }
+    html[data-font-size="huge"], body[data-font-size="huge"] { font-size: 18.5px !important; --app-font-scale: 1.30 !important; }
+
+
+
     /* تكيف شبكة المصروفات */
     .categories-monefy-grid, #catGrid {
       flex: 1 1 auto !important;
@@ -12472,7 +12502,7 @@
     }
 
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -12481,7 +12511,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -12885,46 +12915,61 @@
     /* --- 4. Executive Wealth Cockpit: Zero-Dead-Space Master Layout --- */
     .kpi-master-wealth-cockpit {
       width: calc(100% - 10px) !important;
-      margin: 2px 5px 4px !important;
-      min-height: 82px !important;
+      margin: 2px 5px 6px !important;
+      min-height: 88px !important;
       height: auto !important;
       max-height: none !important;
       box-sizing: border-box !important;
       display: flex !important;
       align-items: stretch !important;
       justify-content: space-between !important;
-      padding: 5px 8px !important;
-      gap: 6px !important;
+      padding: 6px 10px !important;
+      gap: 8px !important;
       position: relative !important;
       overflow: hidden !important;
+      border-radius: 16px !important;
       transition: all 0.25s ease !important;
     }
 
-    /* الرصيد الفعلي الحالي: بطل رئيسي أكبر وأكثر بروزاً بوضوح تام */
+    /* الرصيد الفعلي الحالي: بطل رئيسي أكبر وأكثر بروزاً بوضوح تام بطريقة Antigravity */
     .cockpit-hero-side {
-      flex: 1.25 !important;
+      flex: 1.55 !important;
       min-width: 0 !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      padding: 2px 5px !important;
+      padding: 2px 4px !important;
       box-sizing: border-box !important;
       border-radius: 12px !important;
+      overflow: hidden !important;
     }
 
     .cockpit-hero-label {
-      font-size: clamp(0.68rem, 2.0vw, 0.74rem) !important;
+      font-size: clamp(0.70rem, 2.1vw, 0.78rem) !important;
       font-weight: 800 !important;
       color: #94a3b8 !important;
       display: flex !important;
       align-items: center !important;
-      gap: 5px !important;
+      gap: 6px !important;
       white-space: nowrap !important;
       line-height: 1.2 !important;
     }
 
+    .hero-wallet-icon-badge {
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 6px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(56, 189, 248, 0.18) !important;
+      color: #38bdf8 !important;
+      font-size: 0.85rem !important;
+      flex-shrink: 0 !important;
+    }
+
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.40rem, 4.6vw, 1.95rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -12933,9 +12978,38 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
+      margin-top: 2px !important;
+    }
+
+    .cockpit-hero-value .tx-currency-label {
+      font-size: 0.58em !important;
+      font-weight: 800 !important;
+      opacity: 0.85 !important;
+      margin-right: 3px !important;
+    }
+
+    .cockpit-hero-value .tx-sign-symbol {
+      font-size: 0.82em !important;
+      font-weight: 900 !important;
+      margin-left: 2px !important;
+    }
+
+    body.light-theme .hero-wallet-icon-badge {
+      background: rgba(2, 132, 199, 0.12) !important;
+      color: #0284c7 !important;
+    }
+
+    body.light-theme .cockpit-hero-label {
+      color: #334155 !important;
+    }
+
+    body.light-theme .cockpit-hero-value {
+      color: #0284c7 !important;
+      text-shadow: none !important;
+      filter: drop-shadow(0 1px 1px rgba(2, 132, 199, 0.15)) !important;
     }
 
     .cockpit-hero-sub {
@@ -12954,20 +13028,52 @@
       width: 1px !important;
       align-self: stretch !important;
       margin: 2px 0 !important;
-      background: rgba(255, 255, 255, 0.12) !important;
+      background: linear-gradient(180deg, transparent, rgba(56, 189, 248, 0.3) 15%, rgba(56, 189, 248, 0.3) 85%, transparent) !important;
       flex-shrink: 0 !important;
+    }
+    body.light-theme .cockpit-divider {
+      background: linear-gradient(180deg, transparent, rgba(203, 213, 225, 0.9) 15%, rgba(203, 213, 225, 0.9) 85%, transparent) !important;
     }
 
     /* كبسولات التدفقات التوأم: متسعة ومريحة بدون أي فراغات ميتة */
     .cockpit-flow-side {
-      flex: 1.10 !important;
-      min-width: 0 !important;
+      flex: 1.0 !important;
+      min-width: 120px !important;
+      max-width: 44% !important;
       display: flex !important;
       flex-direction: column !important;
       justify-content: space-between !important;
-      gap: 4px !important;
+      gap: 5px !important;
       box-sizing: border-box !important;
     }
+
+    /* الألوان الحصرية المتنوعة الدائمة لشبكة بنود المصروفات */
+    .cat-card.cat-theme-food { border-color: #10b981 !important; }
+    .cat-card.cat-theme-food .cat-icon-bubble { background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important; outline-color: #10b981 !important; }
+
+    .cat-card.cat-theme-daily { border-color: #f59e0b !important; }
+    .cat-card.cat-theme-daily .cat-icon-bubble { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%) !important; outline-color: #f59e0b !important; }
+
+    .cat-card.cat-theme-bills { border-color: #f97316 !important; }
+    .cat-card.cat-theme-bills .cat-icon-bubble { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%) !important; outline-color: #f97316 !important; }
+
+    .cat-card.cat-theme-transport { border-color: #0284c7 !important; }
+    .cat-card.cat-theme-transport .cat-icon-bubble { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; outline-color: #0284c7 !important; }
+
+    .cat-card.cat-theme-house { border-color: #8b5cf6 !important; }
+    .cat-card.cat-theme-house .cat-icon-bubble { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%) !important; outline-color: #8b5cf6 !important; }
+
+    .cat-card.cat-theme-health { border-color: #ef4444 !important; }
+    .cat-card.cat-theme-health .cat-icon-bubble { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important; outline-color: #ef4444 !important; }
+
+    .cat-card.cat-theme-clothes { border-color: #ec4899 !important; }
+    .cat-card.cat-theme-clothes .cat-icon-bubble { background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important; outline-color: #ec4899 !important; }
+
+    .cat-card.cat-theme-education { border-color: #3b82f6 !important; }
+    .cat-card.cat-theme-education .cat-icon-bubble { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; outline-color: #3b82f6 !important; }
+
+    .cat-card.cat-theme-other { border-color: #14b8a6 !important; }
+    .cat-card.cat-theme-other .cat-icon-bubble { background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%) !important; outline-color: #14b8a6 !important; }
 
     .cockpit-flow-pill {
       flex: 1 1 0 !important;
@@ -13036,7 +13142,7 @@
       line-height: 1.1 !important;
     }
     .cockpit-hero-value {
-      font-size: clamp(1.85rem, 5.8vw, 2.40rem) !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
       font-weight: 950 !important;
       color: #38bdf8 !important;
       letter-spacing: -0.3px !important;
@@ -13045,7 +13151,7 @@
       font-variant-numeric: tabular-nums !important;
       line-height: 1.15 !important;
       white-space: nowrap !important;
-      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.70) !important;
+      text-shadow: 0 2px 20px rgba(56, 189, 248, 0.60) !important;
       max-width: 100% !important;
       overflow: visible !important;
     }
@@ -13896,21 +14002,29 @@
       text-wrap: balance;
     }
 
-    /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة */
+    /* إبراز الرصيد وموازنة كبسولتي التدفقات داخل البطاقة بطريقة Antigravity */
     #viewExpenses #topKpiThreeStrip {
       height: auto !important;
-      min-height: 100px !important;
-      padding-bottom: 8px !important;
-      overflow: visible !important;
+      min-height: 88px !important;
+      padding: 6px 10px !important;
+      overflow: hidden !important;
+      border-radius: 16px !important;
     }
     #viewExpenses .cockpit-hero-value {
-      font-size: clamp(2.20rem, 6.8vw, 2.95rem) !important;
-      font-weight: 1000 !important;
-      -webkit-text-stroke: 0.25px rgba(186, 230, 253, 0.65) !important;
-      text-shadow: 0 0 7px rgba(56, 189, 248, 0.62), 0 2px 24px rgba(56, 189, 248, 0.88) !important;
-      transform: translateY(-3px) scaleX(1.08) scaleY(1.30) !important;
-      transform-origin: right center !important;
-      line-height: 1.20 !important;
+      font-size: clamp(1.85rem, 5.8vw, 2.45rem) !important;
+      font-weight: 950 !important;
+      -webkit-text-stroke: 0 !important;
+      text-shadow: 0 2px 14px rgba(56, 189, 248, 0.45) !important;
+      transform: none !important;
+      line-height: 1.15 !important;
+      letter-spacing: -0.3px !important;
+    }
+    body.light-theme #viewExpenses .cockpit-hero-value {
+      color: #0284c7 !important;
+      -webkit-text-stroke: 0 !important;
+      text-shadow: none !important;
+      filter: none !important;
+      transform: none !important;
     }
     #viewExpenses .cockpit-flow-side {
       align-items: stretch !important;
@@ -14440,72 +14554,7 @@
 
   </style>
   <style id="gold-market-refresh-styles">
-    #goldDrawerPanel .gold-market-topbar {
-      background: radial-gradient(circle at 90% 0%, rgba(245,158,11,.19), transparent 34%), linear-gradient(135deg,#172033,#0b1220) !important;
-      border-bottom: 1px solid rgba(251,191,36,.35) !important;
-    }
-    #goldDrawerPanel .gold-market-toolbar { gap: 10px; align-items: flex-start !important; }
-    #goldDrawerPanel .gold-market-source-chips { gap: 6px !important; }
-    #goldDrawerPanel .market-source-pill {
-      display: inline-flex; align-items: center; gap: 5px; min-height: 22px; padding: 3px 8px !important;
-      border-radius: 999px !important; font-size: .62rem !important; line-height: 1.15; white-space: nowrap;
-    }
-    #goldDrawerPanel .market-source-pill-official { background: rgba(16,185,129,.15) !important; color: #6ee7b7 !important; border: 1px solid rgba(52,211,153,.28) !important; }
-    #goldDrawerPanel .market-source-pill-chart { background: rgba(56,189,248,.10) !important; color: #7dd3fc !important; border: 1px solid rgba(56,189,248,.24) !important; }
-    #goldDrawerPanel .market-update-status {
-      display: inline-flex !important; align-items: center; gap: 5px !important; min-height: 22px; padding: 3px 8px;
-      border-radius: 999px; font-size: .61rem !important; line-height: 1.2; background: rgba(148,163,184,.09);
-    }
-    #goldDrawerPanel .market-update-status[data-status="fresh"] { color: #86efac !important; background: rgba(34,197,94,.10); }
-    #goldDrawerPanel .market-update-status[data-status="estimated"] { color: #fcd34d !important; background: rgba(245,158,11,.11); }
-    #goldDrawerPanel .market-update-status[data-status="stale"] { color: #fca5a5 !important; background: rgba(239,68,68,.10); }
-    #goldDrawerPanel .gold-refresh-btn {
-      flex: 0 0 auto; min-height: 32px; padding: 5px 11px !important; border-radius: 9px !important;
-      background: linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.08)) !important;
-      border: 1px solid rgba(251,191,36,.45) !important; color: #fde68a !important;
-      font-size: .68rem !important; font-weight: 850 !important; transition: .18s ease;
-    }
-    #goldDrawerPanel .gold-refresh-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(245,158,11,.15); }
-    #goldDrawerPanel .gold-refresh-btn:disabled { opacity: .7; cursor: wait; }
-    #goldDrawerPanel .gold-refresh-btn.is-loading i { animation: goldRefreshSpin .8s linear infinite; }
-    @keyframes goldRefreshSpin { to { transform: rotate(360deg); } }
-    #goldDrawerPanel .gold-market-content { gap: 11px !important; padding: 10px 12px 28px !important; }
-    #goldDrawerPanel .gold-market-section {
-      border-radius: 16px !important; padding: 12px !important; box-shadow: 0 8px 20px rgba(0,0,0,.16);
-    }
-    #goldDrawerPanel .gold-rates-section { border-color: rgba(251,191,36,.34) !important; background: linear-gradient(145deg,rgba(33,39,54,.98),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .fx-market-section { border-color: rgba(52,211,153,.28) !important; background: linear-gradient(145deg,rgba(28,42,52,.96),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .market-section-heading { font-size: .78rem !important; letter-spacing: .01em; }
-    #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 8px !important; }
-    #goldDrawerPanel .market-box {
-      min-width: 0; position: relative; overflow: hidden; border-radius: 12px !important; padding: 9px 10px !important;
-      background: linear-gradient(145deg,rgba(35,47,67,.94),rgba(20,29,45,.96)) !important;
-      border: 1px solid rgba(148,163,184,.17) !important; box-shadow: inset 0 1px rgba(255,255,255,.035),0 4px 10px rgba(0,0,0,.12);
-    }
-    #goldDrawerPanel .market-box::after { content: ''; position: absolute; top: 0; inset-inline: 12px; height: 2px; border-radius: 0 0 3px 3px; background: linear-gradient(90deg,transparent,rgba(251,191,36,.7),transparent); opacity: .65; }
-    #goldDrawerPanel .fx-market-section .market-box::after { background: linear-gradient(90deg,transparent,rgba(52,211,153,.7),transparent); }
-    #goldDrawerPanel .market-box-title { min-height: 18px; font-size: .69rem !important; }
-    #goldDrawerPanel .market-box-val { font-size: 1.04rem !important; line-height: 1.35; font-variant-numeric: tabular-nums; }
-    #goldDrawerPanel .market-box-sub { gap: 5px; align-items: center; }
-    #goldDrawerPanel .gold-calculator-section { border-radius: 16px !important; box-shadow: 0 8px 22px rgba(0,0,0,.22) !important; }
-    #goldDrawerPanel .gold-calc-summary { border-radius: 14px !important; background: radial-gradient(circle at 95% 0%,rgba(251,191,36,.15),transparent 45%),linear-gradient(135deg,rgba(245,158,11,.20),rgba(15,23,42,.96)) !important; }
-    #goldDrawerPanel .gold-calc-breakdown { border-radius: 12px !important; }
-    #goldDrawerPanel .gold-calc-presets { gap: 6px !important; margin-top: 8px; }
-    #goldDrawerPanel .gold-calc-presets button { min-height: 32px; border-radius: 9px !important; transition: .16s ease; }
-    #goldDrawerPanel .gold-calc-presets button:hover { border-color: rgba(251,191,36,.5) !important; color: #fde68a !important; }
-    #goldDrawerPanel .gold-chart-section { border-radius: 16px !important; overflow: hidden; }
-    #goldDrawerPanel #tvChartContainer { border: 1px solid rgba(148,163,184,.16); }
-    #goldDrawerPanel .gold-valuation-section { border-radius: 14px !important; }
-    @media (max-width: 440px) {
-      #goldDrawerPanel .gold-market-toolbar { align-items: flex-start !important; }
-      #goldDrawerPanel .gold-market-source-chips { flex: 1 1 100%; }
-      #goldDrawerPanel .market-update-status { flex-basis: 100%; order: 2; }
-      #goldDrawerPanel .gold-refresh-btn { min-height: 31px; padding-inline: 9px !important; }
-      #goldDrawerPanel .gold-market-content { padding-inline: 9px !important; }
-      #goldDrawerPanel .gold-market-section { padding: 10px !important; }
-      #goldDrawerPanel .gold-grid-cards, #goldDrawerPanel .fx-grid-cards { gap: 6px !important; }
-      #goldDrawerPanel .market-box { padding: 8px !important; }
-    }
+    /* Replaced with authoritative gold-market.css (v4.0 Antigravity) */
   </style>
 <style id="unified-date-task-picker-theme">
     :root {
@@ -15032,11 +15081,11 @@
       border-style:var(--appearance-card-border-style) !important;
       border-width:var(--appearance-card-border-width) !important;
     }
-    body[data-card-style="glass"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="glass"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="glass"] #topKpiThreeStrip { backdrop-filter:blur(16px); }
-    body[data-card-style="neon"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="neon"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="neon"] #topKpiThreeStrip { border-color:var(--appearance-accent-text) !important; }
-    body[data-card-style="gradient"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.cat-card,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
+    body[data-card-style="gradient"] #appFrame :is(.app-card-panel,.summary-card,.history-card,.tx-row,.chart-block,.settings-unified-section,.ops-tx-card-lux,.expected-clean-card,.exp-cockpit-card,.kpi-master-wealth-cockpit),
     body[data-card-style="gradient"] #topKpiThreeStrip {
       background-image:linear-gradient(130deg,color-mix(in srgb,var(--appearance-accent-text) 8%,var(--appearance-card-bg)),var(--appearance-card-bg)) !important;
     }
@@ -15050,13 +15099,13 @@
   </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=20261114-gold1"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
-  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-settings-open">
-  <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
+  <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
+  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
+  <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
-  <script src="./family-alerts.js?v=20261114-alert-header"></script>
-  <link rel="stylesheet" href="./family-alerts.css?v=20261114-alert-header">
+  <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
+  <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -15323,41 +15372,17 @@
 
         </div>
 
-        <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + الذهب والبورصة + زر العملة المطور -->
-        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; width: calc(100% - 12px); box-sizing: border-box;">
+        <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + زر العملة المطور -->
+        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: calc(100% - 12px); box-sizing: border-box;">
           
           <!-- كلاستر المحفظة الموسع: أيقونة + قائمة موسعة لعرض كامل الاسم دون اقتصاص -->
-          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 175px; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
+          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 0; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
             <i class="fa-solid fa-wallet" style="color: #38bdf8; font-size: 1.05rem; flex-shrink: 0;"></i>
-            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.88rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
+            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.92rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
-          <!-- زر درج ملخص النشاط المالي الشامل (يفتح الشاشة الجانبية اليسرى) -->
-          <button type="button" class="tool-pill-action" id="btnOpenSummaryDrawer" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات والنشاط المالي" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(15, 23, 42, 0.9)); color: #38bdf8; flex-shrink: 0;">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>ملخص</span>
-          </button>
-
-          <!-- زر شاشة الذهب والبورصة والعملات (يفتح الشاشة الجانبية اليمنى) -->
-          <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="openGoldDrawer()" title="الشاشة الجانبية اليمنى: شارت الذهب وأسعار العملات" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.9)); color: #fbbf24; flex-shrink: 0;">
-            <i class="fa-solid fa-arrow-trend-up"></i>
-            <span>الذهب</span>
-          </button>
-
-          <!-- زر درج المهام والالتزامات العائلية (1-tap shortcut) -->
-          <button type="button" class="tool-pill-action" id="btnOpenTasksDrawer" onclick="openTasksFullScreenModal()" title="إدارة المهام والالتزامات العائلية والخطوات الفرعية" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(168, 85, 247, 0.5); background: linear-gradient(135deg, rgba(168, 85, 247, 0.20), rgba(15, 23, 42, 0.9)); color: #c084fc; flex-shrink: 0;">
-            <i class="fa-solid fa-list-check" style="color: #c084fc;"></i>
-            <span>المهام</span>
-          </button>
-
-          
-
-          
-
-
-
           <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 8px; border-radius: 12px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: rgba(30, 41, 59, 0.85); color: #fbbf24; flex-shrink: 0;">
+          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 12px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: rgba(30, 41, 59, 0.85); color: #fbbf24; flex-shrink: 0;">
             <i class="fa-solid fa-coins"></i>
             <span id="activeCurrencyText">EGP</span>
           </div>
@@ -16923,228 +16948,505 @@
        القائمة الجانبية المنفصلة: الذهب والعملات (TradingView)
          ============================================== -->
     <div class="side-drawer-backdrop" id="goldDrawerBackdrop" onclick="closeGoldDrawer()"></div>
-    <div class="side-drawer-panel" id="goldDrawerPanel" style="max-height: 98vh; height: 98vh; border-radius: 20px 20px 0 0; padding: 0; display: flex; flex-direction: column; overflow: hidden; box-shadow: -10px 0 35px rgba(0,0,0,0.7);">
+    <div class="side-drawer-panel" id="goldDrawerPanel">
       
-      <!-- ترويسة البورصة العلوية المدمجة الموحدة (Zero-Scroll Header) -->
-      <div class="drawer-top-bar gold-market-topbar" style="padding: 10px 14px 8px; background: linear-gradient(135deg, #1e293b, #0f172a); border-bottom: 1.5px solid var(--gold); flex-shrink: 0;">
-        <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center;">
-          <div class="drawer-main-title" style="font-size: 0.92rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 7px;">
-            <i class="fa-solid fa-coins"></i>
-            <span>الذهب والعملات</span>
+      <!-- Antigravity Header with Status & Close -->
+      <div class="drawer-top-bar gold-market-topbar">
+        <div class="drawer-top-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <div class="drawer-main-title" style="display: flex; align-items: center; gap: 7px;">
+            <div class="gold-icon-badge"><i class="fa-solid fa-coins"></i></div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <span style="font-size: 0.92rem; font-weight: 850; color: #fbbf24;">الذهب والعملات</span>
+              <span class="gold-sub-badge">مباشر</span>
+            </div>
           </div>
-          <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" style="font-size: 1.2rem; width: 30px; height: 30px; line-height: 28px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer;">&times;</button>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" class="gold-refresh-btn" id="btnRefreshTv" onclick="fetchTradingViewRates(true)" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار">
+              <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
+            </button>
+            <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" aria-label="إغلاق">&times;</button>
+          </div>
         </div>
-        <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: #cbd5e1; margin-top: 5px;">
-          <div class="gold-market-source-chips" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-            <span id="marketLocalSourcePill" class="market-source-pill market-source-pill-official" title="أسعار السوق المحلي من بنك مصر ومصادر الذهب المصرية" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; padding: 2px 7px; border-radius: 6px; font-weight: 800; font-size: 0.63rem;">
-              <i class="fa-solid fa-building-columns"></i> تعويم (بنك مصر & الصاغة)
+        <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="gold-market-source-chips" style="display: flex; align-items: center; gap: 5px; flex-wrap: wrap;">
+            <span id="marketLocalSourcePill" class="market-source-pill market-source-pill-official" title="أسعار السوق المحلي من بنك مصر ومصادر الذهب المصرية">
+              <i class="fa-solid fa-building-columns"></i> تعويم & بنك مصر
             </span>
-            <span class="market-source-pill market-source-pill-chart" style="background: rgba(41, 98, 255, 0.2); color: #38bdf8; border: 1px solid rgba(41, 98, 255, 0.4); padding: 2px 6px; border-radius: 6px; font-weight: 800; font-size: 0.61rem;">
+            <span class="market-source-pill market-source-pill-chart" style="display:none;">
               <i class="fa-solid fa-chart-line"></i> رسم عالمي مستقل
             </span>
-            <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite" style="color: #cbd5e1; font-weight: 700; font-size: 0.66rem; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-circle" style="font-size: 0.40rem;"></i> جارٍ التحقق من الأسعار…
+            <span id="tvUpdateTime" class="market-update-status" data-status="idle" role="status" aria-live="polite">
+              <i class="fa-solid fa-circle" style="font-size: 0.38rem;"></i> جارٍ التحقق…
             </span>
           </div>
-          <button type="button" class="period-btn active gold-refresh-btn" id="btnRefreshTv" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار المتاحة" style="font-size: 0.68rem; padding: 2px 10px; border-radius: 7px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; cursor: pointer;">
-            <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
+          <button type="button" class="gold-info-trigger-btn" onclick="toggleGoldProvenanceModal()" title="تفاصيل المصادر والتوثيق">
+            <i class="fa-solid fa-circle-info"></i> المصادر
           </button>
         </div>
       </div>
 
-      <!-- جسم البورصة الموحد في شاشة واحدة متكاملة بدون تبويبات وبدون أي تمرير أفقي -->
-      <div class="drawer-view-container gold-market-content" style="flex: 1; overflow-y: auto; overflow-x: hidden; padding: 8px 12px 30px; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;">
+      <!-- Segmented Antigravity Tab Switcher (Zero-Scroll Navigation) -->
+      <div class="gold-antigravity-tabs" role="tablist">
+        <button type="button" class="gold-tab-btn active" id="goldTabBtn_prices" onclick="switchGoldDrawerTab('prices')" role="tab">
+          <i class="fa-solid fa-coins"></i>
+          <span>الأسعار الحية</span>
+        </button>
+        <button type="button" class="gold-tab-btn" id="goldTabBtn_converter" onclick="switchGoldDrawerTab('converter')" role="tab">
+          <i class="fa-solid fa-right-left"></i>
+          <span>المحول الذكي</span>
+          <span class="gold-tab-new-pill">جديد</span>
+        </button>
+        <button type="button" class="gold-tab-btn" id="goldTabBtn_tools" onclick="switchGoldDrawerTab('tools')" role="tab">
+          <i class="fa-solid fa-calculator"></i>
+          <span>حاسبة وبياني</span>
+        </button>
+      </div>
+
+      <!-- Provenance Micro-Sheet (Collapsible modal, retains all DOM IDs for full compatibility) -->
+      <div id="goldProvenanceModal" class="gold-provenance-sheet" style="display: none;">
+        <div class="gold-prov-inner">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <strong style="color: #fbbf24; font-size: 0.74rem;"><i class="fa-solid fa-shield-halved"></i> مصادر وتوثيق الأسعار</strong>
+            <button type="button" onclick="toggleGoldProvenanceModal()" style="background: none; border: none; color: #94a3b8; font-size: 1rem; cursor: pointer; padding: 0 4px;">&times;</button>
+          </div>
+          <p id="marketSourceDetails" style="margin: 2px 0; font-size: 0.65rem; color: #cbd5e1;">الذهب: Ta3weem | العملات: بنك مصر</p>
+          <p id="marketQuoteTimes" style="margin: 2px 0; font-size: 0.65rem; color: #94a3b8;">وقت أسعار المصدر: غير معلن</p>
+          <p id="goldPriceBasis" style="margin: 2px 0; font-size: 0.63rem; color: #94a3b8;">القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.</p>
+          <div class="market-source-links" style="display: flex; gap: 8px; margin-top: 5px; font-size: 0.63rem;">
+            <a href="https://ta3weem.com/ar" target="_blank" rel="noopener">تعويم</a>
+            <a href="https://gold-api.com" target="_blank" rel="noopener">Gold API</a>
+            <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN TAB CONTENT CONTAINER -->
+      <div class="drawer-view-container gold-market-content" style="flex: 1; overflow: hidden; padding: 0; display: flex; flex-direction: column; width: 100%;">
         
-        <section class="market-provenance" aria-label="مصادر الأسعار">
-          <p id="marketSourceDetails">جارٍ قراءة مصادر الأسعار…</p>
-          <p id="marketQuoteTimes">وقت أسعار المصدر: غير معلن</p>
-          <p id="goldPriceBasis">الأسعار بالجنيه المصري، والأونصة العالمية بالدولار.</p>
-          <div class="market-source-links"><a href="https://ta3weem.com/ar" target="_blank" rel="noopener">تعويم</a><a href="https://gold-api.com" target="_blank" rel="noopener">Gold API</a><a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">ExchangeRate-API</a></div>
-        </section>
-        <!-- القسم 1: أسعار الذهب في الصاغة (مصر) -->
-        <div class="gold-market-section gold-rates-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #fde047; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between;">
-            <span id="goldRatesSectionTitle" style="display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-gem" style="color: var(--gold);"></i> أسعار الذهب المحلية (مركز المعلومات IDSC & تعويم)</span>
-            <span id="goldRatesFreshnessHint" style="font-size: 0.65rem; color: #94a3b8;"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> تحقق دوري</span>
+        <!-- ==============================================
+             TAB 1: الأسعار الحية (Live Rates Grid) - ZERO SCROLL
+             ============================================== -->
+        <div class="gold-tab-pane active" id="goldTabPane_prices">
+          <!-- أسعار الذهب -->
+          <div class="gold-market-section gold-rates-section" style="margin-bottom: 6px;">
+            <div class="market-section-heading">
+              <span id="goldRatesSectionTitle"><i class="fa-solid fa-gem" style="color: var(--market-accent);"></i> أسعار الذهب بالسوق المصري</span>
+              <span id="goldRatesFreshnessHint"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> لحظي</span>
+            </div>
+            <div class="gold-grid-cards">
+              <!-- عيار 21 -->
+              <div class="market-box gold-21-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
+                </div>
+                <div class="market-box-val" id="tvGold21Val">—</div>
+                <div class="market-box-sub">
+                  <span>سعر الجرام</span>
+                  <span class="change-tag" id="tvGold21Chg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGold21Buy">—</div>
+              </div>
+
+              <!-- عيار 24 -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
+                </div>
+                <div class="market-box-val" id="tvGold24Val">—</div>
+                <div class="market-box-sub">
+                  <span>نقاء 99.9%</span>
+                  <span class="change-tag" id="tvGold24Chg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGold24Buy">—</div>
+              </div>
+
+              <!-- عيار 18 -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-sparkles"></i> <span>ذهب عيار 18</span>
+                </div>
+                <div class="market-box-val" id="tvGold18Val">—</div>
+                <div class="market-box-sub">
+                  <span>سعر الجرام</span>
+                  <span class="change-tag" id="tvGold18Chg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvGold18Buy">—</div>
+              </div>
+
+              <!-- جنيه الذهب -->
+              <div class="market-box gold-pound-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
+                </div>
+                <div class="market-box-val" id="tvGoldPoundVal">—</div>
+                <div class="market-box-sub">
+                  <span>وزن 8 جرام - 21</span>
+                  <span class="change-tag" id="tvGoldPoundChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvGoldPoundBuy">—</div>
+              </div>
+            </div>
+
+            <!-- أونصة الذهب عالمياً (Horizontal Micro-Strip) -->
+            <div class="gold-ounce-strip">
+              <div class="ounce-title">
+                <i class="fa-solid fa-globe"></i>
+                <span>أونصة الذهب عالمياً</span>
+              </div>
+              <div class="ounce-val" id="tvGoldOunceVal">—</div>
+              <div class="ounce-time" id="tvGoldOunceTime">وقت المصدر غير متاح</div>
+            </div>
           </div>
-          <div class="gold-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-            <!-- عيار 21 -->
-            <div class="market-box gold-21-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.75); border: 1.4px solid rgba(245, 158, 11, 0.5);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #fbbf24; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
+
+          <!-- أسعار العملات -->
+          <div class="gold-market-section fx-market-section" style="margin-bottom: 6px;">
+            <div class="market-section-heading">
+              <span id="fxRatesSectionTitle"><i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> أسعار العملات مقابل الجنيه</span>
+            </div>
+            <div class="fx-grid-cards">
+              <!-- دولار -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
+                </div>
+                <div class="market-box-val" id="tvUsdVal">—</div>
+                <div class="market-box-sub">
+                  <span>USD / EGP</span>
+                  <span class="change-tag up" id="tvUsdChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvUsdBuy">—</div>
               </div>
-              <div class="market-box-val" id="tvGold21Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>سعر الجرام</span>
-                <span class="change-tag down" id="tvGold21Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGold21Buy">—</div>
+
+              <!-- ريال سعودي -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
+                </div>
+                <div class="market-box-val" id="tvSarVal">—</div>
+                <div class="market-box-sub">
+                  <span>SAR / EGP</span>
+                  <span class="change-tag down" id="tvSarChg">—</span>
+                </div>
+                <div class="market-buy-price" id="tvSarBuy">—</div>
+              </div>
+
+              <!-- يورو -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-euro-sign"></i> <span>اليورو الأوروبي</span>
+                </div>
+                <div class="market-box-val" id="tvEurVal">—</div>
+                <div class="market-box-sub">
+                  <span>EUR / EGP</span>
+                  <span class="change-tag" id="tvEurChg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvEurBuy">—</div>
+              </div>
+
+              <!-- درهم إماراتي -->
+              <div class="market-box">
+                <div class="market-box-title">
+                  <i class="fa-solid fa-coins"></i> <span>الدرهم الإماراتي</span>
+                </div>
+                <div class="market-box-val" id="tvAedVal">—</div>
+                <div class="market-box-sub">
+                  <span>AED / EGP</span>
+                  <span class="change-tag" id="tvAedChg" hidden></span>
+                </div>
+                <div class="market-buy-price" id="tvAedBuy">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- تقويم الرصيد الفعلي الحالي بالذهب -->
+          <div class="gold-market-section gold-valuation-strip">
+            <div class="val-info">
+              <div class="val-title"><i class="fa-solid fa-scale-balanced"></i> تقويم رصيدك الفعلي بالذهب</div>
+              <div class="val-sub" id="goldValuationSourceText">بحسب السعر المتاح</div>
+            </div>
+            <div class="val-badge" id="goldValuationText">0.00 جم ذهب 21</div>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             TAB 2: محول العملات والذهب الذكي (Smart Universal Converter)
+             ============================================== -->
+        <div class="gold-tab-pane" id="goldTabPane_converter">
+          <!-- بطاقة الإدخال والاختيار -->
+          <div class="conv-input-card">
+            <div class="conv-input-row">
+              <div class="conv-field conv-amount-field">
+                <label for="convAmount">المبلغ أو الكمية:</label>
+                <div class="conv-input-wrapper">
+                  <input type="number" id="convAmount" value="10000" min="0" step="any" oninput="runUniversalConverter()" placeholder="10000">
+                  <button type="button" class="conv-clear-btn" onclick="document.getElementById('convAmount').value=''; runUniversalConverter();" title="مسح">✕</button>
+                </div>
+              </div>
+              <div class="conv-field conv-source-field">
+                <label for="convSourceAsset">من عملة / أصل:</label>
+                <select id="convSourceAsset" onchange="runUniversalConverter()">
+                  <optgroup label="العملات النقدية">
+                    <option value="EGP" selected>🇪🇬 جنيه مصري (EGP)</option>
+                    <option value="USD">🇺🇸 دولار أمريكي (USD)</option>
+                    <option value="SAR">🇸🇦 ريال سعودي (SAR)</option>
+                    <option value="EUR">🇪🇺 يورو أوروبي (EUR)</option>
+                    <option value="AED">🇦🇪 درهم إماراتي (AED)</option>
+                  </optgroup>
+                  <optgroup label="أصول الذهب (بالجرام / العدد)">
+                    <option value="GOLD21">💎 ذهب عيار 21 (جرام)</option>
+                    <option value="GOLD24">🧱 ذهب عيار 24 (جرام)</option>
+                    <option value="GOLD18">✨ ذهب عيار 18 (جرام)</option>
+                    <option value="GOLD_POUND">🪙 جنيه ذهب (8 جم عيار 21)</option>
+                  </optgroup>
+                </select>
+              </div>
             </div>
 
-            <!-- عيار 24 -->
-            <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #f59e0b; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
+            <!-- مبالغ سريعة بنقرة واحدة -->
+            <div class="conv-presets-row">
+              <span class="conv-preset-label">مبالغ سريعة:</span>
+              <div class="conv-preset-pills">
+                <button type="button" class="conv-pill" onclick="applyConvPreset(1000)">1,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(5000)">5,000</button>
+                <button type="button" class="conv-pill active" onclick="applyConvPreset(10000)">10,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(50000)">50,000</button>
+                <button type="button" class="conv-pill" onclick="applyConvPreset(100000)">100,000</button>
               </div>
-              <div class="market-box-val" id="tvGold24Val" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>نقاء 99.9%</span>
-                <span class="change-tag down" id="tvGold24Chg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGold24Buy">—</div>
             </div>
 
-<div class="market-box"><div class="market-box-title">ذهب عيار 18</div><div class="market-box-val" id="tvGold18Val">—</div><div class="market-box-sub"><span>سعر الجرام</span><span class="change-tag" id="tvGold18Chg" hidden></span></div><div class="market-buy-price" id="tvGold18Buy">—</div></div>
-            <!-- جنيه الذهب -->
-            <div class="market-box" style="padding: 7px 9px; border-radius: 10px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(15, 23, 42, 0.8)); border: 1.2px solid rgba(245, 158, 11, 0.5);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #fde047; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
-              </div>
-              <div class="market-box-val" id="tvGoldPoundVal" style="font-size: 1.02rem; font-weight: 900; color: #fde047; margin: 2px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; align-items: center; color: #cbd5e1;">
-                <span>وزن 8 جرام - عيار 21</span>
-                <span class="change-tag down" id="tvGoldPoundChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvGoldPoundBuy">—</div>
+            <!-- شريط ملخص التحويل اللحظي -->
+            <div class="conv-summary-strip" id="convSourceSummary">
+              10,000 جنيه مصري تعادل حالياً:
             </div>
+          </div>
 
-            <!-- أونصة الذهب عالمياً -->
-            <div class="market-box global-ounce-card" style="padding: 7px 9px; border-radius: 10px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.1);">
-              <div class="market-box-title" style="font-size: 0.70rem; color: #38bdf8; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-globe"></i> <span>أونصة الذهب عالمياً</span>
+          <!-- نتائج الذهب المكافئ -->
+          <div class="conv-section-block">
+            <div class="conv-section-title">
+              <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
+              <span>ما يعادله بالذهب (وزناً بالجرامات):</span>
+            </div>
+            <div class="conv-results-grid gold-results">
+              <!-- Gold 21 -->
+              <div class="conv-res-card gold-res-card highlight" onclick="copyConvVal('convResGold21', 'عيار 21')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 21</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold21">—</div>
+                <div class="res-card-desc">الأكثر تداولاً بالصاغة</div>
               </div>
-              <div class="market-box-val" id="tvGoldOunceVal" style="font-size: 1.02rem; font-weight: 900; color: #fff; margin: 2px 0;">—</div>
-              <div class="market-box-sub" id="tvGoldOunceTime">وقت المصدر غير متاح</div>
+
+              <!-- Gold 24 -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGold24', 'عيار 24')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 24</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold24">—</div>
+                <div class="res-card-desc">سبائك نقاء 99.9%</div>
+              </div>
+
+              <!-- Gold 18 -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGold18', 'عيار 18')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">عيار 18</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGold18">—</div>
+                <div class="res-card-desc">مشغولات راقية</div>
+              </div>
+
+              <!-- Gold Pound -->
+              <div class="conv-res-card gold-res-card" onclick="copyConvVal('convResGoldPound', 'جنيه ذهب')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge gold-badge">جنيه ذهب</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResGoldPound">—</div>
+                <div class="res-card-desc">8 جرام عيار 21</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- نتائج العملات النقدية المكافئة -->
+          <div class="conv-section-block">
+            <div class="conv-section-title">
+              <i class="fa-solid fa-money-bill-transfer" style="color: #34d399;"></i>
+              <span>ما يعادله بالعملات النقدية:</span>
+            </div>
+            <div class="conv-results-grid fx-results">
+              <!-- EGP -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResEgp', 'الجنيه المصري')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇪🇬 الجنيه</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResEgp">—</div>
+                <div class="res-card-desc">EGP مصري</div>
+              </div>
+
+              <!-- USD -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResUsd', 'الدولار الأمريكي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇺🇸 دولار</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResUsd">—</div>
+                <div class="res-card-desc">USD أمريكي</div>
+              </div>
+
+              <!-- SAR -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResSar', 'الريال السعودي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇸🇦 ريال</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResSar">—</div>
+                <div class="res-card-desc">SAR سعودي</div>
+              </div>
+
+              <!-- EUR -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResEur', 'اليورو الأوروبي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇪🇺 يورو</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResEur">—</div>
+                <div class="res-card-desc">EUR أوروبي</div>
+              </div>
+
+              <!-- AED -->
+              <div class="conv-res-card fx-res-card" onclick="copyConvVal('convResAed', 'الدرهم الإماراتي')" title="انقر لنسخ القيمة">
+                <div class="res-card-head">
+                  <span class="res-badge fx-badge">🇦🇪 درهم</span>
+                  <i class="fa-regular fa-copy res-copy-icon"></i>
+                </div>
+                <div class="res-card-val" id="convResAed">—</div>
+                <div class="res-card-desc">AED إماراتي</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- القسم 2: أسعار العملات الفورية (TradingView FX) -->
-        <div class="gold-market-section fx-market-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div class="market-section-heading" style="font-size: 0.78rem; font-weight: 800; color: #34d399; margin-bottom: 7px; display: flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> <span id="fxRatesSectionTitle">أسعار صرف العملات المحلية (بنك مصر & تعويم)</span>
-          </div>
-          <div class="fx-grid-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-            <!-- دولار -->
-            <div class="market-box" style="padding: 6px 9px; border-radius: 9px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(16, 185, 129, 0.3);">
-              <div class="market-box-title" style="font-size: 0.68rem; color: #10b981; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
+        <!-- ==============================================
+             TAB 3: حاسبة المصنعية والرسم البياني
+             ============================================== -->
+        <div class="gold-tab-pane" id="goldTabPane_tools">
+          <!-- حاسبة الصاغة والمصنعية التقديرية (Antigravity Professional Calculator) -->
+          <div class="gold-market-section gold-calculator-section">
+            
+            <!-- ترويسة الحاسبة -->
+            <div class="calc-section-header">
+              <div class="calc-header-title">
+                <div class="calc-header-icon"><i class="fa-solid fa-calculator"></i></div>
+                <span>حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
               </div>
-              <div class="market-box-val" id="tvUsdVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>USDEGP</span>
-                <span class="change-tag up" id="tvUsdChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvUsdBuy">—</div>
+              <span class="calc-header-badge"><i class="fa-solid fa-circle-info"></i> سوق الصاغة</span>
             </div>
 
-            <!-- ريال سعودي -->
-            <div class="market-box" style="padding: 6px 9px; border-radius: 9px; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(16, 185, 129, 0.3);">
-              <div class="market-box-title" style="font-size: 0.68rem; color: #059669; font-weight: 800; display: flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
+            <!-- بطاقة الإجمالي التقديري الشاملة (Hero Card) -->
+            <div class="gold-calc-hero">
+              <div class="calc-hero-label">إجمالي الشراء التقديري شامل المصنعية:</div>
+              <div class="calc-hero-amount" id="calcFinalTotal">—</div>
+              <div class="calc-hero-sub">سعر الذهب الخام الصافي + إجمالي المصنعية والدمغة</div>
+            </div>
+
+            <!-- اختيار نوع المشغولات أو السبيكة -->
+            <div class="calc-form-group">
+              <label class="calc-field-label" for="calcAsset">
+                <i class="fa-solid fa-gem"></i> نوع المشغولات / السبائك / العملة:
+              </label>
+              <div class="calc-select-wrapper">
+                <select class="calc-select" id="calcAsset" onchange="onGoldAssetChange()">
+                  <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
+                  <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
+                  <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
+                  <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
+                  <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
+                  <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
+                  <option value="usd">💵 دولار أمريكي (USDEGP)</option>
+                  <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
+                </select>
               </div>
-              <div class="market-box-val" id="tvSarVal" style="font-size: 0.98rem; font-weight: 900; color: #fff; margin: 1px 0;">—</div>
-              <div class="market-box-sub" style="font-size: 0.62rem; display: flex; justify-content: space-between; color: #94a3b8;">
-                <span>SAREGP</span>
-                <span class="change-tag down" id="tvSarChg" style="font-size: 0.60rem; padding: 1px 4px; border-radius: 4px;">—</span>
-              </div><div class="market-buy-price" id="tvSarBuy">—</div>
             </div>
-<div class="market-box"><div class="market-box-title">اليورو</div><div class="market-box-val" id="tvEurVal">—</div><div class="market-box-sub"><span>EUR / EGP</span><span class="change-tag" id="tvEurChg" hidden></span></div><div class="market-buy-price" id="tvEurBuy">—</div></div>
-<div class="market-box"><div class="market-box-title">الدرهم الإماراتي</div><div class="market-box-val" id="tvAedVal">—</div><div class="market-box-sub"><span>AED / EGP</span><span class="change-tag" id="tvAedChg" hidden></span></div><div class="market-buy-price" id="tvAedBuy">—</div></div>
+
+            <!-- حقول الإدخال: الوزن والمصنعية جنباً إلى جنب -->
+            <div class="calc-inputs-grid">
+              <div class="calc-input-box">
+                <label class="calc-field-label" id="lblCalcQty" for="calcQty">
+                  <i class="fa-solid fa-scale-balanced"></i> الوزن بالجرام / العدد:
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="0.01" class="calc-input" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()">
+                </div>
+              </div>
+              <div class="calc-input-box" id="colCalcWorkmanship">
+                <label class="calc-field-label" for="calcWorkmanshipPerGram">
+                  <i class="fa-solid fa-hammer"></i> المصنعية المقدرة (ج.م/جم):
+                </label>
+                <div class="calc-input-wrapper">
+                  <input type="number" step="5" class="calc-input" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()">
+                </div>
+              </div>
+            </div>
+
+            <!-- ملاحظة سوق الصاغة الذكية -->
+            <div id="calcWorkmanshipNote" class="calc-workmanship-note" style="display: none;"></div>
+
+            <!-- تفاصيل الحسبة المحاسبية والمالية (Financial Breakdown Card) -->
+            <div class="gold-calc-breakdown-card">
+              <div class="breakdown-row" id="rowCalcGoldRaw">
+                <span class="b-label"><i class="fa-solid fa-ring"></i> قيمة الذهب الخام الصافي:</span>
+                <span class="b-val b-val-raw" id="calcGoldRawVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcWorkmanshipTotal">
+                <span class="b-label"><i class="fa-solid fa-tags"></i> إجمالي المصنعية والدمغة:</span>
+                <span class="b-val b-val-work" id="calcWorkmanshipTotalVal">—</span>
+              </div>
+              <div class="breakdown-row" id="rowCalcCashback">
+                <span class="b-label"><i class="fa-solid fa-arrow-rotate-left"></i> كاش باك مسترد عند البيع:</span>
+                <span class="b-val b-val-cash" id="calcCashbackVal">—</span>
+              </div>
+              <div class="breakdown-divider"></div>
+              <div class="breakdown-row breakdown-row-total">
+                <span class="b-label b-label-net"><i class="fa-solid fa-shield-halved"></i> بعد خصم كاش باك مفترض:</span>
+                <span class="b-val b-val-net" id="calcNetCostVal">—</span>
+              </div>
+            </div>
+
+            <!-- أزرار الاختيارات السريعة -->
+            <div class="calc-presets-section">
+              <span class="calc-presets-label">خيارات جاهزة:</span>
+              <div class="gold-calc-presets">
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold21_jewelry', 5, 120)">5جم 21</button>
+                <button type="button" class="calc-preset-btn active" onclick="applyGoldPreset('gold21_jewelry', 10, 120)">10جم 21</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold24_bar_small', 10, 70)">سبيكة 10ج</button>
+                <button type="button" class="calc-preset-btn" onclick="applyGoldPreset('gold_pound', 1, 62.5)">جنيه BTC</button>
+              </div>
+            </div>
+
+            <!-- زر تسجيل كمصروف في المحفظة -->
+            <button type="button" onclick="applyCalcToExpense()" class="btn-gold-save-expense">
+              <i class="fa-solid fa-cart-plus"></i>
+              <span>تسجيل كمصروف في المحفظة</span>
+            </button>
+          </div>
+
+          <!-- مؤشر الذهب الحي TradingView -->
+          <div class="gold-market-section gold-chart-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView)
+              </span>
+              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 7px; border-radius: 5px; font-size: 0.62rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">طي / إظهار</button>
+            </div>
+            <div id="tvChartContainer" style="width: 100%; height: 210px; border-radius: 9px; overflow: hidden; background: #000;">
+              <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
+            </div>
           </div>
         </div>
 
-<details class="gold-tool-panel"><summary>حاسبة الذهب والمصنعية</summary>        <!-- القسم 3: حاسبة الصاغة والمصنعية التقديرية بالسوق المصري -->
-        <div class="gold-market-section gold-calculator-section" style="background: rgba(15, 23, 42, 0.9); border: 1.4px solid rgba(245, 158, 11, 0.5); border-radius: 14px; padding: 12px; width: 100%; box-sizing: border-box; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
-          <div style="font-size: 0.82rem; font-weight: 800; color: #fbbf24; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-            <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calculator"></i> حاسبة الصاغة والمصنعية والكاش باك (مصر)</span>
-            <span style="font-size: 0.64rem; color: #38bdf8;"><i class="fa-solid fa-circle-info"></i> مصنعية سوق الصاغة</span>
-          </div>
-
-          <!-- مربع إجمالي التكلفة الشاملة البارز -->
-          <div class="gold-calc-summary" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(245, 158, 11, 0.6); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: center;">
-            <div style="font-size: 0.68rem; color: #fde047; font-weight: 800; margin-bottom: 2px;">إجمالي الشراء التقديري شامل المصنعية:</div>
-            <div id="calcFinalTotal" style="font-size: 1.35rem; font-weight: 900; color: #fde047; direction: rtl; font-variant-numeric: tabular-nums;">—</div>
-          </div>
-
-          <!-- اختيار نوع الأصل الذهبي أو العملة -->
-          <div class="form-group-custom" style="margin-bottom: 8px;">
-            <label class="form-label-custom" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 3px;">نوع المشغولات / السبائك / العملة:</label>
-            <select class="form-select-custom" id="calcAsset" onchange="onGoldAssetChange()" style="width: 100%; height: 38px; border-radius: 10px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-weight: 800; font-size: 0.82rem; padding: 0 10px;">
-              <option value="gold21_jewelry">💎 عيار 21 مشغولات وحلي (متوسط مصنعية ~120 ج.م/جم)</option>
-              <option value="gold18_jewelry">✨ عيار 18 مصوغات دقيقة (متوسط مصنعية ~150 ج.م/جم)</option>
-              <option value="gold24_bar_small">🧱 سبيكة عيار 24 BTC (مصنعية ~70 ج.م/جم - كاش باك 30 ج.م)</option>
-              <option value="gold_pound">🪙 جنيه ذهب 8 جم BTC عيار 21 (مصنعية ~500 ج.م - كاش باك 180 ج.م)</option>
-              <option value="gold21_raw">⚖️ عيار 21 ذهب كسر / خام (بدون مصنعية)</option>
-              <option value="gold24_raw">⚖️ عيار 24 ذهب نقي خام (بدون مصنعية)</option>
-              <option value="usd">💵 دولار أمريكي (USDEGP)</option>
-              <option value="sar">🇸🇦 ريال سعودي (SAREGP)</option>
-            </select>
-          </div>
-
-          <!-- حقول الوزن بالجرام والمصنعية التقديرية للجرام -->
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
-            <div>
-              <label class="form-label-custom" id="lblCalcQty" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الوزن بالجرام / العدد:</label>
-              <input type="number" step="0.01" class="form-input-custom" id="calcQty" value="10" placeholder="10" oninput="recalcGoldTotal()" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(255,255,255,0.18); color: #fff; font-weight: 900; font-size: 1.05rem; text-align: center;">
-            </div>
-            <div>
-              <label class="form-label-custom" style="font-size: 0.70rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">المصنعية المقدرة (ج.م/جم):</label>
-              <input type="number" step="5" class="form-input-custom" id="calcWorkmanshipPerGram" value="120" placeholder="120" oninput="recalcGoldTotal()" style="width: 100%; height: 38px; border-radius: 9px; background: rgba(30, 41, 59, 0.9); border: 1.2px solid rgba(255,255,255,0.18); color: #fbbf24; font-weight: 900; font-size: 1.05rem; text-align: center;">
-            </div>
-          </div>
-
-          <!-- تفاصيل الحسبة المحاسبية: خام الذهب، المصنعية، الكاش باك -->
-          <div class="gold-calc-breakdown" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 12px; margin-bottom: 8px;">
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
-              <span>قيمة الذهب الخام الصافي:</span>
-              <span id="calcGoldRawVal" style="color: #fff; font-weight: 800;">—</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 3px;">
-              <span>إجمالي المصنعية والدمغة:</span>
-              <span id="calcWorkmanshipTotalVal" style="color: #fbbf24; font-weight: 800;">—</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8; margin-bottom: 4px;">
-              <span>كاش باك مفترض عند إعادة البيع:</span>
-              <span id="calcCashbackVal" style="color: #34d399; font-weight: 800;">—</span>
-            </div>
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.12); padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-              <span style="font-size: 0.76rem; font-weight: 800; color: #38bdf8;">بعد خصم كاش باك مفترض:</span>
-              <span id="calcNetCostVal" style="font-size: 0.92rem; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums;">—</span>
-            </div>
-          </div>
-
-          <!-- أزرار الاختيارات السريعة للوزن والمصنعية -->
-          <div class="gold-calc-presets" style="display: flex; gap: 4px;">
-            <button type="button" onclick="applyGoldPreset('gold21_jewelry', 5, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">5جم 21</button>
-            <button type="button" onclick="applyGoldPreset('gold21_jewelry', 10, 120)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">10جم 21</button>
-            <button type="button" onclick="applyGoldPreset('gold24_bar_small', 10, 70)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; cursor: pointer;">سبيكة 10ج</button>
-            <button type="button" onclick="applyGoldPreset('gold_pound', 1, 62.5)" style="flex: 1; padding: 5px 2px; font-size: 0.68rem; font-weight: 800; border-radius: 7px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(245, 158, 11, 0.4); color: #fde047; cursor: pointer;">جنيه BTC</button>
-          </div>
-        </div>
-
-</details>
-<details class="gold-tool-panel"><summary>الرسم البياني العالمي</summary>        <!-- القسم 4: الشارت الحي للذهب TradingView Live -->
-        <div class="gold-market-section gold-chart-section" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 14px; padding: 10px 12px; width: 100%; box-sizing: border-box;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 0.78rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView - للمطابقة والتحليل)
-            </span>
-            <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 8px; border-radius: 6px; font-size: 0.65rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">طي / إظهار</button>
-          </div>
-          <div id="tvChartContainer" style="width: 100%; height: 230px; border-radius: 10px; overflow: hidden; background: #000;">
-            <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
-          </div>
-        </div>
-
-</details>
-        <!-- القسم 5: تقويم الرصيد الفعلي الحالي بالذهب -->
-        <div class="gold-market-section gold-valuation-section" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9)); border: 1.4px solid rgba(245, 158, 11, 0.45); border-radius: 14px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
-          <div>
-            <div style="font-size: 0.70rem; color: #fbbf24; font-weight: 800;"><i class="fa-solid fa-scale-balanced"></i> تقويم الرصيد الفعلي الحالي بالذهب</div>
-            <div style="font-size: 0.62rem; color: #94a3b8; margin-top: 2px;">ما يعادله رصيد المحافظ بالجرامات:</div>
-          </div>
-          <div style="text-align: left;">
-            <div id="goldValuationText" style="font-size: 1.05rem; font-weight: 900; color: #fde047; direction: rtl;">0.00 جم ذهب 21</div>
-            <div id="goldValuationSourceText" style="font-size: 0.60rem; color: #34d399; font-weight: 700;">بحسب السعر المتاح</div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -18415,165 +18717,134 @@
       </div>
     </div>
 
-        <!-- ==============================================================
-         نافذة مركز الضبط الموحد والمظهر والمزامنة (Settings & Cloud Hub Modal)
-         ============================================================== -->
-        <!-- ==============================================================
-         نافذة مركز الضبط الموحد والمزامنة (Unified Settings Modal)
+    <!-- ==============================================================
+         نافذة مركز الضبط الموحد (Antigravity Zero-Scroll Unified Settings Modal)
          ============================================================== -->
     <div class="modal-overlay modal-overlay-custom" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
-      <div class="modal-content-card settings-modal-shell" style="max-width: 500px; width: 95%; max-height: 94vh; display: flex; flex-direction: column; padding: 0; border-radius: 18px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.35); box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65); margin: auto;">
+      <div class="modal-content-card settings-modal-shell antigravity-settings-shell">
         
-        <!-- الرأس الفاخر للنافذة -->
-        <div class="modal-head settings-modal-head" style="padding: 10px 14px; margin: 0; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98)); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)); border: 1.2px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: #38bdf8;">
+        <!-- 1. الرأس المدمج (Compact Head) -->
+        <div class="modal-head settings-modal-head antigravity-settings-head">
+          <div class="antigravity-head-brand">
+            <div class="antigravity-head-icon">
               <i class="fa-solid fa-sliders"></i>
             </div>
-            <div>
-              <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
-                <span>إعدادات التطبيق</span>
-                <span class="version-badge" id="settingsVersionBadge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;"></span>
-              </h3>
-              <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
+            <div class="antigravity-head-copy">
+              <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.46</span>
             </div>
           </div>
-          <!-- زر الإغلاق المدمج داخل رأس النافذة -->
-          <button type="button" class="btn-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق" style="width: 32px; height: 32px; border-radius: 50%; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; cursor: pointer; margin: 0;">&times;</button>
+          <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
 
-        <!-- محتوى الضبط الموحد الشامل -->
-        <div style="padding: 10px 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 10px;" class="settings-modal-scroll custom-scrollbar">
-
-          <section class="settings-pane" id="settingsPane_appearance" aria-label="المظهر">
-
-          <!-- زر عرض المستخدم وتبديله (يفتح فقط عند الضغط عليه ويغلق الضبط أولاً) -->
-          <div class="settings-user-card" id="settingsSec_users" style="display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95)); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 7px 12px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <img id="settingsCurrentMemberImg" src="" style="width: 30px; height: 30px; border-radius: 8px; object-fit: cover; border: 1.5px solid #38bdf8;">
-              <div style="font-size: 0.76rem; color: #94a3b8; font-weight: 700;">المستخدم النشط:</div>
-              <strong id="settingsCurrentMemberName" style="font-size: 0.84rem; font-weight: 900; color: #f8fafc;">ماهر</strong>
+        <!-- 2. شريط المستخدم النشط المدمج (VIP User Strip) -->
+        <div class="antigravity-user-vip-strip" id="settingsSec_users">
+          <div class="antigravity-vip-avatar-wrap">
+            <img id="settingsCurrentMemberImg" src="assets/icon-192.png" alt="المستخدم" class="antigravity-vip-avatar">
+            <span class="antigravity-vip-status-dot" title="متصل"></span>
+          </div>
+          <div class="antigravity-vip-info">
+            <div class="antigravity-vip-name-row">
+              <strong id="settingsCurrentMemberName">ماهر</strong>
+              <span id="settingsCurrentMemberAvatar" style="display: none;">👨‍💼</span>
               <span id="settingsActiveUserNameTxt" style="display: none;">ماهر</span>
             </div>
-            <button type="button" onclick="closeModal('settingsModal'); openFullUserSelectionModal();" style="background: rgba(56, 189, 248, 0.18); border: 1.2px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 0.72rem; font-weight: 850; padding: 5px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s ease;">
-              <i class="fa-solid fa-arrows-rotate"></i>
-              <span>تبديل المستخدم</span>
-            </button>
+            <div class="antigravity-vip-label">
+              <span id="settingsMemberPinStatus"><i class="fa-solid fa-shield-check" style="color: #34d399;"></i> حساب محمي</span>
+            </div>
           </div>
+          <button type="button" class="antigravity-switch-user-btn" onclick="closeModal('settingsModal'); openFullUserSelectionModal();">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>تبديل</span>
+          </button>
+        </div>
 
-          <!-- القسم 1: المظهر والتخصيص البصري -->
-          <div class="settings-unified-section" id="settingsSec_appearance" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px;">
-            
-            <!-- لوحة المظهر الجديدة: وضع مستقل، لوحة ألوان، ومعاينة حيّة -->
-            <div class="appearance-settings-block">
-              <div class="appearance-section-heading">
-                <span><i class="fa-solid fa-palette" aria-hidden="true"></i> المظهر ولوحة الألوان</span>
-                <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
-              </div>
-              <div class="appearance-mode-row" role="group" aria-label="وضع العرض">
-                <button type="button" id="appearanceModeDark" class="appearance-mode-button" onclick="setAppColorMode('dark')" aria-pressed="true"><i class="fa-solid fa-moon" aria-hidden="true"></i> داكن</button>
-                <button type="button" id="appearanceModeLight" class="appearance-mode-button" onclick="setAppColorMode('light')" aria-pressed="false"><i class="fa-solid fa-sun" aria-hidden="true"></i> فاتح</button>
-              </div>
-              <div class="settings-live-preview" id="settingsThemePreview" aria-live="polite">
-                <div class="settings-live-preview-label"><i class="fa-solid fa-eye" aria-hidden="true"></i><span>معاينة مباشرة</span><span id="appearanceContrastBadge" class="appearance-contrast-badge">تباين AA</span></div>
-                <div class="settings-live-preview-card">
-                  <span class="settings-live-preview-icon"><i class="fa-solid fa-wallet" aria-hidden="true"></i></span>
-                  <span class="settings-live-preview-copy"><strong>مصروفات العائلة</strong><small>الرصيد المتبقي</small></span>
-                  <strong class="settings-live-preview-value" dir="ltr">1,250 ج.م</strong>
-                </div>
-                <div class="appearance-preview-footnote">النصوص والأرقام محفوظة بتباين WCAG AA في الوضعين.</div>
-              </div>
-              <div class="appearance-subheading"><span>لوحات الألوان</span><small>10 اختيارات متوافقة</small></div>
-              <div class="theme-color-palette appearance-palette-grid" role="group" aria-label="لوحة الألوان">
-                <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true" aria-label="تطبيق لوحة كحلي ملكي"><span class="theme-color-dot" style="--theme-swatch:#0f2d55" aria-hidden="true"></span><span>كحلي ملكي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false" aria-label="تطبيق لوحة زمردي"><span class="theme-color-dot" style="--theme-swatch:#047857" aria-hidden="true"></span><span>زمردي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false" aria-label="تطبيق لوحة بنفسجي"><span class="theme-color-dot" style="--theme-swatch:#7e22ce" aria-hidden="true"></span><span>بنفسجي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false" aria-label="تطبيق لوحة وردي ياقوتي"><span class="theme-color-dot" style="--theme-swatch:#be123c" aria-hidden="true"></span><span>وردي ياقوتي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false" aria-label="تطبيق لوحة محيطي"><span class="theme-color-dot" style="--theme-swatch:#0e7490" aria-hidden="true"></span><span>محيطي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false" aria-label="تطبيق لوحة ذهبي"><span class="theme-color-dot" style="--theme-swatch:#a16207" aria-hidden="true"></span><span>ذهبي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false" aria-label="تطبيق لوحة رمادي تيتانيوم"><span class="theme-color-dot" style="--theme-swatch:#475569" aria-hidden="true"></span><span>رمادي تيتانيوم</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false" aria-label="تطبيق لوحة نيلي ليلي"><span class="theme-color-dot" style="--theme-swatch:#4338ca" aria-hidden="true"></span><span>نيلي ليلي</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptForest" data-theme="forest" onclick="setAppTheme('forest')" aria-pressed="false" aria-label="تطبيق لوحة أخضر غابة"><span class="theme-color-dot" style="--theme-swatch:#166534" aria-hidden="true"></span><span>أخضر غابة</span></button>
-                <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false" aria-label="تطبيق لوحة ياقوت أزرق"><span class="theme-color-dot" style="--theme-swatch:#1d4ed8" aria-hidden="true"></span><span>ياقوت أزرق</span></button>
-              </div>
-            </div>
+        <!-- 3. شريط التنقل المقسّم (تبويبان مدمجان: المظهر والخط + المحافظ والمزامنة) -->
+        <div class="antigravity-settings-nav" id="settingsSegmentedNav" role="tablist">
+          <button type="button" role="tab" class="antigravity-nav-pill active" id="settingsTabBtn_appearance" onclick="switchSettingsTab('appearance')" aria-selected="true">
+            <i class="fa-solid fa-palette"></i>
+            <span>المظهر والخط</span>
+          </button>
+          <button type="button" role="tab" class="antigravity-nav-pill" id="settingsTabBtn_wallets" onclick="switchSettingsTab('wallets')" aria-selected="false">
+            <i class="fa-solid fa-wallet"></i>
+            <span>المحافظ والمزامنة</span>
+          </button>
+        </div>
 
-            <!-- 2. ألوان الأيقونات: 10 درجات واضحة لكل وضع -->
-            <div class="appearance-settings-block">
-              <div class="appearance-section-heading">
-                <span><i class="fa-solid fa-icons" aria-hidden="true"></i> ألوان الأيقونات</span>
-                <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
-              </div>
-              <div class="appearance-subheading"><span>اختر لونًا موحدًا وواضحًا</span><small>10 اختيارات</small></div>
-              <div class="appearance-icon-grid" role="group" aria-label="ألوان الأيقونات">
-                <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>فينتك</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>ذهبي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>زمردي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>محيطي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>بنفسجي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>روبي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>عنبر</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptTeal" data-icon-theme="teal" onclick="setAppIconTheme('teal')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>تركوازي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>نيلي</span></button>
-                <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span class="icon-color-dots" aria-hidden="true">● ● ●</span><span>وردي</span></button>
-              </div>
-            </div>
+        <!-- 4. محتوى التبويبات المدمج (Unified Scroll Area) -->
+        <div class="settings-modal-scroll antigravity-scroll-body">
 
-            <!-- 3. خط الكلمات والأرقام -->
-            <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-font" style="color: #38bdf8; font-size: 0.88rem;"></i>
-                  <span>خط الكلمات والأرقام:</span>
-                </div>
-                <span id="activeFontBadge" style="font-size: 0.63rem; color: #34d399; font-weight: 800; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); padding: 1px 7px; border-radius: 5px;">تاجوال (افتراضي)</span>
-              </div>
-              <div class="settings-font-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px;">
-                <button type="button" class="analytics-sec-btn font-choice-pill active" id="fontChoiceTajawal" onclick="setAppFont('tajawal')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Tajawal', sans-serif !important; border-radius: 8px;">
-                  ✨ تاجوال
+          <!-- ========================================================================= -->
+          <!-- صفحة موحدة 1: المظهر والخط والكروت والأيقونات مدمجة بالكامل (3 صفوف × 3 أعمدة) -->
+          <!-- ========================================================================= -->
+          <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_appearance" style="display: flex;">
+            <div class="settings-unified-section" id="settingsSec_appearance" data-compact-ready="true" style="display: flex; flex-direction: column; gap: 7px; width: 100%;">
+              
+              <!-- مبدل الوضع الفاتح والداكن -->
+              <div class="appearance-mode-row antigravity-mode-switcher" role="group" aria-label="وضع العرض">
+                <button type="button" id="appearanceModeDark" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('dark')" aria-pressed="true">
+                  <i class="fa-solid fa-moon"></i> <span>داكن</span>
                 </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceCairo" onclick="setAppFont('cairo')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Cairo', sans-serif !important; border-radius: 8px;">
-                  🏛️ كايرو
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceIBM" onclick="setAppFont('ibm')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'IBM Plex Sans Arabic', sans-serif !important; border-radius: 8px;">
-                  🏢 IBM Plex
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlmarai" onclick="setAppFont('almarai')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Almarai', sans-serif !important; border-radius: 8px;">
-                  📱 المراعي
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceReadex" onclick="setAppFont('readex')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Readex Pro', sans-serif !important; border-radius: 8px;">
-                  📐 ريدكس
-                </button>
-                <button type="button" class="analytics-sec-btn font-choice-pill" id="fontChoiceAlexandria" onclick="setAppFont('alexandria')" style="padding: 6px 2px; font-size: 0.70rem; font-family: 'Alexandria', sans-serif !important; border-radius: 8px;">
-                  🏛️ الإسكندرية
+                <button type="button" id="appearanceModeLight" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('light')" aria-pressed="false">
+                  <i class="fa-solid fa-sun"></i> <span>فاتح</span>
                 </button>
               </div>
-              <div class="settings-font-preview" id="settingsFontPreview" aria-live="polite">
-                <span class="settings-font-preview-label">معاينة الخط</span>
-                <span class="settings-font-preview-sample" id="settingsFontPreviewSample">مصروفات الأسرة ١٬٢٣٤٫٥٠ ج.م</span>
-              </div>
-            </div>
 
-            <!-- 4. حجم الخط ونمط الكروت -->
-            <div class="settings-size-style-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-              <!-- الحجم -->
-              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                  <span style="font-size: 0.70rem; font-weight: 850; color: #cbd5e1;"><i class="fa-solid fa-text-height" style="color: #38bdf8;"></i> حجم الخط:</span>
-                  <span id="activeFontSizeBadge" style="font-size: 0.58rem; color: #38bdf8; font-weight: 800;">وسط</span>
+              <!-- مجموعة 1: ألوان التطبيق 9 متوازنة في 3 صفوف (كل خيار هو اللون نفسه) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>ألوان التطبيق (9 ألوان)</span>
+                  </div>
+                  <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;">
-                  <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeSmall" onclick="setAppFontSize('small')" style="padding: 5px 2px; font-size: 0.66rem; border-radius: 6px;">صغير</button>
-                  <button type="button" class="analytics-sec-btn font-size-pill active" id="fontSizeMedium" onclick="setAppFontSize('medium')" style="padding: 5px 2px; font-size: 0.68rem; border-radius: 6px;">وسط</button>
-                  <button type="button" class="analytics-sec-btn font-size-pill" id="fontSizeLarge" onclick="setAppFontSize('large')" style="padding: 5px 2px; font-size: 0.70rem; border-radius: 6px;">كبير</button>
+                <div class="theme-color-palette appearance-palette-grid antigravity-palette-grid" role="group" aria-label="لوحة الألوان">
+                  <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true"><span>كحلي ملكي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false"><span>زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false"><span>بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false"><span>وردي ياقوتي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span>نيلي ليلي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptSapphire" data-theme="sapphire" onclick="setAppTheme('sapphire')" aria-pressed="false"><span>ياقوت أزرق</span><i class="fa-solid fa-check theme-active-check"></i></button>
                 </div>
               </div>
-              <!-- النمط -->
-              <div class="settings-control-tile" style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 7px 8px;">
-                <div style="margin-bottom: 5px; font-size: 0.70rem; font-weight: 850; color: #cbd5e1;">
-                  <i class="fa-solid fa-shapes" style="color: #38bdf8;"></i> نمط الكروت:
+
+              <!-- مجموعة 2: ألوان الأيقونات 9 متوازنة في 3 صفوف (كل خيار هو اللون نفسه) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-icons"></i>
+                    <span>ألوان الأيقونات (9 ألوان)</span>
+                  </div>
+                  <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
                 </div>
-                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid" role="group" aria-label="أنماط الكروت">
+                <div class="appearance-icon-grid antigravity-icon-grid" role="group" aria-label="ألوان الأيقونات">
+                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span>فينتك</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span>زمردي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span>بنفسجي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span>روبي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span>عنبر</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span>نيلي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span>وردي</span><i class="fa-solid fa-check icon-active-check"></i></button>
+                </div>
+              </div>
+
+              <!-- مجموعة 3: أنماط وتصميم الكروت 9 متوازنة في 3 صفوف (كل خيار يعبر عن نمطه) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>نمط الكروت (9 أنماط)</span>
+                  </div>
+                </div>
+                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid antigravity-card-style-grid" role="group" aria-label="أنماط الكروت">
                   <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>شفاف هادئ</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleMin" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>بسيط</strong><small>مسطح ونظيف</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleNeu" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>مجسّم</strong><small>عمق ناعم</small></button>
@@ -18582,65 +18853,157 @@
                   <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleCompact" data-card-style="compact" onclick="setAppDesignStyle('compact')" aria-pressed="false"><strong>مدمج</strong><small>زوايا صغيرة</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleSoft" data-card-style="soft" onclick="setAppDesignStyle('soft')" aria-pressed="false"><strong>ناعم</strong><small>استدارة واسعة</small></button>
                 </div>
+              </div>
+
+              <!-- مجموعة 4: خط الكلمات والأرقام (9 خطوط متوازنة 3 × 3 مع الخطوط الثلاثة الإضافية) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-font"></i>
+                    <span>خط الكلمات والأرقام (9 خطوط)</span>
+                  </div>
+                  <span id="activeFontBadge" class="appearance-active-badge">تاجوال (افتراضي)</span>
+                </div>
+                <div class="settings-font-grid antigravity-font-grid" role="group" aria-label="أنواع الخطوط">
+                  <button type="button" class="font-choice-pill active" id="fontChoiceTajawal" data-font="tajawal" onclick="setAppFont('tajawal')" style="font-family: 'Tajawal', sans-serif;"><span>✨ تاجوال</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceCairo" data-font="cairo" onclick="setAppFont('cairo')" style="font-family: 'Cairo', sans-serif;"><span>🏛️ كايرو</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceIBM" data-font="ibm" onclick="setAppFont('ibm')" style="font-family: 'IBM Plex Sans Arabic', sans-serif;"><span>🏢 IBM Plex</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceAlmarai" data-font="almarai" onclick="setAppFont('almarai')" style="font-family: 'Almarai', sans-serif;"><span>📱 المراعي</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceReadex" data-font="readex" onclick="setAppFont('readex')" style="font-family: 'Readex Pro', sans-serif;"><span>📐 ريدكس</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceAlexandria" data-font="alexandria" onclick="setAppFont('alexandria')" style="font-family: 'Alexandria', sans-serif;"><span>🏛️ الإسكندرية</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceChanga" data-font="changa" onclick="setAppFont('changa')" style="font-family: 'Changa', sans-serif;"><span>💎 شانجا</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceNoto" data-font="noto" onclick="setAppFont('noto')" style="font-family: 'Noto Sans Arabic', sans-serif;"><span>🌐 نوتو</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceRubik" data-font="rubik" onclick="setAppFont('rubik')" style="font-family: 'Rubik', sans-serif;"><span>⚡ روبيك</span></button>
+                </div>
+                
+                <!-- محدد حجم الخط الاحترافي (6 أحجام متوازنة) -->
+                <div class="antigravity-font-size-section" style="margin-top: 8px;">
+                  <div class="antigravity-size-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
+                    <div style="display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 850; color: var(--text-main, #f8fafc);">
+                      <i class="fa-solid fa-text-height" style="color: #38bdf8;"></i>
+                      <span>حجم الخط (6 أحجام):</span>
+                    </div>
+                    <span id="activeFontSizeBadge" class="appearance-active-badge">وسط (الافتراضي)</span>
+                  </div>
+                  <div class="antigravity-size-track" role="group" aria-label="أحجام الخط">
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_micro" onclick="setAppFontSize('micro')">
+                      <span class="size-sample" style="font-size: 0.62rem;">A</span>
+                      <span class="size-name">دقيق</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_small" onclick="setAppFontSize('small')">
+                      <span class="size-sample" style="font-size: 0.70rem;">A</span>
+                      <span class="size-name">صغير</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill active" id="fontSizeBtn_medium" onclick="setAppFontSize('medium')">
+                      <span class="size-sample" style="font-size: 0.78rem;">A</span>
+                      <span class="size-name">وسط</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_large" onclick="setAppFontSize('large')">
+                      <span class="size-sample" style="font-size: 0.86rem;">A</span>
+                      <span class="size-name">كبير</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_xlarge" onclick="setAppFontSize('xlarge')">
+                      <span class="size-sample" style="font-size: 0.94rem;">A</span>
+                      <span class="size-name">عريض</span>
+                    </button>
+                    <button type="button" class="antigravity-size-pill" id="fontSizeBtn_huge" onclick="setAppFontSize('huge')">
+                      <span class="size-sample" style="font-size: 1.05rem;">A</span>
+                      <span class="size-name">ضخم</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-          </div>
+            </div>
           </section>
 
-          <!-- القسم 2: إدارة المحافظ والنسخ الاحتياطي والمزامنة السحابية -->
-          <section class="settings-pane" id="settingsPane_data" aria-label="البيانات والمزامنة">
-          <div class="settings-unified-section" id="settingsSec_data" style="background: rgba(15, 23, 42, 0.90); border: 1.2px solid rgba(255, 255, 255, 0.10); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="font-size: 0.76rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-wallet" style="color: #10b981; font-size: 0.88rem;"></i>
-                <span>إدارة المحافظ والنسخ الاحتياطي:</span>
+          <!-- ========================================================================= -->
+          <!-- صفحة 2: المحافظ والبيانات والمزامنة السحابية -->
+          <!-- ========================================================================= -->
+          <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_wallets" hidden style="display: none;">
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+              
+              <!-- بطاقة ملخص أرصدة المحافظ والتدقيق الحسابي -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
+                    <span>أرصدة المحافظ والتدقيق</span>
+                  </div>
+                  <span id="settingsTotalWalletsBadge" class="antigravity-mini-badge">4 محافظ نشطة (إجمالي: 0.00 ج.م)</span>
+                </div>
+                <div class="antigravity-audit-badge" id="settingsAuditBadge" style="margin: 4px 0 0;">
+                  <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+                  <span id="settingsAuditText">مطابقة تامة (فرق الرصيد: EGP 0.00)</span>
+                </div>
               </div>
-              <span id="settingsWalletCountText" style="font-size: 0.63rem; color: #10b981; font-weight: 800; background: rgba(16, 185, 129, 0.15); padding: 1px 6px; border-radius: 5px;">
-                4 محافظ نشطة
-              </span>
-            </div>
 
-            <!-- أزرار المحافظ والنسخ -->
-            <div class="settings-data-actions">
-              <button type="button" class="btn-submit-tx" onclick="closeModal('settingsModal'); openModal('walletModal');" style="margin: 0; height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-pen-to-square"></i> المحافظ
-              </button>
-              <button type="button" class="btn-export-tool excel-btn" onclick="closeModal('settingsModal'); openWalletStatementModal();" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-receipt"></i> كشف الحساب
-              </button>
-              <button type="button" class="btn-export-tool" onclick="downloadBackup()" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-download"></i> تصدير JSON
-              </button>
-              <button type="button" class="btn-export-tool" onclick="document.getElementById('settingsBackupFileInput').click()" style="height: 32px; padding: 0 4px; font-size: 0.68rem; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 3px;">
-                <i class="fa-solid fa-upload"></i> استيراد JSON
-              </button>
-              <input type="file" id="settingsBackupFileInput" accept=".json" style="display: none;" onchange="handleBackupUpload(event)">
-            </div>
+              <!-- شبكة إجراءات المحافظ والبيانات (2x2) -->
+              <div class="antigravity-actions-grid-2x2">
+                <button type="button" class="antigravity-action-tile" onclick="openWalletsModal()">
+                  <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i>
+                  <span>إدارة المحافظ</span>
+                </button>
+                <button type="button" class="antigravity-action-tile" onclick="openFullStatementModal()">
+                  <i class="fa-solid fa-file-invoice-dollar" style="color: #a855f7;"></i>
+                  <span>كشف الحساب</span>
+                </button>
+                <button type="button" class="antigravity-action-tile" onclick="exportDataJSON()">
+                  <i class="fa-solid fa-download" style="color: #34d399;"></i>
+                  <span>تصدير JSON</span>
+                </button>
+                <button type="button" class="antigravity-action-tile" onclick="document.getElementById('importFileInput').click()">
+                  <i class="fa-solid fa-upload" style="color: #f59e0b;"></i>
+                  <span>استيراد JSON</span>
+                </button>
+              </div>
 
-            <!-- أزرار المزامنة الفورية وتحديث التطبيق -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px;">
-              <button type="button" class="btn-submit-tx" onclick="executeGoogleDriveSync()" style="margin: 0; height: 32px; background: linear-gradient(135deg, #10b981, #059669); font-size: 0.70rem; font-weight: 850; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                <i class="fa-solid fa-arrows-rotate" id="settingsDriveSyncIconSpin"></i> مزامنة فورية
-              </button>
-              <button type="button" class="btn-primary-custom" onclick="forcePurgeCacheAndReload()" style="height: 32px; background: linear-gradient(135deg, #0284c7, #0369a1); font-size: 0.70rem; font-weight: 850; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                <i class="fa-solid fa-rotate"></i> تحديث التطبيق
-              </button>
+              <!-- بطاقة المزامنة السحابية وتحديث الكاش -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-cloud-arrow-up" style="color: #38bdf8;"></i>
+                    <span>المزامنة والنسخ السحابي</span>
+                  </div>
+                  <span id="settingsDriveStatusBadge" class="antigravity-mini-badge">جاهز</span>
+                </div>
+                <div style="font-size: 0.68rem; color: #94a3b8; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                  <span>سحابة Google Drive:</span>
+                  <span id="settingsDriveAccountTxt" style="direction: ltr; font-weight: 700; color: #38bdf8;">maher.easybakery@gmail.com</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 2px;">
+                  <button type="button" class="antigravity-btn-sync-hero" onclick="executeGoogleDriveSync()">
+                    <i class="fa-solid fa-arrows-rotate" id="settingsDriveSyncIconSpin"></i>
+                    <span>مزامنة فورية</span>
+                  </button>
+                  <button type="button" class="antigravity-btn-update-hero" onclick="forcePurgeCacheAndReload()">
+                    <i class="fa-solid fa-rotate" id="settingsAppUpdateIconSpin"></i>
+                    <span>تحديث الكاش</span>
+                  </button>
+                </div>
+              </div>
+
             </div>
-          </div>
           </section>
+
+          <!-- عناصر وهمية مخفية لحماية التوافق مع أي نداءات JS قديمة -->
+          <div id="settingsThemePreview" style="display: none;" aria-hidden="true">
+            <span id="appearanceContrastBadge"></span>
+          </div>
+          <div id="settingsFontPreview" style="display: none;" aria-hidden="true">
+            <span id="settingsFontPreviewSample"></span>
+          </div>
 
         </div>
 
-        <!-- تذييل النافذة المدمج تماماً داخل الكارت (بدون أي عنصر منفصل أو عائم) -->
-        <div style="padding: 8px 14px; background: rgba(15, 23, 42, 0.98); border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; border-radius: 0 0 18px 18px;">
-          <span style="font-size: 0.65rem; color: #94a3b8;">مصروفات العائلة &copy; 2026</span>
-          <button type="button" class="btn-export-tool" onclick="closeModal('settingsModal')" style="padding: 5px 16px; font-size: 0.74rem; font-weight: 800; border-radius: 8px; background: rgba(255, 255, 255, 0.08); color: #f8fafc; border: 1px solid rgba(255, 255, 255, 0.15);">
-            إغلاق
+        <!-- 5. تذييل النافذة المدمج بالكامل داخل الكارت -->
+        <div class="modal-footer settings-modal-footer antigravity-settings-footer">
+          <div class="antigravity-footer-copy">مصروفات العائلة © 2026</div>
+          <button type="button" class="btn-primary antigravity-confirm-btn" onclick="closeModal('settingsModal')">
+            <i class="fa-solid fa-check"></i>
+            <span>تم وإغلاق</span>
           </button>
         </div>
 
@@ -18648,7 +19011,7 @@
     </div>
 
 
-  <div class="toast-msg" id="toastMsg">
+    <div class="toast-msg" id="toastMsg">
     <i class="fa-solid fa-circle-check" style="color: var(--primary);"></i>
     <span id="toastTxt">تم بنجاح!</span>
   </div>
@@ -23015,20 +23378,31 @@ function generateRichDemoTransactions() {
           elBal.style.color = actualBalance >= 0 ? '#38bdf8' : '#f43f5e';
         }
 
-        // تحجيم ذكي للأرقام الكبيرة حتى تكون أكبر وأبرز ولا تتجاوز حدود البطاقة نهائياً
+        // تحجيم ذكي ديناميكي متجاوب (Auto-Fit) يضمن بقاء الرقم ضخماً وبارزاً دون أي اقتصاص نهائياً
+        const container = elBal.parentElement; // .cockpit-hero-side
+        const maxW = (container ? container.clientWidth : 0) - 4;
         const balStr = elBal.textContent || '';
+        
+        let targetSize = 'clamp(1.40rem, 4.8vw, 1.95rem)';
         if (balStr.length > 22) {
-          elBal.style.setProperty('font-size', 'clamp(1.00rem, 3.2vw, 1.25rem)', 'important');
-          elBal.style.letterSpacing = '-0.5px';
-        } else if (balStr.length > 16) {
-          elBal.style.setProperty('font-size', 'clamp(1.18rem, 3.8vw, 1.45rem)', 'important');
-          elBal.style.letterSpacing = '-0.3px';
-        } else if (balStr.length > 11) {
-          elBal.style.setProperty('font-size', 'clamp(1.32rem, 4.2vw, 1.65rem)', 'important');
-          elBal.style.letterSpacing = '-0.2px';
+          targetSize = 'clamp(1.10rem, 3.4vw, 1.35rem)';
+        } else if (balStr.length > 17) {
+          targetSize = 'clamp(1.28rem, 4.0vw, 1.62rem)';
+        } else if (balStr.length > 12) {
+          targetSize = 'clamp(1.42rem, 4.6vw, 1.82rem)';
         } else {
-          elBal.style.setProperty('font-size', 'clamp(1.45rem, 4.8vw, 1.90rem)', 'important');
-          elBal.style.letterSpacing = '-0.2px';
+          targetSize = 'clamp(1.60rem, 5.2vw, 2.10rem)';
+        }
+        elBal.style.setProperty('font-size', targetSize, 'important');
+        elBal.style.letterSpacing = '-0.3px';
+        
+        // فحص أمان هندسي بالبكسل: إذا كان النص أوسع من الحاوية على الشاشات الصغيرة يتم تقليصه تدريجياً بدقة
+        if (maxW > 50) {
+          let curPx = parseFloat(window.getComputedStyle(elBal).fontSize) || 22;
+          while (elBal.scrollWidth > maxW && curPx > 14) {
+            curPx -= 0.5;
+            elBal.style.setProperty('font-size', curPx + 'px', 'important');
+          }
         }
 
         // تحجيم ذكي لكبسولتي الإيداعات والمصروفات لتكون أرقامها أكبر وأبرز دون أي خروج عن الكارت
@@ -23348,11 +23722,11 @@ function generateRichDemoTransactions() {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
-          const cardBg = pal.bgGrad(cardAccent);
-          const cardBorder = `2px solid ${pal.border(cardAccent)}`;
-          const cardShadow = pal.shadow(cardAccent);
-          const cardTopBg = getCardTopBackground(cardAccent);
+          const cardAccent = theme.accent; // ألوان متنوعة ومختلفة دائماً لكل بند مصروف
+          const cardBg = pal.bgGrad(theme.accent);
+          const cardBorder = `2px solid ${pal.border(theme.accent)}`;
+          const cardShadow = pal.shadow(theme.accent);
+          const cardTopBg = getCardTopBackground(theme.accent);
 
           const converted = convertAmount(spent);
           let numStr = '0.00';
@@ -23417,7 +23791,7 @@ function generateRichDemoTransactions() {
               
               <!-- بالون الرمز أكبر ومجسم يملأ مساحته بروعة متفاعل مع باليت الأيقونات -->
               <div class="cat-icon-bubble" 
-                   style="background: ${curIconPal ? curIconPal.gradient : theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${cardAccent}; flex-shrink: 0;">
+                   style="background: ${theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
                 <span style="font-size: clamp(1.45rem, 3.8vw, 1.75rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
@@ -23450,7 +23824,7 @@ function generateRichDemoTransactions() {
           if (!card) return;
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
           const theme = HIGH_CONTRAST_THEMES[cat.id] || { accent: cat.color || '#38bdf8' };
-          const cardAccent = curIconPal ? curIconPal.accent : theme.accent;
+          const cardAccent = theme.accent;
           const converted = convertAmount(spent);
           let numStr = '0.00';
           if (spent > 0) {
@@ -23473,17 +23847,17 @@ function generateRichDemoTransactions() {
           }
 
           // مزامنة الألوان الحية للبطاقة وبالون الأيقونة
-          card.style.setProperty('background', pal.bgGrad(curIconPal ? curIconPal.accent : theme.accent), 'important');
-          card.style.setProperty('border-color', pal.border(curIconPal ? curIconPal.accent : theme.accent), 'important');
-          card.style.setProperty('box-shadow', pal.shadow(curIconPal ? curIconPal.accent : theme.accent), 'important');
+          card.style.setProperty('background', pal.bgGrad(theme.accent), 'important');
+          card.style.setProperty('border-color', pal.border(theme.accent), 'important');
+          card.style.setProperty('box-shadow', pal.shadow(theme.accent), 'important');
           const topHalf = card.querySelector('.cat-card-top-half');
-          if (topHalf) topHalf.style.background = getCardTopBackground(curIconPal ? curIconPal.accent : theme.accent);
+          if (topHalf) topHalf.style.background = getCardTopBackground(theme.accent);
 
           const bubble = card.querySelector('.cat-icon-bubble');
           if (bubble) {
-            bubble.style.background = curIconPal ? curIconPal.gradient : theme.gradient;
-            bubble.style.outline = '1.8px solid ' + cardAccent;
-            bubble.style.boxShadow = `0 4px 14px ${curIconPal ? curIconPal.shadow : 'rgba(0,0,0,0.45)'}, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
+            bubble.style.background = theme.gradient;
+            bubble.style.outline = '1.8px solid ' + theme.accent;
+            bubble.style.boxShadow = `0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
           }
 
           const lowerHalf = card.querySelector('.cat-card-bottom-half');
@@ -25924,11 +26298,51 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       event.preventDefault();
       option.click();
     });
-function openSettingsModal(targetSection = '') {
+function switchSettingsTab(tabName) {
+      const tabs = ['appearance', 'wallets'];
+      if (tabName === 'typography' || tabName === 'fonts' || tabName === 'icons' || tabName === 'cards') {
+        tabName = 'appearance';
+      }
+      tabs.forEach(t => {
+        const btn = document.getElementById('settingsTabBtn_' + t);
+        const pane = document.getElementById('settingsTabPane_' + t);
+        const active = (t === tabName);
+        if (btn) {
+          btn.classList.toggle('active', active);
+          btn.setAttribute('aria-selected', active ? 'true' : 'false');
+        }
+        if (pane) {
+          if (active) {
+            pane.removeAttribute('hidden');
+            pane.style.setProperty('display', 'flex', 'important');
+            pane.classList.remove('antigravity-pane-enter');
+            void pane.offsetWidth;
+            pane.classList.add('antigravity-pane-enter');
+          } else {
+            pane.setAttribute('hidden', '');
+            pane.style.setProperty('display', 'none', 'important');
+          }
+        }
+      });
+      const scrollArea = document.querySelector('#settingsModal .settings-modal-scroll');
+      if (scrollArea) scrollArea.scrollTop = 0;
+    }
+
+    function openSettingsModal(targetSection = '') {
       updateSettingsModalDisplay();
-      document.getElementById('settingsVersionBadge').textContent = window.APP_VERSION;
+      const vBadge = document.getElementById('settingsVersionBadge');
+      if (vBadge) vBadge.textContent = window.APP_VERSION;
+
+      if (targetSection === 'data' || targetSection === 'wallets' || targetSection === 'sync' || targetSection === 'cloud') {
+        switchSettingsTab('wallets');
+      } else {
+        switchSettingsTab('appearance');
+      }
+
       openModal('settingsModal');
-      document.querySelector('#settingsModal .settings-modal-scroll').scrollTop = 0;
+      const scrollEl = document.querySelector('#settingsModal .settings-modal-scroll');
+      if (scrollEl) scrollEl.scrollTop = 0;
+
       if (targetSection === 'users') {
         setTimeout(() => {
           const sec = document.getElementById('settingsSec_users');
@@ -26533,7 +26947,7 @@ function openSettingsModal(targetSection = '') {
     }
 
     function setAppFontSize(size, persist = true, notify = false) {
-      const validSizes = ['small', 'medium', 'large'];
+      const validSizes = ['micro', 'small', 'medium', 'large', 'xlarge', 'huge'];
       if (!validSizes.includes(size)) size = 'medium';
 
       document.documentElement.setAttribute('data-font-size', size);
@@ -26546,22 +26960,31 @@ function openSettingsModal(targetSection = '') {
       }
 
       // تحديث حالة الأزرار في الإعدادات
-      document.querySelectorAll('.font-size-pill').forEach(btn => {
+      document.querySelectorAll('.antigravity-size-pill, .font-size-pill, .antigravity-size-btn').forEach(btn => {
         btn.classList.remove('active');
         btn.setAttribute('aria-pressed', 'false');
       });
-      const activeBtn = document.getElementById(
-        size === 'small' ? 'fontSizeSmall' : 
-        (size === 'large' ? 'fontSizeLarge' : 'fontSizeMedium')
-      );
+
+      const activeBtn = document.getElementById('fontSizeBtn_' + size) || document.getElementById('fontSize' + size.charAt(0).toUpperCase() + size.slice(1));
       if (activeBtn) {
         activeBtn.classList.add('active');
         activeBtn.setAttribute('aria-pressed', 'true');
       }
 
       const badge = document.getElementById('activeFontSizeBadge');
-      const labels = { small: 'صغير (مدمج)', medium: 'وسط (الافتراضي)', large: 'كبير (واضح وبارز)' };
-      if (badge) badge.textContent = labels[size] || 'وسط';
+      const labels = {
+        micro: 'دقيق (فائق الصغر)',
+        small: 'صغير (مدمج)',
+        medium: 'وسط (الافتراضي)',
+        large: 'كبير (واضح)',
+        xlarge: 'عريض (كبير جداً)',
+        huge: 'ضخم (فائق الوضوح)'
+      };
+      if (badge) badge.textContent = labels[size] || 'وسط (الافتراضي)';
+
+      if (notify && typeof showToast === 'function') {
+        showToast(`🔤 تم ضبط حجم الخط: ${labels[size] || size}`);
+      }
 
       // تحديث الشاشات والكروت تلقائياً لضبط التناسب مع الحجم الجديد
       if (typeof renderCategoriesGrid === 'function') {
@@ -26598,7 +27021,10 @@ function openSettingsModal(targetSection = '') {
         ibm: { name: 'IBM Plex الفاخر', family: "'IBM Plex Sans Arabic', 'Tajawal', sans-serif" },
         almarai: { name: 'المراعي الهادئ', family: "'Almarai', 'Tajawal', sans-serif" },
         readex: { name: 'ريدكس برو الهندسي', family: "'Readex Pro', 'Tajawal', sans-serif" },
-        alexandria: { name: 'الإسكندرية العصري', family: "'Alexandria', 'Tajawal', sans-serif" }
+        alexandria: { name: 'الإسكندرية العصري', family: "'Alexandria', 'Tajawal', sans-serif" },
+        changa: { name: 'شانجا الرقمي', family: "'Changa', 'Tajawal', sans-serif" },
+        noto: { name: 'نوتو سانس الأنيق', family: "'Noto Sans Arabic', 'Tajawal', sans-serif" },
+        rubik: { name: 'روبيك العصري', family: "'Rubik', 'Tajawal', sans-serif" }
       };
 
       const selected = fonts[fontKey] || fonts.tajawal;
@@ -26622,7 +27048,10 @@ function openSettingsModal(targetSection = '') {
         ibm: 'fontChoiceIBM',
         almarai: 'fontChoiceAlmarai',
         readex: 'fontChoiceReadex',
-        alexandria: 'fontChoiceAlexandria'
+        alexandria: 'fontChoiceAlexandria',
+        changa: 'fontChoiceChanga',
+        noto: 'fontChoiceNoto',
+        rubik: 'fontChoiceRubik'
       };
       const activeBtn = document.getElementById(btnMap[fontKey] || 'fontChoiceTajawal');
       if (activeBtn) {
@@ -26704,6 +27133,9 @@ function openSettingsModal(targetSection = '') {
       if (inpQty) inpQty.value = qty;
       if (inpWork) inpWork.value = workmanship;
       recalcGoldTotal();
+      document.querySelectorAll('#goldDrawerPanel .calc-preset-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick')?.includes(asset) && btn.getAttribute('onclick')?.includes(String(qty)));
+      });
     }
 
     // تسجيل مبلغ حاسبة الذهب مباشرة كمصروف
@@ -27232,6 +27664,7 @@ function openSettingsModal(targetSection = '') {
         const goldGrams = g21 > 0 ? (totalBal / g21).toFixed(2) : '0.00';
         const valEl = document.getElementById('goldValuationText');
         if (valEl) valEl.textContent = g21 > 0 ? `${goldGrams} جم ذهب 21` : 'السعر غير متاح';
+        if (typeof runUniversalConverter === 'function') runUniversalConverter();
       } catch(e) {}
     }
 
@@ -27249,6 +27682,131 @@ function openSettingsModal(targetSection = '') {
         if (window.history.state && window.history.state.modalId === 'goldDrawer') {
           window.history.back();
         }
+      }
+    }
+
+    // =========================================================================
+    // محول العملات والذهب الذكي والتنقل بين تبويبات البورصة (Antigravity UX)
+    // =========================================================================
+    function switchGoldDrawerTab(tabId) {
+      const tabs = ['prices', 'converter', 'tools'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('goldTabBtn_' + t);
+        const pane = document.getElementById('goldTabPane_' + t);
+        if (btn) btn.classList.toggle('active', t === tabId);
+        if (pane) pane.classList.toggle('active', t === tabId);
+      });
+      if (tabId === 'converter') {
+        runUniversalConverter();
+      } else if (tabId === 'tools') {
+        if (typeof recalcGoldTotal === 'function') recalcGoldTotal();
+      }
+    }
+
+    function toggleGoldProvenanceModal() {
+      const modal = document.getElementById('goldProvenanceModal');
+      if (!modal) return;
+      modal.style.display = (modal.style.display === 'none' || !modal.style.display) ? 'block' : 'none';
+    }
+
+    function runUniversalConverter() {
+      const amountInput = document.getElementById('convAmount');
+      const sourceSelect = document.getElementById('convSourceAsset');
+      if (!amountInput || !sourceSelect) return;
+
+      const rawAmount = parseFloat(amountInput.value) || 0;
+      const source = sourceSelect.value || 'EGP';
+
+      // استخراج الأسعار الحية مع الحفاظ على قيم احتياطية آمنة
+      const m = state.market || {};
+      const rates = {
+        usd: (m.usdEgp && m.usdEgp > 0) ? Number(m.usdEgp) : 53.49,
+        sar: (m.sarEgp && m.sarEgp > 0) ? Number(m.sarEgp) : 14.24,
+        eur: (m.eurEgp && m.eurEgp > 0) ? Number(m.eurEgp) : 59.22,
+        aed: (m.aedEgp && m.aedEgp > 0) ? Number(m.aedEgp) : 14.57,
+        gold21: (m.gold21 && m.gold21 > 0) ? Number(m.gold21) : 6165.00,
+        gold24: (m.gold24 && m.gold24 > 0) ? Number(m.gold24) : 7045.75,
+        gold18: (m.gold18 && m.gold18 > 0) ? Number(m.gold18) : 5284.25,
+        goldPound: (m.goldPound && m.goldPound > 0) ? Number(m.goldPound) : 49320.00
+      };
+
+      // تحويل المبلغ المدخل إلى الجنيه المصري كأساس مشترك
+      let egp = 0;
+      if (source === 'EGP') egp = rawAmount;
+      else if (source === 'USD') egp = rawAmount * rates.usd;
+      else if (source === 'SAR') egp = rawAmount * rates.sar;
+      else if (source === 'EUR') egp = rawAmount * rates.eur;
+      else if (source === 'AED') egp = rawAmount * rates.aed;
+      else if (source === 'GOLD21') egp = rawAmount * rates.gold21;
+      else if (source === 'GOLD24') egp = rawAmount * rates.gold24;
+      else if (source === 'GOLD18') egp = rawAmount * rates.gold18;
+      else if (source === 'GOLD_POUND') egp = rawAmount * rates.goldPound;
+
+      const fmt = (n, dec = 2) => Number(n).toLocaleString('ar-EG', { maximumFractionDigits: dec, minimumFractionDigits: (Number.isInteger(n) ? 0 : dec) });
+      const setT = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+      // تحديث نتائج الذهب المكافئ
+      const g21 = rates.gold21 > 0 ? (egp / rates.gold21) : 0;
+      const g24 = rates.gold24 > 0 ? (egp / rates.gold24) : 0;
+      const g18 = rates.gold18 > 0 ? (egp / rates.gold18) : 0;
+      const gPound = rates.goldPound > 0 ? (egp / rates.goldPound) : 0;
+
+      setT('convResGold21', fmt(g21, 2) + ' جم');
+      setT('convResGold24', fmt(g24, 2) + ' جم');
+      setT('convResGold18', fmt(g18, 2) + ' جم');
+      setT('convResGoldPound', fmt(gPound, 2) + ' جنيه');
+
+      // تحديث نتائج العملات النقدية المكافئة
+      const usdVal = rates.usd > 0 ? (egp / rates.usd) : 0;
+      const sarVal = rates.sar > 0 ? (egp / rates.sar) : 0;
+      const eurVal = rates.eur > 0 ? (egp / rates.eur) : 0;
+      const aedVal = rates.aed > 0 ? (egp / rates.aed) : 0;
+
+      setT('convResEgp', fmt(egp, 2) + ' ج.م');
+      setT('convResUsd', fmt(usdVal, 2) + ' $');
+      setT('convResSar', fmt(sarVal, 2) + ' ر.س');
+      setT('convResEur', fmt(eurVal, 2) + ' €');
+      setT('convResAed', fmt(aedVal, 2) + ' د.إ');
+
+      // شريط الملخص التفاعلي
+      const sumEl = document.getElementById('convSourceSummary');
+      if (sumEl) {
+        const labels = {
+          'EGP': 'جنيه مصري', 'USD': 'دولار أمريكي', 'SAR': 'ريال سعودي',
+          'EUR': 'يورو أوروبي', 'AED': 'درهم إماراتي', 'GOLD21': 'جرام ذهب 21',
+          'GOLD24': 'جرام ذهب 24', 'GOLD18': 'جرام ذهب 18', 'GOLD_POUND': 'جنيه ذهب'
+        };
+        const sLabel = labels[source] || source;
+        if (source === 'EGP') {
+          sumEl.textContent = `${fmt(rawAmount, 2)} ${sLabel} تعادل حالياً:`;
+        } else {
+          sumEl.textContent = `${fmt(rawAmount, 2)} ${sLabel} = ${fmt(egp, 2)} ج.م تقريباً تعادل:`;
+        }
+      }
+    }
+
+    function applyConvPreset(amount) {
+      const inp = document.getElementById('convAmount');
+      if (inp) {
+        inp.value = amount;
+        document.querySelectorAll('#goldDrawerPanel .conv-pill').forEach(btn => {
+          btn.classList.toggle('active', parseFloat(btn.textContent.replace(/,/g, '')) === amount);
+        });
+        runUniversalConverter();
+      }
+    }
+
+    function copyConvVal(elemId, label) {
+      const el = document.getElementById(elemId);
+      if (!el) return;
+      const text = el.textContent.trim();
+      if (!text || text === '—') return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          if (typeof showToast === 'function') {
+            showToast(`تم نسخ ${label}: ${text}`, 'success', 2000);
+          }
+        }).catch(() => {});
       }
     }
 
@@ -27322,6 +27880,7 @@ function openSettingsModal(targetSection = '') {
         const balance=typeof computeTotalEffectiveBalance==='function'?computeTotalEffectiveBalance():state.balance||0;
         text('goldValuationText',(balance/market.gold21).toLocaleString('ar-EG',{maximumFractionDigits:2})+' جم ذهب 21');
         updateCalcDisplay();
+        if(typeof runUniversalConverter==='function')runUniversalConverter();
         if(typeof renderUI==='function')renderUI();
         if(typeof renderSecWalletView==='function')renderSecWalletView();
         return market;
@@ -27441,7 +28000,7 @@ function openSettingsModal(targetSection = '') {
         if (colWorkmanship) colWorkmanship.style.display = 'block';
       }
 
-      if (noteEl) noteEl.textContent = preset.note;
+      if (noteEl) { noteEl.textContent = preset.note; noteEl.style.display = preset.note ? 'block' : 'none'; }
       recalcGoldTotal();
     }
 
@@ -29926,7 +30485,7 @@ function openSettingsModal(targetSection = '') {
     // محرك تعديل الالتزامات والديون الفاخر (Commitments Edit Engine)
     // =========================================================================
     function openEditCommitmentModal(id) {
-      const exp = (state.expectedExpenses || []).find(e => e.id === id);
+      const exp = (state.expectedExpenses || []).find(e => e.id === id) || (state.debts || []).find(d => d.id === id);
       if (!exp) return;
 
       const idInp = document.getElementById('inpEditCommitmentId');
@@ -36213,6 +36772,14 @@ window.filterArchiveType = filterArchiveType;
       </div>
 
 
+
+      <!-- شريط فلاتر التنبيهات السريعة -->
+      <div class="alert-filter-pills">
+        <button type="button" class="alert-pill active" onclick="familyAlerts.setFilter('all', this)">الكل</button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('unread', this)">غير المقروء <span id="unreadPillCount"></span></button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('expense', this)">المصروفات</button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('due', this)">الالتزامات</button>
+      </div>
 
       <!-- قائمة الإشعارات والتنبيهات -->
       <div class="alert-demo-tools"><button type="button" id="runAlertDemo" onclick="familyAlerts.demo()">تسجيل ٥٠ حالة تجريبية</button></div>

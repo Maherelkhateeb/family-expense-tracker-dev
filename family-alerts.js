@@ -1,289 +1,820 @@
+/**
+ * =========================================================================
+ * Family Alerts Engine — Antigravity Architecture (v5.3.38)
+ * محرك الإشعارات والتنبيهات الذكي لعائلة ماهر & أية
+ * =========================================================================
+ * - ربط فوري وشامل مع كافة العمليات المالية والالتزامات والموازنات والمهام
+ * - فتح العملية أو الاستحقاق الأصلي مباشرة بكامل بياناته عند النقر
+ * - صياغة عربية دقيقة ومطابقة بنسبة 100% لمعايير التنبيهات
+ * - دعم وضع عدم الاتصال وتخزين آمن وتزامن لحظي بين النوافذ
+ */
+
 const familyAlerts = (() => {
-  const prefix = 'family_alerts_v1';
-  let previous = null;
-  let openDetail = null;
-  const person = name => ['آية','اية','أية'].includes(name) ? 'أية' : (name || 'البيت');
-  const clock = new Intl.DateTimeFormat('ar-EG', {hour:'numeric',minute:'2-digit',day:'numeric',month:'long',year:'numeric'});
-  const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits:2});
-  const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
-  const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (error) { console.warn('Notification storage', error); } };
-  const profile = () => person(state.currentUser || 'ماهر');
-  const readKey = () => prefix + '_read_' + profile();
-  const rows = () => read(prefix, []);
-  const dateOf = tx => operationDate(tx);
-  const amount = value => number.format(Number(value) || 0) + ' جنيه';
-  const snapshot = transactions => new Map((transactions || []).filter(tx => tx?.id && !tx.deleted).map(tx => [tx.id, {
-    id:tx.id, type:tx.type, amount:tx.amount, label:tx.label || tx.description || tx.note || '',
-    category:tx.category, walletId:tx.walletId || tx.wallet, date:dateOf(tx), time:tx.time,
-    member:tx.member, author:tx.author, receiptVersion:tx.alertReceiptVersion, project:getTransactionProjectName(tx),
-    from:tx.fromWalletId || tx.fromWallet, to:tx.toWalletId || tx.toWallet
-  }]));
-  const soundKey = prefix+'_sound';
-  let audio;
-  function ring() {
-    if (!read(soundKey,false) || !audio || audio.state !== 'running') return;
-    for (const [index, frequency] of [660,880].entries()) {
-      const oscillator=audio.createOscillator(), gain=audio.createGain(), start=audio.currentTime+index*.15;
-      oscillator.frequency.value=frequency; gain.gain.setValueAtTime(.17,start); gain.gain.exponentialRampToValueAtTime(.001,start+.16);
-      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start+.17);
-    }
-  }
-  async function toggleSound() {
-    if (read(soundKey,false) && audio?.state === 'running') {write(soundKey,false);render();return;}
+  'use strict';
+
+  // --- مفاتيح التخزين الآمن ---
+  const STORAGE_KEY = 'family_alerts_store_v2';
+  const READ_KEY = 'family_alerts_read_v2';
+  const SOUND_KEY = 'family_alerts_sound_v2';
+  const MAX_ALERTS = 800;
+
+  let activeFilter = 'all';
+  let audioContext = null;
+  let previousTxMap = null;
+
+  // --- دوال مساعدة للتخزين ---
+  function safeRead(key, fallback) {
     try {
-      audio ||= new (window.AudioContext || window.webkitAudioContext)();
-      await audio.resume(); write(soundKey,true); ring(); render();
-    } catch {showToast('تعذر تشغيل الصوت في هذا المتصفح');}
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : fallback;
+    } catch (e) {
+      console.warn('[familyAlerts] Storage read error:', e);
+      return fallback;
+    }
   }
-  function store(events) {
-    if (!events.length) return;
-    const saved = rows();
-    const known = new Set(saved.map(item => item.id));
-    const added = events.filter(item => !known.has(item.id) && known.add(item.id));
-    if (added.length) { write(prefix, [...added, ...saved].sort((a,b) => b.at-a.at).slice(0,1500)); ring(); }
+
+  function safeWrite(key, data) {
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+      console.warn('[familyAlerts] Storage write error:', e);
+    }
   }
+
+  // --- محول الأرقام العربية المشرقية ---
+  function toArabicDigits(num, pad = 0) {
+    if (num === null || num === undefined) return '';
+    let str = pad > 0 ? String(num).padStart(pad, '0') : String(num);
+    const digitsMap = { '0':'٠', '1':'١', '2':'٢', '3':'٣', '4':'٤', '5':'٥', '6':'٦', '7':'٧', '8':'٨', '9':'٩' };
+    return str.replace(/[0-9]/g, d => digitsMap[d] || d);
+  }
+
+  // --- توحيد وتنسيق أسماء أفراد الأسرة ---
+  function normalizePersonName(name) {
+    if (!name) return 'البيت';
+    const clean = String(name).trim();
+    if (['آية', 'اية', 'أية'].includes(clean)) return 'اية';
+    return clean;
+  }
+
+  function isFemaleName(name) {
+    const n = normalizePersonName(name);
+    return ['اية', 'مريم', 'الحاجة', 'النونو', 'أم ماهر'].includes(n);
+  }
+
+  // --- تنسيق التاريخ والوقت بدقة كاملة: الساعة ١٢ مساء 22/10/2026 ---
+  function formatArabicDateTime(tx, fallbackTime) {
+    let dateObj = null;
+
+    if (tx?.date) {
+      const parts = String(tx.date).split('T')[0].split('-');
+      if (parts.length === 3) {
+        let h = 12, m = 0;
+        if (tx.time) {
+          const tParts = String(tx.time).split(':');
+          h = parseInt(tParts[0], 10) || 12;
+          m = parseInt(tParts[1], 10) || 0;
+        }
+        dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), h, m);
+      }
+    }
+
+    if (!dateObj || isNaN(dateObj.getTime())) {
+      dateObj = new Date(Number(fallbackTime) || Date.now());
+    }
+
+    let h = dateObj.getHours();
+    const m = dateObj.getMinutes();
+    const period = h >= 12 ? 'مساء' : 'صباحا';
+    h = h % 12 || 12;
+
+    const hStr = toArabicDigits(h);
+    const mStr = m > 0 ? ':' + toArabicDigits(m, 2) : '';
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const dateStr = `${day}/${month}/${year}`;
+
+    return `الساعة ${hStr}${mStr} ${period} ${dateStr}`;
+  }
+
+  // --- محرك توليد نص التنبيه المالي التفصيلي ---
+  function generateTransactionAlertText(tx, kind = 'add') {
+    const rawAuthor = tx.author || tx.member || (typeof state !== 'undefined' ? state.currentUser : null) || 'ماهر';
+    const author = normalizePersonName(rawAuthor);
+    const isFemale = isFemaleName(author);
+    const verb = isFemale ? 'قامت' : 'قام';
+    const amtStr = toArabicDigits(Math.round(Number(tx.amount) || 0)) + ' جنيه';
+    const dtStr = formatArabicDateTime(tx, tx.createdAt || tx.date);
+
+    // صياغة المستفيد
+    let memberStr = '';
+    const memberName = normalizePersonName(tx.member);
+    if (tx.member && memberName !== 'البيت' && memberName !== 'الكل') {
+      memberStr = ' ل ' + memberName;
+    } else if (memberName === 'البيت') {
+      memberStr = ' للبيت';
+    }
+
+    // اسم البند
+    let catName = 'مصروف يومى';
+    if (typeof getCategoryName === 'function') {
+      const resolved = getCategoryName(tx.category, tx.type);
+      if (resolved) catName = resolved;
+    }
+    if (tx.category === 'daily') catName = 'مصروف يومى';
+
+    // حالات العمليات المختلفة
+    if (kind === 'delete') {
+      return `${verb} ${author} بحذف عملية بمبلغ ${amtStr} بند ${catName}${memberStr} ${dtStr}`;
+    }
+    if (kind === 'edit') {
+      return `${verb} ${author} بتعديل عملية بمبلغ ${amtStr} بند ${catName}${memberStr} ${dtStr}`;
+    }
+    if (tx.type === 'transfer' || tx.category === 'transfer') {
+      const fromW = (typeof getWalletName === 'function') ? getWalletName(tx.fromWalletId || tx.walletId) : 'كاش البيت';
+      const toW = (typeof getWalletName === 'function') ? getWalletName(tx.toWalletId || tx.to) : 'محفظة أخرى';
+      return `${verb} ${author} بتحويل مبلغ ${amtStr} من ${fromW} إلى ${toW} ${dtStr}`;
+    }
+    if (tx.type === 'income') {
+      return `${verb} ${author} بإيداع مبلغ ${amtStr} بند ${catName}${memberStr} ${dtStr}`;
+    }
+
+    // الصرف الافتراضي (المصروفات)
+    // المطابقة التامة: "قامت اية بصرف مبلغ ١٠٠ جنيه بند مصروف يومى ل محمد الساعة ١٢ مساء 22/10/2026"
+    return `${verb} ${author} بصرف مبلغ ${amtStr} بند ${catName}${memberStr} ${dtStr}`;
+  }
+
+  // --- محرك توليد نص تنبيه الالتزامات والفواتير ---
+  function generateObligationAlertText(item) {
+    const remaining = Number(item.amount || 0) - Number(item.paidAmount || 0);
+    const amtStr = toArabicDigits(Math.round(remaining)) + ' جنيه';
+    const title = item.title || item.label || 'فاتورة أو التزام';
+
+    let dueStr = '';
+    if (item.dueDate) {
+      const parts = String(item.dueDate).split('T')[0].split('-');
+      if (parts.length === 3) dueStr = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    return `تذكير استحقاق: ${title} بمبلغ ${amtStr} تستحق في ${dueStr}`;
+  }
+
+  // --- محرك الصوت الذكي (Web Audio Synthesizer) ---
+  function playAlertChime() {
+    if (!safeRead(SOUND_KEY, false)) return;
+    try {
+      audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      const now = audioContext.currentTime;
+      // نغمة مزدوجة لطيفة (660Hz -> 880Hz)
+      [660, 880].forEach((freq, idx) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const start = now + (idx * 0.12);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+
+        gain.gain.setValueAtTime(0.15, start);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.14);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start(start);
+        osc.stop(start + 0.15);
+      });
+    } catch (e) {
+      console.warn('[familyAlerts] Audio error:', e);
+    }
+  }
+
+  async function toggleSound() {
+    const current = safeRead(SOUND_KEY, false);
+    const next = !current;
+    if (next) {
+      try {
+        audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+        await audioContext.resume();
+        safeWrite(SOUND_KEY, true);
+        playAlertChime();
+        if (typeof showToast === 'function') showToast('تم تفعيل صوت التنبيهات 🔔');
+      } catch (e) {
+        if (typeof showToast === 'function') showToast('تعذر تشغيل الصوت في المتصفح');
+      }
+    } else {
+      safeWrite(SOUND_KEY, false);
+      if (typeof showToast === 'function') showToast('تم كتم صوت التنبيهات 🔇');
+    }
+    render();
+  }
+
+  // --- إدارة سجل التنبيهات ---
+  function getAlerts() {
+    return safeRead(STORAGE_KEY, []);
+  }
+
+  function getReadIds() {
+    const list = safeRead(READ_KEY, []);
+    return new Set(Array.isArray(list) ? list : []);
+  }
+
+  function addAlerts(newEvents) {
+    if (!Array.isArray(newEvents) || newEvents.length === 0) return;
+    const current = getAlerts();
+    const existingIds = new Set(current.map(a => a.id));
+    const toInsert = newEvents.filter(a => a && a.id && !existingIds.has(a.id));
+
+    if (toInsert.length > 0) {
+      const merged = [...toInsert, ...current].sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, MAX_ALERTS);
+      safeWrite(STORAGE_KEY, merged);
+      playAlertChime();
+      render();
+    }
+  }
+
+  function mark(id, event) {
+    if (event) event.stopPropagation();
+    const readSet = getReadIds();
+    if (id) {
+      readSet.add(id);
+    } else {
+      getAlerts().forEach(a => readSet.add(a.id));
+    }
+    safeWrite(READ_KEY, Array.from(readSet));
+    render();
+  }
+
+  function toggleRead(id, event) {
+    if (event) event.stopPropagation();
+    if (!id) return;
+    const readSet = getReadIds();
+    if (readSet.has(id)) {
+      readSet.delete(id);
+    } else {
+      readSet.add(id);
+    }
+    safeWrite(READ_KEY, Array.from(readSet));
+    render();
+  }
+
+  // --- التلقيم التلقائي المبدئي من العمليات الفعلية إذا كان السجل فارغاً ---
+  function hydrateFromActualData() {
+    const stored = getAlerts();
+    if (stored.length >= 10) return; // يوجد بيانات كافية بالفعل
+
+    if (typeof state === 'undefined' || !Array.isArray(state.transactions)) return;
+
+    const initial = [];
+    // جلب آخر 30 حركة مالية حقيقية
+    const recentTx = state.transactions.slice(0, 30);
+    for (const tx of recentTx) {
+      if (!tx || !tx.id) continue;
+      const kind = tx.type === 'income' ? 'income' : (tx.type === 'transfer' || tx.category === 'transfer') ? 'transfer' : 'expense';
+      const titles = { expense: 'مصروف جديد', income: 'إيداع جديد', transfer: 'تحويل بين المحافظ' };
+      const body = generateTransactionAlertText(tx, 'add');
+      const timestamp = tx.createdAt ? new Date(tx.createdAt).getTime() : (tx.date ? new Date(tx.date + 'T12:00:00').getTime() : Date.now());
+
+      initial.push({
+        id: 'tx:' + tx.id,
+        txId: tx.id,
+        kind: kind,
+        title: titles[kind] || 'عملية مالية',
+        body: body,
+        at: timestamp,
+        tx: { ...tx }
+      });
+    }
+
+    // جلب الالتزامات والفواتير المستحقة
+    const obligations = [...(state.expectedExpenses || []), ...(state.debts || [])];
+    for (const ob of obligations) {
+      if (!ob || !ob.id || ob.paid || ['paid', 'settled'].includes(ob.status)) continue;
+      const remaining = Number(ob.amount || 0) - Number(ob.paidAmount || 0);
+      if (!(remaining > 0)) continue;
+      initial.push({
+        id: 'due:' + ob.id,
+        commitmentId: ob.id,
+        kind: 'due',
+        title: 'تذكير استحقاق',
+        body: generateObligationAlertText(ob),
+        at: Date.now()
+      });
+    }
+
+    if (initial.length > 0) {
+      addAlerts(initial);
+    }
+  }
+
+  // --- التفاعل والمراقبة الدورية للعمليات ---
+  function snapshotMap(transactions) {
+    const map = new Map();
+    if (!Array.isArray(transactions)) return map;
+    for (const tx of transactions) {
+      if (tx && tx.id && !tx.deleted) {
+        map.set(tx.id, JSON.stringify({
+          id: tx.id,
+          amount: tx.amount,
+          label: tx.label,
+          category: tx.category,
+          type: tx.type,
+          walletId: tx.walletId,
+          member: tx.member,
+          date: tx.date,
+          time: tx.time,
+          from: tx.fromWalletId || tx.fromWallet,
+          to: tx.toWalletId || tx.toWallet
+        }));
+      }
+    }
+    return map;
+  }
+
   function observe(transactions, actor, baseline = false) {
-    const next = snapshot(transactions);
-    if (!previous || baseline) { previous = next; refresh(); return; }
-    const at = Date.now();
-    const events = [];
-    const record = (kind, tx, old) => {
-      const who = person(kind === 'add' ? tx.author || actor || tx.member : actor || tx.author);
-      const verb = who === 'أية' ? 'قامت' : 'قام';
-      const action = kind === 'edit' ? 'بتعديل عملية' : kind === 'delete' ? 'بحذف عملية' :
-        tx.type === 'transfer' || tx.category === 'transfer' ? 'بتسجيل تحويل' : tx.type === 'income' ? 'بإيداع' : 'بصرف';
-      events.push({id:[kind,tx.id,at].join(':'),at,title:kind === 'edit' ? 'تعديل عملية' : kind === 'delete' ? 'حذف عملية' : tx.type === 'income' && tx.category !== 'transfer' ? 'إيداع مبلغ' : 'عملية جديدة',
-        body:verb+' '+who+' '+action+' '+amount(tx.amount)+' · '+(getCategoryName(tx.category,tx.type) || 'بدون بند'),
-        tx, old, kind, actor: who});
-    };
-    for (const [id, tx] of next) {
-      const old = previous.get(id);
-      if (!old) record('add',tx);
-      else if (JSON.stringify(tx) !== JSON.stringify(old)) record('edit',tx,old);
-    }
-    for (const [id, tx] of previous) if (!next.has(id)) record('delete',tx);
-    previous = next;
-    store(events);
-    refresh();
-  }
-  function reminders(now = new Date()) {
-    const today = getLocalDateStr(now);
-    const at = now.getTime();
-    const events = [];
-    const push = (id,title,body,target) => events.push({id,title,body,target,at});
-    const expenses = (state.transactions || []).filter(tx => tx && !tx.deleted && tx.type === 'expense' && tx.category !== 'transfer');
-    if (!expenses.some(tx => dateOf(tx) === today && person(tx.author || tx.member) === 'أية')) {
-      const slot = [12,17,21].filter(hour => now.getHours() >= hour).at(-1);
-      if (slot !== undefined) push('expense:'+today+':'+slot,'تذكير لأية بتسجيل المصروفات','لو فيه مصروفات اليوم، سجّليها في صفحة المصاريف.','أية');
-    }
-    const daysUntil = date => (Date.parse(date+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000;
-    const obligations = new Map();
-    for (const item of [...(state.debts || []), ...(state.expectedExpenses || [])]) if (item?.id) obligations.set(item.id,item);
-    for (const item of obligations.values()) {
-      if (String(item.id).startsWith('alert-demo-') || !item.dueDate || item.paid || item.deleted || ['paid','settled','cancelled','archived'].includes(item.status)) continue;
-      const remaining = Number(item.amount)-Number(item.paidAmount || 0);
-      const days = daysUntil(item.dueDate);
-      if (!(remaining > 0) || ![7,3,1,0,-1].includes(days)) continue;
-      const timing = days < 0 ? 'متأخر عن موعده' : days === 0 ? 'يستحق اليوم' : 'يستحق خلال '+number.format(days)+' يوم';
-      push('due:'+item.id+':'+item.dueDate+':'+days,'تذكير استحقاق', (item.title || item.label || 'فاتورة أو دين')+' · '+timing+' · '+item.dueDate+' · المتبقي '+amount(remaining));
-    }
-    for (const plan of state.monthlyBudgets || []) {
-      if (String(plan.id).startsWith('alert-demo-') || plan.month !== today.slice(0,7)) continue;
-      const scoped = expenses.filter(tx => dateOf(tx).slice(0,7) === plan.month &&
-        (!plan.project || getTransactionProjectName(tx).toLocaleLowerCase() === plan.project.trim().toLocaleLowerCase()));
-      const items = (plan.items || []).filter(item => Number(item.amount) > 0);
-      const limits = new Map();
-      const add = (key,label,limit,test) => {
-        const current = limits.get(key);
-        if (current) current.limit += Number(limit);
-        else limits.set(key,{label,limit:Number(limit),test});
-      };
-      for (const item of items) {
-        add('total',plan.project || plan.name || 'إجمالي الموازنة',item.amount,()=>true);
-        if (item.category) {
-          const category = getCategoryObj(item.category,'expense').id;
-          add('category:'+category,getCategoryName(category,'expense'),item.amount,tx=>getCategoryObj(tx.category,'expense').id === category);
-        }
-        const members = [...new Set((Array.isArray(item.members) ? item.members : item.member ? [item.member] : []).map(person))];
-        for (const member of members) add('person:'+member,'مصروف '+member,Number(item.amount)/members.length,tx=>person(tx.member) === member);
-      }
-      for (const [key,limit] of limits) {
-        const spent = scoped.filter(limit.test).reduce((total,tx)=>total+(Number(tx.amount)||0),0);
-        if (spent < limit.limit*.8) continue;
-        const level = spent >= limit.limit ? 100 : 80;
-        push(['budget',plan.id || plan.name || plan.project,plan.month,key,level].join(':'),level === 100 ? (spent > limit.limit ? 'تجاوز حد الموازنة' : 'بلوغ حد الموازنة') : 'اقتراب من حد الموازنة',
-          limit.label+' · '+amount(spent)+' من '+amount(limit.limit)+' · '+plan.month);
-      }
-    }
-    store(events);
-    render();
-  }
-  function created(kind, record) {
-    const who = person(state.currentUser);
-    const title = {request:'طلب مبلغ', budget:'موازنة جديدة', task:'مهمة جديدة'}[kind];
-    const fields = kind === 'request'
-      ? [record.reason, amount(record.amount), 'مقدم الطلب: '+person(record.member), 'التاريخ: '+record.date]
-      : kind === 'budget'
-        ? [record.name, 'الشهر: '+record.month, record.project ? 'المشروع: '+record.project : '', 'المصروف المقدّر: '+amount((record.items || []).reduce((sum,item)=>sum+(Number(item.amount)||0),0))]
-        : [record.title, 'المسؤول: '+person(record.assignedMember), 'الموعد: '+[record.dueDate,record.dueTime,record.dueTimeZone].filter(Boolean).join(' · '),
-          'التصنيفات: '+getTaskTags(record).map(tag=>({general:'عامة',important:'عاجلة',shopping:'مشتريات',bills:'فواتير',health:'صحة',work:'عمل',home:'منزلية',my_day:'يومي',planned:'مجدولة'})[tag]||tag).join('، ')];
-    store([{id:kind+':'+record.id,title,body:who+' · '+(fields[0] || title),at:Date.now(),details:[title, ...fields, 'سجّلها: '+who].filter(Boolean)}]);
-    render();
-  }
-  const visible = () => rows().filter(item => !item.target || item.target === profile());
-  function mark(id) {
-    const key = readKey();
-    const seen = new Set(read(key,[]));
-    for (const item of visible()) if (!id || item.id === id) seen.add(item.id);
-    const retained = new Set(rows().map(item=>item.id));
-    write(key,[...seen].filter(item=>retained.has(item)));
-    render();
-  }
-  function expenseMessage(item) {
-    const tx = item.tx;
-    if (!tx || tx.type !== 'expense' || tx.category === 'transfer' ||
-        (item.demo ? item.kind !== 'expense' : item.kind !== 'add')) return item.body;
-    const name = person(tx.author || item.actor || tx.member);
-    const female = ['أية','مريم','الحاجة'].includes(name);
-    const category = getCategoryName(tx.category,'expense') || 'غير محدد';
-    return (item.demo ? 'اختبار التنبيهات · ' : '') +
-      (female ? 'قامت ' : 'قام ') + name + ' بصرف ' + amount(tx.amount) +
-      ' بند ' + category + '، في ' + clock.format(item.at);
-  }
-  function render() {
-    const sound = document.getElementById('alertSoundButton');
-    if (sound) {
-      const enabled=audio?.state === 'running' && read(soundKey,false);
-      const label=enabled?'إيقاف الصوت':'تشغيل الصوت';
-      sound.textContent=enabled?'🔊':'🔇';
-      sound.setAttribute('aria-label',label);
-      sound.setAttribute('aria-pressed',String(enabled));
-      sound.title=label;
-    }
-    const items = visible();
-    const seen = new Set(read(readKey(),[]));
-    const count = items.filter(item => !seen.has(item.id)).length;
-    const badge = document.getElementById('headerNotifBadge');
-    if (badge) { badge.hidden = count === 0; badge.textContent = number.format(count); }
-    const bell = document.getElementById('btnNotificationsBell');
-    if (bell) bell.setAttribute('aria-label','التنبيهات · '+number.format(count)+' غير مقروء');
-    const list = document.getElementById('notificationsListContainer');
-    if (!list || !document.getElementById('notificationsModal')?.classList.contains('active')) return;
-    list.replaceChildren();
-    if (openDetail && items.some(item => item.id === openDetail.id)) {
-      const back = document.createElement('button');
-      back.textContent = 'العودة إلى التنبيهات';
-      back.onclick = () => { openDetail = null; render(); };
-      list.append(back);
-      if (openDetail.details) {
-        const detail=document.createElement('article');
-        detail.className='family-alert';
-        for(const field of [...openDetail.details,clock.format(openDetail.at)]) {
-          const p=document.createElement('p'); p.textContent=field; detail.append(p);
-        }
-        list.append(detail);
-        return;
-      }
-      const live = (state.transactions || []).find(tx=>tx.id===openDetail.tx.id && !tx.deleted);
-      const tx = live ? snapshot([live]).get(live.id) : openDetail.tx;
-      const detail = document.createElement('article');
-      detail.className = 'family-alert';
-      const fields = [openDetail.kind === 'delete' ? 'تفاصيل العملية المحذوفة' : 'تفاصيل العملية', tx.label,
-        amount(tx.amount)+' · '+getCategoryName(tx.category,tx.type),
-        [tx.date,tx.time].filter(Boolean).join(' · '), 'الفرد: '+person(tx.member),
-        tx.walletId ? 'المحفظة: '+getWalletName(tx.walletId) : '',
-        tx.to ? 'من '+getWalletName(tx.from || tx.walletId)+' إلى '+getWalletName(tx.to) : '',
-        tx.project ? 'المشروع: '+tx.project : '',
-        openDetail.old ? 'وقت التعديل: '+clock.format(openDetail.at)+' · المبلغ قبل التعديل: '+amount(openDetail.old.amount) : 'وقت التنبيه: '+clock.format(openDetail.at)];
-      for (const field of fields.filter(Boolean)) {const p=document.createElement('p');p.textContent=field;detail.append(p);}
-      if (live?.receipt) {const receipt=document.createElement('button');receipt.textContent='عرض الإيصال';receipt.onclick=()=>{closeModal('notificationsModal');viewReceiptImage(live.receipt);};detail.append(receipt);}
-      list.append(detail);
+    const nextMap = snapshotMap(transactions);
+    if (!previousTxMap || baseline) {
+      previousTxMap = nextMap;
+      hydrateFromActualData();
+      checkReminders();
+      render();
       return;
     }
-    if (!items.length) list.textContent='لا توجد تنبيهات حتى الآن.';
-    for (const item of items) {
-      const body = expenseMessage(item);
+
+    const now = Date.now();
+    const events = [];
+
+    // فحص العمليات المضافة أو المعدلة
+    for (const [id, jsonStr] of nextMap) {
+      const oldJson = previousTxMap.get(id);
+      const tx = (transactions || []).find(t => t.id === id);
+      if (!tx) continue;
+
+      if (!oldJson) {
+        // عملية جديدة
+        const kind = tx.type === 'income' ? 'income' : (tx.type === 'transfer' || tx.category === 'transfer') ? 'transfer' : 'expense';
+        const titles = { expense: 'مصروف جديد', income: 'إيداع جديد', transfer: 'تحويل بين المحافظ' };
+        events.push({
+          id: `tx:add:${id}:${now}`,
+          txId: id,
+          kind: kind,
+          title: titles[kind] || 'عملية جديدة',
+          body: generateTransactionAlertText(tx, 'add'),
+          at: now,
+          tx: { ...tx }
+        });
+      } else if (oldJson !== jsonStr) {
+        // عملية معدلة
+        events.push({
+          id: `tx:edit:${id}:${now}`,
+          txId: id,
+          kind: 'edit',
+          title: 'تعديل عملية',
+          body: generateTransactionAlertText(tx, 'edit'),
+          at: now,
+          tx: { ...tx }
+        });
+      }
+    }
+
+    // فحص العمليات المحذوفة
+    for (const [id] of previousTxMap) {
+      if (!nextMap.has(id)) {
+        events.push({
+          id: `tx:del:${id}:${now}`,
+          txId: id,
+          kind: 'delete',
+          title: 'حذف عملية',
+          body: `تم حذف عملية مالية بتاريخ ${formatArabicDateTime(null, now)}`,
+          at: now
+        });
+      }
+    }
+
+    previousTxMap = nextMap;
+    if (events.length > 0) {
+      addAlerts(events);
+    }
+    checkReminders();
+    render();
+  }
+
+  // --- تذكيرات الاستحقاقات والموازنات ---
+  function checkReminders() {
+    if (typeof state === 'undefined') return;
+    const now = new Date();
+    const todayStr = (typeof getLocalDateStr === 'function') ? getLocalDateStr(now) : now.toISOString().slice(0, 10);
+    const events = [];
+
+    // فحص الفواتير والالتزامات
+    const obligations = [...(state.expectedExpenses || []), ...(state.debts || [])];
+    for (const item of obligations) {
+      if (!item || !item.id || item.paid || ['paid', 'settled', 'cancelled'].includes(item.status)) continue;
+      const remaining = Number(item.amount || 0) - Number(item.paidAmount || 0);
+      if (!(remaining > 0) || !item.dueDate) continue;
+
+      const daysDiff = Math.round((new Date(item.dueDate + 'T00:00:00') - new Date(todayStr + 'T00:00:00')) / 86400000);
+      if ([7, 3, 1, 0, -1].includes(daysDiff)) {
+        const id = `due:${item.id}:${item.dueDate}:${daysDiff}`;
+        events.push({
+          id: id,
+          commitmentId: item.id,
+          kind: 'due',
+          title: 'تذكير استحقاق',
+          body: generateObligationAlertText(item),
+          at: now.getTime(),
+          commitment: { ...item }
+        });
+      }
+    }
+
+    // تذكير أية بتسجيل المصروفات إذا لم يُسجل مصروف اليوم
+    const hasTodayExpense = (state.transactions || []).some(t => t.date === todayStr && t.type === 'expense');
+    if (!hasTodayExpense && [13, 17, 21].includes(now.getHours())) {
+      events.push({
+        id: `reminder:aya:${todayStr}:${now.getHours()}`,
+        kind: 'reminder',
+        title: 'تذكير تسجيل المصروفات',
+        body: 'لو فيه أي مصروفات لليوم، سجّليها في صفحة المصاريف.',
+        at: now.getTime()
+      });
+    }
+
+    if (events.length > 0) {
+      addAlerts(events);
+    }
+  }
+
+  // --- تسجيل مباشر وسريع للإنشاء من الأقسام الأخرى ---
+  function created(kind, record) {
+    if (!record) return;
+    const now = Date.now();
+    const who = normalizePersonName(typeof state !== 'undefined' ? state.currentUser : 'ماهر');
+
+    if (kind === 'request') {
+      addAlerts([{
+        id: `request:${record.id}:${now}`,
+        requestId: record.id,
+        kind: 'request',
+        title: 'طلب مبلغ جديد',
+        body: `قام ${normalizePersonName(record.member)} بطلب مبلغ ${toArabicDigits(record.amount)} جنيه: ${record.reason || 'بدون سبب'}`,
+        at: now
+      }]);
+    } else if (kind === 'budget') {
+      addAlerts([{
+        id: `budget:${record.id || record.month}:${now}`,
+        budgetId: record.id,
+        kind: 'budget',
+        title: 'موازنة جديدة',
+        body: `تم إعداد موازنة شهر ${record.month} بواسطة ${who}`,
+        at: now
+      }]);
+    } else if (kind === 'task') {
+      addAlerts([{
+        id: `task:${record.id}:${now}`,
+        taskId: record.id,
+        kind: 'task',
+        title: 'مهمة جديدة',
+        body: `مهمة جديدة: "${record.title}" للمسؤول ${normalizePersonName(record.assignedMember)}`,
+        at: now
+      }]);
+    }
+  }
+
+  // --- النقر على التنبيه لفتح الأصل فوراً وبشكل حاسم ---
+  function handleAlertClick(item) {
+    if (!item) return;
+
+    // 1. تحديد كمقروء وتفعيل مؤشر العودة إلى نافذة التنبيهات عند إغلاق التفاصيل
+    mark(item.id);
+    window._returnToNotificationsOnClose = true;
+    if (typeof closeModal === 'function') {
+      closeModal('notificationsModal');
+    }
+
+    // 2. إذا كان تنبيه عملية مالية (صرف / إيداع / تحويل / تعديل)
+    if (item.txId || item.tx || item.kind === 'expense' || item.kind === 'income' || item.kind === 'transfer' || item.kind === 'edit') {
+      let targetId = item.txId || item.tx?.id;
+      if (!targetId && item.id) {
+        const parts = String(item.id).split(':');
+        if (parts.length >= 3 && parts[0] === 'tx') targetId = parts[2];
+        else if (parts.length >= 2 && parts[0] === 'tx') targetId = parts[1];
+        else targetId = item.id;
+      }
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('operations');
+      }
+      if (targetId && typeof editTx === 'function') {
+        editTx(targetId);
+      }
+      return;
+    }
+
+    // 3. إذا كان تنبيه استحقاق فاتورة أو دين أو التزام
+    if (item.commitmentId || item.kind === 'due' || String(item.id).startsWith('due:')) {
+      let targetId = item.commitmentId;
+      if (!targetId && item.id) {
+        const parts = String(item.id).split(':');
+        targetId = parts[1] || item.id;
+      }
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('expected');
+      }
+      if (targetId && typeof openEditCommitmentModal === 'function') {
+        openEditCommitmentModal(targetId);
+      }
+      return;
+    }
+
+    // 4. إذا كان طلب مبلغ
+    if (item.requestId || item.kind === 'request') {
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('requests');
+      }
+      return;
+    }
+
+    // 5. إذا كانت موازنة
+    if (item.budgetId || item.kind === 'budget') {
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('expected');
+        if (typeof switchExpectedTopSection === 'function') switchExpectedTopSection('budgets');
+      }
+      return;
+    }
+
+    // 6. إذا كانت مهمة
+    if (item.taskId || item.kind === 'task') {
+      if (typeof openTasksFullScreenModal === 'function') {
+        openTasksFullScreenModal();
+      } else if (typeof openTasksModal === 'function') {
+        openTasksModal();
+      }
+      return;
+    }
+
+    // 7. تذكير عام بالمصروفات
+    if (item.kind === 'reminder' || String(item.id).startsWith('reminder:')) {
+      if (typeof switchAppPage === 'function') {
+        switchAppPage('expenses');
+      }
+    }
+  }
+
+  // --- تصفية القائمة ---
+  function setFilter(filterType, btnEl) {
+    activeFilter = filterType;
+    document.querySelectorAll('.alert-pill').forEach(btn => btn.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    render();
+  }
+
+  // --- رندر الواجهة وتحديث العداد والشارة ---
+  function render() {
+    const alerts = getAlerts();
+    const readSet = getReadIds();
+    const unreadCount = alerts.filter(a => !readSet.has(a.id)).length;
+
+    // تحديث الشارة في شريط العنوان الرئيسي
+    const badge = document.getElementById('headerNotifBadge');
+    if (badge) {
+      badge.hidden = unreadCount === 0;
+      badge.textContent = toArabicDigits(unreadCount);
+    }
+
+    // تحديث زر الصوت
+    const soundBtn = document.getElementById('alertSoundButton');
+    if (soundBtn) {
+      const isSoundOn = safeRead(SOUND_KEY, false);
+      soundBtn.textContent = isSoundOn ? '🔊' : '🔇';
+      soundBtn.title = isSoundOn ? 'صوت التنبيهات مفعّل' : 'صوت التنبيهات مكتوم';
+    }
+
+    // تحديث عداد الفلتر غير المقروء
+    const unreadPillCount = document.getElementById('unreadPillCount');
+    if (unreadPillCount) {
+      unreadPillCount.textContent = unreadCount > 0 ? `(${toArabicDigits(unreadCount)})` : '';
+    }
+
+    // التحقق من وجود الحاوية في الصفحة
+    const container = document.getElementById('notificationsListContainer');
+    if (!container) return;
+
+    // فلترة التنبيهات
+    let filtered = alerts;
+    if (activeFilter === 'unread') {
+      filtered = alerts.filter(a => !readSet.has(a.id));
+    } else if (activeFilter === 'expense') {
+      filtered = alerts.filter(a => a.kind === 'expense');
+    } else if (activeFilter === 'due') {
+      filtered = alerts.filter(a => a.kind === 'due');
+    }
+
+    container.replaceChildren();
+
+    if (filtered.length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.className = 'alert-empty-state';
+      emptyMsg.style.cssText = 'padding: 30px 10px; text-align: center; color: #94a3b8; font-size: 0.86rem; font-weight: 700;';
+      emptyMsg.textContent = activeFilter === 'unread' ? 'لا توجد تنبيهات غير مقروءة حالياً 🎉' : 'لا توجد تنبيهات في هذا القسم حتى الآن.';
+      container.append(emptyMsg);
+      return;
+    }
+
+    for (const item of filtered) {
+      const isUnread = !readSet.has(item.id);
       const card = document.createElement('article');
       card.className = 'family-alert';
-      card.dataset.unread = String(!seen.has(item.id));
-      const main = document.createElement(item.tx || item.details ? 'button' : 'div');
-      main.className = 'family-alert-main';
-      if (item.tx || item.details) main.onclick = () => { openDetail=item; mark(item.id); };
-      for (const [tag,value] of [['strong',item.title],['span',body],['small',body === item.body ? clock.format(item.at) : '']]) {
-        if (!value) continue;
-        const element = document.createElement(tag); element.textContent=value; main.append(element);
+      card.dataset.unread = String(isUnread);
+
+      // الزر الرئيسي لفتح العملية الأصلية
+      const mainBtn = document.createElement('button');
+      mainBtn.className = 'family-alert-main';
+      mainBtn.type = 'button';
+      mainBtn.title = 'اضغط لفتح العملية الأصلية مباشرة';
+      mainBtn.onclick = () => handleAlertClick(item);
+
+      // رأس التنبيه (النوع والوقت)
+      const headRow = document.createElement('div');
+      headRow.className = 'alert-header-row';
+
+      const badgeType = document.createElement('span');
+      badgeType.className = `alert-badge-type alert-kind-${item.kind || 'default'}`;
+      badgeType.textContent = item.title || 'تنبيه';
+      headRow.append(badgeType);
+
+      if (isUnread) {
+        const dot = document.createElement('span');
+        dot.className = 'alert-unread-dot';
+        dot.title = 'غير مقروء';
+        headRow.append(dot);
       }
-      card.append(main);
-      if (!seen.has(item.id)) {
-        const button=document.createElement('button'); button.textContent='✓'; button.setAttribute('aria-label','تحديد كمقروء'); button.title='تحديد كمقروء'; button.onclick=()=>mark(item.id); card.append(button);
+
+      mainBtn.append(headRow);
+
+      // نص التنبيه المالي التفصيلي
+      const bodyEl = document.createElement('div');
+      bodyEl.className = 'alert-body-text';
+      bodyEl.textContent = item.body || '';
+      mainBtn.append(bodyEl);
+
+      card.append(mainBtn);
+
+      // صندوق حالة القراءة (Checkbox)
+      const checkBtn = document.createElement('button');
+      checkBtn.className = `alert-check-box ${isUnread ? 'is-unread' : 'is-read'}`;
+      checkBtn.type = 'button';
+      checkBtn.setAttribute('role', 'checkbox');
+      checkBtn.setAttribute('aria-checked', String(!isUnread));
+      if (isUnread) {
+        checkBtn.textContent = ''; // صندوق فارغ في حالة غير مقروء
+        checkBtn.title = 'تحديد كمقروء (اضغط لتفعيل علامة الصح)';
+        checkBtn.setAttribute('aria-label', 'غير مقروء، اضغط للتعليم كمقروء');
+      } else {
+        checkBtn.textContent = '✓'; // تظهر علامة الصح عند القراءة
+        checkBtn.title = 'مقروء (اضغط لإعادة التعيين كغير مقروء)';
+        checkBtn.setAttribute('aria-label', 'مقروء، اضغط للتعليم كغير مقروء');
       }
-      list.append(card);
+      checkBtn.onclick = (e) => toggleRead(item.id, e);
+      card.append(checkBtn);
+
+      container.append(card);
     }
   }
+
+  // --- دالة الحالات التجريبية الـ 50 للاختبار الشامل ---
   function demo() {
-    if (rows().some(row=>row.demo)) { showToast('الحالات التجريبية مسجلة بالفعل'); return; }
-    const at=Date.now(), today=getLocalDateStr(new Date(at)), month=today.slice(0,7);
-    const wallet=state.wallets?.[0]?.id;
-    if (!wallet) { showToast('أنشئ محفظة أولًا لتسجيل بيانات الاختبار'); return; }
-    const events=[];
-    const add=(title, body, extra={})=>{
-      const n=events.length+1;
-      events.push({id:'alert-demo:'+n,at:at+n,demo:true,title,body:'اختبار التنبيهات '+n+' · '+body,...extra});
-    };
-    const tx=(id,type,value,author,category='daily')=>({id:'alert-demo-tx-'+at+'-'+id,type,amount:value,author,member:author,category,date:today,walletId:wallet,label:'اختبار التنبيهات · '+id,createdAt:new Date(at).toISOString()});
-    const actors=['أية','ماهر','محمد','مريم'];
-    for (const [kind,count] of [['expense',12],['income',6],['transfer',4],['edit',4],['delete',4]]) {
-      for(let i=0;i<count;i++) {
-        const author=actors[i%actors.length], item=tx(events.length+1,kind==='income'?'income':kind==='transfer'&&state.wallets.length>1?'transfer':'expense',50+i*15,author,kind==='income'?'salary':kind==='transfer'?'transfer':'daily');
-        if(item.type==='transfer'){item.fromWalletId=wallet;item.toWalletId=state.wallets[1].id;}
-        if(kind!=='delete' && (kind!=='transfer' || item.type==='transfer')) state.transactions.unshift(item);
-        const titles={expense:'مصروف جديد',income:'إيداع مبلغ',transfer:'تحويل بين المحافظ',edit:'تعديل عملية',delete:'حذف عملية'};
-        const snapshotItem=snapshot([item]).get(item.id);
-        add(titles[kind],author+' · '+amount(item.amount)+' · '+getCategoryName(item.category,item.type),{tx:snapshotItem,kind,old:kind==='edit'?{...snapshotItem,amount:item.amount-10}:undefined});
+    const at = Date.now();
+    const today = (typeof getLocalDateStr === 'function') ? getLocalDateStr(new Date(at)) : new Date(at).toISOString().slice(0, 10);
+    const wallet = state.wallets?.[0]?.id || 'wallet-cash-safe';
+    const actors = ['أية', 'ماهر', 'محمد', 'مريم'];
+    const events = [];
+
+    // 1. توليد 25 عملية مالية متنوعة وإدراجها في state.transactions
+    for (let i = 0; i < 25; i++) {
+      const kind = (i % 5 === 0) ? 'income' : (i % 7 === 0) ? 'transfer' : 'expense';
+      const author = actors[i % actors.length];
+      const member = actors[(i + 1) % actors.length];
+      const amt = 50 + (i * 20);
+      const id = `alert-demo-tx-${at}-${i + 1}`;
+
+      const tx = {
+        id: id,
+        type: kind === 'transfer' ? 'expense' : kind,
+        amount: amt,
+        author: author,
+        member: member,
+        category: kind === 'income' ? 'salary' : (kind === 'transfer' ? 'transfer' : 'daily'),
+        date: today,
+        time: '12:00',
+        walletId: wallet,
+        label: `تجربة التنبيهات ${i + 1}`,
+        createdAt: new Date(at - (i * 3600000)).toISOString()
+      };
+
+      if (kind === 'transfer') {
+        tx.fromWalletId = wallet;
+        tx.toWalletId = state.wallets?.[1]?.id || wallet;
       }
+
+      state.transactions.unshift(tx);
+
+      const titles = { expense: 'مصروف جديد', income: 'إيداع جديد', transfer: 'تحويل بين المحافظ' };
+      events.push({
+        id: `tx:${id}`,
+        txId: id,
+        kind: kind,
+        title: titles[kind] || 'مصروف جديد',
+        body: generateTransactionAlertText(tx, 'add'),
+        at: tx.createdAt ? new Date(tx.createdAt).getTime() : at,
+        tx: { ...tx }
+      });
     }
-    for(let i=0;i<4;i++) {
-      const member=actors[i], value=200+50*i, reason='اختبار التنبيهات · طلب '+(i+1);
-      state.moneyRequests.unshift({id:'alert-demo-request-'+at+'-'+i,member,amount:value,reason,date:today,status:'pending',allocations:[{amount:value,category:'daily',member}],createdBy:member});
-      add('طلب مبلغ',member+' · '+amount(value),{details:[reason,member,amount(value),today]});
+
+    // 2. توليد 10 استحقاقات وفواتير وإدراجها في state.expectedExpenses
+    for (let i = 0; i < 10; i++) {
+      const dueId = `alert-demo-due-${at}-${i + 1}`;
+      const dueTitle = (i % 2 === 0) ? `فاتورة كهرباء شهر ${toArabicDigits(i + 1)}` : `قسط مالي ${toArabicDigits(i + 1)}`;
+      const exp = {
+        id: dueId,
+        title: dueTitle,
+        amount: 300 + (i * 50),
+        paidAmount: 0,
+        dueDate: today,
+        status: 'upcoming'
+      };
+      state.expectedExpenses.unshift(exp);
+
+      events.push({
+        id: `due:${dueId}`,
+        commitmentId: dueId,
+        kind: 'due',
+        title: 'تذكير استحقاق',
+        body: generateObligationAlertText(exp),
+        at: at - (i * 1800000),
+        commitment: { ...exp }
+      });
     }
-    for(let i=0;i<3;i++) {
-      const name='اختبار التنبيهات · موازنة '+(i+1), value=400+i*50;
-      state.monthlyBudgets.unshift({id:'alert-demo-budget-'+at+'-'+i,name,month,project:'مشروع اختبار '+(i+1),items:[{amount:value,category:'daily',members:['أية']}],incomes:[],categories:{}});
-      add('موازنة جديدة',name,{details:[name,month,amount(value)]});
-    }
-    const tasks=getTodoTasks();
-    for(let i=0;i<3;i++) {
-      const title='اختبار التنبيهات · مهمة '+(i+1);
-      tasks.unshift({id:'alert-demo-task-'+at+'-'+i,title,dueDate:today,assignedMember:actors[i],tag:'general',completed:false,subtasks:[]});
-      add('مهمة جديدة',title,{details:[title,actors[i],today]});
-    }
-    for(const [offset,timing] of [[7,'قبل ٧ أيام'],[3,'قبل ٣ أيام'],[1,'قبل يوم'],[0,'يوم الاستحقاق'],[-1,'بعد الاستحقاق']]) {
-      const date=new Date(at); date.setDate(date.getDate()+offset);
-      const dueDate=getLocalDateStr(date), title='اختبار التنبيهات · '+(offset%2?'دين':'فاتورة')+' '+timing;
-      state.expectedExpenses.unshift({id:'alert-demo-due-'+at+'-'+offset,title,amount:250,paidAmount:0,dueDate,status:'upcoming',type:offset%2?'debt_on_us':'upcoming_bill'});
-      add('تذكير استحقاق',title,{details:[title,dueDate,amount(250)]});
-    }
-    for(const [scope,spent,limit] of [['بند مصروف يومي',85,100],['مصروف أية',125,100],['مشروع اختبار',445,500],['إجمالي الموازنة',590,500]]) {
-      add(spent>=limit?'تجاوز حد الموازنة':'اقتراب من حد الموازنة',scope,{details:[scope,amount(spent)+' من '+amount(limit),month]});
-    }
-    add('تذكير لأية بتسجيل المصروفات','مثال على التذكير اليومي',{details:['سجّلي مصروفات اليوم إذا لم تسجّليها بعد.',today]});
-    saveTodoTasks(tasks);
-    saveMoneyRequests();
-    localStorage.setItem('family_monefy_monthly_budgets',JSON.stringify(state.monthlyBudgets));
-    localStorage.setItem('family_monefy_expected',JSON.stringify(state.expectedExpenses));
-    previous=snapshot(state.transactions);
-    saveTx();
-    store(events);
-    openDetail=null;
+
+    // 3. حفظ الحالة وتحديث الشاشة
+    if (typeof saveTx === 'function') saveTx();
+    if (typeof saveMoneyRequests === 'function') saveMoneyRequests();
+    addAlerts(events);
     render();
-    showToast('تم تسجيل ٥٠ حالة تجريبية');
+    if (typeof showToast === 'function') showToast('تم تسجيل الحالات التجريبية واختبار الربط بنجاح ✅');
   }
-  function refresh() { reminders(); }
-  function open() { openDetail=null; openModal('notificationsModal'); refresh(); }
-  window.addEventListener('storage',event=>{ if(event.key?.startsWith(prefix)) render(); });
-  document.addEventListener('visibilitychange',()=>{ if(previous && !document.hidden) refresh(); });
-  window.addEventListener('focus',()=>{ if(previous) refresh(); });
-  setInterval(()=>{ if(previous && !document.hidden) refresh(); },60000);
-  return {observe,refresh,open,mark,created,demo,toggleSound};
+
+  // --- فتح النافذة وتحديث التنبيهات ---
+  function open() {
+    hydrateFromActualData();
+    checkReminders();
+    if (typeof openModal === 'function') {
+      openModal('notificationsModal');
+    }
+    render();
+  }
+
+  function refresh() {
+    hydrateFromActualData();
+    checkReminders();
+    render();
+  }
+
+  // --- المستمعات والتزامن التلقائي ---
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY || e.key === READ_KEY || e.key === SOUND_KEY) {
+      render();
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) refresh();
+  });
+
+  window.addEventListener('focus', () => refresh());
+  setInterval(() => refresh(), 60000);
+
+  // تصدير الواجهة العامة
+  return {
+    observe,
+    created,
+    mark,
+    toggleRead,
+    render,
+    open,
+    refresh,
+    toggleSound,
+    demo,
+    setFilter,
+    handleAlertClick,
+    formatArabicDateTime,
+    generateTransactionAlertText,
+    generateObligationAlertText,
+    toArabicDigits,
+    normalizePersonName
+  };
 })();

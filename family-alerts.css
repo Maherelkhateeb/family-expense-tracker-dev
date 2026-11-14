@@ -1,24 +1,272 @@
-#headerNotifBadge:not([hidden]){display:inline-grid;place-items:center;min-width:1.2em;padding:1px 3px;border-radius:100px;background:#b91c1c;color:#fff;font-size:.68rem}
-#notificationsModal{--alert-panel:#111b2c;--alert-row:#1b283c;--alert-text:#f1f5f9;--alert-muted:#b7c6da;--alert-line:#41516b;--alert-accent:#7dd3fc}
-body.light-theme #notificationsModal{--alert-panel:#fff;--alert-row:#edf3f9;--alert-text:#152339;--alert-muted:#435770;--alert-line:#afc0d5;--alert-accent:#075985}
-#notificationsModal>.modal-content-card{background:var(--alert-panel)!important;color:var(--alert-text)!important;border-color:var(--alert-line)!important}
-#notificationsModal h3{color:var(--alert-text)!important}
-#notificationsModal button{color:var(--alert-accent)!important}
-.family-alert{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:10px;padding:8px;display:grid;gap:5px;color:var(--alert-text)}
-.family-alert[data-unread=true]{border-inline-start:3px solid var(--alert-accent)}
-.family-alert-main{display:grid;gap:4px;width:100%;text-align:start;background:none;border:0;padding:2px;font:inherit;color:var(--alert-text)!important}
-.family-alert small{color:var(--alert-muted)}
-.family-alert button,.family-alert-main:is(button){cursor:pointer}
-.family-alert>button,#notificationsListContainer>button{justify-self:start;min-height:32px;background:var(--alert-panel);border:1px solid var(--alert-line);border-radius:6px;padding:4px 8px}
-.family-alert p{margin:0;overflow-wrap:anywhere}
-#notificationsModal .modal-head{flex-wrap:wrap;gap:7px}#alertSoundButton,#runAlertDemo{background:var(--alert-row);border:1px solid var(--alert-line);border-radius:7px;padding:6px 8px;font:inherit;font-size:.74rem;cursor:pointer}.alert-demo-tools{margin-bottom:7px}
-.family-alert[data-unread=true]{grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:5px;padding:6px 8px}
-.family-alert[data-unread=true]>button{width:34px;min-height:34px;padding:0;justify-self:end;font-size:1rem;line-height:1}
+/**
+ * =========================================================================
+ * Family Alerts Stylesheet — Antigravity Design System
+ * =========================================================================
+ */
 
-#notificationsModal .modal-head{display:flex!important;flex-wrap:nowrap!important;align-items:center;justify-content:space-between;gap:6px!important;margin-bottom:5px!important;padding:0 0 6px!important}
-#notificationsModal .modal-head>div:first-child{min-width:0;gap:5px!important}
-#notificationsModal .modal-head>div:first-child>div:first-child{width:25px!important;height:25px!important;flex:none;border-radius:7px!important}
-#notificationsModal .modal-head h3{font-size:clamp(.7rem,3.4vw,.92rem)!important;line-height:1.25}
-#notificationsModal .modal-head>div:last-child{flex:none;gap:4px!important}
-#notificationsModal .modal-head button{width:31px!important;height:31px!important;min-width:31px!important;min-height:31px!important;padding:0!important;display:inline-grid!important;place-items:center;border-radius:7px!important;font-size:.78rem!important}
-#notificationsModal .alert-demo-tools{margin:0 0 5px}
+/* شارة العداد في الهيدر الرئيسي */
+#headerNotifBadge:not([hidden]) {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.3em;
+  height: 1.3em;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.6);
+}
+
+/* سمات نافذة التنبيهات */
+#notificationsModal {
+  --alert-bg: #090e17;
+  --alert-card: #111a2e;
+  --alert-card-hover: #16223b;
+  --alert-card-unread: rgba(245, 158, 11, 0.08);
+  --alert-border: rgba(255, 255, 255, 0.08);
+  --alert-border-unread: #f59e0b;
+  --alert-text: #f8fafc;
+  --alert-muted: #94a3b8;
+  --alert-pill-bg: rgba(255, 255, 255, 0.05);
+  --alert-pill-active: #f59e0b;
+  --alert-pill-active-text: #000;
+}
+
+body.light-theme #notificationsModal {
+  --alert-bg: #f8fafc;
+  --alert-card: #ffffff;
+  --alert-card-hover: #f1f5f9;
+  --alert-card-unread: rgba(245, 158, 11, 0.12);
+  --alert-border: rgba(0, 0, 0, 0.08);
+  --alert-border-unread: #d97706;
+  --alert-text: #0f172a;
+  --alert-muted: #64748b;
+  --alert-pill-bg: rgba(0, 0, 0, 0.05);
+  --alert-pill-active: #d97706;
+  --alert-pill-active-text: #fff;
+}
+
+#notificationsModal > .modal-content-card {
+  background: var(--alert-bg) !important;
+  color: var(--alert-text) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.35) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* شريط فلاتر التنبيهات */
+.alert-filter-pills {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  direction: rtl;
+}
+
+.alert-pill {
+  background: var(--alert-pill-bg);
+  border: 1px solid var(--alert-border);
+  color: var(--alert-muted);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.alert-pill:hover {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--alert-text);
+}
+
+.alert-pill.active {
+  background: var(--alert-pill-active) !important;
+  color: var(--alert-pill-active-text) !important;
+  border-color: var(--alert-pill-active) !important;
+}
+
+/* أدوات التنبيهات السريعة */
+.alert-demo-tools {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+#runAlertDemo {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+#runAlertDemo:hover {
+  background: rgba(245, 158, 11, 0.22);
+}
+
+/* بطاقة التنبيه الفردية */
+.family-alert {
+  background: var(--alert-card);
+  border: 1px solid var(--alert-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.12s ease, background 0.12s ease, border-color 0.12s ease;
+  position: relative;
+  direction: rtl;
+}
+
+.family-alert:hover {
+  background: var(--alert-card-hover);
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.family-alert[data-unread="true"] {
+  background: var(--alert-card-unread);
+  border-inline-start: 4px solid var(--alert-border-unread);
+}
+
+/* زر النقر لفتح العملية الأصلية */
+.family-alert-main {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: right;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.alert-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alert-badge-type {
+  font-size: 0.68rem;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.alert-kind-expense {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.alert-kind-income {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.alert-kind-transfer {
+  background: rgba(6, 182, 212, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.alert-kind-due {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.alert-kind-default, .alert-kind-reminder, .alert-kind-task, .alert-kind-request, .alert-kind-budget {
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.alert-unread-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f59e0b;
+  display: inline-block;
+}
+
+/* نص التنبيه المالي التفصيلي */
+.alert-body-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--alert-text);
+  word-break: break-word;
+}
+
+/* صندوق حالة القراءة (Checkbox) */
+.alert-check-box, .alert-check-btn {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 7px;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.92rem;
+  font-weight: 900;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* حالة غير مقروء: الصندوق فارغ ومحاط بإطار أنيق */
+.alert-check-box.is-unread {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.8px solid rgba(245, 158, 11, 0.6);
+  color: transparent;
+}
+.alert-check-box.is-unread:hover {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+}
+
+/* حالة مقروء: تظهر علامة الصح الخضراء بوضوح داخل الصندوق */
+.alert-check-box.is-read {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1.8px solid #10b981;
+  color: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.25);
+}
+.alert-check-box.is-read:hover {
+  background: rgba(16, 185, 129, 0.28);
+  border-color: #34d399;
+  color: #34d399;
+}
+
+body.light-theme .alert-check-box.is-unread {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1.8px solid #d97706;
+}
+
+body.light-theme .alert-check-box.is-read {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1.8px solid #059669;
+  color: #059669;
+}

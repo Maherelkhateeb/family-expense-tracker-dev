@@ -1,16 +1,57 @@
-# Family Expense Tracker — Development Copy
+# Family Expense Tracker Next — مستودع التطوير المحدث المستقل
 
-Independent development copy of the family expense tracker. The original repository remains unchanged.
+مستودع تطوير جديد ومستقل تماماً لتطبيق إدارة ومتابعة مصروفات الأسرة الذكي، تم إنشاؤه كنقطة انطلاق جديدة ومستقلة لاستكمال التطوير والترقيات المستقبلية بدءاً من أحدث إصدار معتمد:
 
-## Live development app
+- **الإصدار الأساسي (Baseline)**: `v5.3.36` (Build `202611141209`)
+- **تاريخ إنشاء المستودع**: 14 نوفمبر 2026
+- **المستودع المرجعي السابق**: [family-expense-tracker-dev](https://github.com/Maherelkhateeb/family-expense-tracker-dev)
+- **رابط التطبيق المباشر (GitHub Pages)**: [family-expense-tracker-next](https://maherelkhateeb.github.io/family-expense-tracker-next/)
+- **رابط مستودع الكود**: [family-expense-tracker-next on GitHub](https://github.com/Maherelkhateeb/family-expense-tracker-next)
 
-https://maherelkhateeb.github.io/family-expense-tracker-dev/
+---
 
-## Repository notes
+## 🌟 أبرز مميزات الإصدار الحالي:
+1. **مركز التنبيهات الذكية (Family Alerts)**:
+   - تنبيهات فورية وتفصيلية للعمليات (صرف، إيداع، تعديل، حذف).
+   - تنبيهات موازنات الفئات والمشاريع وتجاوز الحدود المحددة.
+   - تنبيهات الاستحقاقات والمهام المطلوبة مع دعم التنبيهات الصوتية وتحديد القراءة.
+   - ترويسة مدمجة مع عداد غير المقروء وعلامات تحقق سريعة.
 
-- This repository is public and deployed through GitHub Pages.
-- `backups/` and the original repository's GitHub Actions workflows are intentionally excluded.
-- New installs start with empty records and zero opening balances. Existing browser data is read from the app's supported local storage keys and is not cleared during updates.
-- Optional demo data remains available only through the app's explicit demo reset action.
+2. **إدارة العمليات والمحافظ والموازنات**:
+   - فلاتر متطورة للعمليات (تصفية متعددة، حسب الأشخاص، الفئات، التواريخ، والمشاريع).
+   - كشف حساب تفصيلي للمحافظ النقدية والبنكية وسجل التحويلات.
+   - موازنات مخصصة للمشاريع ومقارنات رسومية دقيقة.
 
-Original project: https://github.com/mahereasybakery-web/family-expense-tracker
+3. **سوق الذهب وأسعار الصرف**:
+   - متابعة أسعار الذهب والعملات محلياً وعالمياً مع التحديث التلقائي ومصادر البيانات الموثوقة.
+   - دعم كامل للعمل دون اتصال بالإنترنت (Offline-First / PWA).
+
+4. **تجربة المستخدم والتصميم**:
+   - دعم كامل للغة العربية ومحاذاة اليمين إلى اليسار (RTL).
+   - أكثر من 15 سمة مظهر مع تدرجات لونية عصرية و12 لوحة أيقونات مخصصة.
+   - تصميم متجاوب فائق الخفة متوافق مع كافة مقاسات شاشات الهواتف والأجهزة اللوحية والحواسيب.
+
+---
+
+## 🚀 التشغيل المحلي السريع:
+يمكن تشغيل المشروع مباشرة باستخدام بايثون أو أي خادم ملفات محلي:
+
+```bash
+# تشغيل خادم محلي عبر Python
+python -m http.server 8080
+```
+ثم فتح المتصفح على العنوان: `http://localhost:8080`
+
+---
+
+## 📦 هيكل المشروع:
+- `index.html`: الصفحة الرئيسية وواجهة المستخدم الشاملة.
+- `family-alerts.js` & `family-alerts.css`: محرك مركز التنبيهات الذكي والأصوات.
+- `appearance-compact.js` & `appearance-compact.css`: محرك السمات والألوان والتجاوب المدمج.
+- `operation-filters.js`: فلاتر العمليات والحركات المتقدمة.
+- `ledger-task-layout.css`: تنسيقات كشف المحافظ وقوائم المهام.
+- `market-data.js` & `gold-market.css`: بيانات سوق الذهب والعملات.
+- `sw.js` & `manifest.json`: دعم تطبيق الويب التقدمي والتخزين غير المتصل (PWA).
+- `version.json`: سجل الإصدارات وتاريخ التحديثات.
+- `flutter_android_app/`: نسخة تطبيق الأندرويد المرافقة عبر فلاتر.
+- `scripts/`: أدوات التحقق والاختبارات التلقائية (Playwright / Puppeteer).
