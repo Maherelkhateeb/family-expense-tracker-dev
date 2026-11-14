@@ -146,7 +146,7 @@
 
     var currentEditTxReceiptDataUri = null;
     var APP_VERSION = 'v5.3.27';
-    var APP_BUILD_ID = 202611141050;
+    var APP_BUILD_ID = 202611141055;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -18468,7 +18468,7 @@
             <div>
               <h3 class="modal-title-custom" id="settingsModalTitle" style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
                 <span>إعدادات التطبيق</span>
-                <span class="version-badge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;">v5.3.20 • متزامن</span>
+                <span class="version-badge" id="settingsVersionBadge" style="font-size: 0.62rem; background: rgba(34, 197, 94, 0.2); color: #34d399; border: 1px solid rgba(34, 197, 94, 0.4); padding: 1px 6px; border-radius: 5px;"></span>
               </h3>
               <div class="settings-modal-subtitle">خصّص المظهر، ثم أدر بيانات العائلة ومزامنتها</div>
             </div>
@@ -22787,6 +22787,10 @@ function generateRichDemoTransactions() {
       showToast('✨ تم مسح وتجديد بيانات النظام بالكامل وتوليد 1000 حركة موازنة وميزانيات والتزامات بنجاح!');
     }
 
+    function operationDate(transaction) {
+      return String(transaction?.date || transaction?.createdAt || '').slice(0, 10);
+    }
+
     function getFilteredTransactions(includeProjectFilter = true) {
       let list = [...(state.transactions || [])];
 
@@ -23965,7 +23969,6 @@ function generateRichDemoTransactions() {
       const p = state.period || 'month';
       const now = new Date();
       const todayStr = getLocalDateStr(now);
-      const operationDate = t => String(t && (t.date || t.createdAt) || '').slice(0, 10);
 
       if (p === 'day' || p === 'today') {
         list = list.filter(t => operationDate(t) === todayStr);
@@ -26014,6 +26017,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
     });
 function openSettingsModal(targetSection = '') {
       updateSettingsModalDisplay();
+      document.getElementById('settingsVersionBadge').textContent = window.APP_VERSION;
       openModal('settingsModal');
       document.querySelector('#settingsModal .settings-modal-scroll').scrollTop = 0;
       if (targetSection === 'users') {
@@ -33887,7 +33891,7 @@ function openNotificationsModal() {
       <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 12px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #38bdf8; font-size: 0.85rem;">
           <i class="fa-solid fa-circle-check"></i>
-          <span>النظام جاهز ومحدث (v5.3.20)</span>
+          <span>إصدار التطبيق ${window.APP_VERSION}</span>
         </div>
         <div style="font-size: 0.75rem; color: #cbd5e1; margin-top: 4px;">
           تم تدقيق وتحديث كافة الأنظمة بنجاح مع مطابقة رياضية للأرصدة بنسبة 100%.
