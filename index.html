@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.27';
-    var APP_BUILD_ID = 202611141055;
+    var APP_VERSION = 'v5.3.28';
+    var APP_BUILD_ID = 202611141115;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15053,6 +15053,8 @@
   <link rel="stylesheet" href="./gold-market.css?v=20261114-gold1">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261114-settings-open">
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114">
+  <script src="./operation-filters.js?v=20261114"></script>
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -15372,25 +15374,7 @@
            الصفحة 2: العمليات والأرشيف (Page 2: Operations & Audit Archive)
            ================================================================ -->
       <div class="page-view" id="viewOperations" style="display: none;">
-        
-        <!-- شريط التبديل بين نمطي عرض العمليات: تجميع باليوم / مجمع (فوق العمليات المسجلة والأرشيف) -->
-        <div class="ops-view-mode-bar" id="opsViewModeToggleBar">
-          <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
-            <i class="fa-solid fa-calendar-day"></i>
-            <span>حسب اليوم</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>مجمع</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
-            <i class="fa-solid fa-folder-tree"></i>
-            <span>حسب المشروع</span>
-          </button>
-        </div>
-
-        <!-- أزرار التبديل المقسمة: العمليات المسجلة (الافتراضي) / الأرشيف -->
-        <div class="segmented-tabs-bar">
+        <div class="segmented-tabs-bar ops-section-tabs">
           <button class="segmented-tab-btn active" id="btnOpsSubRegistered" onclick="switchOperationsSubTab('registered')">
             <i class="fa-solid fa-receipt"></i> العمليات المسجلة
           </button>
@@ -15398,28 +15382,18 @@
             <i class="fa-solid fa-clock-rotate-left"></i> الأرشيف وسجل النشاط
           </button>
         </div>
-
-        <!-- الجزء الأول: العمليات المسجلة (Revolut/Apple Wallet Ledger) -->
         <div id="opsSubViewRegistered">
-          <!-- شريط أدوات البحث والتصفية المتطورة -->
-          <div class="ops-header-tools" style="margin: 0 12px 12px; display: flex; flex-direction: column; gap: 10px;">
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <div style="flex: 1; position: relative;">
-                <input type="text" id="opsSearchInput" class="form-input-custom" placeholder="🔍 بحث بالبيان، المشروع، الشخص، المحفظة، أو المبلغ..." style="padding-right: 14px; width: 100%; border-radius: 12px;" oninput="filterOperationsList()">
-              </div>
-              <button class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل محاسبي" style="border-radius: 10px;">
-                <i class="fa-solid fa-file-excel"></i> إكسيل
-              </button>
-              <button class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة كشف حساب PDF" style="border-radius: 10px;">
-                <i class="fa-solid fa-file-pdf"></i> PDF
-              </button>
+          <div class="ops-header-tools">
+            <div class="ops-search-row">
+              <label><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
+              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
+              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
             </div>
-
-            <!-- كبسولات تصفية النوع السريعة (الكل / المصروفات / الدخل) -->
-            <!-- فلتر بنوع المصروف والمحفظة في صفحة العمليات -->
-            <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 6px; align-items: center; width: 100%; box-sizing: border-box; margin-bottom: 2px;">
-              <select id="opsFilterCategory" class="form-input-custom" onchange="filterOperationsList()" style="width: 100%; height: 36px; padding: 4px 8px; font-size: 0.78rem; font-weight: 800; border-radius: 10px;">
-                <option value="all">📁 كافة البنود (المصروفات والدخل)</option>
+            <div class="ops-filter-grid">
+<details class="ops-picker" name="operation-filter" data-all-label="كل البنود">
+  <summary><span class="ops-picker-caption">البنود</span><span class="ops-picker-value">كل البنود</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+  <select id="opsFilterCategory" multiple hidden>
+                <option value="all" selected>كل البنود</option>
                 <optgroup label="── بنود المصروفات ──">
                   <option value="food">🛒 طعام ومشتريات</option>
                   <option value="daily">☕ مصروف يومي</option>
@@ -15439,8 +15413,15 @@
                   <option value="other_inc">➕ دخل إضافي آخر</option>
                 </optgroup>
               </select>
-              <select id="opsFilterMember" class="form-input-custom" onchange="filterOperationsList()" style="width: 100%; height: 36px; padding: 4px 6px; font-size: 0.78rem; font-weight: 800; border-radius: 10px;">
-                <option value="all">👤 كل الأفراد</option>
+  <div class="ops-picker-panel">
+    <div class="ops-picker-choices" role="group" aria-label="البنود"></div>
+    <div class="ops-picker-actions"><button type="button" class="ops-picker-reset" onclick="resetOperationPicker(this)">مسح الاختيار</button><button type="button" onclick="closeOperationPicker(this)">تم</button></div>
+  </div>
+</details>
+<details class="ops-picker" name="operation-filter" data-all-label="كل الأفراد">
+  <summary><span class="ops-picker-caption">الأفراد</span><span class="ops-picker-value">كل الأفراد</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+  <select id="opsFilterMember" multiple hidden>
+                <option value="all" selected>كل الأفراد</option>
                 <option value="البيت">البيت</option>
                 <option value="ماهر">ماهر</option>
                 <option value="آية">آية</option>
@@ -15450,30 +15431,35 @@
                 <option value="النونو">النونو</option>
                 <option value="أخرى">أخرى</option>
               </select>
-            </div>
-            <div class="ops-project-filter-row">
-              <select id="opsFilterProject" class="form-input-custom" onchange="setProjectFilter(this.value)" aria-label="تصفية حسب المشروع" style="width: 100%; height: 36px; padding: 4px 8px; font-size: 0.78rem; font-weight: 800; border-radius: 10px;">
-                <option value="all">📌 كل المشاريع</option>
+  <div class="ops-picker-panel">
+    <div class="ops-picker-choices" role="group" aria-label="الأفراد"></div>
+    <div class="ops-picker-actions"><button type="button" class="ops-picker-reset" onclick="resetOperationPicker(this)">مسح الاختيار</button><button type="button" onclick="closeOperationPicker(this)">تم</button></div>
+  </div>
+</details>
+<details class="ops-picker" name="operation-filter" data-all-label="كل المشاريع">
+  <summary><span class="ops-picker-caption">المشاريع</span><span class="ops-picker-value">كل المشاريع</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
+  <select id="opsFilterProject" multiple hidden>
+                <option value="all" selected>كل المشاريع</option>
                 <option value="__no_project__">بدون مشروع</option>
               </select>
-              <button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()">
-                <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><span>مسح الفلاتر</span>
-              </button>
+  <div class="ops-picker-panel">
+    <div class="ops-picker-choices" role="group" aria-label="المشاريع"></div>
+    <div class="ops-picker-actions"><button type="button" class="ops-picker-reset" onclick="resetOperationPicker(this)">مسح الاختيار</button><button type="button" onclick="closeOperationPicker(this)">تم</button></div>
+  </div>
+</details>
             </div>
-            <div style="display: flex; gap: 6px; align-items: center;" id="opsTypeFilterPills">
-              <button id="btnOpsFilterAll" class="btn-export-tool active" onclick="setOpsTypeFilter('all', this)" style="border-radius: 10px; font-weight: 800; padding: 6px 14px; background: rgba(56, 189, 248, 0.2); color: #38bdf8;">
+            <div id="opsTypeFilterPills">
+              <button id="btnOpsFilterAll" class="btn-export-tool active" onclick="setOpsTypeFilter('all', this)">
                 <i class="fa-solid fa-layer-group"></i> كافة العمليات
               </button>
-              <button id="btnOpsFilterExpenses" class="btn-export-tool" onclick="setOpsTypeFilter('expense', this)" style="border-radius: 10px; font-weight: 800; padding: 6px 14px; color: #f43f5e;">
+              <button id="btnOpsFilterExpenses" class="btn-export-tool" onclick="setOpsTypeFilter('expense', this)">
                 <i class="fa-solid fa-arrow-up-right"></i> المصروفات
               </button>
-              <button id="btnOpsFilterIncome" class="btn-export-tool" onclick="setOpsTypeFilter('income', this)" style="border-radius: 10px; font-weight: 800; padding: 6px 14px; color: #10b981;">
-                <i class="fa-solid fa-arrow-down-left"></i> الإيداعات والدخل
+              <button id="btnOpsFilterIncome" class="btn-export-tool" onclick="setOpsTypeFilter('income', this)">
+                <i class="fa-solid fa-arrow-down-left"></i> الإيداعات
               </button>
             </div>
-
-            <!-- فلاتر الفترات الزمنية للعمليات المسجلة -->
-            <div class="ops-period-strip" id="opsPeriodFilterStrip" style="display: flex; gap: 4px; align-items: center; justify-content: space-between; padding: 4px 6px; border-radius: 12px; margin-top: 4px;">
+            <div class="ops-period-strip" id="opsPeriodFilterStrip">
               <button type="button" class="ops-period-pill" data-period="today" onclick="setAppPeriod('day')">
                 <i class="fa-solid fa-clock"></i> اليوم
               </button>
@@ -15487,17 +15473,27 @@
                 <i class="fa-solid fa-infinity"></i> الكل
               </button>
               <button type="button" class="ops-period-pill" data-period="custom" onclick="toggleCustomDatePicker(true)">
-                <i class="fa-solid fa-calendar-check"></i> مخصص 📅
+                <i class="fa-solid fa-calendar-check"></i> مخصص
               </button>
             </div>
-          </div>
-
-          <!-- قائمة الحركات المسجلة المقسمة زمنياً ومصممة بأناقة دون سكرول بار أبيض -->
-          <div id="txOperationsList" class="ops-feed-container" style="margin: 0 12px 24px;">
-            <!-- تتولد ديناميكياً مع التجميع اليومي والإحصاءات -->
-          </div>
+        <div class="ops-view-mode-bar" id="opsViewModeToggleBar">
+          <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
+            <i class="fa-solid fa-calendar-day"></i>
+            <span>حسب اليوم</span>
+          </button>
+          <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>مجمع</span>
+          </button>
+          <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
+            <i class="fa-solid fa-folder-tree"></i>
+            <span>حسب المشروع</span>
+          </button>
         </div>
-
+            <div class="ops-filter-footer"><span id="opsResultCount" role="status"></span><button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> مسح الفلاتر</button></div>
+          </div>
+          <div id="txOperationsList" class="ops-feed-container"></div>
+        </div>
         <!-- الجزء الثاني: الأرشيف وسجل النشاطات والحركات -->
         <div id="opsSubViewArchive" style="display: none;">
           <!-- أزرار تصفية الأرشيف -->
@@ -16216,7 +16212,7 @@
                 <i class="fa-solid fa-wallet"></i>
                 <span>المحافظ والحركات النقدية</span>
               </div>
-              <div style="display: flex; align-items: center; gap: 5px;">
+              <div class="wallet-panel-actions">
                 <button type="button" onclick="toggleSecAddWalletForm()" class="btn-wallet-action-pill" style="height: 32px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); border: 1px solid rgba(56, 189, 248, 0.5); color: #38bdf8; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                   <i class="fa-solid fa-plus"></i> إنشاء محفظة
                 </button>
@@ -16304,34 +16300,36 @@
             </div>
 
             <!-- شريط الفلاتر الرباعي لتحليل واستعراض حركات المحفظة بالتاريخ والشخص والبند -->
-            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px; margin-bottom: 10px;">
+            <div class="wallet-statement-filters">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.72rem; font-weight: 800; color: #94a3b8;"><i class="fa-solid fa-filter"></i> فلاتر استعراض وتحليل حركات المحفظة:</span>
+                <span style="font-size: 0.72rem; font-weight: 800; color: #94a3b8;"><i class="fa-solid fa-filter"></i> فلاتر كشف الحركات</span>
                 <button type="button" onclick="resetSecWalletFilters()" style="background: transparent; border: none; color: #38bdf8; font-size: 0.68rem; font-weight: 800; cursor: pointer; text-decoration: underline;">إعادة ضبط</button>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;">
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px;">
                 <div>
-                  <label style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">المحفظة المستهدفة</label>
+                  <label for="secFilterWallet" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">المحفظة المستهدفة</label>
                   <select id="secFilterWallet" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;"></select>
                 </div>
                 <div>
-                  <label style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">الشخص / المسؤول</label>
+                  <label for="secFilterMember" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">الشخص / المسؤول</label>
                   <select id="secFilterMember" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;">
                     <option value="all">كل أفراد الأسرة 👥</option>
+                    <option value="البيت">البيت</option>
+                    <option value="أخرى">أخرى</option>
                     <option value="ماهر">ماهر</option>
                     <option value="آية">آية</option>
                     <option value="محمد">محمد</option>
                     <option value="مريم">مريم</option>
                     <option value="الحاجة">الحاجة</option>
-                    <option value="النونُو">النونُو</option>
+                    <option value="النونو">النونو</option>
                   </select>
                 </div>
                 <div>
-                  <label style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">بند المصروف / التصنيف</label>
+                  <label for="secFilterCategory" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">بند المصروف / التصنيف</label>
                   <select id="secFilterCategory" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;"></select>
                 </div>
                 <div>
-                  <label style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">التاريخ والفترة</label>
+                  <label for="secFilterPeriod" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">التاريخ والفترة</label>
                   <select id="secFilterPeriod" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;">
                     <option value="all">كافة الفترات (شامل)</option>
                     <option value="today">اليوم 📅</option>
@@ -16342,48 +16340,17 @@
               </div>
             </div>
 
-            <!-- كروت المؤشرات المالية الأربعة للمحفظة -->
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px;">
-              <div style="background: rgba(15, 23, 42, 0.8); border: 1.2px solid rgba(148, 163, 184, 0.3); border-radius: 10px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.60rem; color: #94a3b8; font-weight: 800;">افتتاحي</div>
-                <div id="secWalletKpiOpening" style="font-size: 0.76rem; font-weight: 900; color: #cbd5e1; direction: rtl;">0.00</div>
-              </div>
-              <div style="background: rgba(16, 185, 129, 0.12); border: 1.2px solid rgba(16, 185, 129, 0.4); border-radius: 10px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.60rem; color: #34d399; font-weight: 800;">إيداعات (+)</div>
-                <div id="secWalletKpiTotalIn" style="font-size: 0.76rem; font-weight: 900; color: #34d399; direction: rtl;">+ 0.00</div>
-              </div>
-              <div style="background: rgba(239, 68, 68, 0.12); border: 1.2px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.60rem; color: #f87171; font-weight: 800;">مصروفات (-)</div>
-                <div id="secWalletKpiTotalOut" style="font-size: 0.76rem; font-weight: 900; color: #f87171; direction: rtl;">- 0.00</div>
-              </div>
-              <div style="background: rgba(2, 132, 199, 0.15); border: 1.2px solid rgba(56, 189, 248, 0.5); border-radius: 10px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.60rem; color: #38bdf8; font-weight: 800;">الرصيد الفعلي</div>
-                <div id="secWalletKpiBalance" style="font-size: 0.78rem; font-weight: 900; color: #38bdf8; direction: rtl;">0.00</div>
-              </div>
+            <div class="wallet-statement-kpis">
+              <div>رصيد أول الفترة<b id="secWalletKpiOpening" dir="ltr"></b></div>
+              <div class="wallet-kpi-in">الوارد المطابق<b id="secWalletKpiTotalIn" dir="ltr"></b></div>
+              <div class="wallet-kpi-out">الصادر المطابق<b id="secWalletKpiTotalOut" dir="ltr"></b></div>
+              <div>رصيد نهاية الفترة<b id="secWalletKpiBalance" dir="ltr"></b></div>
             </div>
-
-            <!-- جدول كشف حساب المحفظة المفصل -->
-            <div style="border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 23, 42, 0.75); overflow: hidden;">
-              <div style="max-height: 48vh; overflow-y: auto; overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.74rem; text-align: right;">
-                  <thead>
-                    <tr style="background: rgba(30, 41, 59, 0.9); color: #94a3b8; border-bottom: 1.5px solid rgba(255,255,255,0.1); font-size: 0.68rem;">
-                      <th style="padding: 7px 6px;">التاريخ</th>
-                      <th style="padding: 7px 6px;">البيان</th>
-                      <th style="padding: 7px 6px;">الفرد</th>
-                      <th style="padding: 7px 6px;">البند</th>
-                      <th style="padding: 7px 6px;">منفذ العملية</th>
-                      <th style="padding: 7px 6px;">المبلغ</th>
-                      <th style="padding: 7px 6px;">الرصيد</th>
-                    </tr>
-                  </thead>
-                  <tbody id="secWalletTableBody">
-                    <!-- تتولد السطور تلقائياً -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
+            <div class="wallet-statement-caption"><span id="secWalletCount" role="status"></span><span id="secWalletScopeNote"></span></div>
+            <table class="wallet-statement-table">
+              <thead><tr><th scope="col">الحركة</th><th scope="col">التاريخ</th><th scope="col">المبلغ</th><th scope="col">الرصيد</th></tr></thead>
+              <tbody id="secWalletTableBody"></tbody>
+            </table>
           </div>
 
         </div>
@@ -18094,7 +18061,7 @@
         </button>
 
         <!-- لوحة تسجيل وإضافة المهمة الموحدة والشاملة (مخفية افتراضياً وتظهر فقط عند الضغط على زر إضافة مهمة) -->
-        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" role="form" aria-labelledby="tasksCreatorHeading" style="display: none; background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.99)); border: 1.5px solid rgba(16, 185, 129, 0.55); border-radius: 18px; padding: 10px 12px; flex-direction: column; gap: 9px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: all 0.3s ease;">
+        <div id="tasksUnifiedCreatorCard" class="tasks-unified-creator-card" role="form" aria-labelledby="tasksCreatorHeading" style="display: none; flex-direction: column;">
           
           <!-- هيدر كارت الإضافة مع زر إغلاق / إلغاء واضح للعودة للقائمة النظيفة -->
           <div class="task-creator-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
@@ -18103,13 +18070,12 @@
                 <i class="fa-solid fa-pen-to-square"></i>
               </div>
               <span id="tasksCreatorHeading" style="font-size: 0.88rem; font-weight: 900; color: #f8fafc;">تسجيل مهمة جديدة</span>
-              <span id="unifiedCreatorActiveTagBadge" style="font-size: 0.68rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: rgba(168, 85, 247, 0.25); border: 1px solid rgba(168, 85, 247, 0.5); color: #e9d5ff;">🌐 عامة</span>
+
             </div>
             
             <!-- زر إغلاق النموذج -->
-            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 28px; padding: 0 10px; border-radius: 7px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #f43f5e; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <button type="button" class="task-creator-dismiss" onclick="hideUnifiedTaskCreator()" aria-label="إغلاق نموذج المهمة">
               <i class="fa-solid fa-xmark"></i>
-              <span>إلغاء</span>
             </button>
           </div>
 
@@ -18141,7 +18107,7 @@
           <section class="task-creator-section task-creator-classification" aria-labelledby="taskCreatorCategoryHeading">
             <div class="task-creator-section-heading">
               <span id="taskCreatorCategoryHeading" class="task-creator-section-title"><i class="fa-solid fa-tags" style="color: #38bdf8;" aria-hidden="true"></i> التصنيف</span>
-              <span class="task-creator-section-hint">اختر تصنيفًا واحدًا لتنظيم المهمة</span>
+
             </div>
             <div id="unifiedTaskTagChipsList" class="task-creator-category-grid" role="group" aria-label="تصنيف المهمة">
               <button type="button" class="btn-unified-tag-chip" data-tag="my_day" aria-pressed="false" onclick="selectTaskInlineTag('my_day', this)">☀️ يومي</button>
@@ -18160,7 +18126,7 @@
           <section class="task-creator-section task-creator-appointment" aria-labelledby="taskCreatorAppointmentHeading">
             <div class="task-creator-section-heading">
               <span id="taskCreatorAppointmentHeading" class="task-creator-section-title"><i class="fa-regular fa-calendar-check" style="color: #c084fc;" aria-hidden="true"></i> الموعد</span>
-              <span id="lblUnifiedTaskDateTimeDisplay" class="task-creator-date-summary">اليوم</span>
+
             </div>
 
             <div class="task-creator-schedule-grid">
@@ -18188,7 +18154,7 @@
             </div>
 
             <button type="button" id="btnInlineTaskDateTimePicker" class="task-picker-appointment-button task-creator-picker-button" onclick="openTaskDateTimePickerModal('inline')"><i class="fa-regular fa-calendar-days" aria-hidden="true"></i> تخصيص التاريخ والوقت والمنطقة الزمنية</button>
-            <div class="task-creator-timezone-note"><i class="fa-solid fa-earth-asia" aria-hidden="true"></i><span>يُعرض الموعد وفق المنطقة الزمنية المختارة.</span></div>
+
             <input type="hidden" id="inlineTaskDueSecond" value="00">
             <input type="hidden" id="inlineTaskDueTimezone">
           </section>
@@ -18208,7 +18174,7 @@
               </div>
 
               <div class="task-creator-assignment-block task-creator-attachments-block">
-                <span class="task-creator-group-label"><i class="fa-solid fa-paperclip" style="color:#38bdf8;" aria-hidden="true"></i> المرفقات <span class="task-creator-section-hint">اختياري</span></span>
+                <span class="task-creator-group-label"><i class="fa-solid fa-paperclip" style="color:#38bdf8;" aria-hidden="true"></i> المرفقات <span class="task-creator-optional">اختياري</span></span>
                 <div class="task-creator-attachment-actions">
                   <button type="button" class="task-creator-attachment-button" onclick="triggerMainTaskCamera()" style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.35); color: #7dd3fc;"><i class="fa-solid fa-camera" aria-hidden="true"></i><span>تصوير</span></button>
                   <button type="button" class="task-creator-attachment-button" onclick="triggerMainTaskGallery()" style="background: rgba(16, 185, 129, 0.11); border: 1px solid rgba(16, 185, 129, 0.32); color: #6ee7b7;"><i class="fa-regular fa-image" aria-hidden="true"></i><span>اختيار صورة</span></button>
@@ -18220,7 +18186,7 @@
 
           <details id="quickTaskSubtasksDetails" class="task-creator-subtasks">
             <summary>
-              <span class="task-creator-subtasks-summary-copy"><span><i class="fa-solid fa-list-check" style="color:#6ee7b7;"></i> خطوات فرعية</span><small>اختياري · جزّئ المهمة إلى خطوات قابلة للإنجاز</small></span>
+              <span class="task-creator-subtasks-summary-copy"><span><i class="fa-solid fa-list-check" style="color:#6ee7b7;"></i> خطوات فرعية</span></span>
               <span id="quickTaskSubtaskCount" class="task-creator-subtasks-count" aria-label="عدد الخطوات الفرعية">0</span>
             </summary>
             <div class="task-creator-subtasks-body">
@@ -18233,12 +18199,12 @@
           </details>
 
           <!-- حفظ واحد واضح بدل تكرار زر الحفظ داخل حقل العنوان -->
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="button" id="btnSubmitUnifiedTask" class="task-creator-submit" aria-describedby="quickTaskFormStatus" onclick="handleQuickTaskAdd()" style="flex: 1; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); border: none; color: #fff; font-size: 0.82rem; font-weight: 950; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: all 0.2s;">
+          <div class="task-creator-actions">
+            <button type="button" id="btnSubmitUnifiedTask" class="task-creator-submit" aria-describedby="quickTaskFormStatus" onclick="handleQuickTaskAdd()">
               <i class="fa-solid fa-check-double"></i>
               <span>حفظ المهمة</span>
             </button>
-            <button type="button" onclick="hideUnifiedTaskCreator()" style="height: 38px; padding: 0 14px; border-radius: 10px; background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.74rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+            <button type="button" class="task-creator-dismiss" onclick="hideUnifiedTaskCreator()">
               <i class="fa-solid fa-xmark"></i>
               <span>إلغاء</span>
             </button>
@@ -19219,6 +19185,11 @@
         const previousCategory = categoryFilter.value || 'all';
         const categories = new Map();
         (state.transactions || []).forEach(tx => {
+          if (!tx || tx.deleted) return;
+          if (tx.type === 'transfer' || tx.category === 'transfer') {
+            categories.set('transfer', 'تحويل داخلي');
+            return;
+          }
           if (!tx.category) return;
           categories.set(String(tx.category), typeof getCategoryName === 'function' ? getCategoryName(tx.category, tx.type) : String(tx.category));
         });
@@ -22986,6 +22957,10 @@ function generateRichDemoTransactions() {
 
     function renderUI() {
       refreshProjectSelectors();
+      if (document.getElementById('btnMainTabWallets')?.getAttribute('aria-selected') === 'true') {
+        populateWalletDropdowns();
+        renderSecWalletStatementTable();
+      }
       // 1. حساب الرصيد الفعلي التراكمي المعتمد لكافة المحافظ (السيولة النقدية الدائمة بالخزينة)
       const visibleWallets = (state.wallets || []).filter(wallet =>
         !state.currentWalletId || state.currentWalletId === 'all' || wallet.id === state.currentWalletId
@@ -23705,7 +23680,7 @@ function generateRichDemoTransactions() {
       }
       if (catSelect) {
         const optionExists = Array.from(catSelect.options).some(o => o.value === targetCatId);
-        catSelect.value = optionExists ? targetCatId : 'all';
+        setOperationFilterValues(catSelect.id, optionExists ? [targetCatId] : []);
       }
 
       // 5. ضبط قائمة تصفية العضو (Member Filter)
@@ -23717,10 +23692,10 @@ function generateRichDemoTransactions() {
           ((targetMember === 'أية' || targetMember === 'آية') && (o.value === 'آية' || o.value === 'أية'))
         );
         if (opt) {
-          memSelect.value = opt.value;
+          setOperationFilterValues(memSelect.id, [opt.value]);
           targetMember = opt.value;
         } else {
-          memSelect.value = targetMember;
+          setOperationFilterValues(memSelect.id, []);
         }
       }
       state.currentMemberFilter = targetMember === 'all' ? 'الكل' : targetMember;
@@ -23744,6 +23719,7 @@ function generateRichDemoTransactions() {
       if (project !== null || resetFilters) {
         state.projectFilter = project || 'all';
         refreshProjectSelectors();
+        refreshOperationProjectFilter(getKnownProjects(), [state.projectFilter]);
       }
 
       // 7. ضبط حقل البحث وتوسيع الفترة الزمنية إذا كان البحث مرتبطاً بتاريخ محدد
@@ -23763,7 +23739,7 @@ function generateRichDemoTransactions() {
         queryVal = month;
         state.period = 'all';
         state.customDateRange = null;
-      } else if (category && (!catSelect || catSelect.value === 'all')) {
+      } else if (category && (!catSelect || !getOperationFilterValues(catSelect.id).length)) {
         queryVal = categoryName || category;
       } else if (resetFilters) {
         state.customDateRange = null;
@@ -23822,8 +23798,10 @@ function generateRichDemoTransactions() {
 
     function clearOpsFilter() {
       document.getElementById('opsSearchInput').value = '';
-      document.getElementById('opsFilterCategory').value = 'all';
-      document.getElementById('opsFilterMember').value = 'all';
+      ['opsFilterCategory', 'opsFilterMember', 'opsFilterProject'].forEach(id => {
+        setOperationFilterValues(id, []);
+        document.getElementById(id).parentElement.open = false;
+      });
       state.searchQuery = '';
       state.projectFilter = 'all';
       state.currentWalletId = 'all';
@@ -23911,15 +23889,8 @@ function generateRichDemoTransactions() {
           d.style.display = 'none';
         }
       });
-      document.querySelectorAll('.ops-tx-card-clean').forEach(c => {
-        const id = c.getAttribute('data-tx-id');
-        if (id === window.selectedOperationRowId) {
-          c.style.borderColor = '#38bdf8';
-          c.style.background = 'rgba(56, 189, 248, 0.08)';
-        } else {
-          c.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-          c.style.background = 'rgba(15, 23, 42, 0.75)';
-        }
+      document.querySelectorAll('#txOperationsList .ops-tx-card-clean').forEach(card => {
+        card.classList.toggle('is-selected', card.dataset.txId === window.selectedOperationRowId);
       });
     }
 
@@ -23951,19 +23922,8 @@ function generateRichDemoTransactions() {
     }
 
 
-    function renderOperationsList(filtered, appendMore = false) {
-      const container = document.getElementById('txOperationsList');
-      if (!container) return;
-      refreshProjectSelectors();
-
-      if (!appendMore) {
-        opsRenderLimit = 40;
-      }
-
-      // 1. مصدر الحركات الأساسي
-      let list = (filtered && Array.isArray(filtered) && filtered.length > 0) 
-        ? [...filtered] 
-        : [...(state.transactions || [])];
+    function getRegisteredOperations(transactions = state.transactions || []) {
+      let list = [...transactions];
 
       // 2. تطبيق فلترة الفترة الزمنية بدقة تامة (اليوم / الأسبوع / الشهر / السنة / الكل / مخصص)
       const p = state.period || 'month';
@@ -23975,21 +23935,21 @@ function generateRichDemoTransactions() {
       } else if (p === 'week') {
         const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
         const sevenDaysAgoStr = getLocalDateStr(sevenDaysAgo);
-        list = list.filter(t => t.date && t.date >= sevenDaysAgoStr && t.date <= todayStr);
+        list = list.filter(t => operationDate(t) >= sevenDaysAgoStr && operationDate(t) <= todayStr);
       } else if (p === 'month') {
         const curYearMonth = todayStr.slice(0, 7);
-        list = list.filter(t => t.date && t.date.startsWith(curYearMonth));
+        list = list.filter(t => operationDate(t).startsWith(curYearMonth));
       } else if (p === 'year') {
         const curYear = todayStr.slice(0, 4);
         list = list.filter(t => operationDate(t).startsWith(curYear));
       } else if (p === 'custom' && state.customDateRange) {
         const { from, to } = state.customDateRange;
         if (from && to) {
-          list = list.filter(t => t.date && t.date >= from && t.date <= to);
+          list = list.filter(t => operationDate(t) >= from && operationDate(t) <= to);
         } else if (from) {
-          list = list.filter(t => t.date && t.date >= from);
+          list = list.filter(t => operationDate(t) >= from);
         } else if (to) {
-          list = list.filter(t => t.date && t.date <= to);
+          list = list.filter(t => operationDate(t) && operationDate(t) <= to);
         }
       }
 
@@ -24000,46 +23960,36 @@ function generateRichDemoTransactions() {
         list = list.filter(t => t.type === 'income');
       }
 
-      // 4. تطبيق فلترة التصنيف في صفحة العمليات (Category Filter)
-      const catFilter = document.getElementById('opsFilterCategory')?.value || 'all';
-      if (catFilter && catFilter !== 'all') {
-        list = list.filter(t => {
-          const c = (t.category || '').toLowerCase();
-          if (catFilter === 'food') return c === 'food' || c === 'supermarket' || c === 'shopping';
-          if (catFilter === 'daily') return c === 'daily' || c === 'cafe';
-          if (catFilter === 'bills') return c === 'bills' || c === 'utilities';
-          if (catFilter === 'transport') return c === 'transport' || c === 'fuel';
-          if (catFilter === 'house') return c === 'house' || c === 'home';
-          if (catFilter === 'health') return c === 'health' || c === 'medical' || c === 'pharmacy';
-          if (catFilter === 'clothes') return c === 'clothes';
-          if (catFilter === 'education') return c === 'education' || c === 'school';
-          if (catFilter === 'other') return c === 'other' || c === 'others' || c === 'gifts' || c === 'kids' || c === 'entertainment' || c === 'charity' || c === 'games';
-          // بنود الدخل
-          if (catFilter === 'salary') return c === 'salary';
-          if (catFilter === 'bonus') return c === 'bonus';
-          if (catFilter === 'invest') return c === 'invest';
-          if (catFilter === 'business') return c === 'business';
-          if (catFilter === 'other_inc') return c === 'other_inc' || c === 'income';
-          return c === catFilter;
+
+      const categories = new Set(getOperationFilterValues('opsFilterCategory'));
+      const members = new Set(getOperationFilterValues('opsFilterMember'));
+      const projects = new Set(getOperationFilterValues('opsFilterProject').map(project => project.toLocaleLowerCase()));
+      const categoryAliases = {
+        supermarket: 'food', shopping: 'food', cafe: 'daily', utilities: 'bills',
+        fuel: 'transport', home: 'house', medical: 'health', pharmacy: 'health',
+        school: 'education', others: 'other', gifts: 'other', kids: 'other',
+        entertainment: 'other', charity: 'other', games: 'other', income: 'other_inc'
+      };
+      if (categories.size) {
+        list = list.filter(transaction => {
+          const category = String(transaction.category || '').toLowerCase();
+          return categories.has(Object.hasOwn(categoryAliases, category) ? categoryAliases[category] : category);
         });
       }
-
-      // 5. تطبيق فلترة العضو في صفحة العمليات (Member Filter)
-      let memFilter = document.getElementById('opsFilterMember') ? document.getElementById('opsFilterMember').value : (state.currentMemberFilter && state.currentMemberFilter !== 'الكل' ? state.currentMemberFilter : 'all');
-      if (memFilter && memFilter !== 'all') {
-        list = list.filter(t => {
-          const m = t.member || 'البيت';
-          if (memFilter === 'البيت') return m === 'البيت' || m === 'العائلة' || !t.member;
-          if (memFilter === 'آية' || memFilter === 'أية') return m === 'آية' || m === 'أية';
-          return m === memFilter;
+      if (members.size) {
+        list = list.filter(transaction => {
+          const member = transaction.member || 'البيت';
+          return members.has(member === 'العائلة' ? 'البيت' : member === 'أية' ? 'آية' : member);
         });
       }
-
-      const projectFilter = state.projectFilter || 'all';
-      if (projectFilter === '__no_project__') {
-        list = list.filter(t => !getTransactionProjectName(t));
-      } else if (projectFilter !== 'all') {
-        list = list.filter(t => getTransactionProjectName(t) === projectFilter);
+      if (projects.size) {
+        list = list.filter(transaction => {
+          const project = getTransactionProjectName(transaction).toLocaleLowerCase();
+          return projects.has(project || '__no_project__');
+        });
+      }
+      if (state.currentWalletId && state.currentWalletId !== 'all') {
+        list = list.filter(transaction => transaction.walletId === state.currentWalletId);
       }
 
       // 6. تطبيق نص البحث إذا وجد
@@ -24058,6 +24008,17 @@ function generateRichDemoTransactions() {
           return l.includes(q) || c.includes(q) || cName.includes(q) || m.includes(q) || a.includes(q) || w.includes(q) || d.includes(q) || project.includes(q);
         });
       }
+
+      return list;
+    }
+
+    function renderOperationsList(filtered, appendMore = false) {
+      const container = document.getElementById('txOperationsList');
+      if (!container) return;
+      refreshProjectSelectors();
+      if (!appendMore) opsRenderLimit = 40;
+      const list = getRegisteredOperations(filtered ?? undefined);
+      document.getElementById('opsResultCount').textContent = list.length.toLocaleString('ar-EG') + ' عملية مطابقة';
 
       if (list.length === 0) {
         container.innerHTML = `
@@ -24109,7 +24070,6 @@ function generateRichDemoTransactions() {
           const isExp = tx.type === 'expense';
           const amt = Number(tx.amount) || 0;
           const sign = isExp ? '-' : '+';
-          const amtColor = isExp ? '#ff4d6d' : '#34d399';
           const memberName = tx.member || 'العائلة';
           const walletName = typeof getWalletName === 'function' ? getWalletName(tx.walletId) : '';
           const projectName = getTransactionProjectName(tx);
@@ -24119,50 +24079,29 @@ function generateRichDemoTransactions() {
             cleanLbl = `${cat.name} (${memberName})`;
           }
           const rawLabel = cleanLbl;
+          const date = operationDate(tx);
 
           cardsHtml += `
-            <div class="ops-tx-card-clean" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="background: ${isSelected ? 'rgba(56, 189, 248, 0.08)' : 'rgba(15, 23, 42, 0.75)'}; border: 1px solid ${isSelected ? '#38bdf8' : 'rgba(255, 255, 255, 0.08)'}; border-radius: 12px; padding: 10px 12px; margin-bottom: 7px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 8px rgba(0,0,0,0.25);">
-              
-              <!-- الصف الرئيسي النظيف: العملية والبيان مع التاريخ المدمج أسفله على اليمين | الرقم والنوع على اليسار -->
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                <!-- العملية + البيان وبأسفله التاريخ مباشرة -->
-                <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                  <div style="width: 38px; height: 38px; border-radius: 10px; background: ${cat.color ? cat.color + '22' : 'rgba(56, 189, 248, 0.15)'}; border: 1px solid ${cat.color ? cat.color + '55' : 'rgba(56, 189, 248, 0.3)'}; color: ${cat.color || '#38bdf8'}; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
-                    <i class="fa-solid ${cat.icon || 'fa-receipt'}"></i>
-                  </div>
-                  <div style="min-width: 0; flex: 1;">
-                    <!-- بيان العملية -->
-                    <div style="font-size: 0.88rem; font-weight: 850; color: #f8fafc; line-height: 1.35; word-break: break-word;" title="${escapeHtml(rawLabel)}">
-                      ${escapeHtml(rawLabel)}
-                    </div>
-                    <!-- التاريخ مدمج أسفل بيان العملية مباشرة -->
-                    <div class="ops-tx-date-inline" style="font-size: 0.69rem; color: #38bdf8; font-weight: 800; margin-top: 2px; display: inline-flex; align-items: center; gap: 4px;">
-                      <i class="fa-regular fa-calendar-days" style="font-size: 0.64rem; color: #38bdf8;"></i>
-                      <span>${tx.date || ''}</span>
-                      ${tx.time ? `<span style="color: #94a3b8; font-size: 0.64rem; font-weight: 700;">• ${tx.time}</span>` : ''}
-                    </div>
-                    <!-- شريط البند والعضو والمحفظة والإيصال -->
-                    <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 1px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                      <span style="color: ${cat.color || '#38bdf8'}; font-weight: 750;">${cat.name}</span>
-                      <span style="color: #94a3b8; font-size: 0.65rem; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 6px;">👤 ${memberName}</span>
-                      ${projectName ? `<span style="color: #c4b5fd; font-size: 0.65rem; background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25); padding: 1px 6px; border-radius: 6px;">📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${walletName ? `<span style="color: #cbd5e1; font-size: 0.65rem; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 6px;">💳 ${walletName}</span>` : ''}
-                      ${tx.receipt ? '<span style="color: #f472b6; font-size: 0.65rem;"><i class="fa-solid fa-paperclip"></i> إيصال</span>' : ''}
-                    </div>
+            <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="padding: 9px 10px; margin-bottom: 6px; cursor: pointer;">
+              <div class="ops-entry ops-entry-flat">
+                <div class="ops-entry-main">
+                  <span class="ops-entry-icon" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
+                  <div class="ops-entry-body">
+                    <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
                   </div>
                 </div>
-
-                <!-- الرقم على اليسار بدون تكرار التاريخ -->
-                <div style="text-align: left; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; flex-shrink: 0;">
-                  <div style="color: ${amtColor}; font-weight: 950; font-size: 0.96rem; font-family: var(--font-numbers); direction: ltr; unicode-bidi: isolate;">
-                    ${sign} ${formatMoneyVal(amt)}
-                  </div>
-                  <div style="font-size: 0.64rem; color: #64748b; font-weight: 700; margin-top: 2px;">
-                    ${isExp ? 'منصرف' : 'إيداع'}
-                  </div>
+                <div class="ops-entry-total">
+                  <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
                 </div>
+                    <div class="ops-entry-meta">
+                      <span>${escapeHtml(memberName)}</span>
+                      ${walletName ? `<span>💳 ${escapeHtml(walletName)}</span>` : ''}
+                      ${date ? `<time class="ops-entry-date" dir="ltr" datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
+                      <span>${escapeHtml(cat.name)}</span>
+                      ${projectName ? `<span>📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${tx.receipt ? '<span><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
+                    </div>
               </div>
-
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
               <div class="ops-row-actions-drawer" data-drawer-tx-id="${tx.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); animation: fadeIn 0.15s ease;">
                 ${tx.receipt ? `
@@ -24233,8 +24172,7 @@ function generateRichDemoTransactions() {
             const isExp = tx.type === 'expense';
             const amt = Number(tx.amount) || 0;
             const sign = isExp ? '-' : '+';
-            const amtColor = isExp ? '#ff4d6d' : '#34d399';
-            const memberName = tx.member || 'العائلة';
+              const memberName = tx.member || 'العائلة';
             const walletName = typeof getWalletName === 'function' ? getWalletName(tx.walletId) : '';
             const projectName = getTransactionProjectName(tx);
             const isSelected = (window.selectedOperationRowId === tx.id);
@@ -24245,41 +24183,26 @@ function generateRichDemoTransactions() {
             const rawLabel = cleanLbl;
 
             cardsHtml += `
-              <div class="ops-tx-card-clean" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="background: ${isSelected ? 'rgba(56, 189, 248, 0.08)' : 'rgba(15, 23, 42, 0.75)'}; border: 1px solid ${isSelected ? '#38bdf8' : 'rgba(255, 255, 255, 0.08)'}; border-radius: 12px; padding: 10px 12px; margin-bottom: 7px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 8px rgba(0,0,0,0.25);">
-                
-                <!-- الصف الرئيسي النظيف: العملية والبيان على اليمين | الرقم والتاريخ على اليسار -->
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                  <!-- العملية + البيان -->
-                  <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-                    <div style="width: 38px; height: 38px; border-radius: 10px; background: ${cat.color ? cat.color + '22' : 'rgba(56, 189, 248, 0.15)'}; border: 1px solid ${cat.color ? cat.color + '55' : 'rgba(56, 189, 248, 0.3)'}; color: ${cat.color || '#38bdf8'}; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0;">
-                      <i class="fa-solid ${cat.icon || 'fa-receipt'}"></i>
-                    </div>
-                    <div style="min-width: 0; flex: 1;">
-                      <div style="font-size: 0.88rem; font-weight: 850; color: #f8fafc; line-height: 1.35; word-break: break-word;" title="${escapeHtml(rawLabel)}">
-                        ${escapeHtml(rawLabel)}
-                      </div>
-                      <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 1px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                        <span style="color: ${cat.color || '#38bdf8'}; font-weight: 750;">${cat.name}</span>
-                        <span style="color: #94a3b8; font-size: 0.65rem; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 6px;">👤 ${memberName}</span>
-                        ${projectName ? `<span style="color: #c4b5fd; font-size: 0.65rem; background: rgba(167,139,250,0.12); border: 1px solid rgba(167,139,250,0.25); padding: 1px 6px; border-radius: 6px;">📌 ${escapeHtml(projectName)}</span>` : ''}
-                        ${walletName ? `<span style="color: #cbd5e1; font-size: 0.65rem; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 6px;">💳 ${walletName}</span>` : ''}
-                        ${tx.receipt ? '<span style="color: #f472b6; font-size: 0.65rem;"><i class="fa-solid fa-paperclip"></i> إيصال</span>' : ''}
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- الرقم + التاريخ -->
-                  <div style="text-align: left; display: flex; flex-direction: column; align-items: flex-end; flex-shrink: 0;">
-                    <div style="color: ${amtColor}; font-weight: 950; font-size: 0.95rem; font-family: var(--font-numbers); direction: ltr; unicode-bidi: isolate;">
-                      ${sign} ${formatMoneyVal(amt)}
-                    </div>
-                    <div style="font-size: 0.65rem; color: #64748b; font-weight: 700; margin-top: 2px;">
-                      ${tx.date || ''} ${tx.time ? '• ' + tx.time : ''}
+              <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="padding: 9px 10px; margin-bottom: 6px; cursor: pointer;">
+              <div class="ops-entry">
+                <div class="ops-entry-main">
+                  <span class="ops-entry-icon" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
+                  <div class="ops-entry-body">
+                    <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
+                    <div class="ops-entry-meta">
+                      <span>${escapeHtml(cat.name)}</span><span>${escapeHtml(memberName)}</span>
+                      ${projectName ? `<span>📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${walletName ? `<span>💳 ${escapeHtml(walletName)}</span>` : ''}
+                      ${tx.receipt ? '<span><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
                     </div>
                   </div>
                 </div>
-
-                <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
+                <div class="ops-entry-total">
+                  <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
+                  <div class="ops-entry-date" dir="ltr">${escapeHtml(operationDate(tx))}${tx.time ? ` · ${escapeHtml(tx.time)}` : ''}</div>
+                </div>
+              </div>
+              <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
                 <div class="ops-row-actions-drawer" data-drawer-tx-id="${tx.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); animation: fadeIn 0.15s ease;">
                   ${tx.receipt ? `
                     <button type="button" onclick="event.stopPropagation(); viewReceiptImage('${tx.receipt}')" style="height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
@@ -24356,7 +24279,7 @@ function loadMoreOperations() {
       
       const memSel = document.getElementById('opsFilterMember');
       if (memSel) {
-        memSel.value = (member === 'الكل') ? 'all' : member;
+        setOperationFilterValues(memSel.id, [member === 'أية' ? 'آية' : member]);
       }
       if (typeof filterOperationsList === 'function') {
         filterOperationsList();
@@ -24419,7 +24342,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       replaceProjectOptions(document.getElementById('inpTxProject'), projects, { create: true });
       replaceProjectOptions(document.getElementById('editTxProject'), projects, { create: true });
       replaceProjectOptions(document.getElementById('quickTaskProjectSelect'), projects, { create: true });
-      replaceProjectOptions(document.getElementById('opsFilterProject'), projects, { filter: true });
+      refreshOperationProjectFilter(projects);
       replaceProjectOptions(document.getElementById('analyticsProjectFilter'), projects, { filter: true, allLabel: 'كل المشاريع للمقارنة' });
     }
 
@@ -24447,6 +24370,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
     function setProjectFilter(project) {
       state.projectFilter = project || 'all';
       refreshProjectSelectors();
+      refreshOperationProjectFilter(getKnownProjects(), [state.projectFilter]);
       renderUI();
     }
 
@@ -24600,10 +24524,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
           if (c.getAttribute('data-type') === 'all') c.classList.add('active');
           else c.classList.remove('active');
         });
-        const catFilter = document.getElementById('opsFilterCategory');
-        if (catFilter) catFilter.value = 'all';
-        const memFilter = document.getElementById('opsFilterMember');
-        if (memFilter) memFilter.value = 'all';
+        ['opsFilterCategory', 'opsFilterMember', 'opsFilterProject'].forEach(id => setOperationFilterValues(id, []));
         state.projectFilter = 'all';
         refreshProjectSelectors();
       } catch(e) {}
@@ -28458,8 +28379,15 @@ function openSettingsModal(targetSection = '') {
     // =========================================================================
     // التصدير المحاسبي: Excel و PDF لكافة حركات الفترة
     // =========================================================================
+    function operationFilterExportLabel(id, allLabel) {
+      const values = getOperationFilterValues(id);
+      if (!values.length) return allLabel;
+      return Array.from(document.getElementById(id).options)
+        .filter(option => values.includes(option.value)).map(option => option.textContent.trim()).join('، ');
+    }
+
     function exportExcel() {
-      const filtered = typeof getFilteredTransactions === 'function' ? getFilteredTransactions() : (state.transactions || []);
+      const filtered = getRegisteredOperations();
       if (!filtered || filtered.length === 0) {
         showToast('⚠️ لا توجد حركات مسجلة في الفترة المحددة للتصدير');
         return;
@@ -28478,7 +28406,7 @@ function openSettingsModal(targetSection = '') {
       const headerBlock = [
         ['كشف حساب وتدقيق العمليات المالية - عائلة ماهر ❤️ أية'],
         ['نوع التقرير:', 'دفتر الأستاذ العام وتفاصيل الحركات المحاسبية', 'تاريخ ووقت الاستخراج:', new Date().toLocaleString('ar-EG')],
-        ['الفترة المالية المحددة:', currentPeriodDesc, 'الحساب المالي:', state.selectedMember, 'المحفظة النشطة:', state.currentWalletId === 'all' ? 'كافة المحافظ مجتمعة' : (state.wallets.find(w => w.id === state.currentWalletId)?.name || state.currentWalletId), 'المشروع:', state.projectFilter === 'all' ? 'كافة المشاريع' : (state.projectFilter === '__no_project__' ? 'بدون مشروع' : state.projectFilter)],
+        ['الفترة المالية المحددة:', currentPeriodDesc, 'الأفراد:', operationFilterExportLabel('opsFilterMember', 'كل الأفراد'), 'المحفظة النشطة:', state.currentWalletId === 'all' ? 'كافة المحافظ مجتمعة' : (state.wallets.find(w => w.id === state.currentWalletId)?.name || state.currentWalletId), 'المشروع:', operationFilterExportLabel('opsFilterProject', 'كل المشاريع')],
         [],
         ['م', 'التاريخ', 'رقم المرجع (ID)', 'البيان التفصيلي للحركة', 'بند الصرف / التصنيف', 'المشروع', 'العضو المعني', 'المحفظة / الحساب البنكي', 'المدين / مصروف (-)', 'الدائن / دخل (+)', 'الرصيد التراكمي (ج.م)', 'سجلت بواسطة']
       ];
@@ -28541,7 +28469,7 @@ function openSettingsModal(targetSection = '') {
     }
 
     function exportPdf() {
-      const filtered = typeof getFilteredTransactions === 'function' ? getFilteredTransactions() : (state.transactions || []);
+      const filtered = getRegisteredOperations();
       if (!filtered || filtered.length === 0) {
         showToast('⚠️ لا توجد حركات مسجلة للطباعة في الفترة المحددة');
         return;
@@ -28612,11 +28540,11 @@ function openSettingsModal(targetSection = '') {
           <div class="print-meta-badges">
             <span><strong>الفترة:</strong> ${currentPeriodDesc}</span>
             <span>|</span>
-            <span><strong>الحساب المختار:</strong> ${state.selectedMember}</span>
+            <span><strong>الحساب المختار:</strong> ${escapeHtml(operationFilterExportLabel('opsFilterMember', 'كل الأفراد'))}</span>
             <span>|</span>
             <span><strong>المحفظة:</strong> ${state.currentWalletId === 'all' ? 'كافة المحافظ' : (state.wallets.find(w => w.id === state.currentWalletId)?.name || state.currentWalletId)}</span>
             <span>|</span>
-            <span><strong>المشروع:</strong> ${state.projectFilter === 'all' ? 'كافة المشاريع' : (state.projectFilter === '__no_project__' ? 'بدون مشروع' : escapeHtml(state.projectFilter))}</span>
+            <span><strong>المشروع:</strong> ${escapeHtml(operationFilterExportLabel('opsFilterProject', 'كل المشاريع'))}</span>
             <span>|</span>
             <span><strong>عدد العمليات:</strong> ${sortedTx.length} عملية</span>
           </div>
@@ -31885,8 +31813,6 @@ function updateTaskDateTimeSummary() {
   if (dateInput) dateInput.value = dateValue;
   if (timeInput) timeInput.value = timeValue;
   if (secondInput) secondInput.value = secondValue;
-  const inlineLabel = document.getElementById('lblUnifiedTaskDateTimeDisplay');
-  if (inlineLabel && window.taskDateTimePickerTarget === 'inline') inlineLabel.textContent = `${dateText}${timeValue ? ` • ${timeText}` : ''}`;
   updateTaskPickerControls();
 }
 
@@ -31906,6 +31832,7 @@ function updateTaskDateTimeTargetDisplay(target) {
   const offset = getTaskTimeZoneOffsetText(zone, values.date, values.time, values.second);
   fields.button.textContent = target === 'quick' ? `📅 ${dateText}${values.time ? ` · ${timeText}` : ''}` : `📅 ${dateText}${values.time ? ` • ${timeText}` : ''} · ${offset}`;
   fields.button.title = `${formatTaskPickerDate(values.date)}${values.time ? ` ${timeText}` : ''} · ${zone}`;
+  if (target === 'inline') fields.button.textContent = `تخصيص الموعد · ${fields.button.textContent}`;
 }
 
 function populateTaskTimezoneSelect(selectedZone) {
@@ -32511,31 +32438,6 @@ function onInlineTimeCustomChange(val) {
 }
 
 function updateUnifiedTaskDateTimeLabel() {
-  const dateInp = document.getElementById('inlineTaskDueDate');
-  const timeInp = document.getElementById('inlineTaskDueTime');
-  const lbl = document.getElementById('lblUnifiedTaskDateTimeDisplay');
-  if (!lbl) return;
-
-  const dateVal = dateInp ? dateInp.value : '';
-  const timeVal = timeInp ? timeInp.value : '';
-  if (!dateVal) {
-    lbl.textContent = 'بدون موعد';
-    updateTaskDateTimeTargetDisplay('inline');
-    return;
-  }
-
-  const zone = document.getElementById('inlineTaskDueTimezone')?.value || getDefaultTaskTimezone();
-  const todayStr = getTaskDateInTimezone(zone);
-  const tomorrowStr = addDaysToTaskIsoDate(todayStr, 1);
-
-  let dateText = dateVal;
-  if (dateVal === todayStr) dateText = 'اليوم';
-  else if (dateVal === tomorrowStr) dateText = 'غداً';
-
-  const secondVal = document.getElementById('inlineTaskDueSecond')?.value || '00';
-  const timeText = timeVal ? ` • ${formatTaskPickerTimeLabel(timeVal, secondVal, false)}` : '';
-  const offsetText = dateVal ? ` · ${getTaskTimeZoneOffsetText(zone, dateVal, timeVal, secondVal)}` : '';
-  lbl.textContent = `${dateText || 'اليوم'}${timeText}${offsetText}`;
   updateTaskDateTimeTargetDisplay('inline');
 }
 
@@ -35048,105 +34950,115 @@ window.toggleSecTransferForm = toggleSecTransferForm;
 function handleExecuteSecTransfer() { executeWalletTransfer(); }
 window.handleExecuteSecTransfer = handleExecuteSecTransfer;
 
+function getSecWalletStatement() {
+  const walletId = document.getElementById('secFilterWallet').value || 'all';
+  const member = document.getElementById('secFilterMember').value || 'all';
+  const category = document.getElementById('secFilterCategory').value || 'all';
+  const period = document.getElementById('secFilterPeriod').value || 'month';
+  const today = new Date();
+  const first = new Date(today.getFullYear(), today.getMonth(), period === 'month' ? 1 : today.getDate() - (period === 'week' ? 6 : 0));
+  const last = period === 'month' ? new Date(today.getFullYear(), today.getMonth() + 1, 0) : today;
+  return buildSecWalletStatement(state.wallets || [], state.transactions || [], {
+    walletId, member, category, from: period === 'all' ? '' : getLocalDateStr(first), to: period === 'all' ? '' : getLocalDateStr(last)
+  });
+}
+
+function buildSecWalletStatement(wallets, transactions, { walletId, member, category, from, to }) {
+  const consolidated = walletId === 'all';
+  const selected = new Set(wallets.filter(wallet => consolidated || wallet.id === walletId).map(wallet => wallet.id));
+  const walletIds = new Set(wallets.map(wallet => wallet.id));
+  const walletNames = new Map(wallets.map(wallet => [wallet.name, wallet.id]));
+  const defaultId = wallets.find(wallet => wallet.isDefault)?.id || wallets[0]?.id;
+  const resolve = reference => {
+    if (reference === 'all') return defaultId;
+    if (walletIds.has(reference)) return reference;
+    return walletNames.get(reference) || normalizeWalletId(reference);
+  };
+  const memberKey = name => {
+    const value = String(name || 'البيت').normalize('NFC').replace(/[\u064B-\u065F\u0670]/g, '').trim();
+    return value === 'أية' ? 'آية' : value === 'العائلة' ? 'البيت' : value;
+  };
+  const categoryKey = tx => tx.type === 'transfer' || tx.category === 'transfer' ? 'transfer' : String(tx.category || '');
+  const amountOf = tx => Math.abs(Number(tx.amount) || 0);
+  const ordered = transactions.filter(tx => tx && !tx.deleted).map((tx, index) => ({
+    tx, date: operationDate(tx), timestamp: Date.parse(tx.createdAt) || 0, index
+  })).sort((a, b) => a.date.localeCompare(b.date) || a.timestamp - b.timestamp || b.index - a.index);
+  const touchesWallet = (tx, id) => {
+    const amount = amountOf(tx);
+    if (tx.type === 'transfer') {
+      const source = resolve(tx.fromWalletId || tx.fromWallet || tx.walletId || tx.wallet);
+      const destination = tx.toWalletId || tx.toWallet;
+      const to = destination && resolve(destination);
+      return {included: source === id || to === id, effect: (to === id ? amount : 0) - (source === id ? amount : 0)};
+    }
+    const source = resolve(tx.walletId || tx.wallet || 'wallet-cash-safe');
+    if (source !== id || (tx.type !== 'income' && tx.type !== 'expense')) return {included: false, effect: 0};
+    return {included: true, effect: tx.type === 'income' ? amount : -amount};
+  };
+  let opening = 0;
+  for (const wallet of wallets.filter(item => selected.has(item.id))) {
+    const baseline = wallet.initialBalance ?? wallet.baseBalance;
+    if (baseline != null && Number.isFinite(Number(baseline))) {
+      const recorded = ordered.some(({tx}) => tx.type === 'income' &&
+        (String(tx.id || '').startsWith('tx-opening-') || String(tx.label || '').startsWith('رصيد افتتاحي لمحفظة')) &&
+        touchesWallet(tx, wallet.id).included && Math.abs(amountOf(tx) - Number(baseline)) < 0.01);
+      opening += recorded ? 0 : Number(baseline);
+    } else if (wallet.balance != null && Number.isFinite(Number(wallet.balance))) {
+      opening += Number(wallet.balance) - ordered.reduce((total, {tx}) => total + touchesWallet(tx, wallet.id).effect, 0);
+    }
+  }
+  let balance = opening;
+  let incoming = 0;
+  let outgoing = 0;
+  const rows = [];
+  for (const {tx, date} of ordered) {
+    const transfer = categoryKey(tx) === 'transfer';
+    const amount = amountOf(tx);
+    const effects = Array.from(selected, id => touchesWallet(tx, id)).filter(item => item.included);
+    if (!effects.length) continue;
+    const effect = effects.reduce((sum, item) => sum + item.effect, 0);
+    if (to && date > to) break;
+    balance += effect;
+    if (from && date < from) {
+      opening += effect;
+      continue;
+    }
+    if (member !== 'all' && memberKey(tx.member) !== memberKey(member)) continue;
+    if (category !== 'all' && categoryKey(tx) !== category) continue;
+    if (!(consolidated && transfer)) {
+      if (effect > 0) incoming += effect;
+      if (effect < 0) outgoing -= effect;
+    }
+    rows.push({tx, date, amount, effect, running: balance, transfer});
+  }
+  return {opening, balance, incoming, outgoing, rows, consolidated};
+}
+
 function renderSecWalletStatementTable() {
   const tableBody = document.getElementById('secWalletTableBody');
   if (!tableBody) return;
-
-  const walletFilter = document.getElementById('secFilterWallet')?.value || 'all';
-  const memberFilter = document.getElementById('secFilterMember')?.value || 'all';
-  const categoryFilter = document.getElementById('secFilterCategory')?.value || 'all';
-  const periodFilter = document.getElementById('secFilterPeriod')?.value || 'month';
-  const today = typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString().split('T')[0];
-  const monthPrefix = today.slice(0, 7);
-  const weekStartDate = new Date();
-  weekStartDate.setDate(weekStartDate.getDate() - 6);
-  const weekStart = typeof getLocalDateStr === 'function' ? getLocalDateStr(weekStartDate) : weekStartDate.toISOString().split('T')[0];
-
-  const wallets = Array.isArray(state.wallets) ? state.wallets : [];
-  const wallet = wallets.find(item => item.id === walletFilter);
-  const openingBalance = walletFilter === 'all'
-    ? wallets.reduce((sum, item) => sum + (Number(item.initialBalance) || 0), 0)
-    : Number(wallet?.initialBalance) || 0;
-  const allTransactions = (state.transactions || []).slice().sort((a, b) => String(a.date || '').localeCompare(String(b.date || '')));
-
-  const belongsToWallet = tx => {
-    if (walletFilter === 'all') return true;
-    const targetId = typeof normalizeWalletId === 'function' ? normalizeWalletId(walletFilter) : walletFilter;
-    if (tx.type === 'transfer') {
-      const fromId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.fromWalletId || tx.walletId) : (tx.fromWalletId || tx.walletId);
-      const toId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.toWalletId) : tx.toWalletId;
-      return fromId === targetId || toId === targetId;
-    }
-    const txWalletId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.walletId || tx.wallet) : (tx.walletId || tx.wallet);
-    return txWalletId === targetId;
+  const statement = getSecWalletStatement();
+  tableBody.innerHTML = statement.rows.map(({tx, date, amount, effect, running, transfer}) => {
+    const name = transfer ? 'تحويل داخلي' : getCategoryName(tx.category, tx.type);
+    const amountLabel = effect ? (effect > 0 ? '+ ' : '− ') + formatMoney(amount) : formatMoney(amount);
+    return `<tr>
+      <td class="wallet-statement-description">${escapeHtml(tx.label || tx.description || '—')}<small>${escapeHtml(name || '—')} · ${escapeHtml(tx.member || 'البيت')} · نفّذها: ${escapeHtml(tx.author || tx.member || '—')}</small></td>
+      <td class="wallet-statement-date" dir="ltr">${escapeHtml(date || '—')}</td>
+      <td class="wallet-statement-number" dir="ltr" data-effect="${Math.sign(effect)}">${escapeHtml(amountLabel)}</td>
+      <td class="wallet-statement-number" dir="ltr">${escapeHtml(formatMoney(running))}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="4" class="wallet-statement-empty">لا توجد حركات مطابقة للفلاتر</td></tr>';
+  const values = {
+    secWalletKpiOpening: formatMoney(statement.opening),
+    secWalletKpiTotalIn: '+ ' + formatMoney(statement.incoming),
+    secWalletKpiTotalOut: '− ' + formatMoney(statement.outgoing),
+    secWalletKpiBalance: formatMoney(statement.balance)
   };
-  const matchesPeriod = tx => {
-    const date = String(tx.date || '');
-    if (periodFilter === 'today') return date === today;
-    if (periodFilter === 'week') return date >= weekStart && date <= today;
-    if (periodFilter === 'month') return date.startsWith(monthPrefix);
-    return true;
-  };
-  const matchesFilters = tx => belongsToWallet(tx) &&
-    (memberFilter === 'all' || tx.member === memberFilter) &&
-    (categoryFilter === 'all' || String(tx.category || '') === categoryFilter) &&
-    matchesPeriod(tx);
-
-  const transactionEffect = tx => {
-    if (tx.deleted) return 0;
-    const amount = Math.abs(Number(tx.amount) || 0);
-    if (tx.type === 'transfer') {
-      if (walletFilter === 'all') return 0;
-      const targetId = typeof normalizeWalletId === 'function' ? normalizeWalletId(walletFilter) : walletFilter;
-      const fromId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.fromWalletId || tx.walletId) : (tx.fromWalletId || tx.walletId);
-      const toId = typeof normalizeWalletId === 'function' ? normalizeWalletId(tx.toWalletId) : tx.toWalletId;
-      return fromId === targetId ? -amount : (toId === targetId ? amount : 0);
-    }
-    if (walletFilter !== 'all' && !belongsToWallet(tx)) return 0;
-    if (tx.type === 'income') return amount;
-    if (tx.type === 'expense') return -amount;
-    return 0;
-  };
-
-  const filteredTransactions = allTransactions.filter(matchesFilters);
-  let totalIn = 0;
-  let totalOut = 0;
-  filteredTransactions.forEach(tx => {
-    const amount = Math.abs(Number(tx.amount) || 0);
-    const effect = transactionEffect(tx);
-    if (effect > 0) totalIn += amount;
-    else if (effect < 0) totalOut += amount;
-  });
-
-  let runningBalance = openingBalance;
-  const visibleRows = [];
-  allTransactions.forEach(tx => {
-    runningBalance += transactionEffect(tx);
-    if (!matchesFilters(tx)) return;
-    const amount = Math.abs(Number(tx.amount) || 0);
-    const effect = transactionEffect(tx);
-    const categoryName = typeof getCategoryName === 'function'
-      ? getCategoryName(tx.category, tx.type)
-      : String(tx.category || '—');
-    const effectLabel = effect > 0 ? `+ ${formatMoney(amount)}` : (effect < 0 ? `− ${formatMoney(amount)}` : 'تحويل');
-    visibleRows.push(`
-      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-        <td style="padding: 7px 6px; white-space: nowrap;">${escapeHtml(tx.date || '—')}</td>
-        <td style="padding: 7px 6px;">${escapeHtml(tx.label || '—')}</td>
-        <td style="padding: 7px 6px; white-space: nowrap;">${escapeHtml(tx.member || '—')}</td>
-        <td style="padding: 7px 6px;">${escapeHtml(categoryName)}</td>
-        <td style="padding: 7px 6px;">${escapeHtml(tx.author || tx.member || '—')}</td>
-        <td style="padding: 7px 6px; direction: ltr; text-align: left; white-space: nowrap;">${escapeHtml(effectLabel)}</td>
-        <td style="padding: 7px 6px; direction: ltr; text-align: left; white-space: nowrap;">${formatMoney(runningBalance)}</td>
-      </tr>`);
-  });
-
-  tableBody.innerHTML = visibleRows.join('') || '<tr><td colspan="7" style="text-align:center; padding:18px; color:#94a3b8;">لا توجد حركات مطابقة للفلاتر</td></tr>';
-  const setKpi = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
-  setKpi('secWalletKpiOpening', formatMoney(openingBalance));
-  setKpi('secWalletKpiTotalIn', `+ ${formatMoney(totalIn)}`);
-  setKpi('secWalletKpiTotalOut', `− ${formatMoney(totalOut)}`);
-  setKpi('secWalletKpiBalance', formatMoney(runningBalance));
+  for (const [id, value] of Object.entries(values)) document.getElementById(id).textContent = value;
+  document.getElementById('secWalletCount').textContent = statement.rows.length.toLocaleString('ar-EG') + ' حركة';
+  document.getElementById('secWalletScopeNote').textContent = statement.consolidated
+    ? 'الأرصدة تشمل كل حركات الفترة. التحويلات بين المحافظ لا تدخل في إجماليات الوارد والصادر.'
+    : 'الأرصدة تشمل كل حركات الفترة. الوارد والصادر يعكسان الفلاتر المحددة، بما فيها التحويلات.';
 }
 window.renderSecWalletStatementTable = renderSecWalletStatementTable;
 
@@ -35163,10 +35075,55 @@ function resetSecWalletFilters() {
 }
 window.resetSecWalletFilters = resetSecWalletFilters;
 
-function exportSecWalletExcel() { exportAuditLedgerCSV(); }
+function exportSecWalletExcel() {
+  const statement = getSecWalletStatement();
+  if (!statement.rows.length) {
+    showToast('لا توجد حركات مطابقة للتصدير');
+    return;
+  }
+  if (typeof XLSX === 'undefined') {
+    showToast('تعذر تحميل أداة تصدير إكسيل');
+    return;
+  }
+  const data = [
+    ['كشف المحافظ والحركات النقدية (ج.م)'],
+    ['المحفظة', document.getElementById('secFilterWallet').selectedOptions[0]?.textContent || 'كل المحافظ'],
+    ['رصيد أول الفترة', statement.opening, 'الوارد المطابق', statement.incoming, 'الصادر المطابق', statement.outgoing, 'رصيد نهاية الفترة', statement.balance],
+    ['التاريخ', 'البيان', 'الفرد', 'البند', 'منفذ العملية', 'المبلغ', 'الأثر على الرصيد', 'الرصيد'],
+    ...statement.rows.map(({tx, date, amount, effect, running, transfer}) => [
+      date, tx.label || tx.description || '', tx.member || 'البيت', transfer ? 'تحويل داخلي' : getCategoryName(tx.category, tx.type),
+      tx.author || tx.member || '', amount, effect, running
+    ])
+  ];
+  const sheet = XLSX.utils.aoa_to_sheet(data);
+  sheet['!cols'] = [14, 48, 16, 22, 16, 16, 19, 18].map(wch => ({wch}));
+  const book = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(book, sheet, 'كشف المحافظ');
+  XLSX.writeFile(book, 'wallet-statement-' + getLocalDateStr(new Date()) + '.xlsx');
+}
 window.exportSecWalletExcel = exportSecWalletExcel;
 
-function exportSecWalletPdf() { window.print(); }
+function exportSecWalletPdf() {
+  const source = document.querySelector('#secReqWallets .wallet-statement-table');
+  const printSheet = document.createElement('section');
+  printSheet.id = 'walletPrintSheet';
+  printSheet.dir = 'rtl';
+  const title = document.createElement('h1');
+  title.textContent = 'كشف المحافظ والحركات النقدية';
+  const filters = document.createElement('p');
+  filters.textContent = ['secFilterWallet', 'secFilterMember', 'secFilterCategory', 'secFilterPeriod']
+    .map(id => document.getElementById(id).selectedOptions[0]?.textContent.trim()).filter(Boolean).join(' · ');
+  printSheet.append(title, filters, document.querySelector('.wallet-statement-kpis').cloneNode(true),
+    document.querySelector('.wallet-statement-caption').cloneNode(true), source.cloneNode(true));
+  printSheet.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  document.body.append(printSheet);
+  document.body.classList.add('printing-wallet-statement');
+  try { window.print(); }
+  finally {
+    document.body.classList.remove('printing-wallet-statement');
+    printSheet.remove();
+  }
+}
 window.exportSecWalletPdf = exportSecWalletPdf;
 
 function switchIncomeSubTab(tab) {
@@ -35256,7 +35213,10 @@ function switchRequestMainSection(sec) {
   });
   if (sec === 'income') switchIncomeSubTab('new');
   if (sec === 'requests') switchRequestSubTab('new');
-  if (sec === 'wallets' && typeof renderSecWalletStatementTable === 'function') renderSecWalletStatementTable();
+  if (sec === 'wallets') {
+    populateWalletDropdowns();
+    renderSecWalletStatementTable();
+  }
 }
 window.switchRequestMainSection = switchRequestMainSection;
 
