@@ -246,13 +246,16 @@
     function openModal(id) {
       const el = document.getElementById(id);
       if (el) {
+        pushModalState(id);
+        const stackIdx = activeModalsStack.indexOf(id);
+        const baseZ = 1000050;
+        const dynamicZ = baseZ + ((stackIdx >= 0 ? stackIdx : activeModalsStack.length) * 100);
         el.classList.add('open');
         el.classList.add('active');
         el.style.setProperty('display', 'flex', 'important');
         el.style.setProperty('visibility', 'visible', 'important');
         el.style.setProperty('opacity', '1', 'important');
-        el.style.setProperty('z-index', '1000050', 'important');
-        pushModalState(id);
+        el.style.setProperty('z-index', String(dynamicZ), 'important');
       }
     }
 
@@ -272,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.52';
-    var APP_BUILD_ID = 202611141330;
+    var APP_VERSION = 'v5.3.55';
+    var APP_BUILD_ID = 202611141815;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -5203,7 +5206,7 @@
       inset: 0;
       background: rgba(0, 0, 0, 0.65);
       backdrop-filter: blur(8px);
-      z-index: 10500;
+      z-index: 3000000 !important;
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -15420,6 +15423,166 @@
     }
   </style>
 
+<style id="v5353-custom-fixes">
+  /* =====================================================================
+     [v5.3.53] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
+     ===================================================================== */
+  #walletModal,
+  #walletTransferModal,
+  #walletStatementModal {
+    z-index: 1000250 !important;
+  }
+
+  /* 1. قمرة القيادة وكبسولتي التدفقات التوأم: متسعة ومستقرة ولا تقتطع الأرقام إطلاقاً */
+  #viewExpenses .cockpit-flow-side {
+    flex: 1.25 !important;
+    min-width: 145px !important;
+    max-width: 48% !important;
+    margin-inline: -4px !important;
+    gap: 6px !important;
+  }
+  #viewExpenses .cockpit-flow-pill.inflow,
+  #viewExpenses .cockpit-flow-pill.outflow {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    margin: 0 !important;
+    padding: 3px 8px !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  #viewExpenses .cockpit-flow-pill .flow-pill-left-group {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+  }
+  #viewExpenses .cockpit-flow-pill .flow-icon-badge {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.65rem !important;
+    flex-shrink: 0 !important;
+  }
+  #viewExpenses .cockpit-flow-pill .flow-title {
+    font-size: 0.64rem !important;
+    font-weight: 850 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+  #viewExpenses .cockpit-flow-pill .flow-amount {
+    font-size: clamp(0.70rem, 2.0vw, 0.84rem) !important;
+    font-weight: 900 !important;
+    font-family: var(--font-numbers) !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-shrink: 1 !important;
+    min-width: 0 !important;
+    letter-spacing: -0.2px !important;
+    text-align: left !important;
+  }
+  #viewExpenses .cockpit-flow-pill .flow-amount .tx-currency-label {
+    display: none !important; /* إخفاء رمز ج.م داخل الكبسولتين فقط لتوفير المساحة للأرقام الضخمة بدون أي اقتصاص */
+  }
+  #viewExpenses .cockpit-flow-pill .flow-amount .tx-sign-symbol {
+    font-size: 1.05em !important;
+    font-weight: 900 !important;
+    margin-inline-end: 2px !important;
+  }
+
+  /* 2. تباين ألوان بطاقات الأرشيف وسجل النشاط للأوضاع الفاتحة والداكنة */
+  .activity-card-item {
+    transition: transform 0.15s, background 0.15s, box-shadow 0.15s !important;
+    margin-bottom: 8px !important;
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+    box-sizing: border-box !important;
+  }
+  /* الوضع الداكن الافتراضي لكروت الأرشيف */
+  body:not(.light-theme) .activity-card-item {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.96)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.30) !important;
+  }
+  body:not(.light-theme) .activity-card-item .act-card-title {
+    color: #f8fafc !important;
+  }
+  body:not(.light-theme) .activity-card-item .act-card-date {
+    color: #cbd5e1 !important;
+  }
+  body:not(.light-theme) .activity-type-badge.badge-inc {
+    background: rgba(16, 185, 129, 0.22) !important;
+    color: #34d399 !important;
+    border: 1.2px solid rgba(52, 211, 153, 0.5) !important;
+  }
+  body:not(.light-theme) .activity-type-badge.badge-exp {
+    background: rgba(244, 63, 94, 0.22) !important;
+    color: #fda4af !important;
+    border: 1.2px solid rgba(251, 113, 133, 0.5) !important;
+  }
+
+  /* الوضع الفاتح النقي لكروت الأرشيف (High Contrast Light Mode) */
+  body.light-theme .activity-card-item {
+    background: #ffffff !important;
+    border: 1.2px solid rgba(0, 0, 0, 0.10) !important;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07) !important;
+  }
+  body.light-theme .activity-card-item .act-card-title {
+    color: #0f172a !important;
+    font-weight: 850 !important;
+  }
+  body.light-theme .activity-card-item .act-card-date {
+    color: #475569 !important;
+    font-weight: 700 !important;
+  }
+  body.light-theme .activity-card-item .act-card-meta {
+    color: #334155 !important;
+  }
+  body.light-theme .activity-type-badge.badge-inc {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: #047857 !important;
+    border: 1.2px solid rgba(5, 150, 105, 0.5) !important;
+  }
+  body.light-theme .activity-type-badge.badge-exp {
+    background: rgba(244, 63, 94, 0.12) !important;
+    color: #b91c1c !important;
+    border: 1.2px solid rgba(220, 38, 38, 0.5) !important;
+  }
+  body.light-theme .activity-type-badge.badge-del {
+    background: rgba(225, 29, 72, 0.12) !important;
+    color: #9f1239 !important;
+    border: 1.2px solid rgba(225, 29, 72, 0.4) !important;
+  }
+  body.light-theme .activity-type-badge.badge-trans {
+    background: rgba(2, 132, 199, 0.12) !important;
+    color: #0369a1 !important;
+    border: 1.2px solid rgba(2, 132, 199, 0.4) !important;
+  }
+  body.light-theme .activity-type-badge.badge-lux,
+  body.light-theme .activity-type-badge.badge-req,
+  body.light-theme .activity-type-badge.badge-note {
+    background: rgba(217, 119, 6, 0.12) !important;
+    color: #b45309 !important;
+    border: 1.2px solid rgba(217, 119, 6, 0.4) !important;
+  }
+</style>
 </head>
 <body>
 
@@ -15809,21 +15972,28 @@
                 <i class="fa-solid fa-calendar-check"></i> مخصص
               </button>
             </div>
-        <div class="ops-view-mode-bar" id="opsViewModeToggleBar">
-          <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
-            <i class="fa-solid fa-calendar-day"></i>
-            <span>حسب اليوم</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>مجمع</span>
-          </button>
-          <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
-            <i class="fa-solid fa-folder-tree"></i>
-            <span>حسب المشروع</span>
-          </button>
+        <div class="ops-view-mode-bar" id="opsViewModeToggleBar" style="display: flex; align-items: center; justify-content: space-between; gap: 4px; padding: 2px 4px;">
+          <div style="display: flex; align-items: center; gap: 3px; flex: 1; min-width: 0;">
+            <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
+              <i class="fa-solid fa-calendar-day"></i>
+              <span>حسب اليوم</span>
+            </button>
+            <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
+              <i class="fa-solid fa-layer-group"></i>
+              <span>مجمع</span>
+            </button>
+            <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
+              <i class="fa-solid fa-folder-tree"></i>
+              <span>حسب المشروع</span>
+            </button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+            <span id="opsResultCount" role="status" style="font-size: 0.68rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); padding: 2px 6px; border-radius: 6px; white-space: nowrap;"></span>
+            <button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()" style="background: rgba(244, 63, 94, 0.12); border: 1px solid rgba(244, 63, 94, 0.32); color: #f43f5e; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px; min-height: 28px; height: 28px;">
+              <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> مسح الفلاتر
+            </button>
+          </div>
         </div>
-            <div class="ops-filter-footer"><span id="opsResultCount" role="status"></span><button type="button" id="btnOpsClearFilters" onclick="clearOpsFilter()"><i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i> مسح الفلاتر</button></div>
           </div>
           <div id="txOperationsList" class="ops-feed-container"></div>
         </div>
@@ -16632,20 +16802,26 @@
               </button>
             </div>
 
-            <!-- شريط الفلاتر الرباعي لتحليل واستعراض حركات المحفظة بالتاريخ والشخص والبند -->
-            <div class="wallet-statement-filters">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span style="font-size: 0.72rem; font-weight: 800; color: #94a3b8;"><i class="fa-solid fa-filter"></i> فلاتر كشف الحركات</span>
-                <button type="button" onclick="resetSecWalletFilters()" style="background: transparent; border: none; color: #38bdf8; font-size: 0.68rem; font-weight: 800; cursor: pointer; text-decoration: underline;">إعادة ضبط</button>
+            <!-- شريط فلاتر كشف الحركات المدمج الشامل (مساحة مصغرة وكافة الفلاتر الممكنة) -->
+            <div class="wallet-statement-filters" style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 7px 9px; margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <span style="font-size: 0.70rem; font-weight: 850; color: #f8fafc; display: flex; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-filter" style="color: #f59e0b; font-size: 0.72rem;"></i> فلاتر كشف الحركات
+                </span>
+                <button type="button" onclick="resetSecWalletFilters()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 5px; color: #38bdf8; font-size: 0.62rem; font-weight: 800; cursor: pointer; padding: 2px 8px;">
+                  <i class="fa-solid fa-rotate-left"></i> إعادة ضبط
+                </button>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 6px;">
+
+              <!-- شبكة الفلاتر المصغرة الأنيقة (3 أعمدة في صفين مضغوطين جداً) -->
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 5px;">
                 <div>
-                  <label for="secFilterWallet" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">المحفظة المستهدفة</label>
-                  <select id="secFilterWallet" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;"></select>
+                  <label for="secFilterWallet" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">المحفظة المستهدفة</label>
+                  <select id="secFilterWallet" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;"></select>
                 </div>
                 <div>
-                  <label for="secFilterMember" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">الشخص / المسؤول</label>
-                  <select id="secFilterMember" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;">
+                  <label for="secFilterMember" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">الشخص / المسؤول</label>
+                  <select id="secFilterMember" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
                     <option value="all">كل أفراد الأسرة 👥</option>
                     <option value="البيت">البيت</option>
                     <option value="أخرى">أخرى</option>
@@ -16658,18 +16834,39 @@
                   </select>
                 </div>
                 <div>
-                  <label for="secFilterCategory" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">بند المصروف / التصنيف</label>
-                  <select id="secFilterCategory" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;"></select>
+                  <label for="secFilterCategory" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">بند المصروف / التصنيف</label>
+                  <select id="secFilterCategory" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;"></select>
                 </div>
                 <div>
-                  <label for="secFilterPeriod" style="font-size: 0.64rem; color: #94a3b8; display: block; margin-bottom: 1px;">التاريخ والفترة</label>
-                  <select id="secFilterPeriod" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 32px; font-size: 0.76rem; padding: 2px 6px;">
+                  <label for="secFilterPeriod" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">التاريخ والفترة</label>
+                  <select id="secFilterPeriod" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
                     <option value="all">كافة الفترات (شامل)</option>
                     <option value="today">اليوم 📅</option>
                     <option value="week">هذا الأسبوع 🗓️</option>
                     <option value="month" selected>هذا الشهر 📊</option>
                   </select>
                 </div>
+                <div>
+                  <label for="secFilterType" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">نوع العملية</label>
+                  <select id="secFilterType" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
+                    <option value="all">كافة العمليات 🔄</option>
+                    <option value="expense">مصروفات فقط 🔴</option>
+                    <option value="income">إيداعات فقط 🟢</option>
+                    <option value="transfer">تحويلات بينية ↔️</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="secFilterProject" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">المشروع التابع له</label>
+                  <select id="secFilterProject" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
+                    <option value="all">كافة المشاريع 📁</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- حقل البحث الفوري المدمج في البيان والملاحظات -->
+              <div style="margin-top: 5px; position: relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.65rem; color: #94a3b8;"></i>
+                <input type="text" id="secFilterSearch" oninput="renderSecWalletStatementTable()" placeholder="ابحث في البيان أو الملاحظات..." class="form-input-custom" style="height: 26px; font-size: 0.68rem; padding: 0 24px 0 6px; border-radius: 6px; width: 100%; box-sizing: border-box;">
               </div>
             </div>
 
@@ -19027,7 +19224,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.52</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.55</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -22590,6 +22787,8 @@
 
     let customDatePickerHome = null;
     function toggleCustomDatePicker(open = true) {
+  const _drw = document.getElementById('customDatePickerDrawer');
+  if (_drw) _drw.style.setProperty('z-index', '3000000', 'important');
       const drawer = document.getElementById('customDatePickerDrawer');
       if (!drawer) return;
       const summary = document.getElementById('summaryLeftDrawer');
@@ -25030,6 +25229,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       replaceProjectOptions(document.getElementById('quickTaskProjectSelect'), projects, { create: true });
       refreshOperationProjectFilter(projects);
       replaceProjectOptions(document.getElementById('analyticsProjectFilter'), projects, { filter: true, allLabel: 'كل المشاريع للمقارنة' });
+      replaceProjectOptions(document.getElementById('secFilterProject'), projects, { filter: true, allLabel: 'كافة المشاريع 📁' });
     }
 
     function handleTxProjectSelection(select) {
@@ -25187,6 +25387,12 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         receipt: state.pendingReceiptDataUri || null
       };
 
+      if (currentModalType === 'expense') {
+        if (typeof canDeductFromWallet === 'function' && !canDeductFromWallet(newTx.walletId, newTx.amount)) {
+          showToast('الرصيد الحالى لا يكفى لتنفيذ العملية', 'error', 4500);
+          return;
+        }
+      }
       state.transactions.unshift(newTx);
       saveTx();
       // ضمان ظهور الحركة الجديدة فوراً في صفحة العمليات المسجلة بإزالة أي حجب مؤقت
@@ -25260,7 +25466,55 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       return wId;
     }
 
-    function auditAndRecomputeAllWalletBalances() {
+    
+    // ==============================================================
+    // [v5.3.54] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
+    // ==============================================================
+    function getWalletActualBalance(walletIdOrName) {
+      if (typeof auditAndRecomputeAllWalletBalances === 'function') {
+        auditAndRecomputeAllWalletBalances();
+      }
+      if (!walletIdOrName || !Array.isArray(state.wallets)) return 0;
+      const val = String(walletIdOrName);
+      const normalized = typeof normalizeWalletId === 'function' ? normalizeWalletId(val) : val;
+      const w = state.wallets.find(wallet => wallet && (wallet.id === val || wallet.name === val || wallet.id === normalized));
+      return w ? (Number(w.balance) || 0) : 0;
+    }
+    window.getWalletActualBalance = getWalletActualBalance;
+
+    function canDeductFromWallet(walletId, amount, excludeTxId = null) {
+      if (typeof auditAndRecomputeAllWalletBalances === 'function') {
+        auditAndRecomputeAllWalletBalances();
+      }
+      const amt = Math.abs(Number(amount) || 0);
+      if (amt <= 0) return true;
+      if (!walletId || !Array.isArray(state.wallets)) return false;
+
+      const val = String(walletId);
+      const normalized = typeof normalizeWalletId === 'function' ? normalizeWalletId(val) : val;
+      const w = state.wallets.find(item => item && (item.id === val || item.name === val || item.id === normalized));
+      if (!w) return false;
+
+      let currentBal = Number(w.balance) || 0;
+
+      // عند تعديل حركة موجودة مسبقاً، يتم استرجاع أثرها السابق مؤقتاً للتحقق
+      if (excludeTxId && Array.isArray(state.transactions)) {
+        const prevTx = state.transactions.find(t => t && t.id === excludeTxId);
+        if (prevTx) {
+          const prevAmt = Math.abs(Number(prevTx.amount) || 0);
+          if (prevTx.type === 'expense' && (prevTx.walletId === w.id || prevTx.wallet === w.id || prevTx.walletId === w.name)) {
+            currentBal += prevAmt;
+          } else if (prevTx.type === 'transfer' && (prevTx.fromWalletId === w.id || prevTx.fromWallet === w.id)) {
+            currentBal += prevAmt;
+          }
+        }
+      }
+
+      return (currentBal + 0.0001) >= amt;
+    }
+    window.canDeductFromWallet = canDeductFromWallet;
+
+function auditAndRecomputeAllWalletBalances() {
       if (!Array.isArray(state.wallets)) state.wallets = [];
       const transactions = Array.isArray(state.transactions) ? state.transactions.filter(tx => tx && !tx.deleted) : [];
       const findWallet = reference => {
@@ -26525,6 +26779,12 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         exp.photo = state.pendingPayExpectedReceiptDataUri;
       }
 
+      if (!isCollection) {
+        if (typeof canDeductFromWallet === 'function' && !canDeductFromWallet(walletId, Number(exp.amount))) {
+          if (typeof showToast === 'function') showToast('الرصيد الحالى لا يكفى لتنفيذ العملية', 'error', 4500);
+          return;
+        }
+      }
       if (!state.transactions) state.transactions = [];
       state.transactions.unshift(newTx);
       saveTx();
@@ -29650,7 +29910,7 @@ function switchSettingsTab(tabName) {
         const amountDisplay = rawAmount > 0 ? `${sign ? sign + ' ' : ''}${formatMoney(rawAmount)}` : '';
 
         return `
-          <div class="activity-card-item ${borderClass}" onclick="openActivityDetails('${item.id}')" title="انقر لعرض التفاصيل الكاملة والمستند المرفق" style="cursor: pointer; transition: transform 0.15s, background 0.15s; margin-bottom: 7px; background: rgba(30, 41, 59, 0.6); border-radius: 12px; padding: 10px 12px; border-left: 3.5px solid ${valColor}; box-shadow: 0 4px 14px rgba(0,0,0,0.25);">
+          <div class="activity-card-item ${borderClass}" onclick="openActivityDetails('${item.id}')" title="انقر لعرض التفاصيل الكاملة والمستند المرفق" style="cursor: pointer; border-left: 3.5px solid ${valColor};">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
               <div style="display: flex; align-items: center; gap: 6px;">
                 <span class="activity-type-badge ${badgeClass}" style="font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 6px;">
@@ -29658,25 +29918,31 @@ function switchSettingsTab(tabName) {
                 </span>
                 ${receiptBadge}
               </div>
-              <div style="font-size: 0.65rem; color: #94a3b8; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+              <div class="act-card-date" style="font-size: 0.65rem; font-weight: 600; display: flex; align-items: center; gap: 4px;">
                 <i class="fa-regular fa-clock"></i> <span>${dateStr}</span>
               </div>
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
               <div style="flex: 1; min-width: 0;">
-                <div style="font-size: 0.84rem; font-weight: 800; color: #f8fafc; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <div class="act-card-title" style="font-size: 0.84rem; font-weight: 800; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                   ${item.label || item.action}
                 </div>
-                <div style="font-size: 0.68rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                  <span style="display: flex; align-items: center; gap: 4px;" title="المنفذ">
-                    ${authorAvatar} <strong>${item.author || 'ماهر'}</strong>
-                  </span>
-                  ${item.member ? `
-                    <span style="display: flex; align-items: center; gap: 4px;" title="المستفيد">
-                      ${memberAvatar} <span>${item.member}</span>
+                <div class="act-card-meta" style="font-size: 0.68rem; display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                  ${(item.author && item.member && item.author === item.member) ? `
+                    <span style="display: flex; align-items: center; gap: 4px;" title="المنفذ والمستفيد">
+                      ${authorAvatar} <strong>${item.author}</strong>
                     </span>
-                  ` : ''}
+                  ` : `
+                    <span style="display: flex; align-items: center; gap: 4px;" title="المنفذ">
+                      ${authorAvatar} <strong>${item.author || 'ماهر'}</strong>
+                    </span>
+                    ${item.member ? `
+                      <span style="display: flex; align-items: center; gap: 4px;" title="المستفيد">
+                        ${memberAvatar} <span>${item.member}</span>
+                      </span>
+                    ` : ''}
+                  `}
                 </div>
               </div>
 
@@ -34598,6 +34864,12 @@ function saveEditedTx() {
     if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ صحيح أكبر من 0', 'error');
     return;
   }
+  if (typeVal === 'expense') {
+    if (typeof canDeductFromWallet === 'function' && !canDeductFromWallet(walletVal, amtVal, txId)) {
+      if (typeof showToast === 'function') showToast('الرصيد الحالى لا يكفى لتنفيذ العملية', 'error', 4500);
+      return;
+    }
+  }
 
   tx.amount = amtVal;
   tx.label = labelVal;
@@ -35652,6 +35924,10 @@ function executeWalletTransfer() {
     if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ تحويل أكبر من 0', 'error');
     return;
   }
+  if (typeof canDeductFromWallet === 'function' && !canDeductFromWallet(from, amt)) {
+    if (typeof showToast === 'function') showToast('الرصيد الحالى لا يكفى لتنفيذ العملية', 'error', 4500);
+    return;
+  }
 
   const txOut = {
     id: 'tx-' + Date.now() + '-out',
@@ -35698,26 +35974,50 @@ function renderWalletStatement() {
   const container = document.getElementById('walletStatementTableContainer');
   if (!container) return;
   const wallet = document.getElementById('stmtWalletFilter')?.value || 'all';
+  const period = document.getElementById('stmtPeriodFilter')?.value || 'month';
   const wallets = Array.isArray(state.wallets) ? state.wallets : [];
   const selectedWallets = wallet === 'all' ? wallets : wallets.filter(item => item.id === wallet);
-  const openingBalance = selectedWallets.reduce((sum, item) => sum + (Number(item.initialBalance ?? item.baseBalance) || 0), 0);
+  const initialBaseBalance = selectedWallets.reduce((sum, item) => sum + (Number(item.initialBalance ?? item.baseBalance) || 0), 0);
+  
   const matchesWallet = reference => {
     if (!reference) return false;
     const value = String(reference);
     return selectedWallets.some(item => item.id === value || item.name === value || item.id === normalizeWalletId(value));
   };
-  let txs = (state.transactions || []).filter(tx => {
+
+  // كافة حركات المحفظة المحددة مرتبة زمنياً تصاعدياً لحساب الرصيد التراكمي بدقة
+  let allWalletTxs = (state.transactions || []).filter(tx => {
     if (wallet === 'all') return true;
     if (tx.type === 'transfer') return matchesWallet(tx.fromWalletId || tx.fromWallet || tx.walletId || tx.wallet) || matchesWallet(tx.toWalletId || tx.toWallet);
     return matchesWallet(tx.walletId || tx.wallet || 'wallet-cash-safe');
   });
-  txs.sort((a,b) => (a.date || '').localeCompare(b.date || '') || String(a.time || '').localeCompare(String(b.time || '')));
+  allWalletTxs.sort((a,b) => (a.date || '').localeCompare(b.date || '') || String(a.time || '').localeCompare(String(b.time || '')));
 
-  let bal = openingBalance;
-  let inFlow = 0;
-  let outFlow = 0;
+  // تحديد نطاق تاريخ الفترة المختارة
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  let startDate = '';
+  let endDate = todayStr;
 
-  const rows = txs.map((t, idx) => {
+  if (period === 'today') {
+    startDate = todayStr;
+    endDate = todayStr;
+  } else if (period === 'week') {
+    const wDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
+    startDate = wDate.toISOString().split('T')[0];
+  } else if (period === 'month') {
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    startDate = `${y}-${m}-01`;
+    const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+    endDate = `${y}-${m}-${String(lastDay).padStart(2, '0')}`;
+  } // if 'all', startDate remains empty
+
+  // 1. حساب الرصيد الافتتاحي الدقيق للفترة (الرصيد الأساسي + الحركات السابقة لتاريخ بداية الفترة)
+  let openingBalance = initialBaseBalance;
+  const periodTxs = [];
+
+  allWalletTxs.forEach(t => {
     const isTransfer = t.type === 'transfer' || t.category === 'transfer';
     const amt = parseFloat(t.amount) || 0;
     let effect = t.type === 'income' ? amt : (t.type === 'expense' ? -amt : 0);
@@ -35726,44 +36026,68 @@ function renderWalletStatement() {
       const toMatches = wallet !== 'all' && matchesWallet(t.toWalletId || t.toWallet);
       effect = fromMatches ? -amt : (toMatches ? amt : 0);
     }
+
+    const txDate = t.date || '';
+    if (startDate && txDate < startDate) {
+      openingBalance += effect;
+    } else if (!endDate || txDate <= endDate) {
+      periodTxs.push({ tx: t, effect, amt, isTransfer });
+    }
+  });
+
+  let runningBal = openingBalance;
+  let inFlow = 0;
+  let outFlow = 0;
+
+  const fmtNum = n => Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const rows = periodTxs.map((item, idx) => {
+    const t = item.tx;
+    const effect = item.effect;
+    const amt = item.amt;
+    const isTransfer = item.isTransfer;
     const isInc = effect > 0 || (t.type === 'income' && effect >= 0);
-    bal += effect;
+    runningBal += effect;
+
     if (!(wallet === 'all' && isTransfer)) {
       if (effect > 0) inFlow += effect;
       else if (effect < 0) outFlow += Math.abs(effect);
     }
 
+    const rowBg = idx % 2 === 0 ? 'background: rgba(30,41,59,0.25);' : 'background: transparent;';
+
     return `
-      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-        <td style="padding: 6px;">${idx + 1}</td>
-        <td style="padding: 6px;">${escapeHtml(t.date || '-')}</td>
-        <td style="padding: 6px;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
-        <td style="padding: 6px; color:#34d399; text-align:left;">${isInc ? `+${amt.toFixed(2)}` : '-'}</td>
-        <td style="padding: 6px; color:#f43f5e; text-align:left;">${!isInc ? `-${amt.toFixed(2)}` : '-'}</td>
-        <td style="padding: 6px; font-weight:800; text-align:left;">${bal.toFixed(2)}</td>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); ${rowBg}">
+        <td style="padding: 7px 6px; text-align: center; color: #94a3b8; font-weight: 700;">${idx + 1}</td>
+        <td style="padding: 7px 8px; white-space: nowrap; font-family: var(--font-numbers); direction: ltr; text-align: center; font-weight: 700; color: #cbd5e1;">${escapeHtml(t.date || '-')}</td>
+        <td style="padding: 7px 8px; font-weight: 750; color: #f8fafc; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${typeof escapeHtml === 'function' ? escapeHtml(t.label || '-') : (t.label || '-')}</td>
+        <td style="padding: 7px 8px; color: #34d399; font-weight: 850; font-family: var(--font-numbers); direction: ltr; text-align: left; white-space: nowrap;">${isInc ? `+${fmtNum(amt)}` : '-'}</td>
+        <td style="padding: 7px 8px; color: #f43f5e; font-weight: 850; font-family: var(--font-numbers); direction: ltr; text-align: left; white-space: nowrap;">${!isInc ? `-${fmtNum(amt)}` : '-'}</td>
+        <td style="padding: 7px 8px; font-weight: 900; font-family: var(--font-numbers); direction: ltr; text-align: left; white-space: nowrap; color: ${runningBal >= 0 ? '#38bdf8' : '#f43f5e'};">${fmtNum(runningBal)}</td>
       </tr>
     `;
   }).join('');
 
   container.innerHTML = `
     <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 0.74rem;">
-      <thead>
-        <tr style="background: rgba(30,41,59,0.6); color: #94a3b8;">
-          <th style="padding: 6px;">#</th>
-          <th style="padding: 6px;">التاريخ</th>
-          <th style="padding: 6px;">البيان</th>
-          <th style="padding: 6px; text-align:left;">إيداع</th>
-          <th style="padding: 6px; text-align:left;">صرف</th>
-          <th style="padding: 6px; text-align:left;">الرصيد</th>
+      <thead style="position: sticky; top: 0; z-index: 20; background: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
+        <tr style="color: #94a3b8; border-bottom: 1.5px solid rgba(255,255,255,0.12);">
+          <th style="padding: 8px 6px; position: sticky; top: 0; background: #0f172a; text-align: center; width: 36px;">#</th>
+          <th style="padding: 8px 8px; position: sticky; top: 0; background: #0f172a; text-align: center; white-space: nowrap; width: 95px;">التاريخ</th>
+          <th style="padding: 8px 8px; position: sticky; top: 0; background: #0f172a;">البيان والوصف</th>
+          <th style="padding: 8px 8px; position: sticky; top: 0; background: #0f172a; text-align: left; white-space: nowrap; color: #34d399;">إيداع (+)</th>
+          <th style="padding: 8px 8px; position: sticky; top: 0; background: #0f172a; text-align: left; white-space: nowrap; color: #f43f5e;">صرف (-)</th>
+          <th style="padding: 8px 8px; position: sticky; top: 0; background: #0f172a; text-align: left; white-space: nowrap; color: #38bdf8;">الرصيد التراكمي</th>
         </tr>
       </thead>
-      <tbody>${rows || '<tr><td colspan="6" style="text-align:center; padding:15px; color:#94a3b8;">لا توجد حركات</td></tr>'}</tbody>
+      <tbody>${rows || '<tr><td colspan="6" style="text-align:center; padding: 25px 15px; color: #94a3b8; font-weight: 700;">لا توجد حركات مسجلة في هذه الفترة المحددة</td></tr>'}</tbody>
     </table>
   `;
 
-  if (document.getElementById('stmtTotalInflow')) document.getElementById('stmtTotalInflow').textContent = `+${inFlow.toFixed(2)}`;
-  if (document.getElementById('stmtTotalOutflow')) document.getElementById('stmtTotalOutflow').textContent = `-${outFlow.toFixed(2)}`;
-  if (document.getElementById('stmtClosingBal')) document.getElementById('stmtClosingBal').textContent = `${bal.toFixed(2)}`;
+  if (document.getElementById('stmtOpeningBal')) document.getElementById('stmtOpeningBal').textContent = fmtNum(openingBalance);
+  if (document.getElementById('stmtTotalInflow')) document.getElementById('stmtTotalInflow').textContent = `+${fmtNum(inFlow)}`;
+  if (document.getElementById('stmtTotalOutflow')) document.getElementById('stmtTotalOutflow').textContent = `-${fmtNum(outFlow)}`;
+  if (document.getElementById('stmtClosingBal')) document.getElementById('stmtClosingBal').textContent = fmtNum(runningBal);
 }
 window.renderWalletStatement = renderWalletStatement;
 
@@ -35940,8 +36264,7 @@ async function executeGoogleDriveSync(isManual = false) {
 }
 window.executeGoogleDriveSync = executeGoogleDriveSync;
 
-function executeDailyNoonBackup(isManual = false) { exportToGoogleDriveDirect(); }
-window.executeDailyNoonBackup = executeDailyNoonBackup;
+// [DailyBackup] Activated scheduled noon engine
 
 function exportToGoogleDriveDirect() {
   const data = {
@@ -36070,19 +36393,24 @@ function handleExecuteSecTransfer() { executeWalletTransfer(); }
 window.handleExecuteSecTransfer = handleExecuteSecTransfer;
 
 function getSecWalletStatement() {
-  const walletId = document.getElementById('secFilterWallet').value || 'all';
-  const member = document.getElementById('secFilterMember').value || 'all';
-  const category = document.getElementById('secFilterCategory').value || 'all';
-  const period = document.getElementById('secFilterPeriod').value || 'month';
+  const walletId = document.getElementById('secFilterWallet')?.value || 'all';
+  const member = document.getElementById('secFilterMember')?.value || 'all';
+  const category = document.getElementById('secFilterCategory')?.value || 'all';
+  const period = document.getElementById('secFilterPeriod')?.value || 'month';
+  const type = document.getElementById('secFilterType')?.value || 'all';
+  const project = document.getElementById('secFilterProject')?.value || 'all';
+  const search = (document.getElementById('secFilterSearch')?.value || '').trim().toLowerCase();
+
   const today = new Date();
   const first = new Date(today.getFullYear(), today.getMonth(), period === 'month' ? 1 : today.getDate() - (period === 'week' ? 6 : 0));
   const last = period === 'month' ? new Date(today.getFullYear(), today.getMonth() + 1, 0) : today;
   return buildSecWalletStatement(state.wallets || [], state.transactions || [], {
-    walletId, member, category, from: period === 'all' ? '' : getLocalDateStr(first), to: period === 'all' ? '' : getLocalDateStr(last)
+    walletId, member, category, type, project, search,
+    from: period === 'all' ? '' : getLocalDateStr(first), to: period === 'all' ? '' : getLocalDateStr(last)
   });
 }
 
-function buildSecWalletStatement(wallets, transactions, { walletId, member, category, from, to }) {
+function buildSecWalletStatement(wallets, transactions, { walletId, member, category, type = 'all', project = 'all', search = '', from, to }) {
   const consolidated = walletId === 'all';
   const selected = new Set(wallets.filter(wallet => consolidated || wallet.id === walletId).map(wallet => wallet.id));
   const walletIds = new Set(wallets.map(wallet => wallet.id));
@@ -36144,6 +36472,13 @@ function buildSecWalletStatement(wallets, transactions, { walletId, member, cate
     }
     if (member !== 'all' && memberKey(tx.member) !== memberKey(member)) continue;
     if (category !== 'all' && categoryKey(tx) !== category) continue;
+    if (type !== 'all') {
+      if (type === 'transfer' && !transfer) continue;
+      if (type === 'expense' && (transfer || tx.type !== 'expense')) continue;
+      if (type === 'income' && (transfer || tx.type !== 'income')) continue;
+    }
+    if (project !== 'all' && (tx.project || '') !== project) continue;
+    if (search && !(String(tx.label || '').toLowerCase().includes(search) || String(tx.notes || '').toLowerCase().includes(search) || String(tx.member || '').toLowerCase().includes(search))) continue;
     if (!(consolidated && transfer)) {
       if (effect > 0) incoming += effect;
       if (effect < 0) outgoing -= effect;
@@ -36186,10 +36521,16 @@ function resetSecWalletFilters() {
   const member = document.getElementById('secFilterMember');
   const category = document.getElementById('secFilterCategory');
   const period = document.getElementById('secFilterPeriod');
+  const type = document.getElementById('secFilterType');
+  const project = document.getElementById('secFilterProject');
+  const search = document.getElementById('secFilterSearch');
   if (wallet) wallet.value = 'all';
   if (member) member.value = 'all';
   if (category) category.value = 'all';
   if (period) period.value = 'month';
+  if (type) type.value = 'all';
+  if (project) project.value = 'all';
+  if (search) search.value = '';
   renderSecWalletStatementTable();
 }
 window.resetSecWalletFilters = resetSecWalletFilters;
@@ -36401,7 +36742,14 @@ window.filterArchiveType = filterArchiveType;
     // أدوات الضبط المركزية: إدارة المحافظ، كشف الحساب، تصدير واستيراد JSON
     // ==============================================================
     function openWalletsModal() {
-      if (typeof openModal === 'function') openModal('walletModal');
+      if (typeof openModal === 'function') {
+        openModal('walletModal');
+        const wm = document.getElementById('walletModal');
+        if (wm) {
+          wm.style.setProperty('z-index', '1000250', 'important');
+          wm.style.setProperty('display', 'flex', 'important');
+        }
+      }
     }
     window.openWalletsModal = openWalletsModal;
 
@@ -36563,14 +36911,14 @@ window.filterArchiveType = filterArchiveType;
         <select class="form-select-custom" id="inpTransferToWallet" style="height: 42px; font-weight: 800; font-size: 0.88rem;"></select>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-        <div class="form-group-custom" style="margin-bottom: 0;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; width: 100%;">
+        <div class="form-group-custom" style="margin-bottom: 0; min-width: 0;">
           <label class="form-label-custom" style="font-size: 0.75rem; font-weight: 800;">المبلغ المراد تحويله: <span class="req">*</span></label>
-          <input type="number" step="0.01" class="form-input-custom" id="inpTransferAmount" placeholder="0.00 ج.م" style="height: 42px; font-size: 1.15rem; font-weight: 900; text-align: center; color: #38bdf8;">
+          <input type="number" step="0.01" class="form-input-custom" id="inpTransferAmount" placeholder="0.00 ج.م" style="height: 42px; font-size: 1.15rem; font-weight: 900; text-align: center; color: #38bdf8; width: 100%; box-sizing: border-box;">
         </div>
-        <div class="form-group-custom" style="margin-bottom: 0;">
+        <div class="form-group-custom" style="margin-bottom: 0; min-width: 0;">
           <label class="form-label-custom" style="font-size: 0.75rem; font-weight: 800;">تاريخ التحويل: <span class="req">*</span></label>
-          <input type="date" class="form-input-custom" id="inpTransferDate" style="height: 42px; font-size: 0.82rem;">
+          <input type="date" class="form-input-custom" id="inpTransferDate" style="height: 42px; font-size: 0.82rem; width: 100%; box-sizing: border-box;">
         </div>
       </div>
 

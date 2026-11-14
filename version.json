@@ -1,6 +1,5 @@
 {
-  "version": "v5.3.52",
-  "build": "202611141740",
-  "buildId": "202611141740",
-  "releaseNotes": "Reordered gold calculator with inputs on top and hero total at bottom, fixed cockpit flow pills clipping, synchronized all operations into archive, fixed income card contrast, and condensed filter controls for maximum screen efficiency"
+  "version": "v5.3.55",
+  "build": 202611141815,
+  "updated": "2026-11-14T18:15:00.000Z"
 }
