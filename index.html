@@ -145,8 +145,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.37';
-    var APP_BUILD_ID = 202611141235;
+    var APP_VERSION = 'v5.3.38';
+    var APP_BUILD_ID = 202611141245;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -15055,8 +15055,8 @@
   <script src="./appearance-compact.js?v=20261114-settings-open" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
-  <script src="./family-alerts.js?v=20261114-open-native-tx"></script>
-  <link rel="stylesheet" href="./family-alerts.css?v=20261114-open-native-tx">
+  <script src="./family-alerts.js?v=20261114-antigravity-rebuild"></script>
+  <link rel="stylesheet" href="./family-alerts.css?v=20261114-antigravity-rebuild">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -36213,6 +36213,14 @@ window.filterArchiveType = filterArchiveType;
       </div>
 
 
+
+      <!-- شريط فلاتر التنبيهات السريعة -->
+      <div class="alert-filter-pills">
+        <button type="button" class="alert-pill active" onclick="familyAlerts.setFilter('all', this)">الكل</button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('unread', this)">غير المقروء <span id="unreadPillCount"></span></button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('expense', this)">المصروفات</button>
+        <button type="button" class="alert-pill" onclick="familyAlerts.setFilter('due', this)">الالتزامات</button>
+      </div>
 
       <!-- قائمة الإشعارات والتنبيهات -->
       <div class="alert-demo-tools"><button type="button" id="runAlertDemo" onclick="familyAlerts.demo()">تسجيل ٥٠ حالة تجريبية</button></div>
