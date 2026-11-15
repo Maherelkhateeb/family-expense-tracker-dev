@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.57';
-    var APP_BUILD_ID = 202611150945;
+    var APP_VERSION = 'v5.3.58';
+    var APP_BUILD_ID = 202611151015;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -19335,7 +19335,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.57</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.58</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -38337,5 +38337,40 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
+<script>
+    // ==============================================================
+    // فتح كافة الروابط في المتصفح الخارجي للنظام مباشرة v5.3.58
+    // ==============================================================
+    (function setupExternalLinksDirectOpen() {
+      document.addEventListener('click', function(e) {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+
+        const isHttp = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+        const isExternal = isHttp && !href.startsWith(window.location.origin);
+
+        if (isExternal || a.getAttribute('target') === '_blank' || a.hasAttribute('data-external')) {
+          e.preventDefault();
+          e.stopPropagation();
+          try {
+            const opened = window.open(href, '_blank', 'noopener,noreferrer');
+            if (!opened) {
+              const tempA = document.createElement('a');
+              tempA.href = href;
+              tempA.target = '_blank';
+              tempA.rel = 'noopener noreferrer';
+              document.body.appendChild(tempA);
+              tempA.click();
+              tempA.remove();
+            }
+          } catch(err) {
+            window.location.href = href;
+          }
+        }
+      }, { capture: true });
+    })();
+</script>
 </body>
 </html>
