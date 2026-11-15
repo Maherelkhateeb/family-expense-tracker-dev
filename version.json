@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.67",
-  "build": 202611151430,
-  "buildId": 202611151430,
-  "releaseDate": "2026-11-15T14:30:00.000Z",
-  "changelog": "Hotfix: Terminate reload loop, harmonize APP_BUILD_ID with version.json, and install anti-loop circuit breaker in background sync."
+  "version": "v5.3.68",
+  "build": 202611151600,
+  "buildId": 202611151600,
+  "releaseDate": "2026-11-15T16:00:00.000Z",
+  "changelog": "v5.3.68 Master Architecture: 5 golden bottom tabs, Operations Actual Analytics, Project & Comparisons Budgets, Live Trend Indicators (arrow + % + value vs open), Settings 50/50 flex nav & action cards, Commitments LTR signage fix."
 }
