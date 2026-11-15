@@ -35,22 +35,40 @@
     }
   }
 
-  // Tiered gold ounce fetcher (Gold API -> Binance PAXG -> CoinGecko)
+  // Tiered gold ounce fetcher (Binance PAXG 24hr -> Gold API -> CoinGecko)
   async function fetchGoldOuncePrice() {
     const endpoints = [
       async () => {
-        const d = await json('https://api.gold-api.com/price/XAU');
-        if (positive(d?.price)) return { price: Number(d.price), at: stamp(d.updatedAt) || new Date().toISOString(), source: 'Gold API' };
-        throw new Error('Invalid Gold API');
-      },
-      async () => {
-        const d = await json('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-        if (positive(d?.price)) return { price: Number(d.price), at: new Date().toISOString(), source: 'Binance PAXG' };
+        const d = await json('https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT');
+        if (positive(d?.lastPrice)) {
+          const last = Number(d.lastPrice);
+          const open = positive(d?.openPrice) ? Number(d.openPrice) : last;
+          const chgVal = Number(d.priceChange != null ? d.priceChange : (last - open));
+          const chgPct = Number(d.priceChangePercent != null ? d.priceChangePercent : (open > 0 ? (chgVal / open) * 100 : 0));
+          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'Binance PAXG' };
+        }
         throw new Error('Invalid Binance');
       },
       async () => {
-        const d = await json('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');
-        if (positive(d?.['pax-gold']?.usd)) return { price: Number(d['pax-gold'].usd), at: new Date().toISOString(), source: 'CoinGecko' };
+        const d = await json('https://api.gold-api.com/price/XAU');
+        if (positive(d?.price)) {
+          const last = Number(d.price);
+          const open = positive(d?.open_price) ? Number(d.open_price) : positive(d?.prev_close_price) ? Number(d.prev_close_price) : last;
+          const chgVal = last - open;
+          const chgPct = open > 0 ? (chgVal / open) * 100 : 0;
+          return { price: last, open, chgVal, chgPct, at: stamp(d.updatedAt) || new Date().toISOString(), source: 'Gold API' };
+        }
+        throw new Error('Invalid Gold API');
+      },
+      async () => {
+        const d = await json('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd&include_24hr_change=true');
+        if (positive(d?.['pax-gold']?.usd)) {
+          const last = Number(d['pax-gold'].usd);
+          const chgPct = Number(d['pax-gold']?.usd_24h_change || 0);
+          const open = chgPct !== 0 ? last / (1 + chgPct / 100) : last;
+          const chgVal = last - open;
+          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'CoinGecko' };
+        }
         throw new Error('Invalid CoinGecko');
       }
     ];
@@ -120,27 +138,86 @@
     return null;
   }
 
-  function buildFeed(fx, gold) {
+  function getDailyOpens(storage) {
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      const data = JSON.parse(storage?.getItem('family_market_daily_opens_v2') || 'null');
+      if (data && data.date === today && data.opens) return data.opens;
+    } catch(e) {}
+    return null;
+  }
+
+  function saveDailyOpens(storage, opens) {
+    const today = new Date().toISOString().slice(0, 10);
+    try {
+      storage?.setItem('family_market_daily_opens_v2', JSON.stringify({ date: today, opens }));
+    } catch(e) {}
+  }
+
+  function calcChange(current, open) {
+    const c = Number(current);
+    const o = Number(open);
+    if (!Number.isFinite(c) || !Number.isFinite(o) || o <= 0) return null;
+    const val = c - o;
+    const pct = (val / o) * 100;
+    return { val, pct, open: o };
+  }
+
+  function buildFeed(fx, gold, storage) {
     const nowIso = new Date().toISOString();
     const fxAt = fx.at || nowIso;
     const goldAt = gold.at || nowIso;
     const usdEgp = fx.egp;
     const rawGram24 = (Number(gold.price) * usdEgp) / 31.1034768;
 
-    const currencies = {
-      USD: { sell: usdEgp, buy: null, chg: null, bank: fx.source, sourceUpdatedAt: fxAt },
-      SAR: { sell: positive(fx.sar) ? usdEgp / fx.sar : 14.25, buy: null, chg: null, bank: fx.source, sourceUpdatedAt: fxAt },
-      EUR: { sell: positive(fx.eur) ? usdEgp / fx.eur : 58.00, buy: null, chg: null, bank: fx.source, sourceUpdatedAt: fxAt },
-      AED: { sell: positive(fx.aed) ? usdEgp / fx.aed : 14.55, buy: null, chg: null, bank: fx.source, sourceUpdatedAt: fxAt }
+    // Track or retrieve daily opening baselines for live trend indicators
+    const currentRates = {
+      USD: usdEgp,
+      SAR: positive(fx.sar) ? usdEgp / fx.sar : 14.25,
+      EUR: positive(fx.eur) ? usdEgp / fx.eur : 58.00,
+      AED: positive(fx.aed) ? usdEgp / fx.aed : 14.55,
+      goldOunce: Number(gold.price)
     };
 
-    const quote = (val, label) => ({
+    let opens = getDailyOpens(storage) || {};
+    if (!opens.USD) opens.USD = currentRates.USD;
+    if (!opens.SAR) opens.SAR = currentRates.SAR;
+    if (!opens.EUR) opens.EUR = currentRates.EUR;
+    if (!opens.AED) opens.AED = currentRates.AED;
+    
+    // If provider gives explicit open price (e.g. Binance 24h ticker), respect it
+    if (positive(gold.open)) {
+      opens.goldOunce = Number(gold.open);
+    } else if (!opens.goldOunce) {
+      opens.goldOunce = currentRates.goldOunce;
+    }
+
+    const openGram24 = (opens.goldOunce * opens.USD) / 31.1034768;
+    opens.gold24 = openGram24;
+    opens.gold21 = openGram24 * 21 / 24;
+    opens.gold18 = openGram24 * 18 / 24;
+    opens.goldPound = openGram24 * 7;
+
+    saveDailyOpens(storage, opens);
+
+    const currencies = {
+      USD: { sell: currentRates.USD, buy: null, chg: calcChange(currentRates.USD, opens.USD), bank: fx.source, sourceUpdatedAt: fxAt },
+      SAR: { sell: currentRates.SAR, buy: null, chg: calcChange(currentRates.SAR, opens.SAR), bank: fx.source, sourceUpdatedAt: fxAt },
+      EUR: { sell: currentRates.EUR, buy: null, chg: calcChange(currentRates.EUR, opens.EUR), bank: fx.source, sourceUpdatedAt: fxAt },
+      AED: { sell: currentRates.AED, buy: null, chg: calcChange(currentRates.AED, opens.AED), bank: fx.source, sourceUpdatedAt: fxAt }
+    };
+
+    const quote = (val, label, chg) => ({
       sell: val,
       buy: null,
-      chg: null,
+      chg: chg || null,
       source: label || 'سعر عيار الذهب دون مصنعية',
       sourceUpdatedAt: goldAt
     });
+
+    const ounceChg = (gold.chgVal != null && gold.chgPct != null)
+      ? { val: Number(gold.chgVal), pct: Number(gold.chgPct), open: opens.goldOunce }
+      : calcChange(gold.price, opens.goldOunce);
 
     return {
       schemaVersion: 2,
@@ -155,11 +232,12 @@
       globalGoldUpdatedAt: goldAt,
       currencies,
       gold: {
-        gold24: quote(rawGram24, 'ذهب عيار 24'),
-        gold21: quote(rawGram24 * 21 / 24, 'ذهب عيار 21'),
-        gold18: quote(rawGram24 * 18 / 24, 'ذهب عيار 18'),
-        goldPound: quote(rawGram24 * 7, 'جنيه ذهب 8 جم عيار 21'),
-        goldOunceUSD: Number(gold.price)
+        gold24: quote(rawGram24, 'ذهب عيار 24', calcChange(rawGram24, opens.gold24)),
+        gold21: quote(rawGram24 * 21 / 24, 'ذهب عيار 21', calcChange(rawGram24 * 21 / 24, opens.gold21)),
+        gold18: quote(rawGram24 * 18 / 24, 'ذهب عيار 18', calcChange(rawGram24 * 18 / 24, opens.gold18)),
+        goldPound: quote(rawGram24 * 7, 'جنيه ذهب 8 جم عيار 21', calcChange(rawGram24 * 7, opens.goldPound)),
+        goldOunceUSD: Number(gold.price),
+        goldOunceChg: ounceChg
       }
     };
   }
@@ -167,7 +245,7 @@
   async function load(storage, force) {
     let saved = null;
     try {
-      saved = JSON.parse(storage.getItem('family_market_feed_v2') || 'null');
+      saved = JSON.parse(storage?.getItem('family_market_feed_v2') || 'null');
     } catch (e) {}
 
     // Check if cached feed is very fresh (< 45 minutes) and not forced
@@ -185,10 +263,10 @@
     const fx = fxRes.status === 'fulfilled' ? fxRes.value : null;
 
     if (gold && fx) {
-      const feed = buildFeed(fx, gold);
+      const feed = buildFeed(fx, gold, storage);
       if (valid(feed)) {
         try {
-          storage.setItem('family_market_feed_v2', JSON.stringify(feed));
+          storage?.setItem('family_market_feed_v2', JSON.stringify(feed));
         } catch (e) {}
         return { feed, offline: false };
       }
@@ -201,8 +279,8 @@
 
     // Fallback baseline if first time offline
     const baselineFx = { egp: 53.45, sar: 14.25, eur: 58.50, aed: 14.55, at: new Date().toISOString(), source: 'قاعدة بيانات محلية' };
-    const baselineGold = { price: 3887.60, at: new Date().toISOString(), source: 'سعر مرجعي' };
-    const fallbackFeed = buildFeed(baselineFx, baselineGold);
+    const baselineGold = { price: 3887.60, open: 3870.00, chgVal: 17.60, chgPct: 0.45, at: new Date().toISOString(), source: 'سعر مرجعي' };
+    const fallbackFeed = buildFeed(baselineFx, baselineGold, storage);
     return { feed: fallbackFeed, offline: true };
   }
 
