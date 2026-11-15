@@ -16323,6 +16323,7 @@ body.light-theme .cat-budget-progress-track {
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
+  <script src="./budget-audit-engine.js?v=202611151720"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18649,14 +18650,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
         <!-- شريط تبويب داخلي منسق لقسم الميزانيات -->
         <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 4px; background: rgba(15, 23, 42, 0.85); padding: 4px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 10px;">
-          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 8px 6px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
-            <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر النشطة</span>
+          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
+            <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
-          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 8px 6px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>موازنات المشاريع</span>
+          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
-          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1.1; padding: 8px 6px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>ميزان المقارنات والرقابة</span>
+          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات والرقابة</span>
+          </button>
+          <button type="button" id="btnBudgetSubHistory" onclick="switchBudgetSubTab('history')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            <i class="fa-solid fa-box-archive" style="color: #a855f7;"></i> <span>الأرشيف والسجل</span>
           </button>
         </div>
 
@@ -18774,6 +18778,11 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <canvas id="monthlyBudgetCompareChart"></canvas>
             </div>
           </div>
+
+          <!-- شريط الفلاتر الزمنية السريع وجدول الرقابة الحي وتوزيع أفراد الأسرة (v5.3.72) -->
+          <div id="budgetMonthlyTimeFiltersContainer"></div>
+          <div id="budgetActualVsEstimatedContainer"></div>
+          <div id="budgetMemberBreakdownContainer"></div>
 
           <!-- 5. شريط فلترة أفراد العائلة للبند المحدد -->
           <div style="margin-bottom: 10px;">
@@ -20822,7 +20831,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.71</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.72</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -24039,8 +24048,9 @@ function toggleAnalyticsCustomRange() {
         pageId = 'operations';
         state.activeOpsSubTab = 'analytics';
       }
-      if (pageId === 'requests' && typeof initRequestAllocations === 'function') {
-        initRequestAllocations();
+      if (pageId === 'requests') {
+        if (typeof initRequestAllocations === 'function') initRequestAllocations();
+        if (typeof renderRequestsList === 'function') renderRequestsList();
       }
       if (pageId === 'budgets') {
         if (typeof switchBudgetSubTab === 'function') {
@@ -25142,6 +25152,20 @@ function generateRichDemoTransactions() {
             { id: 'inc-sep-2', name: 'أتعاب استشارات', amount: 25000, member: 'ماهر' }
           ],
           updatedAt: '2026-09-01T10:00:00.000Z'
+        },
+        {
+          id: 'proj-bgt-finishing-1',
+          project: 'تشطيب الشقة الجديدة',
+          title: 'موازنة تشطيب الشقة الجديدة',
+          month: '2026-11',
+          items: [
+            { id: 'pitem-1', category: 'house', title: 'أعمال السباكة والعزل', amount: 35000, members: ['ماهر'] },
+            { id: 'pitem-2', category: 'bills', title: 'تأسيس الكهرباء والإنارة', amount: 28000, members: ['ماهر'] },
+            { id: 'pitem-3', category: 'house', title: 'المحارة والدهانات والديكور', amount: 45000, members: ['أية', 'ماهر'] },
+            { id: 'pitem-4', category: 'house', title: 'أرضيات وسيراميك وبورسلين', amount: 55000, members: ['أية'] },
+            { id: 'pitem-5', category: 'other', title: 'أبواب وشبابيك ونجارة', amount: 30000, members: ['ماهر'] }
+          ],
+          updatedAt: '2026-11-01T10:00:00.000Z'
         }
       ];
     }
@@ -28368,6 +28392,15 @@ function saveTx() {
 
       const countBadge = document.getElementById('reqListCountBadge');
       if (countBadge) countBadge.textContent = `${totalCount} طلب`;
+
+      const cAll = document.getElementById('cntReqAll');
+      const cPend = document.getElementById('cntReqPending');
+      const cAppr = document.getElementById('cntReqApproved');
+      const cRej = document.getElementById('cntReqRejected');
+      if (cAll) cAll.textContent = totalCount;
+      if (cPend) cPend.textContent = pendingCount;
+      if (cAppr) cAppr.textContent = list.filter(r => r.status === 'approved').length;
+      if (cRej) cRej.textContent = list.filter(r => r.status === 'rejected').length;
 
       const pendingBadge = document.getElementById('reqPendingCountBadge');
       if (pendingBadge) pendingBadge.textContent = `${pendingCount} معلق`;
@@ -34471,6 +34504,15 @@ function initMonthlyBudgetUI() {
       if (!Array.isArray(state.monthlyBudgets)) state.monthlyBudgets = [];
 
       if (state.monthlyBudgets.length === 0) {
+        if (typeof generateRichDemoBudgets === 'function') {
+          state.monthlyBudgets = generateRichDemoBudgets();
+          try {
+            localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
+          } catch(e) {}
+        }
+      }
+
+      if (state.monthlyBudgets.length === 0) {
         state.activeBudgetId = null;
         currentBudgetMonthData = null;
         populateBudgetPlanSelector();
@@ -34498,7 +34540,8 @@ function initMonthlyBudgetUI() {
 
     // ضمان وجود قائمة بنود ديناميكية وترحيل التصنيفات القديمة إن وجدت
     function ensureBudgetItems(b) {
-      if (!b.items || !Array.isArray(b.items)) {
+      if (!b) return;
+      if (!b.items || !Array.isArray(b.items) || b.items.length === 0) {
         b.items = [];
         const catMap = {
           food: 'طعام ومشتريات',
@@ -34993,6 +35036,9 @@ function initMonthlyBudgetUI() {
       }
 
       if (typeof updateBudgetKpis === 'function') updateBudgetKpis();
+      if (window.BudgetAuditEngine && typeof BudgetAuditEngine.refreshActiveBudgetAudit === 'function') {
+        BudgetAuditEngine.refreshActiveBudgetAudit();
+      }
     }
     window.renderMonthlyBudgetAllocations = renderMonthlyBudgetAllocations;
 
@@ -36104,7 +36150,11 @@ function switchCategoryChartFormat(format, btnEl) {
           bProj.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.35)';
         }
         if (secProj) secProj.style.display = 'block';
-        if (typeof renderProjectBudgetsPanel === 'function') renderProjectBudgetsPanel();
+        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderProjectBudgetsAdvanced === 'function') {
+          BudgetAuditEngine.renderProjectBudgetsAdvanced();
+        } else if (typeof renderProjectBudgetsPanel === 'function') {
+          renderProjectBudgetsPanel();
+        }
       } else if (tab === 'comparisons') {
         if (bComp) {
           bComp.classList.add('active');
@@ -36114,7 +36164,11 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
         if (secComp) secComp.style.display = 'block';
-        if (typeof renderComparisonsSection === 'function') renderComparisonsSection();
+        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderExecutiveComparisonsAudit === 'function') {
+          BudgetAuditEngine.renderExecutiveComparisonsAudit();
+        } else if (typeof renderComparisonsSection === 'function') {
+          renderComparisonsSection();
+        }
       } else if (tab === 'history') {
         if (bHist) {
           bHist.classList.add('active');
@@ -36124,7 +36178,11 @@ function switchCategoryChartFormat(format, btnEl) {
           bHist.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.35)';
         }
         if (secHist) secHist.style.display = 'block';
-        if (typeof renderBudgetHistoryList === 'function') renderBudgetHistoryList();
+        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderBudgetHistoryAdvanced === 'function') {
+          BudgetAuditEngine.renderBudgetHistoryAdvanced();
+        } else if (typeof renderBudgetHistory === 'function') {
+          renderBudgetHistory();
+        }
       } else {
         if (bCurr) {
           bCurr.classList.add('active');
@@ -36136,6 +36194,9 @@ function switchCategoryChartFormat(format, btnEl) {
         if (secCurr) secCurr.style.display = 'block';
         if (typeof loadActiveBudgetPlan === 'function') loadActiveBudgetPlan();
         if (typeof renderMonthlyBudgetPlan === 'function') renderMonthlyBudgetPlan();
+        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.refreshActiveBudgetAudit === 'function') {
+          BudgetAuditEngine.refreshActiveBudgetAudit();
+        }
       }
     }
 

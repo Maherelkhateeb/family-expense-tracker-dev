@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.71",
-  "build": 202611151715,
-  "buildId": 202611151715,
-  "releaseDate": "2026-11-15T17:15:00.000Z",
-  "changelog": "v5.3.71: Unified commitments filter UX - removed redundant bottom filter strip, renamed Card 1 to 'فواتير' with invoice icon, added compact clear/reset filter button, enabled card click toggle."
+  "version": "v5.3.72",
+  "build": 202611151730,
+  "buildId": 202611151730,
+  "releaseDate": "2026-11-15T17:30:00.000Z",
+  "changelog": "v5.3.72: Executive Budgeting & Forensic Audit Suite - Time filters strip & Proration engine (Actual vs Estimated Table), Family Member Breakdown, Project Budgets Items Matrix & Member Breakdown, Executive Audit & BI Engine (50/30/20, Latte effect, Forensic duplicate detector, Work hours equivalence, Emergency runway), Segmented History Archive (Monthly & Projects) with One-Touch Budget Clone."
 }
