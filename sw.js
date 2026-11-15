@@ -1,18 +1,18 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-tracker-v5.3.57';
+const CACHE_NAME = 'family-expense-tracker-v5.3.58';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './version.json',
-  './family-alerts.js?v=20261114-checkbox-box',
-  './family-alerts.css?v=20261114-checkbox-box',
-  './ledger-task-layout.css?v=20261114-task-compact',
-  './operation-filters.js?v=20261114',
-  './market-data.js?v=20261114-gold1',
-  './gold-market.css?v=20261114-calc-polish3',
-  './appearance-compact.css?v=20261114-settings-open',
-  './appearance-compact.js?v=20261114-settings-open',
+  './family-alerts.js?v=202611151015',
+  './family-alerts.css?v=202611151015',
+  './ledger-task-layout.css?v=202611151015',
+  './operation-filters.js?v=202611151015',
+  './market-data.js?v=202611151015',
+  './gold-market.css?v=202611151015',
+  './appearance-compact.css?v=202611151015',
+  './appearance-compact.js?v=202611151015',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/favicon.png',
@@ -30,7 +30,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
-    })
+    }).catch(err => console.warn('SW cache.addAll warning:', err))
   );
 });
 
@@ -52,27 +52,39 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
 
-  // Network first for index.html, version.json, market_rates.json to ensure instant updates
-  if (url.pathname.endsWith('family-alerts.js') || url.pathname.endsWith('family-alerts.css') || url.pathname.endsWith('appearance-compact.css') || url.pathname.endsWith('appearance-compact.js') || url.pathname.endsWith('index.html') || url.pathname.endsWith('version.json') || url.pathname.endsWith('market_rates.json') || url.pathname === '/' || url.pathname.endsWith('/')) {
+  // 1. NEVER intercept external origins - let the external browser handle them directly
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // 2. Network-first with no-cache for all document navigations, HTML and JSON
+  const isNav = e.request.mode === 'navigate' || e.request.destination === 'document';
+  const isDoc = url.pathname.endsWith('index.html') || url.pathname.endsWith('/') || !url.pathname.includes('.');
+  const isDynamic = url.pathname.endsWith('version.json') || url.pathname.endsWith('market_rates.json') || url.search.includes('nocache') || url.search.includes('update');
+
+  if (isNav || isDoc || isDynamic) {
     e.respondWith(
-      fetch(e.request, { cache: 'no-cache' }).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+      fetch(e.request, { cache: 'no-store' }).then((res) => {
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        }
         return res;
       }).catch(() => caches.match(e.request))
     );
     return;
   }
 
-  // Cache first with network fallback for other static assets
+  // 3. Cache-first with network fallback for local static assets
   e.respondWith(
     caches.match(e.request).then((cached) => {
       return cached || fetch(e.request).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        }
         return res;
       });
     })
   );
 });
-
