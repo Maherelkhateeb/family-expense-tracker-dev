@@ -70,7 +70,7 @@ body.light-theme #appFrame #viewOperations {
   margin-block-end: 6px !important;
   color: var(--ledger-text);
 }
-#appFrame #viewOperations .ops-search-row,
+#appFrame #viewOperations .ops-search-row { display: flex !important; }
 #appFrame #viewOperations .ops-filter-footer { display: none !important; }
 #appFrame #viewOperations .ops-search-row label { min-width: 0; flex: 1; position: relative; }
 #appFrame #viewOperations .ops-search-row label > i { position: absolute; inset-inline-start: 9px; top: 50%; transform: translateY(-50%); color: var(--ledger-muted); pointer-events: none; font-size: .72rem; }
