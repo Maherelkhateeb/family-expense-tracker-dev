@@ -276,7 +276,7 @@
 
     var currentEditTxReceiptDataUri = null;
     var APP_VERSION = 'v5.3.67';
-    var APP_BUILD_ID = 202611151400;
+    var APP_BUILD_ID = 202611151430;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -29227,7 +29227,7 @@ function switchSettingsTab(tabName) {
       try {
         const backupData = {
           app: 'FamilyExpenseTrackerMonefy',
-          version: 'v5.3.62',
+          version: 'v5.3.67',
           exportedAt: new Date().toISOString(),
           account: (typeof GDRIVE_CONFIG !== 'undefined' ? GDRIVE_CONFIG.targetAccount : 'maher.easybakery@gmail.com'),
           state: state
@@ -32889,8 +32889,17 @@ function switchSettingsTab(tabName) {
      * البحث التلقائي عن التحديثات الجديدة وتنزيلها وتطبيقها تلقائياً مع كل فتح للبرنامج
      * @param {Object} options { isManual: boolean, silent: boolean }
      */
-    function forcePurgeCacheAndReload() {
-      showToast('🚀 جاري مسح الذاكرة المؤقتة وتحديث البرنامج بالكامل لأحدث نسخة...', 'info', 4000);
+    function forcePurgeCacheAndReload(isManual = false) {
+      // حماية فائقة ضد حلقات إعادة التحميل المستمرة (Anti-Loop Circuit Breaker)
+      const now = Date.now();
+      const lastForce = Number(localStorage.getItem('family_monefy_last_force_reload_ts') || 0);
+      if (!isManual && (now - lastForce < 120000)) {
+        console.warn('🛑 [AntiLoop] تم كبح إعادة التحميل التلقائي المتكرر (آخر تحديث تم قبل أقل من دقيقتين).');
+        return;
+      }
+      localStorage.setItem('family_monefy_last_force_reload_ts', String(now));
+
+      showToast('🚀 جاري مسح الذاكرة المؤقتة وتحديث البرنامج بالكامل لأحدث نسخة...', 'info', 3000);
       try {
         if ('caches' in window) {
           caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
@@ -32903,12 +32912,10 @@ function switchSettingsTab(tabName) {
           });
         }
       } catch(e) {}
-      localStorage.removeItem('family_monefy_version');
-      localStorage.removeItem('family_monefy_etag');
-      sessionStorage.clear();
+      localStorage.setItem('family_monefy_version', window.APP_VERSION || 'v5.3.67');
       setTimeout(() => {
         const cleanUrl = window.location.origin + window.location.pathname;
-        window.location.replace(`${cleanUrl}?_fresh=${Date.now()}`);
+        window.location.replace(`${cleanUrl}?_fresh=${now}`);
       }, 700);
     }
 
@@ -32951,8 +32958,8 @@ function switchSettingsTab(tabName) {
             console.warn('⚠️ [AutoUpdate] تعذر قراءة version.json:', fetchErr.message);
           }
 
-          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121112);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.62');
+          const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151430);
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.67');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -32988,7 +32995,7 @@ function switchSettingsTab(tabName) {
             }
 
             localStorage.setItem('family_monefy_just_updated_ts', Date.now());
-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.62');
+            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.67');
             setTimeout(() => {
               const updateUrl = new URL(window.location.href);
               updateUrl.searchParams.set('_build', String(remoteBuild?.buildId || Date.now()));
@@ -33043,8 +33050,8 @@ function switchSettingsTab(tabName) {
           console.warn('PWA version check notice:', e);
         }
 
-        const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151250);
-        const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.63');
+        const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151430);
+        const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.67');
 
         const isNewer = remoteBuild && (
           (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -33052,11 +33059,14 @@ function switchSettingsTab(tabName) {
         );
 
         if (isNewer) {
-          if (statusText) statusText.textContent = 'جاري تنزيل التحديث...';
-          showToast(`🚀 تم العثور على إصدار جديد (${remoteBuild.version})! جاري تنزيل التحديث وتفريغ الذاكرة...`, 'info', 3000);
-          if (typeof forcePurgeCacheAndReload === 'function') {
-            forcePurgeCacheAndReload();
+          console.log(`ℹ️ [Sync] تم العثور على إصدار أحدث (${remoteBuild.version}).`);
+          if (statusText) statusText.textContent = 'يوجد تحديث متوفر';
+          // لا يُسمح بإعادة التحميل الإجباري في المزامنة الخلفية التلقائية لمنع أي حلقة تكرار
+          if (isManual && typeof forcePurgeCacheAndReload === 'function') {
+            forcePurgeCacheAndReload(true);
             return;
+          } else {
+            showToast(`🚀 يوجد تحديث جديد متاح (${remoteBuild.version}). اضغط على زر التحديث في الضبط للتطبيق.`, 'info', 4000);
           }
         }
 
@@ -39069,7 +39079,7 @@ window.handleAddNewTask = handleAddNewTask;
 async function executeGoogleDriveSync(isManual = false) {
   try {
     const payload = {
-      version: 'v5.3.62',
+      version: 'v5.3.67',
       timestamp: new Date().toISOString(),
       state: state
     };
@@ -39089,7 +39099,7 @@ window.executeGoogleDriveSync = executeGoogleDriveSync;
 function exportToGoogleDriveDirect() {
   const data = {
     app: 'Family Expense Tracker',
-    version: 'v5.3.62',
+    version: 'v5.3.67',
     exportedAt: new Date().toISOString(),
     state: state
   };
