@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.65';
-    var APP_BUILD_ID = 202611151345;
+    var APP_VERSION = 'v5.3.66';
+    var APP_BUILD_ID = 202611151400;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -11690,6 +11690,68 @@ body.light-theme .analytics-date-range-trigger {
   width: 22px !important;
   height: 22px !important;
   font-size: 1.15rem !important;
+}
+
+
+/* =========================================================================
+   LIVE CATEGORY BUDGET CEILINGS & PULSE ANIMATION (سقوف الإنفاق الذكية والحية)
+   ========================================================================= */
+@keyframes budgetPulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.cat-card.budget-pulse-alert {
+  animation: budgetPulseGlow 2s infinite ease-in-out !important;
+  border-color: #ef4444 !important;
+}
+
+.cat-budget-ceiling-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 2px;
+  padding: 0 2px;
+  box-sizing: border-box;
+}
+
+.cat-budget-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+body.light-theme .cat-budget-progress-track {
+  background: rgba(0, 0, 0, 0.10);
+}
+
+.cat-budget-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease;
+}
+
+.cat-budget-ceiling-text {
+  font-size: 0.58rem;
+  font-weight: 850;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  line-height: 1.15;
+  font-family: var(--font-numbers);
+  direction: rtl;
+  letter-spacing: -0.2px;
 }
 
 </style>
@@ -25131,7 +25193,120 @@ function generateRichDemoTransactions() {
       }
     }
 
-    function renderCategoriesGrid(filtered) {
+    
+    // =========================================================================
+    // LIVE CATEGORY BUDGET CEILINGS ENGINE (محرك سقوف الإنفاق الذكية والحية)
+    // =========================================================================
+    function getActiveMonthBudgetPlan() {
+      if (!Array.isArray(state.monthlyBudgets) || state.monthlyBudgets.length === 0) return null;
+      const nowMonth = (typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString()).slice(0, 7);
+      
+      // 1. الخطة المطابقة للشهر الحالي غير المرتبطة بمشروع
+      let plan = state.monthlyBudgets.find(b => !b.project && b.month === nowMonth);
+      // 2. أو الخطة النشطة حالياً إن كانت غير مرتبطة بمشروع
+      if (!plan && state.activeBudgetId) {
+        plan = state.monthlyBudgets.find(b => b.id === state.activeBudgetId && !b.project);
+      }
+      // 3. أو أول خطة عامة متاحة
+      if (!plan) {
+        plan = state.monthlyBudgets.find(b => !b.project) || state.monthlyBudgets[0];
+      }
+      return plan;
+    }
+    window.getActiveMonthBudgetPlan = getActiveMonthBudgetPlan;
+
+    function getCategoryBudgetCeilings() {
+      const plan = getActiveMonthBudgetPlan();
+      if (!plan) return {};
+      const ceilings = {};
+
+      // 1. قراءة كائن التصنيفات إن وُجد (categories map)
+      if (plan.categories && typeof plan.categories === 'object') {
+        Object.entries(plan.categories).forEach(([catKey, amt]) => {
+          let k = catKey;
+          if (k === 'home') k = 'house';
+          if (k === 'apparel') k = 'clothes';
+          if (k === 'shopping' || k === 'supermarket') k = 'food';
+          if (k === 'others') k = 'other';
+          ceilings[k] = (ceilings[k] || 0) + (Number(amt) || 0);
+        });
+      }
+
+      // 2. قراءة مصفوفة البنود التفصيلية (items array) كمصدر أولي أدق
+      if (Array.isArray(plan.items) && plan.items.length > 0) {
+        const itemsCeilings = {};
+        plan.items.forEach(it => {
+          let k = it.category;
+          if (k === 'home') k = 'house';
+          if (k === 'apparel') k = 'clothes';
+          if (k === 'shopping' || k === 'supermarket') k = 'food';
+          if (k === 'others') k = 'other';
+          if (!k && it.title) {
+            const found = EXPENSE_CATEGORIES.find(c => it.title.includes(c.name) || c.name.includes(it.title));
+            if (found) k = found.id;
+          }
+          if (k) {
+            itemsCeilings[k] = (itemsCeilings[k] || 0) + (Number(it.amount) || 0);
+          }
+        });
+        Object.entries(itemsCeilings).forEach(([k, amt]) => {
+          ceilings[k] = amt;
+        });
+      }
+
+      return ceilings;
+    }
+    window.getCategoryBudgetCeilings = getCategoryBudgetCeilings;
+
+    // تنبيه لحظي عند الاقتراب من سقف الميزانية (> 85%) أو تجاوزه (> 100%)
+    function checkCategoryBudgetCeilingTrigger(catId, addedAmt) {
+      if (!catId) return;
+      let k = catId;
+      if (k === 'shopping' || k === 'supermarket') k = 'food';
+      if (k === 'home') k = 'house';
+      if (k === 'apparel') k = 'clothes';
+      if (k === 'kids' || k === 'gifts' || k === 'entertainment' || k === 'others') k = 'other';
+
+      const ceilings = getCategoryBudgetCeilings();
+      const ceiling = ceilings[k] || 0;
+      if (ceiling <= 0) return;
+
+      const currentMonth = (typeof getLocalDateStr === 'function' ? getLocalDateStr(new Date()) : new Date().toISOString()).slice(0, 7);
+      const totalSpent = (state.transactions || []).filter(t => 
+        t.type === 'expense' && 
+        (t.category === k || (k === 'food' && (t.category === 'shopping' || t.category === 'supermarket')) || (k === 'other' && (t.category === 'entertainment' || t.category === 'others' || t.category === 'gifts' || t.category === 'kids'))) && 
+        !t.deleted && 
+        (t.date || '').startsWith(currentMonth)
+      ).reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      const pct = Math.round((totalSpent / ceiling) * 100);
+      const catObj = EXPENSE_CATEGORIES.find(c => c.id === k);
+      const catName = catObj ? catObj.name : 'بند المصروف';
+
+      if (pct >= 100) {
+        const overAmt = typeof formatMoneyVal === 'function' ? formatMoneyVal(totalSpent - ceiling) : (totalSpent - ceiling).toFixed(2);
+        showToast(`⚠️ تنبيه الميزانية: تم تجاوز سقف ميزانية بند "${catName}" لهذا الشهر! (استهلاك ${pct}% - تجاوز ${overAmt} ج.م)`, 'error', 5500);
+        if (window.FamilyAlerts && typeof window.FamilyAlerts.created === 'function') {
+          window.FamilyAlerts.created('budget_exceeded', {
+            id: `budget_alert_${k}_${Date.now()}`,
+            title: 'تنبيه تجاوز الميزانية',
+            message: `تم تخطي سقف ميزانية بند "${catName}" لشهر ${currentMonth} بنسبة ${pct}% (المنصرف: ${typeof formatMoneyVal === 'function' ? formatMoneyVal(totalSpent) : totalSpent} ج.م من أصل ${typeof formatMoneyVal === 'function' ? formatMoneyVal(ceiling) : ceiling} ج.م).`
+          });
+        }
+      } else if (pct >= 85) {
+        showToast(`⚠️ تنبيه الميزانية: استهلكت ${pct}% من ميزانية بند "${catName}" لهذا الشهر`, 'warning', 4500);
+        if (window.FamilyAlerts && typeof window.FamilyAlerts.created === 'function') {
+          window.FamilyAlerts.created('budget_warning', {
+            id: `budget_alert_${k}_${Date.now()}`,
+            title: 'تنبيه اقتراب سقف الميزانية',
+            message: `اقترب استهلاك بند "${catName}" من الحد الأقصى (${pct}% من أصل ${typeof formatMoneyVal === 'function' ? formatMoneyVal(ceiling) : ceiling} ج.م).`
+          });
+        }
+      }
+    }
+    window.checkCategoryBudgetCeilingTrigger = checkCategoryBudgetCeilingTrigger;
+
+function renderCategoriesGrid(filtered) {
       const grid = document.getElementById('catGrid');
       if (!grid) return;
 
@@ -25146,61 +25321,21 @@ function generateRichDemoTransactions() {
         }
       });
 
+      // جلب سقوف الميزانيات الحية للشهر الحالي
+      const categoryBudgets = (typeof getCategoryBudgetCeilings === 'function') ? getCategoryBudgetCeilings() : {};
+      const activePlan = (typeof getActiveMonthBudgetPlan === 'function') ? getActiveMonthBudgetPlan() : null;
+      const activePlanId = activePlan ? String(activePlan.id || '') : 'none';
+
       const HIGH_CONTRAST_THEMES = {
-        food: {
-          name: 'طعام ومشتريات',
-          emoji: '🛒',
-          accent: '#10b981',
-          gradient: 'linear-gradient(135deg, #10b981 0%, #047857 100%)'
-        },
-        daily: {
-          name: 'مصروف يومي',
-          emoji: '☕',
-          accent: '#f59e0b',
-          gradient: 'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)'
-        },
-        bills: {
-          name: 'فواتير والتزامات',
-          emoji: '⚡',
-          accent: '#f97316',
-          gradient: 'linear-gradient(135deg, #f97316 0%, #c2410c 100%)'
-        },
-        transport: {
-          name: 'مواصلات وبنزين',
-          emoji: '🚗',
-          accent: '#0284c7',
-          gradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
-        },
-        house: {
-          name: 'مستلزمات منزل',
-          emoji: '🛋️',
-          accent: '#8b5cf6',
-          gradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)'
-        },
-        health: {
-          name: 'صحة وعلاج',
-          emoji: '💊',
-          accent: '#ef4444',
-          gradient: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)'
-        },
-        clothes: {
-          name: 'ملابس وأحذية',
-          emoji: '👔',
-          accent: '#ec4899',
-          gradient: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)'
-        },
-        education: {
-          name: 'تعليم ودروس',
-          emoji: '📚',
-          accent: '#3b82f6',
-          gradient: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)'
-        },
-        other: {
-          name: 'أخرى ونثريات',
-          emoji: '🎁',
-          accent: '#14b8a6',
-          gradient: 'linear-gradient(135deg, #14b8a6 0%, #0f766e 100%)'
-        }
+        food: { name: 'طعام ومشتريات', emoji: '🛒', accent: '#10b981', gradient: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' },
+        daily: { name: 'مصروف يومي', emoji: '☕', accent: '#f59e0b', gradient: 'linear-gradient(135deg, #f59e0b 0%, #b45309 100%)' },
+        bills: { name: 'فواتير والتزامات', emoji: '⚡', accent: '#f97316', gradient: 'linear-gradient(135deg, #f97316 0%, #c2410c 100%)' },
+        transport: { name: 'مواصلات وبنزين', emoji: '🚗', accent: '#0284c7', gradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' },
+        house: { name: 'مستلزمات منزل', emoji: '🛋️', accent: '#8b5cf6', gradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' },
+        health: { name: 'صحة وعلاج', emoji: '💊', accent: '#ef4444', gradient: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)' },
+        clothes: { name: 'ملابس وأحذية', emoji: '👔', accent: '#ec4899', gradient: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' },
+        education: { name: 'تعليم ودروس', emoji: '📚', accent: '#3b82f6', gradient: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' },
+        other: { name: 'أخرى ونثريات', emoji: '🎁', accent: '#14b8a6', gradient: 'linear-gradient(135deg, #14b8a6 0%, #0f766e 100%)' }
       };
 
       const activeTheme = state.appTheme || localStorage.getItem('family_monefy_theme') || 'navy';
@@ -25208,7 +25343,6 @@ function generateRichDemoTransactions() {
       const isGold = state.currency === 'GOLD21';
       const currSymbol = getCurrencySymbol();
 
-      // محرك لوحات ألوان الكروت الداخلية المتكيفة بالكامل مع كافة سمات التطبيق الـ 9
       const THEME_CARD_PALETTES = {
         navy: {
           bgGrad: (c) => `linear-gradient(160deg, ${c}42 0%, ${c}15 38%, #08162b 100%)`,
@@ -25253,95 +25387,30 @@ function generateRichDemoTransactions() {
           shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         gold: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #451a03 40%, #261102 100%)`,
-          lowerZero: 'rgba(38, 17, 2, 0.90)',
+          bgGrad: (c) => `linear-gradient(160deg, ${c}38 0%, #3a2803 40%, #1c1301 100%)`,
+          lowerZero: 'rgba(38, 26, 3, 0.90)',
           lowerSpent: 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
           shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         slate: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #1e293b 40%, #0f1622 100%)`,
+          bgGrad: (c) => `linear-gradient(160deg, ${c}35 0%, #1e293b 40%, #0f172a 100%)`,
           lowerZero: 'rgba(15, 23, 42, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.28)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}44`
-        },
-        facebook: {
-          bgGrad: (c) => 'linear-gradient(160deg, ' + c + '20 0%, #eaf2ff 42%, #ffffff 100%)',
-          lowerZero: 'rgba(240, 242, 245, 0.98)',
-          lowerSpent: 'rgba(220, 38, 38, 0.13)',
-          border: (c) => c,
-          shadow: (c) => '0 3px 10px rgba(8, 102, 255, 0.10), 0 0 0 1px ' + c + '15'
+          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          border: (c) => `${c}cc`,
+          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 12px ${c}35`
         },
         light: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}25 0%, rgba(241, 245, 249, 0.70) 40%, #ffffff 100%)`,
+          bgGrad: (c) => `linear-gradient(160deg, #ffffff 0%, ${c}12 45%, ${c}25 100%)`,
           lowerZero: 'rgba(241, 245, 249, 0.95)',
-          lowerSpent: 'rgba(239, 68, 68, 0.14)',
-          border: (c) => c,
-          shadow: (c) => `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 10px ${c}30`
-        },
-        crimson: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #831843 40%, #3b0413 100%)`,
-          lowerZero: 'rgba(45, 11, 29, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
-        },
-        amber: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #9a3412 40%, #360f04 100%)`,
-          lowerZero: 'rgba(54, 15, 4, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
-        },
-        midnight: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #1e1b4b 40%, #0f0a2e 100%)`,
-          lowerZero: 'rgba(15, 10, 46, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
-        },
-        forest: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #064e3b 40%, #012419 100%)`,
-          lowerZero: 'rgba(1, 36, 25, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
-        },
-        carbon: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #27272a 40%, #09090b 100%)`,
-          lowerZero: 'rgba(9, 9, 11, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
-        },
-        sapphire: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #1d4ed8 40%, #0a132c 100%)`,
-          lowerZero: 'rgba(10, 19, 44, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
-          border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          lowerSpent: 'rgba(254, 226, 226, 0.95)',
+          border: (c) => `${c}cc`,
+          shadow: (c) => `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20`
         }
       };
 
       const pal = THEME_CARD_PALETTES[activeTheme] || THEME_CARD_PALETTES.navy;
-      
-      // 12 باليت أيقونات حصرية متفاعلة
       const activeIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
-      const ICON_PALETTES_MAP = {
-        'gold': { gradient: 'linear-gradient(135deg, #fbbf24 0%, #b45309 100%)', accent: '#fbbf24', shadow: 'rgba(251, 191, 36, 0.65)' },
-        'emerald': { gradient: 'linear-gradient(135deg, #34d399 0%, #047857 100%)', accent: '#34d399', shadow: 'rgba(52, 211, 153, 0.65)' },
-        'ocean': { gradient: 'linear-gradient(135deg, #22d3ee 0%, #0e7490 100%)', accent: '#22d3ee', shadow: 'rgba(34, 211, 238, 0.65)' },
-        'purple': { gradient: 'linear-gradient(135deg, #c084fc 0%, #6d28d9 100%)', accent: '#c084fc', shadow: 'rgba(192, 132, 252, 0.65)' },
-        'silver': { gradient: 'linear-gradient(135deg, #f8fafc 0%, #64748b 100%)', accent: '#e2e8f0', shadow: 'rgba(226, 232, 240, 0.65)' },
-        'ruby': { gradient: 'linear-gradient(135deg, #fb7185 0%, #be123c 100%)', accent: '#fb7185', shadow: 'rgba(251, 113, 133, 0.65)' },
-        'amber': { gradient: 'linear-gradient(135deg, #fb923c 0%, #c2410c 100%)', accent: '#fb923c', shadow: 'rgba(251, 146, 60, 0.65)' },
-        'cyber': { gradient: 'linear-gradient(135deg, #a3e635 0%, #4d7c0f 100%)', accent: '#a3e635', shadow: 'rgba(163, 230, 53, 0.65)' },
-        'teal': { gradient: 'linear-gradient(135deg, #2dd4bf 0%, #0f766e 100%)', accent: '#2dd4bf', shadow: 'rgba(45, 212, 191, 0.65)' },
-        'indigo': { gradient: 'linear-gradient(135deg, #818cf8 0%, #4338ca 100%)', accent: '#818cf8', shadow: 'rgba(129, 140, 248, 0.65)' },
-        'rose': { gradient: 'linear-gradient(135deg, #f472b6 0%, #be185d 100%)', accent: '#f472b6', shadow: 'rgba(244, 114, 182, 0.65)' }
-      };
-      const curIconPal = ICON_PALETTES_MAP[activeIconTheme] || null;
       const getCardTopBackground = (accent) => isLight
         ? `linear-gradient(145deg, ${accent}38 0%, ${accent}1f 56%, ${accent}12 100%)`
         : `linear-gradient(145deg, ${accent}60 0%, ${accent}3c 56%, ${accent}25 100%)`;
@@ -25349,11 +25418,13 @@ function generateRichDemoTransactions() {
       const existingCards = grid.querySelectorAll('.cat-card');
       const curFontSize = document.documentElement.getAttribute('data-font-size') || 'medium';
       const curFontFamily = document.documentElement.getAttribute('data-font-family') || 'tajawal';
+      
       const needRebuild = (existingCards.length !== EXPENSE_CATEGORIES.length) || 
                           (grid.dataset.theme !== activeTheme) ||
                           (grid.dataset.iconTheme !== activeIconTheme) ||
                           (grid.dataset.fontSize !== curFontSize) ||
-                          (grid.dataset.fontFamily !== curFontFamily);
+                          (grid.dataset.fontFamily !== curFontFamily) ||
+                          (grid.dataset.activeBudgetId !== activePlanId);
 
       if (needRebuild) {
         grid.innerHTML = '';
@@ -25361,6 +25432,7 @@ function generateRichDemoTransactions() {
         grid.dataset.iconTheme = activeIconTheme;
         grid.dataset.fontSize = curFontSize;
         grid.dataset.fontFamily = curFontFamily;
+        grid.dataset.activeBudgetId = activePlanId;
 
         EXPENSE_CATEGORIES.forEach(cat => {
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
@@ -25371,7 +25443,7 @@ function generateRichDemoTransactions() {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardAccent = theme.accent; // ألوان متنوعة ومختلفة دائماً لكل بند مصروف
+          const cardAccent = theme.accent;
           const cardBg = pal.bgGrad(theme.accent);
           const cardBorder = `2px solid ${pal.border(theme.accent)}`;
           const cardShadow = pal.shadow(theme.accent);
@@ -25384,18 +25456,17 @@ function generateRichDemoTransactions() {
           }
           const signStr = (spent > 0) ? '-' : '';
 
-          // خط أرقام ذكي يتكيف مع طول المبلغ حتى لا يخرج عن حدود البطاقة نهائياً
-          let amtFontSize = 'clamp(0.92rem, 2.8vw, 1.02rem)';
+          let amtFontSize = 'clamp(0.88rem, 2.6vw, 0.98rem)';
           let amtLetterSpacing = '-0.2px';
           const totalLen = numStr.length;
           if (totalLen >= 14 || isGold) {
-            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
+            amtFontSize = 'clamp(0.64rem, 1.8vw, 0.74rem)';
             amtLetterSpacing = '-0.5px';
           } else if (totalLen >= 10) {
-            amtFontSize = 'clamp(0.75rem, 2.15vw, 0.86rem)';
+            amtFontSize = 'clamp(0.72rem, 2.1vw, 0.82rem)';
             amtLetterSpacing = '-0.4px';
           } else if (totalLen >= 7) {
-            amtFontSize = 'clamp(0.84rem, 2.5vw, 0.94rem)';
+            amtFontSize = 'clamp(0.80rem, 2.4vw, 0.90rem)';
             amtLetterSpacing = '-0.3px';
           }
 
@@ -25407,8 +25478,47 @@ function generateRichDemoTransactions() {
             ? (isLight ? '#b91c1c' : '#ff4d6d') 
             : (isLight ? '#334155' : '#f1f5f9');
 
+          // حسابات سقف الميزانية الذكي للبند الحالي
+          const budgetCeiling = categoryBudgets[cat.id] || 0;
+          let ceilingHtml = '';
+          let isPulseAlert = false;
+
+          if (budgetCeiling > 0) {
+            const remaining = budgetCeiling - spent;
+            const pct = Math.round((spent / budgetCeiling) * 100);
+            let statusColor = '#10b981';
+            let remainingText = '';
+
+            if (pct < 70) {
+              statusColor = '#10b981';
+              remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+            } else if (pct <= 90) {
+              statusColor = '#f59e0b';
+              remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+            } else {
+              statusColor = '#ef4444';
+              isPulseAlert = true;
+              if (remaining < 0) {
+                remainingText = `تجاوز: ${formatMoneyVal(Math.abs(remaining))} • ${pct}%`;
+              } else {
+                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+              }
+            }
+
+            ceilingHtml = `
+              <div class="cat-budget-ceiling-wrap" style="width: 100%; display: flex; flex-direction: column; gap: 2px; margin-top: 2px; padding: 0 1px; box-sizing: border-box;">
+                <div class="cat-budget-progress-track" style="width: 100%; height: 3px; background: ${isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)'}; border-radius: 2px; overflow: hidden;">
+                  <div class="cat-budget-progress-fill" style="width: ${Math.min(pct, 100)}%; height: 100%; background: ${statusColor}; border-radius: 2px; transition: width 0.3s ease;"></div>
+                </div>
+                <div class="cat-budget-ceiling-text" style="font-size: 0.58rem; font-weight: 850; color: ${statusColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; line-height: 1.1; font-family: var(--font-numbers); direction: rtl;">
+                  ${remainingText}
+                </div>
+              </div>
+            `;
+          }
+
           const card = document.createElement('div');
-          card.className = `cat-card cat-theme-${cat.id}`;
+          card.className = `cat-card cat-theme-${cat.id} ${isPulseAlert ? 'budget-pulse-alert' : ''}`;
           card.setAttribute('data-cat-id', cat.id);
           card.style.cssText = `
             background: ${cardBg} !important;
@@ -25432,48 +25542,44 @@ function generateRichDemoTransactions() {
           `;
 
           card.innerHTML = `
-            <!-- 1. النصف العلوي: رمز أكبر واسم أكبر يملأ الفراغ المخصص له بالكامل -->
             <div class="cat-card-top-half" 
                  onclick="event.stopPropagation(); openQuickCategoryExpense('${cat.id}');"
                  title="انقر على الرمز لتسجيل مصروف جديد في ${theme.name}"
-                 style="flex: 1.35 1 68%; min-height: 0; width: 100%; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 3px 2px; background: ${cardTopBg}; border-radius: 14px 14px 0 0; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
+                 style="flex: 1.25 1 65%; min-height: 0; width: 100%; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 3px 2px 1px; background: ${cardTopBg}; border-radius: 14px 14px 0 0; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
               
-              <!-- بالون الرمز أكبر ومجسم يملأ مساحته بروعة متفاعل مع باليت الأيقونات -->
               <div class="cat-icon-bubble" 
-                   style="background: ${theme.gradient}; width: clamp(36px, 9.5vw, 42px) !important; height: clamp(36px, 9.5vw, 42px) !important; min-width: 36px !important; min-height: 36px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
-                <span style="font-size: clamp(1.45rem, 3.8vw, 1.75rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
+                   style="background: ${theme.gradient}; width: clamp(34px, 9vw, 40px) !important; height: clamp(34px, 9vw, 40px) !important; min-width: 34px !important; min-height: 34px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
+                <span style="font-size: clamp(1.4rem, 3.6vw, 1.7rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
-              <!-- اسم بند المصروف أكبر وواضح يملأ الفراغ مباشرة تحت الرمز -->
               <div class="cat-label-text" 
-                   style="font-family: var(--font-family); font-size: clamp(0.72rem, 2vw, 0.82rem); font-weight: 900; color: ${isLight ? '#0f172a' : '#ffffff'} !important; text-shadow: ${isLight ? 'none' : '0 1px 3px rgba(0,0,0,0.95)'}; text-align: center; margin: 0; line-height: 1.2; white-space: normal; overflow: hidden; text-overflow: clip; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 2.4em; width: 100%; max-width: 100%; padding: 0 2px; box-sizing: border-box;">
+                   style="font-family: var(--font-family); font-size: clamp(0.70rem, 1.9vw, 0.80rem); font-weight: 900; color: ${isLight ? '#0f172a' : '#ffffff'} !important; text-shadow: ${isLight ? 'none' : '0 1px 3px rgba(0,0,0,0.95)'}; text-align: center; margin: 0; line-height: 1.15; white-space: normal; overflow: hidden; text-overflow: clip; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 2.3em; width: 100%; max-width: 100%; padding: 0 2px; box-sizing: border-box;">
                 ${theme.name}
               </div>
             </div>
 
-            <!-- 2. النصف السفلي: كبسولة أرقام محكومة تماماً داخل حدود البطاقة بدون أي خروج -->
             <div class="cat-card-bottom-half ${spent > 0 ? 'has-spent' : 'zero-spent'}" 
                  onclick="event.stopPropagation(); openOperationsFiltered({ category: '${cat.id}', categoryName: '${cat.name}', type: 'expense' });" 
                  title="انقر لعرض حركات ${theme.name}" 
-                 style="flex: 0.65 1 32%; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; padding: 4px 2px; cursor: pointer; background: ${lowerCardBg}; border-top: 1.5px solid ${lowerCardBorder}; box-sizing: border-box; transition: all 0.15s ease; overflow: hidden; touch-action: manipulation;">
+                 style="flex: 0.75 1 35%; min-height: 0; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2px 2px 3px; cursor: pointer; background: ${lowerCardBg}; border-top: 1.5px solid ${lowerCardBorder}; box-sizing: border-box; transition: all 0.15s ease; overflow: hidden; touch-action: manipulation;">
               <div class="cat-amount-val" 
                    style="font-family: var(--font-numbers); font-size: ${amtFontSize}; letter-spacing: ${amtLetterSpacing}; font-weight: 950; color: ${amtColor}; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; max-width: 100%; direction: rtl; text-align: center; font-variant-numeric: tabular-nums; display: flex; align-items: baseline; justify-content: center; gap: 2px; box-sizing: border-box; padding: 0 1px;">
                 ${signStr ? `<span class="cat-amount-sign">${signStr}</span>` : ''}
                 <span class="cat-number-val">${numStr}</span>
                 <span class="cat-currency-label">${currSymbol}</span>
               </div>
+              ${ceilingHtml}
             </div>
           `;
           grid.appendChild(card);
         });
       } else {
-        // Fast in-place DOM updates with live theme sync
+        // Fast in-place DOM updates with live budget ceilings
         EXPENSE_CATEGORIES.forEach(cat => {
           const card = grid.querySelector(`[data-cat-id="${cat.id}"]`);
           if (!card) return;
           const spent = catTotals[cat.id] || (cat.id === 'other' ? (catTotals['entertainment'] || 0) : 0);
           const theme = HIGH_CONTRAST_THEMES[cat.id] || { accent: cat.color || '#38bdf8' };
-          const cardAccent = theme.accent;
           const converted = convertAmount(spent);
           let numStr = '0.00';
           if (spent > 0) {
@@ -25481,33 +25587,23 @@ function generateRichDemoTransactions() {
           }
           const signStr = (spent > 0) ? '-' : '';
 
-          let amtFontSize = 'clamp(0.92rem, 2.8vw, 1.02rem)';
+          let amtFontSize = 'clamp(0.88rem, 2.6vw, 0.98rem)';
           let amtLetterSpacing = '-0.2px';
           const totalLen = numStr.length;
           if (totalLen >= 14 || isGold) {
-            amtFontSize = 'clamp(0.66rem, 1.9vw, 0.76rem)';
+            amtFontSize = 'clamp(0.64rem, 1.8vw, 0.74rem)';
             amtLetterSpacing = '-0.5px';
           } else if (totalLen >= 10) {
-            amtFontSize = 'clamp(0.75rem, 2.15vw, 0.86rem)';
+            amtFontSize = 'clamp(0.72rem, 2.1vw, 0.82rem)';
             amtLetterSpacing = '-0.4px';
           } else if (totalLen >= 7) {
-            amtFontSize = 'clamp(0.84rem, 2.5vw, 0.94rem)';
+            amtFontSize = 'clamp(0.80rem, 2.4vw, 0.90rem)';
             amtLetterSpacing = '-0.3px';
           }
 
-          // مزامنة الألوان الحية للبطاقة وبالون الأيقونة
           card.style.setProperty('background', pal.bgGrad(theme.accent), 'important');
           card.style.setProperty('border-color', pal.border(theme.accent), 'important');
           card.style.setProperty('box-shadow', pal.shadow(theme.accent), 'important');
-          const topHalf = card.querySelector('.cat-card-top-half');
-          if (topHalf) topHalf.style.background = getCardTopBackground(theme.accent);
-
-          const bubble = card.querySelector('.cat-icon-bubble');
-          if (bubble) {
-            bubble.style.background = theme.gradient;
-            bubble.style.outline = '1.8px solid ' + theme.accent;
-            bubble.style.boxShadow = `0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40)`;
-          }
 
           const lowerHalf = card.querySelector('.cat-card-bottom-half');
           const amtEl = card.querySelector('.cat-amount-val');
@@ -25523,6 +25619,63 @@ function generateRichDemoTransactions() {
               <span class="cat-number-val">${numStr}</span>
               <span class="cat-currency-label">${currSymbol}</span>
             `;
+
+            // تحديث شريط سقف الميزانية اللحظي
+            const budgetCeiling = categoryBudgets[cat.id] || 0;
+            let ceilingWrap = lowerHalf.querySelector('.cat-budget-ceiling-wrap');
+            
+            if (budgetCeiling > 0) {
+              const remaining = budgetCeiling - spent;
+              const pct = Math.round((spent / budgetCeiling) * 100);
+              let statusColor = '#10b981';
+              let remainingText = '';
+
+              if (pct < 70) {
+                statusColor = '#10b981';
+                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+              } else if (pct <= 90) {
+                statusColor = '#f59e0b';
+                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+              } else {
+                statusColor = '#ef4444';
+                if (remaining < 0) {
+                  remainingText = `تجاوز: ${formatMoneyVal(Math.abs(remaining))} • ${pct}%`;
+                } else {
+                  remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+                }
+              }
+
+              card.classList.toggle('budget-pulse-alert', pct > 90);
+
+              if (ceilingWrap) {
+                const fill = ceilingWrap.querySelector('.cat-budget-progress-fill');
+                const txt = ceilingWrap.querySelector('.cat-budget-ceiling-text');
+                if (fill) {
+                  fill.style.width = Math.min(pct, 100) + '%';
+                  fill.style.background = statusColor;
+                }
+                if (txt) {
+                  txt.textContent = remainingText;
+                  txt.style.color = statusColor;
+                }
+              } else {
+                const newWrap = document.createElement('div');
+                newWrap.className = 'cat-budget-ceiling-wrap';
+                newWrap.style.cssText = 'width: 100%; display: flex; flex-direction: column; gap: 2px; margin-top: 2px; padding: 0 1px; box-sizing: border-box;';
+                newWrap.innerHTML = `
+                  <div class="cat-budget-progress-track" style="width: 100%; height: 3px; background: ${isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.15)'}; border-radius: 2px; overflow: hidden;">
+                    <div class="cat-budget-progress-fill" style="width: ${Math.min(pct, 100)}%; height: 100%; background: ${statusColor}; border-radius: 2px; transition: width 0.3s ease;"></div>
+                  </div>
+                  <div class="cat-budget-ceiling-text" style="font-size: 0.58rem; font-weight: 850; color: ${statusColor}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; line-height: 1.1; font-family: var(--font-numbers); direction: rtl;">
+                    ${remainingText}
+                  </div>
+                `;
+                lowerHalf.appendChild(newWrap);
+              }
+            } else {
+              card.classList.remove('budget-pulse-alert');
+              if (ceilingWrap) ceilingWrap.remove();
+            }
           }
         });
       }
@@ -26566,6 +26719,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       newTx.serialNo = generateNextAuditSerial(newTx.type, newTx.date);
       state.transactions.unshift(newTx);
       saveTx();
+      if (newTx.type === 'expense') checkCategoryBudgetCeilingTrigger(newTx.category, newTx.amount);
       // ضمان ظهور الحركة الجديدة فوراً في صفحة العمليات المسجلة بإزالة أي حجب مؤقت
       try {
         const opsSearch = document.getElementById('opsSearchInput');
@@ -28234,6 +28388,7 @@ function saveTx() {
       if (!state.transactions) state.transactions = [];
       state.transactions.unshift(newTx);
       saveTx();
+      if (newTx.type === 'expense') checkCategoryBudgetCeilingTrigger(newTx.category, newTx.amount);
 
       exp.status = 'paid';
       exp.paidAt = new Date().toISOString();
@@ -34246,6 +34401,7 @@ function initMonthlyBudgetUI() {
       familyAlerts.refresh();
       playNotificationChime();
       showToast(`💾 تم حفظ وتثبيت خطة (${currentBudgetMonthData.name}) بنجاح! ✨`);
+      if (typeof renderCategoriesGrid === 'function') renderCategoriesGrid();
       triggerDriveAutoSync();
     }
 
