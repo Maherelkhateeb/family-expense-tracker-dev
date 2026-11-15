@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.58';
-    var APP_BUILD_ID = 202611151015;
+    var APP_VERSION = 'v5.3.59';
+    var APP_BUILD_ID = 202611151030;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -10515,39 +10515,45 @@
       font-weight: 900;
     }
 
-    /* مقبضا الشاشات الجانبية يمين ويسار */
+    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.59 */
     .side-screen-edge-handle {
-      position: fixed;
-      top: 52%;
-      transform: translateY(-50%);
-      width: 14px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      cursor: pointer;
-      font-size: 0.65rem;
-      transition: all 0.22s ease;
-      opacity: 0.55;
+      position: fixed !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      width: 24px !important;
+      height: 60px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 99999 !important;
+      cursor: pointer !important;
+      font-size: 0.82rem !important;
+      transition: all 0.22s ease !important;
+      opacity: 0.92 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+      touch-action: manipulation !important;
+      -webkit-tap-highlight-color: transparent !important;
     }
-    .side-screen-edge-handle:hover {
-      opacity: 1;
-      width: 22px;
+    .side-screen-edge-handle:hover,
+    .side-screen-edge-handle:active {
+      opacity: 1 !important;
+      width: 32px !important;
     }
     .side-screen-edge-handle.left-handle {
-      left: 0;
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.5), rgba(2, 132, 199, 0.7));
-      border-radius: 0 8px 8px 0;
-      color: #ffffff;
-      box-shadow: 2px 0 10px rgba(56, 189, 248, 0.35);
+      left: 0 !important;
+      background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+      border-radius: 0 12px 12px 0 !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.8) !important;
+      border-left: none !important;
+      color: #ffffff !important;
     }
     .side-screen-edge-handle.right-handle {
-      right: 0;
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.5), rgba(217, 119, 6, 0.7));
-      border-radius: 8px 0 0 8px;
-      color: #ffffff;
-      box-shadow: -2px 0 10px rgba(245, 158, 11, 0.35);
+      right: 0 !important;
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      border-radius: 12px 0 0 12px !important;
+      border: 1.5px solid rgba(251, 191, 36, 0.8) !important;
+      border-right: none !important;
+      color: #ffffff !important;
     }
 
   
@@ -10975,7 +10981,171 @@
       flex-direction: column !important;
     }
 
-  </style>
+  
+    /* =========================================================================
+       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.59
+       ========================================================================= */
+    /* 1. فيسبوك والوضع الفاتح: تحويل كافة الكروت والخلفيات المظلمة إلى ألوان واضحة ونقية */
+    body.light-theme :is(
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelMonthlyBudget > div,
+      #reqAllocationsBlock,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      #budgetActualVsPlannedBar,
+      .requests-view-switcher,
+      .requests-sub-switcher,
+      [id^="secReq"],
+      .form-group-custom,
+      .item-entry-card,
+      .expected-top-hero,
+      .project-budget-analysis,
+      #sectionComparisons > div,
+      .budget-plan-card,
+      .wallet-statement-filters,
+      .antigravity-card-block,
+      .archive-period-strip,
+      .archive-filter-row,
+      .cockpit-card,
+      .dashboard-card,
+      .ops-card,
+      .summary-card,
+      .kpi-lux-card,
+      .chart-glass-panel,
+      .wallet-card-lux,
+      .gold-item-row,
+      .gold-kpi-pill
+    ),
+    body[data-theme="facebook"] :is(
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelMonthlyBudget > div,
+      #reqAllocationsBlock,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      #budgetActualVsPlannedBar,
+      .requests-view-switcher,
+      .requests-sub-switcher,
+      [id^="secReq"],
+      .form-group-custom,
+      .item-entry-card,
+      .expected-top-hero,
+      .project-budget-analysis,
+      #sectionComparisons > div,
+      .budget-plan-card,
+      .wallet-statement-filters,
+      .antigravity-card-block,
+      .archive-period-strip,
+      .archive-filter-row,
+      .cockpit-card,
+      .dashboard-card,
+      .ops-card,
+      .summary-card,
+      .kpi-lux-card,
+      .chart-glass-panel,
+      .wallet-card-lux,
+      .gold-item-row,
+      .gold-kpi-pill
+    ),
+    body[data-card-style="facebook"] :is(
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelMonthlyBudget > div,
+      #reqAllocationsBlock,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      #budgetActualVsPlannedBar,
+      .requests-view-switcher,
+      .requests-sub-switcher,
+      [id^="secReq"],
+      .form-group-custom,
+      .item-entry-card,
+      .ops-card,
+      .summary-card
+    ) {
+      background: #ffffff !important;
+      border: 1px solid #ced0d4 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+      color: #050505 !important;
+    }
+
+    /* صناديق التفاصيل والتقدم الداخلية داخل الكروت */
+    body.light-theme :is(
+      .req-alloc-card-item,
+      .budget-item-card > div:last-of-type,
+      #reqAllocationsRowsContainer > div,
+      .budget-item-card [style*="background: rgba(30, 41, 59"],
+      .budget-item-card [style*="background:rgba(30, 41, 59"]
+    ),
+    body[data-theme="facebook"] :is(
+      .req-alloc-card-item,
+      .budget-item-card > div:last-of-type,
+      #reqAllocationsRowsContainer > div,
+      .budget-item-card [style*="background: rgba(30, 41, 59"],
+      .budget-item-card [style*="background:rgba(30, 41, 59"]
+    ) {
+      background: #f0f2f5 !important;
+      border: 1px solid #e4e6eb !important;
+      color: #050505 !important;
+    }
+
+    /* نصوص وعناوين الكروت في الوضع الفاتح والفيسبوك لضمان وضوح فائق 100% */
+    body.light-theme :is(
+      .req-alloc-block,
+      #reqAllocationsBlock,
+      #panelMonthlyBudget,
+      .budget-item-card,
+      #viewCommitments
+    ) :is(label, span, div, p, strong, b, h1, h2, h3, h4, h5),
+    body[data-theme="facebook"] :is(
+      .req-alloc-block,
+      #reqAllocationsBlock,
+      #panelMonthlyBudget,
+      .budget-item-card,
+      #viewCommitments
+    ) :is(label, span, div, p, strong, b, h1, h2, h3, h4, h5) {
+      color: #050505 !important;
+    }
+
+    /* النصوص الثانوية والرمادية في الوضع الفاتح والفيسبوك */
+    body.light-theme :is(
+      .req-alloc-block,
+      #reqAllocationsBlock,
+      #panelMonthlyBudget,
+      .budget-item-card,
+      #viewCommitments
+    ) :is(.text-muted, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]),
+    body[data-theme="facebook"] :is(
+      .req-alloc-block,
+      #reqAllocationsBlock,
+      #panelMonthlyBudget,
+      .budget-item-card,
+      #viewCommitments
+    ) :is(.text-muted, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]) {
+      color: #65676b !important;
+    }
+
+    /* حقول الإدخال والاختيار في الوضع الفاتح والفيسبوك */
+    body.light-theme :is(.req-alloc-block, #panelMonthlyBudget, #viewCommitments) :is(.form-control-custom, .form-select-custom, input, select),
+    body[data-theme="facebook"] :is(.req-alloc-block, #panelMonthlyBudget, #viewCommitments) :is(.form-control-custom, .form-select-custom, input, select) {
+      background: #ffffff !important;
+      border: 1.5px solid #ced0d4 !important;
+      color: #050505 !important;
+    }
+
+    /* أزرار اختيار الأفراد في نموذج الميزانية */
+    body.light-theme #budgetMembersMultiPicker button:not([style*="linear-gradient"]),
+    body[data-theme="facebook"] #budgetMembersMultiPicker button:not([style*="linear-gradient"]) {
+      background: #e4e6eb !important;
+      border-color: #ced0d4 !important;
+      color: #050505 !important;
+    }
+
+</style>
 
     <script>
     // تسجيل Service Worker للعمل أوفلاين وتحديث الكاش تلقائياً بصيغة PWA
@@ -15711,6 +15881,14 @@
 </style>
 </head>
 <body>
+  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.59 - مباشر تحت body -->
+  <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
+    <i class="fa-solid fa-chevron-right"></i>
+  </div>
+  <div class="side-screen-edge-handle right-handle" onclick="openGoldDrawer()" title="الشاشة الجانبية اليمنى: الذهب والعملات">
+    <i class="fa-solid fa-chevron-left"></i>
+  </div>
+
 
   <div class="mobile-frame" id="appFrame">
     
@@ -16131,6 +16309,7 @@
             <button class="btn-export-tool" onclick="filterArchiveType('expected', this)">التزامات وسداد</button>
             <button class="btn-export-tool" onclick="filterArchiveType('budget', this)">ميزانيات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('transfer', this)">تحويلات</button>
+            <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('delete', this)">حذف</button>
             <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool excel-btn" onclick="exportActivityLogExcel()" style="margin-right: auto;">
@@ -18457,6 +18636,7 @@
             </div>
             <!-- الحاجة أزيلت -->
         </div>
+        </div>
 
         <!-- 2. شاشة التحقق من رمز القفل (PIN Verification View) -->
         <div id="authPinVerificationView" style="display: none; background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 16px 14px; text-align: center;">
@@ -19335,7 +19515,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.58</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.59</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -26159,7 +26339,7 @@ function auditAndRecomputeAllWalletBalances() {
         `<option value="${c.id}">${c.name}</option>`
       ).join('');
 
-      const memberOptions = ['البيت', 'ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'أخرى'].map(m => 
+      const memberOptions = ['ماهر', 'أية', 'محمد', 'مريم', 'النونو', 'أخرى'].map(m => 
         `<option value="${m}">${m}</option>`
       ).join('');
 
@@ -38275,13 +38455,7 @@ window.filterArchiveType = filterArchiveType;
       </div>
     </div>
 
-  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) لفتح الشاشات بالسحب أو النقر المباشر -->
-  <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
-    <i class="fa-solid fa-chevron-right"></i>
-  </div>
-  <div class="side-screen-edge-handle right-handle" onclick="openGoldDrawer()" title="الشاشة الجانبية اليمنى: الذهب والعملات">
-    <i class="fa-solid fa-chevron-left"></i>
-  </div>
+  
 
 
   <!-- ==============================================================
@@ -38339,12 +38513,34 @@ window.filterArchiveType = filterArchiveType;
 
 <script>
     // ==============================================================
-    // فتح كافة الروابط في المتصفح الخارجي للنظام مباشرة v5.3.58
+    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.59
     // ==============================================================
     (function setupExternalLinksDirectOpen() {
+      function tagExternalLinks() {
+        try {
+          document.querySelectorAll('a[href]').forEach(a => {
+            const href = a.getAttribute('href');
+            if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+            const isHttp = href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//');
+            const isExternal = isHttp && !href.startsWith(window.location.origin);
+            if (isExternal || a.getAttribute('target') === '_blank' || a.hasAttribute('data-external')) {
+              a.setAttribute('target', '_blank');
+              a.setAttribute('rel', 'noopener noreferrer');
+            }
+          });
+        } catch(e) {}
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', tagExternalLinks);
+      } else {
+        tagExternalLinks();
+      }
+
+      // أمان تام: استخدام bubbling عادي دون capture ودون أي استدعاء عودي لمنع أي تعليق
       document.addEventListener('click', function(e) {
         const a = e.target.closest('a');
-        if (!a) return;
+        if (!a || a.closest('button')) return;
         const href = a.getAttribute('href');
         if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
 
@@ -38352,24 +38548,15 @@ window.filterArchiveType = filterArchiveType;
         const isExternal = isHttp && !href.startsWith(window.location.origin);
 
         if (isExternal || a.getAttribute('target') === '_blank' || a.hasAttribute('data-external')) {
-          e.preventDefault();
-          e.stopPropagation();
-          try {
-            const opened = window.open(href, '_blank', 'noopener,noreferrer');
-            if (!opened) {
-              const tempA = document.createElement('a');
-              tempA.href = href;
-              tempA.target = '_blank';
-              tempA.rel = 'noopener noreferrer';
-              document.body.appendChild(tempA);
-              tempA.click();
-              tempA.remove();
-            }
-          } catch(err) {
-            window.location.href = href;
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener noreferrer');
+          // في وضع تطبيق PWA المستقل: الفتح مباشرة عبر نافذة النظام الخارجية
+          if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            e.preventDefault();
+            window.open(href, '_blank', 'noopener,noreferrer');
           }
         }
-      }, { capture: true });
+      }, false);
     })();
 </script>
 </body>
