@@ -17332,10 +17332,16 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <span id="opsResultCount" role="status" style="white-space: nowrap; font-size: 0.70rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 4px 6px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
                 -- عملية
               </span>
+              <!-- زر طي / إظهار الفلاتر الإضافية لتوفير مساحة الشاشة -->
+              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" title="طي أو إظهار خيارات الفلترة المتقدمة" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.12); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 800;">
+                <i class="fa-solid fa-sliders"></i> <span id="lblToggleOpsFilters">طي الفلاتر</span> <i id="iconToggleOpsFilters" class="fa-solid fa-chevron-up" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
+              </button>
               <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
               <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
               <label style="flex: 1; min-width: 0; margin: 0; position: relative;"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
             </div>
+            <!-- بداية الحاوية القابلة للطي لصفوف الفلترة المتقدمة -->
+            <div id="opsFiltersCollapsibleBody" style="transition: all 0.25s ease;">
             <div class="ops-filter-grid">
 <details class="ops-picker" name="operation-filter" data-all-label="كل البنود">
   <summary><span class="ops-picker-caption">البنود</span><span class="ops-picker-value">كل البنود</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
@@ -17440,6 +17446,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <span>حسب المشروع</span>
             </button>
           </div>
+            </div> <!-- نهاية opsFiltersCollapsibleBody القابل للطي -->
           </div>
           <div id="txOperationsList" class="ops-feed-container"></div>
         </div>
@@ -17487,7 +17494,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <!-- ============================================================
              القسم الأول: تحليل المصروفات الفعلية (Actual Expenses Suite)
              ============================================================ -->
-        <div id="sectionActualAnalytics" style="display: block; padding: 0 8px 24px;">
+        id="sectionActualAnalytics" style="display: block; padding: 0 8px 24px;">
 
           <!-- 3. شريط فلاتر الأقسام الأساسية في منتصف الصفحة (ثابت وبارز ومستحيل يختفي أبداً) -->
           <div class="analytics-section-nav" id="analyticsStickyNav" style="display: flex !important; gap: 6px !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.4px solid rgba(56, 189, 248, 0.3) !important; padding: 6px !important; border-radius: 14px !important; overflow-x: auto !important; scrollbar-width: none !important; margin: 0 0 12px 0 !important; width: 100% !important; box-sizing: border-box !important; position: static !important;">
@@ -17559,8 +17566,155 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <div class="kpi-lux-sub" id="kpiLuxCoverageSub" style="font-size: 0.65rem; color: #64748b; margin-top: 1px;">فائض سيولة وتغطية</div>
             </div>
           </div>
+
+          <!-- 5. ألواح العرض والشارتات الخمسة التفاعلية -->
+
+          <!-- (أ) لوح التصنيفات -->
+          <div class="analytics-content-pane active" id="paneCategories" style="display: block;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+              <div class="chart-glass-head" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-chart-pie" style="color: #10b981;"></i>
+                    <span>توزيع المصروفات حسب التصنيف</span>
+                  </div>
+                </div>
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                  <button type="button" class="btn-export-tool active" id="btnChartTypePie" onclick="switchCategoryChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-pie"></i> دائري
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypeDoughnut" onclick="switchCategoryChartFormat('doughnut', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-circle-notch"></i> دونات
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypeBar" onclick="switchCategoryChartFormat('bar', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-column"></i> أعمدة
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnChartTypePolar" onclick="switchCategoryChartFormat('polarArea', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-compass"></i> قطبي
+                  </button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 330px; position: relative;">
+                <canvas id="executiveCategoryCanvas"></canvas>
+              </div>
+              <div class="cat-breakdown-legend" id="categoryBreakdownLegend" style="margin-top: 12px;"></div>
+            </div>
+          </div>
+
+          <!-- (ب) لوح أفراد العائلة والبيت -->
+          <div class="analytics-content-pane" id="paneMembers" style="display: none;">
+            
+            <!-- 1. التحليل العام لأفراد العائلة مع شريط تبديل أشكال الشارت -->
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 14px;">
+              <div class="chart-glass-head" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                  <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-users"></i>
+                    <span>توزيع المصروفات بين أفراد الأسرة والبيت</span>
+                  </div>
+                </div>
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                  <button type="button" class="btn-export-tool active" id="btnMemChartTypePie" onclick="switchMemberChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-pie"></i> دائري
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypeDoughnut" onclick="switchMemberChartFormat('doughnut', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-circle-notch"></i> دونات
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypeBar" onclick="switchMemberChartFormat('bar', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-chart-column"></i> أعمدة
+                  </button>
+                  <button type="button" class="btn-export-tool" id="btnMemChartTypePolar" onclick="switchMemberChartFormat('polarArea', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; justify-content: center; white-space: nowrap;">
+                    <i class="fa-solid fa-compass"></i> قطبي
+                  </button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 230px; position: relative; margin-bottom: 12px;">
+                <canvas id="anaMembersCanvas"></canvas>
+              </div>
+              <div class="member-lux-grid" id="memberAnalyticsLuxGrid"></div>
+            </div>
+
+            <!-- 2. التحليل الخاص للفرد بنوع المصروف -->
+            <div class="chart-glass-panel" id="panelMemberCatBreakdown" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 8px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f59e0b; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-tags"></i>
+                  <span>التحليل التفصيلي بنوع المصروف لكل شخص</span>
+                </div>
+              </div>
+
+              <!-- شريط كبسولات اختيار الشخص -->
+              <div class="member-selector-strip" id="memberAnalyticsSelectorStrip" style="display: flex; gap: 8px; overflow-x: auto; padding: 6px 2px 10px; margin-bottom: 8px;"></div>
+
+              <div id="memberSelectedHeroCard" style="margin-bottom: 10px;"></div>
+
+              <div class="chart-canvas-wrap" style="height: 200px; position: relative; margin-bottom: 12px;">
+                <canvas id="memberCatChartCanvas"></canvas>
+              </div>
+
+              <div class="chart-glass-head" style="padding: 6px 10px; background: rgba(56, 189, 248, 0.08); border-radius: 8px; margin-bottom: 8px;">
+                <span style="font-size: 0.80rem; font-weight: 800; color: #38bdf8;" id="memberCatBreakdownTitle">
+                  <i class="fa-solid fa-list-check"></i> التوزيع المحاسبي التفصيلي حسب البنود:
+                </span>
+              </div>
+              <div class="member-cat-rank-list" id="memberCatRankList" style="display: flex; flex-direction: column; gap: 6px;"></div>
+            </div>
+
+          </div>
+
+          <!-- (ج) لوح المسار الزمني والمنحنى اليومي -->
+          <div class="analytics-content-pane" id="paneTimeline" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span>منحنى ومسار الإنفاق اليومي طوال الفترة</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+                <canvas id="dailyTimelineCanvas"></canvas>
+              </div>
+              <div id="timelineInsightsBox" style="margin-top: 10px;"></div>
+            </div>
+          </div>
+
+          <!-- (د) لوح مقارنة الشهور -->
+          <div class="analytics-content-pane" id="paneMonthly" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #8b5cf6; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-chart-column"></i>
+                  <span>مقارنة المصروفات عبر الشهور</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+                <canvas id="monthlyCompareCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- (هـ) لوح قنوات الدفع والمحافظ -->
+          <div class="analytics-content-pane" id="paneWallets" style="display: none;">
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #ec4899; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-wallet"></i>
+                  <span>توزيع المصروفات بحسب قنوات الدفع والمحافظ</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 330px; position: relative;">
+                <canvas id="walletsDistributionCanvas"></canvas>
+              </div>
+              <div id="walletsBreakdownLegend" style="margin-top: 10px;"></div>
+            </div>
+          </div>
+
         </div>
 
+        <!-- ============================================================
+             القسم الثاني: المقارنات والرقابة المالية (Comparisons & Control)
+             ============================================================ -->
+        <div 
       </div> <!-- إغلاق opsSubViewAnalytics -->
 
         <!-- الجزء الثالث: الأرشيف وسجل النشاطات والحركات -->
@@ -17607,7 +17761,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </div>
         </div>
 
-      </div>
+      </div> <!-- إغلاق viewOperations الرسمي -->
+      </div> <!-- إغلاق viewOperations التام -->
 
 
       <!-- ================================================================
@@ -18462,10 +18617,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
           </div>
 
-        </div>
-        </div> <!-- إغلاق subViewCommitments التام والنهائي -->
-
-        </div> <!-- إغلاق viewExpected الرسمي -->
+        </div> <!-- إغلاق subViewCommitments -->
+      </div> <!-- إغلاق viewExpected الرسمي -->
 
       <!-- ==========================================================
            صفحة الميزانيات والخطط الشهرية المستقلة الرسمية (viewBudgets)
@@ -18515,7 +18668,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
         <div id="panelMonthlyBudget" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
           
-          <button type="button" class="project-budget-create" onclick="openNewBudgetPlanModal(true)">＋ موازنة تقديرية للمشروع</button>
+          
           <!-- شريط إدارة الخطط والميزانيات التقديرية -->
           <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
@@ -20615,7 +20768,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.68</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.69</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -23875,6 +24028,41 @@ function toggleAnalyticsCustomRange() {
     }
 
     // تبديل التابين داخل صفحة العمليات (العمليات المسجلة / الأرشيف)
+    
+    function toggleOpsFiltersCollapse(forceOpen = null) {
+      const body = document.getElementById('opsFiltersCollapsibleBody');
+      const icon = document.getElementById('iconToggleOpsFilters');
+      const lbl = document.getElementById('lblToggleOpsFilters');
+      const btn = document.getElementById('btnToggleOpsFilters');
+      if (!body) return;
+
+      const isCurrentlyCollapsed = (body.style.display === 'none');
+      const shouldCollapse = forceOpen !== null ? !forceOpen : !isCurrentlyCollapsed;
+
+      if (shouldCollapse) {
+        body.style.display = 'none';
+        if (icon) icon.style.transform = 'rotate(180deg)';
+        if (lbl) lbl.textContent = 'خيارات الفلترة';
+        if (btn) {
+          btn.style.background = 'rgba(255, 255, 255, 0.06)';
+          btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+          btn.style.color = '#94a3b8';
+        }
+        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'true'); } catch(e) {}
+      } else {
+        body.style.display = 'block';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+        if (lbl) lbl.textContent = 'طي الفلاتر';
+        if (btn) {
+          btn.style.background = 'rgba(56, 189, 248, 0.14)';
+          btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+          btn.style.color = '#38bdf8';
+        }
+        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'false'); } catch(e) {}
+      }
+    }
+    window.toggleOpsFiltersCollapse = toggleOpsFiltersCollapse;
+
     function switchOperationsSubTab(tab) {
       state.activeOpsSubTab = tab;
       const btnReg = document.getElementById('btnOpsSubRegistered');
