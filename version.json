@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.73",
-  "build": 202611151800,
-  "buildId": 202611151800,
-  "releaseDate": "2026-11-15T18:00:00.000Z",
-  "changelog": "v5.3.73: Fixes and enhancements for Executive Budgeting & Audit Suite (Custom date range picker, KPI & progress proration sync, dynamic family members & fair shared expense allocation, genuine project budget status without dummy numbers, comprehensive Variance Matrix with dynamic period selectors, Cross-member matrix & merchant concentration radar, robust budget cloning, active/completed project history badges, RTL Excel export, and luxury gold drawer redesign)."
+  "version": "v5.3.74",
+  "build": 202611151830,
+  "buildId": 202611151830,
+  "releaseDate": "2026-11-15T18:30:00.000Z",
+  "changelog": "v5.3.74: Cleaned legacy dark card styles, full light theme support for tasks modal and cards, relocated unified add commitment panel above monthly calendar, real-time live gold & currency sync with genuine non-fake indicators."
 }
