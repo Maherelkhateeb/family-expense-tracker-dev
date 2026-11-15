@@ -1718,3 +1718,62 @@ body.light-theme .change-tag.flat {
   width: 0 !important;
   height: 0 !important;
 }
+
+
+/* ==========================================================================
+   ENHANCED REQUESTS & BUDGETS EXECUTIVE REDESIGN (v5.3.70)
+   ========================================================================== */
+.req-status-filter-strip {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.req-status-filter-strip::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.req-filter-pill-btn {
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.req-filter-pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.req-card-lux {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.req-card-lux:hover {
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+.budget-health-banner {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.budget-chart-panel {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Light Theme Adaptations */
+body.light-theme .req-card-lux {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .req-card-lux:hover {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1) !important;
+}
+body.light-theme .budget-health-banner {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme .budget-chart-panel {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
