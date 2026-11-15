@@ -32919,6 +32919,45 @@ function switchSettingsTab(tabName) {
       }, 700);
     }
 
+    
+    // =========================================================================
+    // محرك التحديث التلقائي الذكي والآمن عند اكتشاف إصدار جديد (Smart PWA Auto-Update Engine)
+    // =========================================================================
+    function applyRemoteUpdateAndReload(remoteBuild, isManual = false) {
+      console.log(`🚀 [AutoUpdate] تطبيق التحديث الجديد فوراً: ${remoteBuild?.version || 'v5.3.67'}`);
+      
+      try {
+        if (typeof saveTx === 'function') saveTx();
+        if (typeof saveTasksToStorage === 'function') saveTasksToStorage();
+      } catch(e) {}
+
+      if ('caches' in window) {
+        try {
+          caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+        } catch(e) {}
+      }
+
+      if ('serviceWorker' in navigator) {
+        try {
+          navigator.serviceWorker.getRegistrations().then(regs => {
+            regs.forEach(r => {
+              r.update();
+              if (r.waiting) r.waiting.postMessage({ type: 'SKIP_WAITING' });
+            });
+          });
+        } catch(e) {}
+      }
+
+      localStorage.setItem('family_monefy_just_updated_ts', Date.now());
+      localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || window.APP_VERSION || 'v5.3.67');
+
+      setTimeout(() => {
+        const cleanUrl = window.location.origin + window.location.pathname;
+        const bId = remoteBuild?.buildId || Date.now();
+        window.location.replace(`${cleanUrl}?_b=${bId}`);
+      }, 750);
+    }
+
     async function checkAndApplyAppUpdates(options = { isManual: false, silent: true }) {
       const now = Date.now();
       // حماية صارمة لمنع التحديث المتكرر أو حلقة إعادة التحميل المستمرة (Infinite Reload Loop Protection)
@@ -32967,41 +33006,19 @@ function switchSettingsTab(tabName) {
           );
 
           if (isNewer || (options.isManual && options.force)) {
-            console.log(`🚀 [AutoUpdate] تطبيق التحديث الجديد: ${remoteBuild?.version || 'v5.2.3'}`);
-            showToast(`🚀 تم العثور على تحديث جديد (${remoteBuild?.version || 'v5.2.3'})! جاري التحميل والتطبيق...`, 'info', 3000);
+            const attemptedBuild = localStorage.getItem('family_monefy_last_attempted_build');
+            const attemptedTime = Number(localStorage.getItem('family_monefy_last_attempted_time') || 0);
+            const alreadyAttemptedThisBuild = (attemptedBuild === String(remoteBuild?.buildId)) && (Date.now() - attemptedTime < 180000);
 
-            try {
-              if (typeof saveTx === 'function') saveTx();
-              if (typeof saveTasksToStorage === 'function') saveTasksToStorage();
-            } catch(e) {}
-
-            if ('caches' in window) {
-              try {
-                const keys = await caches.keys();
-                await Promise.all(keys.map(k => caches.delete(k)));
-              } catch(e) {}
+            if (!alreadyAttemptedThisBuild || options.isManual) {
+              localStorage.setItem('family_monefy_last_attempted_build', String(remoteBuild?.buildId || ''));
+              localStorage.setItem('family_monefy_last_attempted_time', String(Date.now()));
+              showToast(`🚀 تم العثور على تحديث جديد (${remoteBuild?.version || 'v5.3.67'})! جاري التحميل والتطبيق فوراً...`, 'info', 3000);
+              applyRemoteUpdateAndReload(remoteBuild, options.isManual);
+              return;
+            } else {
+              console.log('ℹ️ [AutoUpdate] تم تطبيق التحديث في هذه الجلسة مسبقاً.');
             }
-
-            if ('serviceWorker' in navigator) {
-              try {
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const reg of registrations) {
-                  await reg.update();
-                  if (reg.waiting) {
-                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                  }
-                }
-              } catch(e) {}
-            }
-
-            localStorage.setItem('family_monefy_just_updated_ts', Date.now());
-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.67');
-            setTimeout(() => {
-              const updateUrl = new URL(window.location.href);
-              updateUrl.searchParams.set('_build', String(remoteBuild?.buildId || Date.now()));
-              window.location.replace(updateUrl.href);
-            }, 800);
-            return;
           } else {
             console.log('✅ [AutoUpdate] التطبيق يعمل بالفعل على أحدث إصدار متوفر.');
             if (options.isManual) {
@@ -33059,14 +33076,23 @@ function switchSettingsTab(tabName) {
         );
 
         if (isNewer) {
-          console.log(`ℹ️ [Sync] تم العثور على إصدار أحدث (${remoteBuild.version}).`);
-          if (statusText) statusText.textContent = 'يوجد تحديث متوفر';
-          // لا يُسمح بإعادة التحميل الإجباري في المزامنة الخلفية التلقائية لمنع أي حلقة تكرار
-          if (isManual && typeof forcePurgeCacheAndReload === 'function') {
-            forcePurgeCacheAndReload(true);
-            return;
+          const attemptedBuild = localStorage.getItem('family_monefy_last_attempted_build');
+          const attemptedTime = Number(localStorage.getItem('family_monefy_last_attempted_time') || 0);
+          const alreadyAttemptedThisBuild = (attemptedBuild === String(remoteBuild.buildId)) && (Date.now() - attemptedTime < 180000);
+
+          if (!alreadyAttemptedThisBuild || isManual) {
+            console.log(`🚀 [AutoUpdate] تم اكتشاف نسخة جديدة (${remoteBuild.version}) - جاري التحميل والتطبيق الفوري...`);
+            localStorage.setItem('family_monefy_last_attempted_build', String(remoteBuild.buildId));
+            localStorage.setItem('family_monefy_last_attempted_time', String(Date.now()));
+            if (statusText) statusText.textContent = 'جاري تطبيق التحديث...';
+            showToast(`🚀 تم العثور على إصدار جديد (${remoteBuild.version})! جاري التحديث والتطبيق فوراً...`, 'info', 3000);
+            
+            if (typeof applyRemoteUpdateAndReload === 'function') {
+              applyRemoteUpdateAndReload(remoteBuild, isManual);
+              return;
+            }
           } else {
-            showToast(`🚀 يوجد تحديث جديد متاح (${remoteBuild.version}). اضغط على زر التحديث في الضبط للتطبيق.`, 'info', 4000);
+            console.log(`ℹ️ [AutoUpdate] تم محاولة تطبيق التحديث (${remoteBuild.version}) مسبقاً، بانتظار اكتمال انتشار الكاش على المتصفح.`);
           }
         }
 
