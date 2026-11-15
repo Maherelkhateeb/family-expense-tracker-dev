@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.59';
-    var APP_BUILD_ID = 202611151030;
+    var APP_VERSION = 'v5.3.60';
+    var APP_BUILD_ID = 202611151100;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -10515,7 +10515,7 @@
       font-weight: 900;
     }
 
-    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.59 */
+    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.60 */
     .side-screen-edge-handle {
       position: fixed !important;
       top: 50% !important;
@@ -10558,7 +10558,7 @@
 
   
     /* =========================================================================
-       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.4
+       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.60
        ========================================================================= */
     .kpi-master-wealth-cockpit {
       width: calc(100% - 14px) !important;
@@ -10795,7 +10795,7 @@
     body.light-theme .flow-amount.outflow-color { color: #e11d48 !important; }
 
     /* =========================================================================
-       الكروت الرباعية التنفيذية للالتزامات v5.3.4 (Commitments 4 Executive Cards)
+       الكروت الرباعية التنفيذية للالتزامات v5.3.60 (Commitments 4 Executive Cards)
        ========================================================================= */
     .com-kpi-cards-grid {
       display: grid !important;
@@ -10983,7 +10983,7 @@
 
   
     /* =========================================================================
-       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.59
+       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.60
        ========================================================================= */
     /* 1. فيسبوك والوضع الفاتح: تحويل كافة الكروت والخلفيات المظلمة إلى ألوان واضحة ونقية */
     body.light-theme :is(
@@ -11143,6 +11143,385 @@
       background: #e4e6eb !important;
       border-color: #ced0d4 !important;
       color: #050505 !important;
+    }
+
+
+    /* =========================================================================
+       شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.60
+       ========================================================================= */
+    #settingsModal {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      max-height: 100dvh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      z-index: 100050 !important;
+      background: var(--bg-main, #0f172a) !important;
+      display: none;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
+    }
+
+    #settingsModal.open,
+    #settingsModal[style*="display: flex"],
+    #settingsModal[style*="display:flex"],
+    #settingsModal[style*="display: block"],
+    #settingsModal[style*="display:block"] {
+      display: flex !important;
+    }
+
+    #settingsModal .modal-content-card,
+    #settingsModal .settings-modal-shell,
+    #settingsModal .antigravity-settings-shell {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100% !important;
+      height: 100dvh !important;
+      max-height: 100% !important;
+      max-height: 100dvh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      box-shadow: none !important;
+      background: var(--bg-main, #0f172a) !important;
+    }
+
+    #settingsModal .modal-head,
+    #settingsModal .settings-modal-head,
+    #settingsModal .antigravity-settings-head {
+      flex: 0 0 auto !important;
+      padding: 14px 18px !important;
+      border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.1)) !important;
+      border-radius: 0 !important;
+      background: var(--header-bg, #111827) !important;
+    }
+
+    #settingsModal .antigravity-user-vip-strip {
+      flex: 0 0 auto !important;
+      margin: 8px 14px 0 !important;
+    }
+
+    #settingsModal .antigravity-settings-nav {
+      flex: 0 0 auto !important;
+      margin: 8px 14px 6px !important;
+    }
+
+    #settingsModal .settings-modal-scroll,
+    #settingsModal .antigravity-scroll-body {
+      flex: 1 1 auto !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      padding: 10px 14px 50px !important;
+      max-height: none !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 3x3 Grid Uniform for Palettes and Card Styles (Exactly 9 buttons) */
+    .appearance-palette-grid,
+    .theme-color-palette.appearance-palette-grid,
+    .antigravity-palette-grid,
+    .appearance-card-style-grid,
+    .antigravity-card-style-grid,
+    #cardStyleButtonsContainer {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+
+    /* بروز فائق لرمز العملة المحدد في هيدر الملخص v5.3.60 */
+    .summary-currency-header-pill {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      background: rgba(15, 23, 42, 0.5) !important;
+      padding: 3px 5px !important;
+      border-radius: 20px !important;
+      border: 1.5px solid rgba(56, 189, 248, 0.3) !important;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+    body.light-theme .summary-currency-header-pill,
+    html[data-color-mode="light"] .summary-currency-header-pill {
+      background: #e2e8f0 !important;
+      border-color: #cbd5e1 !important;
+    }
+
+    .summary-currency-btn {
+      min-height: 26px !important;
+      padding: 0 10px !important;
+      font-size: 0.72rem !important;
+      font-weight: 800 !important;
+      border-radius: 14px !important;
+      border: 1px solid transparent !important;
+      color: #94a3b8 !important;
+      background: transparent !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    body.light-theme .summary-currency-btn,
+    html[data-color-mode="light"] .summary-currency-btn {
+      color: #64748b !important;
+    }
+
+    .summary-currency-btn.active {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #0284c7, #0ea5e9) !important;
+      border: 1.5px solid #38bdf8 !important;
+      box-shadow: 0 2px 10px rgba(14, 165, 233, 0.55) !important;
+      font-weight: 950 !important;
+      transform: scale(1.06) !important;
+    }
+    body.light-theme .summary-currency-btn.active,
+    html[data-color-mode="light"] .summary-currency-btn.active {
+      color: #ffffff !important;
+      background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+      border-color: #0284c7 !important;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45) !important;
+    }
+
+    /* =========================================================================
+       نظام التباين الشامل لكافة كروت التطبيق في الأوضاع الفاتحة وفيسبوك v5.3.60
+       يحل جذرياً مشكلة الكروت الداكنة وظهور ألوان باهتة أو غير مقروءة
+       ========================================================================= */
+    html body.light-theme,
+    html[data-color-mode="light"] body,
+    html body[data-app-theme="facebook"],
+    html[data-app-theme="facebook"] body,
+    html body[data-card-style="facebook"],
+    html[data-card-style="facebook"] body {
+      --bg-main: #f0f2f5 !important;
+      --bg-card: #ffffff !important;
+      --text-main: #050505 !important;
+      --text-muted: #65676b !important;
+      --border-color: #ced0d4 !important;
+    }
+
+    /* تبييض وضبط تباين كافة الكروت واللوحات في الوضع الفاتح ونمط فيسبوك */
+    html body.light-theme :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ),
+    html[data-color-mode="light"] body :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ),
+    html body[data-card-style="facebook"] :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ),
+    html[data-card-style="facebook"] body :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ),
+    html body[data-app-theme="facebook"] :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ),
+    html[data-app-theme="facebook"] body :is(
+      .ops-tx-card-clean,
+      .expected-clean-card,
+      .app-card-panel,
+      #panelMonthlyBudget,
+      #panelBudgetHistory,
+      #panelBudgetHistory > div,
+      #budgetHistoryListContainer > div,
+      .budget-history-plan-card,
+      #billsListContentContainer > div,
+      #debtsListContentContainer > div,
+      .expected-top-hero,
+      .summary-group-row,
+      .summary-category-row,
+      .summary-kpi,
+      .req-alloc-block,
+      .req-alloc-card-item,
+      .budget-item-card,
+      .note-item-card,
+      .chart-glass-panel,
+      .modal-content-card
+    ) {
+      background: #ffffff !important;
+      border-color: #ced0d4 !important;
+      color: #050505 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    /* نصوص العناوين والبيانات الرئيسية داخل الكروت الفاتحة */
+    html body.light-theme :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-name, h3, h4, strong, [style*="color: #f8fafc"], [style*="color:#f8fafc"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]),
+    html[data-color-mode="light"] body :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-name, h3, h4, strong, [style*="color: #f8fafc"], [style*="color:#f8fafc"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]),
+    html body[data-card-style="facebook"] :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-name, h3, h4, strong, [style*="color: #f8fafc"], [style*="color:#f8fafc"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]),
+    html[data-card-style="facebook"] body :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-name, h3, h4, strong, [style*="color: #f8fafc"], [style*="color:#f8fafc"], [style*="color: #cbd5e1"], [style*="color:#cbd5e1"]) {
+      color: #050505 !important;
+    }
+
+    /* النصوص الفرعية والبيانات الوصفية */
+    html body.light-theme :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-subinfo, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #64748b"], [style*="color:#64748b"]),
+    html[data-color-mode="light"] body :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-subinfo, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #64748b"], [style*="color:#64748b"]),
+    html body[data-card-style="facebook"] :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-subinfo, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #64748b"], [style*="color:#64748b"]),
+    html[data-card-style="facebook"] body :is(.ops-tx-card-clean, .budget-history-plan-card, .note-item-card, .app-card-panel) :is(.budget-plan-subinfo, [style*="color: #94a3b8"], [style*="color:#94a3b8"], [style*="color: #64748b"], [style*="color:#64748b"]) {
+      color: #65676b !important;
+    }
+
+    /* نصوص الهيدر في صفحة الالتزامات */
+    html body.light-theme .expected-top-hero :is(#txtExpectedPageMainHeader, h2, h2 span),
+    html[data-color-mode="light"] body .expected-top-hero :is(#txtExpectedPageMainHeader, h2, h2 span),
+    html body[data-card-style="facebook"] .expected-top-hero :is(#txtExpectedPageMainHeader, h2, h2 span),
+    html[data-card-style="facebook"] body .expected-top-hero :is(#txtExpectedPageMainHeader, h2, h2 span) {
+      color: #050505 !important;
+    }
+    html body.light-theme .expected-top-hero :is(#txtExpectedPageSubHeader, div),
+    html[data-color-mode="light"] body .expected-top-hero :is(#txtExpectedPageSubHeader, div),
+    html body[data-card-style="facebook"] .expected-top-hero :is(#txtExpectedPageSubHeader, div),
+    html[data-card-style="facebook"] body .expected-top-hero :is(#txtExpectedPageSubHeader, div) {
+      color: #65676b !important;
+    }
+
+    /* أشرطة التبويب في صفحة الالتزامات */
+    html body.light-theme :is(.expected-dual-master-tabs, .budgets-sub-tab-strip),
+    html[data-color-mode="light"] body :is(.expected-dual-master-tabs, .budgets-sub-tab-strip),
+    html body[data-card-style="facebook"] :is(.expected-dual-master-tabs, .budgets-sub-tab-strip),
+    html[data-card-style="facebook"] body :is(.expected-dual-master-tabs, .budgets-sub-tab-strip) {
+      background: #e4e6eb !important;
+      border: 1px solid #ced0d4 !important;
+    }
+    html body.light-theme :is(.expected-dual-master-tabs, .budgets-sub-tab-strip) button:not(.active),
+    html[data-color-mode="light"] body :is(.expected-dual-master-tabs, .budgets-sub-tab-strip) button:not(.active),
+    html body[data-card-style="facebook"] :is(.expected-dual-master-tabs, .budgets-sub-tab-strip) button:not(.active),
+    html[data-card-style="facebook"] body :is(.expected-dual-master-tabs, .budgets-sub-tab-strip) button:not(.active) {
+      color: #65676b !important;
+      background: transparent !important;
+    }
+
+    /* صندوق الإحصائيات داخل كارت خطة الميزانية */
+    html body.light-theme :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]),
+    html[data-color-mode="light"] body :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]),
+    html body[data-card-style="facebook"] :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]),
+    html[data-card-style="facebook"] body :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]) {
+      background: #f0f2f5 !important;
+      border: 1px solid #e4e6eb !important;
+      color: #050505 !important;
+    }
+    html body.light-theme :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]) span,
+    html[data-color-mode="light"] body :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]) span,
+    html body[data-card-style="facebook"] :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]) span,
+    html[data-card-style="facebook"] body :is(.budget-history-stats-box, #budgetHistoryListContainer [style*="grid-template-columns"]) span {
+      color: #65676b !important;
+    }
+
+    /* الكارت المحدد في الوضع الفاتح */
+    html body.light-theme :is(.ops-tx-card-clean.is-selected, .ops-tx-card-clean[style*="rgba(56, 189, 248"]),
+    html[data-color-mode="light"] body :is(.ops-tx-card-clean.is-selected, .ops-tx-card-clean[style*="rgba(56, 189, 248"]),
+    html body[data-card-style="facebook"] :is(.ops-tx-card-clean.is-selected, .ops-tx-card-clean[style*="rgba(56, 189, 248"]),
+    html[data-card-style="facebook"] body :is(.ops-tx-card-clean.is-selected, .ops-tx-card-clean[style*="rgba(56, 189, 248"]) {
+      background: #f0f9ff !important;
+      border-color: #0284c7 !important;
     }
 
 </style>
@@ -15595,7 +15974,7 @@
 
 <style id="v5353-custom-fixes">
   /* =====================================================================
-     [v5.3.53] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
+     [v5.3.60] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
      ===================================================================== */
   #walletModal,
   #walletTransferModal,
@@ -15755,7 +16134,7 @@
 </style>
 <style>
     /* ==============================================================
-       Master Overhaul v5.3.57: High-Contrast Light & Facebook Theme
+       Master Overhaul v5.3.60: High-Contrast Light & Facebook Theme
        ============================================================== */
     body[data-theme="facebook"],
     body.theme-facebook {
@@ -15881,7 +16260,7 @@
 </style>
 </head>
 <body>
-  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.59 - مباشر تحت body -->
+  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.60 - مباشر تحت body -->
   <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
   </div>
@@ -16098,7 +16477,7 @@
                 <!-- شريط المؤشرات المالية التنفيذي الماسي الموحد (Executive Wealth Cockpit)
              تصميم ملكي تنفيذي فائق الفخامة والوضوح بأحدث معايير FinTech العالمية
              ========================================================================= -->
-        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.4) -->
+        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.60) -->
         <div class="kpi-master-wealth-cockpit" id="topKpiThreeStrip">
           
           <!-- الجانب الأيمن: بطل الشاشة المالي (الرصيد الفعلي المتاح) -->
@@ -16185,14 +16564,14 @@
         <div id="opsSubViewRegistered">
           <div class="ops-header-tools">
             <div class="ops-search-row" style="display: flex !important; align-items: center; gap: 4px; padding: 2px 0; margin-bottom: 6px;">
-              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
-              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
               <button type="button" class="btn-export-tool clear-btn" id="btnOpsClearFilters" onclick="resetOperationsFilters()" title="مسح الفلاتر" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
                 <i class="fa-solid fa-filter-circle-xmark"></i> مسح
               </button>
               <span id="opsResultCount" role="status" style="white-space: nowrap; font-size: 0.70rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 4px 6px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
                 -- عملية
               </span>
+              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
+              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
               <label style="flex: 1; min-width: 0; margin: 0; position: relative;"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
             </div>
             <div class="ops-filter-grid">
@@ -19515,7 +19894,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.59</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.60</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -19567,20 +19946,6 @@
             <div class="settings-unified-section" id="settingsSec_appearance" data-compact-ready="true" style="display: flex; flex-direction: column; gap: 7px; width: 100%;">
               
               <!-- مبدل الوضع الفاتح والداكن -->
-              <div class="appearance-subnav-strip" role="tablist" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 4px 0 8px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-                <button type="button" class="appearance-subnav-btn active" id="subTabBtn_theme" onclick="switchAppearanceSubTab('theme')" style="height: 30px; font-size: 0.74rem; font-weight: 850; border-radius: 8px; border: none; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                  <i class="fa-solid fa-palette"></i> <span>السمة</span>
-                </button>
-                <button type="button" class="appearance-subnav-btn" id="subTabBtn_cards" onclick="switchAppearanceSubTab('cards')" style="height: 30px; font-size: 0.74rem; font-weight: 850; border-radius: 8px; border: none; background: transparent; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                  <i class="fa-solid fa-layer-group"></i> <span>الكروت</span>
-                </button>
-                <button type="button" class="appearance-subnav-btn" id="subTabBtn_fonts" onclick="switchAppearanceSubTab('fonts')" style="height: 30px; font-size: 0.74rem; font-weight: 850; border-radius: 8px; border: none; background: transparent; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                  <i class="fa-solid fa-font"></i> <span>الخط</span>
-                </button>
-                <button type="button" class="appearance-subnav-btn" id="subTabBtn_icons" onclick="switchAppearanceSubTab('icons')" style="height: 30px; font-size: 0.74rem; font-weight: 850; border-radius: 8px; border: none; background: transparent; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                  <i class="fa-solid fa-icons"></i> <span>الأيقونات</span>
-                </button>
-              </div>
               <div class="appearance-mode-row antigravity-mode-switcher" role="group" aria-label="وضع العرض">
                 <button type="button" id="appearanceModeDark" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('dark')" aria-pressed="true">
                   <i class="fa-solid fa-moon"></i> <span>داكن</span>
@@ -19595,7 +19960,7 @@
                 <div class="antigravity-card-header">
                   <div class="antigravity-card-title">
                     <i class="fa-solid fa-palette"></i>
-                    <span>ألوان التطبيق (8 ألوان متوازنة)</span>
+                    <span>ألوان التطبيق (9 ألوان متوازنة)</span>
                   </div>
                   <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
                 </div>
@@ -19652,7 +20017,6 @@
                   <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
                   <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleSoft" data-card-style="soft" onclick="setAppDesignStyle('soft')" aria-pressed="false"><strong>ناعم</strong><small>استدارة واسعة</small></button>
                 </div>
               </div>
 
@@ -25775,7 +26139,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
 
     
     // ==============================================================
-    // [v5.3.54] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
+    // [v5.3.60] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
     // ==============================================================
     function getWalletActualBalance(walletIdOrName) {
       if (typeof auditAndRecomputeAllWalletBalances === 'function') {
@@ -26912,7 +27276,7 @@ function auditAndRecomputeAllWalletBalances() {
     }
 
     function renderExpectedList() {
-      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.0
+      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.60
       if (typeof renderCommitmentsPageUI === 'function') {
         renderCommitmentsPageUI();
       }
@@ -27578,7 +27942,7 @@ function switchSettingsTab(tabName) {
       try {
         const backupData = {
           app: 'FamilyExpenseTrackerMonefy',
-          version: 'v5.3.0',
+          version: 'v5.3.60',
           exportedAt: new Date().toISOString(),
           account: (typeof GDRIVE_CONFIG !== 'undefined' ? GDRIVE_CONFIG.targetAccount : 'maher.easybakery@gmail.com'),
           state: state
@@ -27637,12 +28001,11 @@ function switchSettingsTab(tabName) {
       gold: { name: 'ذهبي', swatch: '#a16207', dark: '#fcd34d', light: '#854d0e' },
       slate: { name: 'رمادي تيتانيوم', swatch: '#475569', dark: '#cbd5e1', light: '#475569' },
       midnight: { name: 'نيلي ليلي', swatch: '#4338ca', dark: '#a5b4fc', light: '#3730a3' },
-      forest: { name: 'أخضر غابة', swatch: '#166534', dark: '#86efac', light: '#166534' },
-      sapphire: { name: 'ياقوت أزرق', swatch: '#1d4ed8', dark: '#93c5fd', light: '#1d4ed8' }
+      facebook: { name: 'فيسبوك FB', swatch: '#1877f2', dark: '#1877f2', light: '#1877f2' }
     };
     const APPEARANCE_PALETTE_ALIASES = {
       black: 'slate', carbon: 'slate', crimson: 'rose', amber: 'gold',
-      light: 'navy', facebook: 'navy', sapphire: 'navy'
+      light: 'navy', sapphire: 'navy'
     };
     const APPEARANCE_ICON_THEMES = {
       vibrant: { name: 'فينتك', dark: '#7dd3fc', light: '#0369a1' },
@@ -27726,27 +28089,6 @@ function switchSettingsTab(tabName) {
     }
 
     
-    // تبديل تبويبات المظهر بدون تمرير رأسي v5.3.57
-    function switchAppearanceSubTab(tab) {
-      const tabs = ['theme', 'cards', 'fonts', 'icons'];
-      tabs.forEach(t => {
-        const btn = document.getElementById('subTabBtn_' + t);
-        const pane = document.getElementById('appSubPane_' + t);
-        if (btn) {
-          btn.classList.toggle('active', t === tab);
-          if (t === tab) {
-            btn.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
-            btn.style.color = '#ffffff';
-          } else {
-            btn.style.background = 'transparent';
-            btn.style.color = '#94a3b8';
-          }
-        }
-        if (pane) pane.style.display = (t === tab) ? 'flex' : 'none';
-      });
-    }
-    window.switchAppearanceSubTab = switchAppearanceSubTab;
-
     function setAppTheme(theme, persist = true) {
       const requested = String(theme || '');
       const canonical = APPEARANCE_PALETTE_ALIASES[requested] || requested;
@@ -27987,7 +28329,7 @@ function switchSettingsTab(tabName) {
     }
 
     function setAppDesignStyle(style, notify = true, persist = true) {
-      const validStyles = ['glass', 'minimal', 'neumorphic', 'neon', 'clear', 'elevated', 'outlined', 'gradient', 'compact', 'soft'];
+      const validStyles = ['facebook', 'glass', 'minimal', 'neumorphic', 'neon', 'clear', 'elevated', 'outlined', 'gradient'];
       const targetStyle = validStyles.includes(String(style || '')) ? String(style) : 'glass';
       document.documentElement.setAttribute('data-card-style', targetStyle);
       document.body.setAttribute('data-card-style', targetStyle);
@@ -28151,11 +28493,49 @@ function switchSettingsTab(tabName) {
       return String(value === null || value === undefined ? '' : value).replace(/[&<>"']/g, ch => entities[ch]);
     }
 
+    function summaryFormatMoneyHtml(amount, sign = '−', color = '') {
+      const value = Math.abs(Number(amount) || 0);
+      const market = state.market || {};
+      let converted = value;
+      let sym = 'ج.م';
+      if (currentSummaryCurrency === 'SAR') {
+        converted = value / (Number(market.sarEgp) || 14.37);
+        sym = 'ر.س';
+      } else if (currentSummaryCurrency === 'USD') {
+        converted = value / (Number(market.usdEgp) || 53.97);
+        sym = 'USD';
+      } else if (currentSummaryCurrency === 'GOLD21') {
+        converted = value / (Number(market.gold21) || 6265);
+        sym = 'جم ذهب 21';
+      }
+      const formattedNum = Number(converted).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const textColor = color ? `color: ${color} !important;` : '';
+
+      // رمز العملة والإشارة إلى يمين الرقم وفق الأصول المحاسبية والعربية
+      return '<span class="summary-val-wrap" style="display: inline-flex; align-items: baseline; gap: 4px; direction: rtl; justify-content: flex-end; ' + textColor + '">' +
+        '<span style="font-weight: 950; font-size: 0.95em;">' + sign + '</span>' +
+        '<span style="font-size: 0.80em; font-weight: 900; opacity: 0.92;">' + sym + '</span>' +
+        '<span style="direction: ltr; font-variant-numeric: tabular-nums; font-weight: 900;">' + formattedNum + '</span>' +
+      '</span>';
+    }
+
     function summaryProjectName(tx) {
-      const raw = typeof getTransactionProjectName === 'function'
+      let raw = typeof getTransactionProjectName === 'function'
         ? getTransactionProjectName(tx)
         : String(tx && (tx.project || tx.projectName) || '').trim();
-      return String(raw || '').trim();
+
+      if (!raw && tx && (tx.notes || tx.note || tx.details)) {
+        const text = (tx.notes || tx.note || tx.details || '').trim();
+        const known = typeof getKnownProjects === 'function' ? getKnownProjects() : [];
+        for (const p of known) {
+          if (p && text.includes(p)) {
+            raw = p;
+            break;
+          }
+        }
+      }
+
+      return String(raw || '').trim() || '__general_expenses__';
     }
 
     function summaryMemberName(tx) {
@@ -28163,13 +28543,17 @@ function switchSettingsTab(tabName) {
     }
 
     function summaryGroupKey(tx, mode) {
-      if (mode === 'project') return summaryProjectName(tx) || '__no_project__';
+      if (mode === 'project') return summaryProjectName(tx);
       return summaryMemberName(tx);
     }
 
     function summaryGroupLabel(key, mode) {
-      if (key === 'all') return mode === 'project' ? 'كافة المشاريع' : 'كافة أفراد الأسرة';
-      if (mode === 'project' && key === '__no_project__') return 'بدون مشروع';
+      if (key === 'all') return mode === 'project' ? 'كافة المشاريع والأنشطة' : 'كافة أفراد الأسرة';
+      if (mode === 'project') {
+        if (key === '__no_project__' || key === '__general_expenses__') {
+          return 'مصاريف المعيشة العامة (بدون مشروع خاص)';
+        }
+      }
       return String(key || '');
     }
 
@@ -28372,6 +28756,7 @@ function switchSettingsTab(tabName) {
         .filter(tx => tx.type === 'expense')
         .reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
 
+      // تجميع المصروفات حسب النمط المختار (الشخص أو المشروع)
       const groupsByKey = new Map();
       periodTransactions.forEach(tx => {
         if (tx.type !== 'expense') return;
@@ -28381,6 +28766,17 @@ function switchSettingsTab(tabName) {
         item.count += 1;
         groupsByKey.set(key, item);
       });
+
+      // إذا كان النمط بالشخص، نضمن ظهور أفراد الأسرة الأساسيين حتى لو كانت الحركات 0
+      if (currentSummaryGroupMode === 'member') {
+        const baseMembers = (typeof FAMILY_MEMBERS !== 'undefined' ? FAMILY_MEMBERS : ['ماهر', 'أية', 'محمد', 'مريم', 'النونو', 'أخرى']).filter(m => m !== 'البيت' && m !== 'الحاجة');
+        baseMembers.forEach(m => {
+          const normM = summaryNormalizeMember(m);
+          if (!groupsByKey.has(normM)) {
+            groupsByKey.set(normM, { key: normM, amount: 0, count: 0 });
+          }
+        });
+      }
 
       const groups = Array.from(groupsByKey.values())
         .sort((a, b) => b.amount - a.amount || summaryGroupLabel(a.key, currentSummaryGroupMode).localeCompare(summaryGroupLabel(b.key, currentSummaryGroupMode), 'ar'));
@@ -28394,29 +28790,40 @@ function switchSettingsTab(tabName) {
       const expenseTotal = expenses.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
       const incomeTotal = incomes.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
       const selectedLabel = summaryGroupLabel(currentSummaryGroupKey, currentSummaryGroupMode);
-      const modeLabel = currentSummaryGroupMode === 'project' ? 'مشروع' : 'شخص';
+      const modeLabel = currentSummaryGroupMode === 'project' ? 'المشروع' : 'الشخص';
 
+      // 1. كروت مجموعات الشخص أو المشروع
       const groupRows = groups.map(item => {
         const share = totalPeriodExpenses > 0 ? Math.round((item.amount / totalPeriodExpenses) * 100) : 0;
         const active = hasSelection && item.key === currentSummaryGroupKey;
-        const icon = currentSummaryGroupMode === 'project'
-          ? (item.key === '__no_project__' ? 'fa-folder-minus' : 'fa-folder-open')
-          : 'fa-user';
-        return '<button type="button" class="summary-group-row' + (active ? ' active' : '') + '" data-group-key="' + summaryEscapeHtml(item.key) + '" onclick="drillDownFromGroupElement(this)" aria-label="فتح عمليات ' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + ' ضمن الفترة المحددة">' +
-          '<span class="summary-group-icon"><i class="fa-solid ' + icon + '"></i></span>' +
+        
+        let iconHtml = '';
+        if (currentSummaryGroupMode === 'project') {
+          const isGeneral = (item.key === '__no_project__' || item.key === '__general_expenses__');
+          iconHtml = isGeneral ? '<i class="fa-solid fa-house-chimney" style="color: #38bdf8;"></i>' : '<i class="fa-solid fa-bullseye" style="color: #f59e0b;"></i>';
+        } else {
+          const avatar = (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[item.key]) ? MEMBER_AVATARS[item.key] : '';
+          iconHtml = avatar
+            ? '<img src="' + avatar + '" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">'
+            : '<i class="fa-solid fa-user" style="color: #38bdf8;"></i>';
+        }
+
+        return '<button type="button" class="summary-group-row' + (active ? ' active' : '') + '" data-group-key="' + summaryEscapeHtml(item.key) + '" onclick="drillDownFromGroupElement(this)" aria-label="عرض تفاصيل ' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + '">' +
+          '<span class="summary-group-icon">' + iconHtml + '</span>' +
           '<span class="summary-group-main"><span class="summary-group-title">' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + '</span>' +
           '<span class="summary-group-meta">' + item.count.toLocaleString('ar-EG') + ' عملية · ' + share + '% من المصروفات</span>' +
           '<span class="summary-group-track"><span style="width:' + share + '%"></span></span></span>' +
-          '<span class="summary-group-value">− ' + summaryEscapeHtml(summaryFormatAmount(item.amount)) + '</span></button>';
+          '<span class="summary-group-value">' + summaryFormatMoneyHtml(item.amount, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
       }).join('');
 
+      // 2. كروت البنود والتصنيفات
       const categoryTotals = new Map();
       expenses.forEach(tx => {
         const key = String(tx.category || 'other');
         categoryTotals.set(key, (categoryTotals.get(key) || 0) + Math.abs(Number(tx.amount) || 0));
       });
       const categories = Array.from(categoryTotals.entries()).sort((a, b) => b[1] - a[1]);
-      const isLightSum = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+      const isLightSum = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light' || document.body.getAttribute('data-theme') === 'facebook';
       const categoryRows = categories.map(([categoryId, amount]) => {
         const category = typeof getCategoryObj === 'function' ? getCategoryObj(categoryId, 'expense') : { name: categoryId, color: '#38bdf8', icon: 'fa-receipt' };
         const name = String(category && category.name || categoryId);
@@ -28429,27 +28836,31 @@ function switchSettingsTab(tabName) {
           '<span class="summary-category-icon" style="background:' + harm.bg + ' !important; border:1px solid ' + harm.border + ' !important; color:' + harm.color + ' !important;"><i class="fa-solid ' + icon + '"></i></span>' +
           '<span class="summary-category-main"><span class="summary-category-title" style="color:' + harm.color + ' !important; font-weight:800;">' + summaryEscapeHtml(name) + '</span>' +
           '<span class="summary-category-meta">' + share + '% · عرض الحركات</span></span>' +
-          '<span class="summary-category-value" style="color: var(--ledger-debit, #f43f5e) !important; font-weight:850;">− ' + summaryEscapeHtml(summaryFormatAmount(amount)) + '</span></button>';
+          '<span class="summary-category-value">' + summaryFormatMoneyHtml(amount, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
       }).join('');
 
       const customPending = currentSummaryPeriod === 'custom' && range.valid === false;
       const emptyGroups = customPending
         ? 'حدد تاريخ البداية والنهاية لعرض نتائج الفترة.'
         : 'لا توجد مصروفات مسجلة في هذه الفترة.';
-      const listTitle = currentSummaryGroupMode === 'project' ? 'المصروفات حسب المشروع' : 'المصروفات حسب الشخص';
+      
+      const groupHeading = currentSummaryGroupMode === 'project'
+        ? '<i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> توزيع المصروفات حسب المشاريع'
+        : '<i class="fa-solid fa-users" style="color: #38bdf8;"></i> توزيع المصروفات حسب أفراد الأسرة';
 
+      // وضع تجميع الشخص أو المشروع في المقدمة مباشرة تحت المؤشرات الإجمالية
       container.innerHTML =
         '<section class="summary-kpi-grid">' +
-          '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>− ' + summaryEscapeHtml(summaryFormatAmount(expenseTotal)) + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
-          '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>+ ' + summaryEscapeHtml(summaryFormatAmount(incomeTotal)) + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+          '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>' + summaryFormatMoneyHtml(expenseTotal, '−', '#ef4444') + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+          '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>' + summaryFormatMoneyHtml(incomeTotal, '+', '#10b981') + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
         '</section>' +
-        '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3>الإجمالي حسب البند</h3><span>' + (hasSelection ? 'ضمن المجموعة المحددة' : 'كافة النتائج') + '</span></div>' +
-          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
-        '</section>' +
-        '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3>' + listTitle + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض الكل</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' مجموعات</span></div>' +
+        '<section class="summary-section" style="margin-bottom: 12px;">' +
+          '<div class="summary-section-heading"><h3>' + groupHeading + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض كافة الـ ' + (currentSummaryGroupMode === 'project' ? 'مشاريع' : 'أفراد') + '</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' ' + (currentSummaryGroupMode === 'project' ? 'مشاريع' : 'أفراد') + '</span></div>' +
           '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
+        '</section>' +
+        '<section class="summary-section">' +
+          '<div class="summary-section-heading"><h3><i class="fa-solid fa-layer-group" style="color: #f59e0b;"></i> تفاصيل المصروفات حسب البند</h3><span>' + (hasSelection ? 'ضمن ' + modeLabel + ': ' + summaryEscapeHtml(selectedLabel) : 'كافة البنود') + '</span></div>' +
+          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
         '</section>';
     }
 
@@ -30871,7 +31282,7 @@ function switchSettingsTab(tabName) {
           }
 
           const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121112);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.21');
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.60');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -30907,7 +31318,7 @@ function switchSettingsTab(tabName) {
             }
 
             localStorage.setItem('family_monefy_just_updated_ts', Date.now());
-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.0');
+            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.60');
             setTimeout(() => {
               const updateUrl = new URL(window.location.href);
               updateUrl.searchParams.set('_build', String(remoteBuild?.buildId || Date.now()));
@@ -32802,6 +33213,13 @@ function initMonthlyBudgetUI() {
         return;
       }
 
+      const isLight = document.body.classList.contains('light-theme') ||
+        document.documentElement.getAttribute('data-color-mode') === 'light' ||
+        document.documentElement.getAttribute('data-app-theme') === 'facebook' ||
+        document.body.getAttribute('data-app-theme') === 'facebook' ||
+        document.documentElement.getAttribute('data-card-style') === 'facebook' ||
+        document.body.getAttribute('data-card-style') === 'facebook';
+
       container.innerHTML = state.monthlyBudgets.map(b => {
         ensureBudgetItems(b);
         const totalInc = (b.incomes || []).reduce((s, inc) => s + (Number(inc.amount) || 0), 0);
@@ -32809,41 +33227,48 @@ function initMonthlyBudgetUI() {
         const surplus = totalInc - totalExp;
         const isActive = (b.id === state.activeBudgetId);
 
+        const cardBg = isLight ? '#ffffff' : 'rgba(30, 41, 59, 0.85)';
+        const cardBorder = isLight ? (isActive ? '#0284c7' : '#ced0d4') : (isActive ? '#38bdf8' : 'rgba(255,255,255,0.08)');
+        const cardTitleColor = isLight ? '#050505' : '#f8fafc';
+        const cardMetaColor = isLight ? '#65676b' : '#94a3b8';
+        const statsBoxBg = isLight ? '#f0f2f5' : 'rgba(15, 23, 42, 0.6)';
+        const statsBoxBorder = isLight ? '1px solid #e4e6eb' : '1px solid rgba(255,255,255,0.06)';
+
         return `
-          <div style="background: rgba(30, 41, 59, 0.85); border: 1.4px solid ${isActive ? '#38bdf8' : 'rgba(255,255,255,0.08)'}; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div class="budget-history-plan-card" style="background: ${cardBg}; border: 1.5px solid ${cardBorder}; border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 6px;">
-                  <span>${escapeHtml(b.name)}</span>
-                  ${isActive ? '<span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 1px 6px; border-radius: 5px;">الخطة النشطة</span>' : ''}
+                <div style="font-size: 0.90rem; font-weight: 900; color: ${cardTitleColor}; display: flex; align-items: center; gap: 6px;">
+                  <span class="budget-plan-name">${escapeHtml(b.name)}</span>
+                  ${isActive ? '<span style="font-size: 0.65rem; background: rgba(56, 189, 248, 0.2); color: #0284c7; border: 1px solid rgba(56, 189, 248, 0.5); padding: 1px 6px; border-radius: 5px; font-weight: 900;">الخطة النشطة</span>' : ''}
                 </div>
-                <div style="font-size: 0.70rem; color: #94a3b8; margin-top: 2px;">
-                  ${b.project ? `المشروع: ${escapeHtml(b.project)} · ` : ''}الشهر: <strong style="color: #cbd5e1;">${escapeHtml(String(b.month || ''))}</strong> • عدد البنود: <strong style="color: #38bdf8;">${(b.items || []).length} بند</strong>
+                <div class="budget-plan-subinfo" style="font-size: 0.70rem; color: ${cardMetaColor}; margin-top: 2px;">
+                  ${b.project ? `المشروع: <strong style="color: ${cardTitleColor};">${escapeHtml(b.project)}</strong> · ` : ''}الشهر: <strong style="color: ${cardTitleColor};">${escapeHtml(String(b.month || ''))}</strong> • عدد البنود: <strong style="color: #0284c7;">${(b.items || []).length} بند</strong>
                 </div>
               </div>
 
               <div style="display: flex; gap: 6px;">
-                <button type="button" onclick="restoreBudgetForView('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 12px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.74rem; font-weight: 800; cursor: pointer;">
+                <button type="button" onclick="restoreBudgetForView('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 12px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.74rem; font-weight: 850; cursor: pointer;">
                   <i class="fa-solid fa-folder-open"></i> عرض وتعديل
                 </button>
-                <button type="button" onclick="deleteBudgetFromHistory('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 0.74rem; font-weight: 800; cursor: pointer;" title="حذف">
+                <button type="button" onclick="deleteBudgetFromHistory('${escapeHtml(String(b.id || ''))}')" style="padding: 6px 8px; border-radius: 8px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #f87171; font-size: 0.74rem; font-weight: 850; cursor: pointer;" title="حذف">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; background: rgba(15, 23, 42, 0.6); border-radius: 8px; padding: 6px 8px; text-align: center; font-size: 0.74rem;">
+            <div class="budget-history-stats-box" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; background: ${statsBoxBg}; border: ${statsBoxBorder}; border-radius: 9px; padding: 8px 10px; text-align: center; font-size: 0.74rem;">
               <div>
-                <div style="font-size: 0.64rem; color: #34d399;">دخل متوقع</div>
-                <div style="font-weight: 900; color: #34d399;">+ ${formatMoney(totalInc)}</div>
+                <span style="display: block; color: ${cardMetaColor}; font-size: 0.65rem; font-weight: 800;">دخل متوقع:</span>
+                <strong style="color: #10b981; font-size: 0.78rem;">+ ${formatMoney(totalInc)}</strong>
               </div>
               <div>
-                <div style="font-size: 0.64rem; color: #f87171;">مصروفات مقدرة</div>
-                <div style="font-weight: 900; color: #f87171;">- ${formatMoney(totalExp)}</div>
+                <span style="display: block; color: ${cardMetaColor}; font-size: 0.65rem; font-weight: 800;">مصروفات مقدرة:</span>
+                <strong style="color: #ef4444; font-size: 0.78rem;">- ${formatMoney(totalExp)}</strong>
               </div>
               <div>
-                <div style="font-size: 0.64rem; color: #38bdf8;">فائض / عجز</div>
-                <div style="font-weight: 900; color: ${surplus >= 0 ? '#34d399' : '#f87171'};">${(surplus >= 0 ? '+ ' : '- ') + formatMoney(Math.abs(surplus))}</div>
+                <span style="display: block; color: ${cardMetaColor}; font-size: 0.65rem; font-weight: 800;">فائض / عجز:</span>
+                <strong style="color: ${surplus >= 0 ? '#10b981' : '#ef4444'}; font-size: 0.78rem;">${surplus >= 0 ? '+' : ''}${formatMoney(surplus)}</strong>
               </div>
             </div>
           </div>
@@ -33826,7 +34251,7 @@ function clearTaskPendingPhoto() {
 
 
 /* ==========================================================
-   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.4)
+   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.60)
    دمج بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة
    ========================================================== */
 let selectedTaskTags = new Set(['general']);
@@ -35124,7 +35549,7 @@ window.selectTasksCalendarDay = selectTasksCalendarDay;
 
 // =========================================================================
 // =========================================================================
-// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.0 Comprehensive)
+// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.60 Comprehensive)
 // =========================================================================
 
 // 1. TRANSACTION EDITING & RECEIPTS
@@ -35320,7 +35745,7 @@ function cancelPinVerification() {
 }
 window.cancelPinVerification = cancelPinVerification;
 
-// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.4 Enterprise)
+// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.60 Enterprise)
 const CATEGORY_ARABIC_MAP = {
   // المصروفات
   'food': { name: 'طعام ومشتريات', emoji: '🛒', icon: 'fa-cart-shopping', color: '#10b981', group: 'expense' },
@@ -36592,7 +37017,7 @@ window.handleAddNewTask = handleAddNewTask;
 async function executeGoogleDriveSync(isManual = false) {
   try {
     const payload = {
-      version: 'v5.3.0',
+      version: 'v5.3.60',
       timestamp: new Date().toISOString(),
       state: state
     };
@@ -36612,7 +37037,7 @@ window.executeGoogleDriveSync = executeGoogleDriveSync;
 function exportToGoogleDriveDirect() {
   const data = {
     app: 'Family Expense Tracker',
-    version: 'v5.3.0',
+    version: 'v5.3.60',
     exportedAt: new Date().toISOString(),
     state: state
   };
@@ -38459,7 +38884,7 @@ window.filterArchiveType = filterArchiveType;
 
 
   <!-- ==============================================================
-       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.4)
+       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.60)
        ============================================================== -->
   <div id="modalEditBudgetItem" class="custom-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000000; align-items: center; justify-content: center; padding: 14px;">
     <div class="custom-modal-content" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96)); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 18px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); overflow: hidden; animation: popIn 0.25s ease;">
@@ -38513,7 +38938,7 @@ window.filterArchiveType = filterArchiveType;
 
 <script>
     // ==============================================================
-    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.59
+    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.60
     // ==============================================================
     (function setupExternalLinksDirectOpen() {
       function tagExternalLinks() {
