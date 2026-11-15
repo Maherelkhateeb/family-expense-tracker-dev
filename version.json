@@ -3,5 +3,5 @@
   "build": 202611151430,
   "buildId": 202611151430,
   "releaseDate": "2026-11-15T14:30:00.000Z",
-  "changelog": "Operation serial moved down next to wallet chip; currency abbreviation positioned left of amount; comprehensive Light Mode theme styling for Tasks and Calendar modal; and collapsible interactive commitments calendar in viewExpected."
+  "changelog": "Hotfix: Terminate reload loop, harmonize APP_BUILD_ID with version.json, and install anti-loop circuit breaker in background sync."
 }
