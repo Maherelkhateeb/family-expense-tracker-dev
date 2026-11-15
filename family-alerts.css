@@ -158,7 +158,20 @@ body.light-theme #notificationsModal {
 .alert-header-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 3px;
+}
+
+.alert-exact-timestamp {
+  font-size: 0.65rem;
+  font-weight: 750;
+  color: var(--alert-muted, #94a3b8);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  direction: rtl;
+  opacity: 0.9;
 }
 
 .alert-badge-type {

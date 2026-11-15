@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.63",
-  "build": 202611151250,
-  "buildId": 202611151250,
-  "releaseDate": "2026-11-15T12:50:00.000Z",
-  "changelog": "Smart audit serials for money requests, request edit/delete audit with mandatory reason, analytics year & all periods filter with instant date picker, full-height settings modal, removed midnight theme, and master sync overhaul."
+  "version": "v5.3.65",
+  "build": 202611151345,
+  "buildId": 202611151345,
+  "releaseDate": "2026-11-15T13:45:00.000Z",
+  "changelog": "Separated Bills and Commitments from Budgets: Dedicated main bottom navigation tab for Budgets to the left of Commitments, with standalone viewBudgets and optimized 6-item nav bar."
 }

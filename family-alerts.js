@@ -583,6 +583,35 @@ const familyAlerts = (() => {
   }
 
   // --- رندر الواجهة وتحديث العداد والشارة ---
+  
+  // دالة تنسيق الوقت الدقيق لوصول التنبيه
+  function formatAlertExactTime(timestamp) {
+    if (!timestamp) return '';
+    const d = new Date(timestamp);
+    if (isNaN(d.getTime())) return '';
+    let hours = d.getHours();
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const period = hours >= 12 ? 'م' : 'ص';
+    hours = hours % 12 || 12;
+    const timeStr = `${hours}:${minutes} ${period}`;
+
+    const today = new Date();
+    const isToday = d.toDateString() === today.toDateString();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const isYesterday = d.toDateString() === yesterday.toDateString();
+
+    if (isToday) {
+      return `اليوم ${timeStr}`;
+    } else if (isYesterday) {
+      return `أمس ${timeStr}`;
+    } else {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      return `${timeStr} · ${day}/${month}`;
+    }
+  }
+
   function render() {
     const alerts = getAlerts();
     const readSet = getReadIds();
@@ -647,21 +676,32 @@ const familyAlerts = (() => {
       mainBtn.title = 'اضغط لفتح العملية الأصلية مباشرة';
       mainBtn.onclick = () => handleAlertClick(item);
 
-      // رأس التنبيه (النوع والوقت)
+      // رأس التنبيه (النوع يميناً والوقت الدقيق لوصول التنبيه يساراً)
       const headRow = document.createElement('div');
       headRow.className = 'alert-header-row';
+
+      const rightCluster = document.createElement('div');
+      rightCluster.className = 'alert-header-right';
+      rightCluster.style.cssText = 'display: inline-flex; align-items: center; gap: 6px;';
 
       const badgeType = document.createElement('span');
       badgeType.className = `alert-badge-type alert-kind-${item.kind || 'default'}`;
       badgeType.textContent = item.title || 'تنبيه';
-      headRow.append(badgeType);
+      rightCluster.append(badgeType);
 
       if (isUnread) {
         const dot = document.createElement('span');
         dot.className = 'alert-unread-dot';
         dot.title = 'غير مقروء';
-        headRow.append(dot);
+        rightCluster.append(dot);
       }
+      headRow.append(rightCluster);
+
+      // الوقت الدقيق لوصول التنبيه في الموضع المحدد يسار الهيدر
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'alert-exact-timestamp';
+      timeSpan.innerHTML = `<i class="fa-regular fa-clock" style="font-size: 0.60rem;"></i> <span>${formatAlertExactTime(item.at)}</span>`;
+      headRow.append(timeSpan);
 
       mainBtn.append(headRow);
 
