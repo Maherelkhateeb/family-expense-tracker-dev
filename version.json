@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.65",
-  "build": 202611151345,
-  "buildId": 202611151345,
-  "releaseDate": "2026-11-15T13:45:00.000Z",
-  "changelog": "Separated Bills and Commitments from Budgets: Dedicated main bottom navigation tab for Budgets to the left of Commitments, with standalone viewBudgets and optimized 6-item nav bar."
+  "version": "v5.3.66",
+  "build": 202611151400,
+  "buildId": 202611151400,
+  "releaseDate": "2026-11-15T14:00:00.000Z",
+  "changelog": "Live Category Budget Ceilings on Home Screen: Real-time budget progress bar, remaining amounts and percentage on all 9 category cards, smart alert triggers (>85% and >100%), and warning pulse animation."
 }
