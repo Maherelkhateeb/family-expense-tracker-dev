@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.62';
-    var APP_BUILD_ID = 202611151130;
+    var APP_VERSION = 'v5.3.63';
+    var APP_BUILD_ID = 202611151250;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -11524,6 +11524,138 @@
       border-color: #0284c7 !important;
     }
 
+
+/* =====================================================================
+   FULL HEIGHT SETTINGS MODAL (بطول شاشة الهاتف بالكامل 100dvh)
+   ===================================================================== */
+#settingsModal,
+#settingsModal.open,
+#settingsModal[style*="display: flex"],
+#settingsModal[style*="display:flex"],
+#settingsModal[style*="display: block"],
+#settingsModal[style*="display:block"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  z-index: 100050 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--bg-main, #0f172a) !important;
+}
+
+#settingsModal .modal-content-card,
+#settingsModal .settings-modal-shell,
+#settingsModal .antigravity-settings-shell {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: none !important;
+  background: var(--bg-main, #0f172a) !important;
+}
+
+#settingsModal .settings-modal-scroll,
+#settingsModal .antigravity-scroll-body {
+  flex: 1 1 auto !important;
+  height: calc(100dvh - 110px) !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 12px 14px 40px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
+/* =====================================================================
+   HARMONIZED LIGHT THEME & ZERO BLACK CARDS FOR ANALYTICS (viewAnalytics)
+   ===================================================================== */
+body.light-theme #viewAnalytics {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .analytics-main-tabs-bar {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+body.light-theme .analytics-main-tab-btn {
+  background: transparent !important;
+  color: #475569 !important;
+  border: 1px solid transparent !important;
+}
+
+body.light-theme .analytics-main-tab-btn.active {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(56, 189, 248, 0.20)) !important;
+  border: 1.5px solid #0284c7 !important;
+  color: #0284c7 !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15) !important;
+}
+
+body.light-theme .analytics-control-panel {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-theme .analytics-control-panel span,
+body.light-theme .analytics-control-panel label {
+  color: #1e293b !important;
+}
+
+body.light-theme .analytics-period-bar {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme .analytics-period-btn {
+  background: transparent !important;
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+body.light-theme .analytics-period-btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3) !important;
+  font-weight: 800 !important;
+}
+
+body.light-theme #analyticsProjectFilter {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+}
+
+body.light-theme .analytics-date-range-trigger {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1.5px solid #cbd5e1 !important;
+}
+
 </style>
 
     <script>
@@ -14875,13 +15007,18 @@
     }
 
     #settingsModal .settings-modal-shell {
-      width: min(560px, 96vw) !important;
-      max-height: min(92vh, 920px) !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
+      height: 100dvh !important;
+      min-height: 100dvh !important;
+      max-height: 100dvh !important;
+      margin: 0 !important;
+      border-radius: 0 !important;
       color: var(--text-main, #f8fafc) !important;
       background: var(--bg-app, #0f172a) !important;
-      border: 1px solid var(--border, rgba(148, 163, 184, 0.18)) !important;
-      border-radius: 22px !important;
-      box-shadow: 0 22px 60px rgba(2, 6, 23, 0.28) !important;
+      border: none !important;
+      box-shadow: none !important;
     }
     #settingsModal .settings-modal-head {
       padding: 14px 18px !important;
@@ -16490,6 +16627,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
 }
 
 </style>
+
+
+
 </head>
 <body>
   <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.62 - مباشر تحت body -->
@@ -16919,6 +17059,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <button class="btn-export-tool" onclick="filterArchiveType('income', this)">إضافة ودخل</button>
             <button class="btn-export-tool" onclick="filterArchiveType('expected', this)">التزامات وسداد</button>
             <button class="btn-export-tool" onclick="filterArchiveType('budget', this)">ميزانيات</button>
+            <button class="btn-export-tool" onclick="filterArchiveType('request', this)">طلبات المصروف</button>
             <button class="btn-export-tool" onclick="filterArchiveType('transfer', this)">تحويلات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('delete', this)">حذف</button>
@@ -16977,17 +17118,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
 
         <!-- 2. لوحة التحكم بالفترة الزمنية للمؤشرات: واضحة وثابتة لكافة الأقسام -->
-        <div class="analytics-control-panel" style="position: sticky; top: 0px; z-index: 60; margin: 0 8px 10px; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.4px solid var(--border); border-radius: 14px; padding: 8px 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+        <div class="analytics-control-panel" style="position: sticky; top: 0px; z-index: 60; margin: 0 8px 10px; border-radius: 14px; padding: 8px 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <span style="font-size: 0.80rem; font-weight: 800; color: #cbd5e1;"><i class="fa-regular fa-calendar-check" style="color: #38bdf8;"></i> الفترة الزمنية للتحليل:</span>
-            <span class="period-active-pill" id="analyticsPeriodActivePill" style="font-size: 0.74rem; padding: 2px 8px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 800;">الشهر الحالي</span>
+            <span style="font-size: 0.82rem; font-weight: 800;"><i class="fa-regular fa-calendar-check" style="color: #38bdf8;"></i> الفترة الزمنية للتحليل:</span>
           </div>
           <div class="analytics-period-bar" style="display: flex; gap: 4px; width: 100%;">
             <button class="analytics-period-btn" data-period="day" onclick="setAnalyticsPeriod('day')">اليوم</button>
             <button class="analytics-period-btn" data-period="week" onclick="setAnalyticsPeriod('week')">الأسبوع</button>
             <button class="analytics-period-btn active" data-period="month" onclick="setAnalyticsPeriod('month')">الشهر</button>
-            <button class="analytics-period-btn" data-period="all" onclick="setAnalyticsPeriod('all')">الكل</button>
-            <button class="analytics-period-btn" data-period="custom" onclick="toggleAnalyticsCustomRange()">مخصص ▾</button>
+            <button class="analytics-period-btn" data-period="year" onclick="setAnalyticsPeriod('year')">سنة</button>
+            <button class="analytics-period-btn" data-period="all" onclick="setAnalyticsPeriod('all')">كل الفترات</button>
+            <button class="analytics-period-btn" data-period="custom" onclick="onAnalyticsCustomPeriodClick()">مخصص ▾</button>
           </div>
           <div style="display: grid; grid-template-columns: 1fr; gap: 4px; margin-top: 8px;">
             <label for="analyticsProjectFilter" style="font-size: 0.72rem; font-weight: 800; color: #94a3b8;">📌 تجميع المؤشرات حسب المشروع</label>
@@ -20110,7 +20251,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <button type="button" class="theme-card-box" data-theme="ocean" onclick="selectThemeAndApply('ocean')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#0e7490"></span><span class="theme-card-label">محيطي</span><span class="theme-check-dot" data-theme="ocean" aria-hidden="true"></span></button>
           <button type="button" class="theme-card-box" data-theme="gold" onclick="selectThemeAndApply('gold')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#a16207"></span><span class="theme-card-label">ذهبي</span><span class="theme-check-dot" data-theme="gold" aria-hidden="true"></span></button>
           <button type="button" class="theme-card-box" data-theme="slate" onclick="selectThemeAndApply('slate')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#475569"></span><span class="theme-card-label">رمادي تيتانيوم</span><span class="theme-check-dot" data-theme="slate" aria-hidden="true"></span></button>
-          <button type="button" class="theme-card-box" data-theme="midnight" onclick="selectThemeAndApply('midnight')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#4338ca"></span><span class="theme-card-label">نيلي ليلي</span><span class="theme-check-dot" data-theme="midnight" aria-hidden="true"></span></button>
+          
           <button type="button" class="theme-card-box" data-theme="forest" onclick="selectThemeAndApply('forest')" aria-pressed="false"><span class="theme-card-swatch" style="--theme-swatch:#166534"></span><span class="theme-card-label">أخضر غابة</span><span class="theme-check-dot" data-theme="forest" aria-hidden="true"></span></button>
         </div>
 
@@ -20214,7 +20355,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span>نيلي ليلي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  
                 </div>
               </div>
 
@@ -21122,6 +21263,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
       }
       renderCategoryChart();
     }
+
+    
+    function onAnalyticsCustomPeriodClick() {
+      setAnalyticsPeriod('custom');
+      if (typeof openAnalyticsCustomDatePicker === 'function') {
+        openAnalyticsCustomDatePicker();
+      } else if (typeof toggleAnalyticsCustomRange === 'function') {
+        toggleAnalyticsCustomRange();
+      }
+    }
+    window.onAnalyticsCustomPeriodClick = onAnalyticsCustomPeriodClick;
 
     function setAnalyticsPeriod(period) {
       state.period = period === 'day' ? 'today' : period;
@@ -23912,6 +24064,8 @@ function toggleAnalyticsCustomRange() {
         'day': 'اليوم (' + todayDate.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }) + ')',
         'week': 'الأسبوع الحالي (آخر 7 أيام)',
         'month': 'الشهر الحالي (' + todayDate.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }) + ')',
+        'year': 'سنة (' + todayDate.getFullYear() + ')',
+        'all': 'كل الفترات (سجل العائلة بالكامل)',
         'all': 'كافة الفترات (سجل العائلة بالكامل)',
         'custom': 'فترة مخصصة'
       };
@@ -24587,6 +24741,9 @@ function generateRichDemoTransactions() {
         const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
         const sevenDaysAgoStr = getLocalDateStr(sevenDaysAgo);
         list = list.filter(t => operationDate(t) && operationDate(t) >= sevenDaysAgoStr && operationDate(t) <= todayStr);
+      } else if (state.period === 'year') {
+        const curYear = todayStr.slice(0, 4);
+        list = list.filter(t => operationDate(t) && operationDate(t).startsWith(curYear));
       } else if (state.period === 'month') {
         const curYearMonth = todayStr.slice(0, 7);
         list = list.filter(t => operationDate(t).startsWith(curYearMonth));
@@ -25896,8 +26053,8 @@ function generateRichDemoTransactions() {
                   <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
                 </div>
                     <div class="ops-entry-meta">
-                      <span class="ops-meta-serial" style="font-family: var(--font-numbers); font-weight: 900; background: rgba(56, 189, 248, 0.15); color: #0284c7; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 5px; padding: 1px 6px; font-size: 0.62rem; direction: ltr; display: inline-block;">#${escapeHtml(tx.serialNo || tx.id)}</span>
-                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 5px; padding: 1px 6px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة: ${escapeHtml(tx.lastModifiedReason || '')}</span>` : ''}
+                      <span class="ops-meta-serial" style="font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.12); border: 1px solid rgba(100, 116, 139, 0.25); border-radius: 4px; padding: 1px 5px; direction: ltr; display: inline-flex; align-items: center;">#${escapeHtml(tx.serialNo || tx.id)}</span>
+                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 1px 4px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة</span>` : ''}
                       <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
                       ${date ? `<time class="ops-entry-date" dir="ltr" datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
@@ -25997,6 +26154,8 @@ function generateRichDemoTransactions() {
                   <div class="ops-entry-body">
                     <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
                     <div class="ops-entry-meta">
+                      <span class="ops-meta-serial" style="font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.12); border: 1px solid rgba(100, 116, 139, 0.25); border-radius: 4px; padding: 1px 5px; direction: ltr; display: inline-flex; align-items: center;">#${escapeHtml(tx.serialNo || tx.id)}</span>
+                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 1px 4px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة</span>` : ''}
                       <span class="ops-meta-category" style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
                       ${projectName ? `<span class="ops-meta-project">📌 ${escapeHtml(projectName)}</span>` : ''}
@@ -26564,18 +26723,26 @@ function auditAndRecomputeAllWalletBalances() {
         }
       });
 
+      let assignedCount = 0;
       sorted.forEach(t => {
         if (!t.serialNo) {
           maxSeq++;
           const yr = t.date ? t.date.substring(0, 4) : '2026';
           const prefix = t.type === 'income' ? 'INC' : 'EXP';
           t.serialNo = `${prefix}-${yr}-${String(maxSeq).padStart(4, '0')}`;
+          assignedCount++;
         }
       });
+      if (assignedCount > 0) {
+        try {
+          localStorage.setItem('family_monefy_transactions', JSON.stringify(state.transactions));
+        } catch(e) {}
+      }
     }
 
     function generateNextAuditSerial(type, dateStr) {
       ensureSmartAuditSerials();
+      if (typeof ensureSmartRequestSerials === 'function') ensureSmartRequestSerials();
       let maxSeq = 0;
       (state.transactions || []).forEach(t => {
         if (t.serialNo) {
@@ -27204,6 +27371,135 @@ function saveTx() {
       }
     }
 
+    
+    // =====================================================================
+    // SMART AUDIT SERIALS & EDIT/DELETE AUDIT SYSTEM FOR MONEY REQUESTS
+    // =====================================================================
+    function ensureSmartRequestSerials() {
+      if (!state.moneyRequests || !Array.isArray(state.moneyRequests)) state.moneyRequests = [];
+      const allReqs = [...(state.moneyRequests || []), ...(state.deletedRequests || [])];
+      let maxSeq = 0;
+      allReqs.forEach(r => {
+        const s = r.serialNo || r.auditSerial;
+        if (s) {
+          const parts = s.split('-');
+          const num = parseInt(parts[parts.length - 1], 10);
+          if (!isNaN(num) && num > maxSeq) maxSeq = num;
+        }
+      });
+
+      // ترتيب الطلبات تصاعدياً حسب التاريخ
+      const sorted = [...state.moneyRequests].sort((a, b) => {
+        const da = (a.date || '') + ' ' + (a.timestamp || '');
+        const db = (b.date || '') + ' ' + (b.timestamp || '');
+        return da.localeCompare(db);
+      });
+
+      sorted.forEach(r => {
+        if (!r.serialNo && !r.auditSerial) {
+          maxSeq++;
+          const yr = r.date ? r.date.substring(0, 4) : '2026';
+          r.serialNo = `REQ-${yr}-${String(maxSeq).padStart(4, '0')}`;
+          r.auditSerial = r.serialNo;
+        } else {
+          if (!r.serialNo) r.serialNo = r.auditSerial;
+          if (!r.auditSerial) r.auditSerial = r.serialNo;
+        }
+      });
+    }
+    window.ensureSmartRequestSerials = ensureSmartRequestSerials;
+
+    function generateNextRequestSerial(reqDate) {
+      ensureSmartRequestSerials();
+      const allReqs = [...(state.moneyRequests || []), ...(state.deletedRequests || [])];
+      let maxSeq = 0;
+      allReqs.forEach(r => {
+        const s = r.serialNo || r.auditSerial;
+        if (s) {
+          const parts = s.split('-');
+          const num = parseInt(parts[parts.length - 1], 10);
+          if (!isNaN(num) && num > maxSeq) maxSeq = num;
+        }
+      });
+      const yr = reqDate ? String(reqDate).substring(0, 4) : '2026';
+      return `REQ-${yr}-${String(maxSeq + 1).padStart(4, '0')}`;
+    }
+    window.generateNextRequestSerial = generateNextRequestSerial;
+
+    function promptEditMoneyRequest(reqId) {
+      const req = (state.moneyRequests || []).find(r => r.id === reqId);
+      if (!req) return;
+
+      const newAmtStr = prompt(`تعديل مبلغ طلب المصروف [${req.serialNo || req.id}]:`, req.amount);
+      if (newAmtStr === null) return;
+      const newAmt = parseFloat(newAmtStr);
+      if (isNaN(newAmt) || newAmt <= 0) {
+        showToast('⚠️ تم إلغاء التعديل: يرجى إدخال مبلغ صحيح', 'warning');
+        return;
+      }
+
+      const newReason = prompt(`تعديل بيان وسبب طلب المصروف:`, req.reason);
+      if (newReason === null) return;
+      if (!newReason.trim()) {
+        showToast('⚠️ تم إلغاء التعديل: بيان وسبب الطلب إلزامي', 'warning');
+        return;
+      }
+
+      const editReason = prompt(`يرجى كتابة سبب التعديل والتغيير (إلزامي للرقابة والتوثيق):`);
+      if (editReason === null) return;
+      if (!editReason.trim()) {
+        showToast('❌ تم إلغاء التعديل: كتابة سبب التعديل والتغيير إلزامية للرقابة المالية', 'error', 4500);
+        return;
+      }
+
+      // توثيق التعديل في سجل المراجعة التدقيقي
+      const beforeSnapshot = {
+        amount: req.amount,
+        reason: req.reason,
+        date: req.date,
+        member: req.member
+      };
+
+      req.auditTrail = req.auditTrail || [];
+      req.auditTrail.push({
+        action: 'edit',
+        timestamp: new Date().toISOString(),
+        user: state.currentUser || req.member || 'ماهر',
+        reason: editReason.trim(),
+        before: beforeSnapshot,
+        after: {
+          amount: newAmt,
+          reason: newReason.trim(),
+          date: req.date,
+          member: req.member
+        }
+      });
+
+      req.amount = newAmt;
+      req.reason = newReason.trim();
+      req.isModified = true;
+      req.lastModifiedReason = editReason.trim();
+
+      try {
+        localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
+      } catch(e) {}
+
+      logActivity({
+        type: 'request_modified',
+        action: 'تعديل طلب مصروف',
+        label: `قام [${state.currentUser || 'ماهر'}] بتعديل طلب المصروف ${req.serialNo || req.id} إلى (${formatMoney(newAmt)}) - السبب: ${editReason.trim()}`,
+        amount: newAmt,
+        member: req.member,
+        author: state.currentUser || 'ماهر',
+        serial: req.serialNo || req.auditSerial
+      });
+
+      renderRequestsList();
+      renderActivityLogUI();
+      showToast(`✏️ تم تعديل وتوثيق طلب المصروف [${req.serialNo || req.id}] بنجاح (سبب التعديل: ${editReason.trim()})`, 'success', 5000);
+    }
+    window.promptEditMoneyRequest = promptEditMoneyRequest;
+
     function submitMoneyRequest() {
       const memSel = document.getElementById('inpReqMember');
       const amtInp = document.getElementById('inpReqAmount');
@@ -27257,8 +27553,11 @@ function saveTx() {
         return;
       }
 
+      const nextSerial = generateNextRequestSerial(reqDate);
       const newReq = {
         id: 'req-' + Date.now(),
+        serialNo: nextSerial,
+        auditSerial: nextSerial,
         member: member,
         amount: amount,
         reason: reason,
@@ -27366,8 +27665,10 @@ function saveTx() {
 
         card.innerHTML = `
           <div class="item-entry-header">
-            <div class="item-entry-title">
+            <div class="item-entry-title" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
               <span class="item-member-tag">👤 ${escapeHtml(req.member || 'العائلة')}</span>
+              <span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 800; font-family: monospace;">${req.serialNo || req.auditSerial || '#REQ-2026'}</span>
+              ${req.isModified ? `<span style="background: rgba(14, 165, 233, 0.15); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.3); padding: 1px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 800;" title="تم التعديل: ${escapeHtml(req.lastModifiedReason || '')}">معدل ✏️</span>` : ''}
               <strong>${Number(req.amount || 0).toLocaleString('en-US')} ج.م</strong>
             </div>
             ${statusBadge}
@@ -27404,6 +27705,9 @@ function saveTx() {
           actions.innerHTML = `
             <button class="btn-item-action btn-item-approve" onclick="approveRequest('${req.id}')" title="موافقة وصرف وتقسيم الحركات فوراً">
               <i class="fa-solid fa-check"></i> موافقة وصرف فوراً
+            </button>
+            <button class="btn-item-action" onclick="promptEditMoneyRequest('${req.id}')" title="تعديل تفاصيل الطلب مع ذكر السبب" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);">
+              <i class="fa-solid fa-pen-to-square"></i> تعديل
             </button>
             <button class="btn-item-action btn-item-reject" onclick="rejectRequest('${req.id}')" title="رفض الطلب">
               <i class="fa-solid fa-xmark"></i> رفض
@@ -27498,10 +27802,45 @@ function saveTx() {
     }
 
     function deleteRequest(reqId) {
+      const req = (state.moneyRequests || []).find(r => r.id === reqId);
+      if (!req) return;
+
+      const reason = prompt(`يرجى كتابة سبب حذف طلب المصروف [${req.serialNo || req.auditSerial || req.id}] (إلزامي للرقابة المالية):`);
+      if (reason === null) return;
+      const trimmed = reason.trim();
+      if (!trimmed) {
+        showToast('❌ تم إلغاء الحذف: كتابة سبب الحذف إلزامي للرقابة المالية والتدقيق', 'error', 4500);
+        return;
+      }
+
+      // أرشفة الطلب المحذوف في الأرشيف الدائم
+      state.deletedRequests = state.deletedRequests || [];
+      req.deletedAt = new Date().toISOString();
+      req.deletedBy = state.currentUser || 'ماهر';
+      req.deletionReason = trimmed;
+      state.deletedRequests.unshift(req);
+      try {
+        localStorage.setItem('family_deleted_requests_archive', JSON.stringify(state.deletedRequests));
+      } catch(e) {}
+
       state.moneyRequests = (state.moneyRequests || []).filter(r => r.id !== reqId);
-      localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
+      try {
+        localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
+      } catch(e) {}
+
+      logActivity({
+        type: 'request_deleted',
+        action: 'حذف طلب مصروف',
+        label: `قام [${state.currentUser || 'ماهر'}] بحذف طلب المصروف ${req.serialNo || req.id} (${formatMoney(req.amount)}) - السبب: ${trimmed}`,
+        amount: req.amount,
+        member: req.member,
+        author: state.currentUser || 'ماهر',
+        serial: req.serialNo || req.auditSerial
+      });
+
       renderRequestsList();
-      showToast('🗑️ تم حذف الطلب من السجل');
+      renderActivityLogUI();
+      showToast(`🗑️ تم حذف وأرشفة طلب المصروف [${req.serialNo || req.id}] بنجاح (السبب: ${trimmed})`, 'info', 5000);
     }
 
     // =========================================================================
@@ -31235,6 +31574,8 @@ function switchSettingsTab(tabName) {
         list = list.filter(a => a.type && a.type.includes('expected'));
       } else if (currentActivityTab === 'budget') {
         list = list.filter(a => a.type && a.type.includes('budget'));
+      } else if (currentActivityTab === 'request') {
+        list = list.filter(a => a.type && (a.type.includes('request') || a.type.includes('submit_request')));
       } else if (currentActivityTab === 'transfer') {
         list = list.filter(a => a.type && (a.type.includes('transfer') || a.type.includes('wallet')));
       } else if (currentActivityTab === 'delete') {
@@ -32077,39 +32418,57 @@ function switchSettingsTab(tabName) {
     }
 
     async function executeMasterUnifiedSyncAndRefresh(isManual = false) {
-      if (window.isMasterSyncRunning) return;
+      if (window.isMasterSyncRunning && !isManual) return;
       window.isMasterSyncRunning = true;
 
       const spinIcon = document.getElementById('headerMasterSyncSpinIcon');
       const statusText = document.getElementById('topDriveSyncStatusText');
       if (spinIcon) spinIcon.classList.add('fa-spin');
-      if (statusText) statusText.textContent = 'جاري التحديث والموازنة...';
+      if (statusText) {
+        statusText.textContent = 'جاري التحديث والموازنة...';
+        statusText.style.color = '#38bdf8';
+      }
 
       if (isManual) {
-        showToast('🔄 جاري التحديث الشامل: فحص النسخة + موازنة الحسابات + تحديث أسعار الذهب...', 'info', 4000);
+        showToast('🔄 جاري التحديث الشامل: فحص النسخة + موازنة الحسابات + تحديث أسعار الذهب...', 'info', 3000);
       }
 
       try {
         // 1. فحص النسخة الجديدة وتحديث كاش المتصفح (PWA Cache & App Update)
+        let remoteBuild = null;
         try {
-          if ('serviceWorker' in navigator) {
-            const reg = await navigator.serviceWorker.getRegistration();
-            if (reg) await reg.update();
-          }
-          const vRes = await fetch('version.json?_t=' + Date.now());
+          const vRes = await fetch('version.json?_nocache=' + Date.now(), { cache: 'no-store' });
           if (vRes.ok) {
-            const vData = await vRes.json();
-            console.log('App version verified:', vData.version);
+            remoteBuild = await vRes.json();
           }
         } catch(e) {
-          console.warn('PWA update check notice:', e);
+          console.warn('PWA version check notice:', e);
+        }
+
+        const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151250);
+        const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.63');
+
+        const isNewer = remoteBuild && (
+          (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
+          (remoteBuild.buildId && Number(remoteBuild.buildId) > currentBuildNum)
+        );
+
+        if (isNewer) {
+          if (statusText) statusText.textContent = 'جاري تنزيل التحديث...';
+          showToast(`🚀 تم العثور على إصدار جديد (${remoteBuild.version})! جاري تنزيل التحديث وتفريغ الذاكرة...`, 'info', 3000);
+          if (typeof forcePurgeCacheAndReload === 'function') {
+            forcePurgeCacheAndReload();
+            return;
+          }
         }
 
         // 2. تحديث وموازنة أسعار الذهب والعملات الأجنبية الحية
         if (typeof fetchTradingViewRates === 'function') {
           try {
             await fetchTradingViewRates(true);
-          } catch(e) {}
+          } catch(e) {
+            console.warn('Rates refresh notice:', e);
+          }
         }
 
         // 3. المزامنة السحابية والموازنة المحاسبية التراكمية
@@ -32124,9 +32483,15 @@ function switchSettingsTab(tabName) {
           auditAndRecomputeAllWalletBalances();
         }
 
-        // 5. إعادة رسم الواجهات والقوائم
+        // 5. ضبط سريالات الحركات والطلبات
+        if (typeof ensureSmartAuditSerials === 'function') ensureSmartAuditSerials();
+      if (typeof ensureSmartRequestSerials === 'function') ensureSmartRequestSerials();
+        if (typeof ensureSmartRequestSerials === 'function') ensureSmartRequestSerials();
+
+        // 6. إعادة رسم الواجهات والقوائم
         if (typeof renderUI === 'function') renderUI();
         if (typeof filterOperationsList === 'function') filterOperationsList();
+        if (typeof renderRequestsList === 'function') renderRequestsList();
         if (typeof renderTasksProList === 'function') renderTasksProList();
 
         if (statusText) {
@@ -32135,12 +32500,17 @@ function switchSettingsTab(tabName) {
         }
 
         if (isManual) {
-          showToast('✅ اكتمل التحديث الشامل: توازن الحسابات 100% | أسعار الذهب والعملات محدثة | التطبيق يعمل بأحدث إصدار v5.2.1', 'success', 5000);
+          const goldStr = state.market?.gold21 ? ` | ذهب 21: ${state.market.gold21.toLocaleString('ar-EG')} ج.م` : '';
+          const usdStr = state.market?.usdEgp ? ` | $ دولار: ${state.market.usdEgp.toFixed(2)} ج.م` : '';
+          showToast(`✅ اكتمل التحديث الشامل: التطبيق محدث بالكامل (${APP_VERSION}) | الحسابات متوازنة 100%${usdStr}${goldStr}`, 'success', 5000);
           if (typeof playNotificationChime === 'function') playNotificationChime();
         }
       } catch(err) {
         console.warn('Unified sync notice:', err);
-        if (statusText) statusText.textContent = 'محدث ومتوازن ✓';
+        if (statusText) {
+          statusText.textContent = 'محدث ومتوازن ✓';
+          statusText.style.color = '#34d399';
+        }
         if (isManual) showToast('✅ اكتملت الموازنة والتحديث بنجاح', 'success');
       } finally {
         window.isMasterSyncRunning = false;
@@ -36311,10 +36681,39 @@ function editTx(txId) {
   if (reasonErr) reasonErr.style.display = 'none';
   if (document.getElementById('editTxAmount')) document.getElementById('editTxAmount').value = tx.amount;
   if (document.getElementById('editTxLabel')) document.getElementById('editTxLabel').value = tx.label || '';
-  if (document.getElementById('editTxCategory')) document.getElementById('editTxCategory').value = tx.category || 'other';
-  if (document.getElementById('editTxWallet')) document.getElementById('editTxWallet').value = tx.walletId || 'cash';
-  if (document.getElementById('editTxMember')) document.getElementById('editTxMember').value = tx.member || state.currentUser || 'ماهر';
+
+  // ملء وتفعيل خيارات التصنيف
+  const catSel = document.getElementById('editTxCategory');
+  if (catSel) {
+    const isInc = (tx.type === 'income');
+    const cats = isInc ? (typeof INCOME_CATEGORIES !== 'undefined' ? INCOME_CATEGORIES : []) : (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []);
+    catSel.innerHTML = cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    catSel.value = tx.category || (cats[0] ? cats[0].id : '');
+  }
+
+  // ملء وتفعيل خيارات المحفظة
+  const walSel = document.getElementById('editTxWallet');
+  if (walSel) {
+    const wallets = (state.wallets && state.wallets.length > 0) ? state.wallets : [
+      { id: 'wallet-cash', name: 'كاش / نقدي' },
+      { id: 'wallet-ahly', name: 'البنك الأهلي' },
+      { id: 'wallet-instapay', name: 'انستاباي' }
+    ];
+    walSel.innerHTML = wallets.map(w => `<option value="${w.id}">${w.name || w.id}</option>`).join('');
+    walSel.value = tx.walletId || (wallets[0] ? wallets[0].id : '');
+  }
+
+  // ملء وتفعيل خيارات أفراد العائلة
+  const memSel = document.getElementById('editTxMember');
+  if (memSel) {
+    const members = (typeof FAMILY_MEMBERS !== 'undefined' && Array.isArray(FAMILY_MEMBERS)) ? FAMILY_MEMBERS : ['البيت', 'ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'أخرى'];
+    memSel.innerHTML = members.map(m => `<option value="${m}">${m}</option>`).join('');
+    memSel.value = tx.member || state.currentUser || 'ماهر';
+  }
+
+  // ضبط التاريخ والمشروع
   if (document.getElementById('editTxDate')) document.getElementById('editTxDate').value = tx.date || getLocalDateStr(new Date());
+  if (document.getElementById('editTxProject')) document.getElementById('editTxProject').value = tx.projectId || '';
   const editProject = document.getElementById('editTxProject');
   if (editProject) {
     const projectName = typeof getTransactionProjectName === 'function' ? getTransactionProjectName(tx) : String(tx.project || '');
@@ -39805,6 +40204,78 @@ window.filterArchiveType = filterArchiveType;
       <i class="fa-solid fa-arrow-turn-up" style="transform: rotate(-90deg);"></i>
       <span id="opsFloatingReturnText">رجوع للملخص</span> ↩️
     </button>
+
+
+<style id="settings-fixed-fullscreen-override">
+#settingsModal,
+#settingsModal.open,
+#settingsModal.modal-overlay,
+#settingsModal[style*="display: flex"],
+#settingsModal[style*="display:flex"],
+#settingsModal[style*="display: block"],
+#settingsModal[style*="display:block"] {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  z-index: 100050 !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  display: flex !important;
+}
+
+#settingsModal:not(.open):not([style*="display: flex"]):not([style*="display:flex"]):not([style*="display: block"]) {
+  display: none !important;
+}
+
+#settingsModal .modal-content-card,
+#settingsModal .settings-modal-shell,
+#settingsModal .antigravity-settings-shell {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  max-height: 100dvh !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#settingsModal .settings-modal-scroll,
+#settingsModal .antigravity-scroll-body {
+  flex: 1 1 auto !important;
+  height: calc(100dvh - 110px) !important;
+  max-height: calc(100dvh - 110px) !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 12px 14px 40px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+</style>
 
 </body>
 </html>
