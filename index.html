@@ -18369,23 +18369,29 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
           <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: var(--bg-card, rgba(15, 23, 42, 0.88)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.15);">
             <!-- الشريط العلوي للصافي -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; gap: 6px;">
               <div style="display: flex; align-items: center; gap: 6px; font-size: 0.80rem; font-weight: 900; color: #cbd5e1;">
                 <i class="fa-solid fa-scale-balanced" id="kpiNetIconCommitments" style="color: #38bdf8;"></i>
                 <span id="kpiNetLabelCommitments">صافي الالتزامات المالية المطلوب تدبيرها:</span>
               </div>
-              <div id="kpiNetValueCommitments" style="font-size: 0.95rem; font-weight: 950; font-family: var(--font-numbers); direction: ltr; color: #ff4d6d;">
-                - 0.00 ج.م
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" id="btnClearCommitmentFilter" onclick="setCommitmentsSubFilter('all')" title="مسح التصفية لعرض كل الالتزامات" style="padding: 3px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 850; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
+                  <i class="fa-solid fa-rotate-left" style="font-size: 0.62rem;"></i>
+                  <span id="clearCommitmentFilterLabel">عرض الكل</span>
+                </button>
+                <div id="kpiNetValueCommitments" style="font-size: 0.95rem; font-weight: 950; font-family: var(--font-numbers); direction: ltr; color: #ff4d6d;">
+                  - 0.00 ج.م
+                </div>
               </div>
             </div>
 
             <!-- الكروت الرباعية التنفيذية المتناسقة (صف واحد إلزامي بـ 4 أعمدة بدقة تامة - عدد البنود أسفل اسم البند تماماً) -->
             <div class="com-kpi-cards-grid" id="commitmentsExecutiveCardsStrip">
-                <!-- كارت 1: مصاريف دورية (أصفر) -->
-                <div class="com-kpi-card card-bills" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير ومصاريف دورية قادمة">
+                <!-- كارت 1: فواتير واشتراكات (أصفر) -->
+                <div class="com-kpi-card card-bills" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير واشتراكات دورية قادمة">
                   <div class="com-card-header">
-                    <i class="fa-solid fa-clock com-card-icon"></i>
-                    <span class="com-card-title">مصاريف</span>
+                    <i class="fa-solid fa-file-invoice com-card-icon"></i>
+                    <span class="com-card-title">فواتير</span>
                   </div>
                   <div class="com-card-badge-wrap">
                     <span id="kpiCap1Count" class="com-card-count-badge">0 بند</span>
@@ -18570,31 +18576,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <!-- ========================================================
                1. قسم عرض الفواتير والاشتراكات (Bills View)
                ======================================================== -->
-          <!-- شريط الفلاتر السريعة المنسق تحت الفواتير والديون -->
-        <div class="commitments-subfilter-bar no-scrollbar" style="display: flex; gap: 5px; overflow-x: auto; padding: 4px 0 8px; margin-bottom: 6px;" id="commitmentsSubFilterStrip">
-          <button type="button" class="com-subfilter-pill active" id="pillSubFilterAll" onclick="setCommitmentsSubFilter('all')" style="padding: 6px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: 1px solid rgba(56, 189, 248, 0.4); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-layer-group"></i> <span>الكل</span>
-            <span id="subCntAll" style="background: rgba(255,255,255,0.2); padding: 1px 5px; border-radius: 6px; font-size: 0.64rem;">0</span>
-          </button>
-          <button type="button" class="com-subfilter-pill" id="pillSubFilterBills" onclick="setCommitmentsSubFilter('bills')" style="padding: 6px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: rgba(15, 23, 42, 0.85); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-file-invoice" style="color: #38bdf8;"></i> <span>الفواتير والاشتراكات</span>
-            <span id="subCntBills" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 6px; font-size: 0.64rem;">0</span>
-          </button>
-          <button type="button" class="com-subfilter-pill" id="pillSubFilterDebtsOnUs" onclick="setCommitmentsSubFilter('debts_on_us')" style="padding: 6px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: rgba(15, 23, 42, 0.85); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-handshake-angle" style="color: #f87171;"></i> <span>ديون علينا</span>
-            <span id="subCntDebtsOnUs" style="background: rgba(239, 68, 68, 0.15); color: #f87171; padding: 1px 5px; border-radius: 6px; font-size: 0.64rem;">0</span>
-          </button>
-          <button type="button" class="com-subfilter-pill" id="pillSubFilterDebtsForUs" onclick="setCommitmentsSubFilter('debts_for_us')" style="padding: 6px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: rgba(15, 23, 42, 0.85); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-hand-holding-dollar" style="color: #34d399;"></i> <span>ديون لنا</span>
-            <span id="subCntDebtsForUs" style="background: rgba(16, 185, 129, 0.15); color: #34d399; padding: 1px 5px; border-radius: 6px; font-size: 0.64rem;">0</span>
-          </button>
-          <button type="button" class="com-subfilter-pill" id="pillSubFilterSettled" onclick="setCommitmentsSubFilter('settled')" style="padding: 6px 12px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: rgba(15, 23, 42, 0.85); color: #94a3b8; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-solid fa-circle-check" style="color: #38bdf8;"></i> <span>المسددة والأرشيف</span>
-            <span id="subCntSettled" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 1px 5px; border-radius: 6px; font-size: 0.64rem;">0</span>
-          </button>
-        </div>
-
-<div id="viewCommitmentsBillsList" style="display: block;">
+          <div id="viewCommitmentsBillsList" style="display: block;">
             <!-- فلاتر الفواتير السريعة -->
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 10px 0 8px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.06);">
               <div style="font-size: 0.84rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
@@ -20840,7 +20822,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.70</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.71</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -33941,26 +33923,47 @@ function switchSettingsTab(tabName) {
       const cardOnUs = document.getElementById('cardComDebtsOnUs');
       const cardForUs = document.getElementById('cardComDebtsForUs');
       const cardSettled = document.getElementById('cardComSettled');
+      const btnClearFilter = document.getElementById('btnClearCommitmentFilter');
+      const clearLabel = document.getElementById('clearCommitmentFilterLabel');
 
       [cardBills, cardOnUs, cardForUs, cardSettled].forEach(c => {
         if (c) {
           c.style.transform = 'none';
           c.style.boxShadow = 'none';
+          c.style.borderColor = 'rgba(255, 255, 255, 0.12)';
         }
       });
 
+      if (btnClearFilter && clearLabel) {
+        if (activeCommitmentSubFilter === 'all') {
+          btnClearFilter.style.background = 'rgba(56, 189, 248, 0.12)';
+          btnClearFilter.style.borderColor = 'rgba(56, 189, 248, 0.28)';
+          btnClearFilter.style.color = '#38bdf8';
+          clearLabel.textContent = 'عرض الكل ✓';
+        } else {
+          btnClearFilter.style.background = 'rgba(244, 63, 94, 0.18)';
+          btnClearFilter.style.borderColor = 'rgba(244, 63, 94, 0.45)';
+          btnClearFilter.style.color = '#f43f5e';
+          clearLabel.textContent = 'مسح الفلتر ✕';
+        }
+      }
+
       if (activeCommitmentSubFilter === 'bills' && cardBills) {
-        cardBills.style.transform = 'translateY(-2px)';
+        cardBills.style.transform = 'translateY(-3px)';
         cardBills.style.boxShadow = '0 0 0 2px #fbbf24, 0 6px 18px rgba(245, 158, 11, 0.4)';
+        cardBills.style.borderColor = '#fbbf24';
       } else if (activeCommitmentSubFilter === 'debts_on_us' && cardOnUs) {
-        cardOnUs.style.transform = 'translateY(-2px)';
+        cardOnUs.style.transform = 'translateY(-3px)';
         cardOnUs.style.boxShadow = '0 0 0 2px #fb7185, 0 6px 18px rgba(244, 63, 94, 0.4)';
+        cardOnUs.style.borderColor = '#fb7185';
       } else if (activeCommitmentSubFilter === 'debts_for_us' && cardForUs) {
-        cardForUs.style.transform = 'translateY(-2px)';
+        cardForUs.style.transform = 'translateY(-3px)';
         cardForUs.style.boxShadow = '0 0 0 2px #34d399, 0 6px 18px rgba(16, 185, 129, 0.4)';
+        cardForUs.style.borderColor = '#34d399';
       } else if (activeCommitmentSubFilter === 'settled' && cardSettled) {
-        cardSettled.style.transform = 'translateY(-2px)';
+        cardSettled.style.transform = 'translateY(-3px)';
         cardSettled.style.boxShadow = '0 0 0 2px #38bdf8, 0 6px 18px rgba(2, 132, 199, 0.4)';
+        cardSettled.style.borderColor = '#38bdf8';
       }
 
       // التحكم في إظهار القوائم بناءً على الفلتر السريع
@@ -36145,31 +36148,12 @@ function switchCategoryChartFormat(format, btnEl) {
     }
 
     function setCommitmentsSubFilter(filt) {
-      activeCommitmentSubFilter = filt;
-      const pills = [
-        { id: 'pillSubFilterAll', key: 'all' },
-        { id: 'pillSubFilterBills', key: 'bills' },
-        { id: 'pillSubFilterDebtsOnUs', key: 'debts_on_us' },
-        { id: 'pillSubFilterDebtsForUs', key: 'debts_for_us' },
-        { id: 'pillSubFilterSettled', key: 'settled' }
-      ];
-
-      pills.forEach(p => {
-        const el = document.getElementById(p.id);
-        if (el) {
-          if (p.key === filt) {
-            el.classList.add('active');
-            el.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
-            el.style.color = '#fff';
-            el.style.borderColor = 'rgba(56, 189, 248, 0.5)';
-          } else {
-            el.classList.remove('active');
-            el.style.background = 'rgba(15, 23, 42, 0.85)';
-            el.style.color = '#94a3b8';
-            el.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-          }
-        }
-      });
+      // إذا كان نفس الفلتر مضغوطاً يعود التحديد إلى "الكل" تلقائياً
+      if (activeCommitmentSubFilter === filt && filt !== 'all') {
+        activeCommitmentSubFilter = 'all';
+      } else {
+        activeCommitmentSubFilter = filt;
+      }
 
       renderCommitmentsPageUI();
     }
