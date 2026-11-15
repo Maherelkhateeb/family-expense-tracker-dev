@@ -283,9 +283,10 @@ body.light-theme #goldDrawerPanel .gold-tab-btn.active {
 #goldDrawerPanel .gold-market-section {
   background: var(--market-surface) !important;
   border: 1px solid var(--market-line) !important;
-  border-radius: 11px !important;
-  padding: 7px 9px !important;
+  border-radius: 9px !important;
+  padding: 4px 7px !important;
   box-sizing: border-box !important;
+  margin-bottom: 4px !important;
 }
 
 #goldDrawerPanel .gold-rates-section {
@@ -307,22 +308,41 @@ body.light-theme #goldDrawerPanel .gold-tab-btn.active {
 }
 
 /* --- 2x2 Grid Cards (Micro-Compact) --- */
-#goldDrawerPanel .gold-grid-cards,
-#goldDrawerPanel .fx-grid-cards {
+#goldDrawerPanel .gold-grid-cards {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 5px !important;
+  gap: 4px !important;
+}
+#goldDrawerPanel .fx-grid-cards {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 4px !important;
+}
+#goldDrawerPanel .fx-grid-cards .market-box {
+  min-height: 38px !important;
+  padding: 3px 2px !important;
+}
+#goldDrawerPanel .fx-grid-cards .market-box-title {
+  font-size: 0.54rem !important;
+}
+#goldDrawerPanel .fx-grid-cards .market-box-val {
+  font-size: 0.82rem !important;
+}
+#goldDrawerPanel .fx-grid-cards .market-buy-price {
+  display: none !important;
 }
 
 #goldDrawerPanel .market-box {
   background: var(--market-base) !important;
   border: 1px solid var(--market-line) !important;
   border-radius: 8px !important;
-  padding: 5px 7px !important;
+  padding: 4px 6px !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
-  min-height: 52px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  min-height: 40px !important;
   position: relative !important;
 }
 
@@ -336,37 +356,48 @@ body.light-theme #goldDrawerPanel .gold-tab-btn.active {
 }
 
 #goldDrawerPanel .market-box-title {
-  font-size: 0.63rem !important;
-  font-weight: 800 !important;
+  font-size: 0.60rem !important;
+  font-weight: 850 !important;
   color: var(--market-muted) !important;
   display: flex !important;
   align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
   gap: 3px !important;
 }
 
 #goldDrawerPanel .market-box-val {
-  font-size: clamp(0.88rem, 3.6vw, 1.02rem) !important;
+  font-size: clamp(0.85rem, 3.4vw, 0.98rem) !important;
   font-weight: 900 !important;
   color: var(--market-text) !important;
-  line-height: 1.2 !important;
+  text-align: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  direction: rtl !important;
+  line-height: 1.15 !important;
   margin: 1px 0 !important;
   white-space: nowrap !important;
   font-variant-numeric: tabular-nums !important;
 }
 
 #goldDrawerPanel .market-box-sub {
-  font-size: 0.56rem !important;
+  font-size: 0.52rem !important;
   color: var(--market-muted) !important;
   display: flex !important;
-  justify-content: space-between !important;
+  justify-content: center !important;
   align-items: center !important;
+  text-align: center !important;
+  width: 100% !important;
   line-height: 1 !important;
 }
 
 #goldDrawerPanel .market-buy-price {
-  font-size: 0.56rem !important;
+  font-size: 0.52rem !important;
   color: var(--market-muted) !important;
-  margin-top: 2px !important;
+  text-align: center !important;
+  width: 100% !important;
+  margin-top: 1px !important;
   opacity: 0.85 !important;
   line-height: 1 !important;
 }
@@ -726,18 +757,19 @@ body.light-theme #goldDrawerPanel .conv-res-card.highlight .res-card-val {
    ========================================================================= */
 
 #goldDrawerPanel .gold-calculator-section {
-  border-radius: 12px !important;
+  border-radius: 10px !important;
   background: var(--market-surface) !important;
   border: 1px solid var(--market-line) !important;
-  padding: 9px 11px !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12) !important;
+  padding: 5px 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 4px !important;
 }
 
 #goldDrawerPanel .calc-section-header {
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
-  margin-bottom: 7px !important;
+  margin-bottom: 4px !important;
 }
 
 #goldDrawerPanel .calc-header-title {
@@ -788,17 +820,21 @@ body.light-theme #goldDrawerPanel .calc-header-badge {
 #goldDrawerPanel .gold-calc-hero {
   background: radial-gradient(circle at 90% 0%, rgba(245, 158, 11, 0.18), transparent 45%), linear-gradient(135deg, rgba(20, 33, 54, 0.95), rgba(12, 21, 37, 0.98)) !important;
   border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
-  border-radius: 11px !important;
-  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
   text-align: center !important;
-  margin-bottom: 7px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  margin-bottom: 4px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 body.light-theme #goldDrawerPanel .gold-calc-hero {
-  background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
-  border: 1.5px solid rgba(217, 119, 6, 0.45) !important;
-  box-shadow: 0 3px 10px rgba(180, 83, 9, 0.08) !important;
+  background: radial-gradient(circle at 90% 0%, rgba(245, 158, 11, 0.18), transparent 45%), linear-gradient(135deg, rgba(20, 33, 54, 0.95), rgba(12, 21, 37, 0.98)) !important;
+  border: 1.5px solid rgba(245, 158, 11, 0.45) !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  text-align: center !important;
+  margin-bottom: 4px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 #goldDrawerPanel .calc-hero-label {
@@ -813,17 +849,23 @@ body.light-theme #goldDrawerPanel .calc-hero-label {
 }
 
 #goldDrawerPanel .calc-hero-amount {
-  font-size: 1.35rem !important;
+  font-size: 1.12rem !important;
   font-weight: 900 !important;
   color: #fde047 !important;
   direction: rtl !important;
   font-variant-numeric: tabular-nums !important;
-  line-height: 1.2 !important;
-  margin: 1px 0 !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
 }
 
 body.light-theme #goldDrawerPanel .calc-hero-amount {
-  color: #b45309 !important;
+  font-size: 1.12rem !important;
+  font-weight: 900 !important;
+  color: #fde047 !important;
+  direction: rtl !important;
+  font-variant-numeric: tabular-nums !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
 }
 
 #goldDrawerPanel .calc-hero-sub {
@@ -838,10 +880,10 @@ body.light-theme #goldDrawerPanel .calc-hero-sub {
 
 /* Form Group & Select */
 #goldDrawerPanel .calc-form-group {
-  margin-bottom: 6px !important;
+  margin-bottom: 4px !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 3px !important;
+  gap: 2px !important;
 }
 
 #goldDrawerPanel .calc-field-label {
@@ -859,21 +901,28 @@ body.light-theme #goldDrawerPanel .calc-field-label {
 
 #goldDrawerPanel .calc-select {
   width: 100% !important;
-  height: 34px !important;
-  border-radius: 8px !important;
+  height: 28px !important;
+  border-radius: 7px !important;
   background: var(--market-base) !important;
   border: 1.2px solid var(--market-line) !important;
   color: #fbbf24 !important;
   font-weight: 800 !important;
-  font-size: 0.74rem !important;
-  padding: 0 8px !important;
+  font-size: 0.68rem !important;
+  padding: 0 6px !important;
   cursor: pointer !important;
 }
 
 body.light-theme #goldDrawerPanel .calc-select {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #b45309 !important;
+  width: 100% !important;
+  height: 28px !important;
+  border-radius: 7px !important;
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  color: #fbbf24 !important;
+  font-weight: 800 !important;
+  font-size: 0.68rem !important;
+  padding: 0 6px !important;
+  cursor: pointer !important;
 }
 
 #goldDrawerPanel .calc-select:focus,
@@ -891,8 +940,8 @@ body.light-theme #goldDrawerPanel .calc-input:focus {
 #goldDrawerPanel .calc-inputs-grid {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 6px !important;
-  margin-bottom: 6px !important;
+  gap: 4px !important;
+  margin-bottom: 4px !important;
 }
 
 #goldDrawerPanel .calc-input-box {
@@ -909,22 +958,30 @@ body.light-theme #goldDrawerPanel .calc-input:focus {
 
 #goldDrawerPanel .calc-input {
   width: 100% !important;
-  height: 34px !important;
-  border-radius: 8px !important;
+  height: 28px !important;
+  border-radius: 7px !important;
   background: var(--market-base) !important;
   border: 1.2px solid var(--market-line) !important;
   color: var(--market-text) !important;
   font-weight: 900 !important;
-  font-size: 0.98rem !important;
+  font-size: 0.88rem !important;
   text-align: center !important;
   font-variant-numeric: tabular-nums !important;
-  padding: 0 6px !important;
+  padding: 0 4px !important;
 }
 
 body.light-theme #goldDrawerPanel .calc-input {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
+  width: 100% !important;
+  height: 28px !important;
+  border-radius: 7px !important;
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  color: var(--market-text) !important;
+  font-weight: 900 !important;
+  font-size: 0.88rem !important;
+  text-align: center !important;
+  font-variant-numeric: tabular-nums !important;
+  padding: 0 4px !important;
 }
 
 /* Workmanship Note */
@@ -949,17 +1006,23 @@ body.light-theme #goldDrawerPanel .calc-workmanship-note {
 #goldDrawerPanel .gold-calc-breakdown-card {
   background: var(--market-base) !important;
   border: 1.2px solid var(--market-line) !important;
-  border-radius: 10px !important;
-  padding: 6px 10px !important;
-  margin-bottom: 6px !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  margin-bottom: 4px !important;
   display: flex !important;
   flex-direction: column !important;
-  gap: 4px !important;
+  gap: 2px !important;
 }
 
 body.light-theme #goldDrawerPanel .gold-calc-breakdown-card {
-  background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
+  background: var(--market-base) !important;
+  border: 1.2px solid var(--market-line) !important;
+  border-radius: 8px !important;
+  padding: 4px 8px !important;
+  margin-bottom: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
 }
 
 #goldDrawerPanel .breakdown-row {
@@ -1043,8 +1106,8 @@ body.light-theme #goldDrawerPanel .b-val-net {
 #goldDrawerPanel .calc-presets-section {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  margin-bottom: 7px !important;
+  gap: 4px !important;
+  margin-bottom: 4px !important;
 }
 
 #goldDrawerPanel .calc-presets-label {
@@ -1062,10 +1125,10 @@ body.light-theme #goldDrawerPanel .b-val-net {
 }
 
 #goldDrawerPanel .calc-preset-btn {
-  padding: 4px 2px !important;
-  font-size: 0.62rem !important;
+  padding: 2px 2px !important;
+  font-size: 0.58rem !important;
   font-weight: 800 !important;
-  border-radius: 6px !important;
+  border-radius: 5px !important;
   background: var(--market-base) !important;
   border: 1px solid var(--market-line) !important;
   color: var(--market-text) !important;
@@ -1075,9 +1138,16 @@ body.light-theme #goldDrawerPanel .b-val-net {
 }
 
 body.light-theme #goldDrawerPanel .calc-preset-btn {
-  background: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  color: #1e293b !important;
+  padding: 2px 2px !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  border-radius: 5px !important;
+  background: var(--market-base) !important;
+  border: 1px solid var(--market-line) !important;
+  color: var(--market-text) !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  text-align: center !important;
 }
 
 #goldDrawerPanel .calc-preset-btn:hover,
@@ -1097,9 +1167,9 @@ body.light-theme #goldDrawerPanel .calc-preset-btn.active {
 /* Action Button */
 #goldDrawerPanel .btn-gold-save-expense {
   width: 100% !important;
-  height: 36px !important;
-  border-radius: 9px !important;
-  font-size: 0.76rem !important;
+  height: 30px !important;
+  border-radius: 7px !important;
+  font-size: 0.70rem !important;
   font-weight: 900 !important;
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   color: #000000 !important;
@@ -1108,8 +1178,8 @@ body.light-theme #goldDrawerPanel .calc-preset-btn.active {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 6px !important;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3) !important;
+  gap: 5px !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25) !important;
   transition: all 0.2s ease !important;
 }
 
@@ -1121,4 +1191,31 @@ body.light-theme #goldDrawerPanel .calc-preset-btn.active {
 
 #goldDrawerPanel .gold-chart-section {
   border-radius: 11px !important;
+}
+
+/* Responsive Micro-Height Zero-Scroll Engine */
+@media (max-height: 720px) {
+  #goldDrawerPanel .gold-market-topbar { padding: 4px 8px 3px !important; }
+  #goldDrawerPanel .gold-antigravity-tabs { padding: 3px 6px !important; }
+  #goldDrawerPanel .gold-tab-btn { padding: 4px 3px !important; font-size: 0.65rem !important; }
+  #goldDrawerPanel .gold-market-section { padding: 3px 6px !important; margin-bottom: 3px !important; }
+  #goldDrawerPanel .market-section-heading { margin-bottom: 2px !important; font-size: 0.64rem !important; }
+  #goldDrawerPanel .market-box { min-height: 34px !important; padding: 2px 4px !important; }
+  #goldDrawerPanel .market-box-title { font-size: 0.52rem !important; }
+  #goldDrawerPanel .market-box-val { font-size: 0.78rem !important; line-height: 1.05 !important; }
+  #goldDrawerPanel .gold-ounce-strip { padding: 2px 6px !important; margin-top: 3px !important; }
+  #goldDrawerPanel .gold-valuation-strip { padding: 3px 6px !important; }
+  #goldDrawerPanel .gold-calculator-section { padding: 4px 6px !important; margin-bottom: 3px !important; }
+  #goldDrawerPanel .calc-form-group { margin-bottom: 2px !important; }
+  #goldDrawerPanel .calc-select { height: 24px !important; font-size: 0.62rem !important; }
+  #goldDrawerPanel .calc-inputs-grid { gap: 3px !important; margin-bottom: 2px !important; }
+  #goldDrawerPanel .calc-input { height: 24px !important; font-size: 0.78rem !important; }
+  #goldDrawerPanel .calc-presets-section { margin-bottom: 2px !important; }
+  #goldDrawerPanel .calc-preset-btn { padding: 1px 2px !important; font-size: 0.54rem !important; }
+  #goldDrawerPanel .gold-calc-breakdown-card { padding: 2px 6px !important; margin-bottom: 2px !important; gap: 1px !important; }
+  #goldDrawerPanel .breakdown-row { font-size: 0.54rem !important; }
+  #goldDrawerPanel .gold-calc-hero { padding: 2px 6px !important; margin-bottom: 2px !important; }
+  #goldDrawerPanel .calc-hero-amount { font-size: 0.98rem !important; }
+  #goldDrawerPanel .btn-gold-save-expense { height: 26px !important; font-size: 0.66rem !important; }
+  #goldDrawerPanel .gold-chart-section { display: none !important; }
 }
