@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.63';
-    var APP_BUILD_ID = 202611151250;
+    var APP_VERSION = 'v5.3.65';
+    var APP_BUILD_ID = 202611151345;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -11656,6 +11656,42 @@ body.light-theme .analytics-date-range-trigger {
   border: 1.5px solid #cbd5e1 !important;
 }
 
+
+/* =========================================================================
+   6-ITEM BOTTOM NAVIGATION BAR TUNING (ضبط شريط التنقل السفلي السداسي)
+   ========================================================================= */
+.app-bottom-nav {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 4px 4px calc(5px + env(safe-area-inset-bottom, 0px)) !important;
+  gap: 2px !important;
+}
+
+.nav-tab-item {
+  flex: 1 1 0px !important;
+  min-width: 0 !important;
+  padding: 4px 1px !important;
+  gap: 2px !important;
+}
+
+.nav-tab-item span {
+  font-size: 0.67rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  letter-spacing: -0.3px !important;
+}
+
+.nav-tab-item .nav-tab-svg,
+.nav-tab-item i {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 1.15rem !important;
+}
+
 </style>
 
     <script>
@@ -17026,6 +17062,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <button type="button" class="ops-period-pill active" data-period="month" onclick="setAppPeriod('month')">
                 <i class="fa-solid fa-calendar-days"></i> الشهر
               </button>
+              <button type="button" class="ops-period-pill" data-period="year" onclick="setAppPeriod('year')">
+                <i class="fa-solid fa-calendar"></i> السنة
+              </button>
               <button type="button" class="ops-period-pill" data-period="all" onclick="setAppPeriod('all')">
                 <i class="fa-solid fa-infinity"></i> الكل
               </button>
@@ -17904,11 +17943,13 @@ body.light-theme .summary-matrix-table tr.total-row td {
                 </div>
                 <div>
                   <label for="secFilterPeriod" style="font-size: 0.58rem; color: #94a3b8; font-weight: 750; display: block; margin-bottom: 1px;">التاريخ والفترة</label>
-                  <select id="secFilterPeriod" onchange="renderSecWalletStatementTable()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
-                    <option value="all">كافة الفترات (شامل)</option>
+                  <select id="secFilterPeriod" onchange="onSecFilterPeriodChange()" class="form-input-custom" style="height: 27px; font-size: 0.70rem; padding: 1px 6px; border-radius: 6px; width: 100%;">
                     <option value="today">اليوم 📅</option>
                     <option value="week">هذا الأسبوع 🗓️</option>
                     <option value="month" selected>هذا الشهر 📊</option>
+                    <option value="year">هذه السنة 📆</option>
+                    <option value="all">كافة الفترات (الكل) 🌐</option>
+                    <option value="custom">منتقى التواريخ (مخصص) 🎯</option>
                   </select>
                 </div>
                 <div>
@@ -17969,9 +18010,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
               </div>
               <div>
                 <h2 style="font-size: 1.0rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
-                  <span id="txtExpectedPageMainHeader">الفواتير والديون والميزانيات</span>
+                  <span id="txtExpectedPageMainHeader">الفواتير والالتزامات والأقساط</span>
                 </h2>
-                <div style="font-size: 0.68rem; color: #94a3b8;" id="txtExpectedPageSubHeader">متابعة الفواتير والديون وإدارة الخطط والميزانيات الشهرية</div>
+                <div style="font-size: 0.68rem; color: #94a3b8;" id="txtExpectedPageSubHeader">متابعة الفواتير الشهرية والديون المطلوبة والأقساط المستحقة</div>
               </div>
             </div>
             <!-- أزرار الإجراءات السريعة -->
@@ -17985,22 +18026,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
           </div>
 
-          <!-- شريط التبويب العلوي الثنائي الرئيسي: [ الفواتير والديون ] | [ الميزانيات ] -->
-          <div class="expected-dual-master-tabs" id="commitmentsTopTwoTabsStrip" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(15, 23, 42, 0.95); padding: 5px; border-radius: 13px; border: 1.2px solid rgba(56, 189, 248, 0.25); box-shadow: 0 4px 16px rgba(0,0,0,0.35);">
-            <!-- الزر العلوي 1: الفواتير والديون -->
-            <button type="button" id="tabExpectedBillsAndDebts" onclick="switchExpectedTopSection('bills_and_debts')" class="exp-dual-top-btn active" style="padding: 10px 8px; border-radius: 10px; font-weight: 900; font-size: 0.85rem; color: #fff; background: linear-gradient(135deg, #0284c7, #0369a1); border: 1px solid rgba(56, 189, 248, 0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 3px 12px rgba(2, 132, 199, 0.4); transition: all 0.25s ease;">
-              <i class="fa-solid fa-file-invoice-dollar" style="font-size: 1rem; color: #38bdf8;"></i>
-              <span>الفواتير والديون</span>
-              <span id="badgeCountBillsAndDebts" style="background: rgba(255,255,255,0.25); font-size: 0.68rem; padding: 2px 7px; border-radius: 10px; font-weight: 900;">0</span>
-            </button>
-            
-            <!-- الزر العلوي 2: الميزانيات -->
-            <button type="button" id="tabExpectedBudgets" onclick="switchExpectedTopSection('budgets')" class="exp-dual-top-btn" style="padding: 10px 8px; border-radius: 10px; font-weight: 900; font-size: 0.85rem; color: #94a3b8; background: transparent; border: 1px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.25s ease;">
-              <i class="fa-solid fa-chart-pie" style="font-size: 1rem; color: #34d399;"></i>
-              <span>الميزانيات</span>
-              <span id="badgeCountBudgets" style="background: rgba(255,255,255,0.12); font-size: 0.68rem; padding: 2px 7px; border-radius: 10px; font-weight: 900;">الشهر</span>
-            </button>
-          </div>
+          
         </div>
 
 <div id="subViewCommitments">
@@ -18276,6 +18302,38 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
         </div> <!-- إغلاق subViewCommitments التام والنهائي -->
 
+        </div> <!-- إغلاق viewExpected الرسمي -->
+
+      <!-- ==========================================================
+           صفحة الميزانيات والخطط الشهرية المستقلة الرسمية (viewBudgets)
+           ========================================================== -->
+      <div class="page-view" id="viewBudgets" style="display: none;">
+        <!-- الهيدر الاستراتيجي المستقل لصفحة الميزانيات -->
+        <div class="expected-top-hero" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98)); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: nowrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1.2px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #34d399; flex-shrink: 0;">
+                <i class="fa-solid fa-chart-pie"></i>
+              </div>
+              <div>
+                <h2 style="font-size: 1.0rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>الميزانيات والخطط الشهرية</span>
+                </h2>
+                <div style="font-size: 0.68rem; color: #94a3b8;">التخطيط المالي وتوزيع الميزانيات والرقابة على المصروفات</div>
+              </div>
+            </div>
+            <!-- أزرار الإجراءات السريعة للميزانيات -->
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.76rem; padding: 0 12px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);">
+                <i class="fa-solid fa-plus"></i> <span>خطة جديدة</span>
+              </button>
+              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 34px; width: 34px; padding: 0; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #94a3b8; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="ملاحظات الميزانيات">
+                <i class="fa-solid fa-book-open"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- شريط تبويب داخلي منسق لقسم الميزانيات -->
         <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 6px; background: rgba(15, 23, 42, 0.85); padding: 4px; border-radius: 11px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 10px;">
           <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
@@ -18459,7 +18517,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <!-- تتولد خطط الميزانيات السابقة ديناميكياً -->
           </div>
         </div>
-      </div> <!-- إغلاق viewExpected الرسمي -->
+      </div> <!-- إغلاق viewBudgets الرسمي -->
+
   </div> <!-- إغلاق appScrollBody الرسمي -->
 
   <!-- الشريط السفلي الثابت (Bottom Navigation Bar) -->
@@ -18489,7 +18548,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
         <span>طلب</span>
       </button>
       <!-- زر الالتزامات تم نقله بجوار طلب مباشرة -->
-      <button class="nav-tab-item" id="navTabExpected" onclick="switchAppPage('expected')" title="الالتزامات والمصروفات القادمة">
+      <button class="nav-tab-item" id="navTabExpected" onclick="switchAppPage('expected')" title="الفواتير والالتزامات والأقساط">
         <svg class="nav-tab-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="3" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -18501,8 +18560,16 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </svg>
         <span>الالتزامات</span>
       </button>
+      <!-- زر الميزانيات المنفصل الرئيسي الجديد إلى يسار زر الالتزامات -->
+      <button class="nav-tab-item" id="navTabBudgets" onclick="switchAppPage('budgets')" title="الميزانيات والخطط الشهرية">
+        <svg class="nav-tab-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+          <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+        </svg>
+        <span>الميزانيات</span>
+      </button>
       <!-- زر المؤشرات -->
-      <button class="nav-tab-item" id="navTabAnalytics" onclick="switchAppPage('analytics')" title="المؤشرات والرسوم البيانية">
+      <button class="nav-tab-item" id="navTabAnalytics"  onclick="switchAppPage('analytics')" title="المؤشرات والرسوم البيانية">
         <svg class="nav-tab-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
           <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
@@ -20284,37 +20351,32 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </button>
         </div>
 
-        <!-- 2. شريط المستخدم النشط المدمج (VIP User Strip) -->
-        <div class="antigravity-user-vip-strip" id="settingsSec_users">
-          <div class="antigravity-vip-avatar-wrap">
-            <img id="settingsCurrentMemberImg" src="assets/icon-192.png" alt="المستخدم" class="antigravity-vip-avatar">
-            <span class="antigravity-vip-status-dot" title="متصل"></span>
-          </div>
-          <div class="antigravity-vip-info">
-            <div class="antigravity-vip-name-row">
-              <strong id="settingsCurrentMemberName">ماهر</strong>
-              <span id="settingsCurrentMemberAvatar" style="display: none;">👨‍💼</span>
-              <span id="settingsActiveUserNameTxt" style="display: none;">ماهر</span>
-            </div>
-            <div class="antigravity-vip-label">
-              <span id="settingsMemberPinStatus"><i class="fa-solid fa-shield-check" style="color: #34d399;"></i> حساب محمي</span>
-            </div>
-          </div>
-          <button type="button" class="antigravity-switch-user-btn" onclick="closeModal('settingsModal'); openFullUserSelectionModal();">
-            <i class="fa-solid fa-arrows-rotate"></i>
-            <span>تبديل</span>
-          </button>
+        <!-- 2. شريط المستخدم المخفي لحفظ مراجع العناصر البرمجية دون إشغال مساحة -->
+        <div id="settingsSec_users" style="display: none !important;">
+          <img id="settingsCurrentMemberImg" src="assets/icon-192.png" alt="">
+          <strong id="settingsCurrentMemberName">ماهر</strong>
+          <span id="settingsCurrentMemberAvatar">👨‍💼</span>
+          <span id="settingsActiveUserNameTxt">ماهر</span>
+          <span id="settingsMemberPinStatus"></span>
         </div>
 
-        <!-- 3. شريط التنقل المقسّم (تبويبان مدمجان: المظهر والخط + المحافظ والمزامنة) -->
-        <div class="antigravity-settings-nav" id="settingsSegmentedNav" role="tablist">
-          <button type="button" role="tab" class="antigravity-nav-pill active" id="settingsTabBtn_appearance" onclick="switchSettingsTab('appearance')" aria-selected="true">
-            <i class="fa-solid fa-palette"></i>
-            <span>المظهر والخط</span>
-          </button>
-          <button type="button" role="tab" class="antigravity-nav-pill" id="settingsTabBtn_wallets" onclick="switchSettingsTab('wallets')" aria-selected="false">
-            <i class="fa-solid fa-wallet"></i>
-            <span>المحافظ والمزامنة</span>
+        <!-- 3. شريط التنقل المقسّم مدمجاً معه زر تبديل المستخدم في يسار المحافظ والمزامنة -->
+        <div class="antigravity-settings-nav" id="settingsSegmentedNav" role="tablist" style="display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 4px 8px; margin: 4px 10px 4px;">
+          <div style="display: flex; gap: 6px; flex: 1;">
+            <button type="button" role="tab" class="antigravity-nav-pill active" id="settingsTabBtn_appearance" onclick="switchSettingsTab('appearance')" aria-selected="true" style="flex: 1; padding: 6px 10px; font-size: 0.78rem;">
+              <i class="fa-solid fa-palette"></i>
+              <span>المظهر والخط</span>
+            </button>
+            <button type="button" role="tab" class="antigravity-nav-pill" id="settingsTabBtn_wallets" onclick="switchSettingsTab('wallets')" aria-selected="false" style="flex: 1; padding: 6px 10px; font-size: 0.78rem;">
+              <i class="fa-solid fa-wallet"></i>
+              <span>المحافظ والمزامنة</span>
+            </button>
+          </div>
+          <!-- زر تغيير المستخدم في يسار المحافظ والمزامنة -->
+          <button type="button" class="settings-nav-user-switch-btn" id="btnSettingsNavUserSwitch" onclick="closeModal('settingsModal'); openFullUserSelectionModal();" title="تغيير المستخدم النشط" style="display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 9px; border: 1.5px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(56, 189, 248, 0.20)); color: #0284c7; font-size: 0.74rem; font-weight: 850; cursor: pointer; white-space: nowrap; flex-shrink: 0; box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);">
+            <i class="fa-solid fa-user-circle" style="font-size: 0.85rem;"></i>
+            <span id="settingsNavUserNameDisplay">ماهر</span>
+            <i class="fa-solid fa-arrows-rotate" style="font-size: 0.65rem; opacity: 0.8;"></i>
           </button>
         </div>
 
@@ -23471,7 +23533,8 @@ function toggleAnalyticsCustomRange() {
         'operations': 'viewOperations',
         'analytics': 'viewAnalytics',
         'requests': 'viewRequests',
-        'expected': 'viewExpected'
+        'expected': 'viewExpected',
+        'budgets': 'viewBudgets'
       };
 
       const targetId = pageMap[pageId] || 'viewExpenses';
@@ -23488,7 +23551,8 @@ function toggleAnalyticsCustomRange() {
         'operations': 'navTabOperations',
         'analytics': 'navTabAnalytics',
         'requests': 'navTabRequests',
-        'expected': 'navTabExpected'
+        'expected': 'navTabExpected',
+        'budgets': 'navTabBudgets'
       };
       const activeTabBtn = document.getElementById(tabMap[pageId]);
       if (activeTabBtn) activeTabBtn.classList.add('active');
@@ -23499,10 +23563,14 @@ function toggleAnalyticsCustomRange() {
       if (pageId === 'analytics' && typeof switchAnalyticsMainTab === 'function') {
         switchAnalyticsMainTab(activeAnalyticsMainTab || 'actual');
       }
-      if (pageId === 'expected') {
-        if (typeof switchExpectedTopSection === 'function') {
-          switchExpectedTopSection(window.activeExpectedTopSection || 'bills_and_debts');
+      if (pageId === 'budgets') {
+        if (typeof switchBudgetSubTab === 'function') {
+          switchBudgetSubTab(window.activeBudgetSubTab || 'current');
+        } else if (typeof loadActiveBudgetPlan === 'function') {
+          loadActiveBudgetPlan();
         }
+      }
+      if (pageId === 'expected') {
         if (typeof renderCommitmentsPageUI === 'function') {
           renderCommitmentsPageUI();
         }
@@ -26041,27 +26109,35 @@ function generateRichDemoTransactions() {
           const harm = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(cat.color, isLight) : { color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
 
           cardsHtml += `
-            <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harm.color} !important; cursor: pointer;">
-              <div class="ops-entry ops-entry-flat">
-                <div class="ops-entry-main">
-                  <span class="ops-entry-icon" style="background: ${harm.bg} !important; border: 1px solid ${harm.border} !important; color: ${harm.color} !important;" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
-                  <div class="ops-entry-body">
-                    <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
+            <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harm.color} !important; cursor: pointer; padding: 6px 10px; margin-bottom: 5px; border-radius: 10px;">
+              <div class="ops-entry-compact" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                  <span class="ops-compact-icon" style="width: 32px; height: 32px; min-width: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; background: ${harm.bg} !important; border: 1px solid ${harm.border} !important; color: ${harm.color} !important;" aria-hidden="true">
+                    <i class="fa-solid ${cat.icon || 'fa-receipt'}"></i>
+                  </span>
+                  <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+                      <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
+                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
+                      ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
+                    </div>
+                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                      <span style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
+                      <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
+                      ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
+                      ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
+                    </div>
                   </div>
                 </div>
-                <div class="ops-entry-total">
-                  <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; text-align: left;">
+                  <div style="font-size: 0.88rem; font-weight: 900; font-family: var(--font-numbers); direction: ltr; color: ${isExp ? '#dc2626' : '#059669'}; white-space: nowrap; line-height: 1.2;">
+                    ${sign} ${formatMoneyVal(amt)}
+                  </div>
+                  <div style="font-size: 0.62rem; color: #94a3b8; font-family: var(--font-numbers); direction: ltr; font-weight: 700; white-space: nowrap;">
+                    ${escapeHtml(date || (tx.time || ''))}
+                  </div>
                 </div>
-                    <div class="ops-entry-meta">
-                      <span class="ops-meta-serial" style="font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.12); border: 1px solid rgba(100, 116, 139, 0.25); border-radius: 4px; padding: 1px 5px; direction: ltr; display: inline-flex; align-items: center;">#${escapeHtml(tx.serialNo || tx.id)}</span>
-                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 1px 4px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة</span>` : ''}
-                      <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
-                      ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
-                      ${date ? `<time class="ops-entry-date" dir="ltr" datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
-                      <span class="ops-meta-category" style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; font-weight: 800;">${escapeHtml(cat.name)}</span>
-                      ${projectName ? `<span class="ops-meta-project">📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${tx.receipt ? '<span class="ops-meta-receipt"><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
-                    </div>
               </div>
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
               <div class="ops-row-actions-drawer" data-drawer-tx-id="${tx.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); animation: fadeIn 0.15s ease;">
@@ -26147,26 +26223,38 @@ function generateRichDemoTransactions() {
             const harmFlat = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(cat.color, isLightFlat) : { color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
 
             cardsHtml += `
-              <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harmFlat.color} !important; cursor: pointer;">
-              <div class="ops-entry">
-                <div class="ops-entry-main">
-                  <span class="ops-entry-icon" style="background: ${harmFlat.bg} !important; border: 1px solid ${harmFlat.border} !important; color: ${harmFlat.color} !important;" aria-hidden="true"><i class="fa-solid ${cat.icon || 'fa-receipt'}"></i></span>
-                  <div class="ops-entry-body">
-                    <div class="ops-entry-title">${escapeHtml(rawLabel)}</div>
-                    <div class="ops-entry-meta">
-                      <span class="ops-meta-serial" style="font-family: monospace; font-size: 0.62rem; font-weight: 700; color: #64748b; background: rgba(100, 116, 139, 0.12); border: 1px solid rgba(100, 116, 139, 0.25); border-radius: 4px; padding: 1px 5px; direction: ltr; display: inline-flex; align-items: center;">#${escapeHtml(tx.serialNo || tx.id)}</span>
-                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 1px 4px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة</span>` : ''}
-                      <span class="ops-meta-category" style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; font-weight: 800;">${escapeHtml(cat.name)}</span>
-                      <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
-                      ${projectName ? `<span class="ops-meta-project">📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
-                      ${tx.receipt ? '<span class="ops-meta-receipt"><i class="fa-solid fa-paperclip" aria-hidden="true"></i> إيصال</span>' : ''}
+              <div class="ops-tx-card-clean ${isSelected ? 'is-selected' : ''}" data-tx-id="${tx.id}" onclick="toggleSelectOperationRow('${tx.id}')" style="border-right: 3.5px solid ${harmFlat.color} !important; cursor: pointer; padding: 6px 10px; margin-bottom: 5px; border-radius: 10px;">
+              <div class="ops-entry-compact" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;">
+                <!-- الجانب الأيمن: الأيقونة + العنوان والسريال والرقائق في سطرين مدمجين -->
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+                  <span class="ops-compact-icon" style="width: 32px; height: 32px; min-width: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; background: ${harmFlat.bg} !important; border: 1px solid ${harmFlat.border} !important; color: ${harmFlat.color} !important;" aria-hidden="true">
+                    <i class="fa-solid ${cat.icon || 'fa-receipt'}"></i>
+                  </span>
+                  <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1;">
+                    <!-- السطر الأول: العنوان ومعه شارة السريال المدمجة الأنيقة -->
+                    <div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
+                      <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
+                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
+                      ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
+                    </div>
+                    <!-- السطر الثاني: رقائق مدمجة في سطر واحد أفقي مانع للالتفاف -->
+                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                      <span style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
+                      <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
+                      ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
+                      ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
+                      ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
                     </div>
                   </div>
                 </div>
-                <div class="ops-entry-total">
-                  <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
-                  <div class="ops-entry-date" dir="ltr">${escapeHtml(operationDate(tx))}${tx.time ? ` · ${escapeHtml(tx.time)}` : ''}</div>
+                <!-- الجانب الأيسر: المبلغ والتاريخ/الوقت -->
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; text-align: left;">
+                  <div style="font-size: 0.88rem; font-weight: 900; font-family: var(--font-numbers); direction: ltr; color: ${isExp ? '#dc2626' : '#059669'}; white-space: nowrap; line-height: 1.2;">
+                    ${sign} ${formatMoneyVal(amt)}
+                  </div>
+                  <div style="font-size: 0.62rem; color: #94a3b8; font-family: var(--font-numbers); direction: ltr; font-weight: 700; white-space: nowrap;">
+                    ${escapeHtml(tx.time || (operationDate(tx) || ''))}
+                  </div>
                 </div>
               </div>
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
@@ -34575,8 +34663,7 @@ function switchCategoryChartFormat(format, btnEl) {
 
     // اختصار فتح الميزانيات مباشرة من أي مكان
     window.openBudgetsDirectly = function() {
-      switchAppPage('expected');
-      switchExpectedTopSection('budgets');
+      switchAppPage('budgets');
     };
 
     function switchBudgetSubTab(tab) {
@@ -34603,6 +34690,8 @@ function switchCategoryChartFormat(format, btnEl) {
           bHist.style.boxShadow = 'none';
         }
         if (secCurr) secCurr.style.display = 'block';
+        const vBudgets = document.getElementById('viewBudgets');
+        if (vBudgets) vBudgets.style.display = 'block';
         if (secHist) secHist.style.display = 'none';
         if (typeof loadActiveBudgetPlan === 'function') loadActiveBudgetPlan();
         if (typeof renderMonthlyBudgetPlan === 'function') renderMonthlyBudgetPlan();
@@ -38374,6 +38463,54 @@ window.toggleSecTransferForm = toggleSecTransferForm;
 function handleExecuteSecTransfer() { executeWalletTransfer(); }
 window.handleExecuteSecTransfer = handleExecuteSecTransfer;
 
+
+    // =========================================================================
+    // PERIOD SELECTORS & DATE PICKER INTEGRATION (صندوق إختيار التواريخ ومنتقى التواريخ)
+    // =========================================================================
+    function onSecFilterPeriodChange() {
+      const select = document.getElementById('secFilterPeriod');
+      const val = select ? select.value : 'month';
+      if (val === 'custom') {
+        const fakeFrom = { value: window.secWalletCustomRange?.from || getLocalDateStr(new Date()) };
+        const fakeTo = { value: window.secWalletCustomRange?.to || getLocalDateStr(new Date()) };
+        if (typeof openCustomDatePickerForRange === 'function') {
+          openCustomDatePickerForRange(fakeFrom, fakeTo);
+          const originalApply = window.applyCustomDatePicker;
+          window.applyCustomDatePicker = function() {
+            window.secWalletCustomRange = { from: fakeFrom.value, to: fakeTo.value };
+            if (typeof originalApply === 'function') originalApply();
+            renderSecWalletStatementTable();
+          };
+        }
+      } else {
+        renderSecWalletStatementTable();
+      }
+    }
+    window.onSecFilterPeriodChange = onSecFilterPeriodChange;
+
+    function onStmtPeriodSelectChange() {
+      const select = document.getElementById('stmtPeriodFilter');
+      const val = select ? select.value : 'month';
+      if (val === 'custom') {
+        if (typeof openStmtCustomDatePicker === 'function') {
+          openStmtCustomDatePicker();
+        } else if (typeof openCustomDatePickerForRange === 'function') {
+          const fakeFrom = { value: state.statementFrom || getLocalDateStr(new Date()) };
+          const fakeTo = { value: state.statementTo || getLocalDateStr(new Date()) };
+          openCustomDatePickerForRange(fakeFrom, fakeTo);
+          const originalApply = window.applyCustomDatePicker;
+          window.applyCustomDatePicker = function() {
+            state.statementCustomRange = { from: fakeFrom.value, to: fakeTo.value };
+            if (typeof originalApply === 'function') originalApply();
+            renderWalletStatement();
+          };
+        }
+      } else {
+        renderWalletStatement();
+      }
+    }
+    window.onStmtPeriodSelectChange = onStmtPeriodSelectChange;
+
 function getSecWalletStatement() {
   const walletId = document.getElementById('secFilterWallet')?.value || 'all';
   const member = document.getElementById('secFilterMember')?.value || 'all';
@@ -38384,11 +38521,35 @@ function getSecWalletStatement() {
   const search = (document.getElementById('secFilterSearch')?.value || '').trim().toLowerCase();
 
   const today = new Date();
-  const first = new Date(today.getFullYear(), today.getMonth(), period === 'month' ? 1 : today.getDate() - (period === 'week' ? 6 : 0));
-  const last = period === 'month' ? new Date(today.getFullYear(), today.getMonth() + 1, 0) : today;
+  let fromStr = '';
+  let toStr = '';
+  if (period === 'today') {
+    fromStr = getLocalDateStr(today);
+    toStr = fromStr;
+  } else if (period === 'week') {
+    const d = new Date(today);
+    d.setDate(d.getDate() - 6);
+    fromStr = getLocalDateStr(d);
+    toStr = getLocalDateStr(today);
+  } else if (period === 'month') {
+    const first = new Date(today.getFullYear(), today.getMonth(), 1);
+    const last = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    fromStr = getLocalDateStr(first);
+    toStr = getLocalDateStr(last);
+  } else if (period === 'year') {
+    fromStr = `${today.getFullYear()}-01-01`;
+    toStr = `${today.getFullYear()}-12-31`;
+  } else if (period === 'custom' && window.secWalletCustomRange) {
+    fromStr = window.secWalletCustomRange.from || '';
+    toStr = window.secWalletCustomRange.to || getLocalDateStr(today);
+  } else if (period === 'all') {
+    fromStr = '';
+    toStr = '';
+  }
+
   return buildSecWalletStatement(state.wallets || [], state.transactions || [], {
     walletId, member, category, type, project, search,
-    from: period === 'all' ? '' : getLocalDateStr(first), to: period === 'all' ? '' : getLocalDateStr(last)
+    from: fromStr, to: toStr
   });
 }
 
@@ -38937,11 +39098,13 @@ window.filterArchiveType = filterArchiveType;
           </div>
           <div>
             <label style="font-size: 0.70rem; font-weight: 800; color: #94a3b8; display: block; margin-bottom: 2px;">الفترة الزمنية:</label>
-            <select class="form-select-custom" id="stmtPeriodFilter" onchange="renderWalletStatement()" style="height: 38px; font-weight: 800; font-size: 0.82rem; width: 100%;">
-              <option value="all">كافة الفترات (سجل كامل)</option>
-              <option value="month" selected>هذا الشهر</option>
-              <option value="week">هذا الأسبوع</option>
-              <option value="today">اليوم فقط</option>
+            <select class="form-select-custom" id="stmtPeriodFilter" onchange="onStmtPeriodSelectChange()" style="height: 38px; font-weight: 800; font-size: 0.82rem; width: 100%;">
+              <option value="today">اليوم 📅</option>
+              <option value="week">هذا الأسبوع 🗓️</option>
+              <option value="month" selected>هذا الشهر 📊</option>
+              <option value="year">هذه السنة 📆</option>
+              <option value="all">كافة الفترات (الكل) 🌐</option>
+              <option value="custom">منتقى التواريخ (مخصص) 🎯</option>
             </select>
           </div>
         </div>
