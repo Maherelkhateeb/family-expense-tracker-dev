@@ -275,7 +275,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.61';
+    var APP_VERSION = 'v5.3.62';
     var APP_BUILD_ID = 202611151130;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -10515,7 +10515,7 @@
       font-weight: 900;
     }
 
-    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.61 */
+    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.62 */
     .side-screen-edge-handle {
       position: fixed !important;
       top: 50% !important;
@@ -10558,7 +10558,7 @@
 
   
     /* =========================================================================
-       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.61
+       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.62
        ========================================================================= */
     .kpi-master-wealth-cockpit {
       width: calc(100% - 14px) !important;
@@ -10795,7 +10795,7 @@
     body.light-theme .flow-amount.outflow-color { color: #e11d48 !important; }
 
     /* =========================================================================
-       الكروت الرباعية التنفيذية للالتزامات v5.3.61 (Commitments 4 Executive Cards)
+       الكروت الرباعية التنفيذية للالتزامات v5.3.62 (Commitments 4 Executive Cards)
        ========================================================================= */
     .com-kpi-cards-grid {
       display: grid !important;
@@ -10983,7 +10983,7 @@
 
   
     /* =========================================================================
-       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.61
+       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.62
        ========================================================================= */
     /* 1. فيسبوك والوضع الفاتح: تحويل كافة الكروت والخلفيات المظلمة إلى ألوان واضحة ونقية */
     body.light-theme :is(
@@ -11147,7 +11147,7 @@
 
 
     /* =========================================================================
-       شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.61
+       شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.62
        ========================================================================= */
     #settingsModal {
       position: fixed !important;
@@ -11244,7 +11244,7 @@
       gap: 8px !important;
     }
 
-    /* بروز فائق لرمز العملة المحدد في هيدر الملخص v5.3.61 */
+    /* بروز فائق لرمز العملة المحدد في هيدر الملخص v5.3.62 */
     .summary-currency-header-pill {
       display: inline-flex !important;
       align-items: center !important;
@@ -11298,7 +11298,7 @@
     }
 
     /* =========================================================================
-       نظام التباين الشامل لكافة كروت التطبيق في الأوضاع الفاتحة وفيسبوك v5.3.61
+       نظام التباين الشامل لكافة كروت التطبيق في الأوضاع الفاتحة وفيسبوك v5.3.62
        يحل جذرياً مشكلة الكروت الداكنة وظهور ألوان باهتة أو غير مقروءة
        ========================================================================= */
     html body.light-theme,
@@ -15814,6 +15814,104 @@
        يوازن الخطوط والأحجام والألوان والتباين لجميع الكروت والتسجيلات
        ========================================================================= -->
   <style id="antigravityVisualHarmonyEngine">
+
+/* =========================================================================
+   Universal Anti-Black-Card Contrast Harmonization Engine (v5.3.62)
+   Eliminates all dark/black container leaks in Light Theme across all screens
+   ========================================================================= */
+body.light-theme #commitmentKpiMasterCard,
+body.light-theme #commitmentsExecutiveCardsStrip,
+body.light-theme #panelUnifiedAddCommitment,
+body.light-theme .analytics-custom-range-box,
+body.light-theme .budget-history-plan-card,
+body.light-theme .budget-history-stats-box,
+body.light-theme #viewRequests [role="tablist"],
+body.light-theme #analyticsStickyNav,
+body.light-theme .com-kpi-master-card,
+body.light-theme .expected-kpi-master-card {
+  background: var(--bg-card, #ffffff) !important;
+  border-color: var(--border, #cbd5e1) !important;
+  color: var(--text-main, #0f172a) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme #commitmentKpiMasterCard [style*="color: #cbd5e1"],
+body.light-theme #commitmentKpiMasterCard [style*="color:#cbd5e1"] {
+  color: #334155 !important;
+}
+
+body.light-theme #commitmentKpiMasterCard div[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.08)"],
+body.light-theme #commitmentKpiMasterCard div[style*="border-bottom:1px solid rgba(255,255,255,0.08)"] {
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+body.light-theme .com-subfilter-pill:not(.active) {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme .com-subfilter-pill.active {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .budget-history-plan-card {
+  background: #ffffff !important;
+  border: 1.5px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .budget-history-plan-card .budget-plan-name,
+body.light-theme .budget-history-plan-card strong {
+  color: #0f172a !important;
+}
+
+body.light-theme .budget-history-stats-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-theme #viewRequests [role="tablist"] {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.light-theme #viewRequests [role="tab"]:not([aria-selected="true"]) {
+  background: transparent !important;
+  color: #64748b !important;
+}
+
+body.light-theme #viewRequests div[style*="border-radius: 10px"][style*="margin-bottom: 8px"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.light-theme #viewRequests div[style*="border-radius: 10px"][style*="margin-bottom: 8px"] span {
+  color: #334155 !important;
+}
+
+body.light-theme #analyticsStickyNav {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .analytics-sec-btn:not(.active) {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+body.light-theme .analytics-custom-range-box {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .analytics-date-range-trigger {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
     /* 1. التكيف مع أحجام الخطوط الستة */
     html[data-font-size="micro"] {
       --harmony-card-padding: 6px 8px;
@@ -15974,7 +16072,7 @@
 
 <style id="v5353-custom-fixes">
   /* =====================================================================
-     [v5.3.61] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
+     [v5.3.62] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
      ===================================================================== */
   #walletModal,
   #walletTransferModal,
@@ -16134,7 +16232,7 @@
 </style>
 <style>
     /* ==============================================================
-       Master Overhaul v5.3.61: High-Contrast Light & Facebook Theme
+       Master Overhaul v5.3.62: High-Contrast Light & Facebook Theme
        ============================================================== */
     body[data-theme="facebook"],
     body.theme-facebook {
@@ -16258,9 +16356,143 @@
       gap: 4px !important;
     }
 </style>
+<style id="summaryHierarchicalStyles">
+
+/* =========================================================================
+   Summary Hierarchical Project & Bi-Directional Member Analysis (v5.3.62)
+   ========================================================================= */
+.summary-bi-directional-nav {
+  display: flex !important;
+  gap: 4px !important;
+  background: var(--bg-card-sub, rgba(15, 23, 42, 0.7)) !important;
+  border: 1px solid var(--border, rgba(56, 189, 248, 0.25)) !important;
+  border-radius: 10px !important;
+  padding: 3px !important;
+  margin-bottom: 10px !important;
+}
+
+.summary-dual-tab-btn {
+  flex: 1 !important;
+  padding: 6px 4px !important;
+  border-radius: 8px !important;
+  font-size: 0.68rem !important;
+  font-weight: 850 !important;
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--text-muted, #94a3b8) !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+.summary-dual-tab-btn.active {
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+  color: #ffffff !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3) !important;
+}
+
+body.light-theme .summary-bi-directional-nav {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .summary-dual-tab-btn:not(.active) {
+  color: #475569 !important;
+}
+
+.summary-matrix-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--border, rgba(56, 189, 248, 0.25)) !important;
+  background: var(--bg-card, #1e293b) !important;
+  margin-bottom: 10px !important;
+}
+
+.summary-matrix-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 0.68rem !important;
+  direction: rtl !important;
+}
+
+.summary-matrix-table th,
+.summary-matrix-table td {
+  padding: 6px 8px !important;
+  text-align: center !important;
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.06)) !important;
+  border-left: 1px solid var(--border, rgba(255, 255, 255, 0.06)) !important;
+  white-space: nowrap !important;
+}
+
+.summary-matrix-table th {
+  background: var(--bg-card-sub, #0f172a) !important;
+  color: #38bdf8 !important;
+  font-weight: 900 !important;
+  position: sticky !important;
+  top: 0 !important;
+}
+
+.summary-matrix-table td.cat-col {
+  text-align: right !important;
+  font-weight: 850 !important;
+  color: var(--text-main, #f8fafc) !important;
+  background: var(--bg-card-sub, rgba(15, 23, 42, 0.4)) !important;
+}
+
+.summary-matrix-table td.val-cell {
+  font-family: var(--font-numbers) !important;
+  font-weight: 800 !important;
+  color: var(--text-muted, #94a3b8) !important;
+  direction: ltr !important;
+  cursor: pointer !important;
+}
+
+.summary-matrix-table td.val-cell:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+}
+
+.summary-matrix-table td.val-cell.has-val {
+  color: #f43f5e !important;
+  font-weight: 900 !important;
+}
+
+.summary-matrix-table tr.total-row td {
+  background: var(--bg-card-sub, #0f172a) !important;
+  font-weight: 950 !important;
+  color: #fbbf24 !important;
+  border-top: 2px solid var(--border, rgba(56, 189, 248, 0.35)) !important;
+}
+
+body.light-theme .summary-matrix-table-wrap {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .summary-matrix-table th {
+  background: #f1f5f9 !important;
+  color: #0369a1 !important;
+}
+
+body.light-theme .summary-matrix-table td.cat-col {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+body.light-theme .summary-matrix-table tr.total-row td {
+  background: #f1f5f9 !important;
+  color: #b45309 !important;
+}
+
+</style>
 </head>
 <body>
-  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.61 - مباشر تحت body -->
+  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.62 - مباشر تحت body -->
   <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
   </div>
@@ -16477,7 +16709,7 @@
                 <!-- شريط المؤشرات المالية التنفيذي الماسي الموحد (Executive Wealth Cockpit)
              تصميم ملكي تنفيذي فائق الفخامة والوضوح بأحدث معايير FinTech العالمية
              ========================================================================= -->
-        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.61) -->
+        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.62) -->
         <div class="kpi-master-wealth-cockpit" id="topKpiThreeStrip">
           
           <!-- الجانب الأيمن: بطل الشاشة المالي (الرصيد الفعلي المتاح) -->
@@ -16764,12 +16996,21 @@
               <option value="__no_project__">بدون مشروع</option>
             </select>
           </div>
-          <div class="analytics-custom-range-box" id="analyticsCustomRangeBox" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
-            <div style="display: flex; gap: 6px; align-items: center; width: 100%;">
-              <input type="date" id="inpAnalyticsDateFrom" class="form-input-custom" style="padding: 4px 8px; font-size: 0.74rem; flex: 1;">
-              <span style="color: #64748b; font-size: 0.74rem;">إلى</span>
-              <input type="date" id="inpAnalyticsDateTo" class="form-input-custom" style="padding: 4px 8px; font-size: 0.74rem; flex: 1;">
-              <button class="btn-export-tool" onclick="applyAnalyticsCustomDate()" style="background: #0284c7; color: #fff; padding: 4px 12px; font-size: 0.74rem; font-weight: 800; border-radius: 8px;">تطبيق</button>
+          <div class="analytics-custom-range-box" id="analyticsCustomRangeBox" style="display: none; margin-top: 8px; padding: 6px 10px; border-radius: 12px; background: var(--bg-card-sub, rgba(11, 19, 34, 0.95)); border: 1px solid var(--border, rgba(56, 189, 248, 0.35));">
+            <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+              <button type="button" class="analytics-date-range-trigger" onclick="openAnalyticsCustomDatePicker()" style="flex: 1; min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 10px; border-radius: 9px; cursor: pointer; border: 1px solid var(--border, rgba(56, 189, 248, 0.35)); background: var(--bg-card, #1e293b); color: var(--text-main, #f8fafc); font-weight: 800; font-size: 0.74rem;">
+                <span style="display: flex; align-items: center; gap: 6px;">
+                  <span>من <b id="analyticsCustomDateFromDisplay" style="color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">اختر البداية</b></span>
+                  <span style="color: #94a3b8;">←</span>
+                  <span>إلى <b id="analyticsCustomDateToDisplay" style="color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">اختر النهاية</b></span>
+                </span>
+                <i class="fa-solid fa-calendar-days" style="color: #38bdf8;"></i>
+              </button>
+              <input type="hidden" id="inpAnalyticsDateFrom">
+              <input type="hidden" id="inpAnalyticsDateTo">
+              <button type="button" class="btn-export-tool" onclick="applyAnalyticsCustomDate()" style="height: 36px; padding: 0 14px; font-size: 0.76rem; font-weight: 900; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: none; border-radius: 9px; cursor: pointer;">
+                تطبيق
+              </button>
             </div>
           </div>
         </div>
@@ -17124,7 +17365,7 @@
         <div id="secReqRequests" role="tabpanel" aria-labelledby="btnMainTabRequests" style="display: block;">
           
           <!-- شريط التبديل الفرعي بين إنشاء طلب وسجل الطلبات -->
-          <div role="tablist" aria-label="إنشاء طلب أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+          <div role="tablist" aria-label="إنشاء طلب أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: var(--bg-card-sub, rgba(15, 23, 42, 0.6)); padding: 4px; border-radius: 12px; border: 1px solid var(--border, rgba(255,255,255,0.06));">
             <button type="button" role="tab" aria-controls="panelReqNewForm" aria-selected="true" id="btnSubReqNew" onclick="switchRequestSubTab('new')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #ec4899, #be185d); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-file-circle-plus"></i>
               <span>إنشاء طلب مصروف جديد</span>
@@ -17171,7 +17412,7 @@
             </div>
 
             <!-- مؤشر السلايدر التفاعلي للمبلغ المطلوب (بواقع 100 جنيه لكل تدريج وضغطة) -->
-            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 6px 10px; margin-bottom: 8px;">
+            <div style="background: var(--bg-card-sub, rgba(15, 23, 42, 0.6)); border: 1px solid var(--border, rgba(255, 255, 255, 0.08)); border-radius: 10px; padding: 6px 10px; margin-bottom: 8px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; font-size: 0.68rem; font-weight: 800; color: #94a3b8;">
                 <span><i class="fa-solid fa-sliders" style="color: #ec4899;"></i> مؤشر المبلغ (100 ج.م / خطوة):</span>
                 <span id="lblReqSliderVal" style="color: #ec4899; font-weight: 900; font-size: 0.74rem;">0 ج.م</span>
@@ -17296,7 +17537,7 @@
         <div id="secReqIncome" role="tabpanel" aria-labelledby="btnMainTabIncome" style="display: none;">
           
           <!-- شريط التبديل الفرعي بين تسجيل دخل جديد وسجل الإيداعات -->
-          <div role="tablist" aria-label="تسجيل دخل أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: rgba(15, 23, 42, 0.6); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+          <div role="tablist" aria-label="تسجيل دخل أو عرض السجل" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; gap: 6px; margin-bottom: 10px; background: var(--bg-card-sub, rgba(15, 23, 42, 0.6)); padding: 4px; border-radius: 12px; border: 1px solid var(--border, rgba(255,255,255,0.06));">
             <button type="button" role="tab" aria-controls="panelIncomeNewForm" aria-selected="true" id="btnSubIncomeNew" onclick="switchIncomeSubTab('new')" style="min-width: 0; flex-wrap: wrap; text-align: center; line-height: 1.2; padding: 7px 10px; border-radius: 9px; font-weight: 800; font-size: 0.76rem; border: none; cursor: pointer; background: linear-gradient(135deg, #10b981, #059669); color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px;">
               <i class="fa-solid fa-circle-dollar-to-slot"></i>
               <span>تسجيل دخل / إيداع جديد</span>
@@ -17625,7 +17866,7 @@
           
           <!-- بطاقة المؤشرات والمركز المالي الذكية (تتكيف تلقائياً بحسب التبويب: فواتير أو ديون) -->
           <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
-          <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: rgba(15, 23, 42, 0.88); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.4);">
+          <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: var(--bg-card, rgba(15, 23, 42, 0.88)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.15);">
             <!-- الشريط العلوي للصافي -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
               <div style="display: flex; align-items: center; gap: 6px; font-size: 0.80rem; font-weight: 900; color: #cbd5e1;">
@@ -17692,7 +17933,7 @@
           <!-- ========================================================
                شاشة الإضافة المنسقة الموحدة الفاخرة (Unified Coordinated Add Form)
                ======================================================== -->
-          <div id="panelUnifiedAddCommitment" class="app-card-panel" style="display: none; background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+          <div id="panelUnifiedAddCommitment" class="app-card-panel" style="display: none; background: var(--bg-card, rgba(15, 23, 42, 0.95)); border: 1.5px solid var(--border, rgba(56, 189, 248, 0.45)); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
             <!-- الرأس مع زر إغلاق صريح -->
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px;">
               <div style="font-size: 0.92rem; font-weight: 900; color: #f8fafc; display: flex; align-items: center; gap: 8px;">
@@ -19894,7 +20135,7 @@
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.61</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.62</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -20914,7 +21155,16 @@
       if (typeof renderExecutiveCharts === 'function') renderExecutiveCharts();
     }
 
-    function toggleAnalyticsCustomRange() {
+    
+    function openAnalyticsCustomDatePicker() {
+      const from = document.getElementById('inpAnalyticsDateFrom');
+      const to = document.getElementById('inpAnalyticsDateTo');
+      if (typeof openCustomDatePickerForRange === 'function') {
+        openCustomDatePickerForRange(from, to);
+      }
+    }
+
+function toggleAnalyticsCustomRange() {
       const box = document.getElementById('analyticsCustomRangeBox');
       if (box) {
         box.style.display = (box.style.display === 'none' || !box.style.display) ? 'block' : 'none';
@@ -25646,6 +25896,8 @@ function generateRichDemoTransactions() {
                   <div class="ops-entry-amount ${isExp ? 'is-expense' : ''}" dir="ltr">${sign} ${formatMoneyVal(amt)}</div>
                 </div>
                     <div class="ops-entry-meta">
+                      <span class="ops-meta-serial" style="font-family: var(--font-numbers); font-weight: 900; background: rgba(56, 189, 248, 0.15); color: #0284c7; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 5px; padding: 1px 6px; font-size: 0.62rem; direction: ltr; display: inline-block;">#${escapeHtml(tx.serialNo || tx.id)}</span>
+                      ${tx.isModified ? `<span class="ops-meta-modified" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 5px; padding: 1px 6px; font-size: 0.60rem; font-weight: 800;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️ معدلة: ${escapeHtml(tx.lastModifiedReason || '')}</span>` : ''}
                       <span class="ops-meta-member">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span class="ops-meta-wallet">💳 ${escapeHtml(walletName)}</span>` : ''}
                       ${date ? `<time class="ops-entry-date" dir="ltr" datetime="${escapeHtml(date)}">${escapeHtml(date)}</time>` : ''}
@@ -26064,6 +26316,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
           return;
         }
       }
+      newTx.serialNo = generateNextAuditSerial(newTx.type, newTx.date);
       state.transactions.unshift(newTx);
       saveTx();
       // ضمان ظهور الحركة الجديدة فوراً في صفحة العمليات المسجلة بإزالة أي حجب مؤقت
@@ -26105,24 +26358,72 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
     }
 
     function deleteTx(id) {
-      const tx = state.transactions.find(t => t.id === id);
+      const tx = (state.transactions || []).find(t => t.id === id);
       if (!tx) return;
-      if (confirm(`هل أنت متأكد من حذف حركة: "${tx.label}" بمبلغ (${tx.amount} ج.م)؟`)) {
-        state.transactions = state.transactions.filter(t => t.id !== id);
-        saveTx();
 
-        logActivity({
-          type: 'delete_tx',
-          action: 'حذف حركة',
-          label: `حذف: ${tx.label} (${tx.type === 'income' ? 'دخل' : 'مصروف'})`,
-          amount: tx.amount,
-          member: tx.member,
-          author: state.currentUser || 'ماهر'
-        });
+      const opTypeName = tx.type === 'income' ? 'دخل' : 'صرف';
+      const delUser = state.currentUser || 'ماهر';
 
-        renderUI();
-        showToast('🗑️ تم حذف الحركة بنجاح');
+      // 1. طلب سبب الحذف إلزامياً للتدقيق والرقابة المالية
+      const reason = prompt(`ما سبب حذف حركة: "${tx.label}" بقيمة (${Number(tx.amount).toLocaleString('ar-EG')} ج.م)؟\n(إلزامي لتوثيق الأثر المالي والرقابي):`);
+      if (reason === null) {
+        // ألغى المستخدم العملية
+        return;
       }
+      const trimmedReason = reason.trim();
+      if (!trimmedReason) {
+        if (typeof showToast === 'function') showToast('⚠️ يجب كتابة سبب الحذف لتوثيق الأثر المالي والرقابي', 'error', 4500);
+        return;
+      }
+
+      // 2. أرشفة العملية قبل الحذف في أرشيف العمليات المحذوفة بكامل بياناتها والأثر الرقابي
+      const deletedRecord = {
+        ...tx,
+        isDeleted: true,
+        deletedAt: new Date().toISOString(),
+        deletedBy: delUser,
+        deleteReason: trimmedReason,
+        auditTrail: [
+          ...(tx.auditTrail || []),
+          {
+            action: 'delete',
+            timestamp: new Date().toISOString(),
+            user: delUser,
+            reason: trimmedReason,
+            before: { ...tx },
+            after: null
+          }
+        ]
+      };
+
+      state.deletedTransactions = state.deletedTransactions || [];
+      state.deletedTransactions.unshift(deletedRecord);
+      try {
+        localStorage.setItem('family_deleted_tx_archive', JSON.stringify(state.deletedTransactions.slice(0, 500)));
+      } catch(e) {}
+
+      // 3. حذف الحركة من العمليات النشطة وحفظ الحالة
+      state.transactions = state.transactions.filter(t => t.id !== id);
+      saveTx();
+
+      // 4. إطلاق تنبيه وتوثيق النشاط
+      const alertMsg = `قام المستخدم ${delUser} بحذف عملية ${opTypeName} "${tx.label}" بقيمة (${Number(tx.amount).toLocaleString('ar-EG')} ج.م) - السبب: ${trimmedReason}`;
+      if (typeof addFamilyAlert === 'function') {
+        addFamilyAlert('audit_deletion', alertMsg, 'delete');
+      }
+
+      logActivity({
+        type: 'delete_tx',
+        action: 'حذف حركة',
+        label: `حذف: ${tx.label} (السبب: ${trimmedReason})`,
+        amount: tx.amount,
+        member: tx.member,
+        author: delUser
+      });
+
+      renderUI();
+      if (typeof filterOperationsList === 'function') filterOperationsList();
+      showToast(`🗑️ تم أرشفة وحذف الحركة وتوثيق السبب: ${trimmedReason}`, 'info', 4500);
     }
 
         // دالة توحيد وترقية معرفات المحافظ للعمليات التاريخية
@@ -26139,7 +26440,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
 
     
     // ==============================================================
-    // [v5.3.61] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
+    // [v5.3.62] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
     // ==============================================================
     function getWalletActualBalance(walletIdOrName) {
       if (typeof auditAndRecomputeAllWalletBalances === 'function') {
@@ -26241,7 +26542,54 @@ function auditAndRecomputeAllWalletBalances() {
     }
     window.auditAndRecomputeAllWalletBalances = auditAndRecomputeAllWalletBalances;
 
-    function saveTx() {
+    
+    // =========================================================================
+    // نظام الترقيم والسريال الذكي للعمليات المالية (Smart Audit Serial Engine)
+    // =========================================================================
+    function ensureSmartAuditSerials() {
+      if (!state.transactions || !Array.isArray(state.transactions)) return;
+      // ترتيب الحركات تصاعدياً تاريخياً لضمان ثبات السريال الزمني
+      const sorted = [...state.transactions].sort((a, b) => {
+        const da = (a.date || '') + ' ' + (a.time || '');
+        const db = (b.date || '') + ' ' + (b.time || '');
+        return da.localeCompare(db);
+      });
+      
+      let maxSeq = 0;
+      sorted.forEach(t => {
+        if (t.serialNo) {
+          const parts = t.serialNo.split('-');
+          const num = parseInt(parts[parts.length - 1], 10);
+          if (!isNaN(num) && num > maxSeq) maxSeq = num;
+        }
+      });
+
+      sorted.forEach(t => {
+        if (!t.serialNo) {
+          maxSeq++;
+          const yr = t.date ? t.date.substring(0, 4) : '2026';
+          const prefix = t.type === 'income' ? 'INC' : 'EXP';
+          t.serialNo = `${prefix}-${yr}-${String(maxSeq).padStart(4, '0')}`;
+        }
+      });
+    }
+
+    function generateNextAuditSerial(type, dateStr) {
+      ensureSmartAuditSerials();
+      let maxSeq = 0;
+      (state.transactions || []).forEach(t => {
+        if (t.serialNo) {
+          const parts = t.serialNo.split('-');
+          const num = parseInt(parts[parts.length - 1], 10);
+          if (!isNaN(num) && num > maxSeq) maxSeq = num;
+        }
+      });
+      const yr = dateStr ? dateStr.substring(0, 4) : '2026';
+      const prefix = type === 'income' ? 'INC' : 'EXP';
+      return `${prefix}-${yr}-${String(maxSeq + 1).padStart(4, '0')}`;
+    }
+
+function saveTx() {
       familyAlerts.observe(state.transactions, state.currentUser);
       if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
 
@@ -27276,7 +27624,7 @@ function auditAndRecomputeAllWalletBalances() {
     }
 
     function renderExpectedList() {
-      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.61
+      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.62
       if (typeof renderCommitmentsPageUI === 'function') {
         renderCommitmentsPageUI();
       }
@@ -27942,7 +28290,7 @@ function switchSettingsTab(tabName) {
       try {
         const backupData = {
           app: 'FamilyExpenseTrackerMonefy',
-          version: 'v5.3.61',
+          version: 'v5.3.62',
           exportedAt: new Date().toISOString(),
           account: (typeof GDRIVE_CONFIG !== 'undefined' ? GDRIVE_CONFIG.targetAccount : 'maher.easybakery@gmail.com'),
           state: state
@@ -28440,15 +28788,24 @@ function switchSettingsTab(tabName) {
 
     window.openSummaryLeftDrawer = openSummaryDrawer;
 
-    function openSummaryDrawer(targetMember = null) {
+    function openSummaryDrawer(targetMember = null, restoreState = null) {
       const drawer = document.getElementById('summaryLeftDrawer');
       const backdrop = document.getElementById('summaryDrawerBackdrop');
-      currentSummaryGroupMode = 'member';
-      const requestedMember = targetMember !== null && targetMember !== undefined
-        ? targetMember
-        : (state.currentMemberFilter && state.currentMemberFilter !== 'الكل' ? state.currentMemberFilter : 'الكل');
-      currentSummaryGroupKey = (!requestedMember || requestedMember === 'الكل' || requestedMember === 'all') ? 'all' : summaryNormalizeMember(requestedMember);
-      currentDrawerMember = currentSummaryGroupKey === 'all' ? 'الكل' : currentSummaryGroupKey;
+      if (restoreState && restoreState.groupMode) {
+        currentSummaryGroupMode = restoreState.groupMode;
+        currentSummaryGroupKey = restoreState.groupKey || 'all';
+        if (restoreState.memberTab) window.currentMemberAnalysisTab = restoreState.memberTab;
+        if (restoreState.period) currentSummaryPeriod = restoreState.period;
+        if (restoreState.customDateRange) summaryCustomDateRange = restoreState.customDateRange;
+        if (restoreState.currency) currentSummaryCurrency = restoreState.currency;
+      } else if (targetMember !== null && targetMember !== undefined) {
+        currentSummaryGroupMode = 'member';
+        currentSummaryGroupKey = (!targetMember || targetMember === 'الكل' || targetMember === 'all') ? 'all' : summaryNormalizeMember(targetMember);
+      } else if (!currentSummaryGroupMode) {
+        currentSummaryGroupMode = 'member';
+        currentSummaryGroupKey = 'all';
+      }
+      currentDrawerMember = (currentSummaryGroupMode === 'member' && currentSummaryGroupKey !== 'all') ? currentSummaryGroupKey : 'الكل';
       if (drawer) drawer.classList.add('open');
       if (backdrop) backdrop.classList.add('active');
       syncSummaryDrawerControls();
@@ -28738,6 +29095,150 @@ function switchSettingsTab(tabName) {
       return /^fa-[a-z0-9-]+$/i.test(value) ? value : 'fa-receipt';
     }
 
+    
+    // =========================================================================
+    // نظام التنقل الهرمي والرجوع التلقائي للملخص بنفس الموضع (Summary Navigation)
+    // =========================================================================
+    window.summaryReturnState = null;
+    window.currentMemberAnalysisTab = 'person_breakdown'; // 'person_breakdown' | 'category_breakdown' | 'matrix'
+
+    function saveSummaryReturnState(extra = {}) {
+      const drawer = document.getElementById('summaryLeftDrawer');
+      const scrollTop = drawer ? drawer.scrollTop : 0;
+      window.summaryReturnState = {
+        groupMode: currentSummaryGroupMode,
+        groupKey: currentSummaryGroupKey,
+        memberTab: window.currentMemberAnalysisTab,
+        period: currentSummaryPeriod,
+        customDateRange: { ...summaryCustomDateRange },
+        currency: currentSummaryCurrency,
+        scrollTop: scrollTop,
+        ...extra
+      };
+      try {
+        sessionStorage.setItem('family_summary_return_state', JSON.stringify(window.summaryReturnState));
+      } catch(e) {}
+    }
+
+    function showOperationsReturnBanner(label) {
+      const banner = document.getElementById('opsReturnToSummaryBanner');
+      const bannerTxt = document.getElementById('opsReturnToSummaryText');
+      const floatBtn = document.getElementById('opsFloatingReturnToSummary');
+      const floatTxt = document.getElementById('opsFloatingReturnText');
+
+      const title = label || (currentSummaryGroupMode === 'project' ? 'ملخص المشروع' : 'ملخص العائلة');
+      if (banner && bannerTxt) {
+        bannerTxt.textContent = 'الرجوع إلى ' + title;
+        banner.style.display = 'flex';
+      }
+      if (floatBtn && floatTxt) {
+        floatTxt.textContent = 'رجوع لـ ' + title;
+        floatBtn.style.display = 'inline-flex';
+      }
+    }
+
+    function clearOperationsReturnBanner() {
+      const banner = document.getElementById('opsReturnToSummaryBanner');
+      const floatBtn = document.getElementById('opsFloatingReturnToSummary');
+      if (banner) banner.style.display = 'none';
+      if (floatBtn) floatBtn.style.display = 'none';
+    }
+
+    function returnToSummaryFromOperations() {
+      let stateObj = window.summaryReturnState;
+      if (!stateObj) {
+        try {
+          const saved = sessionStorage.getItem('family_summary_return_state');
+          if (saved) stateObj = JSON.parse(saved);
+        } catch(e) {}
+      }
+
+      clearOperationsReturnBanner();
+
+      if (stateObj) {
+        currentSummaryGroupMode = stateObj.groupMode || 'project';
+        currentSummaryGroupKey = stateObj.groupKey || 'all';
+        if (stateObj.memberTab) window.currentMemberAnalysisTab = stateObj.memberTab;
+        if (stateObj.period) currentSummaryPeriod = stateObj.period;
+        if (stateObj.customDateRange) summaryCustomDateRange = stateObj.customDateRange;
+        if (stateObj.currency) currentSummaryCurrency = stateObj.currency;
+      }
+
+      openSummaryDrawer();
+
+      if (stateObj && stateObj.scrollTop) {
+        setTimeout(() => {
+          const drawer = document.getElementById('summaryLeftDrawer');
+          if (drawer) drawer.scrollTop = stateObj.scrollTop;
+        }, 80);
+      }
+    }
+    window.returnToSummaryFromOperations = returnToSummaryFromOperations;
+
+    function selectSummaryProject(projectKey) {
+      currentSummaryGroupMode = 'project';
+      currentSummaryGroupKey = projectKey;
+      syncSummaryDrawerControls();
+      renderSummaryDrawer();
+    }
+    window.selectSummaryProject = selectSummaryProject;
+
+    function switchMemberAnalysisTab(tab) {
+      window.currentMemberAnalysisTab = tab;
+      renderSummaryDrawer();
+    }
+    window.switchMemberAnalysisTab = switchMemberAnalysisTab;
+
+    function drillDownFromProjectCategory(projectKey, catId, catName) {
+      const projLabel = summaryGroupLabel(projectKey, 'project');
+      saveSummaryReturnState({ returnTitle: 'مشروع: ' + projLabel });
+      showOperationsReturnBanner('مشروع: ' + projLabel);
+      closeSummaryLeftDrawer();
+      const overrides = { category: catId, categoryName: catName };
+      if (projectKey !== 'all') {
+        overrides.project = (projectKey === '__no_project__' || projectKey === '__general_expenses__') ? '__no_project__' : projectKey;
+      }
+      openOperationsFiltered(getSummaryOperationsFilters(overrides));
+    }
+    window.drillDownFromProjectCategory = drillDownFromProjectCategory;
+
+    function drillDownFromProjectMember(projectKey, memberKey) {
+      const projLabel = summaryGroupLabel(projectKey, 'project');
+      saveSummaryReturnState({ returnTitle: 'مشروع: ' + projLabel });
+      showOperationsReturnBanner('مشروع: ' + projLabel);
+      closeSummaryLeftDrawer();
+      const overrides = { member: summaryNormalizeMember(memberKey) };
+      if (projectKey !== 'all') {
+        overrides.project = (projectKey === '__no_project__' || projectKey === '__general_expenses__') ? '__no_project__' : projectKey;
+      }
+      openOperationsFiltered(getSummaryOperationsFilters(overrides));
+    }
+    window.drillDownFromProjectMember = drillDownFromProjectMember;
+
+    function drillDownPersonCategory(personName, catId, catName) {
+      saveSummaryReturnState({ returnTitle: 'الشخص: ' + personName });
+      showOperationsReturnBanner('الشخص: ' + personName);
+      closeSummaryLeftDrawer();
+      openOperationsFiltered(getSummaryOperationsFilters({ member: personName, category: catId, categoryName: catName }));
+    }
+    window.drillDownPersonCategory = drillDownPersonCategory;
+
+    function drillDownPersonAll(personName) {
+      saveSummaryReturnState({ returnTitle: 'الشخص: ' + personName });
+      showOperationsReturnBanner('الشخص: ' + personName);
+      closeSummaryLeftDrawer();
+      openOperationsFiltered(getSummaryOperationsFilters({ member: personName }));
+    }
+    window.drillDownPersonAll = drillDownPersonAll;
+
+    function drillDownCategoryAll(catId, catName) {
+      saveSummaryReturnState({ returnTitle: 'بند: ' + catName });
+      showOperationsReturnBanner('بند: ' + catName);
+      closeSummaryLeftDrawer();
+      openOperationsFiltered(getSummaryOperationsFilters({ category: catId, categoryName: catName }));
+    }
+    window.drillDownCategoryAll = drillDownCategoryAll;
+
     function renderSummaryDrawer() {
       const container = document.getElementById('summaryDrawerContent');
       if (!container) return;
@@ -28755,118 +29256,323 @@ function switchSettingsTab(tabName) {
       const totalPeriodExpenses = periodTransactions
         .filter(tx => tx.type === 'expense')
         .reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
+      const totalPeriodIncomes = periodTransactions
+        .filter(tx => tx.type === 'income')
+        .reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
 
-      // تجميع المصروفات حسب النمط المختار (الشخص أو المشروع)
-      const groupsByKey = new Map();
-      periodTransactions.forEach(tx => {
-        if (tx.type !== 'expense') return;
-        const key = summaryGroupKey(tx, currentSummaryGroupMode);
-        const item = groupsByKey.get(key) || { key: key, amount: 0, count: 0 };
-        item.amount += Math.abs(Number(tx.amount) || 0);
-        item.count += 1;
-        groupsByKey.set(key, item);
-      });
+      const isLightSum = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light' || document.body.getAttribute('data-theme') === 'facebook';
 
-      // إذا كان النمط بالشخص، نضمن ظهور أفراد الأسرة الأساسيين حتى لو كانت الحركات 0
-      if (currentSummaryGroupMode === 'member') {
-        const baseMembers = ['البيت', 'ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'أخرى'];
-        baseMembers.forEach(m => {
-          const normM = summaryNormalizeMember(m);
-          if (!groupsByKey.has(normM)) {
-            groupsByKey.set(normM, { key: normM, amount: 0, count: 0 });
-          }
-        });
-      }
-
-      const groups = Array.from(groupsByKey.values())
-        .sort((a, b) => b.amount - a.amount || summaryGroupLabel(a.key, currentSummaryGroupMode).localeCompare(summaryGroupLabel(b.key, currentSummaryGroupMode), 'ar'));
-
-      const hasSelection = currentSummaryGroupKey !== 'all';
-      const selectedTransactions = hasSelection
-        ? periodTransactions.filter(tx => summaryGroupKey(tx, currentSummaryGroupMode) === currentSummaryGroupKey)
-        : periodTransactions;
-      const expenses = selectedTransactions.filter(tx => tx.type === 'expense');
-      const incomes = selectedTransactions.filter(tx => tx.type === 'income');
-      const expenseTotal = expenses.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
-      const incomeTotal = incomes.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
-      const selectedLabel = summaryGroupLabel(currentSummaryGroupKey, currentSummaryGroupMode);
-      const modeLabel = currentSummaryGroupMode === 'project' ? 'المشروع' : 'الشخص';
-
-      // 1. كروت مجموعات الشخص أو المشروع
-      const groupRows = groups.map(item => {
-        const share = totalPeriodExpenses > 0 ? Math.round((item.amount / totalPeriodExpenses) * 100) : 0;
-        const active = hasSelection && item.key === currentSummaryGroupKey;
+      // =========================================================================
+      // النمط الأول: حسب المشروع (منطق هرمي متكامل: تجميع المشاريع -> تفاصيل المشروع)
+      // =========================================================================
+      if (currentSummaryGroupMode === 'project') {
         
-        let iconHtml = '';
-        if (currentSummaryGroupMode === 'project') {
-          const isGeneral = (item.key === '__no_project__' || item.key === '__general_expenses__');
-          iconHtml = isGeneral ? '<i class="fa-solid fa-house-chimney" style="color: #38bdf8;"></i>' : '<i class="fa-solid fa-bullseye" style="color: #f59e0b;"></i>';
-        } else {
-          const avatar = (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[item.key]) ? MEMBER_AVATARS[item.key] : '';
-          if (avatar) {
-            iconHtml = '<img src="' + avatar + '" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">';
-          } else if (item.key === 'البيت') {
-            iconHtml = '<i class="fa-solid fa-house" style="color: #38bdf8;"></i>';
-          } else if (item.key === 'الحاجة') {
-            iconHtml = '<i class="fa-solid fa-person-cane" style="color: #ec4899;"></i>';
-          } else {
-            iconHtml = '<i class="fa-solid fa-user" style="color: #38bdf8;"></i>';
-          }
+        // أ. عرض تجميع كل المشاريع أسفل بعض عند اختيار "كافة المشاريع"
+        if (currentSummaryGroupKey === 'all') {
+          const projectMap = new Map();
+          periodTransactions.forEach(tx => {
+            if (tx.type !== 'expense') return;
+            const key = summaryGroupKey(tx, 'project');
+            const item = projectMap.get(key) || { key: key, amount: 0, count: 0 };
+            item.amount += Math.abs(Number(tx.amount) || 0);
+            item.count += 1;
+            projectMap.set(key, item);
+          });
+
+          const projectsList = Array.from(projectMap.values())
+            .sort((a, b) => b.amount - a.amount);
+
+          const projectCardsHtml = projectsList.map(item => {
+            const share = totalPeriodExpenses > 0 ? Math.round((item.amount / totalPeriodExpenses) * 100) : 0;
+            const isGeneral = (item.key === '__no_project__' || item.key === '__general_expenses__');
+            const iconHtml = isGeneral ? '<i class="fa-solid fa-house-chimney" style="color: #38bdf8;"></i>' : '<i class="fa-solid fa-diagram-project" style="color: #f59e0b;"></i>';
+            const title = summaryGroupLabel(item.key, 'project');
+
+            return '<button type="button" class="summary-group-row" onclick="selectSummaryProject(\'' + summaryEscapeHtml(item.key) + '\')" style="margin-bottom: 7px; cursor: pointer;" aria-label="عرض تحليل مشروع ' + summaryEscapeHtml(title) + '">' +
+              '<span class="summary-group-icon">' + iconHtml + '</span>' +
+              '<span class="summary-group-main"><span class="summary-group-title" style="font-weight: 850;">' + summaryEscapeHtml(title) + '</span>' +
+              '<span class="summary-group-meta">' + item.count.toLocaleString('ar-EG') + ' عملية · ' + share + '% من إجمالي المصروفات</span>' +
+              '<span class="summary-group-track"><span style="width:' + share + '%"></span></span></span>' +
+              '<span class="summary-group-value">' + summaryFormatMoneyHtml(item.amount, '−', 'var(--ledger-debit, #f43f5e)') + '</span>' +
+              '<i class="fa-solid fa-chevron-left" style="color: #64748b; font-size: 0.74rem; margin-inline-start: 4px;"></i>' +
+              '</button>';
+          }).join('');
+
+          container.innerHTML =
+            '<section class="summary-kpi-grid">' +
+              '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>' + summaryFormatMoneyHtml(totalPeriodExpenses, '−', '#ef4444') + '</strong><small>' + periodTransactions.filter(t => t.type === 'expense').length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+              '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>' + summaryFormatMoneyHtml(totalPeriodIncomes, '+', '#10b981') + '</strong><small>' + periodTransactions.filter(t => t.type === 'income').length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+            '</section>' +
+            '<section class="summary-section" style="margin-top: 10px;">' +
+              '<div class="summary-section-heading"><h3><i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> توزيع ومقارنة المصروفات حسب المشاريع</h3><span>' + projectsList.length.toLocaleString('ar-EG') + ' مشاريع</span></div>' +
+              '<div class="summary-group-list">' + (projectCardsHtml || '<div class="summary-empty-state"><i class="fa-solid fa-folder-open"></i><span>لا توجد مصروفات مسجلة للمشاريع في هذه الفترة.</span></div>') + '</div>' +
+            '</section>';
+          return;
         }
 
-        return '<button type="button" class="summary-group-row' + (active ? ' active' : '') + '" data-group-key="' + summaryEscapeHtml(item.key) + '" onclick="drillDownFromGroupElement(this)" aria-label="عرض تفاصيل ' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + '">' +
-          '<span class="summary-group-icon">' + iconHtml + '</span>' +
-          '<span class="summary-group-main"><span class="summary-group-title">' + summaryEscapeHtml(summaryGroupLabel(item.key, currentSummaryGroupMode)) + '</span>' +
-          '<span class="summary-group-meta">' + item.count.toLocaleString('ar-EG') + ' عملية · ' + share + '% من المصروفات</span>' +
-          '<span class="summary-group-track"><span style="width:' + share + '%"></span></span></span>' +
-          '<span class="summary-group-value">' + summaryFormatMoneyHtml(item.amount, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
-      }).join('');
+        // ب. عند الضغط على مشروع محدد: يفتح إلى جزئين (العلوي: تحليل حسب البند، والسفلي: تجميع حسب الشخص)
+        const projKey = currentSummaryGroupKey;
+        const projTitle = summaryGroupLabel(projKey, 'project');
+        const projTxs = periodTransactions.filter(tx => summaryGroupKey(tx, 'project') === projKey);
+        const projExpenses = projTxs.filter(tx => tx.type === 'expense');
+        const projTotal = projExpenses.reduce((sum, tx) => sum + Math.abs(Number(tx.amount) || 0), 0);
 
-      // 2. كروت البنود والتصنيفات
-      const categoryTotals = new Map();
+        // 1. الجزء الأول العلوي: تحليل مصروفات المشروع حسب البند
+        const catMap = new Map();
+        projExpenses.forEach(tx => {
+          const cId = String(tx.category || 'other');
+          catMap.set(cId, (catMap.get(cId) || 0) + Math.abs(Number(tx.amount) || 0));
+        });
+        const catList = Array.from(catMap.entries()).sort((a, b) => b[1] - a[1]);
+
+        const catRowsHtml = catList.map(([cId, amt]) => {
+          const category = typeof getCategoryObj === 'function' ? getCategoryObj(cId, 'expense') : { name: cId, color: '#38bdf8', icon: 'fa-receipt' };
+          const name = String(category && category.name || cId);
+          const harm = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(category.color || '#38bdf8', isLightSum) : { color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
+          const icon = summaryCategoryIcon(category && category.icon);
+          const share = projTotal > 0 ? ((amt / projTotal) * 100).toFixed(1) : '0.0';
+
+          return '<button type="button" class="summary-category-row" onclick="drillDownFromProjectCategory(\'' + summaryEscapeHtml(projKey) + '\', \'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(name) + '\')" style="border-right: 3.5px solid ' + harm.color + ' !important; cursor: pointer;" title="عرض العمليات الأصلية">' +
+            '<span class="summary-category-icon" style="background:' + harm.bg + ' !important; border:1px solid ' + harm.border + ' !important; color:' + harm.color + ' !important;"><i class="fa-solid ' + icon + '"></i></span>' +
+            '<span class="summary-category-main"><span class="summary-category-title" style="color:' + harm.color + ' !important; font-weight:800;">' + summaryEscapeHtml(name) + '</span>' +
+            '<span class="summary-category-meta">' + share + '% · اضغط لعرض العمليات الأصلية</span></span>' +
+            '<span class="summary-category-value">' + summaryFormatMoneyHtml(amt, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
+        }).join('');
+
+        // 2. الجزء الثاني السفلي: تجميع مصروفات المشروع حسب الشخص
+        const personMap = new Map();
+        projExpenses.forEach(tx => {
+          const mKey = summaryNormalizeMember(tx.member || 'أخرى');
+          personMap.set(mKey, (personMap.get(mKey) || 0) + Math.abs(Number(tx.amount) || 0));
+        });
+        const personList = Array.from(personMap.entries()).sort((a, b) => b[1] - a[1]);
+
+        const personRowsHtml = personList.map(([mKey, amt]) => {
+          const share = projTotal > 0 ? ((amt / projTotal) * 100).toFixed(1) : '0.0';
+          let avatarHtml = '<i class="fa-solid fa-user" style="color: #38bdf8;"></i>';
+          if (mKey === 'البيت') avatarHtml = '<i class="fa-solid fa-house" style="color: #38bdf8;"></i>';
+          else if (mKey === 'الحاجة') avatarHtml = '<i class="fa-solid fa-person-cane" style="color: #ec4899;"></i>';
+          else if (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[mKey]) avatarHtml = '<img src="' + MEMBER_AVATARS[mKey] + '" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover;">';
+
+          return '<button type="button" class="summary-group-row" onclick="drillDownFromProjectMember(\'' + summaryEscapeHtml(projKey) + '\', \'' + summaryEscapeHtml(mKey) + '\')" style="margin-bottom: 6px; cursor: pointer;" title="عرض العمليات الأصلية">' +
+            '<span class="summary-group-icon">' + avatarHtml + '</span>' +
+            '<span class="summary-group-main"><span class="summary-group-title" style="font-weight: 850;">' + summaryEscapeHtml(mKey) + '</span>' +
+            '<span class="summary-group-meta">' + share + '% من مصروفات المشروع · اضغط لعرض العمليات</span>' +
+            '<span class="summary-group-track"><span style="width:' + share + '%"></span></span></span>' +
+            '<span class="summary-group-value">' + summaryFormatMoneyHtml(amt, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
+        }).join('');
+
+        container.innerHTML =
+          '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">' +
+            '<button type="button" onclick="selectSummaryProject(\'all\')" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.74rem; font-weight: 900; cursor: pointer;">' +
+              '<i class="fa-solid fa-arrow-right"></i> <span>‹ كافة المشاريع</span>' +
+            '</button>' +
+            '<span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 800;">' + projExpenses.length.toLocaleString('ar-EG') + ' عملية مسجلة</span>' +
+          '</div>' +
+          '<div class="summary-hero-card" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.18), rgba(15, 23, 42, 0.9)); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;">' +
+            '<div style="font-size: 0.74rem; color: #38bdf8; font-weight: 850;"><i class="fa-solid fa-diagram-project"></i> مشروع:</div>' +
+            '<div style="font-size: 1.15rem; font-weight: 950; color: #ffffff; margin-top: 2px;">' + summaryEscapeHtml(projTitle) + '</div>' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 6px;">' +
+              '<span style="font-size: 0.72rem; color: #cbd5e1;">إجمالي مصروفات المشروع:</span>' +
+              '<span style="font-size: 1.1rem; font-weight: 950; font-family: var(--font-numbers); color: #f43f5e; direction: ltr;">− ' + Number(projTotal).toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currentSummaryCurrency + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<!-- الجزء الأول العلوي: تحليل حسب البند -->' +
+          '<section class="summary-section" style="margin-bottom: 14px;">' +
+            '<div class="summary-section-heading"><h3><i class="fa-solid fa-layer-group" style="color: #f59e0b;"></i> الجزء الأول: تحليل حسب البند</h3><span>' + catList.length.toLocaleString('ar-EG') + ' بنود</span></div>' +
+            '<div class="summary-category-list">' + (catRowsHtml || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>لا توجد بنود مصروفات لهذا المشروع.</span></div>') + '</div>' +
+          '</section>' +
+          '<!-- الجزء الثاني السفلي: تجميع حسب الشخص -->' +
+          '<section class="summary-section">' +
+            '<div class="summary-section-heading"><h3><i class="fa-solid fa-users" style="color: #10b981;"></i> الجزء الثاني: تجميع حسب الشخص</h3><span>' + personList.length.toLocaleString('ar-EG') + ' أفراد</span></div>' +
+            '<div class="summary-group-list">' + (personRowsHtml || '<div class="summary-empty-state"><i class="fa-solid fa-user-xmark"></i><span>لا توجد مصاريف موزعة على أشخاص.</span></div>') + '</div>' +
+          '</section>';
+        return;
+      }
+
+      // =========================================================================
+      // النمط الثاني: حسب الشخص (تحليل موحد: كل بند لكل شخص وكل شخص لكل بند + مصفوفة 2D)
+      // =========================================================================
+      const activeTab = window.currentMemberAnalysisTab || 'person_breakdown';
+      const allMembers = ['البيت', 'ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'أخرى'];
+      const expenses = periodTransactions.filter(tx => tx.type === 'expense');
+
+      // شريط التبديل بين وجهات التحليل الموحدة
+      const tabsNavHtml =
+        '<nav class="summary-bi-directional-nav" role="tablist">' +
+          '<button type="button" class="summary-dual-tab-btn' + (activeTab === 'person_breakdown' ? ' active' : '') + '" onclick="switchMemberAnalysisTab(\'person_breakdown\')" role="tab">' +
+            '<i class="fa-solid fa-user-tag"></i> <span>كل شخص كم لكل بند</span>' +
+          '</button>' +
+          '<button type="button" class="summary-dual-tab-btn' + (activeTab === 'category_breakdown' ? ' active' : '') + '" onclick="switchMemberAnalysisTab(\'category_breakdown\')" role="tab">' +
+            '<i class="fa-solid fa-layer-group"></i> <span>كل بند كم لكل شخص</span>' +
+          '</button>' +
+          '<button type="button" class="summary-dual-tab-btn' + (activeTab === 'matrix' ? ' active' : '') + '" onclick="switchMemberAnalysisTab(\'matrix\')" role="tab">' +
+            '<i class="fa-solid fa-table-cells"></i> <span>جدول المصفوفة التبادلية</span>' +
+          '</button>' +
+        '</nav>';
+
+      // تفريغ البيانات إلى خريطة ثنائية الأبعاد: [member][category]
+      const matrixMap = new Map();
+      const catTotalsMap = new Map();
+      const memberTotalsMap = new Map();
+
       expenses.forEach(tx => {
-        const key = String(tx.category || 'other');
-        categoryTotals.set(key, (categoryTotals.get(key) || 0) + Math.abs(Number(tx.amount) || 0));
+        const mem = summaryNormalizeMember(tx.member || 'أخرى');
+        const cat = String(tx.category || 'other');
+        const amt = Math.abs(Number(tx.amount) || 0);
+
+        if (!matrixMap.has(mem)) matrixMap.set(mem, new Map());
+        const memMap = matrixMap.get(mem);
+        memMap.set(cat, (memMap.get(cat) || 0) + amt);
+
+        catTotalsMap.set(cat, (catTotalsMap.get(cat) || 0) + amt);
+        memberTotalsMap.set(mem, (memberTotalsMap.get(mem) || 0) + amt);
       });
-      const categories = Array.from(categoryTotals.entries()).sort((a, b) => b[1] - a[1]);
-      const isLightSum = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light' || document.body.getAttribute('data-theme') === 'facebook';
-      const categoryRows = categories.map(([categoryId, amount]) => {
-        const category = typeof getCategoryObj === 'function' ? getCategoryObj(categoryId, 'expense') : { name: categoryId, color: '#38bdf8', icon: 'fa-receipt' };
-        const name = String(category && category.name || categoryId);
-        const colorValue = String(category && category.color || '#38bdf8');
-        const color = /^#[0-9a-f]{3,8}$/i.test(colorValue) ? colorValue : '#38bdf8';
-        const harm = typeof getHarmonizedCategoryColor === 'function' ? getHarmonizedCategoryColor(color, isLightSum) : { color: color, bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.4)', badgeBorder: 'rgba(56,189,248,0.3)' };
-        const icon = summaryCategoryIcon(category && category.icon);
-        const share = expenseTotal > 0 ? ((amount / expenseTotal) * 100).toFixed(1) : '0.0';
-        return '<button type="button" class="summary-category-row" data-category-id="' + summaryEscapeHtml(categoryId) + '" data-category-name="' + summaryEscapeHtml(name) + '" onclick="drillDownFromSummaryElement(this)" style="border-right: 3.5px solid ' + harm.color + ' !important;">' +
-          '<span class="summary-category-icon" style="background:' + harm.bg + ' !important; border:1px solid ' + harm.border + ' !important; color:' + harm.color + ' !important;"><i class="fa-solid ' + icon + '"></i></span>' +
-          '<span class="summary-category-main"><span class="summary-category-title" style="color:' + harm.color + ' !important; font-weight:800;">' + summaryEscapeHtml(name) + '</span>' +
-          '<span class="summary-category-meta">' + share + '% · عرض الحركات</span></span>' +
-          '<span class="summary-category-value">' + summaryFormatMoneyHtml(amount, '−', 'var(--ledger-debit, #f43f5e)') + '</span></button>';
-      }).join('');
 
-      const customPending = currentSummaryPeriod === 'custom' && range.valid === false;
-      const emptyGroups = customPending
-        ? 'حدد تاريخ البداية والنهاية لعرض نتائج الفترة.'
-        : 'لا توجد مصروفات مسجلة في هذه الفترة.';
-      
-      const groupHeading = currentSummaryGroupMode === 'project'
-        ? '<i class="fa-solid fa-diagram-project" style="color: #38bdf8;"></i> توزيع المصروفات حسب المشاريع'
-        : '<i class="fa-solid fa-users" style="color: #38bdf8;"></i> توزيع المصروفات حسب أفراد الأسرة';
+      allMembers.forEach(m => {
+        if (!memberTotalsMap.has(m)) memberTotalsMap.set(m, 0);
+      });
 
-      // وضع تجميع الشخص أو المشروع في المقدمة مباشرة تحت المؤشرات الإجمالية
+      let contentBodyHtml = '';
+
+      // 1. الوجه الأول: كل شخص كم لكل بند
+      if (activeTab === 'person_breakdown') {
+        const sortedMembers = Array.from(memberTotalsMap.entries())
+          .sort((a, b) => b[1] - a[1]);
+
+        contentBodyHtml = sortedMembers.map(([mem, mTotal]) => {
+          const memCats = Array.from((matrixMap.get(mem) || new Map()).entries())
+            .sort((a, b) => b[1] - a[1]);
+          const share = totalPeriodExpenses > 0 ? Math.round((mTotal / totalPeriodExpenses) * 100) : 0;
+
+          let avatarHtml = '<i class="fa-solid fa-user" style="color: #38bdf8;"></i>';
+          if (mem === 'البيت') avatarHtml = '<i class="fa-solid fa-house" style="color: #38bdf8;"></i>';
+          else if (mem === 'الحاجة') avatarHtml = '<i class="fa-solid fa-person-cane" style="color: #ec4899;"></i>';
+          else if (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[mem]) avatarHtml = '<img src="' + MEMBER_AVATARS[mem] + '" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover;">';
+
+          const catPills = memCats.map(([cId, cAmt]) => {
+            const catObj = typeof getCategoryObj === 'function' ? getCategoryObj(cId, 'expense') : { name: cId, color: '#38bdf8' };
+            const pShare = mTotal > 0 ? Math.round((cAmt / mTotal) * 100) : 0;
+            return '<button type="button" onclick="drillDownPersonCategory(\'' + summaryEscapeHtml(mem) + '\', \'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 7px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); font-size: 0.66rem; cursor: pointer;" title="اضغط لفتح العمليات الأصلية">' +
+              '<span style="font-weight: 800; color: ' + (catObj.color || '#38bdf8') + ';">' + summaryEscapeHtml(catObj.name) + ':</span>' +
+              '<span style="font-family: var(--font-numbers); font-weight: 900; color: #f43f5e; direction: ltr;">− ' + Number(cAmt).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + '</span>' +
+              '<span style="color: #94a3b8; font-size: 0.58rem;">(' + pShare + '%)</span>' +
+              '</button>';
+          }).join('') || '<span style="font-size: 0.65rem; color: #64748b;">لا توجد مصاريف مسجلة</span>';
+
+          return '<div style="background: var(--bg-card, #1e293b); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));">' +
+              '<div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="drillDownPersonAll(\'' + summaryEscapeHtml(mem) + '\')">' +
+                avatarHtml +
+                '<span style="font-weight: 900; font-size: 0.88rem; color: var(--text-main, #fff);">' + summaryEscapeHtml(mem) + '</span>' +
+                '<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 5px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 800;">' + share + '% من الإجمالي</span>' +
+              '</div>' +
+              '<div style="cursor: pointer;" onclick="drillDownPersonAll(\'' + summaryEscapeHtml(mem) + '\')">' +
+                summaryFormatMoneyHtml(mTotal, '−', 'var(--ledger-debit, #f43f5e)') +
+              '</div>' +
+            '</div>' +
+            '<div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px;">' +
+              catPills +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // 2. الوجه الثاني: كل بند كم لكل شخص
+      else if (activeTab === 'category_breakdown') {
+        const sortedCats = Array.from(catTotalsMap.entries())
+          .sort((a, b) => b[1] - a[1]);
+
+        contentBodyHtml = sortedCats.map(([cId, cTotal]) => {
+          const catObj = typeof getCategoryObj === 'function' ? getCategoryObj(cId, 'expense') : { name: cId, color: '#38bdf8', icon: 'fa-receipt' };
+          const share = totalPeriodExpenses > 0 ? Math.round((cTotal / totalPeriodExpenses) * 100) : 0;
+          const icon = summaryCategoryIcon(catObj && catObj.icon);
+
+          // الأشخاص الذين اشتركوا في هذا البند
+          const personShares = [];
+          allMembers.forEach(mem => {
+            const val = (matrixMap.get(mem) || new Map()).get(cId) || 0;
+            if (val > 0) {
+              personShares.push({ member: mem, amount: val });
+            }
+          });
+          personShares.sort((a, b) => b.amount - a.amount);
+
+          const personPills = personShares.map(p => {
+            const pShare = cTotal > 0 ? Math.round((p.amount / cTotal) * 100) : 0;
+            return '<button type="button" onclick="drillDownPersonCategory(\'' + summaryEscapeHtml(p.member) + '\', \'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 7px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); font-size: 0.66rem; cursor: pointer;" title="اضغط لفتح العمليات الأصلية">' +
+              '<span style="font-weight: 800; color: #38bdf8;">' + summaryEscapeHtml(p.member) + ':</span>' +
+              '<span style="font-family: var(--font-numbers); font-weight: 900; color: #f43f5e; direction: ltr;">− ' + Number(p.amount).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + '</span>' +
+              '<span style="color: #94a3b8; font-size: 0.58rem;">(' + pShare + '%)</span>' +
+              '</button>';
+          }).join('') || '<span style="font-size: 0.65rem; color: #64748b;">لا توجد تفاصيل</span>';
+
+          return '<div style="background: var(--bg-card, #1e293b); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));">' +
+              '<div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="drillDownCategoryAll(\'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')">' +
+                '<i class="fa-solid ' + icon + '" style="color: ' + (catObj.color || '#38bdf8') + ';"></i>' +
+                '<span style="font-weight: 900; font-size: 0.88rem; color: ' + (catObj.color || '#38bdf8') + ';">' + summaryEscapeHtml(catObj.name) + '</span>' +
+                '<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 5px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 800;">' + share + '% من الإجمالي</span>' +
+              '</div>' +
+              '<div style="cursor: pointer;" onclick="drillDownCategoryAll(\'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')">' +
+                summaryFormatMoneyHtml(cTotal, '−', 'var(--ledger-debit, #f43f5e)') +
+              '</div>' +
+            '</div>' +
+            '<div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px;">' +
+              personPills +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // 3. الوجه الثالث: جدول المصفوفة التبادلية الكامل (2D Cross-Tab Matrix: البند × الشخص)
+      else if (activeTab === 'matrix') {
+        const sortedCats = Array.from(catTotalsMap.entries()).sort((a, b) => b[1] - a[1]);
+        const headerCols = allMembers.map(m => '<th>' + summaryEscapeHtml(m) + '</th>').join('');
+
+        const bodyRows = sortedCats.map(([cId, cTotal]) => {
+          const catObj = typeof getCategoryObj === 'function' ? getCategoryObj(cId, 'expense') : { name: cId, color: '#38bdf8' };
+          const cells = allMembers.map(m => {
+            const val = (matrixMap.get(m) || new Map()).get(cId) || 0;
+            const hasVal = val > 0;
+            const formatted = hasVal ? Number(val).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) : '—';
+            return '<td class="val-cell' + (hasVal ? ' has-val' : '') + '" onclick="drillDownPersonCategory(\'' + summaryEscapeHtml(m) + '\', \'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')">' + formatted + '</td>';
+          }).join('');
+
+          return '<tr>' +
+            '<td class="cat-col" onclick="drillDownCategoryAll(\'' + summaryEscapeHtml(cId) + '\', \'' + summaryEscapeHtml(catObj.name) + '\')" style="cursor: pointer;">' + summaryEscapeHtml(catObj.name) + '</td>' +
+            cells +
+            '<td class="val-cell has-val" style="color: #fbbf24 !important; font-weight: 950 !important;">' + Number(cTotal).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + '</td>' +
+            '</tr>';
+        }).join('');
+
+        const totalCells = allMembers.map(m => {
+          const mTot = memberTotalsMap.get(m) || 0;
+          return '<td class="val-cell has-val" style="color: #fbbf24 !important;">' + (mTot > 0 ? Number(mTot).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) : '0') + '</td>';
+        }).join('');
+
+        contentBodyHtml =
+          '<div class="summary-matrix-table-wrap">' +
+            '<table class="summary-matrix-table">' +
+              '<thead><tr><th>البند / الشخص</th>' + headerCols + '<th>الإجمالي</th></tr></thead>' +
+              '<tbody>' +
+                (bodyRows || '<tr><td colspan="' + (allMembers.length + 2) + '" style="text-align: center; color: #64748b; padding: 14px;">لا توجد مصروفات مسجلة</td></tr>') +
+                '<tr class="total-row"><td class="cat-col">الإجمالي العام</td>' + totalCells + '<td class="val-cell" style="color: #f43f5e !important; font-size: 0.74rem;">' + Number(totalPeriodExpenses).toLocaleString('ar-EG', { maximumFractionDigits: 0 }) + '</td></tr>' +
+              '</tbody>' +
+            '</table>' +
+          '</div>';
+      }
+
       container.innerHTML =
         '<section class="summary-kpi-grid">' +
-          '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>' + summaryFormatMoneyHtml(expenseTotal, '−', '#ef4444') + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
-          '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>' + summaryFormatMoneyHtml(incomeTotal, '+', '#10b981') + '</strong><small>' + incomes.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+          '<article class="summary-kpi summary-kpi-expense"><span><i class="fa-solid fa-arrow-trend-down"></i> المصروفات</span><strong>' + summaryFormatMoneyHtml(totalPeriodExpenses, '−', '#ef4444') + '</strong><small>' + expenses.length.toLocaleString('ar-EG') + ' عملية</small></article>' +
+          '<article class="summary-kpi summary-kpi-income"><span><i class="fa-solid fa-arrow-trend-up"></i> الإيداعات</span><strong>' + summaryFormatMoneyHtml(totalPeriodIncomes, '+', '#10b981') + '</strong><small>' + periodTransactions.filter(t => t.type === 'income').length.toLocaleString('ar-EG') + ' عملية</small></article>' +
         '</section>' +
-        '<section class="summary-section" style="margin-bottom: 12px;">' +
-          '<div class="summary-section-heading"><h3>' + groupHeading + '</h3>' + (hasSelection ? '<button type="button" class="summary-show-all-btn" data-group-key="all" onclick="selectSummaryGroupFromElement(this)">عرض كافة الـ ' + (currentSummaryGroupMode === 'project' ? 'مشاريع' : 'أفراد') + '</button>' : '') + '<span>' + groups.length.toLocaleString('ar-EG') + ' ' + (currentSummaryGroupMode === 'project' ? 'مشاريع' : 'أفراد') + '</span></div>' +
-          '<div class="summary-group-list">' + (groupRows || '<div class="summary-empty-state"><i class="fa-solid fa-chart-pie"></i><span>' + emptyGroups + '</span></div>') + '</div>' +
-        '</section>' +
-        '<section class="summary-section">' +
-          '<div class="summary-section-heading"><h3><i class="fa-solid fa-layer-group" style="color: #f59e0b;"></i> تفاصيل المصروفات حسب البند</h3><span>' + (hasSelection ? 'ضمن ' + modeLabel + ': ' + summaryEscapeHtml(selectedLabel) : 'كافة البنود') + '</span></div>' +
-          '<div class="summary-category-list">' + (categoryRows || '<div class="summary-empty-state"><i class="fa-solid fa-receipt"></i><span>' + (customPending ? 'اختر فترة صالحة أولاً.' : 'لا توجد بنود مصروفات لهذه المجموعة.') + '</span></div>') + '</div>' +
+        '<section class="summary-section" style="margin-top: 10px;">' +
+          tabsNavHtml +
+          '<div class="summary-member-dual-content">' +
+            contentBodyHtml +
+          '</div>' +
         '</section>';
     }
 
@@ -31026,6 +31732,25 @@ function switchSettingsTab(tabName) {
         <form id="formEditTx" onsubmit="event.preventDefault(); saveEditedTx();" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto;">
           <input type="hidden" id="editTxId">
           
+          <!-- سريال الحركة الذكي والتاريخ الرقابي -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-card-sub, rgba(15, 23, 42, 0.6)); border: 1px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 8px; padding: 6px 10px; margin-bottom: 4px;">
+            <div style="font-size: 0.72rem; font-weight: 850; color: var(--text-muted, #94a3b8);">
+              <i class="fa-solid fa-hashtag" style="color: #38bdf8;"></i> رقم السريال الرقابي:
+            </div>
+            <div id="editTxSerialDisplay" style="font-family: var(--font-numbers); font-weight: 950; font-size: 0.82rem; color: #38bdf8; direction: ltr;">
+              #OP-0000
+            </div>
+          </div>
+
+          <!-- سبب التعديل والتغيير (إلزامي للرقابة والتدقيق المالي) -->
+          <div class="form-group-custom" style="margin-bottom: 2px;">
+            <label class="form-label-custom" style="font-size: 0.74rem; font-weight: 850; color: #f59e0b; margin-bottom: 3px; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-clipboard-check"></i> سبب التعديل (إلزامي للتدقيق والرقابة المالية):
+            </label>
+            <input type="text" class="form-input-custom" id="editTxReason" required placeholder="مثال: تصحيح المبلغ / تغيير البند / خطأ في الفاتورة..." style="font-size: 0.82rem; height: 38px; border-color: rgba(245, 158, 11, 0.5);">
+            <div id="editTxReasonError" style="display: none; color: #ef4444; font-size: 0.65rem; font-weight: 800; margin-top: 3px;">⚠️ يرجى كتابة سبب التعديل لحفظ الأثر الرقابي</div>
+          </div>
+          
           <!-- نوع العملية -->
           <div class="form-group-custom" style="margin-bottom: 0;">
             <label class="form-label-custom" style="font-size: 0.74rem; font-weight: 800; margin-bottom: 3px;">نوع العملية:</label>
@@ -31288,7 +32013,7 @@ function switchSettingsTab(tabName) {
           }
 
           const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611121112);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.61');
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.62');
 
           const isNewer = remoteBuild && (
             (remoteBuild.version && remoteBuild.version !== currentVerStr) ||
@@ -31324,7 +32049,7 @@ function switchSettingsTab(tabName) {
             }
 
             localStorage.setItem('family_monefy_just_updated_ts', Date.now());
-            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.61');
+            localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || 'v5.3.62');
             setTimeout(() => {
               const updateUrl = new URL(window.location.href);
               updateUrl.searchParams.set('_build', String(remoteBuild?.buildId || Date.now()));
@@ -34257,7 +34982,7 @@ function clearTaskPendingPhoto() {
 
 
 /* ==========================================================
-   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.61)
+   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.62)
    دمج بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة
    ========================================================== */
 let selectedTaskTags = new Set(['general']);
@@ -35555,7 +36280,7 @@ window.selectTasksCalendarDay = selectTasksCalendarDay;
 
 // =========================================================================
 // =========================================================================
-// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.61 Comprehensive)
+// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.62 Comprehensive)
 // =========================================================================
 
 // 1. TRANSACTION EDITING & RECEIPTS
@@ -35571,6 +36296,19 @@ function editTx(txId) {
 
   const idInp = document.getElementById('editTxId');
   if (idInp) idInp.value = tx.id;
+
+  // عرض السريال الرقابي
+  const serialDisp = document.getElementById('editTxSerialDisplay');
+  if (serialDisp) serialDisp.textContent = '#' + (tx.serialNo || tx.id);
+
+  // تصفية حقل سبب التعديل وإخفاء التنبيه
+  const reasonInp = document.getElementById('editTxReason');
+  if (reasonInp) {
+    reasonInp.value = '';
+    reasonInp.classList.remove('error');
+  }
+  const reasonErr = document.getElementById('editTxReasonError');
+  if (reasonErr) reasonErr.style.display = 'none';
   if (document.getElementById('editTxAmount')) document.getElementById('editTxAmount').value = tx.amount;
   if (document.getElementById('editTxLabel')) document.getElementById('editTxLabel').value = tx.label || '';
   if (document.getElementById('editTxCategory')) document.getElementById('editTxCategory').value = tx.category || 'other';
@@ -35624,6 +36362,21 @@ function saveEditedTx() {
   const radInc = document.getElementById('editTxTypeIncome');
   const typeVal = (radInc && radInc.checked) ? 'income' : 'expense';
 
+  // 1. التحقق الإلزامي من كتابة سبب التعديل للأثر الرقابي
+  const reasonInp = document.getElementById('editTxReason');
+  const reasonVal = reasonInp ? reasonInp.value.trim() : '';
+  const reasonErr = document.getElementById('editTxReasonError');
+  if (!reasonVal) {
+    if (reasonErr) reasonErr.style.display = 'block';
+    if (reasonInp) {
+      reasonInp.focus();
+      reasonInp.classList.add('error');
+    }
+    if (typeof showToast === 'function') showToast('⚠️ سبب التعديل إلزامي لحفظ الأثر الرقابي والمالي', 'error', 4500);
+    return;
+  }
+  if (reasonErr) reasonErr.style.display = 'none';
+
   if (amtVal <= 0) {
     if (typeof showToast === 'function') showToast('يرجى كتابة مبلغ صحيح أكبر من 0', 'error');
     return;
@@ -35635,6 +36388,20 @@ function saveEditedTx() {
     }
   }
 
+  // 2. أخذ لقطة كاملة لما قبل التعديل (Before Snapshot)
+  const beforeSnapshot = {
+    amount: tx.amount,
+    label: tx.label,
+    category: tx.category,
+    member: tx.member,
+    walletId: tx.walletId,
+    date: tx.date,
+    project: tx.project,
+    type: tx.type,
+    author: tx.author || 'ماهر'
+  };
+
+  // 3. تطبيق التعديل وتحديث بيانات العملية
   tx.amount = amtVal;
   tx.label = labelVal;
   tx.category = catVal;
@@ -35648,14 +36415,56 @@ function saveEditedTx() {
     tx.receipt = window.currentEditTxReceiptDataUri;
   }
 
-  if (typeof saveTx === 'function') saveTx();
+  // 4. حفظ أثر التعديل في أرشيف نفس البند
+  tx.auditTrail = tx.auditTrail || [];
+  tx.auditTrail.push({
+    action: 'edit',
+    timestamp: new Date().toISOString(),
+    user: state.currentUser || 'ماهر',
+    reason: reasonVal,
+    before: beforeSnapshot,
+    after: {
+      amount: tx.amount,
+      label: tx.label,
+      category: tx.category,
+      member: tx.member,
+      walletId: tx.walletId,
+      date: tx.date,
+      project: tx.project,
+      type: tx.type
+    }
+  });
+  tx.isModified = true;
+  tx.lastModifiedReason = reasonVal;
+  tx.lastModifiedBy = state.currentUser || 'ماهر';
+  tx.lastModifiedAt = new Date().toISOString();
 
+  // 5. إطلاق تنبيه عاجل بالعائلة وتوثيق في سجل النشاط
+  const modUser = state.currentUser || 'ماهر';
+  const opTypeName = tx.type === 'income' ? 'دخل' : 'صرف';
+  const alertMsg = `قام المستخدم ${modUser} بتعديل عملية ${opTypeName} "${tx.label}" بقيمة (${Number(tx.amount).toLocaleString('ar-EG')} ج.م) - السبب: ${reasonVal}`;
+
+  if (typeof addFamilyAlert === 'function') {
+    addFamilyAlert('audit_modification', alertMsg, 'edit');
+  }
+  if (typeof logActivity === 'function') {
+    logActivity({
+      type: 'edit_tx',
+      action: 'تعديل حركة',
+      label: `${tx.label} (معدلة: ${reasonVal})`,
+      amount: tx.amount,
+      member: tx.member,
+      author: modUser
+    });
+  }
+
+  if (typeof saveTx === 'function') saveTx();
   if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
   if (typeof renderUI === 'function') renderUI();
   if (typeof filterOperationsList === 'function') filterOperationsList();
 
   if (typeof closeModal === 'function') closeModal('editTxModal');
-  if (typeof showToast === 'function') showToast('تم تعديل العملية وحفظها بنجاح ✓', 'success');
+  if (typeof showToast === 'function') showToast(`✓ تم تعديل العملية وتوثيق سبب التعديل: ${reasonVal}`, 'success', 4000);
 }
 window.saveEditedTx = saveEditedTx;
 
@@ -35751,7 +36560,7 @@ function cancelPinVerification() {
 }
 window.cancelPinVerification = cancelPinVerification;
 
-// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.61 Enterprise)
+// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.62 Enterprise)
 const CATEGORY_ARABIC_MAP = {
   // المصروفات
   'food': { name: 'طعام ومشتريات', emoji: '🛒', icon: 'fa-cart-shopping', color: '#10b981', group: 'expense' },
@@ -37023,7 +37832,7 @@ window.handleAddNewTask = handleAddNewTask;
 async function executeGoogleDriveSync(isManual = false) {
   try {
     const payload = {
-      version: 'v5.3.61',
+      version: 'v5.3.62',
       timestamp: new Date().toISOString(),
       state: state
     };
@@ -37043,7 +37852,7 @@ window.executeGoogleDriveSync = executeGoogleDriveSync;
 function exportToGoogleDriveDirect() {
   const data = {
     app: 'Family Expense Tracker',
-    version: 'v5.3.61',
+    version: 'v5.3.62',
     exportedAt: new Date().toISOString(),
     state: state
   };
@@ -38890,7 +39699,7 @@ window.filterArchiveType = filterArchiveType;
 
 
   <!-- ==============================================================
-       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.61)
+       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.62)
        ============================================================== -->
   <div id="modalEditBudgetItem" class="custom-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000000; align-items: center; justify-content: center; padding: 14px;">
     <div class="custom-modal-content" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96)); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 18px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); overflow: hidden; animation: popIn 0.25s ease;">
@@ -38944,7 +39753,7 @@ window.filterArchiveType = filterArchiveType;
 
 <script>
     // ==============================================================
-    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.61
+    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.62
     // ==============================================================
     (function setupExternalLinksDirectOpen() {
       function tagExternalLinks() {
@@ -38990,5 +39799,12 @@ window.filterArchiveType = filterArchiveType;
       }, false);
     })();
 </script>
+
+    <!-- زر رجوع عائم للملخص يظهر فقط عند الفتح من شاشة الملخص -->
+    <button type="button" id="opsFloatingReturnToSummary" onclick="returnToSummaryFromOperations()" style="display: none; position: fixed; bottom: 85px; left: 14px; z-index: 105; padding: 7px 14px; border-radius: 999px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; border: 1.5px solid rgba(255, 255, 255, 0.3); font-size: 0.74rem; font-weight: 900; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.5); cursor: pointer; align-items: center; gap: 6px;">
+      <i class="fa-solid fa-arrow-turn-up" style="transform: rotate(-90deg);"></i>
+      <span id="opsFloatingReturnText">رجوع للملخص</span> ↩️
+    </button>
+
 </body>
 </html>
