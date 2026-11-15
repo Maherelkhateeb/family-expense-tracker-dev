@@ -275,7 +275,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.66';
+    var APP_VERSION = 'v5.3.67';
     var APP_BUILD_ID = 202611151400;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -11754,7 +11754,296 @@ body.light-theme .cat-budget-progress-track {
   letter-spacing: -0.2px;
 }
 
-</style>
+
+    /* =========================================================================
+       تخصيص المظهر الفاتح الشامل لشاشة المهام والمخطط والتقويم اليومي (Tasks Light Theme)
+       ========================================================================= */
+    body.light-theme #tasksFullScreenModal,
+    html[data-color-mode="light"] #tasksFullScreenModal,
+    html[data-app-theme="light"] #tasksFullScreenModal {
+      background: #f8fafc !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksFullScreenModal header,
+    html[data-color-mode="light"] #tasksFullScreenModal header,
+    html[data-app-theme="light"] #tasksFullScreenModal header {
+      background: rgba(255, 255, 255, 0.95) !important;
+      border-bottom-color: #e2e8f0 !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    }
+
+    body.light-theme #tasksFullScreenModal header span,
+    html[data-color-mode="light"] #tasksFullScreenModal header span,
+    html[data-app-theme="light"] #tasksFullScreenModal header span {
+      color: #0f172a !important;
+    }
+
+    body.light-theme .tasks-segmented-nav,
+    html[data-color-mode="light"] .tasks-segmented-nav,
+    html[data-app-theme="light"] .tasks-segmented-nav {
+      background: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    body.light-theme .tasks-segmented-nav .btn-tasks-nav-tab:not(.active),
+    html[data-color-mode="light"] .tasks-segmented-nav .btn-tasks-nav-tab:not(.active),
+    html[data-app-theme="light"] .tasks-segmented-nav .btn-tasks-nav-tab:not(.active) {
+      color: #64748b !important;
+    }
+
+    body.light-theme #tasksProductivityPinnedCard,
+    body.light-theme .tasks-productivity-card,
+    html[data-color-mode="light"] #tasksProductivityPinnedCard,
+    html[data-color-mode="light"] .tasks-productivity-card,
+    html[data-app-theme="light"] #tasksProductivityPinnedCard,
+    html[data-app-theme="light"] .tasks-productivity-card {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksProductivityPinnedCard :is(span, div),
+    html[data-color-mode="light"] #tasksProductivityPinnedCard :is(span, div),
+    html[data-app-theme="light"] #tasksProductivityPinnedCard :is(span, div) {
+      color: #0f172a;
+    }
+
+    body.light-theme #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"],
+    html[data-color-mode="light"] #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"],
+    html[data-app-theme="light"] #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"] {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    body.light-theme #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"] div:first-child,
+    html[data-color-mode="light"] #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"] div:first-child,
+    html[data-app-theme="light"] #tasksProductivityPinnedCard div[style*="rgba(30, 41, 59"] div:first-child {
+      color: #64748b !important;
+    }
+
+    body.light-theme #btnHeroAddTaskBar,
+    html[data-color-mode="light"] #btnHeroAddTaskBar,
+    html[data-app-theme="light"] #btnHeroAddTaskBar {
+      background: rgba(16, 185, 129, 0.08) !important;
+      border-color: rgba(16, 185, 129, 0.45) !important;
+    }
+
+    body.light-theme #btnHeroAddTaskBar span,
+    html[data-color-mode="light"] #btnHeroAddTaskBar span,
+    html[data-app-theme="light"] #btnHeroAddTaskBar span {
+      color: #059669 !important;
+    }
+
+    body.light-theme .tasks-sticky-filter-wrapper,
+    html[data-color-mode="light"] .tasks-sticky-filter-wrapper,
+    html[data-app-theme="light"] .tasks-sticky-filter-wrapper {
+      background: rgba(248, 250, 252, 0.96) !important;
+      border-bottom-color: #e2e8f0 !important;
+    }
+
+    body.light-theme #tasksSmartListTabs .btn-export-tool:not(.active),
+    html[data-color-mode="light"] #tasksSmartListTabs .btn-export-tool:not(.active),
+    html[data-app-theme="light"] #tasksSmartListTabs .btn-export-tool:not(.active),
+    body.light-theme #tasksMemberFilterPills .btn-export-tool:not(.active),
+    html[data-color-mode="light"] #tasksMemberFilterPills .btn-export-tool:not(.active),
+    html[data-app-theme="light"] #tasksMemberFilterPills .btn-export-tool:not(.active) {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #475569 !important;
+    }
+
+    body.light-theme #tasksSearchInput,
+    html[data-color-mode="light"] #tasksSearchInput,
+    html[data-app-theme="light"] #tasksSearchInput {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme .task-pro-card,
+    html[data-color-mode="light"] .task-pro-card,
+    html[data-app-theme="light"] .task-pro-card {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme .task-pro-card .task-title,
+    html[data-color-mode="light"] .task-pro-card .task-title,
+    html[data-app-theme="light"] .task-pro-card .task-title {
+      color: #0f172a !important;
+    }
+
+    body.light-theme .task-pro-card button[style*="rgba(255,255,255,0.06)"],
+    html[data-color-mode="light"] .task-pro-card button[style*="rgba(255,255,255,0.06)"],
+    html[data-app-theme="light"] .task-pro-card button[style*="rgba(255,255,255,0.06)"] {
+      background: #f1f5f9 !important;
+      border-color: #e2e8f0 !important;
+      color: #64748b !important;
+    }
+
+    body.light-theme .task-subtask-item,
+    html[data-color-mode="light"] .task-subtask-item,
+    html[data-app-theme="light"] .task-subtask-item {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+      color: #1e293b !important;
+    }
+
+    body.light-theme .task-details-wrap input,
+    html[data-color-mode="light"] .task-details-wrap input,
+    html[data-app-theme="light"] .task-details-wrap input {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    /* التقويم في شاشة المهام */
+    body.light-theme #tasksTabCalendarView > div,
+    html[data-color-mode="light"] #tasksTabCalendarView > div,
+    html[data-app-theme="light"] #tasksTabCalendarView > div {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #calendarMonthTitle,
+    html[data-color-mode="light"] #calendarMonthTitle,
+    html[data-app-theme="light"] #calendarMonthTitle {
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksTabCalendarView button[style*="rgba(255,255,255,0.06)"],
+    html[data-color-mode="light"] #tasksTabCalendarView button[style*="rgba(255,255,255,0.06)"],
+    html[data-app-theme="light"] #tasksTabCalendarView button[style*="rgba(255,255,255,0.06)"] {
+      background: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #334155 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell,
+    html[data-color-mode="light"] .tasks-calendar-day-cell,
+    html[data-app-theme="light"] .tasks-calendar-day-cell {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell span,
+    html[data-color-mode="light"] .tasks-calendar-day-cell span,
+    html[data-app-theme="light"] .tasks-calendar-day-cell span {
+      color: #334155 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell.is-selected,
+    html[data-color-mode="light"] .tasks-calendar-day-cell.is-selected,
+    html[data-app-theme="light"] .tasks-calendar-day-cell.is-selected {
+      background: rgba(168, 85, 247, 0.15) !important;
+      border-color: #a855f7 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell.is-selected span,
+    html[data-color-mode="light"] .tasks-calendar-day-cell.is-selected span,
+    html[data-app-theme="light"] .tasks-calendar-day-cell.is-selected span {
+      color: #7c3aed !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell.is-today,
+    html[data-color-mode="light"] .tasks-calendar-day-cell.is-today,
+    html[data-app-theme="light"] .tasks-calendar-day-cell.is-today {
+      background: rgba(56, 189, 248, 0.12) !important;
+      border-color: #0284c7 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-cell.is-today span,
+    html[data-color-mode="light"] .tasks-calendar-day-cell.is-today span,
+    html[data-app-theme="light"] .tasks-calendar-day-cell.is-today span {
+      color: #0284c7 !important;
+    }
+
+    body.light-theme .tasks-calendar-day-item,
+    html[data-color-mode="light"] .tasks-calendar-day-item,
+    html[data-app-theme="light"] .tasks-calendar-day-item {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    body.light-theme .tasks-calendar-day-item :is(div, span),
+    html[data-color-mode="light"] .tasks-calendar-day-item :is(div, span),
+    html[data-app-theme="light"] .tasks-calendar-day-item :is(div, span) {
+      color: #0f172a;
+    }
+
+    /* إحصائيات المهام */
+    body.light-theme #tasksTabStatsView > div,
+    html[data-color-mode="light"] #tasksTabStatsView > div,
+    html[data-app-theme="light"] #tasksTabStatsView > div {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksTabStatsView div[style*="rgba(15, 23, 42"],
+    html[data-color-mode="light"] #tasksTabStatsView div[style*="rgba(15, 23, 42"],
+    html[data-app-theme="light"] #tasksTabStatsView div[style*="rgba(15, 23, 42"] {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    /* كارت إنشاء وإضافة مهمة جديدة */
+    body.light-theme #tasksUnifiedCreatorCard,
+    html[data-color-mode="light"] #tasksUnifiedCreatorCard,
+    html[data-app-theme="light"] #tasksUnifiedCreatorCard {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksUnifiedCreatorCard :is(#tasksCreatorHeading, .task-creator-section-title, .task-creator-field-label),
+    html[data-color-mode="light"] #tasksUnifiedCreatorCard :is(#tasksCreatorHeading, .task-creator-section-title, .task-creator-field-label),
+    html[data-app-theme="light"] #tasksUnifiedCreatorCard :is(#tasksCreatorHeading, .task-creator-section-title, .task-creator-field-label) {
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksUnifiedCreatorCard .task-creator-control,
+    html[data-color-mode="light"] #tasksUnifiedCreatorCard .task-creator-control,
+    html[data-app-theme="light"] #tasksUnifiedCreatorCard .task-creator-control {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    body.light-theme #tasksUnifiedCreatorCard .task-creator-section,
+    html[data-color-mode="light"] #tasksUnifiedCreatorCard .task-creator-section,
+    html[data-app-theme="light"] #tasksUnifiedCreatorCard .task-creator-section {
+      background: #f8fafc !important;
+      border-color: #e2e8f0 !important;
+    }
+
+    body.light-theme .btn-unified-tag-chip:not(.active),
+    html[data-color-mode="light"] .btn-unified-tag-chip:not(.active),
+    html[data-app-theme="light"] .btn-unified-tag-chip:not(.active),
+    body.light-theme .btn-inline-dt-preset:not(.active),
+    html[data-color-mode="light"] .btn-inline-dt-preset:not(.active),
+    html[data-app-theme="light"] .btn-inline-dt-preset:not(.active),
+    body.light-theme .btn-inline-member-chip:not(.active),
+    html[data-color-mode="light"] .btn-inline-member-chip:not(.active),
+    html[data-app-theme="light"] .btn-inline-member-chip:not(.active) {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #475569 !important;
+    }
+
+  </style>
 
     <script>
     // تسجيل Service Worker للعمل أوفلاين وتحديث الكاش تلقائياً بصيغة PWA
@@ -18092,6 +18381,66 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
 
 <div id="subViewCommitments">
+
+          <!-- ========================================================
+               تقويم الاستحقاقات والالتزامات الذكي التفاعلي القابل للطي
+               (Interactive Collapsible Commitments & Due Dates Calendar)
+               ======================================================== -->
+          <div id="commitmentsCalendarSection" class="commitments-calendar-box" style="background: var(--bg-card, rgba(15, 23, 42, 0.90)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);">
+            <!-- شريط هيدر التقويم: العنوان وزر الطي/البسط وأدوات التنقل -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCommitmentsCalendarCollapse()">
+                <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.88rem;">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                  <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
+                    <span>تقويم الاستحقاقات الشهرية</span>
+                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-up" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
+                  </div>
+                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق</div>
+                </div>
+              </div>
+
+              <!-- أدوات تصفح الشهر وزر تصفية الكل -->
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display: none; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 0.66rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; cursor: pointer; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
+                </button>
+                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                  <button type="button" onclick="navigateCommitmentsCalendar(-1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-right"></i></button>
+                  <span id="commitmentsCalendarMonthTitle" style="font-size: 0.74rem; font-weight: 900; color: var(--text-main, #f8fafc); min-width: 82px; text-align: center;">نوفمبر 2026</span>
+                  <button type="button" onclick="navigateCommitmentsCalendar(1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- محتوى التقويم القابل للطي -->
+            <div id="commitmentsCalendarCollapseBody" style="display: block; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+              <!-- دليل ألوان الالتزامات -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; font-size: 0.62rem; color: #94a3b8; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> مصاريف وفواتير</span>
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span> ديون علينا</span>
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> ديون لنا</span>
+                </div>
+                <div id="commitmentsCalendarActiveDateNotice" style="display: none; font-weight: 800; color: #38bdf8;">
+                  تصفية بحسب: <span id="lblActiveCommitmentDate">2026-11-20</span>
+                </div>
+              </div>
+
+              <!-- شبكة أيام الأسبوع -->
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 3px; margin-bottom: 4px; font-size: 0.64rem; font-weight: 850; color: #94a3b8;">
+                <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
+              </div>
+
+              <!-- شبكة أيام الشهر مع المؤشرات الملونة للالتزامات -->
+              <div id="commitmentsCalendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+                <!-- تتولد ديناميكياً بواسطة renderCommitmentsCalendar() -->
+              </div>
+            </div>
+          </div>
+
           
           <!-- بطاقة المؤشرات والمركز المالي الذكية (تتكيف تلقائياً بحسب التبويب: فواتير أو ديون) -->
           <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
@@ -18609,8 +18958,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </svg>
         <span>طلب</span>
       </button>
-      <!-- زر الالتزامات تم نقله بجوار طلب مباشرة -->
-      <button class="nav-tab-item" id="navTabExpected" onclick="switchAppPage('expected')" title="الفواتير والالتزامات والأقساط">
+      <!-- زر الالتزامات تم نقله بجوار طلب مباشرة مع شارة الاستحقاقات غير المسددة -->
+      <button class="nav-tab-item" id="navTabExpected" onclick="switchAppPage('expected')" title="الفواتير والالتزامات والأقساط" style="position: relative;">
         <svg class="nav-tab-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="3" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -18621,6 +18970,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <circle cx="16" cy="15" r="1.2" fill="currentColor"></circle>
         </svg>
         <span>الالتزامات</span>
+        <span id="navTabExpectedBadge" style="display: none; position: absolute; top: 4px; right: 18px; min-width: 16px; height: 16px; border-radius: 8px; background: #ef4444; color: #fff; font-size: 0.60rem; font-weight: 900; line-height: 16px; text-align: center; padding: 0 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.3);">0</span>
       </button>
       <!-- زر الميزانيات المنفصل الرئيسي الجديد إلى يسار زر الالتزامات -->
       <button class="nav-tab-item" id="navTabBudgets" onclick="switchAppPage('budgets')" title="الميزانيات والخطط الشهرية">
@@ -26028,6 +26378,11 @@ function renderCategoriesGrid(filtered) {
       return Number(converted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + curr;
     }
 
+    function formatNumberValOnly(v) {
+      const converted = typeof convertAmount === 'function' ? convertAmount(v) : v;
+      return Number(converted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
     // التبديل بين عرض العمليات يومياً أو مجمعاً أو مجمعاً حسب المشروع
     function setOperationsViewMode(mode, persist = true) {
       if (!['flat', 'project'].includes(mode)) mode = 'daily';
@@ -26271,13 +26626,13 @@ function renderCategoriesGrid(filtered) {
                   <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1;">
                     <div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
                       <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
-                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
                     <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
                       <span style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
+                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
                       ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
                     </div>
@@ -26387,14 +26742,14 @@ function renderCategoriesGrid(filtered) {
                     <!-- السطر الأول: العنوان ومعه شارة السريال المدمجة الأنيقة -->
                     <div style="display: flex; align-items: center; gap: 6px; min-width: 0;">
                       <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
-                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
-                    <!-- السطر الثاني: رقائق مدمجة في سطر واحد أفقي مانع للالتفاف -->
+                    <!-- السطر الثاني: رقائق مدمجة وبجانب المحفظة رقم العملية مباشرة -->
                     <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
                       <span style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
+                      <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
                       ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
                     </div>
@@ -33024,9 +33379,212 @@ function switchSettingsTab(tabName) {
       renderCommitmentsDebtsList();
     }
 
+    
+    // =========================================================================
+    // محرك تقويم الاستحقاقات والالتزامات الذكي التفاعلي (Commitments Calendar Engine)
+    // =========================================================================
+    window.commitmentsCalendarYear = new Date().getFullYear();
+    window.commitmentsCalendarMonth = new Date().getMonth(); // 0-based
+    state.selectedCommitmentDate = null;
+    window.isCommitmentsCalendarCollapsed = false;
+
+    function toggleCommitmentsCalendarCollapse() {
+      window.isCommitmentsCalendarCollapsed = !window.isCommitmentsCalendarCollapsed;
+      const body = document.getElementById('commitmentsCalendarCollapseBody');
+      const icon = document.getElementById('iconCommitmentsCalendarToggle');
+      if (body) body.style.display = window.isCommitmentsCalendarCollapsed ? 'none' : 'block';
+      if (icon) icon.className = window.isCommitmentsCalendarCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+    }
+
+    function navigateCommitmentsCalendar(dir) {
+      window.commitmentsCalendarMonth += dir;
+      if (window.commitmentsCalendarMonth < 0) {
+        window.commitmentsCalendarMonth = 11;
+        window.commitmentsCalendarYear -= 1;
+      } else if (window.commitmentsCalendarMonth > 11) {
+        window.commitmentsCalendarMonth = 0;
+        window.commitmentsCalendarYear += 1;
+      }
+      renderCommitmentsCalendar();
+    }
+
+    function selectCommitmentCalendarDate(dateStr) {
+      if (state.selectedCommitmentDate === dateStr) {
+        state.selectedCommitmentDate = null;
+      } else {
+        state.selectedCommitmentDate = dateStr;
+      }
+      renderCommitmentsCalendar();
+      renderCommitmentsPageUI();
+    }
+
+    function clearCommitmentDateFilter() {
+      state.selectedCommitmentDate = null;
+      renderCommitmentsCalendar();
+      renderCommitmentsPageUI();
+    }
+
+    function renderCommitmentsCalendar() {
+      const grid = document.getElementById('commitmentsCalendarGrid');
+      const titleEl = document.getElementById('commitmentsCalendarMonthTitle');
+      const clearBtn = document.getElementById('btnCommitmentsClearDateFilter');
+      const notice = document.getElementById('commitmentsCalendarActiveDateNotice');
+      const noticeLbl = document.getElementById('lblActiveCommitmentDate');
+      if (!grid) return;
+
+      const arabicMonthNames = [
+        'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+        'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
+      ];
+
+      if (titleEl) {
+        titleEl.textContent = `${arabicMonthNames[window.commitmentsCalendarMonth]} ${window.commitmentsCalendarYear}`;
+      }
+
+      if (state.selectedCommitmentDate) {
+        if (clearBtn) clearBtn.style.display = 'inline-flex';
+        if (notice) notice.style.display = 'block';
+        if (noticeLbl) noticeLbl.textContent = state.selectedCommitmentDate;
+      } else {
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (notice) notice.style.display = 'none';
+      }
+
+      grid.innerHTML = '';
+
+      // تجميع الالتزامات والديون بحسب موعد الاستحقاق dueDate
+      const items = state.expectedExpenses || [];
+      const isDebtItem = e => {
+        if (!e) return false;
+        if (e.isDebt === true) return true;
+        const t = String(e.type || '').toLowerCase();
+        return t.includes('debt') || t === 'loan';
+      };
+
+      const dateMap = Object.create(null);
+      items.forEach(item => {
+        if (!item.dueDate) return;
+        const dStr = String(item.dueDate).slice(0, 10);
+        if (!dateMap[dStr]) dateMap[dStr] = [];
+        dateMap[dStr].push(item);
+      });
+
+      const todayStr = (typeof getLocalDateStr === 'function') ? getLocalDateStr(new Date()) : new Date().toISOString().slice(0, 10);
+      const firstDay = new Date(window.commitmentsCalendarYear, window.commitmentsCalendarMonth, 1);
+      const lastDay = new Date(window.commitmentsCalendarYear, window.commitmentsCalendarMonth + 1, 0);
+      const totalDays = lastDay.getDate();
+
+      // (getDay() + 1) % 7 يعطي الإزاحة لأسبوع يبدأ بالسبت
+      const startDay = (firstDay.getDay() + 1) % 7;
+
+      for (let i = 0; i < startDay; i++) {
+        const empty = document.createElement('div');
+        empty.style.height = '36px';
+        empty.style.opacity = '0.15';
+        grid.appendChild(empty);
+      }
+
+      const isLightMode = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+
+      for (let day = 1; day <= totalDays; day++) {
+        const dStr = `${window.commitmentsCalendarYear}-${String(window.commitmentsCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayItems = dateMap[dStr] || [];
+        const isToday = (dStr === todayStr);
+        const isSelected = (dStr === state.selectedCommitmentDate);
+
+        const cell = document.createElement('div');
+        cell.className = 'com-cal-day-cell' + (isSelected ? ' is-selected' : '') + (isToday ? ' is-today' : '');
+        
+        let cellBg = isLightMode ? '#f8fafc' : 'rgba(15, 23, 42, 0.65)';
+        let cellBorder = isLightMode ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+
+        if (isSelected) {
+          cellBg = isLightMode ? 'rgba(56, 189, 248, 0.20)' : 'rgba(2, 132, 199, 0.35)';
+          cellBorder = '#0284c7';
+        } else if (isToday) {
+          cellBg = isLightMode ? 'rgba(16, 185, 129, 0.12)' : 'rgba(16, 185, 129, 0.20)';
+          cellBorder = '#10b981';
+        }
+
+        cell.style.cssText = `
+          height: 38px;
+          border-radius: 8px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          position: relative;
+          transition: all 0.18s ease;
+          border: 1px solid ${cellBorder};
+          background: ${cellBg};
+          box-shadow: ${isSelected ? '0 0 10px rgba(2, 132, 199, 0.45)' : 'none'};
+        `;
+
+        cell.onclick = () => selectCommitmentCalendarDate(dStr);
+
+        const numSpan = document.createElement('span');
+        numSpan.textContent = day;
+        numSpan.style.cssText = `
+          font-size: 0.72rem;
+          font-weight: ${isSelected || isToday ? '900' : '750'};
+          color: ${isSelected ? (isLightMode ? '#0284c7' : '#38bdf8') : (isToday ? '#10b981' : (isLightMode ? '#334155' : '#cbd5e1'))};
+          font-family: var(--font-numbers);
+          line-height: 1;
+        `;
+        cell.appendChild(numSpan);
+
+        if (dayItems.length > 0) {
+          const dots = document.createElement('div');
+          dots.style.cssText = 'display: flex; gap: 2px; align-items: center; margin-top: 2px;';
+          
+          let hasBill = false;
+          let hasDebtOnUs = false;
+          let hasDebtForUs = false;
+
+          dayItems.forEach(it => {
+            if (it.status === 'paid') return;
+            if (!isDebtItem(it)) hasBill = true;
+            else if (it.type === 'debt_for_us') hasDebtForUs = true;
+            else hasDebtOnUs = true;
+          });
+
+          if (hasBill) {
+            const d = document.createElement('span');
+            d.style.cssText = 'width: 4.5px; height: 4.5px; border-radius: 50%; background: #f59e0b;';
+            dots.appendChild(d);
+          }
+          if (hasDebtOnUs) {
+            const d = document.createElement('span');
+            d.style.cssText = 'width: 4.5px; height: 4.5px; border-radius: 50%; background: #f43f5e;';
+            dots.appendChild(d);
+          }
+          if (hasDebtForUs) {
+            const d = document.createElement('span');
+            d.style.cssText = 'width: 4.5px; height: 4.5px; border-radius: 50%; background: #10b981;';
+            dots.appendChild(d);
+          }
+
+          if (dots.children.length === 0 && dayItems.some(it => it.status === 'paid')) {
+            const d = document.createElement('span');
+            d.style.cssText = 'width: 4px; height: 4px; border-radius: 50%; background: #64748b;';
+            dots.appendChild(d);
+          }
+
+          cell.appendChild(dots);
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
     function renderCommitmentsPageUI() {
       if (!state.expectedExpenses || !Array.isArray(state.expectedExpenses)) {
         state.expectedExpenses = [];
+      }
+
+      if (typeof renderCommitmentsCalendar === 'function') {
+        renderCommitmentsCalendar();
       }
 
       const allItems = state.expectedExpenses;
@@ -33048,10 +33606,20 @@ function switchSettingsTab(tabName) {
       const pendingDebtsForUs = pendingDebts.filter(d => d.type === 'debt_for_us');
       const settledItems = allItems.filter(i => i.status === 'paid');
 
-      // تحديث عداد الزر العلوي الرئيسي للفواتير والديون
+      // تحديث عداد الزر العلوي الرئيسي للفواتير والديون وشارة التبويب السفلي
       const bBillsAndDebtsBadge = document.getElementById('badgeCountBillsAndDebts');
       if (bBillsAndDebtsBadge) {
         bBillsAndDebtsBadge.textContent = pendingBills.length + pendingDebts.length;
+      }
+      const navBadge = document.getElementById('navTabExpectedBadge');
+      if (navBadge) {
+        const totalPending = pendingBills.length + pendingDebtsOnUs.length;
+        if (totalPending > 0) {
+          navBadge.textContent = totalPending;
+          navBadge.style.display = 'inline-block';
+        } else {
+          navBadge.style.display = 'none';
+        }
       }
 
       // تحديث عدادات شريط الفلاتر السريعة تحت الفواتير والديون
@@ -33280,10 +33848,14 @@ function switchSettingsTab(tabName) {
       if (countHeader) countHeader.textContent = `${allBills.length} فاتورة مسجلة`;
 
       let list = allBills.slice();
-      if (activeCommitmentSubFilter === 'settled' || activeBillsFilterStatus === 'paid') {
-        list = list.filter(b => b.status === 'paid');
+      if (state.selectedCommitmentDate) {
+        list = list.filter(b => String(b.dueDate || '').slice(0, 10) === state.selectedCommitmentDate);
       } else {
-        list = list.filter(b => b.status !== 'paid');
+        if (activeCommitmentSubFilter === 'settled' || activeBillsFilterStatus === 'paid') {
+          list = list.filter(b => b.status === 'paid');
+        } else {
+          list = list.filter(b => b.status !== 'paid');
+        }
       }
 
       // فرز حسب تاريخ الاستحقاق
@@ -33395,14 +33967,18 @@ function switchSettingsTab(tabName) {
       if (countHeader) countHeader.textContent = `${allDebts.length} ديون مسجلة`;
 
       let list = allDebts.slice();
-      if (activeCommitmentSubFilter === 'debts_on_us' || activeDebtsFilterStatus === 'debt_on_us') {
-        list = list.filter(d => (d.type === 'debt_on_us' || d.type === 'debt') && d.status !== 'paid');
-      } else if (activeCommitmentSubFilter === 'debts_for_us' || activeDebtsFilterStatus === 'debt_for_us') {
-        list = list.filter(d => d.type === 'debt_for_us' && d.status !== 'paid');
-      } else if (activeCommitmentSubFilter === 'settled' || activeDebtsFilterStatus === 'paid') {
-        list = list.filter(d => d.status === 'paid');
+      if (state.selectedCommitmentDate) {
+        list = list.filter(d => String(d.dueDate || '').slice(0, 10) === state.selectedCommitmentDate);
       } else {
-        list = list.filter(d => d.status !== 'paid');
+        if (activeCommitmentSubFilter === 'debts_on_us' || activeDebtsFilterStatus === 'debt_on_us') {
+          list = list.filter(d => (d.type === 'debt_on_us' || d.type === 'debt') && d.status !== 'paid');
+        } else if (activeCommitmentSubFilter === 'debts_for_us' || activeDebtsFilterStatus === 'debt_for_us') {
+          list = list.filter(d => d.type === 'debt_for_us' && d.status !== 'paid');
+        } else if (activeCommitmentSubFilter === 'settled' || activeDebtsFilterStatus === 'paid') {
+          list = list.filter(d => d.status === 'paid');
+        } else {
+          list = list.filter(d => d.status !== 'paid');
+        }
       }
 
       if (list.length === 0) {
@@ -36465,15 +37041,19 @@ function renderTasksProList() {
     const doneSubs = subtasks.filter(s => s.completed).length;
 
     const card = document.createElement('div');
+    card.className = 'task-pro-card';
+    const isLightMode = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+    const defaultCardBg = isLightMode ? '#ffffff' : 'linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95))';
+    const defaultBorder = t.completed ? 'rgba(16, 185, 129, 0.4)' : (isOverdue ? 'rgba(244, 63, 94, 0.5)' : (isLightMode ? '#e2e8f0' : 'rgba(168, 85, 247, 0.3)'));
     card.style.cssText = `
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
-      border: 1.2px solid ${t.completed ? 'rgba(16, 185, 129, 0.3)' : (isOverdue ? 'rgba(244, 63, 94, 0.45)' : 'rgba(168, 85, 247, 0.3)')};
+      background: ${defaultCardBg};
+      border: 1.2px solid ${defaultBorder};
       border-radius: 14px;
       padding: 10px 14px;
       display: flex;
       flex-direction: column;
       gap: 6px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      box-shadow: ${isLightMode ? '0 4px 14px rgba(0,0,0,0.06)' : '0 4px 14px rgba(0,0,0,0.3)'};
       transition: all 0.2s ease;
     `;
 
@@ -36686,9 +37266,13 @@ function selectTasksCalendarDay(dateStr) {
   dayTasks.forEach(t => {
     const item = document.createElement('div');
     const isDone = !!t.completed;
+    const isLightMode = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
+    item.className = 'tasks-calendar-day-item';
+    const dayItemBg = isLightMode ? '#f8fafc' : 'linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95))';
+    const dayItemBorder = isDone ? 'rgba(16, 185, 129, 0.35)' : (isLightMode ? '#e2e8f0' : 'rgba(168, 85, 247, 0.35)');
     item.style.cssText = `
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
-      border: 1.2px solid ${isDone ? 'rgba(16, 185, 129, 0.35)' : 'rgba(168, 85, 247, 0.35)'};
+      background: ${dayItemBg};
+      border: 1.2px solid ${dayItemBorder};
       border-radius: 12px;
       padding: 10px 12px;
       display: flex;
@@ -36696,7 +37280,7 @@ function selectTasksCalendarDay(dateStr) {
       justify-content: space-between;
       gap: 10px;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      box-shadow: ${isLightMode ? '0 2px 6px rgba(0,0,0,0.04)' : '0 2px 8px rgba(0,0,0,0.25)'};
     `;
 
     const subtasks = Array.isArray(t.subtasks) ? t.subtasks : [];
@@ -36790,9 +37374,18 @@ function renderTasksCalendar() {
     const cell = document.createElement('div');
     const isToday = dStr === todayStr;
     const isSelected = dStr === window.calendarSelectedDate;
+    const isLightMode = document.body.classList.contains('light-theme') || document.documentElement.getAttribute('data-app-theme') === 'light';
 
+    cell.className = 'tasks-calendar-day-cell' + (isSelected ? ' is-selected' : '') + (isToday ? ' is-today' : '');
     cell.setAttribute('data-calendar-date', dStr);
     cell.setAttribute('data-is-today', isToday ? 'true' : 'false');
+
+    const cellBg = isSelected
+      ? (isLightMode ? 'rgba(168, 85, 247, 0.16)' : 'rgba(168, 85, 247, 0.32)')
+      : (isToday ? (isLightMode ? 'rgba(56, 189, 248, 0.14)' : 'rgba(56, 189, 248, 0.12)') : (isLightMode ? '#f8fafc' : 'rgba(15, 23, 42, 0.55)'));
+    const cellBorder = isSelected
+      ? '1.5px solid #a855f7'
+      : (isToday ? '1.2px solid #0284c7' : (isLightMode ? '1px solid #e2e8f0' : '1px solid rgba(255,255,255,0.06)'));
 
     cell.style.cssText = `
       height: 46px;
@@ -36804,9 +37397,9 @@ function renderTasksCalendar() {
       cursor: pointer;
       position: relative;
       transition: all 0.2s ease;
-      border: ${isSelected ? '1.5px solid #a855f7' : (isToday ? '1.2px solid #38bdf8' : '1px solid rgba(255,255,255,0.06)')};
-      background: ${isSelected ? 'rgba(168, 85, 247, 0.32)' : (isToday ? 'rgba(56, 189, 248, 0.12)' : 'rgba(15, 23, 42, 0.55)')};
-      box-shadow: ${isSelected ? '0 0 10px rgba(168, 85, 247, 0.45)' : 'none'};
+      border: ${cellBorder};
+      background: ${cellBg};
+      box-shadow: ${isSelected ? '0 0 10px rgba(168, 85, 247, 0.35)' : 'none'};
     `;
 
     cell.onclick = () => {
