@@ -1,11 +1,11 @@
 /**
- * budget-audit-engine.js (v5.3.72)
- * المعمارية الشاملة لمنظومة الموازنات والرقابة المالية والتدقيق الجنائي
- * Family Expense Tracker - Executive Budgeting & Audit Suite
+ * budget-audit-engine.js (v5.3.73 - Complete Financial Audit & Control Suite)
+ * المعمارية الشاملة لمنظومة الموازنات والرقابة المالية والتدقيق الجنائي المحاسبي
+ * Family Expense Tracker - Executive Budgeting, Forensic Audit & BI Engine
  */
 
 window.BudgetAuditEngine = (() => {
-  // الحالة الداخلية للمنظومة
+  // الحالة الداخلية لمنظومة الرقابة المالية
   let activeTimePeriod = 'month'; // 'today', 'week', 'month', 'prev_month', 'all', 'custom'
   let customStartDate = null;
   let customEndDate = null;
@@ -14,8 +14,8 @@ window.BudgetAuditEngine = (() => {
   let projectCustomStart = null;
   let projectCustomEnd = null;
 
-  let compPeriodA = 'current_month';
-  let compPeriodB = 'prev_month';
+  let compPeriodA = null; // defaults to current month
+  let compPeriodB = null; // defaults to previous month
 
   let activeHistoryArchiveTab = 'monthly'; // 'monthly', 'projects'
 
@@ -48,6 +48,24 @@ window.BudgetAuditEngine = (() => {
         }
       });
     }
+  }
+
+  function escapeHtml(str) {
+    if (typeof str !== 'string') return String(str || '');
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatMoneyVal(num) {
+    if (typeof formatMoney === 'function') {
+      return formatMoney(num);
+    }
+    const n = Number(num) || 0;
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ج.م';
   }
 
   // =========================================================================
@@ -146,14 +164,19 @@ window.BudgetAuditEngine = (() => {
   // 2. ترقية "موازنة الشهر النشطة" (Task 1)
   // =========================================================================
 
-  function renderTimeFilterStrip(containerId, activeP, onSelectFnName) {
+  function renderTimeFilterStrip(containerId, activeP, onSelectFnName, customStart, customEnd) {
     const periods = [
       { key: 'today', label: 'اليوم' },
       { key: 'week', label: 'هذا الأسبوع' },
       { key: 'month', label: 'هذا الشهر (افتراضي)' },
       { key: 'prev_month', label: 'الشهر السابق' },
       { key: 'all', label: 'الكل' },
-      { key: 'custom', label: '📅 مخصص' }
+      { 
+        key: 'custom', 
+        label: (activeP === 'custom' && customStart && customEnd) 
+          ? `📅 مخصص (${customStart.slice(5)} إلى ${customEnd.slice(5)})` 
+          : '📅 مخصص' 
+      }
     ];
 
     return `
@@ -266,9 +289,14 @@ window.BudgetAuditEngine = (() => {
             <i class="fa-solid fa-table-list"></i>
             <span>ميزان المقارنة اللحظي (التقديري vs الفعلي)</span>
           </div>
-          <span style="font-size: 0.66rem; color: #94a3b8; background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 6px;">
-            الفترة: ${getPeriodLabel(period)}
-          </span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 0.66rem; color: #94a3b8; background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 6px;">
+              الفترة: ${getPeriodLabel(period)}
+            </span>
+            <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" style="padding: 2px 7px; border-radius: 6px; font-size: 0.64rem; font-weight: 850; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; cursor: pointer; display: flex; align-items: center; gap: 3px;" title="تصدير موازنة الشهر إلى Excel">
+              <i class="fa-solid fa-file-excel"></i> <span>تصدير</span>
+            </button>
+          </div>
         </div>
 
         <div style="overflow-x: auto;">
@@ -300,35 +328,50 @@ window.BudgetAuditEngine = (() => {
     `;
   }
 
+  // 3. قراءة أفراد الأسرة ديناميكياً ودقة المصاريف المشتركة
   function renderFamilyMemberBreakdown(plan, targetTransactions, period) {
     if (!plan) return '';
-    if (typeof ensureBudgetItems === 'function') {
-      ensureBudgetItems(plan);
-    }
+    if (typeof ensureBudgetItems === 'function') ensureBudgetItems(plan);
     if (!plan.items) return '';
 
-    const members = ['ماهر', 'أية', 'محمد', 'مريم', 'الحاجة', 'النونو', 'البيت'];
+    // سحب أفراد الأسرة ديناميكياً من بيانات التطبيق بدلاً من التثبيت
+    let rawMembers = [];
+    if (Array.isArray(state.members) && state.members.length > 0) {
+      rawMembers = state.members.map(m => typeof m === 'string' ? m : (m.name || m.id));
+    } else if (typeof DEFAULT_MEMBERS !== 'undefined' && Array.isArray(DEFAULT_MEMBERS)) {
+      rawMembers = DEFAULT_MEMBERS.map(m => typeof m === 'string' ? m : (m.name || m.id));
+    } else {
+      rawMembers = ['ماهر', 'أية', 'محمد', 'مريم'];
+    }
+
+    // إزالة التكرار وإضافة بطاقة المصاريف العائلية المشتركة
+    const membersList = Array.from(new Set(rawMembers.filter(m => m && !['البيت', 'العائلة', 'الكل'].includes(m))));
+    membersList.push('مصاريف عائلية مشتركة');
+
     const expenseTxs = targetTransactions.filter(t => t.type === 'expense');
 
-    const memberCards = members.map(m => {
-      const isHouse = (m === 'البيت' || m === 'مصاريف عائلية مشتركة');
-      const label = isHouse ? 'مصاريف عائلية مشتركة' : m;
+    const memberCards = membersList.map(m => {
+      const isShared = (m === 'مصاريف عائلية مشتركة');
 
-      // مجموع المقدر لهذا الشخص
       let memberEst = 0;
       plan.items.forEach(it => {
-        const itemMems = (it.members && it.members.length > 0) ? it.members : ['البيت'];
-        if (itemMems.includes(m) || (isHouse && (itemMems.includes('البيت') || itemMems.includes('الكل')))) {
-          const prorated = calculateProratedAmount(it, period, plan.month, customStartDate, customEndDate);
-          memberEst += prorated / itemMems.length;
+        const itMems = (it.members && it.members.length > 0) ? it.members : ['البيت'];
+        const isItemShared = itMems.includes('البيت') || itMems.includes('الكل') || itMems.includes('العائلة');
+        
+        if (isShared && isItemShared) {
+          memberEst += calculateProratedAmount(it, period, plan.month, customStartDate, customEndDate);
+        } else if (!isShared && itMems.includes(m)) {
+          memberEst += calculateProratedAmount(it, period, plan.month, customStartDate, customEndDate) / itMems.length;
         }
       });
 
-      // مجموع المنصرف الفعلي للشخص
+      // المصروف الفعلي المطابق
       const memberAct = expenseTxs.filter(t => {
-        const mem = t.member || t.author || 'البيت';
-        if (isHouse) return mem === 'البيت' || mem === 'العائلة' || !mem;
-        return mem === m;
+        const tMem = (t.member || t.author || '').trim();
+        if (isShared) {
+          return !tMem || tMem === 'البيت' || tMem === 'العائلة' || !membersList.includes(tMem);
+        }
+        return tMem === m;
       }).reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
       if (memberEst === 0 && memberAct === 0) return '';
@@ -336,23 +379,22 @@ window.BudgetAuditEngine = (() => {
       const diff = memberEst - memberAct;
       const isOver = diff < 0;
       const pct = memberEst > 0 ? (memberAct / memberEst) * 100 : (memberAct > 0 ? 100 : 0);
-      const avatar = (typeof MEMBER_AVATARS !== 'undefined' && MEMBER_AVATARS[m]) ? MEMBER_AVATARS[m] : '';
 
       return `
         <div style="background: rgba(15, 23, 42, 0.65); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              ${avatar ? `<img src="${avatar}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover;">` : `<i class="fa-solid ${isHouse ? 'fa-house' : 'fa-user'}" style="color: #38bdf8; font-size: 0.8rem;"></i>`}
-              <span style="font-size: 0.78rem; font-weight: 850; color: #f1f5f9;">${label}</span>
+              <i class="fa-solid ${isShared ? 'fa-house-chimney' : 'fa-user'}" style="color: ${isShared ? '#38bdf8' : '#a855f7'}; font-size: 0.8rem;"></i>
+              <span style="font-size: 0.78rem; font-weight: 850; color: #f1f5f9;">${m}</span>
             </div>
             <span style="font-size: 0.68rem; font-weight: 850; color: ${isOver ? '#f87171' : '#34d399'};">
-              ${isOver ? 'تجاوز' : 'وفر'}: ${formatMoneyVal(Math.abs(diff))}
+              ${isOver ? 'تجاوز' : 'وفر'}: ${(typeof formatMoneyVal === 'function') ? formatMoneyVal(Math.abs(diff)) : Math.abs(diff).toFixed(2)}
             </span>
           </div>
 
           <div style="display: flex; justify-content: space-between; font-size: 0.70rem; color: #94a3b8;">
-            <span>المقدر: <strong style="color: #cbd5e1;">${formatMoneyVal(memberEst)}</strong></span>
-            <span>الفعلي: <strong style="color: #f8fafc;">${formatMoneyVal(memberAct)}</strong></span>
+            <span>المقدر: <strong style="color: #cbd5e1;">${(typeof formatMoneyVal === 'function') ? formatMoneyVal(memberEst) : memberEst.toFixed(2)}</strong></span>
+            <span>الفعلي: <strong style="color: #f8fafc;">${(typeof formatMoneyVal === 'function') ? formatMoneyVal(memberAct) : memberAct.toFixed(2)}</strong></span>
           </div>
 
           <div style="height: 5px; background: rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden; margin-top: 2px;">
@@ -408,47 +450,25 @@ window.BudgetAuditEngine = (() => {
     });
 
     if (known.length === 0) {
-      known.push('تشطيب الشقة الجديدة');
+      container.innerHTML = `
+        <div style="text-align: center; padding: 24px 14px; color: #94a3b8; background: rgba(15, 23, 42, 0.5); border-radius: 14px; border: 1.5px dashed rgba(255,255,255,0.1);">
+          <i class="fa-solid fa-trowel-bricks" style="font-size: 2rem; color: #38bdf8; margin-bottom: 8px;"></i>
+          <div style="font-size: 0.90rem; font-weight: 850; color: #f1f5f9; margin-bottom: 4px;">لا توجد مشاريع مسجلة حالياً</div>
+          <div style="font-size: 0.72rem; color: #94a3b8; margin-bottom: 12px;">يمكنك ربط العمليات بمشاريع محددة (مثل: تشطيب شقة، صيانة سيارة) لرصد ميزانياتها ومتابعتها بدقة.</div>
+        </div>
+      `;
+      return;
     }
 
-    if (!window.selectedProjectBudgetName) window.selectedProjectBudgetName = known[0];
+    if (!window.selectedProjectBudgetName || !known.includes(window.selectedProjectBudgetName)) {
+      window.selectedProjectBudgetName = known[0];
+    }
     const curProject = window.selectedProjectBudgetName;
 
     // Plan for project
     let plan = (state.monthlyBudgets || []).find(b => b.project === curProject);
     const allProjectTxs = (state.transactions || []).filter(t => t.project === curProject && t.type === 'expense');
-
-    if (!plan) {
-      // Build an estimated item matrix for this project from its categories or defaults
-      const catTotals = {};
-      allProjectTxs.forEach(t => {
-        const c = t.category || 'other';
-        catTotals[c] = (catTotals[c] || 0) + (Number(t.amount) || 0);
-      });
-      if (Object.keys(catTotals).length === 0) {
-        catTotals['house'] = 50000;
-        catTotals['bills'] = 15000;
-      }
-      const items = Object.keys(catTotals).map((c, i) => ({
-        id: `proj-item-${i}`,
-        title: c === 'other' ? 'أعمال عامة وتشطيبات' : (c === 'house' ? 'سباكة وتشطيبات منزلية' : (c === 'bills' ? 'تركيبات وعدادات' : c)),
-        category: c,
-        amount: Math.round(catTotals[c] * 1.25)
-      }));
-      plan = { project: curProject, items };
-    }
-    if (plan && typeof ensureBudgetItems === 'function') {
-      ensureBudgetItems(plan);
-    }
-
-    // Filter project txs by project time period
-    const filteredTxs = getTransactionsForPeriod(allProjectTxs, activeProjectTimePeriod, null, projectCustomStart, projectCustomEnd);
-
-    const totalEst = (plan.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
     const totalActAll = allProjectTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
-    const totalActPeriod = filteredTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
-    const remainingSafe = Math.max(0, totalEst - totalActAll);
-    const overallPct = totalEst > 0 ? (totalActAll / totalEst) * 100 : 0;
 
     // Selector buttons for projects
     const projectPills = known.map(p => {
@@ -459,6 +479,64 @@ window.BudgetAuditEngine = (() => {
         </button>
       `;
     }).join('');
+
+    // إذا لم يكن للمشروع ميزانية تقديرية مرصودة (إلغاء توليد الأرقام الوهمية العشوائية تماماً)
+    if (!plan || !plan.items || plan.items.length === 0) {
+      container.innerHTML = `
+        <div style="margin-bottom: 12px;">
+          <!-- شريط اختيار المشروع -->
+          <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none;">
+            ${projectPills}
+          </div>
+
+          <!-- بطاقة التنبيه الإرشادية الأنيقة بدون تزوير بيانات -->
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1.5px dashed rgba(56, 189, 248, 0.4); border-radius: 14px; padding: 20px 16px; text-align: center; margin-bottom: 14px;">
+            <i class="fa-solid fa-clipboard-list" style="font-size: 2.2rem; color: #38bdf8; margin-bottom: 10px;"></i>
+            <div style="font-size: 0.94rem; font-weight: 900; color: #f8fafc; margin-bottom: 6px;">
+              لم يتم رصد ميزانية تقديرية لمشروع (${escapeHtml(curProject)}) بعد
+            </div>
+            <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 14px;">
+              إجمالي المنصرف الفعلي المسجل لهذا المشروع حتى اللحظة: 
+              <strong style="color: #f43f5e; font-size: 0.88rem; font-family: var(--font-numbers); direction: ltr;">
+                ${formatMoneyVal(totalActAll)}
+              </strong>
+            </div>
+            <button type="button" onclick="openNewBudgetPlanModal('${escapeHtml(curProject)}')" style="padding: 8px 18px; border-radius: 10px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.78rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);">
+              <i class="fa-solid fa-plus"></i> <span>+ رصد ميزانية تقديرية للمشروع</span>
+            </button>
+          </div>
+
+          ${allProjectTxs.length > 0 ? `
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px;">
+                <i class="fa-solid fa-receipt"></i> تفصيل المنصرف الفعلي المسجل (${allProjectTxs.length} عمليات):
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                ${allProjectTxs.slice(0, 5).map(t => `
+                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px;">
+                    <span style="color: #e2e8f0;">${escapeHtml(t.title || t.notes || t.category)}</span>
+                    <strong style="color: #f87171; font-family: var(--font-numbers); direction: ltr;">-${formatMoneyVal(t.amount)}</strong>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+      return;
+    }
+
+    if (plan && typeof ensureBudgetItems === 'function') {
+      ensureBudgetItems(plan);
+    }
+
+    // Filter project txs by project time period
+    const filteredTxs = getTransactionsForPeriod(allProjectTxs, activeProjectTimePeriod, null, projectCustomStart, projectCustomEnd);
+
+    const totalEst = (plan.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
+    const totalActPeriod = filteredTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    const remainingSafe = Math.max(0, totalEst - totalActAll);
+    const overallPct = totalEst > 0 ? (totalActAll / totalEst) * 100 : 0;
 
     // Project items matrix
     const itemsMatrixHtml = (plan.items && plan.items.length > 0)
@@ -486,9 +564,18 @@ window.BudgetAuditEngine = (() => {
         }).join('')
       : `<tr><td colspan="5" style="text-align: center; padding: 14px; color: #94a3b8; font-size: 0.72rem;">لم يتم تحديد بنود مقدرة لهذا المشروع بعد</td></tr>`;
 
-    // Member spending for project
-    const memberSpendHtml = ['ماهر', 'أية', 'محمد', 'مريم', 'البيت'].map(m => {
-      const spent = filteredTxs.filter(t => (t.member || t.author || 'البيت') === m).reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    // Member spending for project (Dynamic members)
+    const membersList = Array.from(new Set(((state.members || []).map(m => typeof m === 'string' ? m : (m.name || m.id))).filter(m => m && !['البيت', 'العائلة'].includes(m))));
+    membersList.push('البيت');
+
+    const memberSpendHtml = membersList.map(m => {
+      const isHouse = (m === 'البيت');
+      const spent = filteredTxs.filter(t => {
+        const tMem = (t.member || t.author || '').trim();
+        if (isHouse) return !tMem || tMem === 'البيت' || tMem === 'العائلة';
+        return tMem === m;
+      }).reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
       if (spent === 0) return '';
       return `
         <div style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 6px 10px; font-size: 0.70rem; display: flex; justify-content: space-between;">
@@ -538,7 +625,7 @@ window.BudgetAuditEngine = (() => {
         </div>
 
         <!-- شريط الفلاتر الزمنية للمشروع -->
-        ${renderTimeFilterStrip('projectTimeFilters', activeProjectTimePeriod, 'BudgetAuditEngine.selectProjectPeriod')}
+        ${renderTimeFilterStrip('projectTimeFilters', activeProjectTimePeriod, 'BudgetAuditEngine.selectProjectPeriod', projectCustomStart, projectCustomEnd)}
 
         <!-- جدول بنود المشروع الثنائي (Project Items Matrix) -->
         <div style="background: rgba(15, 23, 42, 0.7); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
@@ -590,8 +677,22 @@ window.BudgetAuditEngine = (() => {
     const prevMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const prevMonthStr = `${prevMonthDate.getFullYear()}-${String(prevMonthDate.getMonth() + 1).padStart(2, '0')}`;
 
-    const txsA = allTxs.filter(t => t.date && t.date.startsWith(curMonthStr) && t.type === 'expense');
-    const txsB = allTxs.filter(t => t.date && t.date.startsWith(prevMonthStr) && t.type === 'expense');
+    // إعداد الشهور المتاحة ديناميكياً من العمليات والموازنات
+    const availableMonths = Array.from(new Set(
+      allTxs.map(t => t.date ? t.date.slice(0, 7) : null).concat(
+        (state.monthlyBudgets || []).map(b => b.month)
+      ).filter(Boolean)
+    )).sort().reverse();
+    if (availableMonths.length === 0) availableMonths.push(curMonthStr);
+
+    if (!compPeriodA || !availableMonths.includes(compPeriodA)) compPeriodA = availableMonths[0];
+    if (!compPeriodB || !availableMonths.includes(compPeriodB)) compPeriodB = availableMonths[1] || availableMonths[0];
+
+    const monthOptionsA = availableMonths.map(m => `<option value="${m}" ${m === compPeriodA ? 'selected' : ''}>شهر ${m}</option>`).join('');
+    const monthOptionsB = availableMonths.map(m => `<option value="${m}" ${m === compPeriodB ? 'selected' : ''}>شهر ${m}</option>`).join('');
+
+    const txsA = allTxs.filter(t => t.date && t.date.startsWith(compPeriodA) && t.type === 'expense');
+    const txsB = allTxs.filter(t => t.date && t.date.startsWith(compPeriodB) && t.type === 'expense');
 
     const totalA = txsA.reduce((s, t) => s + (Number(t.amount) || 0), 0);
     const totalB = txsB.reduce((s, t) => s + (Number(t.amount) || 0), 0);
@@ -601,12 +702,12 @@ window.BudgetAuditEngine = (() => {
     const isGrowthDown = growthRate <= 0;
 
     // Income
-    const incomeTxs = allTxs.filter(t => t.date && t.date.startsWith(curMonthStr) && t.type === 'income');
+    const incomeTxs = allTxs.filter(t => t.date && t.date.startsWith(compPeriodA) && t.type === 'income');
     const totalIncome = incomeTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
     const netSavings = totalIncome - totalA;
 
     // Budget Adherence Score
-    const activePlan = (state.monthlyBudgets || []).find(b => b.month === curMonthStr) || (state.monthlyBudgets || [])[0];
+    const activePlan = (state.monthlyBudgets || []).find(b => b.month === compPeriodA) || (state.monthlyBudgets || [])[0];
     if (activePlan && typeof ensureBudgetItems === 'function') {
       ensureBudgetItems(activePlan);
     }
@@ -617,7 +718,93 @@ window.BudgetAuditEngine = (() => {
       adherenceScore = Math.max(0, Math.round((1 - diffRatio) * 100));
     }
 
-    // 1. قاعدة 50/30/20
+    // تجميع المنصرف لكل تصنيف في الفترتين لبناء ميزان الفروقات الشامل
+    const catMapA = {};
+    const catMapB = {};
+    txsA.forEach(t => { catMapA[t.category] = (catMapA[t.category] || 0) + (Number(t.amount) || 0); });
+    txsB.forEach(t => { catMapB[t.category] = (catMapB[t.category] || 0) + (Number(t.amount) || 0); });
+
+    const allCatKeys = Array.from(new Set([...Object.keys(catMapA), ...Object.keys(catMapB)]));
+    const comparisonRows = allCatKeys.map(catId => {
+      const catObj = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === catId) || { name: catId, icon: 'fa-tag', color: '#38bdf8' };
+      const valA = catMapA[catId] || 0;
+      const valB = catMapB[catId] || 0;
+      const diff = valA - valB;
+      const pctChange = valB > 0 ? ((diff / valB) * 100) : (valA > 0 ? 100 : 0);
+      const isUp = diff > 0;
+
+      return `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.72rem;">
+          <td style="padding: 7px 6px;">
+            <i class="fa-solid ${catObj.icon || 'fa-tag'}" style="color: ${catObj.color || '#38bdf8'}; margin-left: 4px;"></i>
+            <span style="font-weight: 800; color: #f1f5f9;">${catObj.name}</span>
+          </td>
+          <td style="padding: 7px 4px; text-align: center; color: #93c5fd; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(valA)}</td>
+          <td style="padding: 7px 4px; text-align: center; color: #cbd5e1; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(valB)}</td>
+          <td style="padding: 7px 4px; text-align: center; color: ${isUp ? '#f87171' : '#34d399'}; font-family: var(--font-numbers); direction: ltr;">
+            ${isUp ? '+ ' : '- '}${formatMoneyVal(Math.abs(diff))}
+          </td>
+          <td style="padding: 7px 6px; text-align: center; font-weight: 850; color: ${isUp ? '#f87171' : '#34d399'};">
+            ${isUp ? '📈 +' : '📉 '}${pctChange.toFixed(0)}%
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    // 1. مصفوفة الأفراد المتقاطعة (Cross-Member Matrix)
+    let rawMembers = [];
+    if (Array.isArray(state.members) && state.members.length > 0) {
+      rawMembers = state.members.map(m => typeof m === 'string' ? m : (m.name || m.id));
+    } else {
+      rawMembers = ['ماهر', 'أية', 'محمد', 'مريم'];
+    }
+    const crossMembers = Array.from(new Set(rawMembers.filter(m => m && !['البيت', 'العائلة'].includes(m))));
+    crossMembers.push('البيت');
+
+    const crossMemberRows = crossMembers.map(m => {
+      const isHouse = (m === 'البيت');
+      const spentA = txsA.filter(t => {
+        const tMem = (t.member || t.author || '').trim();
+        if (isHouse) return !tMem || tMem === 'البيت' || tMem === 'العائلة';
+        return tMem === m;
+      }).reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      const spentB = txsB.filter(t => {
+        const tMem = (t.member || t.author || '').trim();
+        if (isHouse) return !tMem || tMem === 'البيت' || tMem === 'العائلة';
+        return tMem === m;
+      }).reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      if (spentA === 0 && spentB === 0) return '';
+      const mDiff = spentA - spentB;
+
+      return `
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.72rem;">
+          <td style="padding: 6px 8px; font-weight: 800; color: #f1f5f9;">
+            <i class="fa-solid ${isHouse ? 'fa-house-chimney' : 'fa-user'}" style="color: ${isHouse ? '#38bdf8' : '#a855f7'}; margin-left: 4px;"></i>
+            ${isHouse ? 'مصاريف مشتركة (البيت)' : m}
+          </td>
+          <td style="padding: 6px 4px; text-align: center; color: #93c5fd; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(spentA)}</td>
+          <td style="padding: 6px 4px; text-align: center; color: #cbd5e1; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(spentB)}</td>
+          <td style="padding: 6px 4px; text-align: center; color: ${mDiff > 0 ? '#f87171' : '#34d399'}; font-family: var(--font-numbers); direction: ltr;">
+            ${mDiff > 0 ? '+ ' : '- '}${formatMoneyVal(Math.abs(mDiff))}
+          </td>
+        </tr>
+      `;
+    }).filter(Boolean).join('');
+
+    // 2. رادار تركز المتاجر والمنصات (Merchant & Platform Concentration Radar)
+    const merchantMap = {};
+    txsA.forEach(t => {
+      const store = (t.merchant || t.title || t.notes || t.category || 'متجر غير محدد').trim();
+      merchantMap[store] = (merchantMap[store] || 0) + (Number(t.amount) || 0);
+    });
+    const topMerchants = Object.keys(merchantMap)
+      .map(k => ({ name: k, amount: merchantMap[k], pct: totalA > 0 ? ((merchantMap[k] / totalA) * 100) : 0 }))
+      .sort((a, b) => b.amount - a.amount)
+      .slice(0, 4);
+
+    // 3. قاعدة 50/30/20
     let needsTotal = 0;
     let wantsTotal = 0;
     let savingsTotal = Math.max(0, netSavings);
@@ -636,7 +823,7 @@ window.BudgetAuditEngine = (() => {
     const wantsPct = Math.round((wantsTotal / totalBase) * 100);
     const savingsPct = Math.round((savingsTotal / totalBase) * 100);
 
-    // 2. كاشف المصاريف الدقيقة المتكررة (The Latte Effect)
+    // 4. كاشف المصاريف الدقيقة المتكررة (The Latte Effect)
     const smallTxs = txsA.filter(t => (Number(t.amount) || 0) <= 120);
     const latteMap = {};
     smallTxs.forEach(t => {
@@ -648,7 +835,7 @@ window.BudgetAuditEngine = (() => {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 4);
 
-    // 3. كاشف العمليات المزدوجة والأخطاء الجنائية
+    // 5. كاشف العمليات المزدوجة والأخطاء الجنائية
     const duplicates = [];
     const seen = new Set();
     txsA.forEach(t => {
@@ -660,16 +847,37 @@ window.BudgetAuditEngine = (() => {
       }
     });
 
-    // 4. مقياس ساعات العمل البديلة
+    // 6. مقياس ساعات العمل البديلة ومدرج الأمان
     const hourlyIncome = (totalIncome > 0 ? totalIncome : 35000) / 160;
     const workHoursCost = totalA > 0 ? (totalA / hourlyIncome).toFixed(1) : 0;
-
-    // 5. مدرج الأمان في الطوارئ
     const liquidCash = (state.wallets || []).reduce((s, w) => s + (Number(w.balance) || 0), 0);
     const monthlyRunway = needsTotal > 0 ? (liquidCash / needsTotal).toFixed(1) : 0;
 
     container.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 12px;">
+        
+        <!-- قائمتان منسدلتان لاختيار شهري المقارنة بحرية تامة -->
+        <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 14px; padding: 10px 14px;">
+          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-code-compare"></i> محرك المقارنة بين فترتين ماليتين:
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;">
+            <div>
+              <label style="font-size: 0.62rem; color: #94a3b8; display: block; margin-bottom: 2px;">الفترة أ (الحالية):</label>
+              <select id="compSelMonthA" onchange="BudgetAuditEngine.setComparisonPeriods(this.value, document.getElementById('compSelMonthB').value)" style="width: 100%; height: 32px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; color: #38bdf8; font-weight: 850; font-size: 0.74rem; padding: 0 6px;">
+                ${monthOptionsA}
+              </select>
+            </div>
+            <div style="font-size: 1.1rem; color: #f59e0b; padding-top: 14px;">🆚</div>
+            <div>
+              <label style="font-size: 0.62rem; color: #94a3b8; display: block; margin-bottom: 2px;">الفترة ب (المقارن بها):</label>
+              <select id="compSelMonthB" onchange="BudgetAuditEngine.setComparisonPeriods(document.getElementById('compSelMonthA').value, this.value)" style="width: 100%; height: 32px; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; color: #cbd5e1; font-weight: 850; font-size: 0.74rem; padding: 0 6px;">
+                ${monthOptionsB}
+              </select>
+            </div>
+          </div>
+        </div>
+
         <!-- بطاقات الرقابة الثلاثية العليا -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
           <div style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 10px 8px; text-align: center;">
@@ -690,6 +898,84 @@ window.BudgetAuditEngine = (() => {
               ${netSavings >= 0 ? '+ ' : '- '}${formatMoneyVal(Math.abs(netSavings))}
             </div>
             <div style="font-size: 0.60rem; color: #94a3b8; margin-top: 1px;">فائض الشهر الحقيقي</div>
+          </div>
+        </div>
+
+        <!-- جدول ميزان الفروقات الشامل (The Variance Matrix) -->
+        <div style="background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 14px; overflow: hidden;">
+          <div style="padding: 8px 12px; background: rgba(30, 41, 59, 0.6); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+            <div style="font-size: 0.80rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-arrow-down-up-across-line"></i>
+              <span>جدول ميزان الفروقات الشامل للتصنيفات</span>
+            </div>
+            <span style="font-size: 0.66rem; color: #94a3b8;">${compPeriodA} 🆚 ${compPeriodB}</span>
+          </div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: right;">
+              <thead>
+                <tr style="background: rgba(15, 23, 42, 0.9); font-size: 0.66rem; color: #94a3b8; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                  <th style="padding: 7px 6px;">التصنيف</th>
+                  <th style="padding: 7px 4px; text-align: center;">الفترة أ</th>
+                  <th style="padding: 7px 4px; text-align: center;">الفترة ب</th>
+                  <th style="padding: 7px 4px; text-align: center;">الفارق</th>
+                  <th style="padding: 7px 6px; text-align: center;">التغير %</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${comparisonRows || '<tr><td colspan="5" style="text-align: center; padding: 12px; color: #94a3b8;">لا توجد بيانات مقارنة كافية</td></tr>'}
+              </tbody>
+              <tfoot>
+                <tr style="background: rgba(15, 23, 42, 0.95); font-weight: 900; font-size: 0.76rem; border-top: 1.5px solid rgba(56, 189, 248, 0.3);">
+                  <td style="padding: 9px 6px; color: #cbd5e1;">إجمالي المصروفات:</td>
+                  <td style="padding: 9px 4px; text-align: center; color: #93c5fd; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(totalA)}</td>
+                  <td style="padding: 9px 4px; text-align: center; color: #cbd5e1; font-family: var(--font-numbers); direction: ltr;">${formatMoneyVal(totalB)}</td>
+                  <td style="padding: 9px 4px; text-align: center; color: ${totalA - totalB > 0 ? '#f87171' : '#34d399'}; font-family: var(--font-numbers); direction: ltr;">
+                    ${totalA - totalB > 0 ? '+ ' : '- '}${formatMoneyVal(Math.abs(totalA - totalB))}
+                  </td>
+                  <td style="padding: 9px 6px; text-align: center; color: #fbbf24;">${growthRate > 0 ? '+' : ''}${growthRate.toFixed(1)}%</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- مصفوفة الأفراد المتقاطعة ورادار تركز المتاجر -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <!-- مصفوفة الأفراد -->
+          <div style="background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(168, 85, 247, 0.3); border-radius: 12px; overflow: hidden;">
+            <div style="padding: 6px 10px; background: rgba(30, 41, 59, 0.6); font-size: 0.74rem; font-weight: 850; color: #c084fc; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-users-rays"></i>
+              <span>مصفوفة الأفراد المتقاطعة</span>
+            </div>
+            <table style="width: 100%; border-collapse: collapse; text-align: right;">
+              <thead>
+                <tr style="background: rgba(15, 23, 42, 0.85); font-size: 0.62rem; color: #94a3b8;">
+                  <th style="padding: 5px 6px;">الفرد</th>
+                  <th style="padding: 5px 3px; text-align: center;">فترة أ</th>
+                  <th style="padding: 5px 3px; text-align: center;">فترة ب</th>
+                  <th style="padding: 5px 3px; text-align: center;">الفارق</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${crossMemberRows || '<tr><td colspan="4" style="text-align: center; padding: 8px; color: #94a3b8; font-size: 0.65rem;">لا توجد بيانات</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- رادار تركز المتاجر والمنصات -->
+          <div style="background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(245, 158, 11, 0.3); border-radius: 12px; padding: 8px 10px;">
+            <div style="font-size: 0.74rem; font-weight: 850; color: #fbbf24; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;">
+              <i class="fa-solid fa-store"></i>
+              <span>رادار تركز المتاجر والمنصات</span>
+            </div>
+            ${topMerchants.length > 0 ? topMerchants.map(m => `
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.66rem; margin-bottom: 4px; border-bottom: 1px dashed rgba(255,255,255,0.06); padding-bottom: 2px;">
+                <span style="color: #e2e8f0; font-weight: 750;">${escapeHtml(m.name.slice(0, 14))}</span>
+                <span style="color: ${m.pct > 20 ? '#f87171' : '#fbbf24'}; font-family: var(--font-numbers); direction: ltr;">
+                  ${formatMoneyVal(m.amount)} (${m.pct.toFixed(0)}%)
+                </span>
+              </div>
+            `).join('') : '<div style="font-size: 0.66rem; color: #94a3b8;">لا توجد بيانات متاجر كافية</div>'}
           </div>
         </div>
 
@@ -748,7 +1034,7 @@ window.BudgetAuditEngine = (() => {
           <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;">
             <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 800;">⏱️ ساعات العمل البديلة للمصروف:</div>
             <div style="font-size: 1rem; font-weight: 900; color: #38bdf8; margin-top: 3px;">${workHoursCost} ساعة عمل</div>
-            <div style="font-size: 0.60rem; color: #64748b;">من عمر رب الأسرة لتمويل هذا الشهر</div>
+            <div style="font-size: 0.60rem; color: #64748b;">من عمر رب الأسرة لتمويل هذه الفترة</div>
           </div>
           <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;">
             <div style="font-size: 0.72rem; color: #94a3b8; font-weight: 800;">🛡️ مدرج الأمان في الطوارئ:</div>
@@ -756,6 +1042,7 @@ window.BudgetAuditEngine = (() => {
             <div style="font-size: 0.60rem; color: #64748b;">تغطية حتميات الأسرة في الطوارئ</div>
           </div>
         </div>
+
       </div>
     `;
   }
@@ -792,7 +1079,7 @@ window.BudgetAuditEngine = (() => {
       if (monthlyPlans.length === 0) {
         contentHtml = '<div style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد موازنات سابقة محفوظة في الأرشيف</div>';
       } else {
-        contentHtml = monthlyPlans.map(b => {
+        contentHtml = monthlyPlans.map((b, idx) => {
           if (typeof ensureBudgetItems === 'function') {
             ensureBudgetItems(b);
           }
@@ -804,6 +1091,8 @@ window.BudgetAuditEngine = (() => {
           const monthTxs = (state.transactions || []).filter(t => t.date && t.date.startsWith(b.month || '2026-11') && t.type === 'expense');
           const actualSpent = monthTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
           const adherence = totalExp > 0 ? Math.min(100, Math.round((actualSpent / totalExp) * 100)) : 0;
+
+          const bIdentifier = b.id || b.month || ('bgt-idx-' + idx);
 
           return `
             <div style="background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;">
@@ -834,10 +1123,10 @@ window.BudgetAuditEngine = (() => {
 
               <!-- أزرار الإجراءات الفورية -->
               <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button type="button" onclick="BudgetAuditEngine.cloneBudget('${b.id}')" style="flex: 2; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                <button type="button" onclick="BudgetAuditEngine.cloneBudget('${bIdentifier}')" style="flex: 2; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; color: #fff; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
                   <i class="fa-solid fa-copy"></i> إنشاء موازنة جديدة بنسخ هذا الشهر
                 </button>
-                <button type="button" onclick="onBudgetPlanSelect('${b.id}'); switchBudgetSubTab('current');" style="flex: 1; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.72rem; font-weight: 800; cursor: pointer;">
+                <button type="button" onclick="onBudgetPlanSelect('${bIdentifier}'); switchBudgetSubTab('current');" style="flex: 1; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.72rem; font-weight: 800; cursor: pointer;">
                   استعراض
                 </button>
               </div>
@@ -856,15 +1145,18 @@ window.BudgetAuditEngine = (() => {
           const est = plan ? (plan.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0) : 0;
           const act = projectTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
+          // التمييز العادل بين المشاريع النشطة والمكتملة بدقة
+          const isCompleted = (plan && plan.status === 'completed') || (typeof isProjectCompleted === 'function' && isProjectCompleted(p));
+
           return `
             <div style="background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div style="font-size: 0.88rem; font-weight: 850; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-trowel-bricks" style="color: #a855f7;"></i>
+                  <i class="fa-solid fa-trowel-bricks" style="color: ${isCompleted ? '#34d399' : '#38bdf8'};"></i>
                   <span>${escapeHtml(p)}</span>
                 </div>
-                <span style="font-size: 0.68rem; font-weight: 800; color: #34d399; background: rgba(16, 185, 129, 0.15); padding: 2px 7px; border-radius: 6px;">
-                  مكتمل / مرجعي
+                <span style="font-size: 0.68rem; font-weight: 800; color: ${isCompleted ? '#34d399' : '#38bdf8'}; background: ${isCompleted ? 'rgba(16, 185, 129, 0.15)' : 'rgba(56, 189, 248, 0.15)'}; padding: 2px 7px; border-radius: 6px;">
+                  ${isCompleted ? '🏁 مكتمل ومؤرشف' : '🟢 نشط قيد التنفيذ'}
                 </span>
               </div>
 
@@ -874,8 +1166,8 @@ window.BudgetAuditEngine = (() => {
               </div>
 
               <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button type="button" onclick="BudgetAuditEngine.selectProject('${p}'); switchBudgetSubTab('projects');" style="flex: 1; height: 32px; border-radius: 8px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.35); color: #c084fc; font-size: 0.72rem; font-weight: 800; cursor: pointer;">
-                  تقرير المشروع الختامي
+                <button type="button" onclick="BudgetAuditEngine.selectProject('${p}'); switchBudgetSubTab('projects');" style="flex: 1; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.72rem; font-weight: 800; cursor: pointer;">
+                  تقرير المشروع ومتابعة الصرف
                 </button>
               </div>
             </div>
@@ -898,7 +1190,22 @@ window.BudgetAuditEngine = (() => {
   // 6. دوال الربط والأحداث العامة (Public API)
   // =========================================================================
 
+  // 1. دعم الفلترة المخصصة بنافذة إدخال فورية
   function selectPeriod(period) {
+    if (period === 'custom') {
+      const defaultStart = customStartDate || new Date().toISOString().slice(0, 8) + '01';
+      const defaultEnd = customEndDate || new Date().toISOString().slice(0, 10);
+      const start = prompt('أدخل تاريخ بداية الفترة (YYYY-MM-DD):', defaultStart);
+      if (!start) return;
+      const end = prompt('أدخل تاريخ نهاية الفترة (YYYY-MM-DD):', defaultEnd);
+      if (!end) return;
+      if (start > end) {
+        alert('تنبيه: تاريخ البداية يجب أن يسبق تاريخ النهاية!');
+        return;
+      }
+      customStartDate = start;
+      customEndDate = end;
+    }
     activeTimePeriod = period;
     refreshActiveBudgetAudit();
   }
@@ -909,8 +1216,28 @@ window.BudgetAuditEngine = (() => {
   }
 
   function selectProjectPeriod(period) {
+    if (period === 'custom') {
+      const defaultStart = projectCustomStart || new Date().toISOString().slice(0, 8) + '01';
+      const defaultEnd = projectCustomEnd || new Date().toISOString().slice(0, 10);
+      const start = prompt('أدخل تاريخ بداية الفترة للمشروع (YYYY-MM-DD):', defaultStart);
+      if (!start) return;
+      const end = prompt('أدخل تاريخ نهاية الفترة للمشروع (YYYY-MM-DD):', defaultEnd);
+      if (!end) return;
+      if (start > end) {
+        alert('تنبيه: تاريخ البداية يجب أن يسبق تاريخ النهاية!');
+        return;
+      }
+      projectCustomStart = start;
+      projectCustomEnd = end;
+    }
     activeProjectTimePeriod = period;
     renderProjectBudgetsAdvanced();
+  }
+
+  function setComparisonPeriods(monthA, monthB) {
+    if (monthA) compPeriodA = monthA;
+    if (monthB) compPeriodB = monthB;
+    renderExecutiveComparisonsAudit();
   }
 
   function switchArchiveTab(tab) {
@@ -919,7 +1246,8 @@ window.BudgetAuditEngine = (() => {
   }
 
   function cloneBudget(budgetId) {
-    const orig = (state.monthlyBudgets || []).find(b => b.id === budgetId);
+    // دعم البحث بالمعرف id أو باسم الشهر month لتفادي قيمة undefined
+    const orig = (state.monthlyBudgets || []).find(b => b.id === budgetId || b.month === budgetId || (!budgetId && b));
     if (!orig) return;
 
     const now = new Date();
@@ -928,7 +1256,7 @@ window.BudgetAuditEngine = (() => {
 
     const newPlan = JSON.parse(JSON.stringify(orig));
     newPlan.id = 'bgt-' + nextMonthStr + '-' + Date.now();
-    newPlan.name = `ميزانية شهر ${nextMonthStr} (مستنسخة من ${orig.name || orig.month})`;
+    newPlan.name = `ميزانية شهر ${nextMonthStr}`;
     newPlan.month = nextMonthStr;
     newPlan.createdAt = new Date().toISOString();
     newPlan.updatedAt = new Date().toISOString();
@@ -948,7 +1276,113 @@ window.BudgetAuditEngine = (() => {
     if (typeof loadActiveBudgetPlan === 'function') loadActiveBudgetPlan();
   }
 
-  // تهيئة وتحديث كافة اللوحات المتقدمة
+  // 10. تصدير موازنة الشهر إلى Excel مع دعم كامل للغة العربية (RTL) والإشارات المحاسبية
+  function exportBudgetToExcel() {
+    if (typeof XLSX === 'undefined') {
+      if (typeof showToast === 'function') showToast('⚠️ تعذر تحميل مكتبة تصدير Excel');
+      return;
+    }
+
+    let plan = window.currentBudgetMonthData;
+    if (!plan && state.monthlyBudgets && state.monthlyBudgets.length > 0) {
+      plan = state.monthlyBudgets[0];
+    }
+    if (!plan) {
+      if (typeof showToast === 'function') showToast('⚠️ لا توجد موازنة للتصدير');
+      return;
+    }
+    if (typeof ensureBudgetItems === 'function') ensureBudgetItems(plan);
+
+    const txs = getTransactionsForPeriod(state.transactions || [], activeTimePeriod, plan.month, customStartDate, customEndDate);
+    const expenseTxs = txs.filter(t => t.type === 'expense');
+
+    const headers = [
+      'التصنيف / البند',
+      'المبلغ المقدر الشهري (ج.م)',
+      'التقديري للفترة المختارة (ج.م)',
+      'الفعلي المنصرف (ج.م)',
+      'الانحراف / الفارق (ج.م)',
+      'نسبة الاستهلاك %',
+      'الأفراد المعنيون بالبند',
+      'ملاحظات'
+    ];
+
+    const rows = [headers];
+
+    let sumEstMonthly = 0;
+    let sumEstPeriod = 0;
+    let sumActual = 0;
+
+    (plan.items || []).forEach(it => {
+      const monthlyAmt = Number(it.amount) || 0;
+      const proratedEst = calculateProratedAmount(it, activeTimePeriod, plan.month, customStartDate, customEndDate);
+      const cat = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === it.category) || { name: it.title || it.category };
+      
+      const matchingTxs = (typeof getExpensesForBudgetItem === 'function')
+        ? getExpensesForBudgetItem(it, expenseTxs, plan.items)
+        : expenseTxs.filter(t => t.category === it.category || t.budgetItemId === it.id);
+      const actualAmt = matchingTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+      const diff = proratedEst - actualAmt;
+      const pct = proratedEst > 0 ? ((actualAmt / proratedEst) * 100).toFixed(1) + '%' : (actualAmt > 0 ? '100%' : '0%');
+      const members = (it.members && it.members.length > 0) ? it.members.join('، ') : 'البيت';
+
+      sumEstMonthly += monthlyAmt;
+      sumEstPeriod += proratedEst;
+      sumActual += actualAmt;
+
+      // تطبيق المعيار المحاسبي العالمي: المصروف يحمل إشارة سالبة
+      rows.push([
+        it.title || cat.name,
+        monthlyAmt,
+        proratedEst,
+        -actualAmt,
+        diff,
+        pct,
+        members,
+        it.notes || ''
+      ]);
+    });
+
+    const totalDiff = sumEstPeriod - sumActual;
+    const totalPct = sumEstPeriod > 0 ? ((sumActual / sumEstPeriod) * 100).toFixed(1) + '%' : '0%';
+    rows.push([
+      'الإجمالي العام',
+      sumEstMonthly,
+      sumEstPeriod,
+      -sumActual,
+      totalDiff,
+      totalPct,
+      'كافة أفراد الأسرة',
+      `الفترة: ${getPeriodLabel(activeTimePeriod)}`
+    ]);
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!views'] = [{ RTL: true }];
+    ws['!cols'] = [
+      { wch: 28 }, // البند
+      { wch: 22 }, // المقدر الشهري
+      { wch: 22 }, // التقديري للفترة
+      { wch: 20 }, // الفعلي المنصرف
+      { wch: 20 }, // الانحراف
+      { wch: 16 }, // نسبة الاستهلاك
+      { wch: 24 }, // الأفراد
+      { wch: 28 }  // ملاحظات
+    ];
+
+    const wb = XLSX.utils.book_new();
+    const sheetName = `موازنة_${plan.month || 'الشهر'}`;
+    XLSX.utils.book_append_sheet(wb, ws, sheetName.slice(0, 31));
+
+    const fileName = `موازنة_العائلة_${plan.month || 'الشهر'}_${activeTimePeriod}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+
+    if (typeof showToast === 'function') {
+      showToast(`📊 تم تصدير كشف موازنة الشهر إلى Excel بنجاح`);
+    }
+  }
+
+  // 2. تحديث متناغم لجميع بطاقات الصفحة العلوية والجدول
   function refreshActiveBudgetAudit() {
     let plan = window.currentBudgetMonthData;
     if (!plan && state.monthlyBudgets && state.monthlyBudgets.length > 0) {
@@ -963,7 +1397,7 @@ window.BudgetAuditEngine = (() => {
 
     const stripEl = document.getElementById('budgetMonthlyTimeFiltersContainer');
     if (stripEl) {
-      stripEl.innerHTML = renderTimeFilterStrip('budgetMonthlyTimeFilters', activeTimePeriod, 'BudgetAuditEngine.selectPeriod');
+      stripEl.innerHTML = renderTimeFilterStrip('budgetMonthlyTimeFilters', activeTimePeriod, 'BudgetAuditEngine.selectPeriod', customStartDate, customEndDate);
     }
 
     const tblContainer = document.getElementById('budgetActualVsEstimatedContainer');
@@ -975,14 +1409,50 @@ window.BudgetAuditEngine = (() => {
     if (memContainer) {
       memContainer.innerHTML = renderFamilyMemberBreakdown(plan, txs, activeTimePeriod);
     }
+
+    // مزامنة الـ KPIs العلوية مع الفترة الزمنية المختارة لمنع أي تناقض بصري
+    const periodExpense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + (Number(t.amount) || 0), 0);
+    
+    let totalProratedEst = 0;
+    if (plan && plan.items) {
+      totalProratedEst = plan.items.reduce((sum, it) => {
+        return sum + calculateProratedAmount(it, activeTimePeriod, plan.month, customStartDate, customEndDate);
+      }, 0);
+    }
+
+    const kpiAct = document.getElementById('budgetKpiActual');
+    if (kpiAct) {
+      kpiAct.textContent = (typeof formatMoneyVal === 'function') ? formatMoneyVal(periodExpense) : periodExpense.toLocaleString('en-US');
+    }
+
+    const kpiEst = document.getElementById('budgetKpiEstimated');
+    if (kpiEst && activeTimePeriod !== 'month') {
+      kpiEst.textContent = (typeof formatMoneyVal === 'function') ? formatMoneyVal(totalProratedEst) : totalProratedEst.toLocaleString('en-US');
+    }
+
+    const kpiSurplus = document.getElementById('budgetKpiSurplus');
+    if (kpiSurplus && activeTimePeriod !== 'month') {
+      const diff = totalProratedEst - periodExpense;
+      kpiSurplus.textContent = (diff >= 0 ? '+ ' : '- ') + ((typeof formatMoneyVal === 'function') ? formatMoneyVal(Math.abs(diff)) : Math.abs(diff).toLocaleString('en-US'));
+      kpiSurplus.style.color = diff >= 0 ? '#34d399' : '#f87171';
+    }
+
+    const progBar = document.getElementById('budgetProgressOverall');
+    if (progBar && totalProratedEst > 0) {
+      const pct = Math.min(100, Math.round((periodExpense / totalProratedEst) * 100));
+      progBar.style.width = pct + '%';
+      progBar.style.backgroundColor = (pct > 100) ? '#ef4444' : (pct >= 85 ? '#f59e0b' : '#10b981');
+    }
   }
 
   return {
     selectPeriod,
     selectProject,
     selectProjectPeriod,
+    setComparisonPeriods,
     switchArchiveTab,
     cloneBudget,
+    exportBudgetToExcel,
     refreshActiveBudgetAudit,
     renderProjectBudgetsAdvanced,
     renderExecutiveComparisonsAudit,

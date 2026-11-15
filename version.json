@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.72",
-  "build": 202611151730,
-  "buildId": 202611151730,
-  "releaseDate": "2026-11-15T17:30:00.000Z",
-  "changelog": "v5.3.72: Executive Budgeting & Forensic Audit Suite - Time filters strip & Proration engine (Actual vs Estimated Table), Family Member Breakdown, Project Budgets Items Matrix & Member Breakdown, Executive Audit & BI Engine (50/30/20, Latte effect, Forensic duplicate detector, Work hours equivalence, Emergency runway), Segmented History Archive (Monthly & Projects) with One-Touch Budget Clone."
+  "version": "v5.3.73",
+  "build": 202611151800,
+  "buildId": 202611151800,
+  "releaseDate": "2026-11-15T18:00:00.000Z",
+  "changelog": "v5.3.73: Fixes and enhancements for Executive Budgeting & Audit Suite (Custom date range picker, KPI & progress proration sync, dynamic family members & fair shared expense allocation, genuine project budget status without dummy numbers, comprehensive Variance Matrix with dynamic period selectors, Cross-member matrix & merchant concentration radar, robust budget cloning, active/completed project history badges, RTL Excel export, and luxury gold drawer redesign)."
 }

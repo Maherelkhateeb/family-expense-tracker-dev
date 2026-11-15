@@ -16323,7 +16323,7 @@ body.light-theme .cat-budget-progress-track {
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611151720"></script>
+  <script src="./budget-audit-engine.js?v=202611151800"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -17044,17 +17044,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <span id="headerNotifBadge" hidden></span>
           </button>
 
-          <!-- 2. زر البحث (بجانب التنبيهات) -->
-          <button class="header-settings-btn" id="btnGlobalSearch" onclick="openGlobalSearchModal()" title="البحث الشامل في البرنامج" style="background: rgba(56, 189, 248, 0.16); border: 1.2px solid rgba(56, 189, 248, 0.45); color: #38bdf8; height: 32px; padding: 0 8px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 850; transition: all 0.2s; white-space: nowrap;">
-            <i class="fa-solid fa-magnifying-glass" style="font-size: 0.76rem;"></i>
-            <span>بحث</span>
-          </button>
-
-          <!-- 3. زر المهام الرئيسي (ثم المهام) -->
+          <!-- 2. زر المهام الرئيسي (بجانب التنبيهات) -->
           <button type="button" class="header-tasks-main-btn" id="btnHeaderTasksTop" onclick="openTasksFullScreenModal()" title="عرض وإدارة المهام والمخطط اليومي" style="height: 32px; padding: 0 8px; border-radius: 9px; background: linear-gradient(135deg, rgba(168, 85, 247, 0.28), rgba(99, 102, 241, 0.28)); border: 1.2px solid rgba(168, 85, 247, 0.55); color: #f8fafc; font-size: 0.74rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25); transition: all 0.2s; white-space: nowrap;">
             <i class="fa-solid fa-list-check" style="color: #c084fc; font-size: 0.82rem;"></i>
             <span>المهام</span>
             <span id="headerTasksBadgeCount" style="background: #a855f7; color: #ffffff; font-size: 0.60rem; padding: 1px 5px; border-radius: 8px; font-weight: 900;">0</span>
+          </button>
+
+          <!-- 3. زر البحث (إلى يسار المهام) -->
+          <button class="header-settings-btn" id="btnGlobalSearch" onclick="openGlobalSearchModal()" title="البحث الشامل في البرنامج" style="background: rgba(56, 189, 248, 0.16); border: 1.2px solid rgba(56, 189, 248, 0.45); color: #38bdf8; height: 32px; padding: 0 8px; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.72rem; font-weight: 850; transition: all 0.2s; white-space: nowrap;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 0.76rem;"></i>
+            <span>بحث</span>
           </button>
         </div>
 
@@ -17333,16 +17333,16 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <span id="opsResultCount" role="status" style="white-space: nowrap; font-size: 0.70rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 4px 6px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
                 -- عملية
               </span>
-              <!-- زر طي / إظهار الفلاتر الإضافية لتوفير مساحة الشاشة -->
-              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" title="طي أو إظهار خيارات الفلترة المتقدمة" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.12); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 800;">
-                <i class="fa-solid fa-sliders"></i> <span id="lblToggleOpsFilters">طي الفلاتر</span> <i id="iconToggleOpsFilters" class="fa-solid fa-chevron-up" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
+              <!-- زر طي / إظهار الفلاتر الإضافية لتوفير مساحة الشاشة (مطوي افتراضياً) -->
+              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" title="طي أو إظهار خيارات الفلترة المتقدمة" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.06); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 800;">
+                <i class="fa-solid fa-sliders"></i> <span id="lblToggleOpsFilters">خيارات الفلترة</span> <i id="iconToggleOpsFilters" class="fa-solid fa-chevron-down" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
               </button>
               <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
               <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
               <label style="flex: 1; min-width: 0; margin: 0; position: relative;"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
             </div>
-            <!-- بداية الحاوية القابلة للطي لصفوف الفلترة المتقدمة -->
-            <div id="opsFiltersCollapsibleBody" style="transition: all 0.25s ease;">
+            <!-- بداية الحاوية القابلة للطي لصفوف الفلترة المتقدمة (مطوية في الوضع الافتراضي) -->
+            <div id="opsFiltersCollapsibleBody" style="display: none; transition: all 0.25s ease;">
             <div class="ops-filter-grid">
 <details class="ops-picker" name="operation-filter" data-all-label="كل البنود">
   <summary><span class="ops-picker-caption">البنود</span><span class="ops-picker-value">كل البنود</span><i class="fa-solid fa-chevron-down" aria-hidden="true"></i></summary>
@@ -18320,9 +18320,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
                 <div>
                   <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
                     <span>تقويم الاستحقاقات الشهرية</span>
-                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-up" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
+                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
                   </div>
-                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق</div>
+                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق (انقر للتوسيع)</div>
                 </div>
               </div>
 
@@ -18339,8 +18339,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
               </div>
             </div>
 
-            <!-- محتوى التقويم القابل للطي -->
-            <div id="commitmentsCalendarCollapseBody" style="display: block; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <!-- محتوى التقويم القابل للطي (مطوي في الوضع الافتراضي) -->
+            <div id="commitmentsCalendarCollapseBody" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
               <!-- دليل ألوان الالتزامات -->
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; font-size: 0.62rem; color: #94a3b8; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -18637,6 +18637,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <div style="display: flex; align-items: center; gap: 6px;">
               <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.76rem; padding: 0 10px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);">
                 <i class="fa-solid fa-plus"></i> <span>خطة جديدة</span>
+              </button>
+              <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.74rem; padding: 0 9px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="تصدير الموازنة إلى إكسيل (RTL)">
+                <i class="fa-solid fa-file-excel"></i> <span>تصدير</span>
               </button>
               <button type="button" onclick="switchBudgetSubTab('history')" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.74rem; padding: 0 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-weight: 850; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="أرشيف الميزانيات والمشاريع">
                 <i class="fa-solid fa-clock-rotate-left"></i> <span>الأرشيف</span>
@@ -26948,6 +26951,63 @@ function loadMoreOperations() {
       renderOperationsList(state.transactions || []);
     }
 
+    function resetOperationsFilters() {
+      // 1. مسح حقل البحث
+      const inp = document.getElementById('opsSearchInput');
+      if (inp) inp.value = '';
+      state.searchQuery = '';
+
+      // 2. تصفير منتقيات الفلترة المتقدمة (البنود، الأفراد، المشاريع)
+      ['opsFilterCategory', 'opsFilterMember', 'opsFilterProject'].forEach(id => {
+        if (typeof setOperationFilterValues === 'function') {
+          setOperationFilterValues(id, []);
+        }
+      });
+      // إغلاق أي تفاصيل منسدلة مفتوحة
+      document.querySelectorAll('.ops-picker[open]').forEach(p => { p.open = false; });
+
+      // 3. إعادة ضبط نوع العملية لكافة العمليات
+      opsTypeFilterState = 'all';
+      const pillBox = document.getElementById('opsTypeFilterPills');
+      if (pillBox) {
+        pillBox.querySelectorAll('.btn-export-tool').forEach(b => {
+          b.classList.remove('active');
+          b.style.background = 'transparent';
+          b.style.color = '#94a3b8';
+        });
+        const btnAll = document.getElementById('btnOpsFilterAll');
+        if (btnAll) {
+          btnAll.classList.add('active');
+          btnAll.style.background = 'rgba(56, 189, 248, 0.25)';
+          btnAll.style.color = '#38bdf8';
+        }
+      }
+
+      // 4. إعادة ضبط فلتر المشاريع والأفراد العام
+      state.projectFilter = 'all';
+      if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
+
+      // 5. مسح النطاق المخصص للتاريخ إن وجد والعودة للشهر الافتراضي
+      state.customDateRange = null;
+      if (typeof setAppPeriod === 'function') {
+        setAppPeriod('month', false);
+      } else {
+        state.period = 'month';
+      }
+
+      // 6. تحديث قائمة العمليات المسجلة فوراً
+      if (typeof filterOperationsList === 'function') {
+        filterOperationsList();
+      } else if (typeof renderOperationsList === 'function') {
+        renderOperationsList(state.transactions || []);
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('🧹 تم مسح كافة الفلاتر بنجاح وعرض كافة العمليات');
+      }
+    }
+    window.resetOperationsFilters = resetOperationsFilters;
+
     // =========================================================================
     // اختيار أفراد العائلة (Persistent Filter Across All Pages)
     // =========================================================================
@@ -31022,27 +31082,26 @@ function switchSettingsTab(tabName) {
         const feed=result.feed, old=state.market||{};
         const stale=result.offline||MarketData.age(feed.checkedAt)>120;
         const estimated=feed.rateMode==='estimated';
-        const fmt=(n,currency='ج.م')=>MarketData.positive(n)?Number(n).toLocaleString('ar-EG',{maximumFractionDigits:2})+' '+currency:'—';
-        const date=s=>MarketData.stamp(s)?new Date(MarketData.stamp(s)).toLocaleString('ar-EG',{dateStyle:'short',timeStyle:'short'}):'غير معلن';
+        const fmt = (n, currency = 'ج.م') => MarketData.positive(n) ? Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + currency : '—';
+        const date = s => MarketData.stamp(s) ? new Date(MarketData.stamp(s)).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' }) : 'غير معلن';
         const renderPriceChangeBadge = (id, quoteOrChg, curr = 'ج.م') => {
           const el = document.getElementById(id);
           if (!el) return;
           el.removeAttribute('hidden');
           const chg = (quoteOrChg && typeof quoteOrChg === 'object' && 'val' in quoteOrChg) ? quoteOrChg : (quoteOrChg?.chg || null);
-          if (!chg || typeof chg.pct !== 'number' || isNaN(chg.pct)) {
-            el.innerHTML = '<span style="color: #94a3b8; font-size: 0.65rem;">• 0.00%</span>';
+          if (!chg || typeof chg.pct !== 'number' || isNaN(chg.pct) || Math.abs(chg.pct) < 0.001) {
+            el.innerHTML = '<span style="color: var(--market-muted); font-size: 0.58rem; font-weight: 700;">ثابت •</span>';
             el.className = 'change-tag flat';
             return;
           }
           const pct = chg.pct;
           const val = chg.val;
-          const isUp = pct > 0.001;
-          const isDown = pct < -0.001;
-          const arrow = isUp ? '▲' : isDown ? '▼' : '•';
+          const isUp = pct > 0;
+          const arrow = isUp ? '▲' : '▼';
           const sign = isUp ? '+' : '';
-          const cls = isUp ? 'up' : isDown ? 'down' : 'flat';
+          const cls = isUp ? 'up' : 'down';
           el.className = 'change-tag ' + cls;
-          el.innerHTML = `<span>${arrow}</span> <span>${sign}${pct.toFixed(2)}%</span> <span style="font-size: 0.60rem; opacity: 0.85;">(${sign}${val.toFixed(2)} ${curr})</span>`;
+          el.innerHTML = `<span>${arrow} ${Math.abs(pct).toFixed(2)}%</span> <span style="font-size: 0.54rem; opacity: 0.85;">(${sign}${Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${curr})</span>`;
         };
         const changes = (id, q, curr = 'ج.م') => renderPriceChangeBadge(id, q, curr);
         const market={source:feed.provider,updatedAt:feed.updatedAt,checkedAt:feed.checkedAt,rateMode:feed.rateMode,fxProvider:feed.fxProvider,goldProvider:feed.goldProvider,fxUpdatedAt:feed.fxUpdatedAt,goldUpdatedAt:feed.goldUpdatedAt,globalGoldUpdatedAt:feed.globalGoldUpdatedAt,isStale:stale};
@@ -31072,8 +31131,8 @@ function switchSettingsTab(tabName) {
         text('marketQuoteTimes','وقت أسعار المصدر — الذهب: '+date(feed.goldUpdatedAt)+' · العملات: '+date(feed.fxUpdatedAt));
         text('goldPriceBasis',estimated?'أسعار تقديرية من الأونصة وسعر الصرف؛ لا تمثل عرض شراء أو بيع محلي.':'القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.');
         text('goldValuationSourceText',stale?'بحسب سعر محفوظ':estimated?'بحسب تقدير عالمي':'بحسب سعر عيار 21');
-        const balance=typeof computeTotalEffectiveBalance==='function'?computeTotalEffectiveBalance():state.balance||0;
-        text('goldValuationText',(balance/market.gold21).toLocaleString('ar-EG',{maximumFractionDigits:2})+' جم ذهب 21');
+        const balance = typeof computeTotalEffectiveBalance === 'function' ? computeTotalEffectiveBalance() : state.balance || 0;
+        text('goldValuationText', Number(balance / (market.gold21 || 1)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' جم ذهب 21');
         updateCalcDisplay();
         if(typeof runUniversalConverter==='function')runUniversalConverter();
         if(typeof renderUI==='function')renderUI();
@@ -33459,6 +33518,7 @@ function switchSettingsTab(tabName) {
 
       panel.style.display = targetState ? 'block' : 'none';
       if (targetState) {
+        try { panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch(e) {}
         const dateInp = document.getElementById('inpUnifiedCommitmentDueDate');
         if (dateInp && !dateInp.value) {
           dateInp.value = getLocalDateStr(new Date());
@@ -36201,10 +36261,8 @@ function switchCategoryChartFormat(format, btnEl) {
     }
 
     function handleExpectedTopAddAction() {
-      if (activeExpectedTopSection === 'budgets') {
-        if (typeof openNewBudgetPlanModal === 'function') openNewBudgetPlanModal();
-      } else {
-        toggleUnifiedAddCommitmentPanel();
+      if (typeof toggleUnifiedAddCommitmentPanel === 'function') {
+        toggleUnifiedAddCommitmentPanel(true);
       }
     }
 
