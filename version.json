@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.69",
-  "build": 202611151630,
-  "buildId": 202611151630,
-  "releaseDate": "2026-11-15T16:30:00.000Z",
-  "changelog": "v5.3.69: Restored all 4 visual charts & explanatory analytics in Operations, added collapsible operations filter toggle, eliminated Budgets top blank gap & DOM nesting alignment."
+  "version": "v5.3.70",
+  "build": 202611151700,
+  "buildId": 202611151700,
+  "releaseDate": "2026-11-15T17:00:00.000Z",
+  "changelog": "v5.3.70: English notification badge digits, unified single commitments filter strip, executive Budgets dashboard with 4 KPIs, Health compass & comparison chart, luxury Requests reformatting with status filters & synchronized live badges, fixed operations analytics code leak."
 }

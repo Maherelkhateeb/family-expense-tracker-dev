@@ -621,7 +621,7 @@ const familyAlerts = (() => {
     const badge = document.getElementById('headerNotifBadge');
     if (badge) {
       badge.hidden = unreadCount === 0;
-      badge.textContent = toArabicDigits(unreadCount);
+      badge.textContent = String(unreadCount);
     }
 
     // تحديث زر الصوت
