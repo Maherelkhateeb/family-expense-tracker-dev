@@ -35,7 +35,7 @@
     }
   }
 
-  // Tiered gold ounce fetcher (Binance PAXG 24hr -> Gold API -> CoinGecko)
+  // Tiered gold ounce fetcher (Binance PAXG 24hr -> Gold API XAU Spot -> CoinGecko)
   async function fetchGoldOuncePrice() {
     const endpoints = [
       async () => {
@@ -45,7 +45,7 @@
           const open = positive(d?.openPrice) ? Number(d.openPrice) : last;
           const chgVal = Number(d.priceChange != null ? d.priceChange : (last - open));
           const chgPct = Number(d.priceChangePercent != null ? d.priceChangePercent : (open > 0 ? (chgVal / open) * 100 : 0));
-          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'Binance PAXG' };
+          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'Binance PAXG Spot' };
         }
         throw new Error('Invalid Binance');
       },
@@ -56,7 +56,7 @@
           const open = positive(d?.open_price) ? Number(d.open_price) : positive(d?.prev_close_price) ? Number(d.prev_close_price) : last;
           const chgVal = last - open;
           const chgPct = open > 0 ? (chgVal / open) * 100 : 0;
-          return { price: last, open, chgVal, chgPct, at: stamp(d.updatedAt) || new Date().toISOString(), source: 'Gold API' };
+          return { price: last, open, chgVal, chgPct, at: stamp(d.updatedAt) || new Date().toISOString(), source: 'Gold API XAU' };
         }
         throw new Error('Invalid Gold API');
       },
@@ -67,7 +67,7 @@
           const chgPct = Number(d['pax-gold']?.usd_24h_change || 0);
           const open = chgPct !== 0 ? last / (1 + chgPct / 100) : last;
           const chgVal = last - open;
-          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'CoinGecko' };
+          return { price: last, open, chgVal, chgPct, at: new Date().toISOString(), source: 'CoinGecko PAXG' };
         }
         throw new Error('Invalid CoinGecko');
       }
@@ -82,10 +82,26 @@
     return null;
   }
 
-  // Tiered FX rates fetcher (Open ER-API -> jsDelivr Currency API -> Pages dev)
+  // Tiered FX rates fetcher (Fast Fawaz Ahmed Currency API -> Open ER-API -> Pages dev)
   async function fetchFxRates() {
     const endpoints = [
       async () => {
+        // Fast primary: Fawaz Ahmed jsdelivr Currency API (frequently updated)
+        const d = await json('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
+        if (positive(d?.usd?.egp) && positive(d?.usd?.sar)) {
+          return {
+            egp: Number(d.usd.egp),
+            sar: Number(d.usd.sar),
+            eur: Number(d.usd.eur || 0.92),
+            aed: Number(d.usd.aed || 3.67),
+            at: new Date().toISOString(),
+            source: 'Currency-API Live'
+          };
+        }
+        throw new Error('Invalid jsdelivr');
+      },
+      async () => {
+        // Secondary: Open ExchangeRate-API
         const d = await json('https://open.er-api.com/v6/latest/USD');
         if (positive(d?.rates?.EGP) && positive(d?.rates?.SAR)) {
           return {
@@ -98,20 +114,6 @@
           };
         }
         throw new Error('Invalid ER-API');
-      },
-      async () => {
-        const d = await json('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json');
-        if (positive(d?.usd?.egp) && positive(d?.usd?.sar)) {
-          return {
-            egp: Number(d.usd.egp),
-            sar: Number(d.usd.sar),
-            eur: Number(d.usd.eur || 0.92),
-            aed: Number(d.usd.aed || 3.67),
-            at: stamp(d.date) || new Date().toISOString(),
-            source: 'Currency-API'
-          };
-        }
-        throw new Error('Invalid jsdelivr');
       },
       async () => {
         const d = await json('https://latest.currency-api.pages.dev/v1/currencies/usd.json');
@@ -248,9 +250,9 @@
       saved = JSON.parse(storage?.getItem('family_market_feed_v2') || 'null');
     } catch (e) {}
 
-    // Check if cached feed is very fresh (< 45 minutes) and not forced
-    if (!force && valid(saved) && age(saved.checkedAt) < 45) {
-      return { feed: saved, offline: false };
+    // Check if cached feed is very fresh (< 2 minutes) and not forced
+    if (!force && valid(saved) && age(saved.checkedAt) < 2) {
+      return { feed: saved, offline: false, isLive: false, fromCache: true };
     }
 
     // Try fetching fresh live rates concurrently
@@ -268,20 +270,20 @@
         try {
           storage?.setItem('family_market_feed_v2', JSON.stringify(feed));
         } catch (e) {}
-        return { feed, offline: false };
+        return { feed, offline: false, isLive: true, fromCache: false, fetchedAt: new Date().toISOString() };
       }
     }
 
     // If fetch failed or partial, fallback to cache
     if (valid(saved)) {
-      return { feed: saved, offline: true };
+      return { feed: saved, offline: true, isLive: false, fromCache: true, reason: 'network_failed' };
     }
 
     // Fallback baseline if first time offline
     const baselineFx = { egp: 53.45, sar: 14.25, eur: 58.50, aed: 14.55, at: new Date().toISOString(), source: 'قاعدة بيانات محلية' };
     const baselineGold = { price: 3887.60, open: 3870.00, chgVal: 17.60, chgPct: 0.45, at: new Date().toISOString(), source: 'سعر مرجعي' };
     const fallbackFeed = buildFeed(baselineFx, baselineGold, storage);
-    return { feed: fallbackFeed, offline: true };
+    return { feed: fallbackFeed, offline: true, isLive: false, fromCache: true, reason: 'baseline' };
   }
 
   return { positive, stamp, age, valid, load };

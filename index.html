@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.67';
-    var APP_BUILD_ID = 202611151430;
+    var APP_VERSION = 'v5.3.74';
+    var APP_BUILD_ID = 202611151830;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -7818,90 +7818,7 @@
 /* =========================================================================
        أنماط وتصاميم عرض الكروت الحقيقية الفعالة (Card Design Styles: Glass vs Minimal)
        ========================================================================= */
-    /* 1. النمط الزجاجي الفاخر الشفاف المتوهج (Glassmorphism Luxury) */
-    [data-card-style="glass"] .kpi-master-wealth-cockpit,
-    [data-card-style="glass"] .executive-cockpit-card,
-    [data-card-style="glass"] .cockpit-hero-side,
-    [data-card-style="glass"] .stat-capsule-twin,
-    [data-card-style="glass"] .category-card,
-    [data-card-style="glass"] .grid-cat-card,
-    [data-card-style="glass"] .cat-box,
-    /* removed [data-card-style="glass"] .cat-card to allow theme gradients */
-    [data-card-style="glass"] .item-entry-card,
-    [data-card-style="glass"] .ops-tx-card-lux,
-    [data-card-style="glass"] .recent-tx-card,
-    [data-card-style="glass"] .commitment-card-lux,
-    [data-card-style="glass"] .commitment-hero-card,
-    [data-card-style="glass"] .settings-unified-section,
-    [data-card-style="glass"] .app-card-panel,
-    [data-card-style="glass"] .modal-content-card {
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      background: rgba(15, 23, 42, 0.68) !important;
-      border: 1px solid rgba(255, 255, 255, 0.16) !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-      border-radius: 18px !important;
-    }
-
-    [data-card-style="glass"] 
-    body.light-theme .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-
-    .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    [data-card-style="glass"] .stat-capsule-twin {
-      background: rgba(30, 41, 59, 0.45) !important;
-      border-color: rgba(255, 255, 255, 0.14) !important;
-    }
-
-    /* 2. النمط العصري المدمج المصمت فائق الرشاقة (Compact Solid Minimalist) */
-    [data-card-style="minimal"] .kpi-master-wealth-cockpit,
-    [data-card-style="minimal"] .executive-cockpit-card,
-    [data-card-style="minimal"] .cockpit-hero-side,
-    [data-card-style="minimal"] .stat-capsule-twin,
-    [data-card-style="minimal"] .category-card,
-    [data-card-style="minimal"] .grid-cat-card,
-    [data-card-style="minimal"] .cat-box,
-    /* removed [data-card-style="minimal"] .cat-card to allow theme gradients */
-    [data-card-style="minimal"] .item-entry-card,
-    [data-card-style="minimal"] .ops-tx-card-lux,
-    [data-card-style="minimal"] .recent-tx-card,
-    [data-card-style="minimal"] .commitment-card-lux,
-    [data-card-style="minimal"] .commitment-hero-card,
-    [data-card-style="minimal"] .settings-unified-section,
-    [data-card-style="minimal"] .app-card-panel,
-    [data-card-style="minimal"] .modal-content-card {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background: #0f172a !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
-      border-radius: 9px !important;
-    }
-
-    [data-card-style="minimal"] .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    [data-card-style="minimal"] .stat-capsule-twin {
-      background: #1e293b !important;
-      border-radius: 7px !important;
-    }
-
-    [data-card-style="minimal"] .grid-cat-card,
-    [data-card-style="minimal"] .cat-box {
-      border-radius: 8px !important;
-    }
-
-  
-    
+    /* [Cleaned] Old dark card-style block removed to prevent dark overrides in light theme */
     /* =========================================================================
        ضبط الشاشة الرئيسية بنظام (Zero-Scroll Mobile Engine - التنسيق المتقن الفاخر)
        - تكبير الجزء العلوي والصور لملء الفراغ بفخامة
@@ -9559,197 +9476,8 @@
     }
 
 
+    /* [Cleaned] Duplicate legacy dark card-style block removed to allow clean light theme cards */
     /* =========================================================================
-       قواعد الأنماط النهائية فائقة الأولوية (Master High-Priority Card Styles)
-       تضمن الفارق البصري الصريح والدرامي بين النمط الزجاجي الشفاف والنمط المدمج المصمت
-       ========================================================================= */
-    /* 1. النمط الزجاجي الفاخر الشفاف (Glassmorphism Luxury) */
-    html[data-card-style="glass"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="glass"] body #topKpiThreeStrip {
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border-radius: 20px !important;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-    }
-    html[data-card-style="glass"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="glass"] body .stat-capsule-twin {
-      background: rgba(30, 41, 59, 0.45) !important;
-      border: 1px solid rgba(255, 255, 255, 0.14) !important;
-      border-radius: 14px !important;
-    }
-    html[data-card-style="glass"] body .ops-tx-card-lux,
-    html[data-card-style="glass"] body .commitment-card-lux,
-    html[data-card-style="glass"] body .settings-unified-section,
-    html[data-card-style="glass"] body .app-card-panel {
-      background: rgba(15, 23, 42, 0.65) !important;
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.16) !important;
-      border-radius: 18px !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-    }
-
-    /* 2. النمط العصري المدمج المصمت (Compact Solid Minimalist) */
-    html[data-card-style="minimal"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="minimal"] body #topKpiThreeStrip {
-      background: #0b1329 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1.5px solid #1e293b !important;
-      border-radius: 8px !important;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6) !important;
-    }
-    html[data-card-style="minimal"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="minimal"] body .stat-capsule-twin {
-      background: #151f33 !important;
-      border: 1px solid rgba(255, 255, 255, 0.10) !important;
-      border-radius: 6px !important;
-    }
-    html[data-card-style="minimal"] body .ops-tx-card-lux,
-    html[data-card-style="minimal"] body .commitment-card-lux,
-    html[data-card-style="minimal"] body .settings-unified-section,
-    html[data-card-style="minimal"] body .app-card-panel {
-      background: #0f172a !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 8px !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
-    }
-
-
-    /* =========================================================================
-       أنماط وتصاميم عرض الكروت الأربعة الفاخرة (4 Master Card Styles)
-       ========================================================================= */
-    /* 1. ✨ النمط الزجاجي الفاخر الشفاف (Glassmorphism Luxury) */
-    html[data-card-style="glass"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="glass"] body #topKpiThreeStrip {
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border-radius: 20px !important;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-    }
-    html[data-card-style="glass"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="glass"] body .stat-capsule-twin {
-      background: rgba(30, 41, 59, 0.45) !important;
-      border: 1px solid rgba(255, 255, 255, 0.14) !important;
-      border-radius: 16px !important;
-    }
-    html[data-card-style="glass"] body .ops-tx-card-lux,
-    html[data-card-style="glass"] body .commitment-card-lux,
-    html[data-card-style="glass"] body .settings-unified-section,
-    html[data-card-style="glass"] body .app-card-panel {
-      background: rgba(15, 23, 42, 0.65) !important;
-      backdrop-filter: blur(20px) saturate(180%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.16) !important;
-      border-radius: 18px !important;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
-    }
-
-    /* 2. 📐 النمط العصري المدمج المصمت (Compact Solid Minimalist) */
-    html[data-card-style="minimal"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="minimal"] body #topKpiThreeStrip {
-      background: #0b1329 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1.5px solid #1e293b !important;
-      border-radius: 8px !important;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6) !important;
-    }
-    html[data-card-style="minimal"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="minimal"] body .stat-capsule-twin {
-      background: #151f33 !important;
-      border: 1px solid rgba(255, 255, 255, 0.10) !important;
-      border-radius: 6px !important;
-    }
-    html[data-card-style="minimal"] body .ops-tx-card-lux,
-    html[data-card-style="minimal"] body .commitment-card-lux,
-    html[data-card-style="minimal"] body .settings-unified-section,
-    html[data-card-style="minimal"] body .app-card-panel {
-      background: #0f172a !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 8px !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* 3. 🌟 النمط الكلاسيكي المجسم 3D (Neumorphic 3D Embossed) */
-    html[data-card-style="neumorphic"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="neumorphic"] body #topKpiThreeStrip {
-      background: linear-gradient(145deg, #1e293b, #0b1329) !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 14px !important;
-      box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.15), inset -2px -2px 6px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.7) !important;
-    }
-    html[data-card-style="neumorphic"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="neumorphic"] body .stat-capsule-twin {
-      background: linear-gradient(145deg, #1e293b, #111c2e) !important;
-      border: 1px solid rgba(255, 255, 255, 0.10) !important;
-      border-radius: 10px !important;
-      box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.12), inset -1px -1px 4px rgba(0, 0, 0, 0.8) !important;
-    }
-    html[data-card-style="neumorphic"] body .ops-tx-card-lux,
-    html[data-card-style="neumorphic"] body .commitment-card-lux,
-    html[data-card-style="neumorphic"] body .settings-unified-section,
-    html[data-card-style="neumorphic"] body .app-card-panel {
-      background: linear-gradient(145deg, #1e293b, #0f172a) !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1px solid rgba(255, 255, 255, 0.12) !important;
-      border-radius: 14px !important;
-      box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.12), inset -2px -2px 6px rgba(0, 0, 0, 0.8), 0 6px 18px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    /* 4. 💎 نمط النيون المتوهج (Cyber Neon Edge Glow) */
-    html[data-card-style="neon"] body .kpi-master-wealth-cockpit,
-    html[data-card-style="neon"] body #topKpiThreeStrip,
-    html[data-card-style="neon"] body .ops-tx-card-clean,
-    html[data-card-style="neon"] body .expected-clean-card,
-    html[data-card-style="neon"] body .modal-content-card,
-    html[data-card-style="neon"] body .settings-unified-section,
-    html[data-card-style="neon"] body .app-card-panel {
-      background: rgba(15, 23, 42, 0.88) !important;
-      backdrop-filter: blur(16px) !important;
-      -webkit-backdrop-filter: blur(16px) !important;
-      border: 1px solid rgba(56, 189, 248, 0.35) !important;
-      border-radius: 14px !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), 0 0 10px rgba(56, 189, 248, 0.15) !important;
-    }
-    html[data-card-style="neon"] body .cockpit-hero-side {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-    html[data-card-style="neon"] body .stat-capsule-twin {
-      background: rgba(15, 23, 42, 0.8) !important;
-      border: 1px solid rgba(56, 189, 248, 0.35) !important;
-      border-radius: 10px !important;
-    }
-/* =========================================================================
        تحسين عرض نافذة تدقيق الرصيد الفعلي للشاشات والجوالات الذكية (Mobile Responsive)
        ========================================================================= */
     @media (max-width: 768px) {
@@ -16314,16 +16042,90 @@ body.light-theme .cat-budget-progress-track {
       #settingsSec_appearance .theme-pill-option { font-size:.66rem !important; padding-inline:6px !important; }
       #settingsSec_appearance .settings-live-preview-value { font-size:.64rem; }
     }
-  </style>
+  
+/* =========================================================================
+   تنسيقات الشاشة الكاملة للمهام بالوضع الفاتح لمنع سواد الكروت
+   ========================================================================= */
+body.light-theme #tasksFullScreenModal {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+body.light-theme #tasksFullScreenModal header {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1.2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme #tasksFullScreenModal header span {
+  color: #0f172a !important;
+}
+body.light-theme #tasksFullScreenModal .tasks-segmented-nav {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.06) !important;
+}
+body.light-theme #tasksFullScreenModal .btn-tasks-nav-tab:not(.active) {
+  color: #64748b !important;
+}
+body.light-theme #tasksProductivityPinnedCard {
+  background: #ffffff !important;
+  border: 1.2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme #tasksProductivityPinnedCard > div > div > span:not(#pinnedTasksCompletionRateBadge) {
+  color: #0f172a !important;
+}
+body.light-theme #tasksProductivityPinnedCard div[style*="background: rgba(30, 41, 59"] {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+body.light-theme #tasksProductivityPinnedCard div[style*="color: #94a3b8"] {
+  color: #64748b !important;
+}
+body.light-theme #tasksTabCalendarView > div {
+  background: #ffffff !important;
+  border: 1.2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme #calendarMonthTitle {
+  color: #0f172a !important;
+}
+body.light-theme #tasksTabStatsView > div {
+  background: #ffffff !important;
+  border: 1.2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .task-pro-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06) !important;
+}
+body.light-theme .task-pro-card div[style*="color: #f8fafc"] {
+  color: #0f172a !important;
+}
+body.light-theme #tasksCalendarGrid > div {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme #tasksCalendarGrid > div span {
+  color: #1e293b !important;
+}
+body.light-theme #tasksFullScreenModal input#tasksSearchInput {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+</style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
-  <script src="./market-data.js?v=20261114-gold1"></script>
+  <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
   <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
   <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611151800"></script>
+  <script src="./budget-audit-engine.js?v=202611151830"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18307,138 +18109,6 @@ body.light-theme .summary-matrix-table tr.total-row td {
 <div id="subViewCommitments">
 
           <!-- ========================================================
-               تقويم الاستحقاقات والالتزامات الذكي التفاعلي القابل للطي
-               (Interactive Collapsible Commitments & Due Dates Calendar)
-               ======================================================== -->
-          <div id="commitmentsCalendarSection" class="commitments-calendar-box" style="background: var(--bg-card, rgba(15, 23, 42, 0.90)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);">
-            <!-- شريط هيدر التقويم: العنوان وزر الطي/البسط وأدوات التنقل -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCommitmentsCalendarCollapse()">
-                <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.88rem;">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
-                <div>
-                  <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
-                    <span>تقويم الاستحقاقات الشهرية</span>
-                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
-                  </div>
-                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق (انقر للتوسيع)</div>
-                </div>
-              </div>
-
-              <!-- أدوات تصفح الشهر وزر تصفية الكل -->
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display: none; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 0.66rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; cursor: pointer; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
-                </button>
-                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                  <button type="button" onclick="navigateCommitmentsCalendar(-1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-right"></i></button>
-                  <span id="commitmentsCalendarMonthTitle" style="font-size: 0.74rem; font-weight: 900; color: var(--text-main, #f8fafc); min-width: 82px; text-align: center;">نوفمبر 2026</span>
-                  <button type="button" onclick="navigateCommitmentsCalendar(1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-left"></i></button>
-                </div>
-              </div>
-            </div>
-
-            <!-- محتوى التقويم القابل للطي (مطوي في الوضع الافتراضي) -->
-            <div id="commitmentsCalendarCollapseBody" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
-              <!-- دليل ألوان الالتزامات -->
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; font-size: 0.62rem; color: #94a3b8; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> مصاريف وفواتير</span>
-                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span> ديون علينا</span>
-                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> ديون لنا</span>
-                </div>
-                <div id="commitmentsCalendarActiveDateNotice" style="display: none; font-weight: 800; color: #38bdf8;">
-                  تصفية بحسب: <span id="lblActiveCommitmentDate">2026-11-20</span>
-                </div>
-              </div>
-
-              <!-- شبكة أيام الأسبوع -->
-              <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 3px; margin-bottom: 4px; font-size: 0.64rem; font-weight: 850; color: #94a3b8;">
-                <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
-              </div>
-
-              <!-- شبكة أيام الشهر مع المؤشرات الملونة للالتزامات -->
-              <div id="commitmentsCalendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
-                <!-- تتولد ديناميكياً بواسطة renderCommitmentsCalendar() -->
-              </div>
-            </div>
-          </div>
-
-          
-          <!-- بطاقة المؤشرات والمركز المالي الذكية (تتكيف تلقائياً بحسب التبويب: فواتير أو ديون) -->
-          <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
-          <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: var(--bg-card, rgba(15, 23, 42, 0.88)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.15);">
-            <!-- الشريط العلوي للصافي -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; gap: 6px;">
-              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.80rem; font-weight: 900; color: #cbd5e1;">
-                <i class="fa-solid fa-scale-balanced" id="kpiNetIconCommitments" style="color: #38bdf8;"></i>
-                <span id="kpiNetLabelCommitments">صافي الالتزامات المالية المطلوب تدبيرها:</span>
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <button type="button" id="btnClearCommitmentFilter" onclick="setCommitmentsSubFilter('all')" title="مسح التصفية لعرض كل الالتزامات" style="padding: 3px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 850; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
-                  <i class="fa-solid fa-rotate-left" style="font-size: 0.62rem;"></i>
-                  <span id="clearCommitmentFilterLabel">عرض الكل</span>
-                </button>
-                <div id="kpiNetValueCommitments" style="font-size: 0.95rem; font-weight: 950; font-family: var(--font-numbers); direction: ltr; color: #ff4d6d;">
-                  - 0.00 ج.م
-                </div>
-              </div>
-            </div>
-
-            <!-- الكروت الرباعية التنفيذية المتناسقة (صف واحد إلزامي بـ 4 أعمدة بدقة تامة - عدد البنود أسفل اسم البند تماماً) -->
-            <div class="com-kpi-cards-grid" id="commitmentsExecutiveCardsStrip">
-                <!-- كارت 1: فواتير واشتراكات (أصفر) -->
-                <div class="com-kpi-card card-bills" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير واشتراكات دورية قادمة">
-                  <div class="com-card-header">
-                    <i class="fa-solid fa-file-invoice com-card-icon"></i>
-                    <span class="com-card-title">فواتير</span>
-                  </div>
-                  <div class="com-card-badge-wrap">
-                    <span id="kpiCap1Count" class="com-card-count-badge">0 بند</span>
-                  </div>
-                  <div id="kpiCap1Amount" class="com-card-amount">0.00 ج.م</div>
-                </div>
-
-                <!-- كارت 2: ديون علينا (أحمر) -->
-                <div class="com-kpi-card card-debts-on-us" id="cardComDebtsOnUs" onclick="setCommitmentsSubFilter('debts_on_us')" title="ديون والتزامات علينا للغير">
-                  <div class="com-card-header">
-                    <i class="fa-solid fa-handshake-angle com-card-icon"></i>
-                    <span class="com-card-title">ديون علينا</span>
-                  </div>
-                  <div class="com-card-badge-wrap">
-                    <span id="kpiCap2Count" class="com-card-count-badge">0 بند</span>
-                  </div>
-                  <div id="kpiCap2Amount" class="com-card-amount">- 0.00 ج.م</div>
-                </div>
-
-                <!-- كارت 3: ديون لنا (أخضر) -->
-                <div class="com-kpi-card card-debts-for-us" id="cardComDebtsForUs" onclick="setCommitmentsSubFilter('debts_for_us')" title="ديون ومستحقات لنا عند الغير">
-                  <div class="com-card-header">
-                    <i class="fa-solid fa-sack-dollar com-card-icon"></i>
-                    <span class="com-card-title">ديون لنا</span>
-                  </div>
-                  <div class="com-card-badge-wrap">
-                    <span id="kpiCap3Count" class="com-card-count-badge">0 بند</span>
-                  </div>
-                  <div id="kpiCap3Amount" class="com-card-amount">+ 0.00 ج.م</div>
-                </div>
-
-                <!-- كارت 4: تم السداد (أزرق) -->
-                <div class="com-kpi-card card-settled" id="cardComSettled" onclick="setCommitmentsSubFilter('settled')" title="الالتزامات التي تم سدادها بالكامل">
-                  <div class="com-card-header">
-                    <i class="fa-solid fa-circle-check com-card-icon"></i>
-                    <span class="com-card-title">تم السداد</span>
-                  </div>
-                  <div class="com-card-badge-wrap">
-                    <span id="kpiCapSettledCount" class="com-card-count-badge">0 مكتمل</span>
-                  </div>
-                  <div id="kpiCapSettledAmount" class="com-card-amount">0.00 ج.م</div>
-                </div>
-            </div>
-          </div> <!-- نهاية commitmentKpiMasterCard المستقلة -->
-
-          <!-- ========================================================
                شاشة الإضافة المنسقة الموحدة الفاخرة (Unified Coordinated Add Form)
                ======================================================== -->
           <div id="panelUnifiedAddCommitment" class="app-card-panel" style="display: none; background: var(--bg-card, rgba(15, 23, 42, 0.95)); border: 1.5px solid var(--border, rgba(56, 189, 248, 0.45)); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
@@ -18573,6 +18243,140 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
             </form>
           </div>
+
+
+          <!-- ========================================================
+               تقويم الاستحقاقات والالتزامات الذكي التفاعلي القابل للطي
+               (Interactive Collapsible Commitments & Due Dates Calendar)
+               ======================================================== -->
+          <div id="commitmentsCalendarSection" class="commitments-calendar-box" style="background: var(--bg-card, rgba(15, 23, 42, 0.90)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);">
+            <!-- شريط هيدر التقويم: العنوان وزر الطي/البسط وأدوات التنقل -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCommitmentsCalendarCollapse()">
+                <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.88rem;">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <div>
+                  <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
+                    <span>تقويم الاستحقاقات الشهرية</span>
+                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
+                  </div>
+                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق (انقر للتوسيع)</div>
+                </div>
+              </div>
+
+              <!-- أدوات تصفح الشهر وزر تصفية الكل -->
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display: none; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 0.66rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; cursor: pointer; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
+                </button>
+                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                  <button type="button" onclick="navigateCommitmentsCalendar(-1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-right"></i></button>
+                  <span id="commitmentsCalendarMonthTitle" style="font-size: 0.74rem; font-weight: 900; color: var(--text-main, #f8fafc); min-width: 82px; text-align: center;">نوفمبر 2026</span>
+                  <button type="button" onclick="navigateCommitmentsCalendar(1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- محتوى التقويم القابل للطي (مطوي في الوضع الافتراضي) -->
+            <div id="commitmentsCalendarCollapseBody" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+              <!-- دليل ألوان الالتزامات -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; font-size: 0.62rem; color: #94a3b8; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span> مصاريف وفواتير</span>
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #f43f5e; display: inline-block;"></span> ديون علينا</span>
+                  <span style="display: inline-flex; align-items: center; gap: 3px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span> ديون لنا</span>
+                </div>
+                <div id="commitmentsCalendarActiveDateNotice" style="display: none; font-weight: 800; color: #38bdf8;">
+                  تصفية بحسب: <span id="lblActiveCommitmentDate">2026-11-20</span>
+                </div>
+              </div>
+
+              <!-- شبكة أيام الأسبوع -->
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; gap: 3px; margin-bottom: 4px; font-size: 0.64rem; font-weight: 850; color: #94a3b8;">
+                <div>سبت</div><div>أحد</div><div>إثنين</div><div>ثلاثاء</div><div>أربعاء</div><div>خميس</div><div>جمعة</div>
+              </div>
+
+              <!-- شبكة أيام الشهر مع المؤشرات الملونة للالتزامات -->
+              <div id="commitmentsCalendarGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+                <!-- تتولد ديناميكياً بواسطة renderCommitmentsCalendar() -->
+              </div>
+            </div>
+          </div>
+
+          
+          <!-- بطاقة المؤشرات والمركز المالي الذكية (تتكيف تلقائياً بحسب التبويب: فواتير أو ديون) -->
+          <!-- بطاقة المؤشرات والمركز المالي الذكية (4 كروت تنفيذية متناسقة) -->
+          <div class="expected-kpi-master-card" id="commitmentKpiMasterCard" style="background: var(--bg-card, rgba(15, 23, 42, 0.88)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 4px 18px rgba(0,0,0,0.15);">
+            <!-- الشريط العلوي للصافي -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 0.80rem; font-weight: 900; color: #cbd5e1;">
+                <i class="fa-solid fa-scale-balanced" id="kpiNetIconCommitments" style="color: #38bdf8;"></i>
+                <span id="kpiNetLabelCommitments">صافي الالتزامات المالية المطلوب تدبيرها:</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button type="button" id="btnClearCommitmentFilter" onclick="setCommitmentsSubFilter('all')" title="مسح التصفية لعرض كل الالتزامات" style="padding: 3px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 850; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s;">
+                  <i class="fa-solid fa-rotate-left" style="font-size: 0.62rem;"></i>
+                  <span id="clearCommitmentFilterLabel">عرض الكل</span>
+                </button>
+                <div id="kpiNetValueCommitments" style="font-size: 0.95rem; font-weight: 950; font-family: var(--font-numbers); direction: ltr; color: #ff4d6d;">
+                  - 0.00 ج.م
+                </div>
+              </div>
+            </div>
+
+            <!-- الكروت الرباعية التنفيذية المتناسقة (صف واحد إلزامي بـ 4 أعمدة بدقة تامة - عدد البنود أسفل اسم البند تماماً) -->
+            <div class="com-kpi-cards-grid" id="commitmentsExecutiveCardsStrip">
+                <!-- كارت 1: فواتير واشتراكات (أصفر) -->
+                <div class="com-kpi-card card-bills" id="cardComBills" onclick="setCommitmentsSubFilter('bills')" title="فواتير واشتراكات دورية قادمة">
+                  <div class="com-card-header">
+                    <i class="fa-solid fa-file-invoice com-card-icon"></i>
+                    <span class="com-card-title">فواتير</span>
+                  </div>
+                  <div class="com-card-badge-wrap">
+                    <span id="kpiCap1Count" class="com-card-count-badge">0 بند</span>
+                  </div>
+                  <div id="kpiCap1Amount" class="com-card-amount">0.00 ج.م</div>
+                </div>
+
+                <!-- كارت 2: ديون علينا (أحمر) -->
+                <div class="com-kpi-card card-debts-on-us" id="cardComDebtsOnUs" onclick="setCommitmentsSubFilter('debts_on_us')" title="ديون والتزامات علينا للغير">
+                  <div class="com-card-header">
+                    <i class="fa-solid fa-handshake-angle com-card-icon"></i>
+                    <span class="com-card-title">ديون علينا</span>
+                  </div>
+                  <div class="com-card-badge-wrap">
+                    <span id="kpiCap2Count" class="com-card-count-badge">0 بند</span>
+                  </div>
+                  <div id="kpiCap2Amount" class="com-card-amount">- 0.00 ج.م</div>
+                </div>
+
+                <!-- كارت 3: ديون لنا (أخضر) -->
+                <div class="com-kpi-card card-debts-for-us" id="cardComDebtsForUs" onclick="setCommitmentsSubFilter('debts_for_us')" title="ديون ومستحقات لنا عند الغير">
+                  <div class="com-card-header">
+                    <i class="fa-solid fa-sack-dollar com-card-icon"></i>
+                    <span class="com-card-title">ديون لنا</span>
+                  </div>
+                  <div class="com-card-badge-wrap">
+                    <span id="kpiCap3Count" class="com-card-count-badge">0 بند</span>
+                  </div>
+                  <div id="kpiCap3Amount" class="com-card-amount">+ 0.00 ج.م</div>
+                </div>
+
+                <!-- كارت 4: تم السداد (أزرق) -->
+                <div class="com-kpi-card card-settled" id="cardComSettled" onclick="setCommitmentsSubFilter('settled')" title="الالتزامات التي تم سدادها بالكامل">
+                  <div class="com-card-header">
+                    <i class="fa-solid fa-circle-check com-card-icon"></i>
+                    <span class="com-card-title">تم السداد</span>
+                  </div>
+                  <div class="com-card-badge-wrap">
+                    <span id="kpiCapSettledCount" class="com-card-count-badge">0 مكتمل</span>
+                  </div>
+                  <div id="kpiCapSettledAmount" class="com-card-amount">0.00 ج.م</div>
+                </div>
+            </div>
+          </div> <!-- نهاية commitmentKpiMasterCard المستقلة -->
+
 
           <!-- ========================================================
                1. قسم عرض الفواتير والاشتراكات (Bills View)
@@ -18769,18 +18573,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
           </div>
 
-          <!-- 4. رسم بياني رقابي تفاعلي يدمج المقدر vs الفعلي لكل بنود الموازنة النشطة -->
-          <div class="budget-chart-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid rgba(56, 189, 248, 0.3); border-radius: 14px; padding: 10px 12px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <div style="font-size: 0.82rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-column"></i>
-                <span>مخطط المقارنة الرقابية (المقدر مقابل المنصرف الفعلي لكل بند):</span>
-              </div>
-            </div>
-            <div style="height: 230px; position: relative;">
-              <canvas id="monthlyBudgetCompareChart"></canvas>
-            </div>
-          </div>
+
 
           <!-- شريط الفلاتر الزمنية السريع وجدول الرقابة الحي وتوزيع أفراد الأسرة (v5.3.72) -->
           <div id="budgetMonthlyTimeFiltersContainer"></div>
@@ -18887,6 +18680,13 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <button type="button" class="btn-submit-tx" onclick="saveMonthlyBudget()" style="background: linear-gradient(135deg, #0284c7, #0369a1); height: 44px; font-size: 0.92rem; font-weight: 900; width: 100%; border: none; border-radius: 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
             <i class="fa-solid fa-floppy-disk"></i> حفظ وتثبيت الخطة التقديرية الحالية 💾
           </button>
+
+          <!-- ========================================================
+               أسفل الصفحة: مؤشرات وتحليلات ورسوم بيانية لتوضيح الفرق والنتيجة والتغير
+               ======================================================== -->
+          <div id="budgetBottomAnalyticsSection" style="margin-top: 18px; padding-top: 14px; border-top: 1.5px solid rgba(56, 189, 248, 0.25);">
+            <!-- يتم توليد المؤشرات العميقة والتحليلات والرسوم البيانية ديناميكياً بواسطة BudgetAuditEngine -->
+          </div>
         </div>
 
         <!-- ==========================================================
@@ -26585,8 +26385,8 @@ function renderCategoriesGrid(filtered) {
           c.style.borderColor = '#38bdf8';
           c.style.background = 'rgba(56, 189, 248, 0.08)';
         } else {
-          c.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-          c.style.background = 'rgba(15, 23, 42, 0.75)';
+          c.style.borderColor = '';
+          c.style.background = '';
         }
       });
     }
@@ -31121,16 +30921,54 @@ function switchSettingsTab(tabName) {
         renderPriceChangeBadge('tvGoldOunceChg', feed.gold.goldOunceChg, 'USD');
         text('tvGoldOunceTime','وقت سعر الأونصة: '+date(feed.globalGoldUpdatedAt));
         text('tvSummaryText','دولار: '+fmt(market.usdEgp)+' | ريال: '+fmt(market.sarEgp)+' | ذهب 21: '+fmt(market.gold21));
-        const mode=estimated?'تقدير عالمي':feed.rateMode==='mixed'?'محلي + مرجعي':'أسعار محلية';
-        if(status){status.dataset.status=stale?'stale':estimated?'estimated':'fresh';status.textContent=(stale?'بيانات محفوظة · ':'')+'آخر تحقق: '+date(feed.checkedAt||feed.updatedAt);}
-        text('marketLocalSourcePill',mode);
-        text('goldRatesSectionTitle',estimated?'الذهب · تقدير عالمي':'الذهب · السوق المصري');
-        text('fxRatesSectionTitle',estimated?'العملات · سعر مرجعي':'العملات مقابل الجنيه');
-        text('goldRatesFreshnessHint',stale?'بيانات محفوظة':'سعر حي ومحدث ✓');
-        text('marketSourceDetails','الذهب: '+(feed.goldProvider||'غير محدد')+' | العملات: '+(feed.fxProvider||'غير محدد'));
-        text('marketQuoteTimes','وقت أسعار المصدر — الذهب: '+date(feed.goldUpdatedAt)+' · العملات: '+date(feed.fxUpdatedAt));
-        text('goldPriceBasis',estimated?'أسعار تقديرية من الأونصة وسعر الصرف؛ لا تمثل عرض شراء أو بيع محلي.':'القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.');
-        text('goldValuationSourceText',stale?'بحسب سعر محفوظ':estimated?'بحسب تقدير عالمي':'بحسب سعر عيار 21');
+        // مؤشر حقيقي ودقيق للمزامنة والتحقق من الأسعار (Non-Fake Live Status Indicator)
+        const minsAgo = Math.floor(MarketData.age(feed.checkedAt || feed.updatedAt));
+        const isLiveNow = !result.offline && result.isLive && minsAgo < 3;
+        const isRecentCached = !result.offline && minsAgo < 15;
+        
+        let freshnessText = '';
+        let freshnessColor = '#10b981';
+        let statusTextMsg = '';
+
+        if (isLiveNow) {
+          freshnessText = '🟢 مباشر الآن (تم التحديث للتو)';
+          freshnessColor = '#10b981';
+          statusTextMsg = 'مباشر الآن · ' + new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        } else if (isRecentCached) {
+          freshnessText = `🟡 محفوظ حديثاً (منذ ${minsAgo} د)`;
+          freshnessColor = '#f59e0b';
+          statusTextMsg = `محفوظ مؤقتاً · منذ ${minsAgo} دقيقة`;
+        } else {
+          const timeDesc = minsAgo > 60 ? `${Math.floor(minsAgo/60)} ساعة` : `${minsAgo} دقيقة`;
+          freshnessText = `⚠️ بيانات مخزنة (${timeDesc})`;
+          freshnessColor = '#f87171';
+          statusTextMsg = `بيانات غير محدثة · آخر اتصال: ${date(feed.checkedAt || feed.updatedAt)}`;
+        }
+
+        if (status) {
+          status.dataset.status = isLiveNow ? 'fresh' : (isRecentCached ? 'cached' : 'stale');
+          status.textContent = statusTextMsg;
+        }
+
+        const elFreshness = document.getElementById('goldRatesFreshnessHint');
+        if (elFreshness) {
+          elFreshness.textContent = freshnessText;
+          elFreshness.style.color = freshnessColor;
+          elFreshness.style.fontWeight = '900';
+        }
+
+        const modePill = document.getElementById('marketLocalSourcePill');
+        if (modePill) {
+          modePill.textContent = isLiveNow ? '🟢 اتصال مباشر نشط' : (isRecentCached ? '🟡 تخزين مؤقت' : '⚠️ وضع غير متصل');
+          modePill.style.color = freshnessColor;
+        }
+
+        text('goldRatesSectionTitle', estimated ? 'الذهب · تقدير عالمي حي' : 'الذهب · السوق المصري');
+        text('fxRatesSectionTitle', estimated ? 'العملات · سعر مرجعي حي' : 'العملات مقابل الجنيه');
+        text('marketSourceDetails', 'المصدر الحي: ' + (feed.goldProvider || 'غير محدد') + ' + ' + (feed.fxProvider || 'غير محدد'));
+        text('marketQuoteTimes', 'وقت أسعار المصدر — الذهب: ' + date(feed.goldUpdatedAt) + ' · العملات: ' + date(feed.fxUpdatedAt));
+        text('goldPriceBasis', estimated ? 'أسعار حية مبنية على الأونصة اللحظية وأحدث سعر صرف معلن.' : 'القيمة الرئيسية سعر بيع المصدر؛ سعر شرائه موضح أسفلها. الأسعار دون مصنعية.');
+        text('goldValuationSourceText', isLiveNow ? 'بحسب السعر الحي اللحظي' : (stale ? 'بحسب سعر محفوظ' : 'بحسب تقدير عالمي'));
         const balance = typeof computeTotalEffectiveBalance === 'function' ? computeTotalEffectiveBalance() : state.balance || 0;
         text('goldValuationText', Number(balance / (market.gold21 || 1)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' جم ذهب 21');
         updateCalcDisplay();
@@ -33379,9 +33217,10 @@ function switchSettingsTab(tabName) {
         }
 
         // 2. تحديث وموازنة أسعار الذهب والعملات الأجنبية الحية
+        let liveRatesResult = null;
         if (typeof fetchTradingViewRates === 'function') {
           try {
-            await fetchTradingViewRates(true);
+            liveRatesResult = await fetchTradingViewRates(true);
           } catch(e) {
             console.warn('Rates refresh notice:', e);
           }
@@ -33411,8 +33250,14 @@ function switchSettingsTab(tabName) {
         if (typeof renderTasksProList === 'function') renderTasksProList();
 
         if (statusText) {
-          statusText.textContent = 'محدث ومتوازن ✓';
-          statusText.style.color = '#34d399';
+          const isLiveOk = liveRatesResult && !liveRatesResult.isStale && !liveRatesResult.offline;
+          if (isLiveOk) {
+            statusText.textContent = 'محدث ومباشر ✓';
+            statusText.style.color = '#34d399';
+          } else {
+            statusText.textContent = 'أسعار محفوظة ⚠️';
+            statusText.style.color = '#fbbf24';
+          }
         }
 
         if (isManual) {
@@ -33424,10 +33269,16 @@ function switchSettingsTab(tabName) {
       } catch(err) {
         console.warn('Unified sync notice:', err);
         if (statusText) {
-          statusText.textContent = 'محدث ومتوازن ✓';
-          statusText.style.color = '#34d399';
+          const isLiveOk = liveRatesResult && !liveRatesResult.isStale && !liveRatesResult.offline;
+          if (isLiveOk) {
+            statusText.textContent = 'محدث ومباشر ✓';
+            statusText.style.color = '#34d399';
+          } else {
+            statusText.textContent = 'أسعار محفوظة ⚠️';
+            statusText.style.color = '#fbbf24';
+          }
         }
-        if (isManual) showToast('✅ اكتملت الموازنة والتحديث بنجاح', 'success');
+        if (isManual) showToast('⚠️ تعذر إكمال التحديث المباشر للأسعار، تم استخدام البيانات المحفوظة', 'warning');
       } finally {
         window.isMasterSyncRunning = false;
         if (spinIcon) spinIcon.classList.remove('fa-spin');
@@ -34711,6 +34562,9 @@ function initMonthlyBudgetUI() {
       populateBudgetPlanSelector();
       renderBudgetMembersMultiPicker();
       renderMonthlyBudgetAllocations();
+      if (window.BudgetAuditEngine && typeof BudgetAuditEngine.refreshActiveBudgetAudit === 'function') {
+        BudgetAuditEngine.refreshActiveBudgetAudit();
+      }
     }
 
     function loadMonthlyBudget() {
@@ -34726,6 +34580,9 @@ function initMonthlyBudgetUI() {
       }
       state.activeBudgetId = budgetId;
       loadActiveBudgetPlan();
+      if (window.BudgetAuditEngine && typeof BudgetAuditEngine.refreshActiveBudgetAudit === 'function') {
+        BudgetAuditEngine.refreshActiveBudgetAudit();
+      }
       if (currentBudgetMonthData) showToast(`📂 تم فتح الميزانية: (${currentBudgetMonthData.name})`);
     }
 
@@ -35296,6 +35153,8 @@ function initMonthlyBudgetUI() {
       const canvas = document.getElementById('monthlyBudgetCompareChart');
       if (!canvas || typeof Chart === 'undefined') return;
 
+      const existingC = Chart.getChart(canvas);
+      if (existingC) existingC.destroy();
       if (monthlyBudgetChartInstance) {
         monthlyBudgetChartInstance.destroy();
         monthlyBudgetChartInstance = null;
