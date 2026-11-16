@@ -1,6 +1,7 @@
 {
-  "version": "5.3.89",
+  "version": "v5.3.89",
   "build": "202611161615",
+  "buildId": 202611161615,
   "updated": "2026-11-16T16:15:00+03:00",
   "notes": "Complete overhaul of Theme & Color Engine, transparent frame backgrounds, instant live re-render, Facebook palette integration, and PWA cache upgrade"
 }
