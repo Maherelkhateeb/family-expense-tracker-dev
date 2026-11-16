@@ -1,6 +1,6 @@
 {
-  "version": "5.3.88",
-  "build": "202611161600",
-  "updated": "2026-11-16T16:00:00+03:00",
-  "notes": "Added exact scroll position memory and return banner when drilling down from indicators and charts"
+  "version": "5.3.89",
+  "build": "202611161615",
+  "updated": "2026-11-16T16:15:00+03:00",
+  "notes": "Complete overhaul of Theme & Color Engine, transparent frame backgrounds, instant live re-render, Facebook palette integration, and PWA cache upgrade"
 }
