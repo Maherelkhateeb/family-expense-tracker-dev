@@ -77,6 +77,18 @@ const URL = process.env.APP_URL || 'http://127.0.0.1:8765/';
      })){
        try{action();render[key]=true;}catch(e){faults.push(key+': '+e.message);}
      }
+     // Verify that the audit panel follows the active budget, not a stale global.
+     const anotherPlan={id:'qa-budget-2025-07',month:'2025-07',
+       name:'QA selected July plan',items:[{id:'qa-jul-food',category:'food',title:'Food',amount:2000,members:['البيت']}],
+       categories:{},incomes:[]};
+     state.monthlyBudgets.push(anotherPlan);
+     state.activeBudgetId=anotherPlan.id;
+     const earlierGlobal=window.currentBudgetMonthData?.month;
+     if(window.BudgetAuditEngine)window.BudgetAuditEngine.refreshActiveBudgetAudit();
+     const selectedBudget=window.currentBudgetMonthData?.month;
+     const selectedBudgetText=document.querySelector('#budgetMonthlyInsights')?.textContent||'';
+     state.activeBudgetId=qaBudget.id;
+     if(window.BudgetAuditEngine)window.BudgetAuditEngine.refreshActiveBudgetAudit();
      const loadedTasks=JSON.parse(localStorage.getItem('family_monefy_tasks')||'[]');
      const actual={
        expenses:state.transactions.filter(t=>t.type==='expense').length,
@@ -98,6 +110,7 @@ const URL = process.env.APP_URL || 'http://127.0.0.1:8765/';
        commitmentsStored:JSON.parse(localStorage.getItem('family_monefy_expected')||'[]').length,
        tasksStored:getTodoTasks().length,
        periodAfterClear:state.period,
+       earlierGlobal,selectedBudget,selectedBudgetTextMatches:selectedBudgetText.includes('2025-07'),
        render, faults,insights:!!document.querySelector('.monthly-insights'),
        expectedRows:document.querySelectorAll('.budget-item-card').length
      };
@@ -112,10 +125,24 @@ const URL = process.env.APP_URL || 'http://127.0.0.1:8765/';
    assert.equal(result.commitmentsStored,340,'Commitment persistence failed');
    assert.equal(result.tasksStored,60,'Tasks persistence failed');
    assert.equal(result.periodAfterClear,'all','Clear-filters must show all date ranges');
+   assert.equal(result.selectedBudget,'2025-07','Budget analysis used wrong active budget');
+   assert.equal(result.selectedBudgetTextMatches,true,'Selected month not reflected in budget insights');
    assert.deepEqual(result.faults,[],'Render errors');
    assert.ok(Object.values(result.render).every(Boolean),'Not all rendering paths exercised');
    assert.ok(result.insights,'New monthly budget insights missing');
    assert.deepEqual(errors,[],'Browser JS exceptions');
+   // Reload is a separate full application initialization, not only localStorage JSON reading.
+   await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+   await page.waitForFunction(()=>typeof state!=='undefined'&&Array.isArray(state.transactions)&&Array.isArray(state.expectedExpenses),null,{timeout:30000});
+   const afterReload=await page.evaluate(()=>({
+     expenses:state.transactions.filter(t=>t.type==='expense').length,
+     deposits:state.transactions.filter(t=>t.type==='income').length,
+     debts:state.expectedExpenses.filter(t=>String(t.type).includes('debt')).length,
+     bills:state.expectedExpenses.filter(t=>t.type==='upcoming_bill').length,
+     tasks:getTodoTasks().length
+   }));
+   console.log('FINANCIAL_1000_RELOAD '+JSON.stringify(afterReload));
+   assert.deepEqual(afterReload,{expenses:400,deposits:200,debts:240,bills:100,tasks:60},'Data lost after reload');
    console.log('PASS: 1,000 records across 2025, 9 expense categories, all finance/task types; render, storage, filters and budget.');
  } finally {
    await context.close();
