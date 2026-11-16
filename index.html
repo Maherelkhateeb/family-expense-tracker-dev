@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.80';
-    var APP_BUILD_ID = 202611151830;
+    var APP_VERSION = 'v5.3.82';
+    var APP_BUILD_ID = 202611161400;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16909,6 +16909,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161400">
 </head>
 <body>
   <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.62 - مباشر تحت body -->
@@ -18576,6 +18577,18 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </button>
         </div>
 
+        <!-- 1. لوحة موازنة الشهر الرسمية (panelMonthlyBudget) -->
+        <div id="panelMonthlyBudget" style="display:block;">
+          <!-- شريط التبديل الداخلي لموازنة الشهر: [المقارنات] و [أرشيف الموازنات] -->
+          <div id="monthlyBudgetInnerTabStrip" style="display: flex; gap: 6px; background: rgba(15,23,42,0.75); padding: 5px; border-radius: 11px; border: 1px solid rgba(16,185,129,0.25); margin-bottom: 12px;">
+            <button type="button" id="btnBudgetInnerCompare" onclick="switchBudgetMonthView('compare')" style="flex: 1; padding: 9px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
+              <i class="fa-solid fa-scale-balanced"></i> <span>المقارنات</span>
+            </button>
+            <button type="button" id="btnBudgetInnerArchive" onclick="switchBudgetMonthView('archive')" style="flex: 1; padding: 9px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+              <i class="fa-solid fa-box-archive" style="color: #a855f7;"></i> <span>أرشيف الموازنات</span>
+            </button>
+          </div>
+
           <!-- حاوية عرض المقارنة (panelBudgetCompare) -->
           <div id="panelBudgetCompare" style="display:block;">
             <!-- فلاتر الفترات (الفعلية والتقديرية الذكية) -->
@@ -18598,13 +18611,15 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <option value="thisYear">السنة الحالية</option>
                   <option value="custom">منتقى التواريخ (مخصص)</option>
                 </select>
-                <div id="cmpActualCustomRange" style="display:none;gap:6px;margin-top:6px;">
-                  <input type="date" id="cmpActualFrom" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:34px;font-size:0.78rem;border-radius:8px;
-                      border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.15);color:#f8fafc;padding:0 6px;">
-                  <input type="date" id="cmpActualTo" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:34px;font-size:0.78rem;border-radius:8px;
-                      border:1px solid rgba(16,185,129,0.4);background:rgba(16,185,129,0.15);color:#f8fafc;padding:0 6px;">
+                <div id="cmpActualCustomRange" style="display:none;align-items:center;gap:6px;margin-top:6px;">
+                  <button type="button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')"
+                    style="flex:1;height:34px;font-size:0.75rem;font-weight:850;border-radius:8px;
+                      border:1px solid rgba(16,185,129,0.5);background:rgba(16,185,129,0.15);color:#34d399;
+                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpActualCustomRangeLabel">اختر نطاق التواريخ من التقويم</span>
+                  </button>
+                  <input type="date" id="cmpActualFrom" style="display:none;" onchange="BudgetCompareEngine.render()">
+                  <input type="date" id="cmpActualTo" style="display:none;" onchange="BudgetCompareEngine.render()">
                 </div>
               </div>
 
@@ -18633,6 +18648,48 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
 
             <!-- جدول المقارنة الرئيسي (4 أعمدة) -->
+                        <!-- لوحة القيادة التحليلية الذكية المتقدمة لموازنة الشهر -->
+            <div id="cmpAdvancedAnalyticsCockpit" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px;">
+              <!-- 1. مؤشر معدل الحرق المالي -->
+              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;">
+                <div style="font-size: 0.68rem; font-weight: 850; color: #94a3b8; display: flex; align-items: center; justify-content: space-between;">
+                  <span><i class="fa-solid fa-gauge-high" style="color: #38bdf8;"></i> معدل الصرف:</span>
+                  <span id="cmpBurnRatePct" style="color: #38bdf8; font-weight: 900;">0%</span>
+                </div>
+                <div style="width: 100%; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin: 6px 0; overflow: hidden;">
+                  <div id="cmpBurnRateBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #0ea5e9); border-radius: 3px; transition: width 0.4s ease;"></div>
+                </div>
+                <div id="cmpBurnRateDesc" style="font-size: 0.64rem; color: #64748b;">معدل الاستهلاك من الموازنة</div>
+              </div>
+
+              <!-- 2. أعلى بند تجاوز في المصروفات -->
+              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(244,63,94,0.25); border-radius: 12px; padding: 10px 12px;">
+                <div style="font-size: 0.68rem; font-weight: 850; color: #f43f5e; display: flex; align-items: center; justify-content: space-between;">
+                  <span><i class="fa-solid fa-triangle-exclamation"></i> أعلى تجاوز:</span>
+                </div>
+                <div id="cmpTopOverrunCat" style="font-size: 0.85rem; font-weight: 900; color: #f8fafc; margin-top: 3px;">لا يوجد تجاوز</div>
+                <div id="cmpTopOverrunVal" style="font-size: 0.72rem; font-weight: 900; color: #f87171; direction: ltr; font-variant-numeric: tabular-nums;">0.00 ج.م</div>
+              </div>
+
+              <!-- 3. أعلى بند تحقيق وفر -->
+              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(16,185,129,0.25); border-radius: 12px; padding: 10px 12px;">
+                <div style="font-size: 0.68rem; font-weight: 850; color: #34d399; display: flex; align-items: center; justify-content: space-between;">
+                  <span><i class="fa-solid fa-piggy-bank"></i> أعلى وفر:</span>
+                </div>
+                <div id="cmpTopSavedCat" style="font-size: 0.85rem; font-weight: 900; color: #f8fafc; margin-top: 3px;">قيد الحساب...</div>
+                <div id="cmpTopSavedVal" style="font-size: 0.72rem; font-weight: 900; color: #34d399; direction: ltr; font-variant-numeric: tabular-nums;">0.00 ج.م</div>
+              </div>
+
+              <!-- 4. متوسط الصرف اليومي المتاح -->
+              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(251,191,36,0.25); border-radius: 12px; padding: 10px 12px;">
+                <div style="font-size: 0.68rem; font-weight: 850; color: #fbbf24; display: flex; align-items: center; justify-content: space-between;">
+                  <span><i class="fa-solid fa-calendar-day"></i> متاح يومياً:</span>
+                </div>
+                <div id="cmpDailyAllowanceVal" style="font-size: 0.88rem; font-weight: 900; color: #fbbf24; direction: ltr; font-variant-numeric: tabular-nums; margin-top: 3px;">0.00 ج.م</div>
+                <div id="cmpDailyAllowanceDays" style="font-size: 0.64rem; color: #94a3b8;">للأيام المتبقية</div>
+              </div>
+            </div>
+
             <div id="cmpTableWrapper" style="overflow-x:auto;margin-bottom:14px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;">
               <table style="width:100%;border-collapse:collapse;font-size:0.76rem;direction:rtl;">
                 <thead>
@@ -18707,10 +18764,10 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <!-- شريط التبديل بين الميزانيات الفعلية والتقديرية السابقة -->
             <div style="display: flex; gap: 6px; background: rgba(15,23,42,0.75); padding: 4px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 12px;">
               <button type="button" id="btnArchiveSubActual" onclick="BudgetArchiveEngine.switchView('actual')" style="flex:1;height:34px;border-radius:8px;font-size:0.75rem;font-weight:900;background:linear-gradient(135deg, #0ea5e9, #2563eb);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 2px 8px rgba(14,165,233,0.4);">
-                <i class="fa-solid fa-chart-simple"></i> الميزانيات الفعلية السابقة
+                <i class="fa-solid fa-chart-simple"></i> <span>ميزانيات الشهور السابقة</span>
               </button>
               <button type="button" id="btnArchiveSubEstim" onclick="BudgetArchiveEngine.switchView('estimations')" style="flex:1;height:34px;border-radius:8px;font-size:0.75rem;font-weight:900;background:transparent;color:#94a3b8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                <i class="fa-solid fa-clipboard-list" style="color:#a855f7;"></i> التقديرية وإدارة الخطط
+                <i class="fa-solid fa-clipboard-list" style="color:#a855f7;"></i> <span>الموازنات التقديرية السابقة</span>
               </button>
             </div>
 
@@ -18859,6 +18916,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
           </div> <!-- إغلاق panelBudgetArchiveMonthly -->
 
+</div> <!-- إغلاق panelMonthlyBudget -->
+
         <!-- ==========================================================
              2. لوحة موازنات المشاريع المستقلة (panelProjectBudgets)
              ========================================================== -->
@@ -18872,14 +18931,14 @@ body.light-theme .summary-matrix-table tr.total-row td {
                 background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border:none;cursor:pointer;
                 display:flex;align-items:center;justify-content:center;gap:5px;
                 box-shadow:0 2px 8px rgba(14,165,233,0.4);">
-              <i class="fa-solid fa-scale-balanced"></i> مقارنة ومتابعة المشروع
+              <i class="fa-solid fa-scale-balanced"></i> <span>المقارنات بين مصروفات الفعلية والتقديرية للمشاريع</span>
             </button>
             <button type="button" id="btnProjectInnerArchive"
               onclick="switchProjectView('archive')"
               style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.76rem;font-weight:900;
                 background:transparent;color:#94a3b8;border:none;cursor:pointer;
                 display:flex;align-items:center;justify-content:center;gap:5px;">
-              <i class="fa-solid fa-box-archive" style="color:#a855f7;"></i> أرشيف المشاريع
+              <i class="fa-solid fa-box-archive" style="color:#a855f7;"></i> <span>أرشيف المشاريع</span>
             </button>
           </div>
 
@@ -18914,9 +18973,15 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <option value="thisYear">السنة الحالية</option>
                   <option value="custom">منتقى التواريخ (مخصص)</option>
                 </select>
-                <div id="cmpProjActualCustomRange" style="display: none; gap: 6px;">
-                  <input type="date" id="cmpProjActualFrom" onchange="ProjectCompareEngine.render()" style="height: 30px; font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(168, 85, 247, 0.4); background: rgba(30, 41, 59, 0.8); color: #f8fafc; padding: 0 6px;">
-                  <input type="date" id="cmpProjActualTo" onchange="ProjectCompareEngine.render()" style="height: 30px; font-size: 0.75rem; border-radius: 6px; border: 1px solid rgba(168, 85, 247, 0.4); background: rgba(30, 41, 59, 0.8); color: #f8fafc; padding: 0 6px;">
+                <div id="cmpProjActualCustomRange" style="display: none; align-items:center; gap: 6px; margin-top:6px;">
+                  <button type="button" onclick="openDateRangePickerForPair('cmpProjActualFrom','cmpProjActualTo')"
+                    style="flex:1;height:32px;font-size:0.75rem;font-weight:850;border-radius:7px;
+                      border:1px solid rgba(168,85,247,0.5);background:rgba(168,85,247,0.15);color:#c084fc;
+                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpProjActualCustomRangeLabel">اختر نطاق تواريخ المشروع من التقويم</span>
+                  </button>
+                  <input type="date" id="cmpProjActualFrom" style="display:none;" onchange="ProjectCompareEngine.render()">
+                  <input type="date" id="cmpProjActualTo" style="display:none;" onchange="ProjectCompareEngine.render()">
                 </div>
               </div>
             </div>
@@ -18930,10 +18995,10 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <!-- شريط التبديل بين المشاريع المكتملة والمقترحة -->
             <div style="display: flex; gap: 6px; background: rgba(15,23,42,0.75); padding: 4px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 12px;">
               <button type="button" id="btnProjArchiveClosed" onclick="ProjectArchiveEngine.switchSubTab('closed')" style="flex:1;height:34px;border-radius:8px;font-size:0.75rem;font-weight:900;background:linear-gradient(135deg, #0ea5e9, #2563eb);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;box-shadow:0 2px 8px rgba(14,165,233,0.4);">
-                <i class="fa-solid fa-flag-checkered"></i> المشاريع المكتملة والمغلقة
+                <i class="fa-solid fa-receipt"></i> <span>مصروفات المشاريع الفعلية</span>
               </button>
               <button type="button" id="btnProjArchiveDraft" onclick="ProjectArchiveEngine.switchSubTab('draft')" style="flex:1;height:34px;border-radius:8px;font-size:0.75rem;font-weight:900;background:transparent;color:#94a3b8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                <i class="fa-solid fa-hourglass-start" style="color:#a855f7;"></i> مشاريع قيد التجهيز / مقترحة
+                <i class="fa-solid fa-clipboard-list" style="color:#a855f7;"></i> <span>موازنات المشاريع المقدرة</span>
               </button>
             </div>
             <div id="projectArchiveContentArea"></div>
@@ -24622,7 +24687,11 @@ function toggleAnalyticsCustomRange() {
       auditDateFrom: ['auditDateFrom', 'auditDateTo'],
       auditDateTo: ['auditDateFrom', 'auditDateTo'],
       summaryCustomDateFrom: ['summaryCustomDateFrom', 'summaryCustomDateTo'],
-      summaryCustomDateTo: ['summaryCustomDateFrom', 'summaryCustomDateTo']
+      summaryCustomDateTo: ['summaryCustomDateFrom', 'summaryCustomDateTo'],
+      cmpActualFrom: ['cmpActualFrom', 'cmpActualTo'],
+      cmpActualTo: ['cmpActualFrom', 'cmpActualTo'],
+      cmpProjActualFrom: ['cmpProjActualFrom', 'cmpProjActualTo'],
+      cmpProjActualTo: ['cmpProjActualFrom', 'cmpProjActualTo']
     };
 
     function formatCustomRangeDate(dateStr) {
@@ -24653,6 +24722,14 @@ function toggleAnalyticsCustomRange() {
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.dispatchEvent(new Event('change', { bubbles: true }));
     }
+
+        function openDateRangePickerForPair(fromId, toId) {
+      const fromInput = document.getElementById(fromId);
+      const toInput = document.getElementById(toId);
+      if (!fromInput || !toInput || typeof openCustomDatePickerForRange !== 'function') return;
+      openCustomDatePickerForRange(fromInput, toInput);
+    }
+    window.openDateRangePickerForPair = openDateRangePickerForPair;
 
     function openCustomDatePickerForRange(fromInput, toInput) {
       if (!fromInput || !toInput) return;
@@ -24891,10 +24968,24 @@ function toggleAnalyticsCustomRange() {
       }
 
       if (context.mode === 'range') {
-        context.fromInput.value = from || to;
-        context.toInput.value = to || from;
+        const startVal = from || to;
+        const endVal = to || from;
+        context.fromInput.value = startVal;
+        context.toInput.value = endVal;
         dispatchCustomDatePickerChange(context.fromInput);
         dispatchCustomDatePickerChange(context.toInput);
+
+        if (context.fromInput.id === 'cmpActualFrom') {
+          const lbl = document.getElementById('cmpActualCustomRangeLabel');
+          if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
+          if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
+        }
+        if (context.fromInput.id === 'cmpProjActualFrom') {
+          const lbl = document.getElementById('cmpProjActualCustomRangeLabel');
+          if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
+          if (window.ProjectCompareEngine) window.ProjectCompareEngine.render();
+        }
+
         toggleCustomDatePicker(false);
         return;
       }
@@ -36506,25 +36597,25 @@ function switchCategoryChartFormat(format, btnEl) {
     
     
     function switchBudgetMonthView(view) {
-      const views = ['compare', 'archive'];
-      views.forEach(v => {
-        const panel = document.getElementById('panelBudget' + (v === 'compare' ? 'Compare' : 'ArchiveMonthly'));
-        const btn = document.getElementById('btnBudgetInner' + (v === 'compare' ? 'Compare' : 'Archive'));
-        if (!panel || !btn) return;
-        const active = (v === view);
-        panel.style.display = active ? 'block' : 'none';
-        if (active) {
-          btn.style.background = 'linear-gradient(135deg,#0ea5e9,#2563eb)';
-          btn.style.color = '#fff';
-          btn.style.boxShadow = '0 2px 8px rgba(14,165,233,0.4)';
-        } else {
-          btn.style.background = 'transparent';
-          btn.style.color = '#94a3b8';
-          btn.style.boxShadow = 'none';
-        }
-      });
-      if (view === 'compare' && window.BudgetCompareEngine) window.BudgetCompareEngine.render();
-      if (view === 'archive' && window.BudgetArchiveEngine) window.BudgetArchiveEngine.render();
+      const isCompare = (view === 'compare');
+      const panelC = document.getElementById('panelBudgetCompare');
+      const panelA = document.getElementById('panelBudgetArchiveMonthly');
+      const btnC = document.getElementById('btnBudgetInnerCompare');
+      const btnA = document.getElementById('btnBudgetInnerArchive');
+      if (panelC) panelC.style.display = isCompare ? 'block' : 'none';
+      if (panelA) panelA.style.display = isCompare ? 'none' : 'block';
+      if (btnC) {
+        btnC.style.background = isCompare ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent';
+        btnC.style.color = isCompare ? '#fff' : '#94a3b8';
+        btnC.style.boxShadow = isCompare ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none';
+      }
+      if (btnA) {
+        btnA.style.background = !isCompare ? 'linear-gradient(135deg, #a855f7, #7c3aed)' : 'transparent';
+        btnA.style.color = !isCompare ? '#fff' : '#94a3b8';
+        btnA.style.boxShadow = !isCompare ? '0 2px 8px rgba(168, 85, 247, 0.4)' : 'none';
+      }
+      if (isCompare && window.BudgetCompareEngine) window.BudgetCompareEngine.render();
+      if (!isCompare && window.BudgetArchiveEngine) window.BudgetArchiveEngine.render();
     }
     window.switchBudgetMonthView = switchBudgetMonthView;
 
@@ -42411,6 +42502,49 @@ window.filterArchiveType = filterArchiveType;
   box-sizing: border-box !important;
 }
 </style>
+
+
+  <script src="./voice-assistant-engine.js?v=202611161400" defer></script>
+
+  <!-- Voice Assistant Suite v5.3.82 (Web Speech API) -->
+  <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
+    <i class="fa-solid fa-microphone"></i>
+  </button>
+
+  <div id="voiceLiveOverlay">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:0.72rem;font-weight:900;color:#38bdf8;"><i class="fa-solid fa-wand-magic-sparkles"></i> جارٍ الاستماع...</span>
+      <div class="voice-wave-container">
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+        <div class="voice-wave-bar"></div>
+      </div>
+    </div>
+    <div id="voiceLiveText" style="font-size:0.82rem;font-weight:800;color:#f8fafc;line-height:1.4;">تفضل بالحديث...</div>
+  </div>
+
+  <div id="voiceDrawerBackdrop" onclick="VoiceAssistantEngine.closeConfirmDrawer()"></div>
+
+  <div id="voiceConfirmDrawer">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,0.25);border-radius:2px;margin:0 auto 12px;"></div>
+    <div id="voiceConfirmDrawerBody"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button type="button" onclick="VoiceAssistantEngine.commitTransaction()"
+        style="flex:2;height:40px;border-radius:10px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:900;font-size:0.82rem;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 12px rgba(16,185,129,0.4);">
+        <i class="fa-solid fa-check"></i> اعتماد وحفظ فوري
+      </button>
+      <button type="button" onclick="VoiceAssistantEngine.openInModalForEdit()"
+        style="flex:1;height:40px;border-radius:10px;background:rgba(255,255,255,0.08);color:#cbd5e1;font-weight:850;font-size:0.78rem;border:1px solid rgba(255,255,255,0.15);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
+        <i class="fa-solid fa-pencil"></i> تعديل
+      </button>
+      <button type="button" onclick="VoiceAssistantEngine.closeConfirmDrawer()"
+        style="width:40px;height:40px;border-radius:10px;background:rgba(239,68,68,0.15);color:#f87171;font-weight:850;font-size:0.85rem;border:1px solid rgba(239,68,68,0.3);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
 
 </body>
 </html>
