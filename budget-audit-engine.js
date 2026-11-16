@@ -1001,11 +1001,14 @@ window.BudgetAuditEngine = (() => {
   // 6. التحديث الشامل والمتناغم لمنظومة الموازنات (Master Synchronizer)
   // ---------------------------------------------------------------------------
   function refreshActiveBudgetAudit() {
-    let plan = window.currentBudgetMonthData;
-    if (!plan && state.monthlyBudgets && state.monthlyBudgets.length > 0) {
-      plan = state.monthlyBudgets[0];
-      window.currentBudgetMonthData = plan;
-    }
+    // Never use an old global plan after the user changes the selected budget.
+    const plans = (typeof state !== 'undefined' && Array.isArray(state.monthlyBudgets))
+      ? state.monthlyBudgets : [];
+    const selected = plans.find(b => b && b.id === state.activeBudgetId);
+    let plan = selected || (window.currentBudgetMonthData &&
+      plans.find(b => b && b.id === window.currentBudgetMonthData.id)) ||
+      plans[0] || null;
+    if (plan) window.currentBudgetMonthData = plan;
     if (plan && typeof ensureBudgetItems === 'function') {
       ensureBudgetItems(plan);
     }
