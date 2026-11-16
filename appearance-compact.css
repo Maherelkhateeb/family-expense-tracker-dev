@@ -1809,3 +1809,34 @@ body.light-theme .budget-chart-panel {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
+
+/* v5.3.90 — Monthly Budget Analytics: responsive RTL, light and dark modes. */
+.monthly-insights{margin:14px 0 4px;padding:12px;border-radius:14px;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.24);color:#f1f5f9;direction:rtl;box-sizing:border-box;max-width:100%;overflow:hidden}
+.monthly-insights h3{font-size:.98rem;font-weight:900;margin:0 0 5px;color:#e2e8f0}
+.monthly-insights>p{font-size:.73rem;opacity:.81;margin:0 0 12px;line-height:1.6}
+.monthly-insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.monthly-insight-card{padding:10px;border:1px solid rgba(148,163,184,.2);background:rgba(30,41,59,.76);border-radius:11px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+.monthly-insight-card small{font-size:.68rem;color:#cbd5e1}
+.monthly-insight-card strong{font-size:1.06rem;font-weight:900;color:#f8fafc;line-height:1.45}
+.monthly-insight-card span{font-size:.65rem;color:#cbd5e1;line-height:1.55}
+.monthly-insight-details{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px}
+.monthly-insight-details>div{padding:10px;border-radius:11px;border:1px solid rgba(148,163,184,.19)}
+.monthly-insight-details h4{margin:0 0 8px;font-size:.78rem;font-weight:850;color:#e2e8f0}
+.monthly-insight-details p{font-size:.72rem;color:#94a3b8}
+.monthly-week-bars{display:grid;gap:7px}
+.monthly-week-line{display:grid;grid-template-columns:50px minmax(0,1fr) 62px;align-items:center;gap:7px;font-size:.67rem}
+.monthly-week-line b{font-variant-numeric:tabular-nums;text-align:left}
+.monthly-week-track{height:7px;border-radius:20px;background:rgba(148,163,184,.19);overflow:hidden}
+.monthly-week-track i{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#0ea5e9,#10b981)}
+.monthly-overrun-list{display:grid;gap:7px}
+.monthly-overrun-list>div{display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:.73rem}
+.monthly-overrun-list b{color:#fb7185;font-variant-numeric:tabular-nums}
+body.light-theme .monthly-insights{background:#fff;border-color:#dbe2ea;color:#172033}
+body.light-theme .monthly-insights h3,body.light-theme .monthly-insight-details h4{color:#1e293b}
+body.light-theme .monthly-insight-card{background:#f8fafc;border-color:#e2e8f0}
+body.light-theme .monthly-insight-card small,body.light-theme .monthly-insight-card span{color:#475569}
+body.light-theme .monthly-insight-card strong{color:#0f172a}
+body.light-theme .monthly-insight-details>div{border-color:#e2e8f0}
+body.light-theme .monthly-week-track{background:#e2e8f0}
+body.light-theme .monthly-insight-details p{color:#64748b}
+@media(min-width:650px){.monthly-insight-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.monthly-insight-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
