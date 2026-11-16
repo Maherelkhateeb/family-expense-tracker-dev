@@ -275,7 +275,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.78';
+    var APP_VERSION = 'v5.3.79';
     var APP_BUILD_ID = 202611151830;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -11774,7 +11774,62 @@ body.light-theme .cat-budget-progress-track {
       color: #475569 !important;
     }
 
-  </style>
+  
+    /* =========================================================================
+       جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.79
+       ========================================================================= */
+    body.light-theme .budget-lux-card,
+    body.light-theme .project-kpi-card,
+    body.light-theme .project-lux-card,
+    body.light-theme .budget-kpi-card {
+      background: #ffffff !important;
+      border: 1.2px solid #e2e8f0 !important;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
+      color: #0f172a !important;
+    }
+    body.light-theme .budget-lux-card div,
+    body.light-theme .project-lux-card div {
+      color: #0f172a;
+    }
+    body.light-theme .budget-lux-card span,
+    body.light-theme .project-lux-card span {
+      color: inherit;
+    }
+
+    /* إصلاح كشف وتدقيق مصدر الرصيد الفعلي بالكامل في الوضع الفاتح */
+    body.light-theme #actualBalanceAuditModal .modal-content-card {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15) !important;
+      color: #0f172a !important;
+    }
+    body.light-theme #actualBalanceAuditModal .modal-head h3,
+    body.light-theme #actualBalanceAuditModal h2,
+    body.light-theme #actualBalanceAuditModal h3,
+    body.light-theme #actualBalanceAuditModal .modal-title-custom {
+      color: #0f172a !important;
+    }
+    body.light-theme #actualBalanceAuditModal table thead tr,
+    body.light-theme #actualBalanceAuditModal table thead th {
+      background: #f1f5f9 !important;
+      color: #334155 !important;
+      border-color: #cbd5e1 !important;
+    }
+    body.light-theme #actualBalanceAuditModal table tbody tr {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+    }
+    body.light-theme #actualBalanceAuditModal table tbody tr:hover {
+      background: #f8fafc !important;
+    }
+    body.light-theme #actualBalanceAuditModal select,
+    body.light-theme #actualBalanceAuditModal input {
+      background: #f8fafc !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+</style>
 
     <script>
     // تسجيل Service Worker للعمل أوفلاين وتحديث الكاش تلقائياً بصيغة PWA
@@ -17097,30 +17152,33 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
 
         <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + زر العملة المطور -->
-        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; width: calc(100% - 12px); box-sizing: border-box;">
+        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; width: calc(100% - 12px); box-sizing: border-box;">
           
-          <!-- كلاستر المحفظة الموسع: أيقونة + قائمة موسعة لعرض كامل الاسم دون اقتصاص -->
-          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 0; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
+          <!-- 1. أقصى اليمين (Far Right in RTL): زر فتح شاشة الذهب والعملات المباشرة -->
+          <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="toggleGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);">
+            <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
+            <span>الذهب</span>
+          </button>
+
+          <!-- 2. الوسط (Center): كلاستر المحفظة الموسع + زر تبديل العملة -->
+          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 0; height: 38px; display: flex; align-items: center; gap: 8px; padding: 0 12px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
             <i class="fa-solid fa-wallet" style="color: #38bdf8; font-size: 1.05rem; flex-shrink: 0;"></i>
             <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.92rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-            <!-- زر الملخص الشامل السريع بجوار زر الذهب -->
-            <button type="button" class="tool-pill-action summary-pill" id="btnOpenSummaryQuick" onclick="openSummaryLeftDrawer()" title="عرض ملخص العمليات الشامل" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.12)); color: #38bdf8; flex-shrink: 0; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
-              <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i>
-              <span>الملخص</span>
-            </button>
-            <!-- زر فتح شاشة الذهب والعملات المباشرة -->
-            <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="openGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);">
-              <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
-              <span>الذهب</span>
-            </button>
-            <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-            <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0;">
-              <i class="fa-solid fa-right-left"></i>
-              <span id="activeCurrencyText">EGP</span>
-            </div>
+          <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
+          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0;">
+            <i class="fa-solid fa-right-left"></i>
+            <span id="activeCurrencyText">EGP</span>
+          </div>
+
+          <!-- 3. أقصى اليسار (Far Left in RTL): زر الملخص الشامل السريع -->
+          <button type="button" class="tool-pill-action summary-pill" id="btnOpenSummaryQuick" onclick="toggleSummaryDrawer()" title="عرض ملخص العمليات الشامل" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.12)); color: #38bdf8; flex-shrink: 0; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
+            <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i>
+            <span>الملخص</span>
+          </button>
+
+        </div>
           </div>
 
         </div>
@@ -17588,7 +17646,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <!-- ================================================================
            الصفحة 3: مؤشرات المصروفات والمقارنات والضبط (Page 3: Indicators & Comparisons)
            ================================================================ -->
-      <div class="page-view" id="viewAnalytics" style="display: none;"></div>
+      
       <div class="page-view" id="viewRequests" style="display: none;">
         
         <!-- ============================================================
@@ -18481,42 +18539,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
 
         <!-- شريط تبويب داخلي منسق لقسم الميزانيات -->
-        <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 4px; background: rgba(15, 23, 42, 0.85); padding: 4px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 10px;">
-          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
+        <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 6px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 12px;">
+          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
             <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
-          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
-          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
             <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات والرقابة</span>
           </button>
-          <button type="button" id="btnBudgetSubHistory" onclick="switchBudgetSubTab('history')" style="flex: 1; padding: 8px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            <i class="fa-solid fa-box-archive" style="color: #a855f7;"></i> <span>الأرشيف والسجل</span>
-          </button>
         </div>
-
-        <div id="panelMonthlyBudget" class="app-card-panel" style="display: block; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
-
-          <!-- شريط التبديل الداخلي لموازنة الشهر: [مقارنة] و [أرشيف الموازنات] -->
-          <div id="budgetMonthInnerTabStrip" style="display:flex;gap:6px;background:rgba(15,23,42,0.75);
-            padding:5px;border-radius:11px;border:1px solid rgba(56,189,248,0.2);margin-bottom:12px;">
-            <button type="button" id="btnBudgetInnerCompare"
-              onclick="switchBudgetMonthView('compare')"
-              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.76rem;font-weight:900;
-                background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border:none;cursor:pointer;
-                display:flex;align-items:center;justify-content:center;gap:5px;
-                box-shadow:0 2px 8px rgba(14,165,233,0.4);">
-              <i class="fa-solid fa-scale-balanced"></i> مقارنة
-            </button>
-            <button type="button" id="btnBudgetInnerArchive"
-              onclick="switchBudgetMonthView('archive')"
-              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.76rem;font-weight:900;
-                background:transparent;color:#94a3b8;border:none;cursor:pointer;
-                display:flex;align-items:center;justify-content:center;gap:5px;">
-              <i class="fa-solid fa-box-archive" style="color:#a855f7;"></i> أرشيف الموازنات
-            </button>
-          </div>
 
           <!-- حاوية عرض المقارنة (panelBudgetCompare) -->
           <div id="panelBudgetCompare" style="display:block;">
@@ -18652,7 +18685,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
                 <i class="fa-solid fa-chart-simple"></i> الميزانيات الفعلية السابقة
               </button>
               <button type="button" id="btnArchiveSubEstim" onclick="BudgetArchiveEngine.switchView('estimations')" style="flex:1;height:34px;border-radius:8px;font-size:0.75rem;font-weight:900;background:transparent;color:#94a3b8;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                <i class="fa-solid fa-clipboard-list" style="color:#a855f7;"></i> التقديرية السابقة
+                <i class="fa-solid fa-clipboard-list" style="color:#a855f7;"></i> التقديرية وإدارة الخطط
               </button>
             </div>
 
@@ -18660,9 +18693,10 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <div id="archiveContentArea">
               <!-- يُملأ ديناميكياً بواسطة BudgetArchiveEngine.render() -->
             </div>
-          </div>
-
-          <!-- 1. شريط الخطة النشطة والإجراءات الفاخرة -->
+          
+            <!-- قسم إدارة وتعديل الخطة التقديرية الحالية وبنودها وسقوف الإنفاق -->
+            <div id="budgetPlanManagementContainer" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed rgba(168, 85, 247, 0.35);">
+              <!-- 1. شريط الخطة النشطة والإجراءات الفاخرة -->
           <div style="margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
               <div style="font-size: 0.86rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
@@ -18704,81 +18738,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </div>
 
           <div id="activeBudgetProjectInfo" class="project-budget-note" hidden></div>
-
-          <!-- 2. بطاقات المؤشرات المالية الرقابية الأربعة (التقديري vs الفعلي vs الفائض) -->
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px;">
-            <!-- كارت 1: الدخل المتوقع -->
-            <div class="kpi-lux-card" style="background: rgba(16, 185, 129, 0.10); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; font-weight: 850; color: #34d399; margin-bottom: 2px;">
-                <span>إجمالي الدخل المتوقع</span><i class="fa-solid fa-money-bill-wave"></i>
-              </div>
-              <div id="budgetKpiIncome" style="font-size: 0.95rem; font-weight: 900; color: #34d399; direction: rtl;">+ 0.00 ج.م</div>
-              <div style="font-size: 0.64rem; color: #64748b; margin-top: 1px;">الوارد والتمويل التقديري</div>
-            </div>
-
-            <!-- كارت 2: المصروفات المقدرة -->
-            <div class="kpi-lux-card" style="background: rgba(245, 158, 11, 0.10); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; font-weight: 850; color: #fbbf24; margin-bottom: 2px;">
-                <span>المصروفات المقدرة</span><i class="fa-solid fa-hand-holding-dollar"></i>
-              </div>
-              <div id="budgetKpiExpense" style="font-size: 0.95rem; font-weight: 900; color: #fbbf24; direction: rtl;">- 0.00 ج.م</div>
-              <div style="font-size: 0.64rem; color: #64748b; margin-top: 1px;">سقف الموازنة المخطط</div>
-            </div>
-
-            <!-- كارت 3: المنصرف الفعلي حتى الآن -->
-            <div class="kpi-lux-card" style="background: rgba(239, 68, 68, 0.10); border: 1.2px solid rgba(239, 68, 68, 0.35); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; font-weight: 850; color: #f87171; margin-bottom: 2px;">
-                <span>المنصرف الفعلي حتى الآن</span><i class="fa-solid fa-receipt"></i>
-              </div>
-              <div id="budgetKpiActual" style="font-size: 0.95rem; font-weight: 900; color: #f87171; direction: rtl;">- 0.00 ج.م</div>
-              <div style="font-size: 0.64rem; color: #64748b; margin-top: 1px;">الواقع المسجل للعمليات</div>
-            </div>
-
-            <!-- كارت 4: الفائض / العجز المتبقي -->
-            <div class="kpi-lux-card" style="background: rgba(56, 189, 248, 0.10); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; font-weight: 850; color: #38bdf8; margin-bottom: 2px;">
-                <span>الوفر / الفائض المتاح</span><i class="fa-solid fa-shield-halved"></i>
-              </div>
-              <div id="budgetKpiSurplus" style="font-size: 0.95rem; font-weight: 900; color: #38bdf8; direction: rtl;">0.00 ج.م</div>
-              <div style="font-size: 0.64rem; color: #64748b; margin-top: 1px;">المتبقي من سقف الموازنة</div>
-            </div>
-          </div>
-
-          <!-- 3. شريط البوصلة الرقابية ونسبة الاستهلاك الذكية (Health Compass) -->
-          <div id="budgetHealthBanner" class="budget-health-banner safe" style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 12px; margin-bottom: 10px; font-size: 0.76rem; font-weight: 850;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <span id="budgetHealthText">✅ استهلاك آمن وضمن الحدود</span>
-            </div>
-            <span id="budgetHealthBadge" class="budget-health-pill safe">ضمن الأمان</span>
-          </div>
-
-          <!-- شريط مقارنة الفعلي بالمقدر للشهر المحدد -->
-          <div id="budgetActualVsPlannedBar" style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 8px 12px; margin-bottom: 12px; font-size: 0.74rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <span style="color: #cbd5e1; font-weight: 800;"><i class="fa-solid fa-chart-pie" style="color: #fbbf24;"></i> الرقابة المالية الإجمالية:</span>
-              <span id="budgetActualSummaryTxt" style="font-weight: 900; color: #38bdf8;">الفعلي: 0.00 ج.م من أصل 0.00 ج.م</span>
-            </div>
-            <div style="width: 100%; height: 8px; background: rgba(15, 23, 42, 0.8); border-radius: 4px; overflow: hidden; display: flex;">
-              <div id="budgetActualProgressBar" style="height: 100%; width: 0%; background: #38bdf8; transition: width 0.3s;"></div>
-            </div>
-          </div>
-
-
-
-          <!-- شريط الفلاتر الزمنية السريع وجدول الرقابة الحي وتوزيع أفراد الأسرة (v5.3.78) -->
-          <div id="budgetMonthlyTimeFiltersContainer"></div>
-          <div id="budgetActualVsEstimatedContainer"></div>
-          <div id="budgetMemberBreakdownContainer"></div>
-
-          <!-- 5. شريط فلترة أفراد العائلة للبند المحدد -->
-          <div style="margin-bottom: 10px;">
-            <div style="font-size: 0.74rem; font-weight: 800; color: #94a3b8; margin-bottom: 4px; display: flex; align-items: center; gap: 5px;">
-              <i class="fa-solid fa-users"></i> <span>تصفية مخصصات الميزانية حسب الفرد:</span>
-            </div>
-            <div id="budgetMemberFilterPillsContainer" style="display: flex; gap: 4px; overflow-x: auto; padding: 2px 0 6px;"></div>
-          </div>
-
-          <!-- 6. ترويسة بنود المصروفات مع زر إضافة البند القابل للطي الأنيق -->
+              <!-- 6. ترويسة بنود المصروفات مع زر إضافة البند القابل للطي الأنيق -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.06);">
             <div style="font-size: 0.84rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid fa-list-check"></i>
@@ -18870,12 +18830,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <button type="button" class="btn-submit-tx" onclick="saveMonthlyBudget()" style="background: linear-gradient(135deg, #0284c7, #0369a1); height: 44px; font-size: 0.92rem; font-weight: 900; width: 100%; border: none; border-radius: 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
             <i class="fa-solid fa-floppy-disk"></i> حفظ وتثبيت الخطة التقديرية الحالية 💾
           </button>
+            </div>
 
-          <!-- ========================================================
-               أسفل الصفحة: مؤشرات وتحليلات ورسوم بيانية لتوضيح الفرق والنتيجة والتغير
-               ======================================================== -->
-          <div id="budgetBottomAnalyticsSection" style="margin-top: 18px; padding-top: 14px; border-top: 1.5px solid rgba(56, 189, 248, 0.25);">
-            <!-- يتم توليد المؤشرات العميقة والتحليلات والرسوم البيانية ديناميكياً بواسطة BudgetAuditEngine -->
           </div>
         </div>
 
@@ -19063,21 +19019,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
         </div>
         </div>
 
-        <!-- ==========================================================
-             4. لوحة سجل الميزانيات المحفوظة (panelBudgetHistory)
-             ========================================================== -->
-        <div id="panelBudgetHistory" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <div style="font-size: 0.88rem; font-weight: 900; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-              <i class="fa-solid fa-clock-rotate-left"></i> <span>سجل الخطط والميزانيات التقديرية المحفوظة:</span>
-            </div>
-            <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 30px; font-size: 0.72rem; padding: 0 10px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-weight: 800; cursor: pointer; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-plus"></i> خطة جديدة
-            </button>
-          </div>
-          <div id="budgetHistoryListContainer" style="display: flex; flex-direction: column; gap: 8px;">
-            <!-- تتولد خطط الميزانيات السابقة ديناميكياً -->
-          </div>
+        
         </div>
       </div> <!-- إغلاق viewBudgets الرسمي -->
 
@@ -20788,16 +20730,50 @@ body.light-theme .summary-matrix-table tr.total-row td {
   </div> <!-- إغلاق tasksFullScreenModal -->
 
 <!-- عرض الفاتورة والصور المكبرة (Receipt Lightbox Modal) -->
-    <div class="modal-overlay modal-overlay-custom" id="receiptLightboxModal" style="z-index: 120000 !important;">
-      <div class="modal-content-card" style="max-width: 480px; text-align: center;">
-        <div class="modal-head">
-          <h3 class="modal-title-custom"><i class="fa-solid fa-file-invoice" style="color: #38bdf8;"></i> <span id="lightboxHeaderTitle">معاينة الصورة المرفقة</span></h3>
-          <button type="button" class="btn-modal-close" onclick="closeModal('receiptLightboxModal')" aria-label="إغلاق">&times;</button>
+    <!-- نافذة معرض الصور والمرفقات المتعددة الذكية (Multi-Image Gallery Lightbox Carousel) v5.3.79 -->
+    <div class="modal-overlay modal-overlay-custom" id="receiptLightboxModal" style="z-index: 1200050 !important; display: none; align-items: center; justify-content: center;" onclick="if(event.target === this) closeModal('receiptLightboxModal')">
+      <div class="modal-content-card" style="max-width: 580px; width: 95%; max-height: 94vh; padding: 14px; border-radius: 18px; text-align: center; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid rgba(56, 189, 248, 0.45); box-shadow: 0 25px 60px rgba(0,0,0,0.85);">
+        
+        <!-- الهيدر: العنوان + عداد الصور + أدوات التكبير والتنزيل والإغلاق -->
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-images" style="color: #38bdf8; font-size: 1.1rem;"></i>
+            <h3 class="modal-title-custom" id="lightboxHeaderTitle" style="font-size: 0.95rem; font-weight: 850; margin: 0; color: #f8fafc;">معاينة المرفقات المصورة</h3>
+            <span id="lightboxCounterPill" style="display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 850; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8;">1 / 1</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <button type="button" class="btn-audit-mini" onclick="downloadActiveLightboxPhoto()" title="تحميل الصورة الحالية" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+              <i class="fa-solid fa-download"></i>
+            </button>
+            <button type="button" class="btn-audit-mini" onclick="openActiveLightboxPhotoInNewTab()" title="فتح في نافذة كاملة" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </button>
+            <button type="button" class="btn-modal-close" onclick="closeModal('receiptLightboxModal')" aria-label="إغلاق" style="font-size: 1.25rem; cursor: pointer; color: #94a3b8; background: transparent; border: none;">&times;</button>
+          </div>
         </div>
-        <div style="padding: 14px;">
-          <p id="lightboxTxLabel" style="font-size: 0.86rem; font-weight: 800; color: #38bdf8; margin-bottom: 10px;"></p>
-          <img id="lightboxImg" src="" style="width: 100%; max-height: 70vh; object-fit: contain; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 24px rgba(0,0,0,0.5);">
+
+        <!-- بيان العملية أو الفاتورة أو الدين -->
+        <p id="lightboxTxLabel" style="font-size: 0.84rem; font-weight: 800; color: #38bdf8; margin: 2px 0 4px; text-align: right;"></p>
+
+        <!-- منطقة العرض الرئيسية مع أزرار التنقل وإيماءات اللمس -->
+        <div id="lightboxViewerStage" style="position: relative; width: 100%; height: 56vh; max-height: 480px; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.45); border-radius: 14px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); touch-action: pan-y pinch-zoom; user-select: none;">
+          <!-- الصورة المعروضة -->
+          <img id="lightboxImg" src="" alt="المرفق" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; transition: opacity 0.15s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.6);">
+
+          <!-- زر السابق ◀ (في اليمين) -->
+          <button type="button" id="lightboxPrevBtn" onclick="navLightboxGallery(-1)" aria-label="الصورة السابقة" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(15, 23, 42, 0.75); border: 1.5px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); z-index: 10; transition: all 0.2s ease;">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <!-- زر التالي ▶ (في اليسار) -->
+          <button type="button" id="lightboxNextBtn" onclick="navLightboxGallery(1)" aria-label="الصورة التالية" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: rgba(15, 23, 42, 0.75); border: 1.5px solid rgba(56, 189, 248, 0.5); color: #38bdf8; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); box-shadow: 0 4px 14px rgba(0,0,0,0.5); z-index: 10; transition: all 0.2s ease;">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
         </div>
+
+        <!-- شريط مصغرات الصور (Thumbnails Carousel) للتمرير السريع والنقر المباشر -->
+        <div id="lightboxThumbnailsStrip" style="display: flex; gap: 8px; justify-content: center; align-items: center; overflow-x: auto; padding: 6px 2px 2px; max-width: 100%; scrollbar-width: thin; -webkit-overflow-scrolling: touch;"></div>
+
       </div>
     </div>
 
@@ -20862,7 +20838,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.78</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.79</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -20993,7 +20969,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                   <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span>نيلي ليلي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  
                 </div>
               </div>
               <!-- 4. منتقى ألوان الأيقونات (أسفل منه مباشرة) -->
@@ -22463,7 +22439,7 @@ function toggleAnalyticsCustomRange() {
 
     
     // =========================================================================
-    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.78 Advanced Suite)
+    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.79 Advanced Suite)
     // 1. نسبة وقيمة كل شخص من كل بند
     // 2. نسبة وقيمة كل بنك/محفظة لكل شخص
     // 3. مقارنات بين الأفراد وبعضهم
@@ -24363,7 +24339,7 @@ function toggleAnalyticsCustomRange() {
       const pageMap = {
         'expenses': 'viewExpenses',
         'operations': 'viewOperations',
-        'analytics': 'viewAnalytics',
+        
         'requests': 'viewRequests',
         'expected': 'viewExpected',
         'budgets': 'viewBudgets'
@@ -27110,7 +27086,7 @@ function renderCategoriesGrid(filtered) {
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
                       <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
+                      ${(tx.receipt || (tx.receipts && tx.receipts.length)) ? `<span onclick="event.stopPropagation(); openReceiptLightbox('${tx.id}')" style="cursor: pointer; color: #ec4899; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3); padding: 0.5px 6px; border-radius: 4px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px;" title="عرض المرفقات المصورة"><i class="fa-solid fa-images"></i> ${(tx.receipts && tx.receipts.length > 1) ? tx.receipts.length + ' صور' : 'مرفق'}</span>` : ''}
                     </div>
                   </div>
                 </div>
@@ -27127,9 +27103,9 @@ function renderCategoriesGrid(filtered) {
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
               <div class="ops-row-actions-drawer" data-drawer-tx-id="${tx.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); animation: fadeIn 0.15s ease;">
                 ${tx.receipt ? `
-                  <button type="button" onclick="event.stopPropagation(); viewReceiptImage('${tx.receipt}')" style="height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                    <i class="fa-solid fa-image"></i>
-                    <span>عرض الإيصال</span>
+                  <button type="button" onclick="event.stopPropagation(); openReceiptLightbox('${tx.id}')" style="height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-images"></i>
+                    <span>عرض المرفقات ${(tx.receipts && tx.receipts.length > 1) ? `(${tx.receipts.length})` : ''}</span>
                   </button>
                 ` : ''}
                 <button type="button" onclick="event.stopPropagation(); editTx('${tx.id}')" style="height: 30px; padding: 0 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
@@ -27228,7 +27204,7 @@ function renderCategoriesGrid(filtered) {
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
                       <span class="ops-compact-serial" style="font-family: monospace; font-size: 0.58rem; font-weight: 800; color: #64748b; background: rgba(100, 116, 139, 0.10); border: 1px solid rgba(100, 116, 139, 0.22); border-radius: 4px; padding: 0.5px 4px; direction: ltr; flex-shrink: 0; line-height: 1.2;">#${escapeHtml(tx.serialNo || tx.id)}</span>
                       ${projectName ? `<span style="color: #8b5cf6; background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">📌 ${escapeHtml(projectName)}</span>` : ''}
-                      ${tx.receipt ? `<span style="color: #ec4899; background: rgba(236, 72, 153, 0.08); border: 1px solid rgba(236, 72, 153, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;"><i class="fa-solid fa-paperclip"></i></span>` : ''}
+                      ${(tx.receipt || (tx.receipts && tx.receipts.length)) ? `<span onclick="event.stopPropagation(); openReceiptLightbox('${tx.id}')" style="cursor: pointer; color: #ec4899; background: rgba(236, 72, 153, 0.12); border: 1px solid rgba(236, 72, 153, 0.3); padding: 0.5px 6px; border-radius: 4px; font-weight: 800; display: inline-flex; align-items: center; gap: 3px;" title="عرض المرفقات المصورة"><i class="fa-solid fa-images"></i> ${(tx.receipts && tx.receipts.length > 1) ? tx.receipts.length + ' صور' : 'مرفق'}</span>` : ''}
                     </div>
                   </div>
                 </div>
@@ -27246,9 +27222,9 @@ function renderCategoriesGrid(filtered) {
               <!-- درج الإجراءات المخفي: يفتح حصرياً عند الضغط على العملية (تعديل، حذف، إيصال) -->
                 <div class="ops-row-actions-drawer" data-drawer-tx-id="${tx.id}" style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); animation: fadeIn 0.15s ease;">
                   ${tx.receipt ? `
-                    <button type="button" onclick="event.stopPropagation(); viewReceiptImage('${tx.receipt}')" style="height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                      <i class="fa-solid fa-image"></i>
-                      <span>عرض الإيصال</span>
+                    <button type="button" onclick="event.stopPropagation(); openReceiptLightbox('${tx.id}')" style="height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                      <i class="fa-solid fa-images"></i>
+                      <span>عرض المرفقات ${(tx.receipts && tx.receipts.length > 1) ? `(${tx.receipts.length})` : ''}</span>
                     </button>
                   ` : ''}
                   <button type="button" onclick="event.stopPropagation(); editTx('${tx.id}')" style="height: 30px; padding: 0 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
@@ -27675,7 +27651,8 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
         projectItem: (document.getElementById('inpTxProjectItem')?.value || '').trim() || null,
         time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
         author: state.currentUser || 'ماهر',
-        receipt: state.pendingReceiptDataUri || null
+        receipt: state.pendingReceiptDataUri || (state.pendingReceiptDataUris && state.pendingReceiptDataUris[0]) || null,
+        receipts: (state.pendingReceiptDataUris && state.pendingReceiptDataUris.length) ? [...state.pendingReceiptDataUris] : (state.pendingReceiptDataUri ? [state.pendingReceiptDataUri] : [])
       };
 
       if (currentModalType === 'expense') {
@@ -28075,55 +28052,254 @@ function saveTx() {
       const clearBtn = document.getElementById('btnClearReceipt');
       if (previewCont) {
         previewCont.style.display = 'none';
-        previewCont.innerHTML = '<img id="receiptPreviewImg" src="" alt="معاينة الإيصال" style="max-height: 120px; border-radius: 8px; object-fit: cover;">';
+        previewCont.innerHTML = '<img id="receiptPreviewCarouselSingle" src="" alt="معاينة الإيصال" style="max-height: 120px; border-radius: 8px; object-fit: cover;">';
       }
       if (clearBtn) clearBtn.style.display = 'none';
       const badge = document.getElementById('txPhotoAttachedBadge'); if (badge) badge.style.display = 'none';
     }
 
-    function openReceiptLightbox(source, optionalTitle = '') {
-      const lbl = document.getElementById('lightboxTxLabel');
-      const img = document.getElementById('lightboxImg');
-      const header = document.getElementById('lightboxHeaderTitle');
-      if (!img) return;
+    // =========================================================================
+    // محرك معرض الصور والمرفقات المتعددة والتنقل السلس (Multi-Image Gallery Engine) v5.3.79
+    // =========================================================================
+    window.galleryLightboxState = {
+      images: [],
+      currentIndex: 0,
+      title: ''
+    };
 
+    function renderGalleryLightbox() {
+      const st = window.galleryLightboxState;
+      const img = document.getElementById('lightboxImg');
+      const counter = document.getElementById('lightboxCounterPill');
+      const lbl = document.getElementById('lightboxTxLabel');
+      const prevBtn = document.getElementById('lightboxPrevBtn');
+      const nextBtn = document.getElementById('lightboxNextBtn');
+      const strip = document.getElementById('lightboxThumbnailsStrip');
+
+      if (!img) return;
+      if (!st || !st.images || !st.images.length) {
+        img.src = '';
+        if (counter) counter.textContent = '0 / 0';
+        if (strip) strip.innerHTML = '';
+        return;
+      }
+
+      const total = st.images.length;
+      if (st.currentIndex < 0) st.currentIndex = 0;
+      if (st.currentIndex >= total) st.currentIndex = total - 1;
+
+      img.style.opacity = '0.35';
+      setTimeout(() => {
+        img.src = st.images[st.currentIndex];
+        img.style.opacity = '1';
+      }, 50);
+
+      if (counter) counter.textContent = `${st.currentIndex + 1} / ${total}`;
+      if (lbl) lbl.textContent = st.title || '';
+
+      if (prevBtn) {
+        prevBtn.style.display = total > 1 ? 'flex' : 'none';
+        prevBtn.style.opacity = st.currentIndex === 0 ? '0.3' : '1';
+        prevBtn.disabled = (st.currentIndex === 0);
+      }
+      if (nextBtn) {
+        nextBtn.style.display = total > 1 ? 'flex' : 'none';
+        nextBtn.style.opacity = st.currentIndex === total - 1 ? '0.3' : '1';
+        nextBtn.disabled = (st.currentIndex === total - 1);
+      }
+
+      if (strip) {
+        if (total <= 1) {
+          strip.innerHTML = '';
+          strip.style.display = 'none';
+        } else {
+          strip.style.display = 'flex';
+          strip.innerHTML = st.images.map((src, i) => `
+            <div onclick="setLightboxIndex(${i})" style="flex-shrink: 0; width: 48px; height: 48px; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid ${i === st.currentIndex ? '#38bdf8' : 'rgba(255,255,255,0.2)'}; transform: ${i === st.currentIndex ? 'scale(1.1)' : 'scale(1)'}; box-shadow: ${i === st.currentIndex ? '0 0 10px rgba(56,189,248,0.6)' : 'none'}; transition: all 0.2s ease;">
+              <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function navLightboxGallery(dir) {
+      const st = window.galleryLightboxState;
+      if (!st || !st.images || !st.images.length) return;
+      const nextIdx = st.currentIndex + dir;
+      if (nextIdx >= 0 && nextIdx < st.images.length) {
+        st.currentIndex = nextIdx;
+        renderGalleryLightbox();
+      }
+    }
+    window.navLightboxGallery = navLightboxGallery;
+
+    function setLightboxIndex(idx) {
+      const st = window.galleryLightboxState;
+      if (!st || !st.images || !st.images.length) return;
+      if (idx >= 0 && idx < st.images.length) {
+        st.currentIndex = idx;
+        renderGalleryLightbox();
+      }
+    }
+    window.setLightboxIndex = setLightboxIndex;
+
+    function downloadActiveLightboxPhoto() {
+      const st = window.galleryLightboxState;
+      if (!st || !st.images || !st.images.length) return;
+      const src = st.images[st.currentIndex];
+      if (!src) return;
+      const a = document.createElement('a');
+      a.href = src;
+      a.download = `attachment-${st.currentIndex + 1}-${Date.now()}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+    window.downloadActiveLightboxPhoto = downloadActiveLightboxPhoto;
+
+    function openActiveLightboxPhotoInNewTab() {
+      const st = window.galleryLightboxState;
+      if (!st || !st.images || !st.images.length) return;
+      const src = st.images[st.currentIndex];
+      if (src) {
+        const w = window.open('');
+        w.document.write(`<body style="margin:0; background:#0f172a; display:flex; align-items:center; justify-content:center; min-height:100vh;"><img src="${src}" style="max-width:98%; max-height:98vh; object-fit:contain; border-radius:10px;"></body>`);
+      }
+    }
+    window.openActiveLightboxPhotoInNewTab = openActiveLightboxPhotoInNewTab;
+
+    function openReceiptLightbox(source, optionalTitle = '', initialIndex = 0) {
+      const header = document.getElementById('lightboxHeaderTitle');
       if (!source) {
         if (typeof showToast === 'function') showToast('عفواً، لا توجد صورة مرفقة لعرضها');
         return;
       }
 
-      // 1. إذا كان المصدر مسار صورة أو Base64 أو رابط مباشر
-      if (typeof source === 'string' && (
-        source.startsWith('data:') || 
-        source.startsWith('http') || 
-        source.startsWith('blob:') ||
-        source.includes('/') ||
-        source.length > 50 ||
-        /\.(jpg|jpeg|png|webp|svg|gif)($|\?)/i.test(source)
-      )) {
-        if (header) header.textContent = 'معاينة الصورة المرفقة';
-        if (lbl) lbl.textContent = optionalTitle || 'مرفق مصور بالملاحظة';
-        img.src = source;
-        openModal('receiptLightboxModal');
-        const lb = document.getElementById('receiptLightboxModal');
-        if (lb) lb.style.setProperty('z-index', '1200050', 'important');
-        return;
+      let images = [];
+      let title = optionalTitle || '';
+      let curIdx = initialIndex || 0;
+
+      // 1. إذا كان المصدر مصفوفة صور
+      if (Array.isArray(source)) {
+        images = source.filter(Boolean);
+      }
+      // 2. إذا كان المصدر كائناً (Transaction / Commitment / Debt / Bill)
+      else if (typeof source === 'object' && source !== null) {
+        if (Array.isArray(source.receipts) && source.receipts.length) {
+          images = source.receipts;
+        } else if (Array.isArray(source.attachments) && source.attachments.length) {
+          images = source.attachments;
+        } else if (source.receipt || source.photo || source.receiptDataUri || source.receiptUrl) {
+          images = [source.receipt || source.photo || source.receiptDataUri || source.receiptUrl];
+        }
+        title = title || source.label || source.title || 'مرفق مصور';
+      }
+      // 3. إذا كان المصدر معرف عملية (ID string)
+      else if (typeof source === 'string' && (source.startsWith('tx-') || source.startsWith('exp-') || source.startsWith('debt-') || (source.length < 40 && !source.startsWith('data:') && !source.startsWith('http') && !source.startsWith('blob:')))) {
+        const tx = (state.transactions || []).find(t => t.id === source);
+        const exp = (state.expectedExpenses || []).find(e => e.id === source);
+        const debt = (state.debts || []).find(d => d.id === source);
+        const target = tx || exp || debt;
+
+        if (target) {
+          if (Array.isArray(target.receipts) && target.receipts.length) {
+            images = target.receipts;
+          } else if (Array.isArray(target.attachments) && target.attachments.length) {
+            images = target.attachments;
+          } else if (target.receipt || target.photo || target.receiptDataUri || target.receiptUrl) {
+            images = [target.receipt || target.photo || target.receiptDataUri || target.receiptUrl];
+          }
+          title = title || `${target.label || target.title || 'عملية'} (${(typeof formatMoney === 'function') ? formatMoney(target.amount) : target.amount + ' ج.م'})`;
+        }
+      }
+      // 4. إذا كان المصدر مسار صورة أو Base64 فردي
+      if (!images.length && typeof source === 'string') {
+        let foundSibling = false;
+        const allItems = [...(state.transactions || []), ...(state.expectedExpenses || []), ...(state.debts || [])];
+        for (const item of allItems) {
+          const recs = (Array.isArray(item.receipts) && item.receipts.length) ? item.receipts : ((Array.isArray(item.attachments) && item.attachments.length) ? item.attachments : null);
+          if (recs && recs.includes(source)) {
+            images = recs;
+            curIdx = recs.indexOf(source);
+            title = title || `${item.label || item.title || 'عملية'} (${(typeof formatMoney === 'function') ? formatMoney(item.amount) : item.amount + ' ج.م'})`;
+            foundSibling = true;
+            break;
+          }
+        }
+        if (!foundSibling) {
+          images = [source];
+          curIdx = 0;
+        }
       }
 
-      // 2. إذا كان المصدر معرف عملية (tx id)
-      const tx = (state.transactions || []).find(t => t.id === source);
-      const receiptSrc = tx ? (tx.receiptDataUri || tx.receiptUrl || tx.receipt || tx.photo || tx.image) : null;
-      if (!tx || !receiptSrc) {
+      if (!images.length) {
         if (typeof showToast === 'function') showToast('عفواً، لا توجد صورة مرفقة لعرضها');
         return;
       }
-      if (header) header.textContent = 'معاينة الفاتورة المرفقة';
-      if (lbl) lbl.textContent = `${tx.label || 'عملية'} (${(typeof formatMoney === 'function') ? formatMoney(tx.amount) : tx.amount + ' ج.م'})`;
-      img.src = receiptSrc;
+
+      if (header) {
+        header.textContent = images.length > 1 ? `معاينة المرفقات المصورة (${images.length})` : 'معاينة الصورة المرفقة';
+      }
+
+      window.galleryLightboxState = {
+        images: images,
+        currentIndex: Math.max(0, Math.min(curIdx, images.length - 1)),
+        title: title
+      };
+
+      renderGalleryLightbox();
       openModal('receiptLightboxModal');
       const lb = document.getElementById('receiptLightboxModal');
       if (lb) lb.style.setProperty('z-index', '1200050', 'important');
     }
+    window.openReceiptLightbox = openReceiptLightbox;
+
+    function viewReceiptImage(dataUri) {
+      if (!dataUri) return;
+      openReceiptLightbox(dataUri, 'إيصال العملية');
+    }
+    window.viewReceiptImage = viewReceiptImage;
+
+    // إيماءات اللمس والتمرير السريع
+    let _lbTouchStartX = 0;
+    let _lbTouchEndX = 0;
+    function setupLightboxTouchGestures() {
+      const stage = document.getElementById('lightboxViewerStage');
+      if (!stage || stage._swipeAttached) return;
+      stage._swipeAttached = true;
+      stage.addEventListener('touchstart', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          _lbTouchStartX = e.changedTouches[0].screenX;
+        }
+      }, { passive: true });
+      stage.addEventListener('touchend', (e) => {
+        if (e.changedTouches && e.changedTouches[0]) {
+          _lbTouchEndX = e.changedTouches[0].screenX;
+          const deltaX = _lbTouchEndX - _lbTouchStartX;
+          if (Math.abs(deltaX) > 40) {
+            if (deltaX < 0) navLightboxGallery(1);
+            else navLightboxGallery(-1);
+          }
+        }
+      }, { passive: true });
+    }
+    document.addEventListener('DOMContentLoaded', setupLightboxTouchGestures);
+    setTimeout(setupLightboxTouchGestures, 1000);
+
+    // التنقل بأسهم لوحة المفاتيح
+    document.addEventListener('keydown', (e) => {
+      const lb = document.getElementById('receiptLightboxModal');
+      if (lb && (lb.style.display === 'flex' || lb.classList.contains('open'))) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          navLightboxGallery(-1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          navLightboxGallery(1);
+        } else if (e.key === 'Escape') {
+          closeModal('receiptLightboxModal');
+        }
+      }
+    });
 
     // =========================================================================
     // الآلة الحاسبة المدمجة بجانب خانة المبلغ (Inline Calc Integration)
@@ -30378,31 +30554,7 @@ function switchSettingsTab(tabName) {
     }
 
 
-    // تبديل تبويبات بورصة الذهب والعملات (Zero-Scroll 3 Tabs)
-    function switchGoldDrawerTab(tabName) {
-      const tabs = ['rates', 'calc', 'chart'];
-      tabs.forEach(t => {
-        const btn = document.getElementById('tabBtnGold' + t.charAt(0).toUpperCase() + t.slice(1));
-        const view = document.getElementById('viewGold' + t.charAt(0).toUpperCase() + t.slice(1));
-        const isActive = (t === tabName);
-        if (btn) {
-          btn.classList.toggle('active', isActive);
-          if (isActive) {
-            btn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-            btn.style.color = '#0f172a';
-            btn.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
-          } else {
-            btn.style.background = 'transparent';
-            btn.style.color = '#94a3b8';
-            btn.style.boxShadow = 'none';
-          }
-        }
-        if (view) {
-          view.style.display = isActive ? 'flex' : 'none';
-        }
-      });
-      if (tabName === 'calc') updateCalcDisplay();
-    }
+
 
     // تطبيق اختيارات الصاغة السريعة بنقرة واحدة
     function applyGoldPreset(asset, qty, workmanship) {
@@ -31370,6 +31522,12 @@ function switchSettingsTab(tabName) {
         panel.style.display = 'flex';
         panel.classList.add('open');
       }
+      const rh = document.getElementById('rightScreenEdgeHandle');
+      if (rh) {
+        rh.style.right = 'min(420px, 88vw)';
+        rh.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        rh.title = 'إغلاق شاشة الذهب والعملات';
+      }
       try { pushModalState('goldDrawer'); } catch(e) {}
       try {
         if (typeof recalcGoldTotal === 'function') recalcGoldTotal();
@@ -31401,12 +31559,39 @@ function switchSettingsTab(tabName) {
         panel.classList.remove('open');
         setTimeout(() => { if (!panel.classList.contains('open')) panel.style.display = 'none'; }, 260);
       }
+      const rh = document.getElementById('rightScreenEdgeHandle');
+      if (rh) {
+        rh.style.right = '0';
+        rh.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+        rh.title = 'الشاشة الجانبية اليمنى: الذهب والعملات';
+      }
       if (goldMarketAutoRefreshTimer) {
         clearInterval(goldMarketAutoRefreshTimer);
         goldMarketAutoRefreshTimer = null;
       }
       try { popModalState('goldDrawer'); } catch(e) {}
     }
+
+    function toggleGoldDrawer() {
+      const panel = document.getElementById('goldDrawerPanel');
+      if (panel && (panel.classList.contains('open') || panel.style.display === 'flex')) {
+        closeGoldDrawer();
+      } else {
+        openGoldDrawer();
+      }
+    }
+    window.toggleGoldDrawer = toggleGoldDrawer;
+
+    function toggleSummaryDrawer() {
+      const panel = document.getElementById('summaryLeftDrawer');
+      if (panel && (panel.classList.contains('open') || panel.style.display === 'flex')) {
+        if (typeof closeSummaryLeftDrawer === 'function') closeSummaryLeftDrawer();
+      } else {
+        if (typeof openSummaryLeftDrawer === 'function') openSummaryLeftDrawer();
+        else if (typeof openSummaryDrawer === 'function') openSummaryDrawer();
+      }
+    }
+    window.toggleSummaryDrawer = toggleSummaryDrawer;
     window.openGoldDrawer = openGoldDrawer;
     window.closeGoldDrawer = closeGoldDrawer;
 
@@ -34951,7 +35136,7 @@ function switchSettingsTab(tabName) {
                 <span>تعديل</span>
               </button>
               ${b.photo ? `
-                <button type="button" onclick="event.stopPropagation(); viewReceiptImage('${b.photo}')" style="height: 32px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                <button type="button" onclick="event.stopPropagation(); openReceiptLightbox('${b.id}')" style="height: 32px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 800; background: rgba(236, 72, 153, 0.18); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
                   <i class="fa-solid fa-image"></i>
                   <span>عرض الفاتورة</span>
                 </button>
@@ -35940,36 +36125,11 @@ function initMonthlyBudgetUI() {
     }
 
     function renderProjectBudgetAnalysis() {
-      const host = document.getElementById('projectBudgetAnalysis');
-      if (!host) return;
-      const project = state.projectFilter || 'all';
-      const plans = (state.monthlyBudgets || []).filter(b => b?.project &&
-        (project === 'all' || b.project.trim().toLocaleLowerCase() === project.toLocaleLowerCase()));
-      const header = '<h3>موازنات المشاريع · المتوقع والفعلي</h3>';
-      if (!plans.length) {
-        host.innerHTML = header + '<p>لا توجد موازنات مشاريع في هذا العرض. يمكنك إنشاء موازنة من قسم الميزانيات.</p>';
-        return;
+      if (typeof ProjectCompareEngine !== 'undefined' && typeof ProjectCompareEngine.render === 'function') {
+        ProjectCompareEngine.render();
       }
-      const cards = plans.map(plan => {
-        const { expected, actual, remaining, percent } = projectBudgetMetrics(plan, state.transactions);
-        const exceeded = expected > 0 && remaining < 0;
-        const differenceLabel = expected <= 0 ? 'الفرق' : exceeded ? 'التجاوز' : 'المتبقي';
-        const status = percent === null ? 'أضف تقديرات الإنفاق لحساب نسبة الاستخدام'
-          : `${percent.toLocaleString('ar-EG', { maximumFractionDigits: 1 })}٪ استخدام · ${exceeded ? 'تجاوز الموازنة' : remaining === 0 ? 'استُخدمت الموازنة بالكامل' : 'ضمن الموازنة'}`;
-        return `<article class="project-budget-result ${exceeded ? 'over' : ''}">
-          <header><strong>${escapeHtml(plan.project)}</strong><time datetime="${escapeHtml(plan.month || '')}" dir="ltr">${escapeHtml(plan.month || '')}</time></header>
-          <small>${escapeHtml(plan.name || '')}</small>
-          <div class="project-budget-metrics">
-            <div>المتوقع<b>${formatMoney(expected)}</b></div>
-            <div>الفعلي<b>${formatMoney(actual)}</b></div>
-            <div>${differenceLabel}<b>${expected > 0 ? formatMoney(Math.abs(remaining)) : '—'}</b></div>
-          </div>
-          ${percent === null ? '' : `<progress max="100" value="${Math.min(100, Math.max(0, percent))}" aria-label="نسبة استخدام الموازنة"></progress>`}
-          <div class="project-budget-status">${status}</div>
-        </article>`;
-      });
-      host.innerHTML = header + '<p>تغطي كل بطاقة شهر الموازنة بالكامل.</p>' + cards.join('');
     }
+    window.renderProjectBudgetAnalysis = renderProjectBudgetAnalysis;
 
     let monthlyBudgetChartInstance = null;
 
@@ -37532,17 +37692,7 @@ function saveTodoTasks(tasks) {
   }
 }
 
-function openNewTaskDrawerModal() {
-  openTasksFullScreenModal();
-  const inp = document.getElementById('quickTaskTitleInput');
-  if (inp) {
-    setTimeout(() => {
-      inp.focus();
-      inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 120);
-  }
-}
-window.openNewTaskDrawerModal = openNewTaskDrawerModal;
+
 
 function openTasksFullScreenModal() {
   const inlineDate = document.getElementById('inlineTaskDueDate');
@@ -39890,21 +40040,30 @@ function renderAuditWalletsCards() {
   const isNone = window.auditSelectedWallets.has('__NONE__');
   const isAll = (window.auditSelectedWallets.size === 0);
 
+  const isLight = document.body.classList.contains('light-theme');
   container.innerHTML = wallets.map(w => {
     const isSelected = isAll || (!isNone && window.auditSelectedWallets.has(w.id));
     const bal = parseFloat(w.balance) || 0;
     const color = w.color || '#38bdf8';
     const icon = w.icon || 'fa-wallet';
+    const wCardBg = isLight
+      ? (isSelected && !isAll ? 'linear-gradient(135deg, #e0f2fe, #bae6fd)' : '#ffffff')
+      : (isSelected && !isAll ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.95))' : 'rgba(30, 41, 59, 0.55)');
+    const wCardBorder = isLight
+      ? (isSelected && !isAll ? '#0284c7' : '#cbd5e1')
+      : (isSelected && !isAll ? '#38bdf8' : 'rgba(255,255,255,0.08)');
+    const wCardText = isLight ? '#0f172a' : '#f8fafc';
+    const wCardSub = isLight ? '#64748b' : '#94a3b8';
 
     return `
-      <div onclick="selectAuditWalletQuick('${w.id}')" style="cursor: pointer; background: ${isSelected && !isAll ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.95))' : 'rgba(30, 41, 59, 0.55)'}; border: 1.2px solid ${isSelected && !isAll ? '#38bdf8' : 'rgba(255,255,255,0.08)'}; border-radius: 10px; padding: 6px 9px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; box-shadow: ${isSelected && !isAll ? '0 0 10px rgba(56, 189, 248, 0.35)' : 'none'};">
+      <div class="audit-wallet-card" onclick="selectAuditWalletQuick('${w.id}')" style="cursor: pointer; background: ${wCardBg}; border: 1.2px solid ${wCardBorder}; border-radius: 10px; padding: 6px 9px; display: flex; align-items: center; justify-content: space-between; transition: all 0.2s ease; box-shadow: ${isLight ? '0 2px 5px rgba(0,0,0,0.05)' : (isSelected && !isAll ? '0 0 10px rgba(56, 189, 248, 0.35)' : 'none')};">
         <div style="display: flex; align-items: center; gap: 7px;">
-          <div style="width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: ${color}; font-size: 0.8rem;">
+          <div style="width: 26px; height: 26px; border-radius: 7px; background: ${isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.06)'}; display: flex; align-items: center; justify-content: center; color: ${color}; font-size: 0.8rem;">
             <i class="fa-solid ${icon}"></i>
           </div>
           <div>
-            <div style="font-size: 0.72rem; font-weight: 850; color: #f8fafc;">${w.name}</div>
-            <div style="font-size: 0.58rem; color: #94a3b8;">${w.type === 'cash' ? 'كاش' : 'محفظة'}</div>
+            <div style="font-size: 0.72rem; font-weight: 850; color: ${wCardText};">${w.name}</div>
+            <div style="font-size: 0.58rem; color: ${wCardSub};">${w.type === 'cash' ? 'كاش' : 'محفظة'}</div>
           </div>
         </div>
         <div style="text-align: left;">
@@ -41654,7 +41813,7 @@ window.filterArchiveType = filterArchiveType;
           </div>
 
           <!-- 3. شريط البحث والفلاتر متعددة الأبعاد (أفراد، بنود، محافظ، أنواع عمليات) -->
-          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
+          <div class="audit-filter-box" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px;">
 
             <!-- سطر البحث الفوري -->
             <div style="position: relative; width: 100%;">

@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.78",
-  "build": "202611161105",
-  "buildId": 202611161015,
+  "version": "v5.3.79",
+  "build": "202611161150",
+  "buildId": 202611161150,
   "releaseDate": "2026-11-16",
-  "changelog": "إضافة مقارنة وأرشيف المشاريع (Dual-Layer WBS) ومقارنة وأرشيف موازنة الشهر والتحليلات الرقابية"
+  "changelog": "v5.3.79: Cleaned codebase, purged obsolete budget panels and bottom clutter, streamlined indicators sub-tabs, and isolated budget management inside archive view."
 }
