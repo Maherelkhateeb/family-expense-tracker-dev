@@ -27630,12 +27630,17 @@ function loadMoreOperations() {
       state.projectFilter = 'all';
       if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
 
-      // 5. مسح النطاق المخصص للتاريخ إن وجد والعودة للشهر الافتراضي
+      // 5. Clear all remaining dimensions; "clear filters" must show all history.
       state.customDateRange = null;
+      state.currentWalletId = 'all';
+      const walletSelector = document.getElementById('activeWalletSelect');
+      if (walletSelector) walletSelector.value = 'all';
+      state.currentMemberFilter = 'الكل';
+      state.selectedMember = 'الكل';
       if (typeof setAppPeriod === 'function') {
-        setAppPeriod('month', false);
+        setAppPeriod('all', false);
       } else {
-        state.period = 'month';
+        state.period = 'all';
       }
 
       // 6. تحديث قائمة العمليات المسجلة فوراً
