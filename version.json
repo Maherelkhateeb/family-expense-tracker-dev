@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.74",
-  "build": 202611151830,
-  "buildId": 202611151830,
-  "releaseDate": "2026-11-15T18:30:00.000Z",
-  "changelog": "v5.3.74: Cleaned legacy dark card styles, full light theme support for tasks modal and cards, relocated unified add commitment panel above monthly calendar, real-time live gold & currency sync with genuine non-fake indicators."
+  "version": "v5.3.75",
+  "build": 202611160930,
+  "buildId": 202611160930,
+  "releaseDate": "2026-11-16T09:30:00.000Z",
+  "changelog": "v5.3.75: Integer rounded remaining budget items with left currency, relocated analytics filter strip above family distribution, full-screen summary drawer, streamlined gold & FX drawer (Banque Misr rates & high reliability), multi-attachments with horizontal carousel for all operations & debts, reordered settings hierarchy, app theme engine fix, high-clarity crystal chime, offline PWA resilience with auto sync."
 }

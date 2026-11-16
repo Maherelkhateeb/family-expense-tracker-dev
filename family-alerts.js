@@ -161,36 +161,54 @@ const familyAlerts = (() => {
     return `تذكير استحقاق: ${title} بمبلغ ${amtStr} تستحق في ${dueStr}`;
   }
 
-  // --- محرك الصوت الذكي (Web Audio Synthesizer) ---
-  function playAlertChime() {
-    if (!safeRead(SOUND_KEY, false)) return;
+  // --- محرك الصوت الذكي (Web Audio Synthesizer - نغمة كريستالية ثلاثية فائقة الوضوح) ---
+  function playAlertChime(forcePlay = false) {
+    if (!forcePlay && !safeRead(SOUND_KEY, false)) return;
     try {
       audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
       if (audioContext.state === 'suspended') {
         audioContext.resume();
       }
       const now = audioContext.currentTime;
-      // نغمة مزدوجة لطيفة (660Hz -> 880Hz)
-      [660, 880].forEach((freq, idx) => {
+      // نغمة ثلاثية صاعدة بلورية عالية الوضوح (880Hz -> 1175Hz -> 1760Hz) ذات رنين متميز
+      const chimeNotes = [
+        { freq: 880.00,  start: 0.00, dur: 0.22, vol: 0.35 }, // A5
+        { freq: 1174.66, start: 0.10, dur: 0.26, vol: 0.38 }, // D6
+        { freq: 1760.00, start: 0.20, dur: 0.40, vol: 0.42 }  // A6
+      ];
+
+      chimeNotes.forEach((n) => {
         const osc = audioContext.createOscillator();
+        const oscHarmonic = audioContext.createOscillator();
         const gain = audioContext.createGain();
-        const start = now + (idx * 0.12);
+        const start = now + n.start;
 
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, start);
+        osc.frequency.setValueAtTime(n.freq, start);
 
-        gain.gain.setValueAtTime(0.15, start);
-        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.14);
+        // لمسة توافقية (Harmonic Overtone) لإبراز الصوت عبر مكبرات الهاتف الصغيرة
+        oscHarmonic.type = 'triangle';
+        oscHarmonic.frequency.setValueAtTime(n.freq * 2, start);
+
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(n.vol, start + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
 
         osc.connect(gain);
+        oscHarmonic.connect(gain);
         gain.connect(audioContext.destination);
 
         osc.start(start);
-        osc.stop(start + 0.15);
+        oscHarmonic.start(start);
+        osc.stop(start + n.dur + 0.05);
+        oscHarmonic.stop(start + n.dur + 0.05);
       });
     } catch (e) {
       console.warn('[familyAlerts] Audio error:', e);
     }
+  }
+  if (typeof window !== 'undefined') {
+    window.playAlertChime = playAlertChime;
   }
 
   async function toggleSound() {
