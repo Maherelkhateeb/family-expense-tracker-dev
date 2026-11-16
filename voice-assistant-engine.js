@@ -270,6 +270,11 @@ const VoiceAssistantEngine = (() => {
     } else if (p.type === 'bill') {
       typeLabel = '⚡ فاتورة / التزام دوري';
       badgeHtml = `<span style="background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-bolt"></i> التزام دوري</span>`;
+    } else if (p.type === 'income') {
+      typeLabel = 'إيداع أو دخل';
+      badgeHtml = '<span style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-arrow-down-left"></i> إيداع</span>';
+      signPrefix = '+ ';
+      amountColor = '#34d399';
     } else if (p.type === 'project') {
       typeLabel = '🟣 مصروف مشروع خاص';
       badgeHtml = `<span style="background:rgba(168,85,247,0.2);color:#c084fc;border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-trowel-bricks"></i> مشروع</span>`;
