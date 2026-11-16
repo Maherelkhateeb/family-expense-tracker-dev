@@ -1,5 +1,5 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-tracker-v5.3.90';
+const CACHE_NAME = 'family-expense-tracker-v5.3.90-r2';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -71,6 +71,21 @@ self.addEventListener('fetch', (e) => {
         if (res && res.status === 200) {
           const copy = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // 3. Always revalidate app JS/CSS to avoid silently retaining old appearance
+  // and voice logic under an unchanged URL. Cached assets remain available offline.
+  if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css')) {
+    e.respondWith(
+      fetch(e.request, { cache: 'no-store' }).then(res => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy)).catch(() => {});
         }
         return res;
       }).catch(() => caches.match(e.request))
