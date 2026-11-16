@@ -1038,6 +1038,19 @@ window.BudgetAuditEngine = (() => {
     if (bottomAnalytics) {
       bottomAnalytics.innerHTML = renderBottomAnalyticsAndCharts(plan, txsA, activeTimePeriod);
       bottomAnalytics.insertAdjacentHTML('beforeend', renderMonthlyInsights(plan));
+    } else {
+      // The current unified monthly-budget panel uses its own DOM structure.
+      // Create a dedicated analytics slot instead of silently skipping insights.
+      const panel = document.getElementById('panelMonthlyBudget');
+      if (panel) {
+        let insightSlot = document.getElementById('budgetMonthlyInsights');
+        if (!insightSlot) {
+          insightSlot = document.createElement('div');
+          insightSlot.id = 'budgetMonthlyInsights';
+          panel.appendChild(insightSlot);
+        }
+        insightSlot.innerHTML = renderMonthlyInsights(plan);
+      }
     }
 
     // 5. رسم الشارتات
