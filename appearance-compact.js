@@ -79,7 +79,7 @@
     var cardNames = {
       glass:'زجاجي', minimal:'بسيط', neumorphic:'مجسّم', neon:'نيون',
       clear:'واضح', elevated:'مرتفع', outlined:'محدّد',
-      gradient:'متدرّج', compact:'مدمج', soft:'ناعم'
+      gradient:'متدرّج', flat:'مسطح', facebook:'فيسبوك', compact:'مدمج', soft:'ناعم'
     };
     function updateSummaries() {
       basics.summary.textContent = document.body.classList.contains('light-theme') ? 'فاتح' : 'داكن';
