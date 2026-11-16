@@ -26467,61 +26467,86 @@ function renderCategoriesGrid(filtered) {
       const currSymbol = getCurrencySymbol();
 
       const THEME_CARD_PALETTES = {
+        facebook: {
+          bgGrad: (c) => isLight 
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}40 0%, #172554 40%, #0c1a30 100%)`,
+          lowerZero: isLight ? 'rgba(240, 242, 245, 0.95)' : 'rgba(12, 26, 48, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
+          border: (c) => `${c}dd`,
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+        },
         navy: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}42 0%, ${c}15 38%, #08162b 100%)`,
-          lowerZero: 'rgba(8, 22, 43, 0.88)',
-          lowerSpent: 'rgba(239, 68, 68, 0.28)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}42 0%, ${c}15 38%, #08162b 100%)`,
+          lowerZero: isLight ? 'rgba(241, 245, 249, 0.95)' : 'rgba(8, 22, 43, 0.88)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.28)',
           border: (c) => `${c}cc`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px ${c}35, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.5), 0 0 12px ${c}35, inset 0 1px 0 rgba(255, 255, 255, 0.15)`
         },
         black: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}30 0%, #111827 50%, #030508 100%)`,
-          lowerZero: '#060a10',
-          lowerSpent: 'rgba(239, 68, 68, 0.32)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}12 45%, ${c}25 100%)`
+            : `linear-gradient(160deg, ${c}30 0%, #111827 50%, #030508 100%)`,
+          lowerZero: isLight ? 'rgba(241, 245, 249, 0.95)' : '#060a10',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.32)',
           border: (c) => `${c}bb`,
-          shadow: (c) => `0 4px 20px rgba(0, 0, 0, 0.7), 0 0 10px ${c}25`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08)` : `0 4px 20px rgba(0, 0, 0, 0.7), 0 0 10px ${c}25`
         },
         emerald: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #064e3b 40%, #022c22 100%)`,
-          lowerZero: 'rgba(2, 44, 34, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}40 0%, #064e3b 40%, #022c22 100%)`,
+          lowerZero: isLight ? 'rgba(240, 253, 244, 0.95)' : 'rgba(2, 44, 34, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         purple: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #3b0764 40%, #1e1b4b 100%)`,
-          lowerZero: 'rgba(30, 27, 75, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}40 0%, #3b0764 40%, #1e1b4b 100%)`,
+          lowerZero: isLight ? 'rgba(250, 245, 255, 0.95)' : 'rgba(30, 27, 75, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         rose: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #4c0519 40%, #2d0b1d 100%)`,
-          lowerZero: 'rgba(45, 11, 29, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}40 0%, #4c0519 40%, #2d0b1d 100%)`,
+          lowerZero: isLight ? 'rgba(255, 241, 242, 0.95)' : 'rgba(45, 11, 29, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         ocean: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}40 0%, #083344 40%, #041624 100%)`,
-          lowerZero: 'rgba(8, 51, 68, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}40 0%, #083344 40%, #041624 100%)`,
+          lowerZero: isLight ? 'rgba(240, 249, 255, 0.95)' : 'rgba(8, 51, 68, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         gold: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}38 0%, #3a2803 40%, #1c1301 100%)`,
-          lowerZero: 'rgba(38, 26, 3, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}38 0%, #3a2803 40%, #1c1301 100%)`,
+          lowerZero: isLight ? 'rgba(254, 252, 232, 0.95)' : 'rgba(38, 26, 3, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}dd`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 14px ${c}40`
         },
         slate: {
-          bgGrad: (c) => `linear-gradient(160deg, ${c}35 0%, #1e293b 40%, #0f172a 100%)`,
-          lowerZero: 'rgba(15, 23, 42, 0.90)',
-          lowerSpent: 'rgba(239, 68, 68, 0.30)',
+          bgGrad: (c) => isLight
+            ? `linear-gradient(160deg, #ffffff 0%, ${c}15 45%, ${c}28 100%)`
+            : `linear-gradient(160deg, ${c}35 0%, #1e293b 40%, #0f172a 100%)`,
+          lowerZero: isLight ? 'rgba(241, 245, 249, 0.95)' : 'rgba(15, 23, 42, 0.90)',
+          lowerSpent: isLight ? 'rgba(254, 226, 226, 0.95)' : 'rgba(239, 68, 68, 0.30)',
           border: (c) => `${c}cc`,
-          shadow: (c) => `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 12px ${c}35`
+          shadow: (c) => isLight ? `0 4px 14px rgba(0, 0, 0, 0.08), 0 0 8px ${c}20` : `0 4px 18px rgba(0, 0, 0, 0.55), 0 0 12px ${c}35`
         },
         light: {
           bgGrad: (c) => `linear-gradient(160deg, #ffffff 0%, ${c}12 45%, ${c}25 100%)`,
@@ -30561,9 +30586,15 @@ function switchSettingsTab(tabName) {
       root.style.setProperty('--body-bg', themeBg);
 
       const frame = document.getElementById('appFrame');
-      if (frame) frame.style.background = 'transparent';
+      if (frame) {
+        frame.style.setProperty('background', 'transparent', 'important');
+        frame.style.setProperty('background-color', 'transparent', 'important');
+      }
       const scrollBody = document.getElementById('appScrollBody');
-      if (scrollBody) scrollBody.style.background = 'transparent';
+      if (scrollBody) {
+        scrollBody.style.setProperty('background', 'transparent', 'important');
+        scrollBody.style.setProperty('background-color', 'transparent', 'important');
+      }
 
       updateAppearanceAccent();
       document.querySelectorAll('.theme-pill-option[data-theme], .theme-card-box[data-theme]').forEach(option => {
@@ -30578,6 +30609,14 @@ function switchSettingsTab(tabName) {
         if (typeof showToast === 'function') showToast('🎨 تم تطبيق لون التطبيق: ' + APPEARANCE_PALETTES[target].name);
       }
       updateAppearancePreview();
+
+      // v5.3.89: Immediate live re-render on theme change
+      if (typeof renderUI === 'function') renderUI();
+      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+        renderCategoriesGrid(getFilteredTransactions());
+      }
+      if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
+      if (typeof updateThemeCheckDots === 'function') updateThemeCheckDots();
     }
 
     
@@ -30628,6 +30667,11 @@ function switchSettingsTab(tabName) {
         if (typeof showToast === 'function') showToast('✨ تم تطبيق لون الأيقونات: ' + palette.name);
       }
       updateAppearancePreview();
+
+      // v5.3.89: Live re-render categories grid on icon theme change
+      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+        renderCategoriesGrid(getFilteredTransactions());
+      }
     }
 
     // تبديل إظهار وطي شارت TradingView المصغر في بورصة الذهب
