@@ -158,3 +158,90 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', install, {once:true});
   else install();
 })();
+
+
+/* v5.3.90 — Live style bridge for lists and cards already rendered with inline
+ * important styles. Never changes financial data or mutates transaction state.
+ * CSS alone cannot override the inline important styles used by legacy cards. */
+(function () {
+  'use strict';
+  const selector = [
+    '#catGrid .cat-card', '.ops-tx-card-clean', '.expected-clean-card',
+    '.budget-item-card', '.req-alloc-card-item', '.req-card-lux',
+    '.app-card-panel', '.summary-card', '.summary-group-row',
+    '.wallet-card-lux', '.gold-item-row', '.dashboard-card',
+    '.ops-card', '.chart-glass-panel', '.note-item-card', '.project-budget-result'
+  ].join(',');
+  const original = new WeakMap();
+  const props = ['border-radius','box-shadow','background','border-color','border-width','backdrop-filter'];
+  let queued = false;
+
+  function applyStyle() {
+    queued = false;
+    if (!document.body) return;
+    const active = document.body.getAttribute('data-card-style') || 'glass';
+    const light = document.body.classList.contains('light-theme');
+    const base = light ? '#ffffff' : '#17243a';
+    const muted = light ? '#f8fafc' : '#1d2d45';
+    const border = light ? '#cbd5e1' : '#475569';
+    const accent = light ? '#0284c7' : '#38bdf8';
+    const presets = {
+      glass: {radius:'16px',shadow: light ? '0 5px 16px rgba(15,23,42,.07)' : '0 6px 20px rgba(0,0,0,.24)', border: light ? '#d8e2ec' : '#475569',blur:'blur(10px)'},
+      minimal: {radius:'8px',shadow:'none',background:base,border},
+      neumorphic: {radius:'18px',shadow:light ? '7px 7px 17px #d7dde5,-7px -7px 17px #ffffff' : '6px 6px 14px #0b1524,-6px -6px 14px #273750',background:muted,border},
+      neon: {radius:'14px',shadow:light ? '0 0 0 2px #0284c744,0 4px 16px #0284c722' : '0 0 0 2px #38bdf866,0 0 22px #38bdf844',border:accent,width:'2px'},
+      clear: {radius:'12px',shadow:'none',background:base,border:light?'#94a3b8':'#94a3b8',width:'1.5px'},
+      flat: {radius:'6px',shadow:'none',background:base,border},
+      elevated: {radius:'20px',shadow:light?'0 12px 25px rgba(15,23,42,.15)':'0 14px 30px rgba(0,0,0,.48)',border},
+      outlined: {radius:'10px',shadow:'none',border:accent,width:'2px'},
+      gradient: {radius:'18px',shadow:light?'0 6px 17px #2563eb21':'0 8px 22px #0006',background:light?'linear-gradient(145deg,#fff,#e9f2ff)':'linear-gradient(145deg,#203c5c,#152338)',border},
+      facebook: {radius:'8px',shadow:'0 1px 3px rgba(0,0,0,.10)',background:base,border:light?'#ced0d4':'#495466',width:'1px'}
+    };
+    const preset = presets[active] || presets.glass;
+    document.querySelectorAll(selector).forEach(el => {
+      const stamp = active + (light ? ':light' : ':dark');
+      if (el.dataset.appearanceApplied === stamp) return;
+      if (!original.has(el)) {
+        original.set(el, Object.fromEntries(props.map(p => [p, {
+          value:el.style.getPropertyValue(p), priority:el.style.getPropertyPriority(p)
+        }])));
+      }
+      const initial = original.get(el);
+      for (const property of props) {
+        // Restore original properties before applying the new style.
+        const orig = initial[property];
+        if (orig.value) el.style.setProperty(property, orig.value, orig.priority);
+        else el.style.removeProperty(property);
+      }
+      el.style.setProperty('border-radius',preset.radius,'important');
+      el.style.setProperty('box-shadow',preset.shadow,'important');
+      if (preset.background) el.style.setProperty('background',preset.background,'important');
+      // Preserve warnings (red/orange expense and budget borders).
+      if (!el.classList.contains('budget-pulse-alert') && !el.classList.contains('over-budget')) {
+        el.style.setProperty('border-color',preset.border,'important');
+        if (preset.width) el.style.setProperty('border-width',preset.width,'important');
+      }
+      if (preset.blur) el.style.setProperty('backdrop-filter',preset.blur,'important');
+      el.dataset.appearanceApplied = stamp;
+    });
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(applyStyle);
+  }
+  function init() {
+    if (!document.body) return;
+    new MutationObserver(schedule).observe(document.body, {
+      attributes:true,attributeFilter:['data-card-style','class','data-color-mode']
+    });
+    // Renderers replace list/card nodes after changing periods or filters.
+    for (const id of ['catGrid','viewOperations','viewExpected','panelMonthlyBudget','viewExpenses']) {
+      const host = document.getElementById(id);
+      if (host) new MutationObserver(schedule).observe(host,{childList:true,subtree:true});
+    }
+    schedule();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
