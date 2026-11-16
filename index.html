@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.88';
-    var APP_BUILD_ID = 202611161600;
+    var APP_VERSION = 'v5.3.89';
+    var APP_BUILD_ID = 202611161615;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -10246,7 +10246,7 @@
       font-weight: 900;
     }
 
-    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.88 */
+    /* مقبضا الشاشات الجانبية يمين ويسار v5.3.89 */
     .side-screen-edge-handle {
       position: fixed !important;
       top: 50% !important;
@@ -10289,7 +10289,7 @@
 
   
     /* =========================================================================
-       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.88
+       قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.89
        ========================================================================= */
     .kpi-master-wealth-cockpit {
       width: calc(100% - 14px) !important;
@@ -10526,7 +10526,7 @@
     body.light-theme .flow-amount.outflow-color { color: #e11d48 !important; }
 
     /* =========================================================================
-       الكروت الرباعية التنفيذية للالتزامات v5.3.88 (Commitments 4 Executive Cards)
+       الكروت الرباعية التنفيذية للالتزامات v5.3.89 (Commitments 4 Executive Cards)
        ========================================================================= */
     .com-kpi-cards-grid {
       display: grid !important;
@@ -10714,7 +10714,7 @@
 
   
     /* =========================================================================
-       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.88
+       إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.89
        ========================================================================= */
     /* 1. فيسبوك والوضع الفاتح: تحويل كافة الكروت والخلفيات المظلمة إلى ألوان واضحة ونقية */
     body.light-theme :is(
@@ -10878,7 +10878,7 @@
 
 
     /* =========================================================================
-       شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.88
+       شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.89
        ========================================================================= */
     #settingsModal {
       position: fixed !important;
@@ -10975,7 +10975,7 @@
       gap: 8px !important;
     }
 
-    /* بروز فائق لرمز العملة المحدد في هيدر الملخص v5.3.88 */
+    /* بروز فائق لرمز العملة المحدد في هيدر الملخص v5.3.89 */
     .summary-currency-header-pill {
       display: inline-flex !important;
       align-items: center !important;
@@ -11029,7 +11029,7 @@
     }
 
     /* =========================================================================
-       نظام التباين الشامل لكافة كروت التطبيق في الأوضاع الفاتحة وفيسبوك v5.3.88
+       نظام التباين الشامل لكافة كروت التطبيق في الأوضاع الفاتحة وفيسبوك v5.3.89
        يحل جذرياً مشكلة الكروت الداكنة وظهور ألوان باهتة أو غير مقروءة
        ========================================================================= */
     html body.light-theme,
@@ -11776,7 +11776,7 @@ body.light-theme .cat-budget-progress-track {
 
   
     /* =========================================================================
-       جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.88
+       جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.89
        ========================================================================= */
     body.light-theme .budget-lux-card,
     body.light-theme .project-kpi-card,
@@ -11837,6 +11837,9 @@ body.light-theme .cat-budget-progress-track {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js').then(function(reg) {
           console.log('[SW] PWA ServiceWorker active with scope:', reg.scope);
+          try {
+            reg.update();
+          } catch(e) {}
         }).catch(function(err) {
           console.warn('[SW] Registration failed:', err);
         });
@@ -16232,7 +16235,7 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
   <style id="antigravityVisualHarmonyEngine">
 
 /* =========================================================================
-   Universal Anti-Black-Card Contrast Harmonization Engine (v5.3.88)
+   Universal Anti-Black-Card Contrast Harmonization Engine (v5.3.89)
    Eliminates all dark/black container leaks in Light Theme across all screens
    ========================================================================= */
 body.light-theme #commitmentKpiMasterCard,
@@ -16488,7 +16491,7 @@ body.light-theme .analytics-date-range-trigger {
 
 <style id="v5353-custom-fixes">
   /* =====================================================================
-     [v5.3.88] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
+     [v5.3.89] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
      ===================================================================== */
   #walletModal,
   #walletTransferModal,
@@ -16648,7 +16651,7 @@ body.light-theme .analytics-date-range-trigger {
 </style>
 <style>
     /* ==============================================================
-       Master Overhaul v5.3.88: High-Contrast Light & Facebook Theme
+       Master Overhaul v5.3.89: High-Contrast Light & Facebook Theme
        ============================================================== */
     body[data-theme="facebook"],
     body.theme-facebook {
@@ -16775,7 +16778,7 @@ body.light-theme .analytics-date-range-trigger {
 <style id="summaryHierarchicalStyles">
 
 /* =========================================================================
-   Summary Hierarchical Project & Bi-Directional Member Analysis (v5.3.88)
+   Summary Hierarchical Project & Bi-Directional Member Analysis (v5.3.89)
    ========================================================================= */
 .summary-bi-directional-nav {
   display: flex !important;
@@ -17218,7 +17221,7 @@ body.light-theme .market-buy-price {
 </style>
 </head>
 <body>
-  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.88 - مباشر تحت body -->
+  <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.89 - مباشر تحت body -->
   <div class="side-screen-edge-handle left-handle" id="leftScreenEdgeHandle" onclick="toggleSummaryDrawer()" title="الشاشة الجانبية: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
   </div>
@@ -17439,7 +17442,7 @@ body.light-theme .market-buy-price {
                 <!-- شريط المؤشرات المالية التنفيذي الماسي الموحد (Executive Wealth Cockpit)
              تصميم ملكي تنفيذي فائق الفخامة والوضوح بأحدث معايير FinTech العالمية
              ========================================================================= -->
-        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.88) -->
+        <!-- قمرة القيادة المالية التنفيذية الفاخرة (Master Wealth Executive Cockpit v5.3.89) -->
         <div class="kpi-master-wealth-cockpit" id="topKpiThreeStrip">
           
           <!-- الجانب الأيمن: بطل الشاشة المالي (الرصيد الفعلي المتاح) -->
@@ -21122,7 +21125,7 @@ body.light-theme .market-buy-price {
   </div> <!-- إغلاق tasksFullScreenModal -->
 
 <!-- عرض الفاتورة والصور المكبرة (Receipt Lightbox Modal) -->
-    <!-- نافذة معرض الصور والمرفقات المتعددة الذكية (Multi-Image Gallery Lightbox Carousel) v5.3.88 -->
+    <!-- نافذة معرض الصور والمرفقات المتعددة الذكية (Multi-Image Gallery Lightbox Carousel) v5.3.89 -->
     <div class="modal-overlay modal-overlay-custom" id="receiptLightboxModal" style="z-index: 1200050 !important; display: none; align-items: center; justify-content: center;" onclick="if(event.target === this) closeModal('receiptLightboxModal')">
       <div class="modal-content-card" style="max-width: 580px; width: 95%; max-height: 94vh; padding: 14px; border-radius: 18px; text-align: center; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid rgba(56, 189, 248, 0.45); box-shadow: 0 25px 60px rgba(0,0,0,0.85);">
         
@@ -21230,7 +21233,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.88</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.89</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -22831,7 +22834,7 @@ function toggleAnalyticsCustomRange() {
 
     
     // =========================================================================
-    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.88 Advanced Suite)
+    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.89 Advanced Suite)
     // 1. نسبة وقيمة كل شخص من كل بند
     // 2. نسبة وقيمة كل بنك/محفظة لكل شخص
     // 3. مقارنات بين الأفراد وبعضهم
@@ -28099,7 +28102,7 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
 
     
     // ==============================================================
-    // [v5.3.88] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
+    // [v5.3.89] الفحص المحاسبي الصارم لمنع الصرف أو التحويل بأكثر من الرصيد الفعلي
     // ==============================================================
     function getWalletActualBalance(walletIdOrName) {
       if (typeof auditAndRecomputeAllWalletBalances === 'function') {
@@ -28371,7 +28374,7 @@ function saveTx() {
     }
 
     // =========================================================================
-    // محرك معرض الصور والمرفقات المتعددة والتنقل السلس (Multi-Image Gallery Engine) v5.3.88
+    // محرك معرض الصور والمرفقات المتعددة والتنقل السلس (Multi-Image Gallery Engine) v5.3.89
     // =========================================================================
     window.galleryLightboxState = {
       images: [],
@@ -29755,7 +29758,7 @@ function saveTx() {
     }
 
     function renderExpectedList() {
-      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.88
+      // تم التوجيه تلقائياً إلى محرك الالتزامات والميزانيات المزدوج المطور v5.3.89
       if (typeof renderCommitmentsPageUI === 'function') {
         renderCommitmentsPageUI();
       }
@@ -30394,7 +30397,7 @@ function switchSettingsTab(tabName) {
       try {
         const backupData = {
           app: 'FamilyExpenseTrackerMonefy',
-          version: 'v5.3.88',
+          version: 'v5.3.89',
           exportedAt: new Date().toISOString(),
           account: (typeof GDRIVE_CONFIG !== 'undefined' ? GDRIVE_CONFIG.targetAccount : 'maher.easybakery@gmail.com'),
           state: state
@@ -34033,7 +34036,7 @@ function switchSettingsTab(tabName) {
           });
         }
       } catch(e) {}
-      localStorage.setItem('family_monefy_version', window.APP_VERSION || 'v5.3.88');
+      localStorage.setItem('family_monefy_version', window.APP_VERSION || 'v5.3.89');
       setTimeout(() => {
         const cleanUrl = window.location.origin + window.location.pathname;
         window.location.replace(`${cleanUrl}?_fresh=${now}`);
@@ -34045,7 +34048,7 @@ function switchSettingsTab(tabName) {
     // محرك التحديث التلقائي الذكي والآمن عند اكتشاف إصدار جديد (Smart PWA Auto-Update Engine)
     // =========================================================================
     function applyRemoteUpdateAndReload(remoteBuild, isManual = false) {
-      console.log(`🚀 [AutoUpdate] تطبيق التحديث الجديد فوراً: ${remoteBuild?.version || 'v5.3.88'}`);
+      console.log(`🚀 [AutoUpdate] تطبيق التحديث الجديد فوراً: ${remoteBuild?.version || 'v5.3.89'}`);
       
       try {
         if (typeof saveTx === 'function') saveTx();
@@ -34070,7 +34073,7 @@ function switchSettingsTab(tabName) {
       }
 
       localStorage.setItem('family_monefy_just_updated_ts', Date.now());
-      localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || window.APP_VERSION || 'v5.3.88');
+      localStorage.setItem('family_monefy_just_updated', remoteBuild?.version || window.APP_VERSION || 'v5.3.89');
 
       setTimeout(() => {
         const cleanUrl = window.location.origin + window.location.pathname;
@@ -34119,10 +34122,12 @@ function switchSettingsTab(tabName) {
           }
 
           const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151430);
-          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.88');
+          const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.89');
 
+          const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
           const isNewer = remoteBuild && (
-            (remoteBuild.buildId && Number(remoteBuild.buildId) > currentBuildNum)
+            (remoteBNum > currentBuildNum) ||
+            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
           );
 
           if (isNewer || (options.isManual && options.force)) {
@@ -34133,7 +34138,7 @@ function switchSettingsTab(tabName) {
             if (!alreadyAttemptedThisBuild || options.isManual) {
               localStorage.setItem('family_monefy_last_attempted_build', String(remoteBuild?.buildId || ''));
               localStorage.setItem('family_monefy_last_attempted_time', String(Date.now()));
-              showToast(`🚀 تم العثور على تحديث جديد (${remoteBuild?.version || 'v5.3.88'})! جاري التحميل والتطبيق فوراً...`, 'info', 3000);
+              showToast(`🚀 تم العثور على تحديث جديد (${remoteBuild?.version || 'v5.3.89'})! جاري التحميل والتطبيق فوراً...`, 'info', 3000);
               applyRemoteUpdateAndReload(remoteBuild, options.isManual);
               return;
             } else {
@@ -34188,10 +34193,12 @@ function switchSettingsTab(tabName) {
         }
 
         const currentBuildNum = (typeof APP_BUILD_ID !== 'undefined' ? Number(APP_BUILD_ID) : 202611151430);
-        const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.88');
+        const currentVerStr = (typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v5.3.89');
 
-        const isNewer = remoteBuild && (
-            (remoteBuild.buildId && Number(remoteBuild.buildId) > currentBuildNum)
+        const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
+          const isNewer = remoteBuild && (
+            (remoteBNum > currentBuildNum) ||
+            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
           );
 
         if (isNewer) {
@@ -37885,7 +37892,7 @@ function clearTaskPendingPhoto() {
 
 
 /* ==========================================================
-   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.88)
+   وظائف لوحة تسجيل وإضافة المهام الموحدة (v5.3.89)
    دمج بيان المهمة + التاجات + التاريخ والساعة من نفس الشاشة
    ========================================================== */
 let selectedTaskTags = new Set(['general']);
@@ -39255,7 +39262,7 @@ window.selectTasksCalendarDay = selectTasksCalendarDay;
 
 // =========================================================================
 // =========================================================================
-// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.88 Comprehensive)
+// MASTER SUITE: ALL MISSING EVENT HANDLERS & MODAL ENGINES (v5.3.89 Comprehensive)
 // =========================================================================
 
 // 1. TRANSACTION EDITING & RECEIPTS
@@ -39508,7 +39515,7 @@ function clearEditReceiptUpload() {
 }
 window.clearEditReceiptUpload = clearEditReceiptUpload;
 
-// duplicate viewReceiptImage purged in v5.3.88
+// duplicate viewReceiptImage purged in v5.3.89
 
 function openNotificationsModal() { familyAlerts.open(); }
 function markAllNotificationsRead() { familyAlerts.mark(); }
@@ -39565,7 +39572,7 @@ function cancelPinVerification() {
 }
 window.cancelPinVerification = cancelPinVerification;
 
-// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.88 Enterprise)
+// 4. ACTUAL BALANCE AUDIT & RECONCILIATION LEDGER (v5.3.89 Enterprise)
 const CATEGORY_ARABIC_MAP = {
   // المصروفات
   'food': { name: 'طعام ومشتريات', emoji: '🛒', icon: 'fa-cart-shopping', color: '#10b981', group: 'expense' },
@@ -40846,7 +40853,7 @@ window.handleAddNewTask = handleAddNewTask;
 async function executeGoogleDriveSync(isManual = false) {
   try {
     const payload = {
-      version: 'v5.3.88',
+      version: 'v5.3.89',
       timestamp: new Date().toISOString(),
       state: state
     };
@@ -40866,7 +40873,7 @@ window.executeGoogleDriveSync = executeGoogleDriveSync;
 function exportToGoogleDriveDirect() {
   const data = {
     app: 'Family Expense Tracker',
-    version: 'v5.3.88',
+    version: 'v5.3.89',
     exportedAt: new Date().toISOString(),
     state: state
   };
@@ -42796,7 +42803,7 @@ window.filterArchiveType = filterArchiveType;
 
 
   <!-- ==============================================================
-       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.88)
+       نافذة تعديل بند الميزانية التقديري وربطه بأفراد الأسرة (v5.3.89)
        ============================================================== -->
   <div id="modalEditBudgetItem" class="custom-modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000000; align-items: center; justify-content: center; padding: 14px;">
     <div class="custom-modal-content" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.96)); border: 1.5px solid rgba(56, 189, 248, 0.45); border-radius: 18px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); overflow: hidden; animation: popIn 0.25s ease;">
@@ -42850,7 +42857,7 @@ window.filterArchiveType = filterArchiveType;
 
 <script>
     // ==============================================================
-    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.88
+    // فتح كافة الروابط الخارجية في المتصفح الخارجي للنظام مباشرة وبأمان v5.3.89
     // ==============================================================
     (function setupExternalLinksDirectOpen() {
       function tagExternalLinks() {
@@ -42984,7 +42991,7 @@ window.filterArchiveType = filterArchiveType;
 
   <script src="./voice-assistant-engine.js?v=202611161600" defer></script>
 
-  <!-- Voice Assistant Suite v5.3.88 (Web Speech API) -->
+  <!-- Voice Assistant Suite v5.3.89 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
     <i class="fa-solid fa-microphone"></i>
   </button>
