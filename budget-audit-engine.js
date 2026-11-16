@@ -1164,91 +1164,11 @@ window.BudgetAuditEngine = (() => {
   // 8. لوحة موازنات المشاريع المستقلة والأرشيف (Preserved & Enhanced)
   // ---------------------------------------------------------------------------
   function renderProjectBudgetsAdvanced() {
-    const container = document.getElementById('panelProjectBudgets');
-    if (!container) return;
-
-    const plans = (state.monthlyBudgets || []).filter(b => b.project);
-    if (plans.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 24px 14px; color: #94a3b8; font-size: 0.82rem; background: rgba(15, 23, 42, 0.4); border-radius: 14px; border: 1px dashed rgba(255,255,255,0.1);">
-          <div style="font-size: 1.8rem; margin-bottom: 8px; color: #38bdf8;"><i class="fa-solid fa-trowel-bricks"></i></div>
-          <div style="font-weight: 850; font-size: 0.95rem; color: #f8fafc; margin-bottom: 4px;">لا توجد موازنات مشاريع مرصودة حتى الآن</div>
-          <div>يمكنك إنشاء موازنة جديدة وتخصيصها لمشروع محدد من زر (+ خطة جديدة).</div>
-        </div>
-      `;
-      return;
+    if (typeof switchProjectView === 'function') {
+      switchProjectView('compare');
+    } else if (window.ProjectCompareEngine) {
+      ProjectCompareEngine.render();
     }
-
-    let selProj = window.selectedProjectBudgetName;
-    let activeProjPlan = plans.find(p => p.project === selProj) || plans[0];
-    window.selectedProjectBudgetName = activeProjPlan.project;
-
-    ensureBudgetItems(activeProjPlan);
-
-    const allProjTxs = (state.transactions || []).filter(t => t.project === activeProjPlan.project);
-    const projTxs = getTransactionsForPeriod(allProjTxs, activeProjectTimePeriod, activeProjPlan.month, projectCustomStart, projectCustomEnd);
-    const expenseTxs = projTxs.filter(t => t.type === 'expense');
-
-    const totalEst = (activeProjPlan.items || []).reduce((s, it) => s + (Number(it.amount) || 0), 0);
-    const totalAct = expenseTxs.reduce((s, t) => s + (Number(t.amount) || 0), 0);
-    const diff = totalEst - totalAct;
-    const isOver = diff < 0;
-
-    container.innerHTML = `
-      <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
-        <div style="font-size: 0.88rem; font-weight: 900; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-trowel-bricks"></i>
-          <span>موازنة المشروع: ${escapeHtml(activeProjPlan.project)}</span>
-        </div>
-        <select onchange="BudgetAuditEngine.selectProject(this.value)" style="height: 32px; font-size: 0.76rem; font-weight: 850; background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(56, 189, 248, 0.4); color: #fff; border-radius: 8px; padding: 0 8px;">
-          ${plans.map(p => `<option value="${escapeHtml(p.project)}" ${p.project === activeProjPlan.project ? 'selected' : ''}>${escapeHtml(p.name || p.project)}</option>`).join('')}
-        </select>
-      </div>
-
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
-        <div style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 8px; text-align: center;">
-          <div style="font-size: 0.68rem; color: #94a3b8;">الميزانية المرصودة</div>
-          <div style="font-size: 0.95rem; font-weight: 900; color: #38bdf8;">${formatMoneyVal(totalEst)}</div>
-        </div>
-        <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 8px; text-align: center;">
-          <div style="font-size: 0.68rem; color: #94a3b8;">المنصرف الفعلي</div>
-          <div style="font-size: 0.95rem; font-weight: 900; color: #f87171;">${formatMoneyVal(totalAct)}</div>
-        </div>
-        <div style="background: ${isOver ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'}; border: 1px solid ${isOver ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'}; border-radius: 10px; padding: 8px; text-align: center;">
-          <div style="font-size: 0.68rem; color: #94a3b8;">${isOver ? 'العجز' : 'الوفر المتبقي'}</div>
-          <div style="font-size: 0.95rem; font-weight: 900; color: ${isOver ? '#f87171' : '#34d399'};">${isOver ? '- ' : '+ '}${formatMoneyVal(Math.abs(diff))}</div>
-        </div>
-      </div>
-
-      <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden;">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.74rem;">
-          <thead>
-            <tr style="background: rgba(30, 41, 59, 0.8); color: #94a3b8;">
-              <th style="padding: 8px; text-align: right;">البند</th>
-              <th style="padding: 8px; text-align: center;">المقدر</th>
-              <th style="padding: 8px; text-align: center;">الفعلي</th>
-              <th style="padding: 8px; text-align: center;">الفارق</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${(activeProjPlan.items || []).map(it => {
-              const act = expenseTxs.filter(t => t.category === it.category).reduce((s, t) => s + (Number(t.amount) || 0), 0);
-              const d = (Number(it.amount) || 0) - act;
-              return `
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                  <td style="padding: 8px; color: #f8fafc; font-weight: 800;">${escapeHtml(it.title || it.category)}</td>
-                  <td style="padding: 8px; text-align: center; color: #fbbf24;">${formatMoneyVal(it.amount)}</td>
-                  <td style="padding: 8px; text-align: center; color: #38bdf8;">${formatMoneyVal(act)}</td>
-                  <td style="padding: 8px; text-align: center; color: ${d < 0 ? '#f87171' : '#34d399'}; font-weight: 900;">
-                    ${d < 0 ? '- ' : '+ '}${formatMoneyVal(Math.abs(d))}
-                  </td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
   }
 
   function renderExecutiveComparisonsAudit() {
@@ -1324,3 +1244,1539 @@ window.BudgetAuditEngine = (() => {
     renderBudgetHistoryAdvanced
   };
 })();
+
+
+
+// =============================================================================
+// BudgetCompareEngine & BudgetArchiveEngine (v5.3.77 Advanced Comparison & Archive Suite)
+// =============================================================================
+
+const BudgetCompareEngine = (() => {
+  let _actualPeriod = 'thisMonth';
+  let _estimPeriod = 'thisMonth';
+  let _actualFrom = null, _actualTo = null;
+  let _estimFrom = null, _estimTo = null;
+  let _chartDough = null, _chartBar = null, _chartLine = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function formatDateStr(d) {
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  }
+
+  function dateDiffDays(d1, d2) {
+    const t1 = new Date(d1).getTime();
+    const t2 = new Date(d2).getTime();
+    return Math.max(1, Math.round(Math.abs(t2 - t1) / (1000 * 60 * 60 * 24)) + 1);
+  }
+
+  function periodToRange(period, customFrom, customTo) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth();
+    const day = now.getDate();
+
+    if (period === 'today') {
+      const s = formatDateStr(now);
+      return { from: s, to: s, label: 'اليوم' };
+    }
+    if (period === 'yesterday') {
+      const yest = new Date(y, m, day - 1);
+      const s = formatDateStr(yest);
+      return { from: s, to: s, label: 'أمس' };
+    }
+    if (period === 'thisWeek') {
+      const dayOfWeek = now.getDay(); // 0 is Sun, 6 is Sat. Saturday is week start in SA/Arab
+      const diffToSat = (dayOfWeek + 1) % 7; 
+      const start = new Date(y, m, day - diffToSat);
+      const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الأسبوع الحالى' };
+    }
+    if (period === 'lastWeek') {
+      const dayOfWeek = now.getDay();
+      const diffToSat = (dayOfWeek + 1) % 7;
+      const end = new Date(y, m, day - diffToSat - 1);
+      const start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - 6);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الأسبوع السابق' };
+    }
+    if (period === 'thisMonth') {
+      const start = new Date(y, m, 1);
+      const end = new Date(y, m + 1, 0);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر الحالى' };
+    }
+    if (period === 'lastMonth') {
+      const start = new Date(y, m - 1, 1);
+      const end = new Date(y, m, 0);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر السابق' };
+    }
+    if (period === 'thisYear') {
+      const start = new Date(y, 0, 1);
+      const end = new Date(y, 11, 31);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'السنة الحالية' };
+    }
+    if (period === 'lastYear') {
+      const start = new Date(y - 1, 0, 1);
+      const end = new Date(y - 1, 11, 31);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'السنة السابقة' };
+    }
+    if (period === 'custom') {
+      const f = customFrom || formatDateStr(new Date(y, m, 1));
+      const t = customTo || formatDateStr(now);
+      return { from: f, to: t, label: 'فترة مخصصة' };
+    }
+    return { from: formatDateStr(new Date(y, m, 1)), to: formatDateStr(now), label: 'الشهر الحالى' };
+  }
+
+  function getActiveEstimBudgetTotal() {
+    if (typeof state === 'undefined') return 12000;
+    const now = new Date();
+    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+    const plans = state.monthlyBudgets || [];
+    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
+    if (activePlan && Array.isArray(activePlan.items) && activePlan.items.length > 0) {
+      return activePlan.items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+    }
+    return 12000;
+  }
+
+  function getActivePlanCategoryEstimMap() {
+    if (typeof state === 'undefined') return {};
+    const now = new Date();
+    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+    const plans = state.monthlyBudgets || [];
+    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
+    const map = {};
+    if (activePlan && Array.isArray(activePlan.items)) {
+      activePlan.items.forEach(it => {
+        if (it.category) map[it.category] = (map[it.category] || 0) + (parseFloat(it.amount) || 0);
+      });
+    }
+    return map;
+  }
+
+  function getActualsForRange(fromDate, toDate) {
+    if (typeof state === 'undefined' || !Array.isArray(state.transactions)) return { items: [], total: 0, byMember: {}, byDate: {} };
+
+    const catMap = {};
+    const byMember = {};
+    const byDate = {};
+    let total = 0;
+
+    state.transactions.forEach(tx => {
+      if (tx.type !== 'expense') return;
+      const d = (tx.date || '').slice(0, 10);
+      if (!d || d < fromDate || d > toDate) return;
+
+      const amt = parseFloat(tx.amount) || 0;
+      total += amt;
+      const cat = tx.category || 'other';
+      const mem = tx.member || 'البيت';
+
+      if (!catMap[cat]) catMap[cat] = { category: cat, total: 0, count: 0, members: {} };
+      catMap[cat].total += amt;
+      catMap[cat].count++;
+      catMap[cat].members[mem] = (catMap[cat].members[mem] || 0) + amt;
+
+      byMember[mem] = (byMember[mem] || 0) + amt;
+      byDate[d] = (byDate[d] || 0) + amt;
+    });
+
+    const items = Object.values(catMap).sort((a, b) => b.total - a.total);
+    return { items, total, byMember, byDate };
+  }
+
+  function buildEstimPeriodOptions(actPeriod) {
+    const sel = document.getElementById('cmpEstimPeriod');
+    if (!sel) return;
+
+    let options = [];
+    if (actPeriod === 'today' || actPeriod === 'yesterday') {
+      options = [
+        { val: actPeriod, label: (actPeriod === 'today' ? 'اليوم (متزامن مع الفعلية)' : 'أمس (متزامن مع الفعلية)') },
+        { val: actPeriod === 'today' ? 'yesterday' : 'today', label: actPeriod === 'today' ? 'أمس' : 'اليوم' },
+        { val: 'custom', label: 'منتقى بيوم محدد' }
+      ];
+    } else if (actPeriod === 'thisWeek' || actPeriod === 'lastWeek') {
+      options = [
+        { val: actPeriod, label: (actPeriod === 'thisWeek' ? 'الأسبوع الحالى (متزامن)' : 'الأسبوع السابق (متزامن)') },
+        { val: actPeriod === 'thisWeek' ? 'lastWeek' : 'thisWeek', label: actPeriod === 'thisWeek' ? 'الأسبوع السابق' : 'الأسبوع الحالى' },
+        { val: 'custom', label: 'منتقى بأسبوع' }
+      ];
+    } else if (actPeriod === 'thisMonth' || actPeriod === 'lastMonth') {
+      options = [
+        { val: actPeriod, label: (actPeriod === 'thisMonth' ? 'الشهر الحالى (متزامن)' : 'الشهر السابق (متزامن)') },
+        { val: actPeriod === 'thisMonth' ? 'lastMonth' : 'thisMonth', label: actPeriod === 'thisMonth' ? 'الشهر السابق' : 'الشهر الحالى' },
+        { val: 'custom', label: 'منتقى بشهر' }
+      ];
+    } else if (actPeriod === 'thisYear') {
+      options = [
+        { val: 'thisYear', label: 'السنة الحالية (متزامن)' },
+        { val: 'lastYear', label: 'السنة السابقة' },
+        { val: 'custom', label: 'منتقى بسنة' }
+      ];
+    } else {
+      options = [
+        { val: 'custom', label: 'منتقى التواريخ (مخصص)' }
+      ];
+    }
+
+    sel.innerHTML = options.map(o => `<option value="${o.val}" ${o.val === _estimPeriod ? 'selected' : ''}>${o.label}</option>`).join('');
+  }
+
+  function onActualPeriodChange(val) {
+    _actualPeriod = val;
+    const customDiv = document.getElementById('cmpActualCustomRange');
+    if (customDiv) customDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+
+    // Auto-sync estimated period
+    _estimPeriod = val;
+    buildEstimPeriodOptions(val);
+
+    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
+    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+
+    render();
+  }
+
+  function onEstimPeriodChange(val) {
+    _estimPeriod = val;
+    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
+    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+    render();
+  }
+
+  function render() {
+    const actInpFrom = document.getElementById('cmpActualFrom');
+    const actInpTo = document.getElementById('cmpActualTo');
+    const customActFrom = actInpFrom ? actInpFrom.value : null;
+    const customActTo = actInpTo ? actInpTo.value : null;
+
+    const actRange = periodToRange(_actualPeriod, customActFrom, customActTo);
+
+    const estInpFrom = document.getElementById('cmpEstimFrom');
+    const estInpTo = document.getElementById('cmpEstimTo');
+    const customEstFrom = estInpFrom ? estInpFrom.value : null;
+    const customEstTo = estInpTo ? estInpTo.value : null;
+
+    const estRange = periodToRange(_estimPeriod, customEstFrom || actRange.from, customEstTo || actRange.to);
+
+    const actData = getActualsForRange(actRange.from, actRange.to);
+    const daysCount = dateDiffDays(estRange.from, estRange.to);
+    const monthlyTotal = getActiveEstimBudgetTotal();
+    const estimTotalScaled = Math.round((monthlyTotal / 30) * daysCount);
+
+    const catEstimMap = getActivePlanCategoryEstimMap();
+
+    // 1. Build Table Body
+    const tbody = document.getElementById('cmpTableBody');
+    const tfoot = document.getElementById('cmpTableFoot');
+
+    // Merge categories from both actuals and plan items
+    const allCatKeys = new Set(actData.items.map(it => it.category));
+    Object.keys(catEstimMap).forEach(k => allCatKeys.add(k));
+
+    const rowsData = [];
+    allCatKeys.forEach(catKey => {
+      const actItem = actData.items.find(i => i.category === catKey);
+      const actualAmt = actItem ? actItem.total : 0;
+
+      let estAmt = 0;
+      if (catEstimMap[catKey]) {
+        estAmt = Math.round((catEstimMap[catKey] / 30) * daysCount);
+      } else {
+        // distribute remaining
+        const knownEstimSum = Object.values(catEstimMap).reduce((s, v) => s + v, 0);
+        const remMonthly = Math.max(0, monthlyTotal - knownEstimSum);
+        estAmt = Math.round((remMonthly / (allCatKeys.size || 1) / 30) * daysCount);
+      }
+
+      // Difference: Estimated - Actual (Positive = saving, Negative = overrun)
+      const diff = estAmt - actualAmt;
+      rowsData.push({
+        catKey,
+        actualAmt,
+        estAmt,
+        diff,
+        count: actItem ? actItem.count : 0
+      });
+    });
+
+    // Sort descending by actualAmt
+    rowsData.sort((a, b) => b.actualAmt - a.actualAmt);
+
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
+
+    if (tbody) {
+      if (rowsData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد مصروفات مسجلة لهذه الفترة</td></tr>`;
+      } else {
+        tbody.innerHTML = rowsData.map(r => {
+          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey, color: '#38bdf8', icon: 'fa-tag' };
+          const isSave = r.diff >= 0;
+          const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
+          const diffColor = isSave ? '#34d399' : '#f87171';
+          const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
+
+          return `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+              <td style="padding: 8px 10px; text-align: right; display: flex; align-items: center; gap: 7px;">
+                <span style="display:inline-flex;width:24px;height:24px;border-radius:6px;background:${catObj.color || '#38bdf8'}26;color:${catObj.color || '#38bdf8'};align-items:center;justify-content:center;font-size:0.75rem;"><i class="fa-solid ${catObj.icon || 'fa-tag'}"></i></span>
+                <div>
+                  <div style="font-weight: 850; color: #f8fafc;">${catObj.name}</div>
+                  ${r.count > 0 ? `<div style="font-size: 0.64rem; color: #94a3b8;">${r.count} حركة</div>` : ''}
+                </div>
+              </td>
+              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #34d399; font-variant-numeric: tabular-nums; direction: ltr;">
+                ${formatVal(r.actualAmt)}
+              </td>
+              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
+                ${formatVal(r.estAmt)}
+              </td>
+              <td style="padding: 8px 10px; text-align: center; direction: ltr;">
+                <span style="display: inline-block; padding: 2px 7px; border-radius: 6px; font-weight: 950; font-size: 0.74rem; background: ${diffBg}; color: ${diffColor}; font-variant-numeric: tabular-nums;">
+                  ${diffSign}${formatVal(Math.abs(r.diff))}
+                </span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // Foot (Totals)
+    const totActual = actData.total;
+    const totEstim = rowsData.reduce((s, r) => s + r.estAmt, 0) || estimTotalScaled;
+    const totDiff = totEstim - totActual;
+    const totIsSave = totDiff >= 0;
+
+    if (tfoot) {
+      tfoot.innerHTML = `
+        <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
+          <td style="padding: 10px; text-align: right; color: #f8fafc;">الإجمالي الكلي</td>
+          <td style="padding: 10px; text-align: center; color: #34d399; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totActual)}</td>
+          <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totEstim)}</td>
+          <td style="padding: 10px; text-align: center; direction: ltr;">
+            <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${totIsSave ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${totIsSave ? '#34d399' : '#f87171'};">
+              ${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}
+            </span>
+          </td>
+        </tr>
+      `;
+    }
+
+    // Update 3 KPI Cards
+    const kpiAct = document.getElementById('cmpKpiTotalActual');
+    const kpiEst = document.getElementById('cmpKpiTotalEstim');
+    const kpiDiff = document.getElementById('cmpKpiTotalDiff');
+
+    if (kpiAct) kpiAct.textContent = formatVal(totActual);
+    if (kpiEst) kpiEst.textContent = formatVal(totEstim);
+    if (kpiDiff) {
+      kpiDiff.textContent = `${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}`;
+      kpiDiff.style.color = totIsSave ? '#34d399' : '#f87171';
+      const label = document.getElementById('cmpKpiDiffLabel');
+      if (label) label.textContent = totIsSave ? 'وفر كلي في الموازنة 🎉' : 'عجز / تجاوز كلي ⚠️';
+    }
+
+    // Render 3 Charts
+    renderCharts(rowsData, actData, totEstim, actRange.from, actRange.to);
+  }
+
+  function renderCharts(rowsData, actData, totEstim, fromDate, toDate) {
+    if (typeof Chart === 'undefined') return;
+
+    // 1. Doughnut Chart (Distribution of actuals by category)
+    const ctxDough = document.getElementById('cmpChartDoughnut');
+    if (ctxDough) {
+      if (_chartDough) { _chartDough.destroy(); _chartDough = null; }
+
+      const filteredRows = rowsData.filter(r => r.actualAmt > 0);
+      const labels = filteredRows.map(r => {
+        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey };
+        return obj.name;
+      });
+      const data = filteredRows.map(r => r.actualAmt);
+      const colors = filteredRows.map(r => {
+        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { color: '#38bdf8' };
+        return obj.color || '#38bdf8';
+      });
+
+      _chartDough = new Chart(ctxDough, {
+        type: 'doughnut',
+        data: {
+          labels: labels.length ? labels : ['لا توجد بيانات'],
+          datasets: [{
+            data: data.length ? data : [1],
+            backgroundColor: colors.length ? colors : ['rgba(255,255,255,0.1)'],
+            borderWidth: 1.5,
+            borderColor: '#0f172a'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { family: 'inherit', size: 11 } } }
+          }
+        }
+      });
+    }
+
+    // 2. Horizontal Bar Chart (By Person / Member)
+    const ctxBar = document.getElementById('cmpChartBar');
+    if (ctxBar) {
+      if (_chartBar) { _chartBar.destroy(); _chartBar = null; }
+
+      const membersList = (typeof state !== 'undefined' && Array.isArray(state.members)) ? state.members.map(m => m.name || m) : Object.keys(actData.byMember);
+      const memberNames = Array.from(new Set([...membersList, ...Object.keys(actData.byMember)]));
+      const memberValues = memberNames.map(m => actData.byMember[m] || 0);
+
+      _chartBar = new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: memberNames,
+          datasets: [{
+            label: 'المصروف الفعلي',
+            data: memberValues,
+            backgroundColor: 'rgba(56, 189, 248, 0.75)',
+            borderColor: '#38bdf8',
+            borderWidth: 1.2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { ticks: { color: '#f8fafc', font: { weight: 'bold' } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // 3. Line Chart (Cumulative Daily Actual vs Cumulative Daily Budget)
+    const ctxLine = document.getElementById('cmpChartLine');
+    if (ctxLine) {
+      if (_chartLine) { _chartLine.destroy(); _chartLine = null; }
+
+      const start = new Date(fromDate);
+      const end = new Date(toDate);
+      const dayList = [];
+      const cur = new Date(start);
+      while (cur <= end) {
+        dayList.push(formatDateStr(cur));
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      let cumAct = 0;
+      const actPoints = [];
+      const estimPoints = [];
+      const dailyBudgetCap = (dayList.length > 0) ? (totEstim / dayList.length) : 0;
+      let cumEst = 0;
+
+      dayList.forEach(d => {
+        cumAct += (actData.byDate[d] || 0);
+        cumEst += dailyBudgetCap;
+        actPoints.push(cumAct);
+        estimPoints.push(Math.round(cumEst));
+      });
+
+      _chartLine = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: dayList.map(d => d.slice(5)), // MM-DD
+          datasets: [
+            {
+              label: 'الفعلي التراكمي',
+              data: actPoints,
+              borderColor: '#f43f5e',
+              backgroundColor: 'rgba(244, 63, 94, 0.15)',
+              fill: true,
+              tension: 0.25,
+              borderWidth: 2.2,
+              pointRadius: 2.5
+            },
+            {
+              label: 'سقف التقديري التراكمي',
+              data: estimPoints,
+              borderColor: '#fbbf24',
+              borderDash: [5, 5],
+              fill: false,
+              tension: 0,
+              borderWidth: 2,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 11 } } }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }
+          }
+        }
+      });
+    }
+  }
+
+  return {
+    render,
+    onActualPeriodChange,
+    onEstimPeriodChange,
+    buildEstimPeriodOptions
+  };
+})();
+window.BudgetCompareEngine = BudgetCompareEngine;
+
+
+// =============================================================================
+// BudgetArchiveEngine (v5.3.77 Prior Months Actuals & Estimations Archive)
+// =============================================================================
+
+const BudgetArchiveEngine = (() => {
+  let _view = 'actual'; // 'actual' | 'estimations'
+  let _expandedMonths = new Set();
+  let _expandedPlans = new Set();
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function switchView(v) {
+    _view = v;
+    const btnAct = document.getElementById('btnArchiveSubActual');
+    const btnEst = document.getElementById('btnArchiveSubEstim');
+
+    if (btnAct && btnEst) {
+      if (v === 'actual') {
+        btnAct.style.background = 'linear-gradient(135deg, #0ea5e9, #2563eb)';
+        btnAct.style.color = '#fff';
+        btnAct.style.boxShadow = '0 2px 8px rgba(14, 165, 233, 0.4)';
+        btnEst.style.background = 'transparent';
+        btnEst.style.color = '#94a3b8';
+        btnEst.style.boxShadow = 'none';
+      } else {
+        btnEst.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+        btnEst.style.color = '#fff';
+        btnEst.style.boxShadow = '0 2px 8px rgba(168, 85, 247, 0.4)';
+        btnAct.style.background = 'transparent';
+        btnAct.style.color = '#94a3b8';
+        btnAct.style.boxShadow = 'none';
+      }
+    }
+    render();
+  }
+
+  function toggleMonthExpand(monthKey) {
+    if (_expandedMonths.has(monthKey)) _expandedMonths.delete(monthKey);
+    else _expandedMonths.add(monthKey);
+    renderActualArchive();
+  }
+  window.toggleMonthArchiveExpand = toggleMonthExpand;
+
+  function togglePlanExpand(planId) {
+    if (_expandedPlans.has(planId)) _expandedPlans.delete(planId);
+    else _expandedPlans.add(planId);
+    renderEstimArchive();
+  }
+  window.togglePlanArchiveExpand = togglePlanExpand;
+
+  function editMonthNote(monthKey) {
+    const existing = localStorage.getItem(`budget_month_note_${monthKey}`) || '';
+    const note = prompt(`ملاحظات أرشيف شهر ${monthKey}:`, existing);
+    if (note !== null) {
+      localStorage.setItem(`budget_month_note_${monthKey}`, note.trim());
+      if (typeof showToast === 'function') showToast(`تم حفظ ملاحظات شهر ${monthKey} بنجاح ✓`);
+      renderActualArchive();
+    }
+  }
+  window.editMonthArchiveNote = editMonthNote;
+
+  function getMonthNameArabic(ymStr) {
+    const [y, m] = ymStr.split('-').map(Number);
+    const monthsAr = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    return `${monthsAr[m - 1] || ymStr} ${y}`;
+  }
+
+  function renderActualArchive() {
+    const container = document.getElementById('archiveContentArea');
+    if (!container) return;
+
+    const now = new Date();
+    const curMonthKey = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+
+    // Group transactions by month
+    const monthMap = {};
+    (state.transactions || []).forEach(tx => {
+      if (tx.type !== 'expense') return;
+      const d = tx.date || '';
+      const mKey = d.slice(0, 7);
+      if (!mKey || mKey >= curMonthKey) return; // Exclude current month and future
+
+      const amt = parseFloat(tx.amount) || 0;
+      const cat = tx.category || 'other';
+      const mem = tx.member || 'البيت';
+
+      if (!monthMap[mKey]) {
+        monthMap[mKey] = {
+          monthKey: mKey,
+          total: 0,
+          count: 0,
+          categories: {},
+          members: {}
+        };
+      }
+      monthMap[mKey].total += amt;
+      monthMap[mKey].count++;
+      monthMap[mKey].categories[cat] = (monthMap[mKey].categories[cat] || 0) + amt;
+      monthMap[mKey].members[mem] = (monthMap[mKey].members[mem] || 0) + amt;
+    });
+
+    const sortedMonths = Object.keys(monthMap).sort((a, b) => b.localeCompare(a));
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
+
+    if (sortedMonths.length === 0) {
+      container.innerHTML = `
+        <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(56,189,248,0.3); border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8;">
+          <i class="fa-solid fa-calendar-xmark" style="font-size: 1.8rem; color: #38bdf8; margin-bottom: 6px; display: block;"></i>
+          لا توجد ميزانيات فعلية مسجلة لشهور سابقة حتى الآن.
+        </div>
+      `;
+      return;
+    }
+
+    let html = `<div style="display: flex; flex-direction: column; gap: 10px;">`;
+    sortedMonths.forEach(mKey => {
+      const item = monthMap[mKey];
+      const isExpanded = _expandedMonths.has(mKey);
+      const monthLabel = getMonthNameArabic(mKey);
+      const note = localStorage.getItem(`budget_month_note_${mKey}`) || '';
+
+      // Find top category
+      const topCatEntry = Object.entries(item.categories).sort((a, b) => b[1] - a[1])[0];
+      const topCatObj = topCatEntry ? ((typeof getCategoryObj === 'function') ? getCategoryObj(topCatEntry[0], 'expense') : { name: topCatEntry[0] }) : null;
+
+      html += `
+        <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-calendar-days"></i></span>
+              <div>
+                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">🗓️ ${monthLabel}</div>
+                <div style="font-size: 0.68rem; color: #94a3b8; display: flex; gap: 8px; margin-top: 1px;">
+                  <span>إجمالي المصروف: <strong style="color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(item.total)}</strong></span>
+                  ${topCatObj ? `<span>• أعلى فئة: <strong style="color: #38bdf8;">${topCatObj.name}</strong> (${formatVal(topCatEntry[1])})</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" onclick="editMonthArchiveNote('${mKey}')" title="تعديل ملاحظة الشهر" style="height: 28px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-pencil"></i> ${note ? 'تعديل' : 'ملاحظة'}
+              </button>
+              <button type="button" onclick="toggleMonthArchiveExpand('${mKey}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i>
+              </button>
+            </div>
+          </div>
+
+          ${note ? `<div style="margin-top: 6px; font-size: 0.70rem; color: #cbd5e1; background: rgba(15,23,42,0.6); padding: 4px 8px; border-radius: 6px; border-right: 2px solid #38bdf8;">📝 ${escapeHtml(note)}</div>` : ''}
+
+          ${isExpanded ? `
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
+              <div style="font-size: 0.72rem; font-weight: 850; color: #38bdf8; margin-bottom: 6px;"><i class="fa-solid fa-table-list"></i> تفاصيل بنود مصروفات ${monthLabel}:</div>
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; direction: rtl;">
+                <thead>
+                  <tr style="background: rgba(15,23,42,0.85); color: #94a3b8;">
+                    <th style="padding: 6px; text-align: right;">فئة المصروف</th>
+                    <th style="padding: 6px; text-align: center;">إجمالي</th>
+                    <th style="padding: 6px; text-align: center;">العمليات</th>
+                    <th style="padding: 6px; text-align: left;">الشخص المسؤول</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${Object.entries(item.categories).sort((a,b) => b[1] - a[1]).map(([cKey, cAmt]) => {
+                    const cObj = (typeof getCategoryObj === 'function') ? getCategoryObj(cKey, 'expense') : { name: cKey };
+                    const mems = Object.keys(item.members).join(', ');
+                    return `
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                        <td style="padding: 6px; font-weight: 800; color: #f8fafc; text-align: right;">${cObj.name}</td>
+                        <td style="padding: 6px; text-align: center; color: #f87171; font-weight: 900; font-variant-numeric: tabular-nums; direction: ltr;">- ${formatVal(cAmt)}</td>
+                        <td style="padding: 6px; text-align: center; color: #94a3b8;">-</td>
+                        <td style="padding: 6px; text-align: left; color: #cbd5e1;">${mems || 'الجميع'}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function renderEstimArchive() {
+    const container = document.getElementById('archiveContentArea');
+    if (!container) return;
+
+    const now = new Date();
+    const curMonthKey = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+
+    const plans = (state.monthlyBudgets || []).filter(p => p.month && p.month < curMonthKey).sort((a, b) => b.month.localeCompare(a.month));
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
+
+    let html = `
+      <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+        <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 12px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.74rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);">
+          <i class="fa-solid fa-plus"></i> إضافة خطة تقديرية لشهر سابق
+        </button>
+      </div>
+    `;
+
+    if (plans.length === 0) {
+      html += `
+        <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(168,85,247,0.3); border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8;">
+          <i class="fa-solid fa-clipboard-list" style="font-size: 1.8rem; color: #c084fc; margin-bottom: 6px; display: block;"></i>
+          لا توجد موازنات تقديرية سابقة محفوظة للأشهر الماضية.
+        </div>
+      `;
+      container.innerHTML = html;
+      return;
+    }
+
+    html += `<div style="display: flex; flex-direction: column; gap: 10px;">`;
+    plans.forEach(plan => {
+      const planId = plan.id || plan.month;
+      const isExpanded = _expandedPlans.has(planId);
+      const items = Array.isArray(plan.items) ? plan.items : [];
+      const totalAmount = items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+      const monthLabel = getMonthNameArabic(plan.month);
+
+      html += `
+        <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#c084fc' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(168, 85, 247, 0.2); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-clipboard-check"></i></span>
+              <div>
+                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">📋 ميزانية ${monthLabel} التقديرية</div>
+                <div style="font-size: 0.68rem; color: #94a3b8; display: flex; gap: 8px; margin-top: 1px;">
+                  <span>السقف التقديري: <strong style="color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">${formatVal(totalAmount)}</strong></span>
+                  <span>• عدد البنود: <strong style="color: #c084fc;">${items.length} بند</strong></span>
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" onclick="if(typeof openBudgetItemModal==='function') openBudgetItemModal('${planId}'); else openNewBudgetPlanModal();" title="تعديل الخطة التقديرية" style="height: 28px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <i class="fa-solid fa-pencil"></i> تعديل
+              </button>
+              <button type="button" onclick="togglePlanArchiveExpand('${planId}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i>
+              </button>
+            </div>
+          </div>
+
+          ${isExpanded ? `
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
+              <div style="font-size: 0.72rem; font-weight: 850; color: #c084fc; margin-bottom: 6px;"><i class="fa-solid fa-list-check"></i> بنود الخطة التقديرية:</div>
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; direction: rtl;">
+                <thead>
+                  <tr style="background: rgba(15,23,42,0.85); color: #94a3b8;">
+                    <th style="padding: 6px; text-align: right;">الفئة</th>
+                    <th style="padding: 6px; text-align: center;">المبلغ التقديري</th>
+                    <th style="padding: 6px; text-align: right;">الملاحظة</th>
+                    <th style="padding: 6px; text-align: left;">الشخص المسؤول</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${items.map(it => {
+                    const cObj = (typeof getCategoryObj === 'function') ? getCategoryObj(it.category, 'expense') : { name: it.category || 'عام' };
+                    return `
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                        <td style="padding: 6px; font-weight: 800; color: #f8fafc; text-align: right;">${cObj.name}</td>
+                        <td style="padding: 6px; text-align: center; color: #fbbf24; font-weight: 900; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(it.amount)}</td>
+                        <td style="padding: 6px; text-align: right; color: #cbd5e1;">${escapeHtml(it.note || '-')}</td>
+                        <td style="padding: 6px; text-align: left; color: #cbd5e1;">${escapeHtml(it.member || 'الجميع')}</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    });
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+  function render() {
+    if (_view === 'actual') renderActualArchive();
+    else renderEstimArchive();
+  }
+
+  return {
+    render,
+    switchView
+  };
+})();
+window.BudgetArchiveEngine = BudgetArchiveEngine;
+
+
+
+// =============================================================================
+// ProjectCompareEngine & ProjectArchiveEngine (v5.3.78 Project WBS Suite)
+// =============================================================================
+
+const ProjectCompareEngine = (() => {
+  let _activeProject = '';
+  let _actualPeriod = 'all'; // Default: total project lifetime
+  let _estimPeriod = 'all';
+  let _actualFrom = null, _actualTo = null;
+  let _chartDough = null, _chartGrouped = null, _chartMembers = null, _chartSCurve = null;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function formatDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+
+  function getActiveProjects() {
+    if (typeof state === 'undefined') return [];
+    const closed = new Set(state.closedProjects || []);
+    const known = (typeof getKnownProjects === 'function') ? getKnownProjects() : [];
+    return known.filter(p => !closed.has(p));
+  }
+
+  function getProjectPlan(projectName) {
+    if (typeof state === 'undefined' || !Array.isArray(state.monthlyBudgets)) return null;
+    return state.monthlyBudgets.find(b => (b.project === projectName || b.title === projectName || b.name === projectName));
+  }
+
+  function onProjectChange(projectName) {
+    _activeProject = projectName;
+    render();
+  }
+
+  function onActualPeriodChange(val) {
+    _actualPeriod = val;
+    _estimPeriod = val;
+    const customDiv = document.getElementById('cmpProjActualCustomRange');
+    if (customDiv) customDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+    render();
+  }
+
+  function getProjectDateRange(period, customFrom, customTo) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth();
+    const day = now.getDate();
+
+    if (period === 'all') return { from: '2020-01-01', to: '2099-12-31', label: 'إجمالي عمر المشروع' };
+    if (period === 'today') {
+      const s = formatDateStr(now);
+      return { from: s, to: s, label: 'اليوم' };
+    }
+    if (period === 'thisWeek') {
+      const dayOfWeek = now.getDay();
+      const diffToSat = (dayOfWeek + 1) % 7;
+      const start = new Date(y, m, day - diffToSat);
+      const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'هذا الأسبوع' };
+    }
+    if (period === 'thisMonth') {
+      const start = new Date(y, m, 1);
+      const end = new Date(y, m + 1, 0);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'هذا الشهر' };
+    }
+    if (period === 'lastMonth') {
+      const start = new Date(y, m - 1, 1);
+      const end = new Date(y, m, 0);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر السابق' };
+    }
+    if (period === 'thisYear') {
+      const start = new Date(y, 0, 1);
+      const end = new Date(y, 11, 31);
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'السنة الحالية' };
+    }
+    if (period === 'custom') {
+      const f = customFrom || formatDateStr(new Date(y, m, 1));
+      const t = customTo || formatDateStr(now);
+      return { from: f, to: t, label: 'فترة مخصصة' };
+    }
+    return { from: '2020-01-01', to: '2099-12-31', label: 'إجمالي عمر المشروع' };
+  }
+
+  function getProjectTransactions(projectName, fromDate, toDate) {
+    if (typeof state === 'undefined' || !Array.isArray(state.transactions)) return [];
+    return state.transactions.filter(tx => {
+      if (tx.type !== 'expense') return false;
+      const p = tx.project || tx.projectId || '';
+      if (p !== projectName) return false;
+      const d = (tx.date || '').slice(0, 10);
+      if (fromDate && toDate && (d < fromDate || d > toDate)) return false;
+      return true;
+    });
+  }
+
+  function closeAndArchiveProject(projectName) {
+    if (!projectName) projectName = _activeProject;
+    if (!projectName) return;
+    if (!confirm(`هل أنت متأكد من رغبتك في إغلاق مشروع "${projectName}" ونقله للأرشيف؟`)) return;
+
+    state.closedProjects = state.closedProjects || [];
+    if (!state.closedProjects.includes(projectName)) {
+      state.closedProjects.push(projectName);
+    }
+    localStorage.setItem('family_closed_projects', JSON.stringify(state.closedProjects));
+    if (typeof showToast === 'function') showToast(`تم نقل مشروع "${projectName}" إلى الأرشيف بنجاح ✓`);
+
+    refreshProjectSelectors();
+    _activeProject = getActiveProjects()[0] || '';
+    render();
+  }
+  window.closeAndArchiveCurrentProject = closeAndArchiveProject;
+
+  function render() {
+    const activeProjects = getActiveProjects();
+    const projSelect = document.getElementById('cmpProjSelect');
+
+    if (projSelect) {
+      if (!_activeProject || !activeProjects.includes(_activeProject)) {
+        _activeProject = activeProjects[0] || '';
+      }
+      projSelect.innerHTML = activeProjects.map(p => `<option value="${p}" ${p === _activeProject ? 'selected' : ''}>📂 ${p}</option>`).join('');
+      if (activeProjects.length === 0) {
+        projSelect.innerHTML = `<option value="">-- لا توجد مشاريع نشطة --</option>`;
+      }
+    }
+
+    const container = document.getElementById('projectCompareMainContent');
+    if (!container) return;
+
+    if (!_activeProject) {
+      container.innerHTML = `
+        <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(56,189,248,0.3); border-radius: 14px; padding: 24px; text-align: center; color: #94a3b8;">
+          <i class="fa-solid fa-folder-open" style="font-size: 2.2rem; color: #38bdf8; margin-bottom: 8px; display: block;"></i>
+          <div style="font-size: 0.90rem; font-weight: 850; color: #f8fafc; margin-bottom: 6px;">لا يوجد مشروع نشط حالياً للمقارنة</div>
+          <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 14px; border-radius: 8px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border: none; color: #fff; font-size: 0.76rem; font-weight: 900; cursor: pointer;">＋ إنشاء موازنة مشروع جديد</button>
+        </div>
+      `;
+      return;
+    }
+
+    const actInpFrom = document.getElementById('cmpProjActualFrom');
+    const actInpTo = document.getElementById('cmpProjActualTo');
+    const customFrom = actInpFrom ? actInpFrom.value : null;
+    const customTo = actInpTo ? actInpTo.value : null;
+
+    const range = getProjectDateRange(_actualPeriod, customFrom, customTo);
+    const txs = getProjectTransactions(_activeProject, range.from, range.to);
+    const allProjTxs = getProjectTransactions(_activeProject, '2020-01-01', '2099-12-31');
+
+    // Fetch Plan
+    const plan = getProjectPlan(_activeProject);
+    const planItems = (plan && Array.isArray(plan.items)) ? plan.items : [];
+    const planApprovedBudget = planItems.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0) || (plan ? (parseFloat(plan.totalAmount) || 0) : 0);
+
+    // Group transactions by projectItem
+    const itemActuals = {};
+    const memberActuals = {};
+    const dateActuals = {};
+    let totalActualInPeriod = 0;
+
+    txs.forEach(t => {
+      const itName = t.projectItem || 'مصروفات مشروع عامة';
+      const amt = parseFloat(t.amount) || 0;
+      const mem = t.member || 'البيت';
+      const d = (t.date || '').slice(0, 10);
+
+      itemActuals[itName] = (itemActuals[itName] || 0) + amt;
+      memberActuals[mem] = (memberActuals[mem] || 0) + amt;
+      if (d) dateActuals[d] = (dateActuals[d] || 0) + amt;
+      totalActualInPeriod += amt;
+    });
+
+    const totalActualLifetime = allProjTxs.reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+
+    // 1. Combine WBS items from Plan and Transactions
+    const allWbsNames = new Set(planItems.map(it => it.category || it.name || it.title));
+    Object.keys(itemActuals).forEach(k => allWbsNames.add(k));
+
+    const wbsRows = [];
+    allWbsNames.forEach(name => {
+      const planItem = planItems.find(it => (it.category === name || it.name === name || it.title === name));
+      const estAmt = planItem ? (parseFloat(planItem.amount) || 0) : 0;
+      const actAmt = itemActuals[name] || 0;
+      const diff = estAmt - actAmt; // Positive = saving, Negative = overrun
+
+      wbsRows.push({
+        name,
+        actAmt,
+        estAmt,
+        diff
+      });
+    });
+
+    // Sort descending by actual expense
+    wbsRows.sort((a, b) => b.actAmt - a.actAmt);
+
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
+
+    // 2. Compute 6 KPIs
+    const approvedBudget = planApprovedBudget || (wbsRows.reduce((s, r) => s + r.estAmt, 0)) || totalActualLifetime;
+    const spentActual = totalActualLifetime;
+    const remainingBalance = approvedBudget - spentActual;
+    const consumptionPct = approvedBudget > 0 ? Math.round((spentActual / approvedBudget) * 100) : 0;
+
+    // CPI = Budget of executed items ÷ Actual spent
+    const executedBudgetSum = wbsRows.filter(r => r.actAmt > 0).reduce((s, r) => s + r.estAmt, 0);
+    const cpi = spentActual > 0 ? (executedBudgetSum / spentActual) : 1.0;
+
+    // Burn Rate (Weekly)
+    const dates = allProjTxs.map(t => t.date).filter(Boolean).sort();
+    let daysDiff = 1;
+    if (dates.length > 1) {
+      const t1 = new Date(dates[0]).getTime();
+      const t2 = new Date(dates[dates.length - 1]).getTime();
+      daysDiff = Math.max(1, Math.round((t2 - t1) / (1000 * 60 * 60 * 24)));
+    }
+    const weeklyBurnRate = (spentActual / daysDiff) * 7;
+
+    // EAC = Approved Budget ÷ CPI
+    const eac = (cpi > 0) ? (approvedBudget / cpi) : spentActual;
+
+    // Build Insights Callout
+    const topCostDrivers = wbsRows.slice(0, 3).filter(r => r.actAmt > 0);
+    const overrunItems = wbsRows.filter(r => r.estAmt > 0 && r.diff < 0);
+    const savingsItems = wbsRows.filter(r => r.estAmt > 0 && r.diff > 0);
+
+    // Build HTML Output
+    container.innerHTML = `
+      <!-- 6 كروت المؤشرات التنفيذية والتحليلات الرقابية للمشروع -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-bottom: 12px;">
+        <!-- كارت 1: الميزانية المعتمدة -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #94a3b8; font-weight: 800; margin-bottom: 2px;">الميزانية المعتمدة</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(approvedBudget)}</div>
+          <div style="font-size: 0.58rem; color: #7dd3fc;">سقف التكلفة المخطط</div>
+        </div>
+
+        <!-- كارت 2: المنصرف الفعلي الإجمالي -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(239, 68, 68, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #fecdd3; font-weight: 800; margin-bottom: 2px;">المنصرف الفعلي الكلي</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(spentActual)}</div>
+          <div style="width: 100%; height: 5px; background: rgba(0,0,0,0.3); border-radius: 3px; overflow: hidden; margin-top: 4px;">
+            <div style="width: ${Math.min(100, consumptionPct)}%; height: 100%; background: ${consumptionPct > 100 ? '#ef4444' : '#f59e0b'};"></div>
+          </div>
+          <div style="font-size: 0.58rem; color: #94a3b8; margin-top: 2px;">استهلاك ${consumptionPct}% من السقف</div>
+        </div>
+
+        <!-- كارت 3: الرصيد المتبقي لإتمام المشروع -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid ${remainingBalance >= 0 ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.5)'}; border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الرصيد المتبقي لإتمام المشروع</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: ${remainingBalance >= 0 ? '#34d399' : '#f87171'}; font-family: var(--font-numbers); direction: ltr;">
+            ${remainingBalance >= 0 ? '+' : ''}${formatVal(remainingBalance)}
+          </div>
+          <div style="font-size: 0.58rem; color: ${remainingBalance >= 0 ? '#6ee7b7' : '#fca5a5'};">
+            ${remainingBalance >= 0 ? 'سيولة متاحة متبقية' : 'تجاوز عجز مالي ⚠️'}
+          </div>
+        </div>
+
+        <!-- كارت 4: مؤشر كفاءة التكلفة CPI -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(168, 85, 247, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #e9d5ff; font-weight: 800; margin-bottom: 2px;">مؤشر كفاءة التكلفة (CPI)</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'}; font-family: var(--font-numbers); direction: ltr;">${cpi.toFixed(2)}</div>
+          <div style="font-size: 0.58rem; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'};">${cpi >= 1.0 ? 'كفاءة ممتازة (وفر)' : 'انحراف وتجاوز تكلفة'}</div>
+        </div>
+
+        <!-- كارت 5: معدل الحرق المالي Burn Rate -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #fde68a; font-weight: 800; margin-bottom: 2px;">معدل الصرف الأسبوعي</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">${formatVal(weeklyBurnRate)}</div>
+          <div style="font-size: 0.58rem; color: #94a3b8;">متوسط أسبوعي</div>
+        </div>
+
+        <!-- كارت 6: التكلفة المتوقعة عند الاكتمال EAC -->
+        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+          <div style="font-size: 0.66rem; color: #bae6fd; font-weight: 800; margin-bottom: 2px;">المتوقع عند الاكتمال (EAC)</div>
+          <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(eac)}</div>
+          <div style="font-size: 0.58rem; color: #94a3b8;">تنبؤ بالوتيرة الحالية</div>
+        </div>
+      </div>
+
+      <!-- صندوق الاستنتاجات والتحليلات التلقائية الذكية -->
+      <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px;">
+        <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>استنتاجات رقابية وتحليلات ذكية للمشروع:</span>
+        </div>
+        <div style="font-size: 0.72rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5;">
+          ${topCostDrivers.length > 0 ? `<div>📌 <strong>أعلى بنود تكلفة مستنزفة:</strong> ${topCostDrivers.map(d => `<span style="color:#f87171;">${d.name} (${formatVal(d.actAmt)})</span>`).join(' • ')}</div>` : ''}
+          ${overrunItems.length > 0 ? `<div>⚠️ <strong>تنبيه تجاوز السقف:</strong> ${overrunItems.map(o => `<span style="color:#ef4444;">بند ${o.name} تجاوز المعتمد بفارق ${formatVal(Math.abs(o.diff))}</span>`).join(' • ')}</div>` : '<div>✅ <strong>انضباط الميزانية:</strong> لا توجد بنود تجاوزت السقف المعتمد حتى الآن.</div>'}
+          ${savingsItems.length > 0 ? `<div>🎉 <strong>وفورات محققة:</strong> ${savingsItems.slice(0, 2).map(s => `<span style="color:#34d399;">بند ${s.name} حقق وفراً بقيمة ${formatVal(s.diff)}</span>`).join(' • ')}</div>` : ''}
+        </div>
+      </div>
+
+      <!-- جدول مقارنة بنود المشروع الرباعي (4 أعمدة) -->
+      <div style="overflow-x: auto; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; direction: rtl;">
+          <thead>
+            <tr style="background: rgba(15, 23, 42, 0.9);">
+              <th style="padding: 10px; text-align: right; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">بيان بند المشروع (WBS)</th>
+              <th style="padding: 10px; text-align: center; color: #f87171; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">المصروف الفعلي</th>
+              <th style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الموازنة التقديرية</th>
+              <th style="padding: 10px; text-align: center; color: #38bdf8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الفرق والانحراف</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${wbsRows.length === 0 ? `<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد بنود أو حركات مسجلة لهذا المشروع في هذه الفترة</td></tr>` : 
+              wbsRows.map(r => {
+                const isSave = r.diff >= 0;
+                const diffColor = isSave ? '#34d399' : '#f87171';
+                const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
+                const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
+
+                return `
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 9px 12px; font-weight: 850; color: #f8fafc; text-align: right;">
+                      <i class="fa-solid fa-cube" style="color: #38bdf8; font-size: 0.70rem; margin-left: 6px;"></i>
+                      <span>${r.name}</span>
+                    </td>
+                    <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #f87171; font-variant-numeric: tabular-nums; direction: ltr;">
+                      ${formatVal(r.actAmt)}
+                    </td>
+                    <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
+                      ${formatVal(r.estAmt)}
+                    </td>
+                    <td style="padding: 9px 12px; text-align: center; direction: ltr;">
+                      <span style="display: inline-block; padding: 2px 7px; border-radius: 6px; font-weight: 950; font-size: 0.74rem; background: ${diffBg}; color: ${diffColor}; font-variant-numeric: tabular-nums;">
+                        ${diffSign}${formatVal(Math.abs(r.diff))}
+                      </span>
+                    </td>
+                  </tr>
+                `;
+              }).join('')
+            }
+          </tbody>
+          <tfoot>
+            <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
+              <td style="padding: 10px; text-align: right; color: #f8fafc;">إجمالي المنصرف والمعتمد في الفترة</td>
+              <td style="padding: 10px; text-align: center; color: #f87171; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">- ${formatVal(totalActualInPeriod)}</td>
+              <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(wbsRows.reduce((s,r) => s + r.estAmt, 0))}</td>
+              <td style="padding: 10px; text-align: center; direction: ltr;">
+                <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${(wbsRows.reduce((s,r) => s + r.diff, 0)) >= 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${(wbsRows.reduce((s,r) => s + r.diff, 0)) >= 0 ? '#34d399' : '#f87171'};">
+                  ${(wbsRows.reduce((s,r) => s + r.diff, 0)) > 0 ? '+' : ''}${formatVal(wbsRows.reduce((s,r) => s + r.diff, 0))}
+                </span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- 4 رسوم بيانية مرفقة شاملة للمشروع -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
+        <!-- رسم 1: هيكل تكاليف المشروع حسب البنود -->
+        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
+          </div>
+          <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
+        </div>
+
+        <!-- رسم 2: مقارنة التقديري بالفعلي لكل بند -->
+        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-chart-column"></i> <span>مقارنة التقديري بالفعلي لكل بند</span>
+          </div>
+          <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
+        </div>
+
+        <!-- رسم 3: توزيع مساهمات الأفراد في الإنفاق على المشروع -->
+        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع</span>
+          </div>
+          <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
+        </div>
+
+        <!-- رسم 4: منحنى التدفق المالي التراكمي (S-Curve) -->
+        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
+          </div>
+          <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
+        </div>
+      </div>
+    `;
+
+    // Render Charts
+    renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget);
+  }
+
+  function renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget) {
+    if (typeof Chart === 'undefined') return;
+
+    // 1. Doughnut Chart (WBS Cost Breakdown)
+    const ctxDough = document.getElementById('projChartDoughnut');
+    if (ctxDough) {
+      if (_chartDough) { _chartDough.destroy(); _chartDough = null; }
+      const activeRows = wbsRows.filter(r => r.actAmt > 0);
+      const labels = activeRows.map(r => r.name);
+      const data = activeRows.map(r => r.actAmt);
+      const colors = ['#38bdf8', '#a855f7', '#fbbf24', '#34d399', '#f43f5e', '#ec4899', '#6366f1', '#14b8a6'];
+
+      _chartDough = new Chart(ctxDough, {
+        type: 'doughnut',
+        data: {
+          labels: labels.length ? labels : ['لا توجد مصروفات'],
+          datasets: [{
+            data: data.length ? data : [1],
+            backgroundColor: labels.length ? colors.slice(0, labels.length) : ['rgba(255,255,255,0.1)'],
+            borderWidth: 1.5,
+            borderColor: '#0f172a'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { size: 10 } } } }
+        }
+      });
+    }
+
+    // 2. Grouped Bar Chart (Estimated vs Actual)
+    const ctxGrouped = document.getElementById('projChartBarGrouped');
+    if (ctxGrouped) {
+      if (_chartGrouped) { _chartGrouped.destroy(); _chartGrouped = null; }
+      const topRows = wbsRows.slice(0, 7);
+      const labels = topRows.map(r => r.name);
+      const actData = topRows.map(r => r.actAmt);
+      const estData = topRows.map(r => r.estAmt);
+
+      _chartGrouped = new Chart(ctxGrouped, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'التقديري المعتمد', data: estData, backgroundColor: 'rgba(251, 191, 36, 0.75)', borderRadius: 5 },
+            { label: 'الفعلي المنصرف', data: actData, backgroundColor: 'rgba(56, 189, 248, 0.75)', borderRadius: 5 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 10 } } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }
+          }
+        }
+      });
+    }
+
+    // 3. Horizontal Bar Chart (Members)
+    const ctxMembers = document.getElementById('projChartBarMembers');
+    if (ctxMembers) {
+      if (_chartMembers) { _chartMembers.destroy(); _chartMembers = null; }
+      const memNames = Object.keys(memberActuals);
+      const memVals = Object.values(memberActuals);
+
+      _chartMembers = new Chart(ctxMembers, {
+        type: 'bar',
+        data: {
+          labels: memNames.length ? memNames : ['البيت'],
+          datasets: [{
+            label: 'المساهمة الفعلية',
+            data: memVals.length ? memVals : [0],
+            backgroundColor: 'rgba(168, 85, 247, 0.75)',
+            borderColor: '#a855f7',
+            borderWidth: 1.2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { ticks: { color: '#f8fafc', font: { weight: 'bold' } }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // 4. Cumulative S-Curve Chart
+    const ctxSCurve = document.getElementById('projChartLineSCurve');
+    if (ctxSCurve) {
+      if (_chartSCurve) { _chartSCurve.destroy(); _chartSCurve = null; }
+
+      const dateMap = {};
+      allProjTxs.forEach(t => {
+        const d = (t.date || '').slice(0, 10);
+        if (d) dateMap[d] = (dateMap[d] || 0) + (parseFloat(t.amount) || 0);
+      });
+
+      const sortedDates = Object.keys(dateMap).sort();
+      let cumAct = 0;
+      const actPoints = [];
+      sortedDates.forEach(d => {
+        cumAct += dateMap[d];
+        actPoints.push(cumAct);
+      });
+
+      _chartSCurve = new Chart(ctxSCurve, {
+        type: 'line',
+        data: {
+          labels: sortedDates.map(d => d.slice(5)),
+          datasets: [
+            {
+              label: 'الفعلي التراكمي للمشروع',
+              data: actPoints,
+              borderColor: '#f43f5e',
+              backgroundColor: 'rgba(244, 63, 94, 0.15)',
+              fill: true,
+              tension: 0.25,
+              borderWidth: 2.2
+            },
+            {
+              label: 'سقف الموازنة المعتمدة',
+              data: sortedDates.map(() => approvedBudget),
+              borderColor: '#fbbf24',
+              borderDash: [6, 4],
+              fill: false,
+              borderWidth: 1.8,
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 10 } } } },
+          scales: {
+            x: { ticks: { color: '#94a3b8', maxTicksLimit: 10 }, grid: { color: 'rgba(255,255,255,0.06)' } },
+            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }
+          }
+        }
+      });
+    }
+  }
+
+  return {
+    render,
+    onProjectChange,
+    onActualPeriodChange,
+    closeAndArchiveProject
+  };
+})();
+window.ProjectCompareEngine = ProjectCompareEngine;
+
+
+// =============================================================================
+// ProjectArchiveEngine (Closed & Draft Projects)
+// =============================================================================
+
+const ProjectArchiveEngine = (() => {
+  let _subTab = 'closed'; // 'closed' | 'draft'
+  let _expandedProjects = new Set();
+
+  function switchSubTab(tab) {
+    _subTab = tab;
+    const btnClosed = document.getElementById('btnProjArchiveClosed');
+    const btnDraft = document.getElementById('btnProjArchiveDraft');
+    if (btnClosed && btnDraft) {
+      if (tab === 'closed') {
+        btnClosed.style.background = 'linear-gradient(135deg, #0ea5e9, #2563eb)';
+        btnClosed.style.color = '#fff';
+        btnClosed.style.boxShadow = '0 2px 8px rgba(14,165,233,0.4)';
+        btnDraft.style.background = 'transparent';
+        btnDraft.style.color = '#94a3b8';
+        btnDraft.style.boxShadow = 'none';
+      } else {
+        btnDraft.style.background = 'linear-gradient(135deg, #a855f7, #7c3aed)';
+        btnDraft.style.color = '#fff';
+        btnDraft.style.boxShadow = '0 2px 8px rgba(168,85,247,0.4)';
+        btnClosed.style.background = 'transparent';
+        btnClosed.style.color = '#94a3b8';
+        btnClosed.style.boxShadow = 'none';
+      }
+    }
+    render();
+  }
+
+  function toggleProjectExpand(projectName) {
+    if (_expandedProjects.has(projectName)) _expandedProjects.delete(projectName);
+    else _expandedProjects.add(projectName);
+    render();
+  }
+  window.toggleProjectArchiveExpand = toggleProjectExpand;
+
+  function restoreProject(projectName) {
+    state.closedProjects = (state.closedProjects || []).filter(p => p !== projectName);
+    localStorage.setItem('family_closed_projects', JSON.stringify(state.closedProjects));
+    if (typeof showToast === 'function') showToast(`تمت استعادة مشروع "${projectName}" كنشط بنجاح ✓`);
+    refreshProjectSelectors();
+    render();
+  }
+  window.restoreArchivedProject = restoreProject;
+
+  function exportProjectToExcel(projectName) {
+    const txs = (state.transactions || []).filter(t => (t.project === projectName || t.projectId === projectName));
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (v || 0).toFixed(2);
+
+    let csv = '\uFEFFالتاريخ,البيان,البند الفرعي WBS,المبلغ,المسؤول,المحفظة\n';
+    txs.forEach(t => {
+      csv += `"${t.date || ''}","${t.label || t.category || ''}","${t.projectItem || 'عام'}","${t.amount || 0}","${t.member || ''}","${t.walletId || ''}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `كشف_حساب_مشروع_${projectName}_${new Date().toISOString().slice(0,10)}.csv`;
+    link.click();
+    if (typeof showToast === 'function') showToast(`تم تصدير كشف حساب مشروع ${projectName} بنجاح ✓`);
+  }
+  window.exportProjectArchiveToExcel = exportProjectToExcel;
+
+  function render() {
+    const container = document.getElementById('projectArchiveContentArea');
+    if (!container) return;
+
+    const closedSet = new Set(state.closedProjects || []);
+    const known = (typeof getKnownProjects === 'function') ? getKnownProjects() : [];
+    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
+
+    if (_subTab === 'closed') {
+      const closedProjects = known.filter(p => closedSet.has(p));
+      if (closedProjects.length === 0) {
+        container.innerHTML = `
+          <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(56,189,248,0.3); border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8;">
+            <i class="fa-solid fa-flag-checkered" style="font-size: 1.8rem; color: #38bdf8; margin-bottom: 6px; display: block;"></i>
+            لا توجد مشاريع مكتملة ومغلقة في الأرشيف حالياً.
+          </div>
+        `;
+        return;
+      }
+
+      let html = `<div style="display: flex; flex-direction: column; gap: 10px;">`;
+      closedProjects.forEach(pName => {
+        const txs = (state.transactions || []).filter(t => (t.project === pName || t.projectId === pName) && t.type === 'expense');
+        const totSpent = txs.reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
+        const isExpanded = _expandedProjects.has(pName);
+
+        html += `
+          <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-folder-closed"></i></span>
+                <div>
+                  <div style="font-size: 0.92rem; font-weight: 900; color: #f8fafc;">🏁 ${pName}</div>
+                  <div style="font-size: 0.68rem; color: #94a3b8;">
+                    التكلفة الإجمالية: <strong style="color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(totSpent)}</strong> • ${txs.length} حركة مسجلة
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" onclick="exportProjectArchiveToExcel('${pName}')" class="btn-wallet-action-pill" style="height: 28px; padding: 0 8px; font-size: 0.68rem; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; cursor: pointer; border-radius: 6px;">
+                  <i class="fa-solid fa-file-excel"></i> تصدير إكسيل
+                </button>
+                <button type="button" onclick="restoreArchivedProject('${pName}')" class="btn-wallet-action-pill" style="height: 28px; padding: 0 8px; font-size: 0.68rem; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-weight: 850; cursor: pointer; border-radius: 6px;">
+                  <i class="fa-solid fa-rotate-left"></i> إعادة فتح
+                </button>
+                <button type="button" onclick="toggleProjectArchiveExpand('${pName}')" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-size: 0.78rem; font-weight: 900; cursor: pointer;">
+                  <i class="fa-solid ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i>
+                </button>
+              </div>
+            </div>
+
+            ${isExpanded ? `
+              <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
+                <div style="font-size: 0.72rem; font-weight: 850; color: #38bdf8; margin-bottom: 6px;"><i class="fa-solid fa-receipt"></i> حركات ومصروفات المشروع:</div>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; direction: rtl;">
+                  <thead>
+                    <tr style="background: rgba(15,23,42,0.85); color: #94a3b8;">
+                      <th style="padding: 6px; text-align: right;">التاريخ</th>
+                      <th style="padding: 6px; text-align: right;">البيان</th>
+                      <th style="padding: 6px; text-align: right;">البند الفرعي</th>
+                      <th style="padding: 6px; text-align: center;">المبلغ</th>
+                      <th style="padding: 6px; text-align: left;">المسؤول</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${txs.slice(0, 50).map(t => `
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                        <td style="padding: 5px 6px; color: #94a3b8;">${t.date || ''}</td>
+                        <td style="padding: 5px 6px; color: #f8fafc; font-weight: 800;">${escapeHtml(t.label || t.category || '')}</td>
+                        <td style="padding: 5px 6px; color: #38bdf8;">${escapeHtml(t.projectItem || 'عام')}</td>
+                        <td style="padding: 5px 6px; text-align: center; color: #f87171; font-weight: 900; direction: ltr;">- ${formatVal(t.amount)}</td>
+                        <td style="padding: 5px 6px; text-align: left; color: #cbd5e1;">${escapeHtml(t.member || 'البيت')}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+      html += `</div>`;
+      container.innerHTML = html;
+    } else {
+      // Draft / Upcoming Projects
+      const draftPlans = (state.monthlyBudgets || []).filter(p => (p.project || p.type === 'project') && !closedSet.has(p.project || p.title));
+      let html = `
+        <div style="margin-bottom: 10px; display: flex; justify-content: flex-end;">
+          <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 12px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #7c3aed); border: none; color: #fff; font-size: 0.74rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);">
+            <i class="fa-solid fa-plus"></i> إنشاء موازنة مشروع جديد وبنوده
+          </button>
+        </div>
+      `;
+
+      if (draftPlans.length === 0) {
+        html += `
+          <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(168,85,247,0.3); border-radius: 12px; padding: 20px; text-align: center; color: #94a3b8;">
+            <i class="fa-solid fa-hourglass-start" style="font-size: 1.8rem; color: #c084fc; margin-bottom: 6px; display: block;"></i>
+            لا توجد مشاريع قيد التجهيز أو مقترحة حالياً.
+          </div>
+        `;
+      } else {
+        html += `<div style="display: flex; flex-direction: column; gap: 10px;">`;
+        draftPlans.forEach(plan => {
+          const pTitle = plan.project || plan.title || 'مشروع جديد';
+          const items = Array.isArray(plan.items) ? plan.items : [];
+          const totalAmt = items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
+
+          html += `
+            <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">📋 ${pTitle}</div>
+                <div style="font-size: 0.68rem; color: #94a3b8;">السقف المالي: <strong style="color: #fbbf24;">${formatVal(totalAmt)}</strong> • ${items.length} بنود WBS</div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" onclick="if(typeof openBudgetItemModal==='function') openBudgetItemModal('${plan.id}');" class="btn-wallet-action-pill" style="height: 28px; padding: 0 8px; font-size: 0.68rem; background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.4); color: #c084fc; font-weight: 850; cursor: pointer; border-radius: 6px;">
+                  <i class="fa-solid fa-pencil"></i> تعديل
+                </button>
+              </div>
+            </div>
+          `;
+        });
+        html += `</div>`;
+      }
+      container.innerHTML = html;
+    }
+  }
+
+  return {
+    render,
+    switchSubTab
+  };
+})();
+window.ProjectArchiveEngine = ProjectArchiveEngine;
