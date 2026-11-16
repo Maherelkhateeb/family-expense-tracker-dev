@@ -31,7 +31,16 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
        const values=[];
        const pause=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
        for(const btn of buttons){
-         btn.click();await pause();
+         btn.click();
+         // Rendering is intentionally frame-deferred. A list may be rebuilt
+         // during the same click; wait for the current node, not the old node.
+         for(let tries=0;tries<24;tries++){
+           await pause();
+           const cat=document.querySelector('#catGrid .cat-card');
+           const op=document.querySelector('#txOperationsList .ops-tx-card-clean');
+           if(cat?.dataset.appearanceApplied===btn.dataset.cardStyle+':'+mode &&
+              op?.dataset.appearanceApplied===btn.dataset.cardStyle+':'+mode) break;
+         }
          const snap=el=>{
            const c=getComputedStyle(el);
            return {signature:[c.borderRadius,c.boxShadow,c.backgroundImage,c.backgroundColor,c.borderColor].join('|'),
