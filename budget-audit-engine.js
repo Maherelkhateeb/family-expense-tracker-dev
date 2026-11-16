@@ -1517,13 +1517,32 @@ const BudgetCompareEngine = (() => {
           const diffColor = isSave ? '#34d399' : '#f87171';
           const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
 
+          // Percentage evaluated relative to estimated budget
+          let pctStr = '';
+          if (r.estAmt > 0) {
+            const pctOfEst = Math.round((r.actualAmt / r.estAmt) * 100);
+            if (isSave) {
+              const savePct = Math.round((r.diff / r.estAmt) * 100);
+              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#34d399;margin-top:2px;">وفر ${savePct}% (${pctOfEst}% مستهلك)</div>`;
+            } else {
+              const overPct = Math.round((Math.abs(r.diff) / r.estAmt) * 100);
+              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#f87171;margin-top:2px;">تجاوز +${overPct}% (${pctOfEst}% من التقديري)</div>`;
+            }
+          } else {
+            pctStr = r.actualAmt > 0 ? `<div style="font-size:0.64rem;color:#f87171;margin-top:2px;">بدون موازنة تقديرية</div>` : '';
+          }
+
           return `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: background 0.15s;"
+                onclick="BudgetCompareEngine.drillDownToCategory('${r.catKey}')"
+                title="اضغط لعرض كافة حركات ${catObj.name} المفلترة"
+                onmouseover="this.style.background='rgba(56,189,248,0.08)'"
+                onmouseout="this.style.background='transparent'">
               <td style="padding: 8px 10px; text-align: right; display: flex; align-items: center; gap: 7px;">
                 <span style="display:inline-flex;width:24px;height:24px;border-radius:6px;background:${catObj.color || '#38bdf8'}26;color:${catObj.color || '#38bdf8'};align-items:center;justify-content:center;font-size:0.75rem;"><i class="fa-solid ${catObj.icon || 'fa-tag'}"></i></span>
                 <div>
                   <div style="font-weight: 850; color: #f8fafc;">${catObj.name}</div>
-                  ${r.count > 0 ? `<div style="font-size: 0.64rem; color: #94a3b8;">${r.count} حركة</div>` : ''}
+                  ${r.count > 0 ? `<div style="font-size: 0.64rem; color: #94a3b8;">${r.count} حركة (اضغط للتفاصيل)</div>` : ''}
                 </div>
               </td>
               <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #34d399; font-variant-numeric: tabular-nums; direction: ltr;">
@@ -1532,10 +1551,11 @@ const BudgetCompareEngine = (() => {
               <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
                 ${formatVal(r.estAmt)}
               </td>
-              <td style="padding: 8px 10px; text-align: center; direction: ltr;">
-                <span style="display: inline-block; padding: 2px 7px; border-radius: 6px; font-weight: 950; font-size: 0.74rem; background: ${diffBg}; color: ${diffColor}; font-variant-numeric: tabular-nums;">
+              <td style="padding: 8px 10px; text-align: center;">
+                <span style="display:inline-block;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:900;background:${diffBg};color:${diffColor};direction:ltr;font-variant-numeric: tabular-nums;">
                   ${diffSign}${formatVal(Math.abs(r.diff))}
                 </span>
+                ${pctStr}
               </td>
             </tr>
           `;
@@ -1577,6 +1597,75 @@ const BudgetCompareEngine = (() => {
       const label = document.getElementById('cmpKpiDiffLabel');
       if (label) label.textContent = totIsSave ? 'وفر كلي في الموازنة 🎉' : 'عجز / تجاوز كلي ⚠️';
     }
+
+    // Update Executive Analytics Cockpit
+    const burnPctEl = document.getElementById('cmpBurnRatePct');
+    const burnBarEl = document.getElementById('cmpBurnRateBar');
+    const burnDescEl = document.getElementById('cmpBurnRateDesc');
+    if (burnPctEl && burnBarEl) {
+      const burnPct = totEstim > 0 ? Math.round((totActual / totEstim) * 100) : (totActual > 0 ? 100 : 0);
+      burnPctEl.textContent = `${burnPct}%`;
+      burnBarEl.style.width = `${Math.min(100, burnPct)}%`;
+      if (burnPct > 100) {
+        burnBarEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+        burnPctEl.style.color = '#f87171';
+        if (burnDescEl) burnDescEl.textContent = 'تجاوز السقف التقديري للموازنة!';
+      } else if (burnPct >= 80) {
+        burnBarEl.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+        burnPctEl.style.color = '#fbbf24';
+        if (burnDescEl) burnDescEl.textContent = 'اقتراب من سقف الموازنة المحددة';
+      } else {
+        burnBarEl.style.background = 'linear-gradient(90deg, #10b981, #0ea5e9)';
+        burnPctEl.style.color = '#34d399';
+        if (burnDescEl) burnDescEl.textContent = 'إنفاق صحي ضمن الحدود التقديرية';
+      }
+    }
+
+    // Top Overrun and Top Saved categories
+    const overruns = rowsData.filter(r => r.diff < 0).sort((a, b) => a.diff - b.diff); // most negative first
+    const savings = rowsData.filter(r => r.diff > 0).sort((a, b) => b.diff - a.diff); // most positive first
+
+    const topOverCatEl = document.getElementById('cmpTopOverrunCat');
+    const topOverValEl = document.getElementById('cmpTopOverrunVal');
+    if (topOverCatEl && topOverValEl) {
+      if (overruns.length > 0) {
+        const topO = overruns[0];
+        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topO.catKey, 'expense') : { name: topO.catKey };
+        topOverCatEl.textContent = catObj.name;
+        topOverValEl.textContent = `-${formatVal(Math.abs(topO.diff))}`;
+      } else {
+        topOverCatEl.textContent = 'لا يوجد تجاوز 🌟';
+        topOverValEl.textContent = '0.00 ج.م';
+      }
+    }
+
+    const topSaveCatEl = document.getElementById('cmpTopSavedCat');
+    const topSaveValEl = document.getElementById('cmpTopSavedVal');
+    if (topSaveCatEl && topSaveValEl) {
+      if (savings.length > 0) {
+        const topS = savings[0];
+        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topS.catKey, 'expense') : { name: topS.catKey };
+        topSaveCatEl.textContent = catObj.name;
+        topSaveValEl.textContent = `+${formatVal(topS.diff)}`;
+      } else {
+        topSaveCatEl.textContent = 'لا يوجد وفر حالياً';
+        topSaveValEl.textContent = '0.00 ج.م';
+      }
+    }
+
+    // Daily safe spending allowance
+    const dailyAllowValEl = document.getElementById('cmpDailyAllowanceVal');
+    const dailyAllowDaysEl = document.getElementById('cmpDailyAllowanceDays');
+    if (dailyAllowValEl && dailyAllowDaysEl) {
+      const now = new Date();
+      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      const remainingDays = Math.max(1, lastDayOfMonth - now.getDate() + 1);
+      const remainingBudget = Math.max(0, totDiff);
+      const dailySafe = Math.round(remainingBudget / remainingDays);
+      dailyAllowValEl.textContent = formatVal(dailySafe);
+      dailyAllowDaysEl.textContent = `متاح لـ ${remainingDays} يوم متبقية`;
+    }
+
 
     // Render 3 Charts
     renderCharts(rowsData, actData, totEstim, actRange.from, actRange.to);
@@ -1728,11 +1817,30 @@ const BudgetCompareEngine = (() => {
     }
   }
 
+  function drillDownToCategory(catKey) {
+    if (typeof switchAppPage === 'function') {
+      switchAppPage('operations');
+      setTimeout(() => {
+        const catFilter = document.getElementById('filterCategory') || document.getElementById('txCategoryFilter');
+        if (catFilter) {
+          catFilter.value = catKey;
+          catFilter.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (typeof renderTransactionsTable === 'function') renderTransactionsTable();
+        if (typeof showToast === 'function') {
+          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(catKey, 'expense') : { name: catKey };
+          showToast(`تمت فلترة الحركات على بند: ${catObj.name}`);
+        }
+      }, 100);
+    }
+  }
+
   return {
     render,
     onActualPeriodChange,
     onEstimPeriodChange,
-    buildEstimPeriodOptions
+    buildEstimPeriodOptions,
+    drillDownToCategory
   };
 })();
 window.BudgetCompareEngine = BudgetCompareEngine;
