@@ -12,9 +12,21 @@ try{
  for(const width of [320,390,430,1365]){
   const context=await browser.newContext({viewport:{width,height:844},serviceWorkers:'block'});
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+  // Install the provider stub before the application's scripts run, so an
+  // initial fetch cannot race with later refreshes or overwrite the fixture.
+  await page.addInitScript(f=>{
+    window.__qaMarketFeed=f;
+    Object.defineProperty(window,'MarketData',{
+      configurable:true,
+      get(){return this.__qaMarketApi;},
+      set(api){
+        api.load=async()=>({feed:window.__qaMarketFeed,offline:false,isLive:true});
+        this.__qaMarketApi=api;
+      }
+    });
+  },quote);
   await page.goto(URL,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(()=>typeof MarketData?.load==='function'&&typeof fetchTradingViewRates==='function',null,{timeout:20000});
-  await page.evaluate(f=>{MarketData.load=async()=>({feed:f,offline:false,isLive:true})},quote);
   await page.locator('#btnOpenGold').click();
   await page.waitForFunction(()=>document.getElementById('tvUpdateTime').dataset.status==='fresh',null,{timeout:20000});
   const rendered=await page.locator('#tvGold21Val').innerText();
@@ -35,7 +47,7 @@ try{
   const result=await page.locator('#calcFinalTotal').innerText();
   assert.match(result,/10,700/,'Gold 21 grams calculation mismatch: '+result);
   const updated=structuredClone(quote);updated.gold.gold21.sell=5300;
-  await page.evaluate(f=>{MarketData.load=async()=>({feed:f,offline:false,isLive:true})},updated);
+  await page.evaluate(f=>{window.__qaMarketFeed=f},updated);
   await page.locator('#btnRefreshTv').click();
   await page.waitForFunction(()=>document.getElementById('tvGold21Val').textContent.includes('5,300.00'));
   assert.deepEqual(errors,[],'Unexpected UI exceptions');
@@ -43,9 +55,15 @@ try{
   await context.close();
  }
  const context=await browser.newContext({serviceWorkers:'block'}),page=await context.newPage();
+ await page.addInitScript(()=>{
+   Object.defineProperty(window,'MarketData',{
+     configurable:true,
+     get(){return this.__qaOfflineApi;},
+     set(api){api.load=async()=>null;this.__qaOfflineApi=api;}
+   });
+ });
  await page.goto(URL,{waitUntil:'domcontentloaded',timeout:60000});
  await page.waitForFunction(()=>typeof MarketData?.load==='function');
- await page.evaluate(()=>{MarketData.load=async()=>null});
  await page.locator('#btnOpenGold').click();
  await page.waitForFunction(()=>document.getElementById('tvUpdateTime').dataset.status==='stale',null,{timeout:20000});
  assert.equal((await page.locator('#tvGold21Val').innerText()).trim(),'—');
