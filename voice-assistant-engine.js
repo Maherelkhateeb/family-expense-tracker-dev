@@ -58,6 +58,7 @@ const VoiceAssistantEngine = (() => {
     let total = 0, group = 0, found = false, lastScale = 1;
     for (let i = 0; i < words.length; i++) {
       let word = words[i].replace(/^[^\u0621-\u064a]+|[^\u0621-\u064a]+$/g, '');
+      if (word.startsWith('ب') && AR_NUMS[word.slice(1)] !== undefined) word = word.slice(1);
       if (word.startsWith('ال') && AR_NUMS[word.slice(2)] !== undefined) word = word.slice(2);
       if (AR_NUMS[word] === undefined && word.startsWith('و') && word.length > 2) word = word.slice(1);
       const next = words[i + 1] ? normalizeArabic(words[i + 1]) : '';
