@@ -101,7 +101,7 @@ try {
     await page.locator('.summary-period-btn[data-period="month"]').click();
     assert.equal(await page.locator('#customDatePickerDrawer').isVisible(),false);
     await page.screenshot({path:'screenshots/'+viewport.name+'-summary.png',fullPage:false});
-    await page.evaluate(()=>window.closeSummaryLeftDrawer());
+    await page.evaluate(()=>window.toggleSummaryDrawer());
     await page.evaluate(() => window.openOperationsFiltered({
       resetFilters: true, type: 'expense', category: 'food', member: 'ماهر',
       project: '__no_project__', dateFrom: '2026-11-01', dateTo: '2026-11-02'
