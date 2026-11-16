@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.82';
-    var APP_BUILD_ID = 202611161400;
+    var APP_VERSION = 'v5.3.84';
+    var APP_BUILD_ID = 202611161500;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16909,14 +16909,185 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161400">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161500">
+<style>
+/* =========================================================================
+   V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
+   ========================================================================= */
+#goldDrawerPanel {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.32s !important;
+  z-index: 100020 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#goldDrawerPanel.open {
+  transform: translateX(0) !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#rightScreenEdgeHandle {
+  z-index: 100035 !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+}
+
+/* Ensure app frames never block custom theme backgrounds */
+.mobile-frame, #appFrame, .page-view, .app-scroll-body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Enforce Theme Backgrounds on Body for all 8 palettes in dark and light */
+body[data-app-theme="facebook"], html[data-app-theme="facebook"] body {
+  background: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #172554 45%, #0c1a30 100%) !important;
+}
+body.light-theme[data-app-theme="facebook"], html[data-app-theme="facebook"] body.light-theme {
+  background: linear-gradient(180deg, #e7f3ff 0%, #f0f2f5 35%, #f0f2f5 100%) !important;
+}
+
+body[data-app-theme="navy"], html[data-app-theme="navy"] body {
+  background: radial-gradient(circle at 50% 0%, #1e3a5f 0%, #0f1d33 45%, #060d1d 100%) !important;
+}
+body.light-theme[data-app-theme="navy"], html[data-app-theme="navy"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f0f4f9 45%, #f8fafc 100%) !important;
+}
+
+body[data-app-theme="emerald"], html[data-app-theme="emerald"] body {
+  background: radial-gradient(circle at 50% 0%, #065f46 0%, #064e3b 40%, #022c22 80%, #011a14 100%) !important;
+}
+body.light-theme[data-app-theme="emerald"], html[data-app-theme="emerald"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #d1fae5 0%, #ecfdf5 45%, #f0fdf4 100%) !important;
+}
+
+body[data-app-theme="purple"], html[data-app-theme="purple"] body {
+  background: radial-gradient(circle at 50% 0%, #581c87 0%, #3b0764 45%, #1e1035 85%, #0d0819 100%) !important;
+}
+body.light-theme[data-app-theme="purple"], html[data-app-theme="purple"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #ede9fe 0%, #f5f3ff 45%, #faf5ff 100%) !important;
+}
+
+body[data-app-theme="rose"], html[data-app-theme="rose"] body {
+  background: radial-gradient(circle at 50% 0%, #881337 0%, #4c0519 45%, #2a0815 85%, #15060e 100%) !important;
+}
+body.light-theme[data-app-theme="rose"], html[data-app-theme="rose"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #ffe4e6 0%, #fff1f2 45%, #fff5f5 100%) !important;
+}
+
+body[data-app-theme="ocean"], html[data-app-theme="ocean"] body {
+  background: radial-gradient(circle at 50% 0%, #0e7490 0%, #155e75 40%, #083344 80%, #041624 100%) !important;
+}
+body.light-theme[data-app-theme="ocean"], html[data-app-theme="ocean"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #cffafe 0%, #ecfeff 45%, #f0f9ff 100%) !important;
+}
+
+body[data-app-theme="gold"], html[data-app-theme="gold"] body {
+  background: radial-gradient(circle at 50% 0%, #78350f 0%, #451a03 45%, #241400 85%, #140d06 100%) !important;
+}
+body.light-theme[data-app-theme="gold"], html[data-app-theme="gold"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #fef3c7 0%, #fffbeb 45%, #fffdf5 100%) !important;
+}
+
+body[data-app-theme="slate"], html[data-app-theme="slate"] body {
+  background: radial-gradient(circle at 50% 0%, #334155 0%, #1e293b 50%, #0f172a 100%) !important;
+}
+body.light-theme[data-app-theme="slate"], html[data-app-theme="slate"] body.light-theme {
+  background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 50%, #ffffff 100%) !important;
+}
+</style>
+<style>
+/* =========================================================================
+   V5.3.84: Unified Layout Compact Optimization & Light Theme Contrast Fixes
+   ========================================================================= */
+
+/* 1. Eliminate Black/Dark Chart Cards in Light Theme */
+body.light-theme .cmp-chart-card,
+body.light-theme [id^="cmpChart"].cmp-chart-card,
+html[data-color-mode="light"] body .cmp-chart-card,
+html[data-app-theme="facebook"] body.light-theme .cmp-chart-card,
+html[data-card-style="facebook"] body .cmp-chart-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.light-theme .cmp-chart-card .cmp-chart-card-title,
+html[data-color-mode="light"] body .cmp-chart-card .cmp-chart-card-title {
+  color: #0f172a !important;
+}
+
+/* 2. Light Theme for Periods Filter Box & Selects */
+body.light-theme #cmpPeriodsFilterBox,
+html[data-color-mode="light"] body #cmpPeriodsFilterBox {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-theme #cmpActualPeriod,
+html[data-color-mode="light"] body #cmpActualPeriod {
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+body.light-theme #cmpEstimPeriod,
+html[data-color-mode="light"] body #cmpEstimPeriod {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+
+/* 3. Light Theme for 3 Summary KPI Cards */
+body.light-theme #cmpKpiCardsRow > div,
+html[data-color-mode="light"] body #cmpKpiCardsRow > div {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.light-theme #cmpKpiDiffLabel,
+html[data-color-mode="light"] body #cmpKpiDiffLabel {
+  color: #475569 !important;
+}
+
+/* 4. Indicators Chart Switcher Strip Light Mode */
+body.light-theme .chart-format-switcher-strip,
+html[data-color-mode="light"] body .chart-format-switcher-strip {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .chart-format-switcher-strip .btn-export-tool:not(.active),
+html[data-color-mode="light"] body .chart-format-switcher-strip .btn-export-tool:not(.active) {
+  color: #475569 !important;
+  background: transparent !important;
+}
+</style>
 </head>
 <body>
   <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.62 - مباشر تحت body -->
   <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
   </div>
-  <div class="side-screen-edge-handle right-handle" onclick="openGoldDrawer()" title="الشاشة الجانبية اليمنى: الذهب والعملات">
+  <div class="side-screen-edge-handle right-handle" id="rightScreenEdgeHandle" onclick="toggleGoldDrawer()" title="الشاشة الجانبية: الذهب والعملات">
     <i class="fa-solid fa-chevron-left"></i>
   </div>
 
@@ -17485,7 +17656,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
                     <span>توزيع المصروفات حسب التصنيف</span>
                   </div>
                 </div>
-                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                <!-- شريط أشكال الشارت بالترتيب القياسي: دائري | دونات | أعمدة | قطبي -->
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box; direction: rtl;">
                   <button type="button" class="btn-export-tool active" id="btnChartTypePie" onclick="switchCategoryChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
                     <i class="fa-solid fa-chart-pie"></i> دائري
                   </button>
@@ -17519,7 +17691,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
                     <span>توزيع المصروفات بين أفراد الأسرة والبيت</span>
                   </div>
                 </div>
-                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box;">
+                <!-- شريط أشكال الشارت بالترتيب القياسي: دائري | دونات | أعمدة | قطبي -->
+                <div class="chart-format-switcher-strip" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: rgba(15, 23, 42, 0.7); padding: 3px 4px; border-radius: 10px; border: 1px solid var(--border-subtle); width: 100%; box-sizing: border-box; direction: rtl;">
                   <button type="button" class="btn-export-tool active" id="btnMemChartTypePie" onclick="switchMemberChartFormat('pie', this)" style="border-radius: 8px; padding: 6px 2px; font-size: 0.70rem; font-weight: 800; background: rgba(56, 189, 248, 0.2); color: #38bdf8; justify-content: center; white-space: nowrap;">
                     <i class="fa-solid fa-chart-pie"></i> دائري
                   </button>
@@ -18534,31 +18707,25 @@ body.light-theme .summary-matrix-table tr.total-row td {
       <div class="page-view" id="viewBudgets" style="display: none;">
         <!-- الهيدر الاستراتيجي المستقل لصفحة الميزانيات -->
         <div class="expected-top-hero" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98)); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: nowrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1.2px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: #34d399; flex-shrink: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; flex-wrap: nowrap; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 7px;">
+              <div style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #34d399; flex-shrink: 0;">
                 <i class="fa-solid fa-chart-pie"></i>
               </div>
-              <div>
-                <h2 style="font-size: 1.0rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
-                  <span>الميزانيات والخطط الشهرية</span>
-                </h2>
-                <div style="font-size: 0.68rem; color: #94a3b8;">التخطيط المالي وتوزيع الميزانيات والرقابة على المصروفات</div>
-              </div>
+              <h2 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 4px;">
+                <span>الميزانيات والخطط الشهرية</span>
+              </h2>
             </div>
-            <!-- أزرار الإجراءات السريعة للميزانيات -->
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.76rem; padding: 0 10px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);">
-                <i class="fa-solid fa-plus"></i> <span>خطة جديدة</span>
+            <!-- أزرار الإجراءات السريعة المصغرة للميزانيات (توفير المساحة) -->
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 26px; font-size: 0.68rem; padding: 0 8px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);">
+                <i class="fa-solid fa-plus" style="font-size: 0.65rem;"></i> <span>خطة جديدة</span>
               </button>
-              <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.74rem; padding: 0 9px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="تصدير الموازنة إلى إكسيل (RTL)">
-                <i class="fa-solid fa-file-excel"></i> <span>تصدير</span>
+              <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 26px; font-size: 0.68rem; padding: 0 7px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="تصدير الموازنة إلى إكسيل (RTL)">
+                <i class="fa-solid fa-file-excel" style="font-size: 0.68rem;"></i> <span>تصدير</span>
               </button>
-              <button type="button" onclick="switchBudgetSubTab('history')" class="btn-wallet-action-pill" style="height: 34px; font-size: 0.74rem; padding: 0 9px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-weight: 850; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="أرشيف الميزانيات والمشاريع">
-                <i class="fa-solid fa-clock-rotate-left"></i> <span>الأرشيف</span>
-              </button>
-              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 34px; width: 34px; padding: 0; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #94a3b8; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="ملاحظات الميزانيات">
-                <i class="fa-solid fa-book-open"></i>
+              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 26px; width: 28px; padding: 0; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #94a3b8; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="ملاحظات الميزانيات">
+                <i class="fa-solid fa-book-open" style="font-size: 0.68rem;"></i>
               </button>
             </div>
           </div>
@@ -18591,17 +18758,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
           <!-- حاوية عرض المقارنة (panelBudgetCompare) -->
           <div id="panelBudgetCompare" style="display:block;">
-            <!-- فلاتر الفترات (الفعلية والتقديرية الذكية) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-bottom: 12px; background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px;">
+            <!-- فلاتر الفترات متجاورة جنباً إلى جنب في صف واحد لتوفير المساحة -->
+            <div id="cmpPeriodsFilterBox" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px 10px;">
               <!-- فلتر الفترة الفعلية -->
               <div>
-                <label style="font-size:0.72rem;font-weight:850;color:#34d399;display:block;margin-bottom:5px;">
+                <label style="font-size:0.70rem;font-weight:850;color:#34d399;display:block;margin-bottom:3px;white-space:nowrap;">
                   <i class="fa-solid fa-clock"></i> فترة الفعلية:
                 </label>
                 <select id="cmpActualPeriod" onchange="BudgetCompareEngine.onActualPeriodChange(this.value)"
-                  style="width:100%;height:38px;font-weight:850;font-size:0.82rem;
+                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
                     background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.4);
-                    color:#34d399;border-radius:9px;padding:0 8px;outline:none;">
+                    color:#34d399;border-radius:8px;padding:0 6px;outline:none;">
                   <option value="today">اليوم</option>
                   <option value="yesterday">أمس</option>
                   <option value="thisWeek">الأسبوع الحالى</option>
@@ -18611,12 +18778,12 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <option value="thisYear">السنة الحالية</option>
                   <option value="custom">منتقى التواريخ (مخصص)</option>
                 </select>
-                <div id="cmpActualCustomRange" style="display:none;align-items:center;gap:6px;margin-top:6px;">
+                <div id="cmpActualCustomRange" style="display:none;align-items:center;gap:4px;margin-top:4px;">
                   <button type="button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')"
-                    style="flex:1;height:34px;font-size:0.75rem;font-weight:850;border-radius:8px;
+                    style="flex:1;height:30px;font-size:0.70rem;font-weight:850;border-radius:7px;
                       border:1px solid rgba(16,185,129,0.5);background:rgba(16,185,129,0.15);color:#34d399;
-                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpActualCustomRangeLabel">اختر نطاق التواريخ من التقويم</span>
+                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
+                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
                   </button>
                   <input type="date" id="cmpActualFrom" style="display:none;" onchange="BudgetCompareEngine.render()">
                   <input type="date" id="cmpActualTo" style="display:none;" onchange="BudgetCompareEngine.render()">
@@ -18625,31 +18792,31 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
               <!-- فلتر الفترة التقديرية (الذكي) -->
               <div>
-                <label style="font-size:0.72rem;font-weight:850;color:#fbbf24;display:block;margin-bottom:5px;">
-                  <i class="fa-solid fa-layer-group"></i> فترة التقديرية (ذكي):
+                <label style="font-size:0.70rem;font-weight:850;color:#fbbf24;display:block;margin-bottom:3px;white-space:nowrap;">
+                  <i class="fa-solid fa-layer-group"></i> فترة التقديرية:
                 </label>
                 <select id="cmpEstimPeriod" onchange="BudgetCompareEngine.onEstimPeriodChange(this.value)"
-                  style="width:100%;height:38px;font-weight:850;font-size:0.82rem;
+                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
                     background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);
-                    color:#fbbf24;border-radius:9px;padding:0 8px;outline:none;">
-                  <option value="thisMonth" selected>الشهر الحالى (متزامن مع الفعلية)</option>
+                    color:#fbbf24;border-radius:8px;padding:0 6px;outline:none;">
+                  <option value="thisMonth" selected>الشهر الحالى (متزامن)</option>
                   <option value="lastMonth">الشهر السابق</option>
                   <option value="custom">منتقى بشهر محدد</option>
                 </select>
-                <div id="cmpEstimCustomRange" style="display:none;gap:6px;margin-top:6px;">
+                <div id="cmpEstimCustomRange" style="display:none;gap:4px;margin-top:4px;">
                   <input type="date" id="cmpEstimFrom" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:34px;font-size:0.78rem;border-radius:8px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 6px;">
+                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
+                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
                   <input type="date" id="cmpEstimTo" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:34px;font-size:0.78rem;border-radius:8px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 6px;">
+                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
+                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
                 </div>
               </div>
             </div>
 
             <!-- جدول المقارنة الرئيسي (4 أعمدة) -->
                         <!-- لوحة القيادة التحليلية الذكية المتقدمة لموازنة الشهر -->
-            <div id="cmpAdvancedAnalyticsCockpit" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px;">
+            <div id="cmpAdvancedAnalyticsCockpit" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px;">
               <!-- 1. مؤشر معدل الحرق المالي -->
               <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px;">
                 <div style="font-size: 0.68rem; font-weight: 850; color: #94a3b8; display: flex; align-items: center; justify-content: space-between;">
@@ -18709,27 +18876,27 @@ body.light-theme .summary-matrix-table tr.total-row td {
               </table>
             </div>
 
-            <!-- بطاقات KPI الثلاثية -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-bottom: 14px;">
-              <div style="background: rgba(16,185,129,0.12); border: 1.2px solid rgba(16,185,129,0.35); border-radius: 12px; padding: 10px; text-align: center;">
-                <div style="font-size: 0.68rem; color: #a7f3d0; font-weight: 800; margin-bottom: 3px;">إجمالي المصروف الفعلي</div>
-                <div id="cmpKpiTotalActual" style="font-size: 1.15rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
+            <!-- بطاقات KPI الثلاثية في صف واحد مدمج وأنيق لتوفير المساحة -->
+            <div id="cmpKpiCardsRow" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px;">
+              <div style="background: rgba(16,185,129,0.12); border: 1.2px solid rgba(16,185,129,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
+                <div style="font-size: 0.65rem; color: #34d399; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي المصروف الفعلي</div>
+                <div id="cmpKpiTotalActual" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
               </div>
-              <div style="background: rgba(245,158,11,0.12); border: 1.2px solid rgba(245,158,11,0.35); border-radius: 12px; padding: 10px; text-align: center;">
-                <div style="font-size: 0.68rem; color: #fde68a; font-weight: 800; margin-bottom: 3px;">إجمالي السقف التقديري</div>
-                <div id="cmpKpiTotalEstim" style="font-size: 1.15rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
+              <div style="background: rgba(245,158,11,0.12); border: 1.2px solid rgba(245,158,11,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
+                <div style="font-size: 0.65rem; color: #fbbf24; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي السقف التقديري</div>
+                <div id="cmpKpiTotalEstim" style="font-size: 0.92rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
               </div>
-              <div style="background: rgba(15,23,42,0.85); border: 1.2px solid rgba(56,189,248,0.35); border-radius: 12px; padding: 10px; text-align: center;">
-                <div id="cmpKpiDiffLabel" style="font-size: 0.68rem; color: #94a3b8; font-weight: 800; margin-bottom: 3px;">الفارق الكلي في الموازنة</div>
-                <div id="cmpKpiTotalDiff" style="font-size: 1.15rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
+              <div style="background: rgba(15,23,42,0.85); border: 1.2px solid rgba(56,189,248,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
+                <div id="cmpKpiDiffLabel" style="font-size: 0.65rem; color: #94a3b8; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">الفارق الكلي بالموازنة</div>
+                <div id="cmpKpiTotalDiff" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
               </div>
             </div>
 
-            <!-- مؤشرات ورسوم بيانية (Chart.js) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <!-- مؤشرات ورسوم بيانية (Chart.js) متوافقة 100% مع الوضع الفاتح وبدون أي شاشات داكنة -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 12px;">
               <!-- رسم دائري: توزيع الفعلية بالبند -->
-              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-chart-pie"></i> <span>توزيع المصروفات الفعلية بالبند</span>
                 </div>
                 <div style="height: 220px; position: relative;">
@@ -18738,8 +18905,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
               </div>
 
               <!-- رسم شريطي أفقي: مقارنة المصروفات بالشخص -->
-              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                   <i class="fa-solid fa-chart-bar"></i> <span>مقارنة المصروفات بالشخص</span>
                 </div>
                 <div style="height: 220px; position: relative;">
@@ -18749,8 +18916,8 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
 
             <!-- رسم خطي: المقارنة الزمنية التراكمية -->
-            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+            <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+              <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-chart-line"></i> <span>المقارنة الزمنية التراكمية (الفعلي vs سقف الموازنة)</span>
               </div>
               <div style="height: 230px; position: relative;">
@@ -30241,8 +30408,8 @@ function switchSettingsTab(tabName) {
 
       const themeStyle = THEME_ACCENTS_SUITE[target] || THEME_ACCENTS_SUITE.navy;
       const themeBg = isLight ? themeStyle.lightBg : themeStyle.darkBg;
-      document.body.style.background = themeBg;
-      document.documentElement.style.background = themeBg;
+      document.body.style.setProperty('background', themeBg, 'important');
+      document.documentElement.style.setProperty('background', themeBg, 'important');
       root.style.setProperty('--body-bg', themeBg);
 
       const frame = document.getElementById('appFrame');
@@ -31414,7 +31581,8 @@ function switchSettingsTab(tabName) {
       }
       const rh = document.getElementById('rightScreenEdgeHandle');
       if (rh) {
-        rh.style.right = 'min(420px, 88vw)';
+        rh.style.right = '0';
+        rh.style.zIndex = '100035';
         rh.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
         rh.title = 'إغلاق شاشة الذهب والعملات';
       }
@@ -42504,9 +42672,9 @@ window.filterArchiveType = filterArchiveType;
 </style>
 
 
-  <script src="./voice-assistant-engine.js?v=202611161400" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611161500" defer></script>
 
-  <!-- Voice Assistant Suite v5.3.82 (Web Speech API) -->
+  <!-- Voice Assistant Suite v5.3.83 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
     <i class="fa-solid fa-microphone"></i>
   </button>
