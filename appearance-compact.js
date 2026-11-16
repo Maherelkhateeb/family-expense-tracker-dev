@@ -200,7 +200,9 @@
     const preset = presets[active] || presets.glass;
     document.querySelectorAll(selector).forEach(el => {
       const stamp = active + (light ? ':light' : ':dark');
-      if (el.dataset.appearanceApplied === stamp) return;
+      if (el.dataset.appearanceApplied === stamp &&
+          el.style.getPropertyValue('border-radius') === preset.radius &&
+          el.style.getPropertyValue('box-shadow') === preset.shadow) return;
       if (!original.has(el)) {
         original.set(el, Object.fromEntries(props.map(p => [p, {
           value:el.style.getPropertyValue(p), priority:el.style.getPropertyPriority(p)
@@ -228,7 +230,9 @@
   function schedule() {
     if (queued) return;
     queued = true;
-    requestAnimationFrame(applyStyle);
+    // Flush style changes before paint, including newly rendered operation rows.
+    // A frame-deferred pass can miss rows replaced by another renderer in that frame.
+    queueMicrotask(applyStyle);
   }
   function init() {
     if (!document.body) return;
@@ -238,7 +242,10 @@
     // Renderers replace list/card nodes after changing periods or filters.
     for (const id of ['catGrid','viewOperations','viewExpected','panelMonthlyBudget','viewExpenses']) {
       const host = document.getElementById(id);
-      if (host) new MutationObserver(schedule).observe(host,{childList:true,subtree:true});
+      if (host) new MutationObserver(records => {
+        if (records.some(record => record.type === 'childList' ||
+            (record.target.matches && record.target.matches(selector)))) schedule();
+      }).observe(host,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
     }
     schedule();
   }
