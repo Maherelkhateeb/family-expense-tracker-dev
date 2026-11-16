@@ -10,7 +10,7 @@ const assert=require('node:assert/strict');
    await page.waitForFunction(()=>typeof window.setAppColorMode==='function');
    for(const mode of ['light','dark']){
     await page.evaluate(mode=>window.setAppColorMode(mode,false),mode);
-    for(const id of ['navTabExpenses','navTabOperations','navTabRequests','navTabExpected','navTabAnalytics']){
+    for(const id of ['navTabExpenses','navTabOperations','navTabRequests','navTabExpected','navTabBudgets']){
      await page.locator('#'+id).click();
      const bad=await page.locator('button').evaluateAll(es=>es.filter(e=>{
       const rect=e.getBoundingClientRect();
