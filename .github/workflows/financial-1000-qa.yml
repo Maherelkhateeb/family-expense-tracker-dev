@@ -9,6 +9,7 @@ on:
       - appearance-compact.js
       - scripts/test-financial-1000.cjs
       - scripts/test-voice-integration.cjs
+      - scripts/test-card-list-design.cjs
       - .github/workflows/financial-1000-qa.yml
   workflow_dispatch:
 permissions:
@@ -34,3 +35,4 @@ jobs:
         run: |
           node scripts/test-financial-1000.cjs
           node scripts/test-voice-integration.cjs
+          node scripts/test-card-list-design.cjs
