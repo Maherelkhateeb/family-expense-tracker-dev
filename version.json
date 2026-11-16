@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.76",
-  "build": 202611161015,
+  "version": "v5.3.78",
+  "build": "202611161105",
   "buildId": 202611161015,
-  "releaseDate": "2026-11-16T10:15:00.000Z",
-  "changelog": "v5.3.76: Renamed bottom nav button from 'الميزانيات والرقابة' to 'مؤشرات'."
+  "releaseDate": "2026-11-16",
+  "changelog": "إضافة مقارنة وأرشيف المشاريع (Dual-Layer WBS) ومقارنة وأرشيف موازنة الشهر والتحليلات الرقابية"
 }
