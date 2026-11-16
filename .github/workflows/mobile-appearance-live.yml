@@ -1,25 +1,26 @@
-name: Mobile appearance - live browser smoke
-
+name: Appearance engine regression
 on:
   push:
     branches:
       - main
-      - qa/mobile-appearance-smoke
+      - fix/appearance-palettes-20261116
     paths:
       - index.html
+      - appearance-compact.js
+      - scripts/test-appearance-presets.js
       - scripts/test-mobile-appearance.cjs
       - .github/workflows/mobile-appearance-live.yml
   pull_request:
     paths:
+      - index.html
+      - scripts/test-appearance-presets.js
       - scripts/test-mobile-appearance.cjs
       - .github/workflows/mobile-appearance-live.yml
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
-  verify-mobile-live:
+  appearance-browser:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -27,18 +28,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Static appearance contract
+        run: node scripts/test-appearance-presets.js
       - name: Install Playwright Chromium
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Run mobile and desktop browser checks
+      - name: Start isolated app server
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/appearance-http.log 2>&1 &
+      - name: Browser appearance checks
+        env:
+          APP_URL: http://127.0.0.1:8765/
         run: |
           mkdir -p screenshots
           node scripts/test-mobile-appearance.cjs
-      - name: Save screenshots for visual review
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: deployed-appearance-screenshots
-          path: screenshots/*.png
-          if-no-files-found: ignore

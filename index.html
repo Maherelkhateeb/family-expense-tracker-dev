@@ -26562,6 +26562,11 @@ function renderCategoriesGrid(filtered) {
 
       const pal = THEME_CARD_PALETTES[activeTheme] || THEME_CARD_PALETTES.navy;
       const activeIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
+      const iconPalette = APPEARANCE_ICON_THEMES[activeIconTheme] || APPEARANCE_ICON_THEMES.vibrant;
+      const iconColor = isLight ? iconPalette.light : iconPalette.dark;
+      const cardIconBg = `linear-gradient(145deg, ${iconColor}bd 0%, ${iconColor}69 100%)`;
+      const activeCardStyle = document.body.getAttribute('data-card-style') || 'glass';
+      const colorMode = isLight ? 'light' : 'dark';
       const getCardTopBackground = (accent) => isLight
         ? `linear-gradient(145deg, ${accent}38 0%, ${accent}1f 56%, ${accent}12 100%)`
         : `linear-gradient(145deg, ${accent}60 0%, ${accent}3c 56%, ${accent}25 100%)`;
@@ -26573,6 +26578,8 @@ function renderCategoriesGrid(filtered) {
       const needRebuild = (existingCards.length !== EXPENSE_CATEGORIES.length) || 
                           (grid.dataset.theme !== activeTheme) ||
                           (grid.dataset.iconTheme !== activeIconTheme) ||
+                          (grid.dataset.cardStyle !== activeCardStyle) ||
+                          (grid.dataset.colorMode !== colorMode) ||
                           (grid.dataset.fontSize !== curFontSize) ||
                           (grid.dataset.fontFamily !== curFontFamily) ||
                           (grid.dataset.activeBudgetId !== activePlanId);
@@ -26581,6 +26588,8 @@ function renderCategoriesGrid(filtered) {
         grid.innerHTML = '';
         grid.dataset.theme = activeTheme;
         grid.dataset.iconTheme = activeIconTheme;
+        grid.dataset.cardStyle = activeCardStyle;
+        grid.dataset.colorMode = colorMode;
         grid.dataset.fontSize = curFontSize;
         grid.dataset.fontFamily = curFontFamily;
         grid.dataset.activeBudgetId = activePlanId;
@@ -26594,11 +26603,15 @@ function renderCategoriesGrid(filtered) {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardAccent = theme.accent;
-          const cardBg = pal.bgGrad(theme.accent);
-          const cardBorder = `2px solid ${pal.border(theme.accent)}`;
-          const cardShadow = pal.shadow(theme.accent);
-          const cardTopBg = getCardTopBackground(theme.accent);
+          const isFlatCard = activeCardStyle === 'flat';
+          const cardBg = isFlatCard ? (isLight ? '#ffffff' : '#17243a') : pal.bgGrad(theme.accent);
+          const cardBorder = isFlatCard
+            ? `1px solid ${isLight ? '#cbd5e1' : '#475569'}`
+            : `2px solid ${pal.border(theme.accent)}`;
+          const cardShadow = isFlatCard ? 'none' : pal.shadow(theme.accent);
+          const cardTopBg = isFlatCard
+            ? (isLight ? 'rgba(241,245,249,.85)' : 'rgba(255,255,255,.04)')
+            : getCardTopBackground(theme.accent);
 
           const converted = convertAmount(spent);
           let numStr = '0.00';
@@ -26673,7 +26686,7 @@ function renderCategoriesGrid(filtered) {
           card.style.cssText = `
             background: ${cardBg} !important;
             border: ${cardBorder} !important;
-            border-radius: 16px !important;
+            border-radius: ${activeCardStyle === 'flat' ? '9px' : '16px'} !important;
             padding: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -26698,7 +26711,7 @@ function renderCategoriesGrid(filtered) {
                  style="flex: 1.25 1 65%; min-height: 0; width: 100%; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 3px 2px 1px; background: ${cardTopBg}; border-radius: 14px 14px 0 0; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
               
               <div class="cat-icon-bubble" 
-                   style="background: ${theme.gradient}; width: clamp(34px, 9vw, 40px) !important; height: clamp(34px, 9vw, 40px) !important; min-width: 34px !important; min-height: 34px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
+                   style="background: ${cardIconBg}; width: clamp(34px, 9vw, 40px) !important; height: clamp(34px, 9vw, 40px) !important; min-width: 34px !important; min-height: 34px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${iconColor}66, inset 0 0 6px rgba(255, 255, 255, 0.24); border: 2px solid rgba(255, 255, 255, 0.75); outline: 1.8px solid ${iconColor}; flex-shrink: 0;">
                 <span style="font-size: clamp(1.4rem, 3.6vw, 1.7rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
@@ -26751,9 +26764,9 @@ function renderCategoriesGrid(filtered) {
             amtLetterSpacing = '-0.3px';
           }
 
-          card.style.setProperty('background', pal.bgGrad(theme.accent), 'important');
-          card.style.setProperty('border-color', pal.border(theme.accent), 'important');
-          card.style.setProperty('box-shadow', pal.shadow(theme.accent), 'important');
+          card.style.setProperty('background', activeCardStyle === 'flat' ? (isLight ? '#ffffff' : '#17243a') : pal.bgGrad(theme.accent), 'important');
+          card.style.setProperty('border-color', activeCardStyle === 'flat' ? (isLight ? '#cbd5e1' : '#475569') : pal.border(theme.accent), 'important');
+          card.style.setProperty('box-shadow', activeCardStyle === 'flat' ? 'none' : pal.shadow(theme.accent), 'important');
 
           const lowerHalf = card.querySelector('.cat-card-bottom-half');
           const amtEl = card.querySelector('.cat-amount-val');
@@ -30443,7 +30456,8 @@ function switchSettingsTab(tabName) {
       amber: { name: 'عنبر', dark: '#fdba74', light: '#9a3412' },
       teal: { name: 'تركوازي', dark: '#5eead4', light: '#0f766e' },
       indigo: { name: 'نيلي', dark: '#a5b4fc', light: '#3730a3' },
-      rose: { name: 'وردي', dark: '#f9a8d4', light: '#9d174d' }
+      rose: { name: 'وردي', dark: '#f9a8d4', light: '#9d174d' },
+      monochrome: { name: 'أحادي', dark: '#cbd5e1', light: '#475569' }
     };
 
     function appearanceContrastRatio(foreground, background) {
@@ -30528,7 +30542,7 @@ function switchSettingsTab(tabName) {
       document.body.setAttribute('data-theme', target);
 
       // تحديث فئات الـ body
-      const allThemeClasses = ['theme-navy', 'theme-emerald', 'theme-purple', 'theme-rose', 'theme-ocean', 'theme-gold', 'theme-slate', 'theme-midnight', 'theme-facebook'];
+      const allThemeClasses = Object.keys(APPEARANCE_PALETTES).map(key => 'theme-' + key);
       document.body.classList.remove(...allThemeClasses);
       document.body.classList.add('theme-' + target);
 
@@ -30842,11 +30856,11 @@ function switchSettingsTab(tabName) {
     }
 
     function setAppDesignStyle(style, notify = true, persist = true) {
-      const validStyles = ['facebook', 'glass', 'minimal', 'neumorphic', 'neon', 'clear', 'elevated', 'outlined', 'gradient'];
+      const validStyles = ['facebook', 'glass', 'minimal', 'neumorphic', 'neon', 'clear', 'flat', 'elevated', 'outlined', 'gradient'];
       const targetStyle = validStyles.includes(String(style || '')) ? String(style) : 'glass';
       document.documentElement.setAttribute('data-card-style', targetStyle);
       document.body.setAttribute('data-card-style', targetStyle);
-      document.querySelectorAll('#cardStyleButtonsContainer [data-card-style]').forEach(button => {
+      document.querySelectorAll('#settingsSec_appearance button[data-card-style]').forEach(button => {
         const selected = button.getAttribute('data-card-style') === targetStyle;
         button.classList.toggle('active', selected);
         button.setAttribute('aria-pressed', selected ? 'true' : 'false');
@@ -30855,6 +30869,9 @@ function switchSettingsTab(tabName) {
         try { localStorage.setItem('family_monefy_design_style', targetStyle); } catch (e) {}
       }
       updateAppearancePreview();
+      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+        renderCategoriesGrid(getFilteredTransactions());
+      }
       if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + targetStyle);
     }
 
