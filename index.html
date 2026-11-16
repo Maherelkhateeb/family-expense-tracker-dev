@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.84';
-    var APP_BUILD_ID = 202611161500;
+    var APP_VERSION = 'v5.3.86';
+    var APP_BUILD_ID = 202611161530;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16909,7 +16909,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161500">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161530">
 <style>
 /* =========================================================================
    V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
@@ -17081,10 +17081,87 @@ html[data-color-mode="light"] body .chart-format-switcher-strip .btn-export-tool
   background: transparent !important;
 }
 </style>
+<style>
+/* =========================================================================
+   V5.3.85: Left Screen Edge Handle & Summary Fullscreen Toggle Docking
+   ========================================================================= */
+#leftScreenEdgeHandle {
+  position: fixed !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 0 !important;
+  z-index: 100035 !important;
+  cursor: pointer !important;
+  touch-action: manipulation !important;
+}
+
+#leftScreenEdgeHandle.is-docked-close {
+  left: 0 !important;
+  z-index: 100035 !important;
+  border-radius: 0 12px 12px 0 !important;
+  background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+}
+</style>
+<style>
+/* =========================================================================
+   V5.3.86: Gold & Currency Cards Typography & Formatting Luxury Tuning
+   ========================================================================= */
+.market-box {
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+}
+
+.market-box-title {
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  margin-bottom: 2px !important;
+}
+
+.market-box-val {
+  font-size: 1.25rem !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.2px !important;
+  margin: 4px 0 !important;
+}
+
+.market-buy-price {
+  font-size: 0.72rem !important;
+  font-weight: 750 !important;
+  color: #cbd5e1 !important;
+  margin-top: 4px !important;
+  line-height: 1.3 !important;
+}
+
+body.light-theme .market-buy-price {
+  color: #64748b !important;
+}
+
+.gold-ounce-strip {
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  margin-top: 8px !important;
+}
+
+.ounce-title {
+  font-size: 0.80rem !important;
+  font-weight: 850 !important;
+}
+
+.ounce-val {
+  font-size: 1.15rem !important;
+  font-weight: 950 !important;
+}
+
+.ounce-time {
+  font-size: 0.68rem !important;
+  color: #94a3b8 !important;
+}
+</style>
 </head>
 <body>
   <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.62 - مباشر تحت body -->
-  <div class="side-screen-edge-handle left-handle" onclick="openSummaryDrawer()" title="الشاشة الجانبية اليسرى: ملخص العمليات">
+  <div class="side-screen-edge-handle left-handle" id="leftScreenEdgeHandle" onclick="toggleSummaryDrawer()" title="الشاشة الجانبية: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
   </div>
   <div class="side-screen-edge-handle right-handle" id="rightScreenEdgeHandle" onclick="toggleGoldDrawer()" title="الشاشة الجانبية: الذهب والعملات">
@@ -19484,14 +19561,7 @@ html[data-color-mode="light"] body .chart-format-switcher-strip .btn-export-tool
             </div>
           </div>
 
-          <!-- تقويم الرصيد الفعلي الحالي بالذهب -->
-          <div class="gold-market-section gold-valuation-strip">
-            <div class="val-info">
-              <div class="val-title"><i class="fa-solid fa-scale-balanced"></i> تقويم رصيدك الفعلي بالذهب</div>
-              <div class="val-sub" id="goldValuationSourceText">بحسب السعر المتاح</div>
-            </div>
-            <div class="val-badge" id="goldValuationText">0.00 جم ذهب 21</div>
-          </div>
+
         
 
 <!-- حاسبة الصاغة والمصنعية التقديرية (Antigravity Professional Calculator) -->
@@ -30727,6 +30797,14 @@ function switchSettingsTab(tabName) {
       currentDrawerMember = (currentSummaryGroupMode === 'member' && currentSummaryGroupKey !== 'all') ? currentSummaryGroupKey : 'الكل';
       if (drawer) drawer.classList.add('open');
       if (backdrop) backdrop.classList.add('active');
+      const lh = document.getElementById('leftScreenEdgeHandle');
+      if (lh) {
+        lh.style.left = '0';
+        lh.style.zIndex = '100035';
+        lh.classList.add('is-docked-close');
+        lh.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+        lh.title = 'إغلاق ملخص العمليات';
+      }
       syncSummaryDrawerControls();
       renderSummaryDrawer();
     }
@@ -30737,6 +30815,13 @@ function switchSettingsTab(tabName) {
       const backdrop = document.getElementById('summaryDrawerBackdrop');
       if (drawer) drawer.classList.remove('open');
       if (backdrop) backdrop.classList.remove('active');
+      const lh = document.getElementById('leftScreenEdgeHandle');
+      if (lh) {
+        lh.style.left = '0';
+        lh.classList.remove('is-docked-close');
+        lh.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+        lh.title = 'الشاشة الجانبية: ملخص العمليات';
+      }
     }
 
     function summaryNormalizeMember(value) {
@@ -42672,7 +42757,7 @@ window.filterArchiveType = filterArchiveType;
 </style>
 
 
-  <script src="./voice-assistant-engine.js?v=202611161500" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611161530" defer></script>
 
   <!-- Voice Assistant Suite v5.3.83 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
