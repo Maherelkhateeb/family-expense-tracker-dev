@@ -1864,7 +1864,7 @@ const BudgetArchiveEngine = (() => {
       const topCatObj = topCatEntry ? ((typeof getCategoryObj === 'function') ? getCategoryObj(topCatEntry[0], 'expense') : { name: topCatEntry[0] }) : null;
 
       html += `
-        <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
+        <div class="budget-lux-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.75)'} !important; border: 1.2px solid ${isExpanded ? (document.body.classList.contains('light-theme') ? '#0284c7' : '#38bdf8') : (document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(255, 255, 255, 0.1)')} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 12px rgba(0,0,0,0.06)' : 'none'}; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-calendar-days"></i></span>
@@ -1962,7 +1962,7 @@ const BudgetArchiveEngine = (() => {
       const monthLabel = getMonthNameArabic(plan.month);
 
       html += `
-        <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#c084fc' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
+        <div class="budget-lux-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.75)'} !important; border: 1.2px solid ${isExpanded ? (document.body.classList.contains('light-theme') ? '#7c3aed' : '#c084fc') : (document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(255, 255, 255, 0.1)')} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 12px rgba(0,0,0,0.06)' : 'none'}; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; border-radius: 14px; padding: 12px 14px; transition: all 0.2s ease;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(168, 85, 247, 0.2); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-clipboard-check"></i></span>
@@ -2020,8 +2020,18 @@ const BudgetArchiveEngine = (() => {
   }
 
   function render() {
-    if (_view === 'actual') renderActualArchive();
-    else renderEstimArchive();
+    const planMgmt = document.getElementById('budgetPlanManagementContainer');
+    if (_view === 'actual') {
+      if (planMgmt) planMgmt.style.display = 'none';
+      renderActualArchive();
+    } else {
+      if (planMgmt) planMgmt.style.display = 'block';
+      renderEstimArchive();
+      try {
+        if (typeof refreshBudgetPlanUI === 'function') refreshBudgetPlanUI();
+        else if (typeof renderBudgetPlanSelector === 'function') renderBudgetPlanSelector();
+      } catch(e) {}
+    }
   }
 
   return {
@@ -2262,14 +2272,14 @@ const ProjectCompareEngine = (() => {
       <!-- 6 كروت المؤشرات التنفيذية والتحليلات الرقابية للمشروع -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-bottom: 12px;">
         <!-- كارت 1: الميزانية المعتمدة -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(56, 189, 248, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #94a3b8; font-weight: 800; margin-bottom: 2px;">الميزانية المعتمدة</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(approvedBudget)}</div>
           <div style="font-size: 0.58rem; color: #7dd3fc;">سقف التكلفة المخطط</div>
         </div>
 
         <!-- كارت 2: المنصرف الفعلي الإجمالي -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(239, 68, 68, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#fecdd3' : 'rgba(239, 68, 68, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #fecdd3; font-weight: 800; margin-bottom: 2px;">المنصرف الفعلي الكلي</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(spentActual)}</div>
           <div style="width: 100%; height: 5px; background: rgba(0,0,0,0.3); border-radius: 3px; overflow: hidden; margin-top: 4px;">
@@ -2279,7 +2289,7 @@ const ProjectCompareEngine = (() => {
         </div>
 
         <!-- كارت 3: الرصيد المتبقي لإتمام المشروع -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid ${remainingBalance >= 0 ? 'rgba(16, 185, 129, 0.4)' : 'rgba(239, 68, 68, 0.5)'}; border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${remainingBalance >= 0 ? (document.body.classList.contains('light-theme') ? '#a7f3d0' : 'rgba(16, 185, 129, 0.4)') : (document.body.classList.contains('light-theme') ? '#fecdd3' : 'rgba(239, 68, 68, 0.5)')} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الرصيد المتبقي لإتمام المشروع</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: ${remainingBalance >= 0 ? '#34d399' : '#f87171'}; font-family: var(--font-numbers); direction: ltr;">
             ${remainingBalance >= 0 ? '+' : ''}${formatVal(remainingBalance)}
@@ -2290,21 +2300,21 @@ const ProjectCompareEngine = (() => {
         </div>
 
         <!-- كارت 4: مؤشر كفاءة التكلفة CPI -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(168, 85, 247, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e9d5ff' : 'rgba(168, 85, 247, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #e9d5ff; font-weight: 800; margin-bottom: 2px;">مؤشر كفاءة التكلفة (CPI)</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'}; font-family: var(--font-numbers); direction: ltr;">${cpi.toFixed(2)}</div>
           <div style="font-size: 0.58rem; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'};">${cpi >= 1.0 ? 'كفاءة ممتازة (وفر)' : 'انحراف وتجاوز تكلفة'}</div>
         </div>
 
         <!-- كارت 5: معدل الحرق المالي Burn Rate -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(245, 158, 11, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#fde68a' : 'rgba(245, 158, 11, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #fde68a; font-weight: 800; margin-bottom: 2px;">معدل الصرف الأسبوعي</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">${formatVal(weeklyBurnRate)}</div>
           <div style="font-size: 0.58rem; color: #94a3b8;">متوسط أسبوعي</div>
         </div>
 
         <!-- كارت 6: التكلفة المتوقعة عند الاكتمال EAC -->
-        <div style="background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.35); border-radius: 12px; padding: 10px; text-align: center;">
+        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(56, 189, 248, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
           <div style="font-size: 0.66rem; color: #bae6fd; font-weight: 800; margin-bottom: 2px;">المتوقع عند الاكتمال (EAC)</div>
           <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(eac)}</div>
           <div style="font-size: 0.58rem; color: #94a3b8;">تنبؤ بالوتيرة الحالية</div>
@@ -2673,7 +2683,7 @@ const ProjectArchiveEngine = (() => {
         const isExpanded = _expandedProjects.has(pName);
 
         html += `
-          <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid ${isExpanded ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}; border-radius: 14px; padding: 12px 14px;">
+          <div class="budget-lux-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.75)'} !important; border: 1.2px solid ${isExpanded ? (document.body.classList.contains('light-theme') ? '#0284c7' : '#38bdf8') : (document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(255, 255, 255, 0.1)')} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 12px rgba(0,0,0,0.06)' : 'none'}; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; border-radius: 14px; padding: 12px 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-folder-closed"></i></span>
@@ -2755,7 +2765,7 @@ const ProjectArchiveEngine = (() => {
           const totalAmt = items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
 
           html += `
-            <div style="background: rgba(30, 41, 59, 0.75); border: 1.2px solid rgba(168, 85, 247, 0.3); border-radius: 14px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="budget-lux-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.75)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(168, 85, 247, 0.3)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 12px rgba(0,0,0,0.06)' : 'none'}; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; border-radius: 14px; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
               <div>
                 <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">📋 ${pTitle}</div>
                 <div style="font-size: 0.68rem; color: #94a3b8;">السقف المالي: <strong style="color: #fbbf24;">${formatVal(totalAmt)}</strong> • ${items.length} بنود WBS</div>
