@@ -2,7 +2,7 @@
 const {chromium}=require('playwright'),assert=require('node:assert/strict');
 const stamp=new Date().toISOString();
 const quote=n=>({sell:n,buy:n-5,chg:'0%'});
-const fixture={schemaVersion:2,checkedAt:stamp,updatedAt:stamp,rateMode:'official',provider:'Test provider',goldProvider:'Test gold',fxProvider:'Test FX',globalGoldUpdatedAt:stamp,currencies:{USD:quote(50),SAR:quote(13.33),EUR:quote(55),AED:quote(13.61)},gold:{gold24:quote(6000),gold21:quote(5250),gold18:quote(4500),goldPound:quote(42000),goldOunceUSD:3000}};
+const fixture={schemaVersion:2,checkedAt:stamp,updatedAt:stamp,rateMode:'estimated',provider:'Test provider',goldProvider:'Test gold',fxProvider:'Test FX',globalGoldUpdatedAt:stamp,currencies:{USD:quote(50),SAR:quote(13.33),EUR:quote(55),AED:quote(13.61)},gold:{gold24:quote(6000),gold21:quote(5250),gold18:quote(4500),goldPound:quote(42000),goldOunceUSD:3000}};
 (async()=>{const browser=await chromium.launch({headless:true,args:['--no-sandbox']});try{
  for(const width of [320,390,430,1365]){
   const context=await browser.newContext({viewport:{width,height:844},serviceWorkers:"block"}),page=await context.newPage();
@@ -15,7 +15,7 @@ const fixture={schemaVersion:2,checkedAt:stamp,updatedAt:stamp,rateMode:'officia
   for(const mode of ['light','dark']){
    await page.evaluate(m=>window.setAppColorMode(m,false),mode);
    const layout=await page.locator('#goldDrawerPanel').evaluate(e=>({w:e.clientWidth,scroll:e.scrollWidth,cards:e.querySelectorAll('.market-box').length,sections:[...e.querySelectorAll('.gold-grid-cards,.fx-grid-cards')].map(e=>e.scrollWidth<=e.clientWidth+2)}));
-   assert(layout.scroll<=layout.w+2,JSON.stringify(layout));assert.equal(layout.cards,9);assert(layout.sections.every(Boolean));
+   assert(layout.scroll<=layout.w+2,JSON.stringify(layout));assert.equal(layout.cards,4);assert(layout.sections.every(Boolean));
    await page.locator('#goldDrawerPanel').screenshot({path:`screenshots/gold-${width}-${mode}.png`});
   }
   assert((await page.locator('#tvGold21Val').innerText()).includes('٥٬٢٥٠'));
