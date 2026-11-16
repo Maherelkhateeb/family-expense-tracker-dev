@@ -915,6 +915,88 @@ window.BudgetAuditEngine = (() => {
     }
   }
 
+  // Independent, read-only insights for the selected monthly plan.
+  // Avoid contaminating monthly actuals with another month or saved projections.
+  function renderMonthlyInsights(plan) {
+    if (!plan || !/^\d{4}-\d{2}$/.test(String(plan.month || ''))) return '';
+    const month = plan.month;
+    const [year, mm] = month.split('-').map(Number);
+    const days = new Date(year, mm, 0).getDate();
+    const now = new Date();
+    const todayMonth = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0')].join('-');
+    const isCurrent = month === todayMonth;
+    const isPast = month < todayMonth;
+    const elapsed = isPast ? days : (isCurrent ? Math.min(days, now.getDate()) : 0);
+    const monthlyPlan = (plan.items || []).reduce((a, it) => a + Math.max(0, Number(it.amount) || 0), 0);
+    const txs = (typeof state !== 'undefined' && Array.isArray(state.transactions) ? state.transactions : []);
+    const expenses = txs.filter(t => t.type === 'expense' && String(t.date || '').slice(0, 7) === month);
+    const actual = expenses.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const percent = monthlyPlan > 0 ? actual / monthlyPlan * 100 : null;
+    const daysRemaining = Math.max(0, days - elapsed);
+    const perDay = elapsed > 0 ? actual / elapsed : null;
+    const forecast = isCurrent && elapsed > 0 ? perDay * days : null;
+    const plannedPerDay = monthlyPlan > 0 ? monthlyPlan / days : null;
+    const permittedPerDay = isCurrent && daysRemaining > 0 && monthlyPlan > 0
+      ? Math.max(0, monthlyPlan - actual) / daysRemaining : null;
+    const prevDate = new Date(year, mm - 2, 1);
+    const prevMonth = [prevDate.getFullYear(), String(prevDate.getMonth() + 1).padStart(2, '0')].join('-');
+    const prevMonthDays = new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 0).getDate();
+    const prevExpenses = txs.filter(t => t.type === 'expense' &&
+      String(t.date || '').slice(0, 7) === prevMonth &&
+      (!isCurrent || Number(String(t.date || '').slice(8, 10)) <= Math.min(elapsed, prevMonthDays)));
+    const prevActual = prevExpenses.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const prevChange = prevActual > 0 ? (actual - prevActual) / prevActual * 100 : null;
+    const cats = new Map();
+    for (const it of plan.items || []) {
+      const cat = it.category || 'other';
+      const item = cats.get(cat) || {name:cat, planned:0, actual:0};
+      item.planned += Math.max(0, Number(it.amount) || 0);
+      item.name = it.title || cat;
+      cats.set(cat, item);
+    }
+    for (const tx of expenses) {
+      const cat = tx.category || 'other';
+      const item = cats.get(cat) || {name:cat, planned:0, actual:0};
+      item.actual += Number(tx.amount) || 0;
+      cats.set(cat, item);
+    }
+    const over = Array.from(cats.values())
+      .filter(x => x.actual > x.planned && x.actual > 0)
+      .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned)).slice(0, 4);
+    const fmt = v => Number.isFinite(v) ? v.toLocaleString('ar-EG', {maximumFractionDigits:0}) : '—';
+    const metric = (name, value, hint) =>
+      '<div class="monthly-insight-card"><small>' + name + '</small><strong>' + value +
+      '</strong><span>' + hint + '</span></div>';
+    const pct = value => value === null ? '—' : (value >= 0 ? '+' : '') + value.toFixed(1) + '%';
+    const variance = monthlyPlan - actual;
+    const completionLabel = isCurrent ? ('حتى يوم ' + elapsed + ' من ' + days) : (isPast ? 'شهر مكتمل' : 'شهر لم يبدأ');
+    const weekly = [0,0,0,0,0];
+    for (const tx of expenses) {
+      const day = Number(String(tx.date || '').slice(8,10));
+      if (day >= 1 && day <= days) weekly[Math.min(4, Math.floor((day - 1) / 7))] += Number(tx.amount) || 0;
+    }
+    const largest = Math.max(1, ...weekly);
+    return '<section class="monthly-insights" aria-label="تحليلات موازنة الشهر">' +
+      '<h3>تحليل الموازنة والتوقعات • ' + month + '</h3>' +
+      '<p>جميع الأرقام محسوبة من عمليات الشهر المختار؛ التوقع تقديري وليس عملية مسجلة. ' + completionLabel + '</p>' +
+      '<div class="monthly-insight-grid">' +
+        metric('المنصرف من الموازنة', percent === null ? 'غير متاح' : percent.toFixed(1) + '%', 'المخطط ' + fmt(monthlyPlan) + ' / الفعلي ' + fmt(actual)) +
+        metric('وفر أو تجاوز الموازنة', (variance >= 0 ? '+' : '−') + fmt(Math.abs(variance)), variance >= 0 ? 'المتبقي من المخصص' : 'تجاوز المخطط') +
+        metric('متوسط الإنفاق اليومي', perDay === null ? '—' : fmt(perDay), 'المخطط يوميًا ' + fmt(plannedPerDay)) +
+        metric('التغير عن الشهر السابق', pct(prevChange), isCurrent ? 'لنفس عدد الأيام المنقضية' : 'مقارنة بالشهر السابق') +
+        metric('توقع نهاية الشهر', forecast === null ? '—' : fmt(forecast), !isCurrent ? 'يظهر للشهر الجاري فقط' : (forecast > monthlyPlan && monthlyPlan > 0 ? 'تحذير: أعلى من المخطط' : 'بافتراض استمرار المعدل الحالي')) +
+        metric('الحد اليومي المتاح', permittedPerDay === null ? '—' : fmt(permittedPerDay), 'للأيام المتبقية دون تجاوز الموازنة') +
+      '</div>' +
+      '<div class="monthly-insight-details"><div><h4>توزيع المصروفات حسب أسابيع الشهر</h4><div class="monthly-week-bars">' +
+        weekly.map((v, i) => '<div class="monthly-week-line"><span>أسبوع ' + (i + 1) + '</span><div class="monthly-week-track"><i style="width:' + (Math.max(0, v) / largest * 100).toFixed(1) + '%"></i></div><b>' + fmt(v) + '</b></div>').join('') +
+      '</div></div><div><h4>أكبر تجاوزات البنود</h4>' +
+        (over.length ? '<div class="monthly-overrun-list">' + over.map(x =>
+          '<div><span>' + String(x.name).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) +
+          '</span><b>+' + fmt(x.actual - x.planned) + '</b></div>').join('') + '</div>' :
+          '<p>لا توجد تجاوزات على البنود المسجلة لهذا الشهر.</p>') +
+      '</div></div></section>';
+  }
+
   // ---------------------------------------------------------------------------
   // 6. التحديث الشامل والمتناغم لمنظومة الموازنات (Master Synchronizer)
   // ---------------------------------------------------------------------------
@@ -955,6 +1037,7 @@ window.BudgetAuditEngine = (() => {
     const bottomAnalytics = document.getElementById('budgetBottomAnalyticsSection');
     if (bottomAnalytics) {
       bottomAnalytics.innerHTML = renderBottomAnalyticsAndCharts(plan, txsA, activeTimePeriod);
+      bottomAnalytics.insertAdjacentHTML('beforeend', renderMonthlyInsights(plan));
     }
 
     // 5. رسم الشارتات
@@ -989,8 +1072,8 @@ window.BudgetAuditEngine = (() => {
 
     const progBar = document.getElementById('budgetProgressOverall');
     if (progBar && totalProratedEst > 0) {
-      const pct = Math.min(100, Math.round((periodExpense / totalProratedEst) * 100));
-      progBar.style.width = pct + '%';
+      const pct = Math.round((periodExpense / totalProratedEst) * 100);
+      progBar.style.width = Math.max(0, Math.min(100, pct)) + '%';
       progBar.style.backgroundColor = (pct > 100) ? '#ef4444' : (pct >= 85 ? '#f59e0b' : '#10b981');
     }
   }
@@ -1328,7 +1411,7 @@ const BudgetCompareEngine = (() => {
   }
 
   function getActiveEstimBudgetTotal() {
-    if (typeof state === 'undefined') return 12000;
+    if (typeof state === 'undefined') return 0;
     const now = new Date();
     const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
     const plans = state.monthlyBudgets || [];
@@ -1336,7 +1419,7 @@ const BudgetCompareEngine = (() => {
     if (activePlan && Array.isArray(activePlan.items) && activePlan.items.length > 0) {
       return activePlan.items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
     }
-    return 12000;
+    return 0;
   }
 
   function getActivePlanCategoryEstimMap() {
