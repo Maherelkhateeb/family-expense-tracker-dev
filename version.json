@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.89",
-  "build": "202611161615",
-  "buildId": 202611161615,
-  "updated": "2026-11-16T16:15:00+03:00",
-  "notes": "Complete overhaul of Theme & Color Engine, transparent frame backgrounds, instant live re-render, Facebook palette integration, and PWA cache upgrade"
+  "version": "v5.3.90",
+  "build": "202611170130",
+  "buildId": 202611170130,
+  "updated": "2026-11-17T01:30:00+03:00",
+  "notes": "Voice Arabic speech recognition and native persistence, immediate card/list style switching, extended monthly budget insights, corrected legacy regression expectations"
 }
