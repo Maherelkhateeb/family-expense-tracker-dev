@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.79",
-  "build": "202611161150",
-  "buildId": 202611161150,
+  "version": "v5.3.80",
+  "build": "202611161220",
+  "buildId": 202611161220,
   "releaseDate": "2026-11-16",
-  "changelog": "v5.3.79: Cleaned codebase, purged obsolete budget panels and bottom clutter, streamlined indicators sub-tabs, and isolated budget management inside archive view."
+  "changelog": "v5.3.80: Fixed critical DOM div nesting bug and page overflow, dynamic whole-app color and background transformation for all 8 themes, 8 balanced icon palettes (4x2 grid), purged 30 dead functions, removed duplicate receipt viewer, and cleaned unused assets."
 }

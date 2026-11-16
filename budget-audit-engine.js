@@ -1869,31 +1869,31 @@ const BudgetArchiveEngine = (() => {
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-calendar-days"></i></span>
               <div>
-                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">🗓️ ${monthLabel}</div>
-                <div style="font-size: 0.68rem; color: #94a3b8; display: flex; gap: 8px; margin-top: 1px;">
+                <div style="font-size: 0.90rem; font-weight: 900; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'};">🗓️ ${monthLabel}</div>
+                <div style="font-size: 0.68rem; color: ${document.body.classList.contains('light-theme') ? '#475569' : '#94a3b8'}; display: flex; gap: 8px; margin-top: 1px;">
                   <span>إجمالي المصروف: <strong style="color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(item.total)}</strong></span>
-                  ${topCatObj ? `<span>• أعلى فئة: <strong style="color: #38bdf8;">${topCatObj.name}</strong> (${formatVal(topCatEntry[1])})</span>` : ''}
+                  ${topCatObj ? `<span>• أعلى فئة: <strong style="color: #0284c7;">${topCatObj.name}</strong> (${formatVal(topCatEntry[1])})</span>` : ''}
                 </div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <button type="button" onclick="editMonthArchiveNote('${mKey}')" title="تعديل ملاحظة الشهر" style="height: 28px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <button type="button" onclick="editMonthArchiveNote('${mKey}')" title="تعديل ملاحظة الشهر" style="height: 28px; padding: 0 8px; border-radius: 6px; background: ${document.body.classList.contains('light-theme') ? '#f1f5f9' : 'rgba(255,255,255,0.08)'}; border: 1px solid ${document.body.classList.contains('light-theme') ? '#cbd5e1' : 'rgba(255,255,255,0.15)'}; color: ${document.body.classList.contains('light-theme') ? '#334155' : '#cbd5e1'}; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                 <i class="fa-solid fa-pencil"></i> ${note ? 'تعديل' : 'ملاحظة'}
               </button>
-              <button type="button" onclick="toggleMonthArchiveExpand('${mKey}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <button type="button" onclick="toggleMonthArchiveExpand('${mKey}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(56,189,248,0.15); border: 1px solid rgba(56,189,248,0.4); color: #0284c7; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i>
               </button>
             </div>
           </div>
 
-          ${note ? `<div style="margin-top: 6px; font-size: 0.70rem; color: #cbd5e1; background: rgba(15,23,42,0.6); padding: 4px 8px; border-radius: 6px; border-right: 2px solid #38bdf8;">📝 ${escapeHtml(note)}</div>` : ''}
+          ${note ? `<div style="margin-top: 6px; font-size: 0.70rem; color: ${document.body.classList.contains('light-theme') ? '#334155' : '#cbd5e1'}; background: ${document.body.classList.contains('light-theme') ? '#f8fafc' : 'rgba(15,23,42,0.6)'}; padding: 4px 8px; border-radius: 6px; border-right: 2px solid #0284c7;">📝 ${escapeHtml(note)}</div>` : ''}
 
           ${isExpanded ? `
-            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
-              <div style="font-size: 0.72rem; font-weight: 850; color: #38bdf8; margin-bottom: 6px;"><i class="fa-solid fa-table-list"></i> تفاصيل بنود مصروفات ${monthLabel}:</div>
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed ${document.body.classList.contains('light-theme') ? '#cbd5e1' : 'rgba(255,255,255,0.1)'};">
+              <div style="font-size: 0.72rem; font-weight: 850; color: #0284c7; margin-bottom: 6px;"><i class="fa-solid fa-table-list"></i> تفاصيل بنود مصروفات ${monthLabel}:</div>
               <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; direction: rtl;">
                 <thead>
-                  <tr style="background: rgba(15,23,42,0.85); color: #94a3b8;">
+                  <tr style="background: ${document.body.classList.contains('light-theme') ? '#f1f5f9' : 'rgba(15,23,42,0.85)'}; color: ${document.body.classList.contains('light-theme') ? '#475569' : '#94a3b8'};">
                     <th style="padding: 6px; text-align: right;">فئة المصروف</th>
                     <th style="padding: 6px; text-align: center;">إجمالي</th>
                     <th style="padding: 6px; text-align: center;">العمليات</th>
@@ -1906,7 +1906,7 @@ const BudgetArchiveEngine = (() => {
                     const mems = Object.keys(item.members).join(', ');
                     return `
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                        <td style="padding: 6px; font-weight: 800; color: #f8fafc; text-align: right;">${cObj.name}</td>
+                        <td style="padding: 6px; font-weight: 800; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; text-align: right;">${cObj.name}</td>
                         <td style="padding: 6px; text-align: center; color: #f87171; font-weight: 900; font-variant-numeric: tabular-nums; direction: ltr;">- ${formatVal(cAmt)}</td>
                         <td style="padding: 6px; text-align: center; color: #94a3b8;">-</td>
                         <td style="padding: 6px; text-align: left; color: #cbd5e1;">${mems || 'الجميع'}</td>
@@ -1967,29 +1967,29 @@ const BudgetArchiveEngine = (() => {
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="width: 32px; height: 32px; border-radius: 8px; background: rgba(168, 85, 247, 0.2); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;"><i class="fa-solid fa-clipboard-check"></i></span>
               <div>
-                <div style="font-size: 0.90rem; font-weight: 900; color: #f8fafc;">📋 ميزانية ${monthLabel} التقديرية</div>
-                <div style="font-size: 0.68rem; color: #94a3b8; display: flex; gap: 8px; margin-top: 1px;">
-                  <span>السقف التقديري: <strong style="color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">${formatVal(totalAmount)}</strong></span>
-                  <span>• عدد البنود: <strong style="color: #c084fc;">${items.length} بند</strong></span>
+                <div style="font-size: 0.90rem; font-weight: 900; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'};">📋 ميزانية ${monthLabel} التقديرية</div>
+                <div style="font-size: 0.68rem; color: ${document.body.classList.contains('light-theme') ? '#475569' : '#94a3b8'}; display: flex; gap: 8px; margin-top: 1px;">
+                  <span>السقف التقديري: <strong style="color: #d97706; font-family: var(--font-numbers); direction: ltr;">${formatVal(totalAmount)}</strong></span>
+                  <span>• عدد البنود: <strong style="color: #7c3aed;">${items.length} بند</strong></span>
                 </div>
               </div>
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
-              <button type="button" onclick="if(typeof openBudgetItemModal==='function') openBudgetItemModal('${planId}'); else openNewBudgetPlanModal();" title="تعديل الخطة التقديرية" style="height: 28px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+              <button type="button" onclick="if(typeof openBudgetItemModal==='function') openBudgetItemModal('${planId}'); else openNewBudgetPlanModal();" title="تعديل الخطة التقديرية" style="height: 28px; padding: 0 8px; border-radius: 6px; background: ${document.body.classList.contains('light-theme') ? '#f1f5f9' : 'rgba(255,255,255,0.08)'}; border: 1px solid ${document.body.classList.contains('light-theme') ? '#cbd5e1' : 'rgba(255,255,255,0.15)'}; color: ${document.body.classList.contains('light-theme') ? '#334155' : '#cbd5e1'}; font-size: 0.70rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                 <i class="fa-solid fa-pencil"></i> تعديل
               </button>
-              <button type="button" onclick="togglePlanArchiveExpand('${planId}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #c084fc; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+              <button type="button" onclick="togglePlanArchiveExpand('${planId}')" title="${isExpanded ? 'طي' : 'توسيع'}" style="width: 28px; height: 28px; border-radius: 6px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); color: #7c3aed; font-size: 0.78rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                 <i class="fa-solid ${isExpanded ? 'fa-minus' : 'fa-plus'}"></i>
               </button>
             </div>
           </div>
 
           ${isExpanded ? `
-            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1);">
-              <div style="font-size: 0.72rem; font-weight: 850; color: #c084fc; margin-bottom: 6px;"><i class="fa-solid fa-list-check"></i> بنود الخطة التقديرية:</div>
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed ${document.body.classList.contains('light-theme') ? '#cbd5e1' : 'rgba(255,255,255,0.1)'};">
+              <div style="font-size: 0.72rem; font-weight: 850; color: #7c3aed; margin-bottom: 6px;"><i class="fa-solid fa-list-check"></i> بنود الخطة التقديرية:</div>
               <table style="width: 100%; border-collapse: collapse; font-size: 0.72rem; direction: rtl;">
                 <thead>
-                  <tr style="background: rgba(15,23,42,0.85); color: #94a3b8;">
+                  <tr style="background: ${document.body.classList.contains('light-theme') ? '#f1f5f9' : 'rgba(15,23,42,0.85)'}; color: ${document.body.classList.contains('light-theme') ? '#475569' : '#94a3b8'};">
                     <th style="padding: 6px; text-align: right;">الفئة</th>
                     <th style="padding: 6px; text-align: center;">المبلغ التقديري</th>
                     <th style="padding: 6px; text-align: right;">الملاحظة</th>
@@ -2001,7 +2001,7 @@ const BudgetArchiveEngine = (() => {
                     const cObj = (typeof getCategoryObj === 'function') ? getCategoryObj(it.category, 'expense') : { name: it.category || 'عام' };
                     return `
                       <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
-                        <td style="padding: 6px; font-weight: 800; color: #f8fafc; text-align: right;">${cObj.name}</td>
+                        <td style="padding: 6px; font-weight: 800; color: ${document.body.classList.contains('light-theme') ? '#0f172a' : '#f8fafc'}; text-align: right;">${cObj.name}</td>
                         <td style="padding: 6px; text-align: center; color: #fbbf24; font-weight: 900; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(it.amount)}</td>
                         <td style="padding: 6px; text-align: right; color: #cbd5e1;">${escapeHtml(it.note || '-')}</td>
                         <td style="padding: 6px; text-align: left; color: #cbd5e1;">${escapeHtml(it.member || 'الجميع')}</td>

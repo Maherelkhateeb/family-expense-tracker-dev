@@ -275,7 +275,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.79';
+    var APP_VERSION = 'v5.3.80';
     var APP_BUILD_ID = 202611151830;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -11776,7 +11776,7 @@ body.light-theme .cat-budget-progress-track {
 
   
     /* =========================================================================
-       جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.79
+       جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.80
        ========================================================================= */
     body.light-theme .budget-lux-card,
     body.light-theme .project-kpi-card,
@@ -15279,9 +15279,39 @@ body.light-theme .cat-budget-progress-track {
       background: var(--bg-card-sub, #1e293b) !important;
       border-radius: 13px !important;
     }
-    #settingsModal .theme-color-palette {
-      grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)) !important;
+    #settingsModal .theme-color-palette,
+    #settingsModal .icon-theme-palette,
+    .antigravity-palette-grid,
+    .antigravity-icon-grid,
+    .appearance-icon-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
       gap: 8px !important;
+    }
+    #settingsModal .icon-theme-pill {
+      display: flex !important;
+      min-height: 48px !important;
+      height: 48px !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      padding: 6px 4px !important;
+      border-radius: 12px !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.16) !important;
+      font-size: 0.74rem !important;
+      font-weight: 850 !important;
+      cursor: pointer !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      user-select: none !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+    }
+    #settingsModal .icon-theme-pill.active {
+      outline: 2.5px solid #38bdf8 !important;
+      outline-offset: 1px !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5) !important;
+      transform: scale(1.02) !important;
     }
     #settingsModal .theme-pill-option {
       display: flex !important;
@@ -15923,14 +15953,12 @@ body.light-theme .cat-budget-progress-track {
       --appearance-panel:#111b2c; --appearance-panel-soft:#17243a; --appearance-text:#f8fafc;
       --appearance-muted:#cbd5e1; --appearance-border:#40516b; --appearance-card-bg:#17243a;
       --appearance-icon-surface:#24334b;
-      background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--appearance-accent-text) 16%,#0c1422) 0%,#0c1422 48%,#090f19 100%) !important;
       color:#f8fafc;
     }
     body.light-theme {
       --appearance-panel:#f5f8fc; --appearance-panel-soft:#fff; --appearance-text:#142033;
       --appearance-muted:#475569; --appearance-border:#cbd5e1; --appearance-card-bg:#fff;
       --appearance-icon-surface:#eaf0f6;
-      background:radial-gradient(ellipse at 50% 0%,color-mix(in srgb,var(--appearance-accent-text) 7%,#fff) 0%,#f4f7fb 58%,#edf2f7 100%) !important;
       color:#142033;
     }
     body:not(.light-theme) :is(#settingsModal .modal-content-card,#themeDrawerModal .modal-content-card) {
@@ -17178,17 +17206,14 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <span>الملخص</span>
           </button>
 
-        </div>
-          </div>
-
-        </div>
+        </div> <!-- إغلاق executive-quick-tools-strip -->
 
         <!-- شبكة بنود المصاريف فقط -->
         <div class="categories-monefy-grid" id="catGrid" style="margin-top: 8px;">
           <!-- تتولد ديناميكياً لتشمل بنود المصاريف فقط -->
         </div>
 
-      </div>
+      </div> <!-- إغلاق viewExpenses -->
 
 
       <!-- ================================================================
@@ -18830,10 +18855,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <button type="button" class="btn-submit-tx" onclick="saveMonthlyBudget()" style="background: linear-gradient(135deg, #0284c7, #0369a1); height: 44px; font-size: 0.92rem; font-weight: 900; width: 100%; border: none; border-radius: 12px; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
             <i class="fa-solid fa-floppy-disk"></i> حفظ وتثبيت الخطة التقديرية الحالية 💾
           </button>
-            </div>
+            </div> <!-- إغلاق budgetPlanManagementContainer -->
 
-          </div>
-        </div>
+          </div> <!-- إغلاق panelBudgetArchiveMonthly -->
 
         <!-- ==========================================================
              2. لوحة موازنات المشاريع المستقلة (panelProjectBudgets)
@@ -19016,11 +19040,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <div id="comparisonsMonthTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
           <div id="comparisonsProjectTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
 
-        </div>
-        </div>
+        </div> <!-- إغلاق sectionComparisons -->
+        </div> <!-- إغلاق panelBudgetComparisons -->
 
-        
-        </div>
       </div> <!-- إغلاق viewBudgets الرسمي -->
 
   </div> <!-- إغلاق appScrollBody الرسمي -->
@@ -20730,7 +20752,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
   </div> <!-- إغلاق tasksFullScreenModal -->
 
 <!-- عرض الفاتورة والصور المكبرة (Receipt Lightbox Modal) -->
-    <!-- نافذة معرض الصور والمرفقات المتعددة الذكية (Multi-Image Gallery Lightbox Carousel) v5.3.79 -->
+    <!-- نافذة معرض الصور والمرفقات المتعددة الذكية (Multi-Image Gallery Lightbox Carousel) v5.3.80 -->
     <div class="modal-overlay modal-overlay-custom" id="receiptLightboxModal" style="z-index: 1200050 !important; display: none; align-items: center; justify-content: center;" onclick="if(event.target === this) closeModal('receiptLightboxModal')">
       <div class="modal-content-card" style="max-width: 580px; width: 95%; max-height: 94vh; padding: 14px; border-radius: 18px; text-align: center; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; background: linear-gradient(145deg, #0f172a, #1e293b); border: 1.5px solid rgba(56, 189, 248, 0.45); box-shadow: 0 25px 60px rgba(0,0,0,0.85);">
         
@@ -20838,7 +20860,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.79</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.80</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -20972,25 +20994,24 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   
                 </div>
               </div>
-              <!-- 4. منتقى ألوان الأيقونات (أسفل منه مباشرة) -->
+              <!-- 4. منتقى ألوان الأيقونات (أسفل منه مباشرة) - 8 ألوان متوازنة في صفين متطابقة مع ألوان التطبيق -->
               <div class="antigravity-card-block">
                 <div class="antigravity-card-header">
                   <div class="antigravity-card-title">
                     <i class="fa-solid fa-icons"></i>
-                    <span>ألوان الأيقونات (9 ألوان)</span>
+                    <span>ألوان الأيقونات (8 ألوان متوازنة)</span>
                   </div>
                   <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك (افتراضي)</span>
                 </div>
                 <div class="icon-theme-palette appearance-icon-grid antigravity-icon-grid" role="group" aria-label="ألوان الأيقونات">
-                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span>🌐 فينتك</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span>🪙 ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span>🌿 زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span>🌊 محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span>🔮 بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span>💎 روبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span>🔥 عنبر</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptForest" data-icon-theme="forest" onclick="setAppIconTheme('forest')" aria-pressed="false"><span>🌲 غابي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptMonochrome" data-icon-theme="monochrome" onclick="setAppIconTheme('monochrome')" aria-pressed="false"><span>⚪ أحادي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true" style="background: linear-gradient(135deg, #0284c7, #0369a1) !important; color: #fff !important; font-weight: 900;"><span>🌐 فينتك</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false" style="background: linear-gradient(135deg, #d97706, #b45309) !important; color: #fff !important; font-weight: 900;"><span>🪙 ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false" style="background: linear-gradient(135deg, #059669, #047857) !important; color: #fff !important; font-weight: 900;"><span>🌿 زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false" style="background: linear-gradient(135deg, #0891b2, #0e7490) !important; color: #fff !important; font-weight: 900;"><span>🌊 محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false" style="background: linear-gradient(135deg, #7c3aed, #6d28d9) !important; color: #fff !important; font-weight: 900;"><span>🔮 بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false" style="background: linear-gradient(135deg, #e11d48, #be123c) !important; color: #fff !important; font-weight: 900;"><span>💎 روبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false" style="background: linear-gradient(135deg, #ea580c, #c2410c) !important; color: #fff !important; font-weight: 900;"><span>🔥 عنبر</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptMonochrome" data-icon-theme="monochrome" onclick="setAppIconTheme('monochrome')" aria-pressed="false" style="background: linear-gradient(135deg, #475569, #334155) !important; color: #fff !important; font-weight: 900;"><span>⚪ أحادي</span><i class="fa-solid fa-check theme-active-check"></i></button>
                 </div>
               </div>
               <!-- 5. أنماط وتصميم الكروت 9 متوازنة في 3 صفوف -->
@@ -21150,6 +21171,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
       updateAppearanceAccent();
       const currentIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
       setAppIconTheme(currentIconTheme, false);
+      setAppTheme(state.appTheme || localStorage.getItem('family_monefy_theme') || 'navy', false);
       updateAppearancePreview();
       if (persist) {
         try {
@@ -22439,7 +22461,7 @@ function toggleAnalyticsCustomRange() {
 
     
     // =========================================================================
-    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.79 Advanced Suite)
+    // محرك التحليلات والمؤشرات الفعلية الخماسية المتقدمة (v5.3.80 Advanced Suite)
     // 1. نسبة وقيمة كل شخص من كل بند
     // 2. نسبة وقيمة كل بنك/محفظة لكل شخص
     // 3. مقارنات بين الأفراد وبعضهم
@@ -24845,39 +24867,7 @@ function toggleAnalyticsCustomRange() {
       openUnifiedDatePickerFromInput(input);
     }, true);
 
-    function applyPresetPeriod(preset) {
-      const now = new Date();
-      const todayStr = typeof getLocalDateStr === 'function' ? getLocalDateStr(now) : now.toISOString().split('T')[0];
-      let from = todayStr, to = todayStr;
-
-      if (preset === 'today') {
-        from = todayStr;
-        to = todayStr;
-      } else if (preset === 'yesterday') {
-        const yest = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-        from = typeof getLocalDateStr === 'function' ? getLocalDateStr(yest) : yest.toISOString().split('T')[0];
-        to = from;
-      } else if (preset === 'last7') {
-        const d7 = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6);
-        from = typeof getLocalDateStr === 'function' ? getLocalDateStr(d7) : d7.toISOString().split('T')[0];
-        to = todayStr;
-      } else if (preset === 'this_month') {
-        const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-        from = typeof getLocalDateStr === 'function' ? getLocalDateStr(startMonth) : startMonth.toISOString().split('T')[0];
-        to = typeof getLocalDateStr === 'function' ? getLocalDateStr(endMonth) : endMonth.toISOString().split('T')[0];
-      } else if (preset === 'last_month') {
-        const startPrev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const endPrev = new Date(now.getFullYear(), now.getMonth(), 0);
-        from = typeof getLocalDateStr === 'function' ? getLocalDateStr(startPrev) : startPrev.toISOString().split('T')[0];
-        to = typeof getLocalDateStr === 'function' ? getLocalDateStr(endPrev) : endPrev.toISOString().split('T')[0];
-      }
-
-      customRangePickerDraft = { from, to };
-      customRangePickerCursor = new Date(Number(from.slice(0, 4)), Number(from.slice(5, 7)) - 1, 1);
-      customRangePickerDraftReady = true;
-      renderCustomDateRangePicker();
-    }
+    
 
     function applyDateRange() {
       const from = customRangePickerDraft.from;
@@ -25585,47 +25575,7 @@ function generateRichDemoTransactions() {
       ];
     }
 
-    function resetToDemoData() {
-      if (!confirm('هل أنت متأكد من مسح البيانات السابقة وبدء تجربة جديدة مع 1000 حركة موازنة وميزانيات والتزامات واقعية؟')) return;
-      localStorage.removeItem('family_monefy_v2_tx');
-      localStorage.removeItem('family_monefy_txs');
-      localStorage.removeItem('family_monefy_requests');
-      localStorage.removeItem('family_monefy_notes');
-      localStorage.removeItem('family_monefy_debts');
-      localStorage.removeItem('family_monefy_wallets');
-      localStorage.removeItem('family_monefy_activity_log');
-      localStorage.removeItem('family_monefy_monthly_budgets');
-      localStorage.removeItem('family_monefy_expected');
-      localStorage.setItem('family_monefy_version', '4.0.0');
-      localStorage.setItem('family_monefy_seed_version', 'v4.0_clean_1000');
-
-      state.wallets = [
-        { id: 'wallet-cash-safe', name: 'كاش البيت', type: 'cash', balance: 35000, initialBalance: 35000, icon: 'fa-money-bill-1-wave', color: '#06b6d4', isDefault: true },
-        { id: 'wallet-reserve', name: 'المبلغ الإحتياطى', type: 'reserve', balance: 120000, initialBalance: 120000, icon: 'fa-vault', color: '#f59e0b' },
-        { id: 'wallet-vodafone', name: 'فودافون كاش', type: 'wallet', balance: 20000, initialBalance: 20000, icon: 'fa-mobile-screen', color: '#ef4444' },
-        { id: 'wallet-other', name: 'أخرى', type: 'other', balance: 15000, initialBalance: 15000, icon: 'fa-wallet', color: '#8b5cf6' }
-      ];
-      localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
-
-      state.transactions = generateRichDemoTransactions();
-      familyAlerts.observe(state.transactions, null, true);
-      saveTx();
-
-      state.moneyRequests = generateRichDemoRequests();
-      localStorage.setItem('family_monefy_requests', JSON.stringify(state.moneyRequests));
-
-      state.monthlyBudgets = generateRichDemoBudgets();
-      localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
-
-      state.expectedExpenses = generateRichDemoCommitments();
-      localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-
-      auditAndRecomputeAllWalletBalances();
-      state.period = 'month';
-      setAppPeriod('month');
-      renderUI();
-      showToast('✨ تم مسح وتجديد بيانات النظام بالكامل وتوليد 1000 حركة موازنة وميزانيات والتزامات بنجاح!');
-    }
+    
 
     function operationDate(transaction) {
       return String(transaction?.date || transaction?.createdAt || '').slice(0, 10);
@@ -25700,37 +25650,7 @@ function generateRichDemoTransactions() {
     // =========================================================================
     // محرك الصور الفعلية لأفراد العائلة في كافة النماذج والاختيارات
     // =========================================================================
-    function getActivePeriodDisplay() {
-      const p = state.period || 'month';
-      const now = new Date();
-      
-      let periodTxt = '';
-      if (p === 'today' || p === 'day') {
-        periodTxt = 'اليوم (' + now.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }) + ')';
-      } else if (p === 'yesterday') {
-        periodTxt = 'الأمس';
-      } else if (p === 'week') {
-        periodTxt = 'الأسبوع الحالي (آخر 7 أيام)';
-      } else if (p === 'month') {
-        periodTxt = 'الشهر الحالي (' + now.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }) + ')';
-      } else if (p === 'last_month') {
-        periodTxt = 'الشهر السابق';
-      } else if (p === 'all') {
-        periodTxt = 'كافة الفترات (سجل العائلة بالكامل)';
-      } else if (p === 'custom') {
-        const from = state.customDateRange?.from || state.customDateFrom || state.customDate || '';
-        const to = state.customDateRange?.to || state.customDateTo || state.customDate || '';
-        periodTxt = (from && to && from !== to) ? `من ${from} إلى ${to}` : (from ? `تاريخ: ${from}` : 'فترة مخصصة');
-      } else {
-        periodTxt = 'الشهر الحالي';
-      }
-      
-      const curMember = (state.currentMemberFilter && state.currentMemberFilter !== 'الكل') 
-        ? ` • 👤 ${state.currentMemberFilter}` 
-        : '';
-        
-      return `${periodTxt}${curMember}`;
-    }
+    
 
     function initMemberPhotoPickers() {
       // ضمان توفر صورة آية بكلا صيغتي الهمزة
@@ -26488,21 +26408,7 @@ function renderCategoriesGrid(filtered) {
       openTxModal('expense', catId);
     }
 
-    function openCategoryAnalysis(catId) {
-      state.activeCategoryFilter = catId;
-      const cat = getCategoryObj(catId, 'expense');
-      
-      // 1. الانتقال فوراً إلى صفحة التحليلات
-      switchAppPage('analytics');
-
-      // 2. تفعيل قسم التصنيفات داخل صفحة التحليلات
-      switchAnalyticsSection('categories');
-
-      // 3. بناء وعرض كارت التقرير التفصيلي لبند المصروف
-      showCategoryDetailBanner(catId);
-
-      showToast(`📊 تحليل مصروفات: ${cat.name} للفترة المحددة`);
-    }
+    
 
     function showCategoryDetailBanner(catId) {
       const cat = getCategoryObj(catId, 'expense');
@@ -26776,32 +26682,7 @@ function renderCategoriesGrid(filtered) {
       showToast(`🔍 تم فتح العمليات المفلترة: ${labelTxt}`);
     }
 
-    function clearOpsFilter() {
-      document.getElementById('opsSearchInput').value = '';
-      ['opsFilterCategory', 'opsFilterMember', 'opsFilterProject'].forEach(id => {
-        setOperationFilterValues(id, []);
-        document.getElementById(id).parentElement.open = false;
-      });
-      state.searchQuery = '';
-      state.projectFilter = 'all';
-      state.currentWalletId = 'all';
-      state.currentMemberFilter = 'الكل';
-      state.selectedMember = 'الكل';
-      state.customDateRange = null;
-      state.customDate = state.customDateFrom = state.customDateTo = '';
-      customRangePickerDraftReady = false;
-      document.getElementById('activeWalletSelect').value = 'all';
-      document.getElementById('inpAnalyticsDateFrom').value = '';
-      document.getElementById('inpAnalyticsDateTo').value = '';
-      document.getElementById('analyticsCustomRangeBox').style.display = 'none';
-      document.querySelectorAll('.avatar-card').forEach(card => {
-        card.classList.toggle('active', card.dataset.member === 'الكل');
-      });
-      updateUserAndDefaultDisplay();
-      setOpsTypeFilter('all', document.getElementById('btnOpsFilterAll'), false);
-      setAppPeriod('all', false);
-      showToast('تم مسح الفلاتر · عرض كافة العمليات');
-    }
+    
 
     function setOpsTypeFilter(type, btn, render = true) {
       opsTypeFilterState = type;
@@ -28059,7 +27940,7 @@ function saveTx() {
     }
 
     // =========================================================================
-    // محرك معرض الصور والمرفقات المتعددة والتنقل السلس (Multi-Image Gallery Engine) v5.3.79
+    // محرك معرض الصور والمرفقات المتعددة والتنقل السلس (Multi-Image Gallery Engine) v5.3.80
     // =========================================================================
     window.galleryLightboxState = {
       images: [],
@@ -28422,9 +28303,7 @@ function saveTx() {
       }
     }
 
-    function openInlineCalcForTx() {
-      toggleTxCalcPad(true);
-    }
+    
 
 
     // =========================================================================
@@ -29346,21 +29225,7 @@ function saveTx() {
     // إدارة المصروفات والالتزامات والديون (Commitments & Debts Engine)
     // =========================================================================
 
-    function onExpectedTypeChange(type) {
-      const lbl = document.getElementById('lblExpTitle');
-      const inp = document.getElementById('inpExpTitle');
-      if (!lbl || !inp) return;
-      if (type === 'debt_on_us') {
-        lbl.innerHTML = 'البيان / المستحق له <span class="req">*</span>';
-        inp.placeholder = 'مثال: دين لمحمد';
-      } else if (type === 'debt_for_us') {
-        lbl.innerHTML = 'البيان / المدين لنا <span class="req">*</span>';
-        inp.placeholder = 'مثال: سلفة لخالد';
-      } else {
-        lbl.innerHTML = 'البيان / الوصف <span class="req">*</span>';
-        inp.placeholder = 'مثال: قسط مدرسة';
-      }
-    }
+    
 
     function submitExpectedExpense() {
       const typeSel = document.getElementById('inpExpType');
@@ -29679,28 +29544,7 @@ function saveTx() {
       showToast(successMsg);
     }
 
-    function deleteExpected(expId) {
-      if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الالتزام؟')) return;
-      const targetExp = (state.expectedExpenses || []).find(e => e.id === expId);
-      if (targetExp) {
-        logActivity({
-          type: 'delete_expected',
-          action: 'حذف التزام مالي',
-          label: `حذف التزام: ${targetExp.title}`,
-          amount: targetExp.amount || 0,
-          member: targetExp.member || 'البيت',
-          author: state.currentUser || 'ماهر',
-          notes: 'تم حذف هذا الالتزام من جدول الالتزامات'
-        });
-      }
-      state.expectedExpenses = (state.expectedExpenses || []).filter(e => e.id !== expId);
-      try {
-        localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-      } catch(e) {}
-      renderExpectedList();
-      showToast('🗑️ تم حذف الالتزام بنجاح');
-      triggerDriveAutoSync();
-    }
+    
 
     function initializeSettingsControlAccessibility() {
       document.querySelectorAll('.theme-pill-option, .icon-theme-pill, .theme-card-box').forEach(option => {
@@ -29854,14 +29698,7 @@ function switchSettingsTab(tabName) {
     // =========================================================================
     // محرك موازنة وتدقيق الأرصدة الفوري + نافذة اختيار المستخدم الكاملة
     // =========================================================================
-    function runInstantSettingsAudit() {
-      if (typeof auditAndRecomputeAllWalletBalances === 'function') {
-        auditAndRecomputeAllWalletBalances();
-      }
-      if (typeof renderUI === 'function') renderUI();
-      if (typeof playNotificationChime === 'function') playNotificationChime();
-      showToast('⚖️ تمت موازنة وتدقيق كافة الأرصدة والمحافظ بنجاح (فرق 0.00 ج.م)');
-    }
+    
 
     // جدول رموز PIN السرية المعتمدة
     const FAMILY_PIN_CODES = window.FAMILY_PIN_CODES = {
@@ -30145,36 +29982,7 @@ function switchSettingsTab(tabName) {
       }
     }
 
-    function handleBackupUpload(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const parsed = JSON.parse(e.target.result);
-          const incomingState = parsed.state || parsed;
-          if (incomingState && Array.isArray(incomingState.transactions)) {
-            if (!confirm('هل أنت متأكد من استعادة النسخة الاحتياطية؟ سيتم دمج كافة المعاملات والمحافظ وتحديث المزامنة.')) return;
-            if (typeof mergeIncomingSyncData === 'function') {
-              mergeIncomingSyncData(incomingState);
-            } else {
-              state = Object.assign(state, incomingState);
-            }
-            if (typeof saveState === 'function') saveState();
-            if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
-            if (typeof executeGoogleDriveSync === 'function') executeGoogleDriveSync();
-            if (typeof renderUI === 'function') renderUI();
-            if (typeof showToast === 'function') showToast('✅ تم استعادة النسخة الاحتياطية وتزامنها مع Google Drive بنجاح!');
-          } else {
-            alert('ملف النسخة الاحتياطية غير صالح أو لا يحتوي على بنية بيانات صحيحة.');
-          }
-        } catch(err) {
-          alert('حدث خطأ أثناء قراءة ملف النسخة الاحتياطية: ' + err.message);
-        }
-        event.target.value = '';
-      };
-      reader.readAsText(file);
-    }
+    
 
     const APPEARANCE_PALETTES = {
       navy: { name: 'كحلي ملكي', swatch: '#0f2d55', dark: '#7dd3fc', light: '#075985' },
@@ -30279,7 +30087,7 @@ function switchSettingsTab(tabName) {
       const target = Object.prototype.hasOwnProperty.call(APPEARANCE_PALETTES, canonical) ? canonical : 'navy';
       state.appTheme = target;
 
-      // تطبيق السمة على كلا الخاصيتين لضمان عمل كافة القواعد البرمجية والـ CSS المتطورة
+      // تطبيق السمة على كلا الخاصيتين لضمان عمل كافة القواعد البرمجية والـ CSS
       document.documentElement.setAttribute('data-app-theme', target);
       document.documentElement.setAttribute('data-theme', target);
       document.body.setAttribute('data-app-theme', target);
@@ -30304,6 +30112,53 @@ function switchSettingsTab(tabName) {
       root.style.setProperty('--theme-accent', accentColor);
       root.style.setProperty('--theme-swatch', palette.swatch);
 
+      // تطبيق خلفية السمة المختارة بالكامل على التطبيق (تغيير لون وخلفية التطبيق بالكامل)
+      const THEME_ACCENTS_SUITE = {
+        facebook: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #1e3a8a 0%, #172554 45%, #0c1a30 100%)',
+          lightBg: 'linear-gradient(180deg, #e7f3ff 0%, #f0f2f5 35%, #f0f2f5 100%)'
+        },
+        navy: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #1e3a5f 0%, #0f1d33 45%, #060d1d 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #e0f2fe 0%, #f0f4f9 45%, #f8fafc 100%)'
+        },
+        emerald: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #065f46 0%, #064e3b 40%, #022c22 80%, #011a14 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #d1fae5 0%, #ecfdf5 45%, #f0fdf4 100%)'
+        },
+        purple: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #581c87 0%, #3b0764 45%, #1e1035 85%, #0d0819 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #ede9fe 0%, #f5f3ff 45%, #faf5ff 100%)'
+        },
+        rose: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #881337 0%, #4c0519 45%, #2a0815 85%, #15060e 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #ffe4e6 0%, #fff1f2 45%, #fff5f5 100%)'
+        },
+        ocean: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #0e7490 0%, #155e75 40%, #083344 80%, #041624 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #cffafe 0%, #ecfeff 45%, #f0f9ff 100%)'
+        },
+        gold: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #78350f 0%, #451a03 45%, #241400 85%, #140d06 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #fef3c7 0%, #fffbeb 45%, #fffdf5 100%)'
+        },
+        slate: {
+          darkBg: 'radial-gradient(circle at 50% 0%, #334155 0%, #1e293b 50%, #0f172a 100%)',
+          lightBg: 'radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 50%, #ffffff 100%)'
+        }
+      };
+
+      const themeStyle = THEME_ACCENTS_SUITE[target] || THEME_ACCENTS_SUITE.navy;
+      const themeBg = isLight ? themeStyle.lightBg : themeStyle.darkBg;
+      document.body.style.background = themeBg;
+      document.documentElement.style.background = themeBg;
+      root.style.setProperty('--body-bg', themeBg);
+
+      const frame = document.getElementById('appFrame');
+      if (frame) frame.style.background = 'transparent';
+      const scrollBody = document.getElementById('appScrollBody');
+      if (scrollBody) scrollBody.style.background = 'transparent';
+
       updateAppearanceAccent();
       document.querySelectorAll('.theme-pill-option[data-theme], .theme-card-box[data-theme]').forEach(option => {
         const selected = option.getAttribute('data-theme') === target;
@@ -30319,10 +30174,7 @@ function switchSettingsTab(tabName) {
       updateAppearancePreview();
     }
 
-    function openThemeDrawer() {
-      updateThemeCheckDots();
-      openModal('themeDrawerModal');
-    }
+    
 
     function selectThemeAndApply(theme) {
       setAppTheme(theme);
@@ -30572,34 +30424,7 @@ function switchSettingsTab(tabName) {
     }
 
     // تسجيل مبلغ حاسبة الذهب مباشرة كمصروف
-    function importGoldCalcToExpense() {
-      const finalEl = document.getElementById('calcFinalTotal');
-      const assetSel = document.getElementById('calcAsset');
-      const qtyInp = document.getElementById('calcQty');
-      if (!finalEl) return;
-      const totalStr = finalEl.textContent.replace(/[^0-9.]/g, '');
-      const amount = parseFloat(totalStr) || 0;
-      if (amount <= 0) return;
-
-      closeGoldDrawer();
-      if (typeof openTxModal === 'function') {
-        openTxModal('expense');
-        const amtInput = document.getElementById('inpTxAmount') || document.getElementById('txAmount');
-        const noteInput = document.getElementById('inpTxLabel') || document.getElementById('txNote');
-        const catSelect = document.getElementById('inpTxCategory') || document.getElementById('txCategory');
-        if (amtInput) { amtInput.value = amount; }
-        if (noteInput && assetSel && qtyInp) {
-          const assetName = assetSel.options[assetSel.selectedIndex] ? assetSel.options[assetSel.selectedIndex].text : 'ذهب';
-          noteInput.value = `شراء ${assetName} (كمية ${qtyInp.value})`;
-        }
-        if (catSelect) {
-          // محاولة اختيار تصنيف مناسب كالاستثمار أو المشتريات
-          const opts = Array.from(catSelect.options).map(o => o.value);
-          if (opts.includes('shopping')) catSelect.value = 'shopping';
-          else if (opts.includes('others')) catSelect.value = 'others';
-        }
-      }
-    }
+    
 
     function toggleTvChartVisibility() {
       const container = document.getElementById('tvChartContainer');
@@ -30834,17 +30659,7 @@ function switchSettingsTab(tabName) {
       renderSummaryDrawer();
     }
 
-    function selectSummaryGroupFromElement(button) {
-      if (!button || !button.dataset) return;
-      currentSummaryGroupKey = String(button.dataset.groupKey || 'all');
-      if (currentSummaryGroupMode === 'member') {
-        currentDrawerMember = currentSummaryGroupKey === 'all' ? 'الكل' : summaryNormalizeMember(currentSummaryGroupKey);
-      } else {
-        currentDrawerMember = 'الكل';
-      }
-      syncSummaryDrawerControls();
-      renderSummaryDrawer();
-    }
+    
 
     function switchSummaryPeriod(period) {
       const allowed = ['day', 'week', 'month', 'year', 'custom', 'all'];
@@ -31412,10 +31227,7 @@ function switchSettingsTab(tabName) {
         '</section>';
     }
 
-    function drillDownFromSummaryElement(button) {
-      if (!button || !button.dataset) return;
-      drillDownFromMemberDrawer(button.dataset.categoryId, button.dataset.categoryName);
-    }
+    
 
     function getSummaryOperationsFilters(overrides = {}) {
       const range = summaryGetRange(currentSummaryPeriod);
@@ -31431,20 +31243,7 @@ function switchSettingsTab(tabName) {
       return filters;
     }
 
-    function drillDownFromGroupElement(button) {
-      if (!button || !button.dataset) return;
-      const groupKey = String(button.dataset.groupKey || 'all');
-      const overrides = {};
-      if (currentSummaryGroupMode === 'member' && groupKey !== 'all') {
-        overrides.member = summaryNormalizeMember(groupKey);
-      } else if (currentSummaryGroupMode === 'project' && groupKey !== 'all') {
-        overrides.project = groupKey === '__no_project__' ? '__no_project__' : groupKey;
-      }
-      const filters = getSummaryOperationsFilters(overrides);
-      if (!filters) return;
-      closeSummaryLeftDrawer();
-      openOperationsFiltered(filters);
-    }
+    
 
     function drillDownFromMemberDrawer(categoryId, categoryName) {
       const overrides = { category: categoryId, categoryName };
@@ -32251,15 +32050,7 @@ function switchSettingsTab(tabName) {
       return Math.floor(100000 + Math.random() * 900000).toString();
     }
 
-    function quickFillOtp(code) {
-      code = code || currentAuthOtp;
-      const inp = document.getElementById('inpOtpCode');
-      if (inp) {
-        inp.value = code;
-        inp.focus();
-        showToast(`✅ تم تعبئة كود التحقق (${code}) تلقائياً! اضغط تأكيد الحساب`);
-      }
-    }
+    
 
     function sendEmailConfirmationSimulated(email, code, type = 'account') {
       currentAuthOtp = code;
@@ -32278,256 +32069,17 @@ function switchSettingsTab(tabName) {
     }
 
     // إنشاء حساب جديد
-    function handleCreateAccountSubmit() {
-      const nameInp = document.getElementById('regName');
-      const emailInp = document.getElementById('regEmail');
-      const passInp = document.getElementById('regPass');
-      const memberInp = document.getElementById('regMember');
+    
 
-      const name = (nameInp?.value || '').trim();
-      const email = (emailInp?.value || '').trim().toLowerCase();
-      const pass = (passInp?.value || '').trim();
-      const member = memberInp ? memberInp.value : 'العائلة';
+    
 
-      if (!name) { alert('يرجى كتابة الاسم'); nameInp?.focus(); return; }
-      if (!email || !email.includes('@') || !email.includes('.')) { alert('يرجى إدخال بريد إلكتروني صحيح'); emailInp?.focus(); return; }
-      if (!pass || pass.length < 4) { alert('كلمة المرور يجب ألا تقل عن 4 خانات'); passInp?.focus(); return; }
-
-      const users = getRegisteredUsers();
-      const existingUser = users.find(u => u.email === email);
-      if (existingUser) {
-        if (confirm(`البريد الإلكتروني (${email}) مسجل مسبقاً باسم (${existingUser.name}). هل تريد الانتقال إلى تسجيل الدخول به؟`)) {
-          switchAuthTab('signin');
-          const aEmail = document.getElementById('authEmail');
-          if (aEmail) aEmail.value = email;
-          const aPass = document.getElementById('authPass');
-          if (aPass) aPass.value = existingUser.pass || '';
-          return;
-        }
-      }
-
-      pendingAuthData = { type: 'signup', name, email, pass, member };
-      const code = generateOtp();
-      sendEmailConfirmationSimulated(email, code, 'account');
-      switchAuthTab('otp');
-    }
-
-    function handleSendPasswordResetCode() {
-      const emailInp = document.getElementById('forgotEmail');
-      const email = (emailInp?.value || '').trim().toLowerCase();
-      if (!email || !email.includes('@')) { alert('يرجى إدخال البريد الإلكتروني المسجل'); emailInp?.focus(); return; }
-
-      pendingAuthData = { type: 'forgot', email };
-      const code = generateOtp();
-      sendEmailConfirmationSimulated(email, code, 'reset');
-      switchAuthTab('otp');
-    }
-
-    function handleResendOtp() {
-      if (!pendingAuthData || !pendingAuthData.email) return;
-      const code = generateOtp();
-      sendEmailConfirmationSimulated(pendingAuthData.email, code, pendingAuthData.type);
-      showToast('🔄 تم إعادة إرسال رمز التأكيد إلى بريدك الإلكتروني');
-    }
+    
 
     // التحقق من كود التأكيد OTP وتفعيل الحساب والمزامنة
-    function handleVerifyOtpCode() {
-      const enteredCode = (document.getElementById('inpOtpCode')?.value || '').trim();
-      if (!enteredCode) {
-        alert('يرجى إدخال رمز التأكيد المكون من 6 أرقام');
-        return;
-      }
-
-      if (enteredCode !== currentAuthOtp && enteredCode !== '482915') {
-        alert('رمز التأكيد غير صحيح! يرجى التأكد من الرمز المرسل لإيميلك.');
-        return;
-      }
-
-      if (pendingAuthData && pendingAuthData.type === 'signup') {
-        // 1. تسجيل الحساب في قائمة المستخدمين
-        const users = getRegisteredUsers();
-        const existingIdx = users.findIndex(u => u.email === pendingAuthData.email);
-        const newUserObj = {
-          name: pendingAuthData.name,
-          email: pendingAuthData.email,
-          pass: pendingAuthData.pass,
-          member: pendingAuthData.member,
-          createdAt: new Date().toISOString()
-        };
-
-        if (existingIdx !== -1) {
-          users[existingIdx] = newUserObj;
-        } else {
-          users.push(newUserObj);
-        }
-        saveRegisteredUsers(users);
-
-        // 2. تعيين الحالة النشطة
-        state.userEmail = pendingAuthData.email;
-        state.currentUser = pendingAuthData.member;
-        localStorage.setItem('family_user_email', state.userEmail);
-        localStorage.setItem('family_monefy_auth', JSON.stringify({ user: pendingAuthData.member, email: state.userEmail }));
-
-        // 3. ربط ومزامنة البيانات في خزانة الحساب
-        saveEmailVault();
-
-        // 4. تحديث النصوص في الهيدر والضبط
-        const emailDisp = document.getElementById('headerUserEmailDisplay');
-        if (emailDisp) emailDisp.textContent = state.userEmail;
-        const sEmailDisp = document.getElementById('settingsModalUserEmail');
-        if (sEmailDisp) sEmailDisp.textContent = state.userEmail;
-        const actLbl = document.getElementById('lblActiveEmailTxt');
-        if (actLbl) actLbl.textContent = state.userEmail;
-
-        closeModal('authModal');
-        selectMember(pendingAuthData.member);
-        renderUI();
-
-        logActivity({
-          type: 'sync_drive',
-          action: 'إنشاء حساب وتأكيد إيميل',
-          label: `تم إنشاء وتأكيد الحساب الجديد: ${state.userEmail} بنجاح ومزامنته مع سحابة العائلة`,
-          amount: 0,
-          member: pendingAuthData.member,
-          author: pendingAuthData.member
-        });
-
-        showToast(`🎉 تم إنشاء الحساب بنجاح وتأكيد البريد الإلكتروني ومزامنة بيانات العائلة!`);
-
-      } else if (pendingAuthData && pendingAuthData.type === 'forgot') {
-        const newPass = prompt('أدخل كلمة المرور الجديدة لحسابك:');
-        if (newPass && newPass.trim().length >= 4) {
-          const users = getRegisteredUsers();
-          const uIdx = users.findIndex(u => u.email === pendingAuthData.email);
-          if (uIdx !== -1) {
-            users[uIdx].pass = newPass.trim();
-            saveRegisteredUsers(users);
-          }
-          alert('تم إعادة تعيين كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.');
-          switchAuthTab('signin');
-          const aEmail = document.getElementById('authEmail');
-          if (aEmail) aEmail.value = pendingAuthData.email;
-          const aPass = document.getElementById('authPass');
-          if (aPass) aPass.value = newPass.trim();
-        } else if (newPass) {
-          alert('كلمة المرور يجب ألا تقل عن 4 خانات');
-        }
-      }
-      pendingAuthData = null;
-    }
+    
 
     // تسجيل الدخول والربط والمزامنة
-    function handleLoginAndSync() {
-      const emailInp = document.getElementById('authEmail');
-      const passInp = document.getElementById('authPass');
-      const email = (emailInp?.value || '').trim().toLowerCase();
-      const pass = (passInp?.value || '').trim();
-
-      if (!email || !email.includes('@')) {
-        alert('يرجى إدخال بريد إلكتروني صحيح');
-        emailInp?.focus();
-        return;
-      }
-
-      // التحقق من كلمة المرور إذا كان المستخدم مسجلاً
-      const users = getRegisteredUsers();
-      const userMatch = users.find(u => u.email === email);
-      if (userMatch && userMatch.pass && pass && userMatch.pass !== pass) {
-        alert('كلمة المرور غير صحيحة! يرجى إعادة المحاولة أو الضغط على "نسيت كلمة المرور".');
-        passInp?.focus();
-        return;
-      }
-
-      state.userEmail = email;
-      localStorage.setItem('family_user_email', email);
-
-      // تحديد العضو المناسب
-      let memberName = userMatch ? userMatch.member : (email.includes('aya') ? 'أية' : (email.includes('mohamed') ? 'محمد' : (email.includes('mariam') ? 'مريم' : 'ماهر')));
-      state.currentUser = memberName;
-
-      // فحص واستعادة خزانة هذا الإيميل أو السحابة المركزية
-      let restoredCount = 0;
-      const localVault = localStorage.getItem('family_vault_' + email) || localStorage.getItem('family_master_cloud_sync');
-      if (localVault) {
-        try {
-          const vData = JSON.parse(localVault);
-          if (vData.transactions && vData.transactions.length > 0) {
-            state.transactions = vData.transactions;
-            familyAlerts.observe(state.transactions, null, true);
-            restoredCount = vData.transactions.length;
-            saveTx();
-          }
-          if (vData.wallets && vData.wallets.length > 0) {
-            state.wallets = vData.wallets;
-            localStorage.setItem('family_monefy_wallets', JSON.stringify(state.wallets));
-            populateWalletDropdowns();
-          }
-          if (Array.isArray(vData.expectedExpenses)) {
-            state.expectedExpenses = vData.expectedExpenses;
-            localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
-          }
-          if (Array.isArray(vData.monthlyBudgets)) {
-            state.monthlyBudgets = vData.monthlyBudgets;
-            localStorage.setItem('family_monefy_monthly_budgets', JSON.stringify(state.monthlyBudgets));
-            initMonthlyBudgetUI();
-          }
-          if (vData.debts) {
-            state.debts = vData.debts;
-            saveDebts();
-          }
-          if (vData.moneyRequests) {
-            state.moneyRequests = vData.moneyRequests;
-            saveMoneyRequests();
-          }
-          if (vData.notes) {
-            state.notes = vData.notes;
-            saveNotes();
-          }
-          if (vData.activityLog && vData.activityLog.length > 0) {
-            state.activityLog = vData.activityLog;
-            saveActivityLog();
-          }
-          if (vData.permissions) {
-            state.permissions = vData.permissions;
-            localStorage.setItem('family_monefy_perms', JSON.stringify(state.permissions));
-          }
-          auditAndRecomputeAllWalletBalances();
-        } catch(e) {
-          console.error('Error loading email vault:', e);
-        }
-      } else {
-        // إنشاء خزانة فورية لهذا الحساب من بيانات الجلسة الحالية
-        saveEmailVault();
-      }
-
-      const rememberCheck = document.getElementById('authRemember');
-      if (rememberCheck && rememberCheck.checked) {
-        localStorage.setItem('family_monefy_auth', JSON.stringify({ user: memberName, email: email }));
-      }
-
-      // تحديث واجهات الإيميل في التطبيق
-      const emailDisplay = document.getElementById('headerUserEmailDisplay');
-      if (emailDisplay) emailDisplay.textContent = email;
-      const sEmailDisp2 = document.getElementById('settingsModalUserEmail');
-      if (sEmailDisp2) sEmailDisp2.textContent = email;
-      const activeLbl = document.getElementById('lblActiveEmailTxt');
-      if (activeLbl) activeLbl.textContent = email;
-
-      closeModal('authModal');
-      selectMember(memberName);
-      renderUI();
-
-      logActivity({
-        type: 'sync_drive',
-        action: 'تسجيل دخول وتزامن',
-        label: `تسجيل الدخول بحساب البريد: ${email} وتزامن (${restoredCount || state.transactions.length}) حركة ومحافظ العائلة`,
-        amount: 0,
-        member: memberName,
-        author: memberName
-      });
-
-      showToast(`☁️ تم تسجيل الدخول والمزامنة بنجاح: (${email})`);
-    }
+    
 
     // استعادة البيانات الفورية بالبريد الإلكتروني
     function handleRestoreByEmail(email) {
@@ -32639,31 +32191,11 @@ function switchSettingsTab(tabName) {
       }
     }
 
-    function handleRestoreByEmailPrompt() {
-      const emailInp = document.getElementById('authEmail');
-      const curEmail = emailInp ? emailInp.value.trim() : (state.userEmail || 'maher@family.com');
-      const targetEmail = prompt('أدخل البريد الإلكتروني الذي ترغب في استعادة بياناته ومحفظته:', curEmail);
-      if (targetEmail) {
-        handleRestoreByEmail(targetEmail);
-      }
-    }
+    
 
-    function handleRestoreFromEmailPrompt() {
-      closeModal('authModal');
-      openModal('driveSyncModal');
-      showToast('📥 اختر ملف النسخة السحابية لبريدك الإلكتروني من Google Drive لاستعادة كل بياناتك');
-    }
+    
 
-    function handleLogout() {
-      if (confirm('هل تريد تسجيل الخروج؟ (بياناتك محفوظة على هذا الجهاز وفي Google Drive)')) {
-        localStorage.removeItem('family_monefy_auth');
-        state.currentUser = 'ماهر';
-        showToast('🚪 تم تسجيل الخروج بنجاح');
-        closeModal('authModal');
-        selectMember('ماهر');
-        renderUI();
-      }
-    }
+    
 
     // ==============================================================
     // 11. محرك الآلة الحاسبة الاحترافية المتطورة (مطابقة للصورة بدقة)
@@ -33830,9 +33362,7 @@ function switchSettingsTab(tabName) {
     // =========================================================================
     // دوال الدخل والإيداعات المنقولة لصفحة طلب أموال
     // =========================================================================
-    function openIncomeChoiceModal() {
-      openModal('incomeChoiceModal');
-    }
+    
 
     function openIncomeHistoryModal() {
       openModal('incomeHistoryModal');
@@ -35268,46 +34798,7 @@ function switchSettingsTab(tabName) {
       }).join('');
     }
 
-    function payBillDirectly(id) {
-      const bill = (state.expectedExpenses || []).find(e => e.id === id);
-      if (!bill) return;
-
-      if (!confirm(`هل تريد تأكيد سداد وصرف [${bill.title || bill.label}] بمبلغ ${bill.amount} ج.م وإدراجه كمصروف فعلي في السجل؟`)) {
-        return;
-      }
-
-      bill.status = 'paid';
-      bill.paidAt = new Date().toISOString();
-
-      // تسجيل حركة مصروف في سجل العمليات
-      const newTx = {
-        id: 'tx-' + Date.now(),
-        type: 'expense',
-        amount: Number(bill.amount) || 0,
-        label: `سداد: ${bill.title || bill.label || 'فاتورة مستحقة'}`,
-        category: bill.category || 'bills',
-        member: bill.member || 'البيت',
-        walletId: state.currentWalletId && state.currentWalletId !== 'all'
-          ? state.currentWalletId
-          : ((state.wallets || [])[0]?.id || 'wallet-cash-safe'),
-        date: getLocalDateStr(new Date()),
-        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-        receipt: bill.photo || null,
-        author: state.currentUser || 'ماهر',
-        createdAt: new Date().toISOString()
-      };
-
-      if (!state.transactions) state.transactions = [];
-      state.transactions.unshift(newTx);
-
-      try { localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses)); } catch(e) {}
-      if (typeof saveTx === 'function') saveTx();
-
-      playNotificationChime();
-      renderUI();
-      renderCommitmentsPageUI();
-      showToast(`✅ تم سداد الفاتورة بنجاح وتسجيلها كمصروف فعلي: ${bill.amount} ج.م`);
-    }
+    
 
     function settleDebtPrompt(id, isFull = false) {
       const debt = (state.expectedExpenses || []).find(e => e.id === id);
@@ -35576,9 +35067,7 @@ function initMonthlyBudgetUI() {
       }
     }
 
-    function loadMonthlyBudget() {
-      loadActiveBudgetPlan();
-    }
+    
 
     function onBudgetPlanSelect(budgetId) {
       if (!budgetId) {
@@ -36118,11 +35607,7 @@ function initMonthlyBudgetUI() {
         && getTransactionProjectName(t).toLocaleLowerCase() === project);
     }
 
-    function projectBudgetMetrics(plan, transactions) {
-      const expected = (plan.items || []).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-      const actual = getProjectBudgetExpenses(plan, transactions).reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
-      return { expected, actual, remaining: expected - actual, percent: expected > 0 ? actual / expected * 100 : null };
-    }
+    
 
     function renderProjectBudgetAnalysis() {
       if (typeof ProjectCompareEngine !== 'undefined' && typeof ProjectCompareEngine.render === 'function') {
@@ -37191,15 +36676,7 @@ const arabicMonths = [
   'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'
 ];
 
-function formatTimeReadable(timeStr) {
-  if (!timeStr) return '';
-  const parts = timeStr.split(':').map(Number);
-  const h = parts[0] || 0;
-  const m = parts[1] || 0;
-  const isPm = h >= 12;
-  const h12 = h % 12 || 12;
-  return `${h12}:${m < 10 ? '0' + m : m} ${isPm ? 'مساءً' : 'صباحاً'}`;
-}
+
 
 function getDefaultTaskTimezone() {
   try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; }
@@ -37943,16 +37420,7 @@ function updateUnifiedTaskDateTimeLabel() {
   updateTaskDateTimeTargetDisplay('inline');
 }
 
-function formatTime12hArabic(val) {
-  if (!val) return '';
-  const parts = val.split(':');
-  let h = parseInt(parts[0], 10);
-  const m = parts[1] || '00';
-  const period = h >= 12 ? 'م' : 'ص';
-  if (h === 0) h = 12;
-  else if (h > 12) h -= 12;
-  return `${h}:${m} ${period}`;
-}
+
 
 function selectInlineTaskMember(member, element) {
   window._selectedTaskMember = member;
@@ -39477,15 +38945,7 @@ function clearEditReceiptUpload() {
 }
 window.clearEditReceiptUpload = clearEditReceiptUpload;
 
-function viewReceiptImage(dataUri) {
-  if (!dataUri) return;
-  if (typeof openReceiptLightbox === 'function') {
-    openReceiptLightbox(dataUri, 'إيصال العملية');
-  } else {
-    window.open(dataUri, '_blank');
-  }
-}
-window.viewReceiptImage = viewReceiptImage;
+// duplicate viewReceiptImage purged in v5.3.80
 
 function openNotificationsModal() { familyAlerts.open(); }
 function markAllNotificationsRead() { familyAlerts.mark(); }
