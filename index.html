@@ -275,7 +275,7 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.74';
+    var APP_VERSION = 'v5.3.75';
     var APP_BUILD_ID = 202611151830;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
@@ -1925,8 +1925,10 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 86%;
-      max-width: 380px;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      right: 0 !important;
+      border-radius: 0 !important;
       height: 100%;
       max-height: 100vh;
       background: #0f172a;
@@ -15718,8 +15720,11 @@ body.light-theme .cat-budget-progress-track {
 
   <style id="summary-rebuild-styles">
     #summaryLeftDrawer.summary-rebuilt-drawer {
-      width: min(94vw, 430px) !important;
-      max-width: 430px !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      left: 0 !important;
+      right: 0 !important;
+      border-radius: 0 !important;
       height: 100vh !important;
       height: 100dvh !important;
       max-height: 100dvh !important;
@@ -16832,6 +16837,10 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
   <div class="mobile-frame" id="appFrame">
+  <!-- شريط التنبيه الفوري لعدم الاتصال والمزامنة التلقائية المضمونة -->
+  <div id="globalOfflineSyncBanner" style="display: none; background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; padding: 7px 12px; font-size: 0.76rem; font-weight: 850; text-align: center; border-radius: 0 0 12px 12px; box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4); position: sticky; top: 0; z-index: 99999;">
+    <i class="fa-solid fa-wifi-slash"></i> 📴 وضع عدم الاتصال (أوفلاين) · التطبيق يعمل بكامل كفاءته ويحفظ جميع العمليات محلياً، وستتم المزامنة السحابية فور عودة الشبكة.
+  </div>
     
     <!-- الشريط العلوي -->
     <header class="app-header">
@@ -17095,10 +17104,17 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.92rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
-          <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 12px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 6px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: rgba(30, 41, 59, 0.85); color: #fbbf24; flex-shrink: 0;">
-            <i class="fa-solid fa-coins"></i>
-            <span id="activeCurrencyText">EGP</span>
+          <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+            <!-- زر فتح شاشة الذهب والعملات المباشرة -->
+            <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="openGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);">
+              <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
+              <span>الذهب</span>
+            </button>
+            <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
+            <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0;">
+              <i class="fa-solid fa-right-left"></i>
+              <span id="activeCurrencyText">EGP</span>
+            </div>
           </div>
 
         </div>
@@ -17294,23 +17310,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
         <div id="sectionActualAnalytics" style="display: block; padding: 0 8px 24px;">
 
           <!-- 3. شريط فلاتر الأقسام الأساسية في منتصف الصفحة (ثابت وبارز ومستحيل يختفي أبداً) -->
-          <div class="analytics-section-nav" id="analyticsStickyNav" style="display: flex !important; gap: 6px !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.4px solid rgba(56, 189, 248, 0.3) !important; padding: 6px !important; border-radius: 14px !important; overflow-x: auto !important; scrollbar-width: none !important; margin: 0 0 12px 0 !important; width: 100% !important; box-sizing: border-box !important; position: static !important;">
-            <button class="analytics-sec-btn active" data-sec="categories" onclick="switchAnalyticsSection('categories')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
-              <i class="fa-solid fa-chart-pie" style="color: #10b981;"></i> التصنيفات
-            </button>
-            <button class="analytics-sec-btn" data-sec="members" onclick="switchAnalyticsSection('members')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
-              <i class="fa-solid fa-users" style="color: #38bdf8;"></i> أفراد العائلة
-            </button>
-            <button class="analytics-sec-btn" data-sec="timeline" onclick="switchAnalyticsSection('timeline')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
-              <i class="fa-solid fa-chart-line" style="color: #fbbf24;"></i> المسار اليومي
-            </button>
-            <button class="analytics-sec-btn" data-sec="monthly" onclick="switchAnalyticsSection('monthly')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
-              <i class="fa-solid fa-chart-column" style="color: #8b5cf6;"></i> مقارنة الشهور
-            </button>
-            <button class="analytics-sec-btn" data-sec="wallets" onclick="switchAnalyticsSection('wallets')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
-              <i class="fa-solid fa-wallet" style="color: #ec4899;"></i> قنوات الدفع
-            </button>
-          </div>
+          
 
           <!-- 4. شبكة المؤشرات المالية الستة التنفيذية المتطورة -->
           <div class="kpi-master-grid-lux-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
@@ -17365,6 +17365,25 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </div>
 
           <!-- 5. ألواح العرض والشارتات الخمسة التفاعلية -->
+
+          <!-- 3. شريط فلاتر الأقسام الأساسية المنقول فوق الألواح وتوزيع المصروفات -->
+          <div class="analytics-section-nav" id="analyticsStickyNav" style="display: flex !important; gap: 6px !important; background: rgba(15, 23, 42, 0.95) !important; border: 1.4px solid rgba(56, 189, 248, 0.3) !important; padding: 6px !important; border-radius: 14px !important; overflow-x: auto !important; scrollbar-width: none !important; margin: 0 0 12px 0 !important; width: 100% !important; box-sizing: border-box !important; position: static !important;">
+            <button class="analytics-sec-btn active" data-sec="categories" onclick="switchAnalyticsSection('categories')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-pie" style="color: #10b981;"></i> التصنيفات
+            </button>
+            <button class="analytics-sec-btn" data-sec="members" onclick="switchAnalyticsSection('members')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-users" style="color: #38bdf8;"></i> أفراد العائلة
+            </button>
+            <button class="analytics-sec-btn" data-sec="timeline" onclick="switchAnalyticsSection('timeline')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-line" style="color: #fbbf24;"></i> المسار اليومي
+            </button>
+            <button class="analytics-sec-btn" data-sec="monthly" onclick="switchAnalyticsSection('monthly')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-chart-column" style="color: #8b5cf6;"></i> مقارنة الشهور
+            </button>
+            <button class="analytics-sec-btn" data-sec="wallets" onclick="switchAnalyticsSection('wallets')" style="flex: 1 0 auto; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 12px; border-radius: 10px; font-size: 0.80rem; font-weight: 800; cursor: pointer; white-space: nowrap;">
+              <i class="fa-solid fa-wallet" style="color: #ec4899;"></i> قنوات الدفع
+            </button>
+          </div>
 
           <!-- (أ) لوح التصنيفات -->
           <div class="analytics-content-pane active" id="paneCategories" style="display: block;">
@@ -18178,47 +18197,47 @@ body.light-theme .summary-matrix-table tr.total-row td {
                 </div>
               </div>
 
-              <!-- الصف 3 (خاص بالفواتير): التصنيف وإرفاق الصورة الكاميرا -->
-              <div id="rowUnifiedBillExtras" style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                  <div>
-                    <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
-                      تصنيف ونوع الفاتورة:
-                    </label>
-                    <select id="inpUnifiedCommitmentCategory" class="form-input-custom" style="height: 38px; font-size: 0.80rem; font-weight: 800; width: 100%; border-radius: 9px; padding: 0 6px; box-sizing: border-box;">
-                      <option value="bills">⚡ فواتير وكهرباء وغاز</option>
-                      <option value="house">🛋️ إيجار ومستلزمات منزل</option>
-                      <option value="education">🎓 تعليم ومصاريف دراسية</option>
-                      <option value="transport">🚗 مواصلات وأقساط سيارة</option>
-                      <option value="health">💊 اشتراكات علاج وتأمين</option>
-                      <option value="other">📦 التزامات واشتراكات أخرى</option>
-                    </select>
-                  </div>
-                  <!-- أزرار تصوير وإرفاق الفاتورة -->
-                  <div>
-                    <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
-                      إرفاق الفاتورة المصورة:
-                    </label>
-                    <div style="display: flex; gap: 4px;">
-                      <input type="file" id="inpUnifiedBillPhotoCamera" accept="image/*" capture="environment" style="display: none;" onchange="handleUnifiedBillPhotoUpload(event)">
-                      <input type="file" id="inpUnifiedBillPhotoGallery" accept="image/*" style="display: none;" onchange="handleUnifiedBillPhotoUpload(event)">
-                      <button type="button" onclick="document.getElementById('inpUnifiedBillPhotoCamera').click()" style="flex: 1; height: 38px; border-radius: 8px; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        <i class="fa-solid fa-camera"></i> <span>كاميرا</span>
-                      </button>
-                      <button type="button" onclick="document.getElementById('inpUnifiedBillPhotoGallery').click()" style="flex: 1; height: 38px; border-radius: 8px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 0.72rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        <i class="fa-solid fa-image"></i> <span>معرض</span>
-                      </button>
-                    </div>
-                  </div>
+              <!-- الصف 3 (خاص بالفواتير فقط): التصنيف -->
+              <div id="rowUnifiedBillExtras" style="display: block;">
+                <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; display: block; margin-bottom: 3px;">
+                  تصنيف ونوع الفاتورة:
+                </label>
+                <select id="inpUnifiedCommitmentCategory" class="form-input-custom" style="height: 38px; font-size: 0.80rem; font-weight: 800; width: 100%; border-radius: 9px; padding: 0 6px; box-sizing: border-box;">
+                  <option value="bills">⚡ فواتير وكهرباء وغاز</option>
+                  <option value="house">🛋️ إيجار ومستلزمات منزل</option>
+                  <option value="education">🎓 تعليم ومصاريف دراسية</option>
+                  <option value="transport">🚗 مواصلات وأقساط سيارة</option>
+                  <option value="health">💊 اشتراكات علاج وتأمين</option>
+                  <option value="other">📦 التزامات واشتراكات أخرى</option>
+                </select>
+              </div>
+
+              <!-- الصف 4 (مشترك لكافة العمليات والديون والفواتير): إرفاق صور متعددة ومستندات -->
+              <div id="rowUnifiedAttachmentExtras" style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <label style="font-size: 0.72rem; font-weight: 800; color: #cbd5e1; margin: 0;">
+                    📷 إرفاق صور ومستندات (فواتير، إيصالات، عقود دين):
+                  </label>
+                  <span id="unifiedCommitmentPhotoCountBadge" style="font-size: 0.65rem; color: #38bdf8; font-weight: 850;">0 صور</span>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <input type="file" id="inpUnifiedBillPhotoCamera" accept="image/*" capture="environment" style="display: none;" onchange="handleUnifiedBillPhotoUpload(event)">
+                  <input type="file" id="inpUnifiedBillPhotoGallery" accept="image/*" multiple style="display: none;" onchange="handleUnifiedBillPhotoUpload(event)">
+                  <button type="button" onclick="document.getElementById('inpUnifiedBillPhotoCamera').click()" style="flex: 1; height: 38px; border-radius: 8px; background: rgba(56, 189, 248, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 0.74rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fa-solid fa-camera"></i> <span>التقاط بالكاميرا</span>
+                  </button>
+                  <button type="button" onclick="document.getElementById('inpUnifiedBillPhotoGallery').click()" style="flex: 1; height: 38px; border-radius: 8px; background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; font-size: 0.74rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="fa-solid fa-images"></i> <span>اختيار صور متعددة</span>
+                  </button>
                 </div>
 
-                <!-- معاينة صورة الفاتورة إن وجدت -->
-                <div id="unifiedBillPhotoPreviewRow" style="display: none; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.6); padding: 6px 10px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.35);">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <img id="unifiedBillPhotoPreviewImg" src="" style="width: 32px; height: 32px; border-radius: 6px; object-fit: cover; border: 1px solid #38bdf8;">
-                    <span style="font-size: 0.70rem; color: #34d399; font-weight: 800;">تم إرفاق صورة الفاتورة بنجاح ✓</span>
+                <!-- شريط التمرير الأفقي للمرفقات المتعددة المعاينة -->
+                <div id="unifiedBillPhotoPreviewRow" style="display: none; flex-direction: column; gap: 6px; background: rgba(15, 23, 42, 0.6); padding: 8px 10px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.35);">
+                  <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.70rem; color: #34d399; font-weight: 850;">تم إرفاق الصور بنجاح (يمكنك التمرير أفقياً للإطلاع عليها)</span>
+                    <button type="button" onclick="clearUnifiedBillPhoto()" style="background: rgba(244, 63, 94, 0.2); border: none; color: #f43f5e; border-radius: 6px; padding: 2px 7px; font-size: 0.66rem; cursor: pointer;">حذف الكل</button>
                   </div>
-                  <button type="button" onclick="clearUnifiedBillPhoto()" style="background: rgba(244, 63, 94, 0.2); border: none; color: #f43f5e; border-radius: 6px; padding: 3px 8px; font-size: 0.70rem; cursor: pointer;">حذف الصورة</button>
+                  <div id="unifiedBillPhotoCarousel" style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; scrollbar-width: thin;"></div>
                 </div>
               </div>
 
@@ -18575,7 +18594,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-          <!-- شريط الفلاتر الزمنية السريع وجدول الرقابة الحي وتوزيع أفراد الأسرة (v5.3.72) -->
+          <!-- شريط الفلاتر الزمنية السريع وجدول الرقابة الحي وتوزيع أفراد الأسرة (v5.3.75) -->
           <div id="budgetMonthlyTimeFiltersContainer"></div>
           <div id="budgetActualVsEstimatedContainer"></div>
           <div id="budgetMemberBreakdownContainer"></div>
@@ -18889,7 +18908,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <button type="button" class="gold-refresh-btn" id="btnRefreshTv" onclick="fetchTradingViewRates(true)" aria-label="تحديث أسعار الذهب والعملات" title="جلب أحدث الأسعار">
               <i class="fa-solid fa-arrows-rotate" id="iconSpin"></i> تحديث
             </button>
-            <button class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" aria-label="إغلاق">&times;</button>
+            <button type="button" class="btn-close-drawer" id="btnCloseDrawer" onclick="closeGoldDrawer()" ontouchend="closeGoldDrawer()" aria-label="إغلاق" style="cursor: pointer; z-index: 100030; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 900; color: #f8fafc; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);">&times;</button>
           </div>
         </div>
         <div class="gold-market-toolbar" style="display: flex; justify-content: space-between; align-items: center;">
@@ -18954,57 +18973,29 @@ body.light-theme .summary-matrix-table tr.total-row td {
               <span id="goldRatesSectionTitle"><i class="fa-solid fa-gem" style="color: var(--market-accent);"></i> أسعار الذهب بالسوق المصري</span>
               <span id="goldRatesFreshnessHint"><i class="fa-solid fa-rotate" style="color: #fbbf24;"></i> لحظي</span>
             </div>
-            <div class="gold-grid-cards">
+            <div class="gold-grid-cards" style="display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 8px; margin-bottom: 8px;">
               <!-- عيار 21 -->
-              <div class="market-box gold-21-box">
-                <div class="market-box-title">
+              <div class="market-box gold-21-box" style="padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(245, 158, 11, 0.45); background: linear-gradient(145deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.95));">
+                <div class="market-box-title" style="font-size: 0.76rem; font-weight: 850; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
                   <i class="fa-solid fa-ring"></i> <span>ذهب عيار 21</span>
                 </div>
-                <div class="market-box-val" id="tvGold21Val">—</div>
-                <div class="market-box-sub">
-                  
+                <div class="market-box-val" id="tvGold21Val" style="font-size: 1.15rem; font-weight: 950; color: #fbbf24; margin: 4px 0; font-family: var(--font-numbers); direction: ltr;">—</div>
+                <div class="market-box-sub" style="display: flex; align-items: center; justify-content: space-between;">
                   <span class="change-tag" id="tvGold21Chg">—</span>
                 </div>
-                <div class="market-buy-price" id="tvGold21Buy">—</div>
+                <div class="market-buy-price" id="tvGold21Buy" style="font-size: 0.65rem; color: #94a3b8; margin-top: 3px;">—</div>
               </div>
 
               <!-- عيار 24 -->
-              <div class="market-box">
-                <div class="market-box-title">
+              <div class="market-box" style="padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(251, 191, 36, 0.35); background: linear-gradient(145deg, rgba(251, 191, 36, 0.10), rgba(15, 23, 42, 0.95));">
+                <div class="market-box-title" style="font-size: 0.76rem; font-weight: 850; color: #fde047; display: flex; align-items: center; gap: 5px;">
                   <i class="fa-solid fa-bars"></i> <span>ذهب عيار 24</span>
                 </div>
-                <div class="market-box-val" id="tvGold24Val">—</div>
-                <div class="market-box-sub">
-                  
+                <div class="market-box-val" id="tvGold24Val" style="font-size: 1.15rem; font-weight: 950; color: #fde047; margin: 4px 0; font-family: var(--font-numbers); direction: ltr;">—</div>
+                <div class="market-box-sub" style="display: flex; align-items: center; justify-content: space-between;">
                   <span class="change-tag" id="tvGold24Chg">—</span>
                 </div>
-                <div class="market-buy-price" id="tvGold24Buy">—</div>
-              </div>
-
-              <!-- عيار 18 -->
-              <div class="market-box">
-                <div class="market-box-title">
-                  <i class="fa-solid fa-sparkles"></i> <span>ذهب عيار 18</span>
-                </div>
-                <div class="market-box-val" id="tvGold18Val">—</div>
-                <div class="market-box-sub">
-                  
-                  <span class="change-tag" id="tvGold18Chg"></span>
-                </div>
-                <div class="market-buy-price" id="tvGold18Buy">—</div>
-              </div>
-
-              <!-- جنيه الذهب -->
-              <div class="market-box gold-pound-box">
-                <div class="market-box-title">
-                  <i class="fa-solid fa-coins"></i> <span>جنيه ذهب · 8 جم</span>
-                </div>
-                <div class="market-box-val" id="tvGoldPoundVal">—</div>
-                <div class="market-box-sub">
-                  
-                  <span class="change-tag" id="tvGoldPoundChg">—</span>
-                </div>
-                <div class="market-buy-price" id="tvGoldPoundBuy">—</div>
+                <div class="market-buy-price" id="tvGold24Buy" style="font-size: 0.65rem; color: #94a3b8; margin-top: 3px;">—</div>
               </div>
             </div>
 
@@ -19025,57 +19016,29 @@ body.light-theme .summary-matrix-table tr.total-row td {
             <div class="market-section-heading">
               <span id="fxRatesSectionTitle"><i class="fa-solid fa-money-bill-transfer" style="color: #10b981;"></i> أسعار العملات مقابل الجنيه</span>
             </div>
-            <div class="fx-grid-cards">
-              <!-- دولار -->
-              <div class="market-box">
-                <div class="market-box-title">
+            <div class="fx-grid-cards" style="display: grid; grid-template-columns: repeat(2, 1fr) !important; gap: 8px;">
+              <!-- دولار أمريكي (بنك مصر والسوق المصرفي الرسمي) -->
+              <div class="market-box" style="padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(16, 185, 129, 0.45); background: linear-gradient(145deg, rgba(16, 185, 129, 0.14), rgba(15, 23, 42, 0.95));">
+                <div class="market-box-title" style="font-size: 0.76rem; font-weight: 850; color: #34d399; display: flex; align-items: center; gap: 5px;">
                   <i class="fa-solid fa-dollar-sign"></i> <span>الدولار الأمريكي</span>
                 </div>
-                <div class="market-box-val" id="tvUsdVal">—</div>
-                <div class="market-box-sub">
-                  
+                <div class="market-box-val" id="tvUsdVal" style="font-size: 1.15rem; font-weight: 950; color: #34d399; margin: 4px 0; font-family: var(--font-numbers); direction: ltr;">—</div>
+                <div class="market-box-sub" style="display: flex; align-items: center; justify-content: space-between;">
                   <span class="change-tag up" id="tvUsdChg">—</span>
                 </div>
-                <div class="market-buy-price" id="tvUsdBuy">—</div>
+                <div class="market-buy-price" id="tvUsdBuy" style="font-size: 0.65rem; color: #94a3b8; margin-top: 3px;">—</div>
               </div>
 
               <!-- ريال سعودي -->
-              <div class="market-box">
-                <div class="market-box-title">
+              <div class="market-box" style="padding: 10px 12px; border-radius: 12px; border: 1.5px solid rgba(56, 189, 248, 0.35); background: linear-gradient(145deg, rgba(56, 189, 248, 0.12), rgba(15, 23, 42, 0.95));">
+                <div class="market-box-title" style="font-size: 0.76rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; gap: 5px;">
                   <i class="fa-solid fa-money-bill-1"></i> <span>الريال السعودي</span>
                 </div>
-                <div class="market-box-val" id="tvSarVal">—</div>
-                <div class="market-box-sub">
-                  
+                <div class="market-box-val" id="tvSarVal" style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; margin: 4px 0; font-family: var(--font-numbers); direction: ltr;">—</div>
+                <div class="market-box-sub" style="display: flex; align-items: center; justify-content: space-between;">
                   <span class="change-tag down" id="tvSarChg">—</span>
                 </div>
-                <div class="market-buy-price" id="tvSarBuy">—</div>
-              </div>
-
-              <!-- يورو -->
-              <div class="market-box">
-                <div class="market-box-title">
-                  <i class="fa-solid fa-euro-sign"></i> <span>اليورو الأوروبي</span>
-                </div>
-                <div class="market-box-val" id="tvEurVal">—</div>
-                <div class="market-box-sub">
-                  
-                  <span class="change-tag" id="tvEurChg"></span>
-                </div>
-                <div class="market-buy-price" id="tvEurBuy">—</div>
-              </div>
-
-              <!-- درهم إماراتي -->
-              <div class="market-box">
-                <div class="market-box-title">
-                  <i class="fa-solid fa-coins"></i> <span>الدرهم الإماراتي</span>
-                </div>
-                <div class="market-box-val" id="tvAedVal">—</div>
-                <div class="market-box-sub">
-                  
-                  <span class="change-tag" id="tvAedChg"></span>
-                </div>
-                <div class="market-buy-price" id="tvAedBuy">—</div>
+                <div class="market-buy-price" id="tvSarBuy" style="font-size: 0.65rem; color: #94a3b8; margin-top: 3px;">—</div>
               </div>
             </div>
           </div>
@@ -19494,7 +19457,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
           </div>
 
           <!-- حقول الملفات المخفية -->
-          <input type="file" id="inpTxReceipt" accept="image/*" style="display:none;" onchange="handleReceiptUpload(event)">
+          <input type="file" id="inpTxReceipt" accept="image/*" multiple style="display:none;" onchange="handleReceiptUpload(event)">
           <input type="file" id="inpTxReceiptCamera" accept="image/*" capture="environment" style="display:none;" onchange="handleReceiptUpload(event)">
 
           <!-- زرا التصوير والاختيار البارزان -->
@@ -20634,7 +20597,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.72</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.75</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -20679,7 +20642,6 @@ body.light-theme .summary-matrix-table tr.total-row td {
           <!-- ========================================================================= -->
           <section class="settings-pane antigravity-tab-pane" id="settingsTabPane_appearance" style="display: flex;">
             <div class="settings-unified-section" id="settingsSec_appearance" data-compact-ready="true" style="display: flex; flex-direction: column; gap: 7px; width: 100%;">
-              
               <!-- مبدل الوضع الفاتح والداكن -->
               <div class="appearance-mode-row antigravity-mode-switcher" role="group" aria-label="وضع العرض">
                 <button type="button" id="appearanceModeDark" class="appearance-mode-button antigravity-mode-btn" onclick="setAppColorMode('dark')" aria-pressed="true">
@@ -20689,102 +20651,16 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   <i class="fa-solid fa-sun"></i> <span>فاتح</span>
                 </button>
               </div>
-
-              <!-- مجموعة 1: ألوان التطبيق (8 ألوان متوازنة) (كل خيار هو اللون نفسه) -->
+              <!-- 1. منتقى حجم الخط الاحترافي (في الأعلى وفق الطلب) -->
               <div class="antigravity-card-block">
                 <div class="antigravity-card-header">
                   <div class="antigravity-card-title">
-                    <i class="fa-solid fa-palette"></i>
-                    <span>ألوان التطبيق (9 ألوان متوازنة)</span>
+                    <i class="fa-solid fa-text-height" style="color: #38bdf8;"></i>
+                    <span>حجم الخط (6 أحجام):</span>
                   </div>
-                  <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
+                  <span id="activeFontSizeBadge" class="appearance-active-badge">وسط (الافتراضي)</span>
                 </div>
-                <div class="theme-color-palette appearance-palette-grid antigravity-palette-grid" role="group" aria-label="لوحة الألوان">
-                  <button type="button" class="theme-pill-option" id="themeOptFacebook" data-theme="facebook" onclick="setAppTheme('facebook')" aria-pressed="false" style="background: linear-gradient(135deg, #1877f2, #0d65d9) !important; color: #fff !important; font-weight: 900;"><span>فيسبوك FB</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true"><span>كحلي ملكي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false"><span>زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false"><span>بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false"><span>وردي ياقوتي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
-                  
-                </div>
-              </div>
-
-              <!-- مجموعة 2: ألوان الأيقونات 9 متوازنة في 3 صفوف (كل خيار هو اللون نفسه) -->
-              <div class="antigravity-card-block">
-                <div class="antigravity-card-header">
-                  <div class="antigravity-card-title">
-                    <i class="fa-solid fa-icons"></i>
-                    <span>ألوان الأيقونات (9 ألوان)</span>
-                  </div>
-                  <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك</span>
-                </div>
-                <div class="appearance-icon-grid antigravity-icon-grid" role="group" aria-label="ألوان الأيقونات">
-                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span>فينتك</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span>زمردي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span>بنفسجي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span>روبي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span>عنبر</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptIndigo" data-icon-theme="indigo" onclick="setAppIconTheme('indigo')" aria-pressed="false"><span>نيلي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                  <button type="button" class="icon-theme-pill" id="iconThemeOptRose" data-icon-theme="rose" onclick="setAppIconTheme('rose')" aria-pressed="false"><span>وردي</span><i class="fa-solid fa-check icon-active-check"></i></button>
-                </div>
-              </div>
-
-              <!-- مجموعة 3: أنماط وتصميم الكروت 9 متوازنة في 3 صفوف (كل خيار يعبر عن نمطه) -->
-              <div class="antigravity-card-block">
-                <div class="antigravity-card-header">
-                  <div class="antigravity-card-title">
-                    <i class="fa-solid fa-layer-group"></i>
-                    <span>نمط الكروت (9 أنماط)</span>
-                  </div>
-                </div>
-                <div id="cardStyleButtonsContainer" class="appearance-card-style-grid antigravity-card-style-grid" role="group" aria-label="أنماط الكروت">
-                  <button type="button" class="analytics-sec-btn" id="designStyleFacebook" data-card-style="facebook" onclick="setAppDesignStyle('facebook')" aria-pressed="false" style="border: 1.5px solid #1877f2;"><strong>فيسبوك</strong><small>أبيض كلاسيكي</small></button>
-                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>شفاف هادئ</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleMin" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>بسيط</strong><small>مسطح ونظيف</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeu" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>مجسّم</strong><small>عمق ناعم</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>حدود مضيئة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>واضح</strong><small>إطار بارز</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
-                </div>
-              </div>
-
-              <!-- مجموعة 4: خط الكلمات والأرقام (9 خطوط متوازنة 3 × 3 مع الخطوط الثلاثة الإضافية) -->
-              <div class="antigravity-card-block">
-                <div class="antigravity-card-header">
-                  <div class="antigravity-card-title">
-                    <i class="fa-solid fa-font"></i>
-                    <span>خط الكلمات والأرقام (9 خطوط)</span>
-                  </div>
-                  <span id="activeFontBadge" class="appearance-active-badge">تاجوال (افتراضي)</span>
-                </div>
-                <div class="settings-font-grid antigravity-font-grid" role="group" aria-label="أنواع الخطوط">
-                  <button type="button" class="font-choice-pill active" id="fontChoiceTajawal" data-font="tajawal" onclick="setAppFont('tajawal')" style="font-family: 'Tajawal', sans-serif;"><span>✨ تاجوال</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceCairo" data-font="cairo" onclick="setAppFont('cairo')" style="font-family: 'Cairo', sans-serif;"><span>🏛️ كايرو</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceIBM" data-font="ibm" onclick="setAppFont('ibm')" style="font-family: 'IBM Plex Sans Arabic', sans-serif;"><span>🏢 IBM Plex</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceAlmarai" data-font="almarai" onclick="setAppFont('almarai')" style="font-family: 'Almarai', sans-serif;"><span>📱 المراعي</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceReadex" data-font="readex" onclick="setAppFont('readex')" style="font-family: 'Readex Pro', sans-serif;"><span>📐 ريدكس</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceAlexandria" data-font="alexandria" onclick="setAppFont('alexandria')" style="font-family: 'Alexandria', sans-serif;"><span>🏛️ الإسكندرية</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceChanga" data-font="changa" onclick="setAppFont('changa')" style="font-family: 'Changa', sans-serif;"><span>💎 شانجا</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceNoto" data-font="noto" onclick="setAppFont('noto')" style="font-family: 'Noto Sans Arabic', sans-serif;"><span>🌐 نوتو</span></button>
-                  <button type="button" class="font-choice-pill" id="fontChoiceRubik" data-font="rubik" onclick="setAppFont('rubik')" style="font-family: 'Rubik', sans-serif;"><span>⚡ روبيك</span></button>
-                </div>
-                
-                <!-- محدد حجم الخط الاحترافي (6 أحجام متوازنة) -->
-                <div class="antigravity-font-size-section" style="margin-top: 8px;">
-                  <div class="antigravity-size-label" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;">
-                    <div style="display: flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 850; color: var(--text-main, #f8fafc);">
-                      <i class="fa-solid fa-text-height" style="color: #38bdf8;"></i>
-                      <span>حجم الخط (6 أحجام):</span>
-                    </div>
-                    <span id="activeFontSizeBadge" class="appearance-active-badge">وسط (الافتراضي)</span>
-                  </div>
+                <div class="antigravity-font-size-section" style="margin-top: 4px;">
                   <div class="antigravity-size-track" role="group" aria-label="أحجام الخط">
                     <button type="button" class="antigravity-size-pill" id="fontSizeBtn_micro" onclick="setAppFontSize('micro')">
                       <span class="size-sample" style="font-size: 0.62rem;">A</span>
@@ -20813,7 +20689,90 @@ body.light-theme .summary-matrix-table tr.total-row td {
                   </div>
                 </div>
               </div>
-
+              <!-- 2. منتقى نوع خط الكلمات والأرقام (أسفل منه مباشرة) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-font"></i>
+                    <span>نوع خط الكلمات والأرقام (9 خطوط)</span>
+                  </div>
+                  <span id="activeFontBadge" class="appearance-active-badge">تاجوال (افتراضي)</span>
+                </div>
+                <div class="settings-font-grid antigravity-font-grid" role="group" aria-label="أنواع الخطوط">
+                  <button type="button" class="font-choice-pill active" id="fontChoiceTajawal" data-font="tajawal" onclick="setAppFont('tajawal')" style="font-family: 'Tajawal', sans-serif;"><span>✨ تاجوال</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceCairo" data-font="cairo" onclick="setAppFont('cairo')" style="font-family: 'Cairo', sans-serif;"><span>🏛️ كايرو</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceIBM" data-font="ibm" onclick="setAppFont('ibm')" style="font-family: 'IBM Plex Sans Arabic', sans-serif;"><span>🏢 IBM Plex</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceAlmarai" data-font="almarai" onclick="setAppFont('almarai')" style="font-family: 'Almarai', sans-serif;"><span>📱 المراعي</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceReadex" data-font="readex" onclick="setAppFont('readex')" style="font-family: 'Readex Pro', sans-serif;"><span>📐 ريدكس</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceAlexandria" data-font="alexandria" onclick="setAppFont('alexandria')" style="font-family: 'Alexandria', sans-serif;"><span>🏛️ الإسكندرية</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceChanga" data-font="changa" onclick="setAppFont('changa')" style="font-family: 'Changa', sans-serif;"><span>💎 شانجا</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceNoto" data-font="noto" onclick="setAppFont('noto')" style="font-family: 'Noto Sans Arabic', sans-serif;"><span>🌐 نوتو</span></button>
+                  <button type="button" class="font-choice-pill" id="fontChoiceRubik" data-font="rubik" onclick="setAppFont('rubik')" style="font-family: 'Rubik', sans-serif;"><span>⚡ روبيك</span></button>
+                </div>
+              </div>
+              <!-- 3. منتقى ألوان التطبيق (أسفل منه مباشرة) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>ألوان التطبيق (9 ألوان متوازنة)</span>
+                  </div>
+                  <span id="activeThemeBadge" class="appearance-active-badge">كحلي ملكي</span>
+                </div>
+                <div class="theme-color-palette appearance-palette-grid antigravity-palette-grid" role="group" aria-label="لوحة الألوان">
+                  <button type="button" class="theme-pill-option" id="themeOptFacebook" data-theme="facebook" onclick="setAppTheme('facebook')" aria-pressed="false" style="background: linear-gradient(135deg, #1877f2, #0d65d9) !important; color: #fff !important; font-weight: 900;"><span>فيسبوك FB</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option active" id="themeOptNavy" data-theme="navy" onclick="setAppTheme('navy')" aria-pressed="true"><span>كحلي ملكي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptEmerald" data-theme="emerald" onclick="setAppTheme('emerald')" aria-pressed="false"><span>زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptPurple" data-theme="purple" onclick="setAppTheme('purple')" aria-pressed="false"><span>بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptRose" data-theme="rose" onclick="setAppTheme('rose')" aria-pressed="false"><span>وردي ياقوتي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptOcean" data-theme="ocean" onclick="setAppTheme('ocean')" aria-pressed="false"><span>محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptGold" data-theme="gold" onclick="setAppTheme('gold')" aria-pressed="false"><span>ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptSlate" data-theme="slate" onclick="setAppTheme('slate')" aria-pressed="false"><span>رمادي تيتانيوم</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="theme-pill-option" id="themeOptMidnight" data-theme="midnight" onclick="setAppTheme('midnight')" aria-pressed="false"><span>نيلي ليلي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                </div>
+              </div>
+              <!-- 4. منتقى ألوان الأيقونات (أسفل منه مباشرة) -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-icons"></i>
+                    <span>ألوان الأيقونات (9 ألوان)</span>
+                  </div>
+                  <span id="activeIconThemeBadge" class="appearance-active-badge">فينتك (افتراضي)</span>
+                </div>
+                <div class="icon-theme-palette appearance-icon-grid antigravity-icon-grid" role="group" aria-label="ألوان الأيقونات">
+                  <button type="button" class="icon-theme-pill active" id="iconThemeOptVibrant" data-icon-theme="vibrant" onclick="setAppIconTheme('vibrant')" aria-pressed="true"><span>🌐 فينتك</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptGold" data-icon-theme="gold" onclick="setAppIconTheme('gold')" aria-pressed="false"><span>🪙 ذهبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptEmerald" data-icon-theme="emerald" onclick="setAppIconTheme('emerald')" aria-pressed="false"><span>🌿 زمردي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptOcean" data-icon-theme="ocean" onclick="setAppIconTheme('ocean')" aria-pressed="false"><span>🌊 محيطي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptPurple" data-icon-theme="purple" onclick="setAppIconTheme('purple')" aria-pressed="false"><span>🔮 بنفسجي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptRuby" data-icon-theme="ruby" onclick="setAppIconTheme('ruby')" aria-pressed="false"><span>💎 روبي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptAmber" data-icon-theme="amber" onclick="setAppIconTheme('amber')" aria-pressed="false"><span>🔥 عنبر</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptForest" data-icon-theme="forest" onclick="setAppIconTheme('forest')" aria-pressed="false"><span>🌲 غابي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                  <button type="button" class="icon-theme-pill" id="iconThemeOptMonochrome" data-icon-theme="monochrome" onclick="setAppIconTheme('monochrome')" aria-pressed="false"><span>⚪ أحادي</span><i class="fa-solid fa-check theme-active-check"></i></button>
+                </div>
+              </div>
+              <!-- 5. أنماط وتصميم الكروت 9 متوازنة في 3 صفوف -->
+              <div class="antigravity-card-block">
+                <div class="antigravity-card-header">
+                  <div class="antigravity-card-title">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span>تصميم الكروت والقوائم (9 أنماط)</span>
+                  </div>
+                  <span id="activeDesignStyleBadge" class="appearance-active-badge">زجاجي (افتراضي)</span>
+                </div>
+                <div class="settings-segmented-grid antigravity-style-grid" role="group" aria-label="أنماط الكروت">
+                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>تأثير ضبابي</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleMinimal" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>هادئ</strong><small>خلفية موحدة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleNeumorphic" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>نيومورفيك</strong><small>ظلال مجسمة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>توهج حاد</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>شفاف</strong><small>بدون حواف</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleFlat" data-card-style="flat" onclick="setAppDesignStyle('flat')" aria-pressed="false"><strong>مسطّح</strong><small>تعبئة صامتة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
+                  <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -25776,19 +25735,24 @@ function renderCategoriesGrid(filtered) {
             let statusColor = '#10b981';
             let remainingText = '';
 
+            const isOver = remaining < 0;
+            const convertedRem = typeof convertAmount === 'function' ? convertAmount(remaining) : remaining;
+            const roundedRem = Math.round(Math.abs(convertedRem || 0)).toLocaleString('en-US');
+            const remCurr = typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : (state.currency || 'ج.م');
+
             if (pct < 70) {
               statusColor = '#10b981';
-              remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+              remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
             } else if (pct <= 90) {
               statusColor = '#f59e0b';
-              remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+              remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
             } else {
               statusColor = '#ef4444';
               isPulseAlert = true;
-              if (remaining < 0) {
-                remainingText = `تجاوز: ${formatMoneyVal(Math.abs(remaining))} • ${pct}%`;
+              if (isOver) {
+                remainingText = `تجاوز: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} -${roundedRem}</span> • ${pct}%`;
               } else {
-                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+                remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
               }
             }
 
@@ -25917,18 +25881,23 @@ function renderCategoriesGrid(filtered) {
               let statusColor = '#10b981';
               let remainingText = '';
 
+              const isOver = remaining < 0;
+              const convertedRem = typeof convertAmount === 'function' ? convertAmount(remaining) : remaining;
+              const roundedRem = Math.round(Math.abs(convertedRem || 0)).toLocaleString('en-US');
+              const remCurr = typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : (state.currency || 'ج.م');
+
               if (pct < 70) {
                 statusColor = '#10b981';
-                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+                remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
               } else if (pct <= 90) {
                 statusColor = '#f59e0b';
-                remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+                remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
               } else {
                 statusColor = '#ef4444';
-                if (remaining < 0) {
-                  remainingText = `تجاوز: ${formatMoneyVal(Math.abs(remaining))} • ${pct}%`;
+                if (isOver) {
+                  remainingText = `تجاوز: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} -${roundedRem}</span> • ${pct}%`;
                 } else {
-                  remainingText = `متبقي: ${formatMoneyVal(remaining)} • ${pct}%`;
+                  remainingText = `متبقي: <span dir="ltr" style="display:inline-flex; align-items:center; gap:2px; font-weight:900;">${remCurr} ${roundedRem}</span> • ${pct}%`;
                 }
               }
 
@@ -25942,7 +25911,7 @@ function renderCategoriesGrid(filtered) {
                   fill.style.background = statusColor;
                 }
                 if (txt) {
-                  txt.textContent = remainingText;
+                  txt.innerHTML = remainingText;
                   txt.style.color = statusColor;
                 }
               } else {
@@ -27373,51 +27342,92 @@ function saveTx() {
     // إدارة رفع وتصوير الفواتير (Receipt Camera / Upload)
     // =========================================================================
     function handleReceiptUpload(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const maxDim = 600;
-          let w = img.width;
-          let h = img.height;
-          if (w > h && w > maxDim) {
-            h = Math.round((h * maxDim) / w);
-            w = maxDim;
-          } else if (h > maxDim) {
-            w = Math.round((w * maxDim) / h);
-            h = maxDim;
-          }
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
-          const compressedDataUri = canvas.toDataURL('image/jpeg', 0.82);
-          state.pendingReceiptDataUri = compressedDataUri;
+      const files = event.target.files ? Array.from(event.target.files) : [];
+      if (!files.length) return;
+      if (!state.pendingReceiptDataUris) state.pendingReceiptDataUris = [];
 
-          const previewImg = document.getElementById('receiptPreviewImg');
-          const previewCont = document.getElementById('receiptPreviewContainer');
-          const clearBtn = document.getElementById('btnClearReceipt');
-          if (previewImg) previewImg.src = compressedDataUri;
-          if (previewCont) previewCont.style.display = 'block';
-          if (clearBtn) clearBtn.style.display = 'inline-flex';
-          const badge = document.getElementById('txPhotoAttachedBadge'); if (badge) badge.style.display = 'inline-flex';
-          showToast('📷 تم تحميل صورة الفاتورة بنجاح');
+      let loaded = 0;
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxDim = 800;
+            let w = img.width, h = img.height;
+            if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const compressedDataUri = canvas.toDataURL('image/jpeg', 0.82);
+            state.pendingReceiptDataUris.push(compressedDataUri);
+            state.pendingReceiptDataUri = state.pendingReceiptDataUris[0] || null;
+            loaded++;
+            if (loaded === files.length) {
+              renderReceiptPreviewsCarousel();
+              showToast(`📷 تم إرفاق ${files.length} مرفقات بنجاح`);
+            }
+          };
+          img.src = e.target.result;
         };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function renderReceiptPreviewsCarousel() {
+      const previewCont = document.getElementById('receiptPreviewContainer');
+      const clearBtn = document.getElementById('btnClearReceipt');
+      const badge = document.getElementById('txPhotoAttachedBadge');
+      const uris = state.pendingReceiptDataUris || [];
+
+      if (!uris.length) {
+        if (previewCont) previewCont.style.display = 'none';
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (badge) badge.style.display = 'none';
+        return;
+      }
+
+      if (previewCont) {
+        previewCont.style.display = 'block';
+        previewCont.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-size: 0.72rem; color: #38bdf8; font-weight: 850;">المرفقات (${uris.length}) - مرر أفقياً للمعاينة:</span>
+            <button type="button" onclick="clearReceiptUpload()" style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; border-radius: 6px; padding: 2px 8px; font-size: 0.68rem; cursor: pointer;">حذف الكل</button>
+          </div>
+          <div style="display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px; scrollbar-width: thin;">
+            ${uris.map((uri, i) => `
+              <div style="position: relative; width: 64px; height: 64px; border-radius: 8px; overflow: hidden; border: 1.5px solid #38bdf8; flex-shrink: 0; background: #0f172a;">
+                <img src="${uri}" onclick="openReceiptLightbox('${uri}', 'مرفق ${i+1}')" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;">
+                <button type="button" onclick="removeSingleReceipt(${i})" style="position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: rgba(239, 68, 68, 0.9); color: #fff; border: none; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      if (clearBtn) clearBtn.style.display = 'none'; // Replaced by inline delete all
+      if (badge) badge.style.display = 'inline-flex';
+    }
+
+    function removeSingleReceipt(idx) {
+      if (!state.pendingReceiptDataUris) return;
+      state.pendingReceiptDataUris.splice(idx, 1);
+      state.pendingReceiptDataUri = state.pendingReceiptDataUris[0] || null;
+      renderReceiptPreviewsCarousel();
     }
 
     function clearReceiptUpload() {
       state.pendingReceiptDataUri = null;
+      state.pendingReceiptDataUris = [];
       const inp = document.getElementById('inpTxReceipt');
       if (inp) inp.value = '';
       const previewCont = document.getElementById('receiptPreviewContainer');
       const clearBtn = document.getElementById('btnClearReceipt');
-      if (previewCont) previewCont.style.display = 'none';
+      if (previewCont) {
+        previewCont.style.display = 'none';
+        previewCont.innerHTML = '<img id="receiptPreviewImg" src="" alt="معاينة الإيصال" style="max-height: 120px; border-radius: 8px; object-fit: cover;">';
+      }
       if (clearBtn) clearBtn.style.display = 'none';
       const badge = document.getElementById('txPhotoAttachedBadge'); if (badge) badge.style.display = 'none';
     }
@@ -29443,8 +29453,32 @@ function switchSettingsTab(tabName) {
       const canonical = APPEARANCE_PALETTE_ALIASES[requested] || requested;
       const target = Object.prototype.hasOwnProperty.call(APPEARANCE_PALETTES, canonical) ? canonical : 'navy';
       state.appTheme = target;
+
+      // تطبيق السمة على كلا الخاصيتين لضمان عمل كافة القواعد البرمجية والـ CSS المتطورة
       document.documentElement.setAttribute('data-app-theme', target);
+      document.documentElement.setAttribute('data-theme', target);
       document.body.setAttribute('data-app-theme', target);
+      document.body.setAttribute('data-theme', target);
+
+      // تحديث فئات الـ body
+      const allThemeClasses = ['theme-navy', 'theme-emerald', 'theme-purple', 'theme-rose', 'theme-ocean', 'theme-gold', 'theme-slate', 'theme-midnight', 'theme-facebook'];
+      document.body.classList.remove(...allThemeClasses);
+      document.body.classList.add('theme-' + target);
+
+      // ضخ المتغيرات اللونية الجذرية لحظياً لتحويل واجهة التطبيق بالكامل
+      const palette = APPEARANCE_PALETTES[target] || APPEARANCE_PALETTES.navy;
+      const isLight = document.body.classList.contains('light-theme');
+      const accentColor = isLight ? palette.light : palette.dark;
+      const root = document.documentElement;
+
+      root.style.setProperty('--primary', accentColor);
+      root.style.setProperty('--primary-color', accentColor);
+      root.style.setProperty('--accent', accentColor);
+      root.style.setProperty('--primary-glow', palette.swatch + '66');
+      root.style.setProperty('--border-focus', accentColor);
+      root.style.setProperty('--theme-accent', accentColor);
+      root.style.setProperty('--theme-swatch', palette.swatch);
+
       updateAppearanceAccent();
       document.querySelectorAll('.theme-pill-option[data-theme], .theme-card-box[data-theme]').forEach(option => {
         const selected = option.getAttribute('data-theme') === target;
@@ -29455,7 +29489,7 @@ function switchSettingsTab(tabName) {
       if (badge) badge.textContent = APPEARANCE_PALETTES[target].name;
       if (persist) {
         try { localStorage.setItem('family_monefy_theme', target); } catch (e) {}
-        if (typeof showToast === 'function') showToast('🎨 تم تطبيق لوحة ' + APPEARANCE_PALETTES[target].name);
+        if (typeof showToast === 'function') showToast('🎨 تم تطبيق لون التطبيق: ' + APPEARANCE_PALETTES[target].name);
       }
       updateAppearancePreview();
     }
@@ -31045,10 +31079,29 @@ function switchSettingsTab(tabName) {
 
     // window focus sync throttled to prevent UI freeze
 
-    window.addEventListener('online', () => {
-      showToast('🌐 تم استعادة الاتصال بالإنترنت، جاري التحديث والمزامنة الشاملة...', 'info', 3000);
-      executeMasterUnifiedSyncAndRefresh(false);
+    // رصد وتأكيد العمل الكامل في حال انقطاع الإنترنت (Offline First Resilience)
+    window.addEventListener('offline', () => {
+      const banner = document.getElementById('globalOfflineSyncBanner');
+      if (banner) banner.style.display = 'block';
+      showToast('📴 انقطع اتصال الإنترنت - يتم تسجيل العمليات محلياً وستُرفع تلقائياً عند عودة الشبكة', 'warning', 4000);
     });
+
+    window.addEventListener('online', () => {
+      const banner = document.getElementById('globalOfflineSyncBanner');
+      if (banner) banner.style.display = 'none';
+      showToast('🌐 تم استعادة الاتصال بالإنترنت! جاري رفع ومزامنة كافة العمليات المسجلة...', 'success', 3500);
+      if (typeof executeMasterUnifiedSyncAndRefresh === 'function') {
+        executeMasterUnifiedSyncAndRefresh(true);
+      }
+    });
+
+    // فحص مبدئي للحالة
+    if (!navigator.onLine) {
+      setTimeout(() => {
+        const banner = document.getElementById('globalOfflineSyncBanner');
+        if (banner) banner.style.display = 'block';
+      }, 500);
+    }
 
     // =========================================================================
     // حاسبة الذهب والمصنعية التقديرية بالصاغة المصرية (v3.2.0)
@@ -33434,28 +33487,80 @@ function switchSettingsTab(tabName) {
       }
     }
 
-    function handleUnifiedBillPhotoUpload(event) {
-      const file = event.target.files && event.target.files[0];
-      if (!file) return;
+    window.currentUnifiedCommitmentPhotos = [];
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        window.currentUnifiedBillPhoto = e.target.result;
-        const previewRow = document.getElementById('unifiedBillPhotoPreviewRow');
-        const previewImg = document.getElementById('unifiedBillPhotoPreviewImg');
-        if (previewImg) previewImg.src = e.target.result;
-        if (previewRow) previewRow.style.display = 'flex';
-        showToast('📷 تم التقاط وإرفاق صورة الفاتورة');
-      };
-      reader.readAsDataURL(file);
+    function handleUnifiedBillPhotoUpload(event) {
+      const files = event.target.files ? Array.from(event.target.files) : [];
+      if (!files.length) return;
+
+      if (!window.currentUnifiedCommitmentPhotos) window.currentUnifiedCommitmentPhotos = [];
+
+      let loadedCount = 0;
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDim = 800;
+            let w = img.width, h = img.height;
+            if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
+            else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            const compressed = canvas.toDataURL('image/jpeg', 0.85);
+            window.currentUnifiedCommitmentPhotos.push(compressed);
+            window.currentUnifiedBillPhoto = window.currentUnifiedCommitmentPhotos[0] || null;
+            loadedCount++;
+            if (loadedCount === files.length) {
+              renderUnifiedCommitmentPhotoPreviews();
+              showToast(`📷 تم إرفاق ${files.length} مرفق بنجاح`);
+            }
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = '';
+    }
+
+    function removeUnifiedCommitmentPhoto(idx) {
+      if (!window.currentUnifiedCommitmentPhotos) return;
+      window.currentUnifiedCommitmentPhotos.splice(idx, 1);
+      window.currentUnifiedBillPhoto = window.currentUnifiedCommitmentPhotos[0] || null;
+      renderUnifiedCommitmentPhotoPreviews();
+    }
+
+    function renderUnifiedCommitmentPhotoPreviews() {
+      const row = document.getElementById('unifiedBillPhotoPreviewRow');
+      const carousel = document.getElementById('unifiedBillPhotoCarousel');
+      const badge = document.getElementById('unifiedCommitmentPhotoCountBadge');
+      const photos = window.currentUnifiedCommitmentPhotos || [];
+
+      if (badge) badge.textContent = `${photos.length} صور`;
+
+      if (!photos.length) {
+        if (row) row.style.display = 'none';
+        if (carousel) carousel.innerHTML = '';
+        return;
+      }
+
+      if (row) row.style.display = 'flex';
+      if (carousel) {
+        carousel.innerHTML = photos.map((p, idx) => `
+          <div style="position: relative; flex-shrink: 0; width: 62px; height: 62px; border-radius: 8px; overflow: hidden; border: 1.5px solid #38bdf8; background: #0f172a;">
+            <img src="${p}" onclick="openReceiptLightbox('${p}', 'مرفق ${idx + 1}')" style="width: 100%; height: 100%; object-fit: cover; cursor: pointer;" title="تكبير الصورة">
+            <button type="button" onclick="removeUnifiedCommitmentPhoto(${idx})" style="position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border-radius: 50%; background: rgba(239, 68, 68, 0.9); color: #fff; border: none; font-size: 0.65rem; line-height: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;">&times;</button>
+          </div>
+        `).join('');
+      }
     }
 
     function clearUnifiedBillPhoto() {
+      window.currentUnifiedCommitmentPhotos = [];
       window.currentUnifiedBillPhoto = null;
-      const previewRow = document.getElementById('unifiedBillPhotoPreviewRow');
-      const previewImg = document.getElementById('unifiedBillPhotoPreviewImg');
-      if (previewRow) previewRow.style.display = 'none';
-      if (previewImg) previewImg.src = '';
+      renderUnifiedCommitmentPhotoPreviews();
     }
 
     function submitUnifiedCommitment() {
@@ -33489,6 +33594,10 @@ function switchSettingsTab(tabName) {
       }
 
       const isBill = (currentUnifiedCommitmentType === 'upcoming_bill');
+      const photos = (Array.isArray(window.currentUnifiedCommitmentPhotos) && window.currentUnifiedCommitmentPhotos.length)
+        ? window.currentUnifiedCommitmentPhotos
+        : (window.currentUnifiedBillPhoto ? [window.currentUnifiedBillPhoto] : []);
+
       const newCommitment = {
         id: 'exp-' + Date.now(),
         type: currentUnifiedCommitmentType, // 'upcoming_bill', 'debt_on_us', 'debt_for_us'
@@ -33499,7 +33608,9 @@ function switchSettingsTab(tabName) {
         dueDate: dueDate,
         member: member,
         category: isBill ? category : (currentUnifiedCommitmentType === 'debt_on_us' ? 'debt_on_us' : 'debt_for_us'),
-        photo: isBill ? window.currentUnifiedBillPhoto : null,
+        photo: photos[0] || null,
+        receipt: photos[0] || null,
+        receipts: photos,
         notes: notes,
         status: 'upcoming',
         author: state.currentUser || 'ماهر',
@@ -33746,6 +33857,29 @@ function switchSettingsTab(tabName) {
 
         grid.appendChild(cell);
       }
+    }
+
+        function renderCommitmentAttachmentsRow(item) {
+      const receipts = (Array.isArray(item.receipts) && item.receipts.length)
+        ? item.receipts
+        : ((item.photo || item.receipt) ? [item.photo || item.receipt] : []);
+      if (!receipts.length) return '';
+      return `
+        <div style="margin-top: 6px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.08);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px;">
+            <span style="font-size: 0.65rem; color: #f472b6; font-weight: 850;">
+              <i class="fa-solid fa-paperclip"></i> المرفقات (${receipts.length}) · مرر للتصفح:
+            </span>
+          </div>
+          <div class="commitment-attachments-carousel" onclick="event.stopPropagation();" style="display: flex; gap: 6px; overflow-x: auto; padding: 2px 0; scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
+            ${receipts.map((src, i) => `
+              <div style="flex-shrink: 0; width: 50px; height: 50px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(244, 114, 182, 0.45); background: #0f172a; cursor: pointer; position: relative;" onclick="openReceiptLightbox('${src}', '${escapeHtml(item.title || item.label || 'مرفق')} (${i+1}/${receipts.length})')" title="معاينة المرفق">
+                <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
     }
 
     function renderCommitmentsPageUI() {
@@ -34116,6 +34250,8 @@ function switchSettingsTab(tabName) {
               </div>
             </div>
 
+            ${renderCommitmentAttachmentsRow(b)}
+
             <!-- درج الإجراءات السريعة للفاتورة (يفتح عند النقر) -->
             <div style="display: ${isSelected ? 'flex' : 'none'}; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.12); flex-wrap: wrap;">
               ${!isPaid ? `
@@ -34227,6 +34363,8 @@ function switchSettingsTab(tabName) {
                 </div>
               </div>
             </div>
+
+            ${renderCommitmentAttachmentsRow(d)}
 
             <!-- شريط تقدم السداد للديون -->
             <div style="width: 100%; height: 3px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-top: 6px;">
@@ -34938,7 +35076,7 @@ function initMonthlyBudgetUI() {
                     <strong style="color: #38bdf8; font-weight: 900;">${formatMoney(it.amount)}</strong>
                   </div>
                   <div style="font-weight: 850; color: ${isOver ? '#ef4444' : '#10b981'}; font-size: 0.70rem;">
-                    ${isOver ? `⚠️ تجاوز: -${formatMoney(Math.abs(diff))}` : `متبقي: +${formatMoney(diff)}`} (${pct}%)
+                    ${isOver ? '⚠️ تجاوز:' : 'متبقي:'} <span dir="ltr" style="display: inline-flex; align-items: center; gap: 2px; font-weight: 900;">${(typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : (state.currency || 'ج.م'))} ${isOver ? '-' : '+'}${Math.round(Math.abs(diff)).toLocaleString('en-US')}</span> (${pct}%)
                   </div>
                 </div>
 
