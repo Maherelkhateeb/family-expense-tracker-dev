@@ -1,4 +1,6 @@
 {
-  "version": "v5.3.86",
-  "build": 202611161530
+  "version": "5.3.88",
+  "build": "202611161600",
+  "updated": "2026-11-16T16:00:00+03:00",
+  "notes": "Added exact scroll position memory and return banner when drilling down from indicators and charts"
 }
