@@ -18811,7 +18811,7 @@ body.light-theme .market-buy-price {
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
           <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات والرقابة</span>
+            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات الجديدة</span>
           </button>
         </div>
 
@@ -37207,6 +37207,7 @@ function switchCategoryChartFormat(format, btnEl) {
 
     function switchBudgetSubTab(tab) {
       activeBudgetSubTab = tab;
+      window.activeBudgetSubTab = tab;
       const bCurr = document.getElementById('btnBudgetSubCurrent');
       const bProj = document.getElementById('btnBudgetSubProjects');
       const bComp = document.getElementById('btnBudgetSubComparisons');
@@ -37251,10 +37252,13 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
         if (secComp) secComp.style.display = 'block';
-        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderExecutiveComparisonsAudit === 'function') {
+        // Dedicated new dashboard is the authoritative comparison renderer.
+        if (secComp && window.FamilyBudgetComparison && typeof window.FamilyBudgetComparison.render === 'function') {
+          window.FamilyBudgetComparison.render(secComp, state);
+        } else if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderExecutiveComparisonsAudit === 'function') {
           BudgetAuditEngine.renderExecutiveComparisonsAudit();
-        } else if (typeof renderComparisonsSection === 'function') {
-          renderComparisonsSection();
+        } else if (secComp) {
+          secComp.textContent = 'تعذر تحميل المقارنات الجديدة، يرجى إعادة تحميل التطبيق.';
         }
       } else if (tab === 'history') {
         if (bHist) {
@@ -43303,5 +43307,6 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
 })();
 </script>
 <script src="./operations-return-hub.js?v=202611171820"></script>
+<script src="./comparison-deeplink.js?v=20261117-v4"></script>
 </body>
 </html>
