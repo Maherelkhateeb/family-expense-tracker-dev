@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.15",
-  "build": "202611172010",
-  "buildId": 202611172010,
-  "updated": "2026-11-17T17:05:00+03:00",
-  "notes": "Fixed responsive cards and text alignment for all 6 home designs; ten categories including zeros; restored quick tool order, constrained toast widths and synchronized auto-update build."
+  "version": "v5.4.16",
+  "build": "202611172245",
+  "buildId": 202611172245,
+  "updated": "2026-11-17T22:45:00+03:00",
+  "notes": "All six home layouts fit mobile screen heights without vertical scrolling on tested phone sizes, match reference pastel colors and tile arrangements, preserve ten categories and voice action, and keep tool order."
 }
