@@ -1309,55 +1309,30 @@ window.BudgetAuditEngine = (() => {
   }
 
   function renderExecutiveComparisonsAudit() {
-    // The dedicated comparison tab owns its visuals. Reuse the registered-budget
-    // renderer instead of leaving an empty legacy container or cloning its DOM.
-    const panel = document.getElementById('panelBudgetComparisons');
-    if (!panel) return;
-    comparisonMode = 'budget';
-    const plans=(state.monthlyBudgets||[]).filter(p=>p&&!p.project&&/^\d{4}-\d{2}$/.test(String(p.month||'')));
-    const months=[...new Set(plans.map(p=>p.month))].sort().reverse();
-    const selectedPlan=plans.find(p=>p.id===state.activeBudgetId)||plans[0]||null;
-    const month=selectedPlan?.month||months[0]||'';
-    if(!months.length){
-      panel.innerHTML='<div class="budget-spec"><section class="bs-panel"><h3>مقارنة الفعلي بالتقديري</h3><p>لا توجد موازنة شهرية مسجلة. أنشئ موازنة تقديرية أولًا لعرض المقارنات.</p></section></div>';
-      return;
-    }
-    panel.innerHTML='<section id="sectionComparisons" dir="rtl">'+
-      '<header style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:5px 5px 12px">'+
-      '<h2 style="margin:0;font-size:17px">مقارنة الميزانية الفعلية بالتقديرية</h2>'+
-      '<label for="budgetSpecMonthPicker" style="font-size:13px">الشهر: <select id="budgetSpecMonthPicker" aria-label="اختر شهر الموازنة" style="min-height:38px;padding:6px;border:1px solid #888780;border-radius:9px;background:var(--card-bg,transparent);color:inherit">'+
-      months.map(m=>'<option value="'+m+'"'+(m===month?' selected':'')+'>'+m+'</option>').join('')+
-      '</select></label></header><div id="budgetComparisonsDedicatedContainer"></div></section>';
-    const host=document.getElementById('budgetComparisonsDedicatedContainer');
-    const show=monthValue=>{
-      const plan=plans.find(p=>p.month===monthValue&&p.id===state.activeBudgetId)||
-        plans.find(p=>p.month===monthValue);
-      if(plan){
-        state.activeBudgetId=plan.id;
-        window.currentBudgetMonthData=plan;
-      }
-      window.BudgetCompareEngine?.renderReferenceInto(host,monthValue);
+    // The dedicated comparison tab has one authoritative renderer, which
+    // provides multi-month filters and the eight documented visualizations.
+    const container = document.getElementById('panelBudgetComparisons');
+    if (!container) return;
+    const draw = () => {
+      if (!container.isConnected || !window.FamilyBudgetComparison) return;
+      window.FamilyBudgetComparison.render(container, state);
     };
-    panel.onchange=event=>{
-      if(event.target?.id==='budgetSpecMonthPicker')show(event.target.value);
-    };
-    panel.onclick=event=>{
-      const target=event.target.closest('button[data-period-series="actual"]');
-      if(!target)return;
-      const selected=document.getElementById('budgetSpecMonthPicker')?.value;
-      if(!/^\d{4}-\d{2}$/.test(selected||''))return;
-      const [year,monthNum]=selected.split('-').map(Number);
-      const last=String(new Date(year,monthNum,0).getDate()).padStart(2,'0');
-      window.OperationsReturnHub?.stageOrigin?.();
-      window.BudgetDrilldownHub?.open({
-        source:'compare',originNode:target,from:selected+'-01',to:selected+'-'+last,
-        category:target.dataset.periodCategory||'',
-        label:target.dataset.periodCategory?
-          (typeof getCategoryObj==='function'?getCategoryObj(target.dataset.periodCategory,'expense')?.name:target.dataset.periodCategory)||target.dataset.periodCategory:
-          'إجمالي المصروفات'
+    if (window.FamilyBudgetComparison) { draw(); return; }
+    container.textContent = 'يتم تحميل لوحة مقارنة الفعلي والتقديري...';
+    if (!window.__familyBudgetComparisonScriptLoading) {
+      window.__familyBudgetComparisonScriptLoading = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = './family-budget-comparison.js?v=20261117-v2';
+        script.defer = true;
+        script.onload = () => window.FamilyBudgetComparison ? resolve() :
+          reject(new Error('Comparison module unavailable'));
+        script.onerror = () => reject(new Error('Comparison module could not be loaded'));
+        document.head.appendChild(script);
       });
-    };
-    show(month);
+    }
+    window.__familyBudgetComparisonScriptLoading.then(draw).catch(() => {
+      container.textContent = 'تعذّر تحميل لوحة المقارنة. يُرجى تحديث التطبيق.';
+    });
   }
 
   function renderBudgetHistoryAdvanced() {
