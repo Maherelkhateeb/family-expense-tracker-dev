@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.90",
-  "build": "202611170130",
-  "buildId": 202611170130,
-  "updated": "2026-11-17T01:30:00+03:00",
-  "notes": "Voice Arabic speech recognition and native persistence, immediate card/list style switching, extended monthly budget insights, corrected legacy regression expectations"
+  "version": "v5.3.91",
+  "build": "202611170644",
+  "buildId": 202611170644,
+  "updated": "2026-11-17T06:44:00+03:00",
+  "notes": "Full browser QA passed; preserve truly empty task lists, Arabic voice debt direction, robust mobile gold display and offline states."
 }
