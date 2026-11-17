@@ -46,12 +46,18 @@ const order = ['daily','food','bills','house','education','transport','health','
             .map(el => {const r=el.getBoundingClientRect(); return {x:r.x,right:r.right,width:r.width};}),
           switcherVisible:getComputedStyle(document.getElementById('btnHomeDesign')).display!=='none',
           switcherInQuickTools:document.getElementById('btnHomeDesign')?.parentElement?.classList.contains('executive-quick-tools-strip'),
+          toolVisualOrder:[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')]
+            .sort((a,b)=>b.getBoundingClientRect().right-a.getBoundingClientRect().right)
+            .map(el=>el.id),
           toolsOrder:[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')]
             .sort((a,b)=>Number(getComputedStyle(a).order)-Number(getComputedStyle(b).order))
             .map(el=>el.id),
           bodyOverflow:document.documentElement.scrollWidth > window.innerWidth + 2
         };
       });
+      if(!require('node:fs').existsSync('screenshots'))require('node:fs').mkdirSync('screenshots');
+      await page.screenshot({path:'screenshots/home-reference-one-'+width+'.png',fullPage:true});
+      await page.screenshot({path:'screenshots/home-reference-one-viewport-'+width+'.png'});
       assert.deepEqual(snap.ids,order,'Wrong category order or missing zero category');
       assert.deepEqual(snap.labels,[
         'مصروف يومي','طعام ومشتريات','فواتير والتزامات','مستلزمات منزل',
@@ -61,10 +67,10 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.equal(snap.zeroCards,9);
       assert.equal(snap.actions,10);
       assert.equal(snap.detailActions,9);
-      if (snap.toolsOrder[3] !== 'btnToggleCurrency') {
+      if (snap.toolVisualOrder[3] !== 'btnToggleCurrency') {
         console.log('TOOL_ORDER_DIAGNOSTIC',width,await page.evaluate(()=>[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')].map(x=>({id:x.id,order:getComputedStyle(x).order,style:x.style.getPropertyValue('order'),priority:x.style.getPropertyPriority('order'),parent:x.parentElement?.className}))));
       }
-      assert.deepEqual(snap.toolsOrder,[
+      assert.deepEqual(snap.toolVisualOrder,[
         'btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick'
       ],'Five reference tools are in the wrong RTL order');
       assert.ok(snap.switcherVisible && snap.switcherInQuickTools,'Home switcher was hidden or moved to Settings');
@@ -74,9 +80,6 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.ok(snap.topHeaderPresent,'Original header must remain');
       assert.equal(snap.toolCount,5,'Reference must show five quick tools');
       assert.equal(snap.avatarCount,9,'All nine family filters stay visible');
-      if(!require('node:fs').existsSync('screenshots'))require('node:fs').mkdirSync('screenshots');
-      await page.screenshot({path:'screenshots/home-reference-one-'+width+'.png',fullPage:true});
-      await page.screenshot({path:'screenshots/home-reference-one-viewport-'+width+'.png'});
       const voiceBox = await page.evaluate(()=>{
         const card=document.querySelector('.reference-one-card[data-ref-category="voice"]');
         const text=card?.querySelector('strong');
