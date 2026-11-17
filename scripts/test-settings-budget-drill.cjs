@@ -240,7 +240,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
 
    const initial=await page.evaluate(()=>({
      metrics:document.querySelectorAll('.monthly-insights .monthly-insight-card').length,
-     rows:document.querySelectorAll('#cmpTableBody tr[data-budget-category]').length,
+     rows:document.querySelectorAll('.budget-spec .bs-table tbody tr[data-budget-category]').length,
      selectedMonth:BudgetAuditEngine.getNavigationContext().month,
      hasWeek:!!document.querySelector('.monthly-week-line[data-budget-week]'),
      hasHub:!!window.BudgetDrilldownHub
@@ -252,7 +252,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    // Click the amount/number in the first budget category. Must display ONLY the
    // relevant expense transactions from the selected April plan, not today's month.
    await page.evaluate(()=>{
-     const row=[...document.querySelectorAll('#cmpTableBody tr[data-budget-category]')]
+     const row=[...document.querySelectorAll('.budget-spec .bs-table tbody tr[data-budget-category]')]
        .find(r=>r.dataset.budgetCategory==='food');
      if(!row)throw Error('Budget comparison food category is missing');
      row.querySelector('button[data-period-series="actual"]').click();
@@ -297,7 +297,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    const back=await page.evaluate(()=>({
      active:BudgetDrilldownHub.isActive(),period:state.period,budgetId:state.activeBudgetId,
      banner:!!document.getElementById('budgetDrilldownBanner'),
-     rowCount:document.querySelectorAll('#cmpTableBody tr[data-budget-category]').length
+     rowCount:document.querySelectorAll('.budget-spec .bs-table tbody tr[data-budget-category]').length
    }));
    console.log('RETURN_TO_BUDGET '+width+' '+JSON.stringify(back));
    assert.deepEqual({active:back.active,period:back.period,budgetId:back.budgetId,
