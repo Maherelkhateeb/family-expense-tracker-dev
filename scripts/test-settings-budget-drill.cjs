@@ -172,7 +172,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      const referenceColor=getComputedStyle(firstRow.querySelector('.cmp-series-reference')).backgroundColor;
      if(actualColor===referenceColor)throw Error('Actual and reference must use distinct backgrounds');
      if(firstRow.querySelector('.cmp-difference bdi').dir!=='ltr')throw Error('Difference sign must use numeric direction');
-     const nums=[...[...firstRow.querySelectorAll('td')].slice(0,2), ...firstRow.querySelector('.cmp-difference').children].map(el=>el.textContent.trim());
+     const nums=[...firstRow.querySelectorAll('td bdi, .cmp-difference small')].map(el=>el.textContent.trim());
      select('sample');
      const digits=new Intl.NumberFormat('ar-EG');
      const totals=root.querySelector('.cmp-summary-reference strong').textContent;
@@ -299,7 +299,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      document.getElementById('cmpEstimTo').value='2025-04-30';
      BudgetCompareEngine.render();
    });
-   await page.locator('#cmpEstimCustomRange button').click();
+   await page.locator('#cmpEstimCustomRange .cmp-month-range-button').click();
    assert.ok(await page.locator('#customDatePickerDrawer').isVisible());
    for(const date of ['2025-04-03','2025-04-07']){
      await page.locator('#customRangeCalendarMonths [onclick="selectCustomRangeDate(\''+date+'\')"]').click();
@@ -312,11 +312,14 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.ok(!(await page.locator('#cmpEstimFrom').isVisible()));
    assert.ok(!(await page.locator('#cmpEstimTo').isVisible()));
    assert.equal(await page.locator('#cmpActualFrom').inputValue(),'2025-04-01');
-   await page.locator('#cmpEstimCustomRange button').click();
-   await page.locator('#customDatePickerResetButton').click();
+   assert.match(await page.locator('#cmpReferenceDates').innerText(),/2025-04-03.*2025-04-07/);
+   await page.locator('#cmpRestoreDateLink').click();
    assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'');
    assert.equal(await page.locator('#cmpEstimTo').inputValue(),'');
    assert.equal(await page.locator('#cmpEstimCustomRangeLabel').innerText(),'تاريخ الموازنة');
+   assert.match(await page.locator('#cmpReferenceDates').innerText(),/2025-04-01.*2025-04-30/);
+   await page.locator('#cmpPeriodReference').selectOption('previous');
+   assert.match(await page.locator('#cmpReferenceDates').innerText(),/2025-03-02.*2025-03-31/);
 
    if(width===360){
      await page.evaluate(()=>{
@@ -383,7 +386,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.equal((await page.locator('.cmp-summary-reference strong').innerText()).trim(),'١٢٬٠٥٠');
    assert.match(await page.locator('#cmpSummary').innerText(),/\+٨٥٠/);
    const check=await page.locator('#cmpTableBody tr').evaluateAll(rows=>Object.fromEntries(rows.map(row=>
-     [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map(cell=>cell.textContent.trim())])));
+     [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map((cell,i)=>i<2?cell.querySelector('bdi').textContent.trim():cell.textContent.trim())])));
    assert.deepEqual(check['food'].slice(0,2),['٣٬٤٠٠','٢٬٨٠٠']);
    assert.deepEqual(check['bills'].slice(0,2),['٢٬١٠٠','٢٬١٠٠']);
    assert.match(check['trial-leisure'][2],/بند جديد/);

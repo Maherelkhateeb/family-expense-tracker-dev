@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.99';
-    var APP_BUILD_ID = 202611171105;
+    var APP_VERSION = 'v5.4.0';
+    var APP_BUILD_ID = 202611171236;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171105">
-  <script src="./appearance-compact.js?v=202611171105" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171105">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171236">
+  <script src="./appearance-compact.js?v=202611171236" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171236">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171105"></script>
+  <script src="./budget-audit-engine.js?v=202611171236"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18838,7 +18838,7 @@ body.light-theme .market-buy-price {
               <div id="cmpPeriodsFilterBox" class="cmp-period-filters">
                 <div>
                   <label for="cmpActualPeriod">الفترة الأساسية</label>
-                  <select id="cmpActualPeriod" onchange="BudgetCompareEngine.onActualPeriodChange(this.value); if (this.value === 'custom') openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
+                  <select id="cmpActualPeriod" aria-describedby="cmpPrimaryDates" onchange="BudgetCompareEngine.onActualPeriodChange(this.value); if (this.value === 'custom') openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
                     <option value="thisMonth" selected>الشهر الحالي حتى اليوم</option>
                     <option value="lastMonth">الشهر السابق كاملًا</option>
                     <option value="thisWeek">الأسبوع الحالي حتى اليوم</option>
@@ -18848,6 +18848,7 @@ body.light-theme .market-buy-price {
                     <option value="thisYear">السنة الحالية حتى اليوم</option>
                     <option value="custom">نطاق مخصص</option>
                   </select>
+                  <p id="cmpPrimaryDates" class="cmp-range-preview cmp-preview-actual" aria-live="polite"></p>
                   <div id="cmpActualCustomRange" class="cmp-month-custom-range" hidden>
                     <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
                       <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
@@ -18858,9 +18859,9 @@ body.light-theme .market-buy-price {
                 </div>
                 <div>
                   <label for="cmpPeriodReference">المقارنة مع</label>
-                  <select id="cmpPeriodReference" onchange="BudgetCompareEngine.selectReference(); if (this.value === 'custom') openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
-                    <option value="previous">الفترة السابقة</option>
-                    <option value="custom">فترة مخصصة</option>
+                  <select id="cmpPeriodReference" aria-describedby="cmpReferenceDates" onchange="BudgetCompareEngine.selectReference(); if (this.value === 'custom') openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
+                    <option value="previous">الفترة السابقة تلقائيًا</option>
+                    <option value="custom">فترة مرجعية مخصصة</option>
                     <option value="plan">الموازنة المسجلة</option>
                     <optgroup label="موازنات تجريبية">
                       <option value="sample-low">اقتصادية · ١٠٬٠٠٠ ج.م</option>
@@ -18868,6 +18869,7 @@ body.light-theme .market-buy-price {
                       <option value="sample-high">مرنة · ١٤٬٠٠٠ ج.م</option>
                     </optgroup>
                   </select>
+                  <p id="cmpReferenceDates" class="cmp-range-preview cmp-preview-reference" aria-live="polite"></p>
                   <div id="cmpPeriodCustom" class="cmp-month-custom-range" hidden>
                     <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
                       <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpPeriodCustomRangeLabel">نطاق المرجع</span>
@@ -18879,6 +18881,7 @@ body.light-theme .market-buy-price {
                     <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpEstimFrom','cmpEstimTo')">
                       <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpEstimCustomRangeLabel">تاريخ الموازنة</span>
                     </button>
+                    <button type="button" id="cmpRestoreDateLink" class="cmp-restore-link" onclick="BudgetCompareEngine.usePrimaryDates()" hidden>مطابقة الفترة الأساسية</button>
                     <input type="date" id="cmpEstimFrom" hidden>
                     <input type="date" id="cmpEstimTo" hidden onchange="BudgetCompareEngine.render()">
                   </div>
@@ -18892,7 +18895,7 @@ body.light-theme .market-buy-price {
               <div id="cmpSummary" aria-live="polite"></div>
               <div class="cmp-view-tools">
                 <div class="cmp-period-modes" role="group" aria-label="شكل عرض المقارنة">
-                  <button type="button" data-mode="table" aria-pressed="true">جدول</button>
+                  <button type="button" data-mode="table" aria-pressed="true">البنود</button>
                   <button type="button" data-mode="paired" aria-pressed="false">أعمدة</button>
                   <button type="button" data-mode="change" aria-pressed="false">التغيّر</button>
                 </div>
@@ -21071,7 +21074,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.99</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.0</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">

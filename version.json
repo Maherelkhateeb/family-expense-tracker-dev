@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.99",
-  "build": "202611171105",
-  "buildId": 202611171105,
-  "updated": "2026-11-17T11:05:00+03:00",
-  "notes": "Compact, color-coded budget comparisons across the table, paired bars, and change views."
+  "version": "v5.4.0",
+  "build": "202611171236",
+  "buildId": 202611171236,
+  "updated": "2026-11-17T12:36:00+03:00",
+  "notes": "Readable comparison cards and explicit links between primary and reference dates."
 }

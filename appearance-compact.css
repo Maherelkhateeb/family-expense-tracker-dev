@@ -2211,3 +2211,120 @@ body.light-theme #cmpPeriodChart {
   direction: ltr !important;
   unicode-bidi: isolate;
 }
+
+.cmp-card-table thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+#cmpPeriodChartContent .cmp-card-table table,
+#cmpPeriodChartContent .cmp-card-table tbody { display: block; }
+#cmpPeriodChartContent .cmp-card-table tr,
+#cmpPeriodChartContent .cmp-period-bars li {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 4px;
+  margin: 0 0 5px;
+  padding: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 8px;
+}
+#cmpPeriodChartContent .cmp-period-bars { gap: 0; }
+#cmpPeriodChartContent .cmp-card-table tbody th,
+#cmpPeriodChartContent .cmp-period-row-heading {
+  grid-column: 1/-1;
+  width: auto;
+  padding: 0 1px;
+  font-size: .86rem;
+  color: var(--text-main);
+  font-weight: 850;
+}
+#cmpPeriodChartContent .cmp-card-table td,
+.cmp-pair-values > div {
+  min-width: 0;
+  min-height: 35px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px 4px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  text-align: start;
+}
+.cmp-value-label { font-size: .67rem; font-weight: 750; overflow-wrap: anywhere; }
+#cmpPeriodChartContent :is(.cmp-period-value,.cmp-plain-value) { font-size: .94rem; line-height: 1.2; }
+#cmpPeriodChartContent .cmp-difference {
+  grid-column: 1/-1;
+  min-height: 23px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  gap: 3px 6px;
+  color: var(--text-main);
+  background: var(--bg-card-sub,var(--bg-card));
+  border-radius: 5px;
+  padding: 3px 5px;
+  font-size: .72rem;
+  text-align: start;
+}
+#cmpPeriodChartContent .cmp-difference .cmp-delta-caption { font-size: .71rem; font-weight: 800; }
+#cmpPeriodChartContent .cmp-difference .cmp-delta-amount { font-size: .84rem; }
+#cmpPeriodChartContent .cmp-difference small { display: inline; color: var(--text-main); opacity: .85; font-size: .69rem; }
+#cmpPeriodChartContent .cmp-period-bar-row {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: 2px;
+  padding: 4px 5px;
+}
+#cmpPeriodChartContent .cmp-bar-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 4px; }
+#cmpPeriodChartContent .cmp-period-track { height: 7px; }
+#cmpPeriodChartContent :is(.cmp-pair-values,.cmp-period-delta) { grid-column: 1/-1; }
+#cmpPeriodChartContent .cmp-period-delta { height: 11px; }
+#cmpPeriodChart .cmp-summary-grid :is(.cmp-summary-primary,.cmp-summary-reference) { grid-template-columns: minmax(0,1fr); }
+#cmpPeriodChart .cmp-summary-grid strong { font-size: 1rem; }
+#cmpPeriodChart .cmp-summary-grid small { font-size: .68rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child { grid-template-columns: minmax(0,1fr); }
+#cmpPeriodChart .cmp-summary-grid > div:last-child > small:last-child { display: none; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child strong { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 5px; font-size: .82rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child strong small { margin: 0; }
+#cmpPeriodChart .cmp-view-tools { gap: 5px; flex-wrap: wrap; }
+#cmpPeriodChart .cmp-view-tools .cmp-period-modes { min-width: 190px; }
+
+.cmp-range-preview {
+  min-width: 0;
+  margin: 3px 0 0;
+  padding: 4px 5px;
+  border-radius: 5px;
+  color: var(--text-muted,var(--text-main));
+  background: var(--bg-card-sub,var(--bg-card));
+  font-size: .68rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.cmp-range-preview small { display: block; font-size: .65rem; font-weight: 800; }
+.cmp-range-preview bdi { font-variant-numeric: tabular-nums; }
+.cmp-preview-actual { color: var(--cmp-primary-text); background: var(--cmp-primary-surface); }
+.cmp-preview-reference { color: var(--cmp-reference-text); background: var(--cmp-reference-surface); }
+#cmpEstimCustomRange .cmp-restore-link {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  padding: 3px;
+  background: var(--cmp-reference-surface);
+  color: var(--cmp-reference-text);
+  border: 0;
+  border-radius: 5px;
+  font: inherit;
+  font-size: .68rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#cmpPeriodChartContent .cmp-card-table td.cmp-difference { justify-content: start; }
+.cmp-delta-value { display: inline-flex; align-items: baseline; gap: 3px; white-space: nowrap; }
+#cmpPeriodChartContent :is(.cmp-card-table tbody th,.cmp-period-row-heading) { font-size: .92rem; }
