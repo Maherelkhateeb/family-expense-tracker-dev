@@ -110,6 +110,7 @@ const WIDTHS=[320,360,390,391,430,768];
        bodyOverflow,errors};
     });
     console.log('HOME_LAYOUT_QA '+JSON.stringify(report));
+    await page.screenshot({path:'screenshots/home-layout-'+width+'-'+design+'.png',fullPage:false});
     assert.ok(report.switcherVisible&&report.switcherInside,'Switcher missing '+width+'/'+design);
     assert.equal(report.toolCount,5,'Five tools must stay visible '+width+'/'+design);
     assert.deepEqual(report.toolVisualOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
@@ -129,7 +130,7 @@ const WIDTHS=[320,360,390,391,430,768];
       assert.ok(v.host.bottom<=v.view.bottom+2,'Home content clips inside home view '+width+'/'+design);
       assert.ok(v.view.scrollHeight<=v.view.clientHeight+3,'Vertical scroll still required '+width+'/'+design);
     }
-    await page.screenshot({path:'screenshots/home-layout-'+width+'-'+design+'.png',fullPage:false});
+
    }
    await page.reload({waitUntil:'domcontentloaded',timeout:60000});
    await page.waitForFunction(()=>document.querySelector('#homeInterfaces')?.dataset.design==='5');
