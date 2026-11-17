@@ -311,18 +311,19 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
 }
 #viewExpenses.home-reference-one .inflow-color {color:#088b31 !important;}
 #viewExpenses.home-reference-one .outflow-color {color:#d00909 !important;}
-/* In the reference, only four tools: gold, wallet, currency, summary (RTL). */
+/* Five quick tools in RTL: switch layout, gold, wallet, summary, currency. */
 #viewExpenses.home-reference-one .executive-quick-tools-strip {
   box-sizing:border-box !important;
   display:grid !important;
-  grid-template-columns:minmax(0,.86fr) minmax(0,1.88fr) minmax(0,.62fr) minmax(0,.89fr) !important;
+  grid-template-columns:minmax(0,.76fr) minmax(0,.85fr) minmax(0,1.60fr) minmax(0,.94fr) minmax(0,.79fr) !important;
   align-items:center !important;
   width:auto !important;
   margin:1.4cqi 3.1cqi 2.85cqi !important;
   padding:0 !important;
-  gap:1.3cqi !important;
+  gap:clamp(3px,.95cqi,7px) !important;
+  direction:rtl !important;
 }
-#viewExpenses.home-reference-one .executive-quick-tools-strip > *:not(#btnHomeDesign) {
+#viewExpenses.home-reference-one .executive-quick-tools-strip > * {
   box-sizing:border-box !important;
   display:flex !important;
   align-items:center !important;
@@ -340,19 +341,32 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
   box-shadow:0 2px 3px #20527c30 !important;
   overflow:hidden !important;
 }
-#viewExpenses.home-reference-one #btnHomeDesign {display:none !important;}
+#viewExpenses.home-reference-one #btnHomeDesign {
+  order:0 !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:linear-gradient(#f6efff,#e8dcff) !important;
+  border:1px solid #9953e3 !important;
+  color:#6320aa !important;
+  padding:0 2px !important;
+  font:900 clamp(8px,2.35cqi,13px)/1.05 Tahoma,Arial,sans-serif !important;
+  min-width:0 !important;
+  max-width:none !important;
+}
+#viewExpenses.home-reference-one #btnHomeDesign span {white-space:nowrap !important;}
 #viewExpenses.home-reference-one #btnOpenGold {
-  order:0 !important;color:#9e5100 !important;
+  order:1 !important;color:#9e5100 !important;
   background:linear-gradient(#fffdf5,#fff0d2) !important;
   border:1px solid #ffa300 !important;
 }
 #viewExpenses.home-reference-one #walletSelectCluster {
-  order:1 !important;color:#087abd !important;
+  order:2 !important;color:#087abd !important;
   background:linear-gradient(#fff,#f8fbff) !important;
   border:1px solid #a9bdd5 !important;
 }
 #viewExpenses.home-reference-one #btnToggleCurrency {
-  order:2 !important;color:#ab5900 !important;
+  order:4 !important;color:#ab5900 !important;
   background:linear-gradient(#fffef7,#fff1d5) !important;
   border:1px solid #ffa100 !important;
 }
@@ -374,14 +388,7 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
   color:#7322ba !important;
   font-size:1.22em !important;
 }
-.reference-design-settings-slot {margin:4px 0;}
-.reference-design-settings-slot #btnHomeDesign {
-  display:block !important;width:100% !important;height:36px !important;
-  color:#6d28d9 !important;border:1px solid #a78bfa !important;
-  background:#f1e9ff !important;border-radius:10px !important;
-  text-align:center !important;font:800 13px Tahoma,Arial,sans-serif !important;
-}
-/* Reference categories are a 3x3 array, top icons, titles, values + progress. */
+/* Two-column category grid: all nine expense categories and voice action, including zeros. */
 #viewExpenses.home-reference-one #homeInterfaces {
   margin:0 3.1cqi 5cqi !important;
   padding:0 !important;
@@ -391,7 +398,7 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
 #viewExpenses.home-reference-one .reference-one-grid {
   box-sizing:border-box !important;
   display:grid !important;
-  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   direction:rtl !important;
   gap:clamp(5px,1.5cqi,11px) !important;
 }
@@ -595,4 +602,14 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav #navTabExpenses.
   }
   #viewExpenses.home-reference-one .reference-one-details small {font-size:7px !important;}
   #viewExpenses.home-reference-one .reference-one-amount {font-size:9px !important;}
+}
+
+/* Keep the original quick-tools row usable on narrow phones, without changing its header. */
+@media (max-width:400px) {
+  #viewExpenses:not(.home-reference-one) .executive-quick-tools-strip {gap:3px !important;}
+  #viewExpenses:not(.home-reference-one) #btnHomeDesign {min-width:33px !important;max-width:38px !important;padding:0 3px !important;}
+  #viewExpenses:not(.home-reference-one) #btnHomeDesign span {display:none !important;}
+  #viewExpenses:not(.home-reference-one) :is(#btnOpenGold,#btnOpenSummaryQuick) {padding:0 4px !important;font-size:10px !important;}
+  #viewExpenses:not(.home-reference-one) #walletSelectCluster {min-width:0 !important;padding:0 3px !important;gap:2px !important;}
+  #viewExpenses:not(.home-reference-one) #btnToggleCurrency {padding:0 3px !important;font-size:10px !important;}
 }
