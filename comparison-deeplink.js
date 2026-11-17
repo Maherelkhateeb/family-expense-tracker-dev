@@ -63,7 +63,7 @@
   const monthLabel=m=>{const parts=m.split('-').map(Number);return new Date(parts[0],parts[1]-1,1).toLocaleDateString('ar-EG',{month:'long',year:'numeric'});};
   const dateTo=m=>{const p=m.split('-').map(Number);return new Date(p[0],p[1],0).getFullYear()+'-'+String(p[1]).padStart(2,'0')+'-'+String(new Date(p[0],p[1],0).getDate()).padStart(2,'0');};
   const currentMonth=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');};
-  const st=()=>window.state||{};
+  const st=()=>{try{if(typeof state!=='undefined'&&state)return state;}catch(_err){}return window.state||{};};
   const currency=()=>safe(st().currency||'EGP');
   function calculate(source,months){
     const list=ITEMS.map(([id,name])=>({id,name,estimated:0,actual:0,count:0,hasPlan:false}));
@@ -166,7 +166,7 @@
   }
   function hideOldTab(){
     const labels=['المقارنات الجديدة','مقارنات جديدة'];
-    document.querySelectorAll('#viewBudgets button,#viewBudgets a,#viewBudgets [role="tab"]').forEach(el=>{
+    document.querySelectorAll('button,a,[role="tab"]').forEach(el=>{
       const label=(el.textContent||'').replace(/\s+/g,' ').trim();
       if(labels.some(x=>label.includes(x))){el.hidden=true;el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');}
     });
