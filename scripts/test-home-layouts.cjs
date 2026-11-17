@@ -53,7 +53,13 @@ const WIDTHS=[320,360,390,430,768];
      const ids=design===1?cards.map(x=>x.dataset.refCategory):design>1?
        cards.map(x=>x.querySelector('[data-add]')?.dataset.add||(x.querySelector('[data-voice]')?'voice':null)):[];
      const bodyOverflow=document.documentElement.scrollWidth>viewportWidth+3;
-     return {design,width:viewportWidth,originalHidden:document.getElementById('catGrid').hidden,
+     const offscreen=bodyOverflow?[...document.querySelectorAll('body *')].map(el=>{
+       const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
+       return {id:el.id,tag:el.tagName,cls:typeof el.className==='string'?el.className.slice(0,55):'',
+         l:Math.round(r.left),r:Math.round(r.right),w:Math.round(r.width),
+         position:cs.position,display:cs.display,visibility:cs.visibility};
+     }).filter(o=>o.w>0&&o.display!=='none'&&o.visibility!=='hidden'&&(o.l< -3||o.r>viewportWidth+3)).slice(0,22):[];
+     return {offscreen,pageScrollWidth:document.documentElement.scrollWidth,design,width:viewportWidth,originalHidden:document.getElementById('catGrid').hidden,
        count:cards.length,ids,gridCols:grid?getComputedStyle(grid).gridTemplateColumns:'',
        toolOrder,toolCount:tools.length,switcherVisible:cs.display!=='none'&&cs.visibility!=='hidden',
        switcherInside:document.getElementById('btnHomeDesign').parentElement.classList.contains('executive-quick-tools-strip'),
