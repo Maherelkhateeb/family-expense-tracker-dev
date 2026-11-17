@@ -43113,7 +43113,7 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-reference-one.css?v=202611171845">
+<link rel="stylesheet" href="./home-reference-one.css?v=202611171915">
 <style>
 #btnHomeDesign{order:-1;flex:0 1 auto;min-width:44px;max-width:66px;height:38px;padding:0 5px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:3px;font:850 10px Tahoma,Arial,sans-serif;white-space:nowrap}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
@@ -43234,6 +43234,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     function render() {
       host.dataset.design = design;
       expensePage.classList.toggle('home-reference-one', design === 1);
+      expensePage.classList.toggle('home-alternative-design', design > 1);
       // Render updates must never move the switcher away from the home screen.
       if (trigger.parentElement !== gold.parentElement) gold.before(trigger);
       const isOriginal = design === 0;
@@ -43258,11 +43259,11 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       const cards = items.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
-        if (!source) return '';
-        const name = source.querySelector('.cat-label-text')?.textContent.trim() || id;
-        const amount = source.querySelector('.cat-amount-val')?.textContent.replace(/\s+/g,' ').trim() || '';
-        const budget = source.querySelector('.cat-budget-ceiling-text')?.textContent.trim() || 'لم تحدد موازنة لهذا البند';
-        const fill = parseFloat(source.querySelector('.cat-budget-progress-fill')?.style.width) || 0;
+        // Preserve all expense categories, including zero/missing-source categories.
+        const name = source?.querySelector('.cat-label-text')?.textContent.trim() || referenceLabels[id] || id;
+        const amount = source?.querySelector('.cat-amount-val')?.textContent.replace(/\s+/g,' ').trim() || '0.00 ' + getCurrencySymbol();
+        const budget = source?.querySelector('.cat-budget-ceiling-text')?.textContent.trim() || 'لم تُحدَّد موازنة';
+        const fill = Math.max(0, Math.min(100, parseFloat(source?.querySelector('.cat-budget-progress-fill')?.style.width) || 0));
         return '<article class="home-design-card" style="--tone:'+tone+'"><button type="button" class="home-design-head" data-add="'+id+'"><strong>'+escapeHtml(name)+'</strong><span class="home-design-icon" aria-hidden="true">'+icon+'</span></button><button type="button" class="home-design-value" data-details="'+id+'"><bdi>'+escapeHtml(amount)+'</bdi><progress max="100" value="'+fill+'" aria-label="استخدام الموازنة"></progress><small>'+escapeHtml(budget)+'</small></button></article>';
       }).join('');
       let insights = '';
