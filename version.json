@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.97",
-  "build": "202611171045",
-  "buildId": 202611171045,
-  "updated": "2026-11-17T10:45:00+03:00",
-  "notes": "Redesigned mobile request cards and removed the duplicate Notes archive filter."
+  "version": "v5.3.98",
+  "build": "202611171055",
+  "buildId": 202611171055,
+  "updated": "2026-11-17T10:55:00+03:00",
+  "notes": "Open the unified date picker when a custom primary or reference period is selected."
 }
