@@ -6,13 +6,13 @@ const fs=require('node:fs');
 const {chromium}=require('playwright');
 const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
 const IDS=['daily','food','bills','house','education','transport','health','other','voice','clothes'];
-const WIDTHS=[320,360,390,430,768];
+const WIDTHS=[320,360,390,391,430,768];
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  fs.mkdirSync('screenshots',{recursive:true});
  try{
   for(const width of WIDTHS){
-   const context=await browser.newContext({viewport:{width,height:({320:700,360:760,390:844,430:932,768:1024}[width]||852)},locale:'ar-EG',serviceWorkers:'block'});
+   const context=await browser.newContext({viewport:{width,height:({320:700,360:760,390:844,391:695,430:932,768:1024}[width]||852)},locale:'ar-EG',serviceWorkers:'block'});
    const page=await context.newPage();
    const exceptions=[];
    page.on('pageerror',e=>exceptions.push(e.message));
@@ -41,7 +41,25 @@ const WIDTHS=[320,360,390,430,768];
        if(amount&&amount.scrollWidth>amount.clientWidth+5)errors.push('value-clipped:'+i);
      }
      const rects=cards.map(readRect);
-     if(design===1 || design===5) {
+     if(design===1) {
+       const order=[...cards].sort((a,b)=>{
+         const ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
+         return Math.abs(ra.top-rb.top)>3?ra.top-rb.top:rb.right-ra.right;
+       }).map(card=>card.dataset.refCategory);
+       const reference=['daily','bills','food','house','transport','education','other','health','voice','clothes'];
+       if(JSON.stringify(order)!==JSON.stringify(reference))errors.push('wrong-photo-reference-visual-order:'+order.join(','));
+       for(let i=0;i<order.length;i+=2){
+         const first=cards.find(card=>card.dataset.refCategory===order[i]);
+         const second=cards.find(card=>card.dataset.refCategory===order[i+1]);
+         if(Math.abs(first.getBoundingClientRect().top-second.getBoundingClientRect().top)>3)
+           errors.push('misaligned-first-photo-row:'+i);
+       }
+       for(const card of cards.filter(card=>card.dataset.refCategory!=='voice')){
+         const icon=card.querySelector('.reference-one-icon')?.getBoundingClientRect();
+         const title=card.querySelector('button.reference-one-add strong')?.getBoundingClientRect();
+         if(icon&&title&&icon.right>title.left+6)errors.push('reference-icon-not-left:'+card.dataset.refCategory);
+       }
+     } else if(design===5) {
        for(let i=0;i<8;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
      } else if(design===2||design===3){
        for(let i=0;i<6;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
@@ -77,7 +95,7 @@ const WIDTHS=[320,360,390,430,768];
     console.log('HOME_LAYOUT_QA '+JSON.stringify(report));
     assert.ok(report.switcherVisible&&report.switcherInside,'Switcher missing '+width+'/'+design);
     assert.equal(report.toolCount,5,'Five tools must stay visible '+width+'/'+design);
-    assert.deepEqual(report.toolOrder,['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
+    assert.deepEqual(report.toolOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
       'Unexpected tool order '+width+'/'+design);
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
