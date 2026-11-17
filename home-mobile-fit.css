@@ -1236,7 +1236,7 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     min-height:0!important;
     max-height:none!important;
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    grid-template-rows:repeat(5,clamp(71px,18.1cqi,79px))!important;
+    grid-template-rows:repeat(5,clamp(68px,18.1cqi,79px))!important;
     align-content:start!important;
     align-items:stretch!important;
     gap:clamp(4px,1.3cqi,7px)!important;
