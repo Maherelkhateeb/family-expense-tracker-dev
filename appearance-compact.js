@@ -446,18 +446,17 @@
     if(event.target.closest('#budgetDrilldownBack'))return;
     const scopeButton=event.target.closest('[data-budget-drill-scope]');
     const auditRow=event.target.closest('#budgetActualVsEstimatedContainer tbody tr[data-budget-item-index]');
-    const compareRow=event.target.closest('#cmpTableBody tr');
     const week=event.target.closest('.monthly-week-line[data-budget-week]');
     const over=event.target.closest('[data-budget-cat]');
-    const basic=event.target.closest('#budgetKpiActual,#budgetKpiExpense,#budgetKpiSurplus,#cmpKpiTotalActual,#cmpKpiTotalEstim,#cmpKpiTotalDiff');
-    if(!scopeButton&&!auditRow&&!compareRow&&!week&&!over&&!basic)return;
+    const basic=event.target.closest('#budgetKpiActual,#budgetKpiExpense,#budgetKpiSurplus');
+    if(!scopeButton&&!auditRow&&!week&&!over&&!basic)return;
     if(!document.getElementById('viewBudgets')?.contains(event.target) &&
        !document.getElementById('panelMonthlyBudget')?.contains(event.target) &&
        !document.getElementById('panelBudgetComparisons')?.contains(event.target))return;
     event.preventDefault();event.stopImmediatePropagation();
-    const source=(compareRow || event.target.closest('#panelBudgetCompare')) ? 'compare' :
+    const source=event.target.closest('#panelBudgetCompare') ? 'compare' :
       (event.target.closest('#panelBudgetComparisons') ? 'executive' : 'monthly');
-    const a={source,originNode:scopeButton||auditRow||compareRow||week||over||basic};
+    const a={source,originNode:scopeButton||auditRow||week||over||basic};
     if(auditRow){
       a.itemIndex=Number(auditRow.dataset.budgetItemIndex);
       const c=window.BudgetAuditEngine?.getNavigationContext?.()||{};
@@ -466,9 +465,6 @@
       a.label=it?.title||'البند المختار';
       const cells=auditRow.querySelectorAll('td');
       if(event.target.closest('td')===cells[2] && c.comparisonMode==='period')a.scope='benchmark';
-    }else if(compareRow){
-      a.category=compareRow.dataset.budgetCategory||'';
-      a.label=categoryName(a.category);
     }else if(over){
       a.category=over.dataset.budgetCat;
       a.scope='fullmonth';

@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.95';
-    var APP_BUILD_ID = 202611171025;
+    var APP_VERSION = 'v5.3.96';
+    var APP_BUILD_ID = 202611171035;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171025">
-  <script src="./appearance-compact.js?v=202611171025" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171025">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171035">
+  <script src="./appearance-compact.js?v=202611171035" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171035">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171025"></script>
+  <script src="./budget-audit-engine.js?v=202611171035"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -17012,57 +17012,6 @@ body.light-theme[data-app-theme="slate"], html[data-app-theme="slate"] body.ligh
    V5.3.84: Unified Layout Compact Optimization & Light Theme Contrast Fixes
    ========================================================================= */
 
-/* 1. Eliminate Black/Dark Chart Cards in Light Theme */
-body.light-theme .cmp-chart-card,
-body.light-theme [id^="cmpChart"].cmp-chart-card,
-html[data-color-mode="light"] body .cmp-chart-card,
-html[data-app-theme="facebook"] body.light-theme .cmp-chart-card,
-html[data-card-style="facebook"] body .cmp-chart-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
-}
-
-body.light-theme .cmp-chart-card .cmp-chart-card-title,
-html[data-color-mode="light"] body .cmp-chart-card .cmp-chart-card-title {
-  color: #0f172a !important;
-}
-
-/* 2. Light Theme for Periods Filter Box & Selects */
-body.light-theme #cmpPeriodsFilterBox,
-html[data-color-mode="light"] body #cmpPeriodsFilterBox {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-}
-
-body.light-theme #cmpActualPeriod,
-html[data-color-mode="light"] body #cmpActualPeriod {
-  background: #f0fdf4 !important;
-  border-color: #86efac !important;
-  color: #15803d !important;
-}
-
-body.light-theme #cmpEstimPeriod,
-html[data-color-mode="light"] body #cmpEstimPeriod {
-  background: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #b45309 !important;
-}
-
-/* 3. Light Theme for 3 Summary KPI Cards */
-body.light-theme #cmpKpiCardsRow > div,
-html[data-color-mode="light"] body #cmpKpiCardsRow > div {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-}
-
-body.light-theme #cmpKpiDiffLabel,
-html[data-color-mode="light"] body #cmpKpiDiffLabel {
-  color: #475569 !important;
-}
-
 /* 4. Indicators Chart Switcher Strip Light Mode */
 body.light-theme .chart-format-switcher-strip,
 html[data-color-mode="light"] body .chart-format-switcher-strip {
@@ -17157,25 +17106,6 @@ body.light-theme .market-buy-price {
 /* =========================================================================
    V5.3.87: Compact Cockpit Strip at the Bottom & Ultra-Crisp Mobile Formatting
    ========================================================================= */
-#cmpAdvancedAnalyticsCockpit {
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 6px !important;
-  margin-top: 14px !important;
-  margin-bottom: 8px !important;
-  padding: 4px 0 !important;
-}
-
-#cmpAdvancedAnalyticsCockpit .budget-lux-card {
-  padding: 6px 5px !important;
-  border-radius: 9px !important;
-  min-height: 60px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  text-align: center !important;
-}
-
 .cockpit-card-head {
   font-size: 0.65rem !important;
   font-weight: 850 !important;
@@ -18899,193 +18829,89 @@ body.light-theme .market-buy-price {
             </button>
           </div>
 
-          <!-- حاوية عرض المقارنة (panelBudgetCompare) -->
-          <div id="panelBudgetCompare" style="display:block;">
-            <!-- فلاتر الفترات متجاورة جنباً إلى جنب في صف واحد لتوفير المساحة -->
-            <div id="cmpPeriodsFilterBox" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px 10px;">
-              <!-- فلتر الفترة الفعلية -->
-              <div>
-                <label style="font-size:0.70rem;font-weight:850;color:#34d399;display:block;margin-bottom:3px;white-space:nowrap;">
-                  <i class="fa-solid fa-clock"></i> فترة الفعلية:
-                </label>
-                <select id="cmpActualPeriod" onchange="BudgetCompareEngine.onActualPeriodChange(this.value)"
-                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
-                    background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.4);
-                    color:#34d399;border-radius:8px;padding:0 6px;outline:none;">
-                  <option value="today">اليوم</option>
-                  <option value="yesterday">أمس</option>
-                  <option value="thisWeek">الأسبوع الحالى</option>
-                  <option value="lastWeek">الأسبوع السابق</option>
-                  <option value="thisMonth" selected>الشهر الحالى</option>
-                  <option value="lastMonth">الشهر السابق</option>
-                  <option value="thisYear">السنة الحالية</option>
-                  <option value="custom">منتقى التواريخ (مخصص)</option>
-                </select>
-                <div id="cmpActualCustomRange" class="cmp-month-custom-range" style="display:none">
-                  <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
-                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
-                  </button>
-                  <input type="date" id="cmpActualFrom" hidden onchange="BudgetCompareEngine.render()">
-                  <input type="date" id="cmpActualTo" hidden onchange="BudgetCompareEngine.render()">
+          <section id="panelBudgetCompare" aria-labelledby="cmpPeriodChartTitle">
+            <div id="cmpPeriodChart" class="cmp-workspace">
+              <header class="cmp-heading">
+                <h3 id="cmpPeriodChartTitle">مقارنة المصروفات حسب البند</h3>
+                <button type="button" id="cmpDataMode" onclick="BudgetCompareEngine.toggleDemo()" aria-pressed="false">عرض مثال تجريبي</button>
+              </header>
+              <div id="cmpDemoNote" role="status" hidden></div>
+              <div id="cmpPeriodsFilterBox" class="cmp-period-filters">
+                <div>
+                  <label for="cmpActualPeriod">الفترة الأساسية</label>
+                  <select id="cmpActualPeriod" onchange="BudgetCompareEngine.onActualPeriodChange(this.value)">
+                    <option value="thisMonth" selected>الشهر الحالي حتى اليوم</option>
+                    <option value="lastMonth">الشهر السابق كاملًا</option>
+                    <option value="thisWeek">الأسبوع الحالي حتى اليوم</option>
+                    <option value="lastWeek">الأسبوع السابق كاملًا</option>
+                    <option value="today">اليوم</option>
+                    <option value="yesterday">أمس</option>
+                    <option value="thisYear">السنة الحالية حتى اليوم</option>
+                    <option value="custom">نطاق مخصص</option>
+                  </select>
+                  <div id="cmpActualCustomRange" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
+                    </button>
+                    <input type="date" id="cmpActualFrom" hidden>
+                    <input type="date" id="cmpActualTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
                 </div>
-              </div>
-
-              <!-- فلتر الفترة التقديرية (الذكي) -->
-              <div>
-                <label style="font-size:0.70rem;font-weight:850;color:#fbbf24;display:block;margin-bottom:3px;white-space:nowrap;">
-                  <i class="fa-solid fa-layer-group"></i> فترة التقديرية:
-                </label>
-                <select id="cmpEstimPeriod" onchange="BudgetCompareEngine.onEstimPeriodChange(this.value)"
-                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
-                    background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);
-                    color:#fbbf24;border-radius:8px;padding:0 6px;outline:none;">
-                  <option value="thisMonth" selected>الشهر الحالى (متزامن)</option>
-                  <option value="lastMonth">الشهر السابق</option>
-                  <option value="custom">منتقى بشهر محدد</option>
-                </select>
-                <div id="cmpEstimCustomRange" class="cmp-month-custom-range" style="display:none">
-                  <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpEstimFrom','cmpEstimTo')">
-                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpEstimCustomRangeLabel">نطاق التواريخ</span>
-                  </button>
-                  <input type="date" id="cmpEstimFrom" hidden onchange="BudgetCompareEngine.render()">
-                  <input type="date" id="cmpEstimTo" hidden onchange="BudgetCompareEngine.render()">
-                </div>
-              </div>
-            </div>
-
-            <!-- جدول المقارنة الرئيسي (4 أعمدة) -->
-                        <div id="cmpTableWrapper" style="overflow-x:auto;margin-bottom:14px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;">
-              <table style="width:100%;border-collapse:collapse;font-size:0.76rem;direction:rtl;">
-                <thead>
-                  <tr style="background:rgba(15,23,42,0.9);">
-                    <th style="padding:10px;text-align:right;color:#94a3b8;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">بيان</th>
-                    <th style="padding:10px;text-align:center;color:#34d399;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">الفعلية</th>
-                    <th style="padding:10px;text-align:center;color:#fbbf24;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">التقديرية</th>
-                    <th style="padding:10px;text-align:center;color:#38bdf8;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">الفرق</th>
-                  </tr>
-                </thead>
-                <tbody id="cmpTableBody">
-                  <!-- يُملأ ديناميكياً بواسطة BudgetCompareEngine.render() -->
-                </tbody>
-                <tfoot id="cmpTableFoot">
-                  <!-- صف الإجمالي -->
-                </tfoot>
-              </table>
-            </div>
-
-            <!-- بطاقات KPI الثلاثية في صف واحد مدمج وأنيق لتوفير المساحة -->
-            <div id="cmpKpiCardsRow" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px;">
-              <div style="background: rgba(16,185,129,0.12); border: 1.2px solid rgba(16,185,129,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.65rem; color: #34d399; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي المصروف الفعلي</div>
-                <div id="cmpKpiTotalActual" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-              <div style="background: rgba(245,158,11,0.12); border: 1.2px solid rgba(245,158,11,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.65rem; color: #fbbf24; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي السقف التقديري</div>
-                <div id="cmpKpiTotalEstim" style="font-size: 0.92rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-              <div style="background: rgba(15,23,42,0.85); border: 1.2px solid rgba(56,189,248,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div id="cmpKpiDiffLabel" style="font-size: 0.65rem; color: #94a3b8; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">الفارق الكلي بالموازنة</div>
-                <div id="cmpKpiTotalDiff" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-            </div>
-
-            <!-- لوحة القيادة التحليلية الذكية المتقدمة لموازنة الشهر منسقة ومدمجة بأسفل الصفحة -->
-            <div id="cmpAdvancedAnalyticsCockpit">
-              <!-- 1. مؤشر معدل الحرق المالي -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08);">
-                <div class="cockpit-card-head" style="color: #94a3b8;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-gauge-high" style="color: #38bdf8;"></i> معدل الصرف</span>
-                  <span id="cmpBurnRatePct" style="color: #38bdf8; font-weight: 950; font-size: 0.72rem;">0%</span>
-                </div>
-                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin: 3px 0; overflow: hidden;">
-                  <div id="cmpBurnRateBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #0ea5e9); border-radius: 2px; transition: width 0.4s ease;"></div>
-                </div>
-                <div id="cmpBurnRateDesc" class="cockpit-card-sub" style="color: #64748b;">استهلاك الموازنة</div>
-              </div>
-
-              <!-- 2. أعلى بند تجاوز في المصروفات -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(244,63,94,0.25);">
-                <div class="cockpit-card-head" style="color: #f43f5e;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-triangle-exclamation"></i> أعلى تجاوز</span>
-                </div>
-                <div id="cmpTopOverrunCat" style="font-size: 0.74rem; font-weight: 900; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;">لا يوجد تجاوز</div>
-                <div id="cmpTopOverrunVal" class="cockpit-card-val" style="color: #f87171;">0.00 ج.م</div>
-              </div>
-
-              <!-- 3. أعلى بند تحقيق وفر -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(16,185,129,0.25);">
-                <div class="cockpit-card-head" style="color: #34d399;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-piggy-bank"></i> أعلى وفر</span>
-                </div>
-                <div id="cmpTopSavedCat" style="font-size: 0.74rem; font-weight: 900; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;">قيد الحساب...</div>
-                <div id="cmpTopSavedVal" class="cockpit-card-val" style="color: #34d399;">0.00 ج.م</div>
-              </div>
-
-              <!-- 4. متوسط الصرف اليومي المتاح -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(251,191,36,0.25);">
-                <div class="cockpit-card-head" style="color: #fbbf24;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-calendar-day"></i> متاح يومياً</span>
-                </div>
-                <div id="cmpDailyAllowanceVal" class="cockpit-card-val" style="color: #fbbf24;">0.00 ج.م</div>
-                <div id="cmpDailyAllowanceDays" class="cockpit-card-sub" style="color: #94a3b8;">للأيام المتبقية</div>
-              </div>
-            </div>
-
-            <!-- مؤشرات ورسوم بيانية (Chart.js) متوافقة 100% مع الوضع الفاتح وبدون أي شاشات داكنة -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; margin-bottom: 12px;">
-              <section id="cmpPeriodChart" class="cmp-chart-card chart-glass-panel" aria-labelledby="cmpPeriodChartTitle">
-                <h3 id="cmpPeriodChartTitle" class="cmp-chart-card-title">تغيّر المصروفات حسب البند</h3>
-                <div class="cmp-period-controls">
+                <div>
                   <label for="cmpPeriodReference">المقارنة مع</label>
                   <select id="cmpPeriodReference" onchange="BudgetCompareEngine.selectReference()">
-                    <option value="previous">الفترة الفعلية السابقة</option>
-                    <option value="custom">فترة فعلية أختارها</option>
-                    <optgroup label="موازنات تجريبية شهرية">
+                    <option value="previous">الفترة السابقة</option>
+                    <option value="custom">فترة مخصصة</option>
+                    <option value="plan">الموازنة المسجلة</option>
+                    <optgroup label="موازنات تجريبية">
                       <option value="sample-low">اقتصادية · ١٠٬٠٠٠ ج.م</option>
                       <option value="sample">أساسية · ١٢٬٠٠٠ ج.م</option>
                       <option value="sample-high">مرنة · ١٤٬٠٠٠ ج.م</option>
                     </optgroup>
                   </select>
-                  <div id="cmpPeriodCustom" hidden>
-                    <button type="button" onclick="openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">اختيار نطاق المقارنة</button>
-                    <input type="date" id="cmpPeriodFrom" hidden onchange="BudgetCompareEngine.render()">
+                  <div id="cmpPeriodCustom" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpPeriodCustomRangeLabel">نطاق المرجع</span>
+                    </button>
+                    <input type="date" id="cmpPeriodFrom" hidden>
                     <input type="date" id="cmpPeriodTo" hidden onchange="BudgetCompareEngine.render()">
                   </div>
+                  <div id="cmpEstimCustomRange" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpEstimFrom','cmpEstimTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpEstimCustomRangeLabel">تاريخ الموازنة</span>
+                    </button>
+                    <input type="date" id="cmpEstimFrom" hidden>
+                    <input type="date" id="cmpEstimTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
                 </div>
-                <div id="cmpSampleActions" class="cmp-sample-actions" hidden>
-                  <button type="button" onclick="BudgetCompareEngine.recordSampleOperations()">تسجيل هذه الفترة</button>
-                  <button type="button" id="cmpSampleView" onclick="BudgetCompareEngine.openSampleOperations(this)">عرض العمليات التجريبية</button>
-                  <span id="cmpSampleStatus" role="status"></span>
-                </div>
+              </div>
+              <div id="cmpSampleActions" class="cmp-sample-actions" hidden>
+                <button type="button" onclick="BudgetCompareEngine.recordSampleOperations()">تسجيل هذه الفترة</button>
+                <button type="button" id="cmpSampleView" onclick="BudgetCompareEngine.openSampleOperations(this)">عرض العمليات التجريبية</button>
+                <span id="cmpSampleStatus" role="status"></span>
+              </div>
+              <div id="cmpSummary" aria-live="polite"></div>
+              <div class="cmp-view-tools">
                 <div class="cmp-period-modes" role="group" aria-label="شكل عرض المقارنة">
-                  <button type="button" data-mode="paired" aria-pressed="true">أعمدة متجاورة</button>
-                  <button type="button" data-mode="change" aria-pressed="false">الزيادة والانخفاض</button>
-                  <button type="button" data-mode="table" aria-pressed="false">جدول الأرقام</button>
+                  <button type="button" data-mode="table" aria-pressed="true">جدول</button>
+                  <button type="button" data-mode="paired" aria-pressed="false">أعمدة</button>
+                  <button type="button" data-mode="change" aria-pressed="false">التغيّر</button>
                 </div>
-                <div id="cmpPeriodChartContent" aria-live="polite"></div>
-              </section>
-
-              <!-- رسم شريطي أفقي: مقارنة المصروفات بالشخص -->
-              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-chart-bar"></i> <span>مقارنة المصروفات بالشخص</span>
-                </div>
-                <div style="height: 220px; position: relative;">
-                  <canvas id="cmpChartBar"></canvas>
-                </div>
+                <label><span>ترتيب</span>
+                  <select id="cmpSort" aria-label="ترتيب بنود المقارنة" onchange="BudgetCompareEngine.render()">
+                    <option value="delta">أكبر فرق</option>
+                    <option value="spend">أكبر مصروف</option>
+                    <option value="name">اسم البند</option>
+                  </select>
+                </label>
               </div>
+              <div id="cmpPeriodChartContent"></div>
+              <details id="cmpInsightDetails">
+                <summary>مؤشرات المقارنة</summary>
+                <div id="cmpExtraInsightGrid"></div>
+              </details>
             </div>
-
-            <!-- رسم خطي: المقارنة الزمنية التراكمية -->
-            <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-              <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-line"></i> <span>المقارنة الزمنية التراكمية (الفعلي vs سقف الموازنة)</span>
-              </div>
-              <div style="height: 230px; position: relative;">
-                <canvas id="cmpChartLine"></canvas>
-              </div>
-            </div>
-          </div>
+          </section>
 
           <!-- حاوية عرض الأرشيف (panelBudgetArchiveMonthly) -->
           <div id="panelBudgetArchiveMonthly" style="display:none;">
@@ -21246,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.95</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.96</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -37098,6 +36924,8 @@ function switchCategoryChartFormat(format, btnEl) {
       const btnA = document.getElementById('btnBudgetInnerArchive');
       if (panelC) panelC.style.display = isCompare ? 'block' : 'none';
       if (panelA) panelA.style.display = isCompare ? 'none' : 'block';
+      btnC?.setAttribute('aria-pressed', String(isCompare));
+      btnA?.setAttribute('aria-pressed', String(!isCompare));
       if (btnC) {
         btnC.style.background = isCompare ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent';
         btnC.style.color = isCompare ? '#fff' : '#94a3b8';

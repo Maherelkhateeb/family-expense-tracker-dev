@@ -137,7 +137,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      const select=value=>{reference.value=value;reference.dispatchEvent(new Event('change'));};
      state.transactions.push({id:'qa-prev',type:'expense',date:'2025-03-13',category:'food',amount:200,member:'البيت'});
      select('custom');
-     const invalid=content.textContent.includes('اختر نطاق تواريخ');
+     const invalid=document.getElementById('cmpSummary').textContent.includes('اختر تاريخ البداية والنهاية');
      document.getElementById('cmpPeriodFrom').value='2025-03-01';
      document.getElementById('cmpPeriodTo').value='2025-03-31';
      BudgetCompareEngine.render();
@@ -146,33 +146,35 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      root.querySelector('[data-mode="change"]').click();
      const change=!!root.querySelector('.cmp-period-delta .positive');
      root.querySelector('[data-mode="table"]').click();
-     const nums=[...root.querySelectorAll('tr:first-child td')].map(td=>td.textContent.trim());
+     const firstRow=root.querySelector('tr[data-budget-category="food"]');
+     const nums=[...[...firstRow.querySelectorAll('td')].slice(0,2), ...firstRow.querySelector('.cmp-difference').children].map(el=>el.textContent.trim());
      select('sample');
      const digits=new Intl.NumberFormat('ar-EG');
-     const totals=root.querySelector('.cmp-period-total').textContent;
+     const totals=root.querySelector('.cmp-summary-reference strong').textContent;
      const sample=totals.includes(digits.format(12000));
      select('sample-low');
-     const low=root.querySelector('.cmp-period-total').textContent.includes(digits.format(10000));
+     const low=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(10000));
      select('sample-high');
-     const high=root.querySelector('.cmp-period-total').textContent.includes(digits.format(14000));
+     const high=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(14000));
      select('sample');
      document.getElementById('cmpActualFrom').value='2024-02-01';
      document.getElementById('cmpActualTo').value='2024-02-29';
      BudgetCompareEngine.render();
-     const leap=root.querySelector('.cmp-period-total').textContent.includes(digits.format(12000));
+     const leap=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(12000));
      document.getElementById('cmpActualFrom').value='2025-04-01';
      document.getElementById('cmpActualTo').value='2025-04-07';
      BudgetCompareEngine.render();
-     const week=root.querySelector('.cmp-period-total').textContent.includes(digits.format(2800));
+     const week=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(2800));
      document.getElementById('cmpActualTo').value='2025-04-01';
      BudgetCompareEngine.render();
-     const day=root.querySelector('.cmp-period-total').textContent.includes(digits.format(400));
+     const day=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(400));
      document.getElementById('cmpActualTo').value='2025-04-30';
      select('previous');
      state.transactions=state.transactions.filter(tx=>tx.id!=='qa-prev');
      BudgetCompareEngine.render();
+     document.getElementById('cmpInsightDetails').open=true;
      return {invalid,paired,change,nums,sample,low,high,leap,week,day,columns:getComputedStyle(
-       document.querySelector('#cmpExtraInsightGrid .monthly-insight-grid')).gridTemplateColumns.split(/\s+/).length};
+       document.querySelector('#cmpExtraInsightGrid  .cmp-metrics')).gridTemplateColumns.split(/\s+/).length};
    });
    assert.deepEqual(display,{invalid:true,paired:true,change:true,nums:['٣٥٠','٢٠٠','+١٥٠','+٧٥٪'],
      sample:true,low:true,high:true,leap:true,week:true,day:true,columns:3});
@@ -215,7 +217,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      const row=[...document.querySelectorAll('#cmpTableBody tr[data-budget-category]')]
        .find(r=>r.dataset.budgetCategory==='food');
      if(!row)throw Error('Budget comparison food category is missing');
-     row.querySelector('td:nth-child(2)').click();
+     row.querySelector('button[data-period-series="actual"]').click();
    });
    const drill=await page.evaluate(()=>({
      active:BudgetDrilldownHub.isActive(),banner:document.getElementById('budgetDrilldownBanner')?.innerText||'',
@@ -267,6 +269,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      switchBudgetSubTab('monthly');
      switchBudgetMonthView('compare');
      BudgetCompareEngine.onActualPeriodChange('custom');
+     document.getElementById('cmpPeriodReference').value='plan';
      document.getElementById('cmpEstimFrom').value='2025-04-01';
      document.getElementById('cmpEstimTo').value='2025-04-30';
      BudgetCompareEngine.render();
@@ -279,6 +282,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.locator('#customDatePickerConfirmButton').click();
    assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'2025-04-03');
    assert.equal(await page.locator('#cmpEstimTo').inputValue(),'2025-04-07');
+   assert.equal((await page.locator('.cmp-summary-reference strong').innerText()).trim(),'٢٥٠');
    assert.match(await page.locator('#cmpEstimCustomRangeLabel').innerText(),/2025-04-03.*2025-04-07/);
    assert.ok(!(await page.locator('#cmpEstimFrom').isVisible()));
    assert.ok(!(await page.locator('#cmpEstimTo').isVisible()));
@@ -287,7 +291,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.locator('#customDatePickerResetButton').click();
    assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'');
    assert.equal(await page.locator('#cmpEstimTo').inputValue(),'');
-   assert.equal(await page.locator('#cmpEstimCustomRangeLabel').innerText(),'نطاق التواريخ');
+   assert.equal(await page.locator('#cmpEstimCustomRangeLabel').innerText(),'تاريخ الموازنة');
 
    if(width===360){
      await page.evaluate(()=>{
@@ -295,7 +299,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
        if(typeof BudgetCompareEngine!=='undefined')BudgetCompareEngine.render();
      });
      const compare=await page.evaluate(()=>({
-       kpis:document.querySelectorAll('#cmpExtraInsightGrid .monthly-insight-card').length,
+       kpis:document.querySelectorAll('#cmpExtraInsightGrid .cmp-metrics dt').length,
        period:window.BudgetCompareEngine?.getNavigationRange?.()
      }));
      console.log('COMPARE_EXTRA '+JSON.stringify(compare));
@@ -334,13 +338,39 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.waitForFunction(()=>state.activeOpsSubTab==='sample');
    const sampleDetails=await page.locator('#sampleOperationsList tbody tr').allTextContents();
    assert.equal(sampleDetails.length,8);
-   assert.ok(sampleDetails.every(row=>row.includes('طعام ومشتريات')&&row.includes('التجريبية الأساسية')));
+   assert.ok(sampleDetails.every(row=>row.includes('طعام ومشتريات')&&row.includes('موازنة تجريبية أساسية')));
    await page.locator('#sampleOperationsBack').click();
    await page.waitForFunction(()=>getComputedStyle(document.getElementById('panelBudgetCompare')).display!=='none');
    await page.reload({waitUntil:'domcontentloaded'});
    await page.waitForFunction(()=>typeof BudgetCompareEngine==='object'&&typeof switchAppPage==='function');
    await page.evaluate(()=>{switchAppPage('operations');switchOperationsSubTab('sample');});
    assert.match(await page.locator('#sampleOperationsList').innerText(),/٧٢ عملية تجريبية/);
+
+   await page.evaluate(()=>{
+     switchAppPage('budgets',true);
+     switchBudgetSubTab('monthly');
+     switchBudgetMonthView('compare');
+   });
+   const realCount=await page.evaluate(()=>state.transactions.length);
+   await page.locator('#cmpDataMode').click();
+   await page.waitForFunction(()=>document.getElementById('cmpDataMode').getAttribute('aria-pressed')==='true');
+   assert.equal((await page.locator('.cmp-summary-primary strong').innerText()).trim(),'١٢٬٩٠٠');
+   assert.equal((await page.locator('.cmp-summary-reference strong').innerText()).trim(),'١٢٬٠٥٠');
+   assert.match(await page.locator('#cmpSummary').innerText(),/\+٨٥٠/);
+   const check=await page.locator('#cmpTableBody tr').evaluateAll(rows=>Object.fromEntries(rows.map(row=>
+     [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map(cell=>cell.textContent.trim())])));
+   assert.deepEqual(check['food'].slice(0,2),['٣٬٤٠٠','٢٬٨٠٠']);
+   assert.deepEqual(check['bills'].slice(0,2),['٢٬١٠٠','٢٬١٠٠']);
+   assert.match(check['trial-leisure'][2],/بند جديد/);
+   assert.match(check['trial-gifts'][2],/توقف الصرف/);
+   assert.equal(await page.locator('#cmpPeriodChartContent .cmp-period-table').evaluate(e=>e.scrollWidth<=e.clientWidth+1),true);
+   await page.locator('#cmpTableBody tr[data-budget-category="food"] button[data-period-series="reference"]').click();
+   assert.match(await page.locator('#sampleOperationsList').innerText(),/٢٬٨٠٠ ج.م/);
+   await page.locator('#sampleOperationsBack').click();
+   assert.equal(await page.locator('#cmpDataMode').getAttribute('aria-pressed'),'true');
+   await page.locator('#cmpDataMode').click();
+   assert.equal(await page.locator('#cmpDataMode').getAttribute('aria-pressed'),'false');
+   assert.equal(await page.evaluate(()=>state.transactions.length),realCount);
 
    assert.deepEqual(errors,[],'Browser errors '+JSON.stringify(errors));
    await context.close();

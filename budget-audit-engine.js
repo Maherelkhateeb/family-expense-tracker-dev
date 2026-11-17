@@ -1391,9 +1391,7 @@ window.BudgetAuditEngine = (() => {
 
 const BudgetCompareEngine = (() => {
   let _actualPeriod = 'thisMonth';
-  let _estimPeriod = 'thisMonth';
-  let _chartBar = null, _chartLine = null;
-  let periodChartMode = 'paired';
+  let periodChartMode = 'table';
   const sampleMonthlyAmounts = {
     food: 3000, bills: 2100, education: 1800, transport: 1200,
     house: 1000, daily: 950, health: 850, clothes: 650, other: 450
@@ -1430,8 +1428,7 @@ const BudgetCompareEngine = (() => {
       const dayOfWeek = now.getDay(); // 0 is Sun, 6 is Sat. Saturday is week start in SA/Arab
       const diffToSat = (dayOfWeek + 1) % 7; 
       const start = new Date(y, m, day - diffToSat);
-      const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الأسبوع الحالى' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'الأسبوع الحالى' };
     }
     if (period === 'lastWeek') {
       const dayOfWeek = now.getDay();
@@ -1442,8 +1439,7 @@ const BudgetCompareEngine = (() => {
     }
     if (period === 'thisMonth') {
       const start = new Date(y, m, 1);
-      const end = new Date(y, m + 1, 0);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر الحالى' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'الشهر الحالى' };
     }
     if (period === 'lastMonth') {
       const start = new Date(y, m - 1, 1);
@@ -1452,8 +1448,7 @@ const BudgetCompareEngine = (() => {
     }
     if (period === 'thisYear') {
       const start = new Date(y, 0, 1);
-      const end = new Date(y, 11, 31);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'السنة الحالية' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'السنة الحالية' };
     }
     if (period === 'lastYear') {
       const start = new Date(y - 1, 0, 1);
@@ -1468,452 +1463,90 @@ const BudgetCompareEngine = (() => {
     return { from: formatDateStr(new Date(y, m, 1)), to: formatDateStr(now), label: 'الشهر الحالى' };
   }
 
-  function getActiveEstimBudgetTotal() {
-    if (typeof state === 'undefined') return 0;
-    const now = new Date();
-    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
-    const plans = state.monthlyBudgets || [];
-    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
-    if (activePlan && Array.isArray(activePlan.items) && activePlan.items.length > 0) {
-      return activePlan.items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
-    }
-    return 0;
-  }
-
-  function getActivePlanCategoryEstimMap() {
-    if (typeof state === 'undefined') return {};
-    const now = new Date();
-    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
-    const plans = state.monthlyBudgets || [];
-    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
-    const map = {};
-    if (activePlan && Array.isArray(activePlan.items)) {
-      activePlan.items.forEach(it => {
-        if (it.category) map[it.category] = (map[it.category] || 0) + (parseFloat(it.amount) || 0);
-      });
-    }
-    return map;
-  }
-
-  function getActualsForRange(fromDate, toDate) {
-    if (typeof state === 'undefined' || !Array.isArray(state.transactions)) return { items: [], total: 0, byMember: {}, byDate: {} };
-
-    const catMap = {};
-    const byMember = {};
-    const byDate = {};
-    let total = 0;
-
-    state.transactions.forEach(tx => {
-      if (tx.type !== 'expense') return;
-      const d = (tx.date || '').slice(0, 10);
-      if (!d || d < fromDate || d > toDate) return;
-
-      const amt = parseFloat(tx.amount) || 0;
-      total += amt;
-      const cat = tx.category || 'other';
-      const mem = tx.member || 'البيت';
-
-      if (!catMap[cat]) catMap[cat] = { category: cat, total: 0, count: 0, members: {} };
-      catMap[cat].total += amt;
-      catMap[cat].count++;
-      catMap[cat].members[mem] = (catMap[cat].members[mem] || 0) + amt;
-
-      byMember[mem] = (byMember[mem] || 0) + amt;
-      byDate[d] = (byDate[d] || 0) + amt;
-    });
-
-    const items = Object.values(catMap).sort((a, b) => b.total - a.total);
-    return { items, total, byMember, byDate };
-  }
-
-  function buildEstimPeriodOptions(actPeriod) {
-    const sel = document.getElementById('cmpEstimPeriod');
-    if (!sel) return;
-
-    let options = [];
-    if (actPeriod === 'today' || actPeriod === 'yesterday') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'today' ? 'اليوم (متزامن مع الفعلية)' : 'أمس (متزامن مع الفعلية)') },
-        { val: actPeriod === 'today' ? 'yesterday' : 'today', label: actPeriod === 'today' ? 'أمس' : 'اليوم' },
-        { val: 'custom', label: 'منتقى بيوم محدد' }
-      ];
-    } else if (actPeriod === 'thisWeek' || actPeriod === 'lastWeek') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'thisWeek' ? 'الأسبوع الحالى (متزامن)' : 'الأسبوع السابق (متزامن)') },
-        { val: actPeriod === 'thisWeek' ? 'lastWeek' : 'thisWeek', label: actPeriod === 'thisWeek' ? 'الأسبوع السابق' : 'الأسبوع الحالى' },
-        { val: 'custom', label: 'منتقى بأسبوع' }
-      ];
-    } else if (actPeriod === 'thisMonth' || actPeriod === 'lastMonth') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'thisMonth' ? 'الشهر الحالى (متزامن)' : 'الشهر السابق (متزامن)') },
-        { val: actPeriod === 'thisMonth' ? 'lastMonth' : 'thisMonth', label: actPeriod === 'thisMonth' ? 'الشهر السابق' : 'الشهر الحالى' },
-        { val: 'custom', label: 'منتقى بشهر' }
-      ];
-    } else if (actPeriod === 'thisYear') {
-      options = [
-        { val: 'thisYear', label: 'السنة الحالية (متزامن)' },
-        { val: 'lastYear', label: 'السنة السابقة' },
-        { val: 'custom', label: 'منتقى بسنة' }
-      ];
-    } else {
-      options = [
-        { val: 'custom', label: 'منتقى التواريخ (مخصص)' }
-      ];
-    }
-
-    sel.innerHTML = options.map(o => `<option value="${o.val}" ${o.val === _estimPeriod ? 'selected' : ''}>${o.label}</option>`).join('');
-  }
-
-  function onActualPeriodChange(val) {
-    _actualPeriod = val;
-    const customDiv = document.getElementById('cmpActualCustomRange');
-    if (customDiv) customDiv.style.display = (val === 'custom') ? 'flex' : 'none';
-
-    // Auto-sync estimated period
-    _estimPeriod = val;
-    buildEstimPeriodOptions(val);
-
-    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
-    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
-
-    render();
-  }
-
-  function onEstimPeriodChange(val) {
-    _estimPeriod = val;
-    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
-    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
-    render();
-  }
-
-  function render() {
-    const actInpFrom = document.getElementById('cmpActualFrom');
-    const actInpTo = document.getElementById('cmpActualTo');
-    const customActFrom = actInpFrom ? actInpFrom.value : null;
-    const customActTo = actInpTo ? actInpTo.value : null;
-
-    const actRange = periodToRange(_actualPeriod, customActFrom, customActTo);
-
-    const estInpFrom = document.getElementById('cmpEstimFrom');
-    const estInpTo = document.getElementById('cmpEstimTo');
-    const customEstFrom = estInpFrom ? estInpFrom.value : null;
-    const customEstTo = estInpTo ? estInpTo.value : null;
-
-    const estRange = periodToRange(_estimPeriod, customEstFrom || actRange.from, customEstTo || actRange.to);
-    const actualLabel = document.getElementById('cmpActualCustomRangeLabel');
-    const estimatedLabel = document.getElementById('cmpEstimCustomRangeLabel');
-    if (actualLabel) actualLabel.textContent = customActFrom && customActTo ? customActFrom + ' إلى ' + customActTo : 'نطاق التواريخ';
-    if (estimatedLabel) estimatedLabel.textContent = customEstFrom && customEstTo ? customEstFrom + ' إلى ' + customEstTo : 'نطاق التواريخ';
-
-    const actData = getActualsForRange(actRange.from, actRange.to);
-    const daysCount = dateDiffDays(estRange.from, estRange.to);
-    const monthlyTotal = getActiveEstimBudgetTotal();
-    const estimTotalScaled = Math.round((monthlyTotal / 30) * daysCount);
-
-    const catEstimMap = getActivePlanCategoryEstimMap();
-
-    // 1. Build Table Body
-    const tbody = document.getElementById('cmpTableBody');
-    const tfoot = document.getElementById('cmpTableFoot');
-
-    // Merge categories from both actuals and plan items
-    const allCatKeys = new Set(actData.items.map(it => it.category));
-    Object.keys(catEstimMap).forEach(k => allCatKeys.add(k));
-
-    const rowsData = [];
-    allCatKeys.forEach(catKey => {
-      const actItem = actData.items.find(i => i.category === catKey);
-      const actualAmt = actItem ? actItem.total : 0;
-
-      let estAmt = 0;
-      if (catEstimMap[catKey]) {
-        estAmt = Math.round((catEstimMap[catKey] / 30) * daysCount);
-      } else {
-        // distribute remaining
-        const knownEstimSum = Object.values(catEstimMap).reduce((s, v) => s + v, 0);
-        const remMonthly = Math.max(0, monthlyTotal - knownEstimSum);
-        estAmt = Math.round((remMonthly / (allCatKeys.size || 1) / 30) * daysCount);
-      }
-
-      // Difference: Estimated - Actual (Positive = saving, Negative = overrun)
-      const diff = estAmt - actualAmt;
-      rowsData.push({
-        catKey,
-        actualAmt,
-        estAmt,
-        diff,
-        count: actItem ? actItem.count : 0
-      });
-    });
-
-    // Sort descending by actualAmt
-    rowsData.sort((a, b) => b.actualAmt - a.actualAmt);
-
-    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
-
-    if (tbody) {
-      if (rowsData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد مصروفات مسجلة لهذه الفترة</td></tr>`;
-      } else {
-        tbody.innerHTML = rowsData.map(r => {
-          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey, color: '#38bdf8', icon: 'fa-tag' };
-          const isSave = r.diff >= 0;
-          const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
-          const diffColor = isSave ? '#34d399' : '#f87171';
-          const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
-
-          // Percentage evaluated relative to estimated budget
-          let pctStr = '';
-          if (r.estAmt > 0) {
-            const pctOfEst = Math.round((r.actualAmt / r.estAmt) * 100);
-            if (isSave) {
-              const savePct = Math.round((r.diff / r.estAmt) * 100);
-              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#34d399;margin-top:2px;">وفر ${savePct}% (${pctOfEst}% مستهلك)</div>`;
-            } else {
-              const overPct = Math.round((Math.abs(r.diff) / r.estAmt) * 100);
-              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#f87171;margin-top:2px;">تجاوز +${overPct}% (${pctOfEst}% من التقديري)</div>`;
-            }
-          } else {
-            pctStr = r.actualAmt > 0 ? `<div style="font-size:0.64rem;color:#f87171;margin-top:2px;">بدون موازنة تقديرية</div>` : '';
-          }
-
-          return `
-            <tr data-budget-category="${escapeHtml(r.catKey)}" style="border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: background 0.15s;"
-                onclick="BudgetCompareEngine.drillDownToCategory('${r.catKey}')"
-                title="اضغط لعرض كافة حركات ${catObj.name} المفلترة"
-                onmouseover="this.style.background='rgba(56,189,248,0.08)'"
-                onmouseout="this.style.background='transparent'">
-              <td style="padding: 8px 10px; text-align: right; display: flex; align-items: center; gap: 7px;">
-                <span style="display:inline-flex;width:24px;height:24px;border-radius:6px;background:${catObj.color || '#38bdf8'}26;color:${catObj.color || '#38bdf8'};align-items:center;justify-content:center;font-size:0.75rem;"><i class="fa-solid ${catObj.icon || 'fa-tag'}"></i></span>
-                <div>
-                  <div style="font-weight: 850; color: #f8fafc;">${catObj.name}</div>
-                  ${r.count > 0 ? `<div style="font-size: 0.64rem; color: #94a3b8;">${r.count} حركة (اضغط للتفاصيل)</div>` : ''}
-                </div>
-              </td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #34d399; font-variant-numeric: tabular-nums; direction: ltr;">
-                ${formatVal(r.actualAmt)}
-              </td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
-                ${formatVal(r.estAmt)}
-              </td>
-              <td style="padding: 8px 10px; text-align: center;">
-                <span style="display:inline-block;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:900;background:${diffBg};color:${diffColor};direction:ltr;font-variant-numeric: tabular-nums;">
-                  ${diffSign}${formatVal(Math.abs(r.diff))}
-                </span>
-                ${pctStr}
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-    }
-
-    // Foot (Totals)
-    const totActual = actData.total;
-    const totEstim = rowsData.reduce((s, r) => s + r.estAmt, 0) || estimTotalScaled;
-    const totDiff = totEstim - totActual;
-    const totIsSave = totDiff >= 0;
-
-    if (tfoot) {
-      tfoot.innerHTML = `
-        <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
-          <td style="padding: 10px; text-align: right; color: #f8fafc;">الإجمالي الكلي</td>
-          <td style="padding: 10px; text-align: center; color: #34d399; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totActual)}</td>
-          <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totEstim)}</td>
-          <td style="padding: 10px; text-align: center; direction: ltr;">
-            <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${totIsSave ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${totIsSave ? '#34d399' : '#f87171'};">
-              ${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}
-            </span>
-          </td>
-        </tr>
-      `;
-    }
-
-    // Update 3 KPI Cards
-    const kpiAct = document.getElementById('cmpKpiTotalActual');
-    const kpiEst = document.getElementById('cmpKpiTotalEstim');
-    const kpiDiff = document.getElementById('cmpKpiTotalDiff');
-
-    if (kpiAct) kpiAct.textContent = formatVal(totActual);
-    if (kpiEst) kpiEst.textContent = formatVal(totEstim);
-    if (kpiDiff) {
-      kpiDiff.textContent = `${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}`;
-      kpiDiff.style.color = totIsSave ? '#34d399' : '#f87171';
-      const label = document.getElementById('cmpKpiDiffLabel');
-      if (label) label.textContent = totIsSave ? 'وفر كلي في الموازنة 🎉' : 'عجز / تجاوز كلي ⚠️';
-    }
-
-    // Update Executive Analytics Cockpit
-    const burnPctEl = document.getElementById('cmpBurnRatePct');
-    const burnBarEl = document.getElementById('cmpBurnRateBar');
-    const burnDescEl = document.getElementById('cmpBurnRateDesc');
-    if (burnPctEl && burnBarEl) {
-      const burnPct = totEstim > 0 ? Math.round((totActual / totEstim) * 100) : (totActual > 0 ? 100 : 0);
-      burnPctEl.textContent = `${burnPct}%`;
-      burnBarEl.style.width = `${Math.min(100, burnPct)}%`;
-      if (burnPct > 100) {
-        burnBarEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
-        burnPctEl.style.color = '#f87171';
-        if (burnDescEl) burnDescEl.textContent = 'تجاوز السقف التقديري للموازنة!';
-      } else if (burnPct >= 80) {
-        burnBarEl.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
-        burnPctEl.style.color = '#fbbf24';
-        if (burnDescEl) burnDescEl.textContent = 'اقتراب من سقف الموازنة المحددة';
-      } else {
-        burnBarEl.style.background = 'linear-gradient(90deg, #10b981, #0ea5e9)';
-        burnPctEl.style.color = '#34d399';
-        if (burnDescEl) burnDescEl.textContent = 'إنفاق صحي ضمن الحدود التقديرية';
-      }
-    }
-
-    // Top Overrun and Top Saved categories
-    const overruns = rowsData.filter(r => r.diff < 0).sort((a, b) => a.diff - b.diff); // most negative first
-    const savings = rowsData.filter(r => r.diff > 0).sort((a, b) => b.diff - a.diff); // most positive first
-
-    const topOverCatEl = document.getElementById('cmpTopOverrunCat');
-    const topOverValEl = document.getElementById('cmpTopOverrunVal');
-    if (topOverCatEl && topOverValEl) {
-      if (overruns.length > 0) {
-        const topO = overruns[0];
-        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topO.catKey, 'expense') : { name: topO.catKey };
-        topOverCatEl.textContent = catObj.name;
-        topOverValEl.textContent = `-${formatVal(Math.abs(topO.diff))}`;
-      } else {
-        topOverCatEl.textContent = 'لا يوجد تجاوز 🌟';
-        topOverValEl.textContent = '0.00 ج.م';
-      }
-    }
-
-    const topSaveCatEl = document.getElementById('cmpTopSavedCat');
-    const topSaveValEl = document.getElementById('cmpTopSavedVal');
-    if (topSaveCatEl && topSaveValEl) {
-      if (savings.length > 0) {
-        const topS = savings[0];
-        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topS.catKey, 'expense') : { name: topS.catKey };
-        topSaveCatEl.textContent = catObj.name;
-        topSaveValEl.textContent = `+${formatVal(topS.diff)}`;
-      } else {
-        topSaveCatEl.textContent = 'لا يوجد وفر حالياً';
-        topSaveValEl.textContent = '0.00 ج.م';
-      }
-    }
-
-    // Daily safe spending allowance
-    const dailyAllowValEl = document.getElementById('cmpDailyAllowanceVal');
-    const dailyAllowDaysEl = document.getElementById('cmpDailyAllowanceDays');
-    if (dailyAllowValEl && dailyAllowDaysEl) {
-      const now = new Date();
-      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const remainingDays = Math.max(1, lastDayOfMonth - now.getDate() + 1);
-      const remainingBudget = Math.max(0, totDiff);
-      const dailySafe = Math.round(remainingBudget / remainingDays);
-      dailyAllowValEl.textContent = formatVal(dailySafe);
-      dailyAllowDaysEl.textContent = `متاح لـ ${remainingDays} يوم متبقية`;
-    }
-
-
-    // Extra verified actuals vs plan insights.
-    renderExtraComparisonMetrics(rowsData, actRange, totEstim, totActual);
-    renderPeriodChart(actData, actRange);
-    renderCharts(actData, totEstim, actRange.from, actRange.to);
-  }
-
-
-  function renderExtraComparisonMetrics(rowsData, range, budgetAmount, actual) {
-    const table = document.getElementById('cmpTableBody')?.closest('table');
-    if (!table) return;
-    let slot = document.getElementById('cmpExtraInsightGrid');
-    if (!slot) {
-      slot = document.createElement('div');
-      slot.id = 'cmpExtraInsightGrid';
-      table.parentElement.insertAdjacentElement('afterend',slot);
-    }
-    const transactions=(state.transactions||[]).filter(t=>t.type==='expense'&&
-      String(t.date||'')>=range.from&&String(t.date||'')<=range.to);
-    const daily=new Map();
-    transactions.forEach(t=>daily.set(t.date,(daily.get(t.date)||0)+(Number(t.amount)||0)));
-    const highest=[...daily.entries()].sort((a,b)=>b[1]-a[1])[0]||['',0];
-    const avg=transactions.length?actual/transactions.length:0;
-    const unplanned=rowsData.filter(x=>x.estAmt===0&&x.actualAmt>0);
-    const top=rowsData.filter(x=>x.actualAmt>0).slice(0,3);
-    const concentration=actual>0?top.reduce((sum,x)=>sum+x.actualAmt,0)/actual*100:0;
-    const overCount=rowsData.filter(x=>x.actualAmt>x.estAmt).length;
-    const covered=rowsData.filter(x=>x.estAmt>0).length;
-    const fmt=n=>Number(n||0).toLocaleString('ar-EG',{maximumFractionDigits:0});
-    const card=(name,value,hint,scope='actual',attrs='')=>
-      '<button type="button" class="monthly-insight-card" data-budget-drill-scope="'+scope+'" '+attrs+
-      '><small>'+name+'</small><strong>'+value+'</strong><span>'+hint+'</span></button>';
-    slot.innerHTML='<div class="monthly-insights"><h3>مؤشرات إضافية للمقارنة</h3>'+
-      '<p>تحليلات العمليات الفعلية المسجلة خلال '+escapeHtml(range.from)+' إلى '+escapeHtml(range.to)+'.</p>'+
-      '<div class="monthly-insight-grid">'+
-      card('عدد العمليات',fmt(transactions.length),'مصروفات الفترة المختارة')+
-      card('متوسط العملية',fmt(avg),'متوسط قيمة المصروف المسجل')+
-      card('أيام الإنفاق الفعلي',fmt(daily.size),'عدد الأيام ذات المصروف')+
-      card('أعلى يوم إنفاق',fmt(highest[1]),escapeHtml(highest[0]),'highest-day','data-budget-date="'+escapeHtml(highest[0])+'"')+
-      card('حصة أكبر 3 فئات',concentration.toFixed(1)+'%','تركز الإنفاق الفعلي')+
-      card('الفئات المتجاوزة',fmt(overCount),'الأعلى من المقدر')+
-      card('فئات دون موازنة',fmt(unplanned.length),'مصروفات دون تقدير معتمد')+
-      card('الفئات ذات المخصص',fmt(covered),'المغطاة بموازنة تقديرية')+
-      card('نسبة استخدام التقديري',budgetAmount>0?(actual/budgetAmount*100).toFixed(1)+'%':'—','الفعلي ÷ المقدر')+
-      '</div></div>';
-  }
-
-  function previousActualRange(range) {
-    if (_actualPeriod === 'lastMonth') {
-      const start = new Date(range.from + 'T00:00:00');
-      const year = start.getFullYear();
-      const month = start.getMonth();
-      return {from: formatDateStr(new Date(year, month - 1, 1)), to: formatDateStr(new Date(year, month, 0))};
-    }
-    const periods = {thisWeek: 'lastWeek', thisMonth: 'lastMonth', thisYear: 'lastYear'};
-    if (periods[_actualPeriod]) return periodToRange(periods[_actualPeriod]);
-    const day = 86400000;
-    const start = Date.parse(range.from);
-    const length = dateDiffDays(range.from, range.to);
-    return {
-      from: new Date(start - length * day).toISOString().slice(0, 10),
-      to: new Date(start - day).toISOString().slice(0, 10)
-    };
-  }
-
   const sampleLedgerKey = 'family_monefy_budget_trial_operations_v1';
   const sampleProfiles = {
-    'sample-low': { adjustment: -1, label: 'التجريبية الاقتصادية' },
-    sample: { adjustment: 0, label: 'التجريبية الأساسية' },
-    'sample-high': { adjustment: 1, label: 'التجريبية المرنة' }
+    'sample-low': { factor: -1, label: 'موازنة تجريبية اقتصادية' },
+    sample: { factor: 0, label: 'موازنة تجريبية أساسية' },
+    'sample-high': { factor: 1, label: 'موازنة تجريبية مرنة' },
+    'sample-spend': { label: 'مصروفات المثال التجريبي' }
   };
-  let sampleView = { limit: 60 };
+  const sampleSpendProfiles = [
+    { food: 2800, bills: 2100, education: 2000, transport: 1200, house: 1100, daily: 900, health: 700, clothes: 500, other: 300, 'trial-gifts': 450, 'trial-leisure': 0 },
+    { food: 3400, bills: 2100, education: 1600, transport: 1450, house: 900, daily: 850, health: 1200, clothes: 450, other: 300, 'trial-gifts': 0, 'trial-leisure': 650 }
+  ];
+  const trialCategoryNames = { 'trial-gifts': 'هدايا تجريبية', 'trial-leisure': 'ترفيه تجريبي' };
+  const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 2});
+  const percent = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 1});
+  const money = cents => number.format(cents / 100);
+  const signedMoney = cents => (cents > 0 ? '+' : '') + money(cents);
+  const byId = id => document.getElementById(id);
+  let demoMode = false;
+  let previousControls = null;
+  let sampleView = {limit: 60};
   let sampleReturn = null;
 
-  function* sampleMonthSlices(range, profile) {
-    const adjustment = sampleProfiles[profile].adjustment;
-    const flexible = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
-    const monthly = Object.entries(sampleMonthlyAmounts).map(([key, amount]) => [
-      key, (amount + adjustment * (flexible[key] || 0)) * 100
-    ]);
-    const month = new Date(range.from.slice(0, 7) + '-01');
+  function getNavigationRange() {
+    return periodToRange(_actualPeriod, byId('cmpActualFrom')?.value, byId('cmpActualTo')?.value);
+  }
+
+  function categoryName(category) {
+    return trialCategoryNames[category] || (category === 'other' ? 'أخرى' : getCategoryObj(category, 'expense')?.name) || category;
+  }
+
+  function datePair(prefix) {
+    return {from: byId(prefix + 'From').value, to: byId(prefix + 'To').value};
+  }
+
+  function validRange(range) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(range.from) && /^\d{4}-\d{2}-\d{2}$/.test(range.to) && range.from <= range.to;
+  }
+
+  function previousRange(range, period = _actualPeriod) {
+    const start = new Date(range.from + 'T00:00:00Z');
+    const year = start.getUTCFullYear();
+    const month = start.getUTCMonth();
+    const date = value => value.toISOString().slice(0, 10);
+    if (period === 'thisMonth' || period === 'lastMonth') {
+      const last = new Date(Date.UTC(year, month, 0));
+      if (period === 'thisMonth') last.setUTCDate(Math.min(last.getUTCDate(), dateDiffDays(range.from, range.to)));
+      return {from: date(new Date(Date.UTC(year, month - 1, 1))), to: date(last)};
+    }
+    if (period === 'thisYear') {
+      const end = new Date(range.to + 'T00:00:00Z');
+      const endMonth = end.getUTCMonth();
+      const lastDay = new Date(Date.UTC(year - 1, endMonth + 1, 0)).getUTCDate();
+      return {from: date(new Date(Date.UTC(year - 1, 0, 1))), to: date(new Date(Date.UTC(year - 1, endMonth, Math.min(lastDay, end.getUTCDate()))))};
+    }
+    const step = period === 'thisWeek' ? 7 : dateDiffDays(range.from, range.to);
+    const day = 86400000;
+    return {from: date(new Date(+start - step * day)), to: date(new Date(Date.parse(range.to) - step * day))};
+  }
+
+  function* monthSlices(range) {
+    const month = new Date(range.from.slice(0,7) + '-01');
     const end = new Date(range.to);
-    while (month <= end) {
-      const key = month.toISOString().slice(0, 7);
-      const index = month.getUTCMonth();
+    for (;month <= end;month.setUTCMonth(month.getUTCMonth()+1)) {
+      const key = month.toISOString().slice(0,7);
       const endOfMonth = new Date(month);
-      endOfMonth.setUTCMonth(index + 1, 0);
+      endOfMonth.setUTCMonth(month.getUTCMonth()+1,0);
       const days = endOfMonth.getUTCDate();
-      const first = key === range.from.slice(0, 7) ? Number(range.from.slice(8)) : 1;
-      const last = key === range.to.slice(0, 7) ? Number(range.to.slice(8)) : days;
-      const throughDay = day => monthly.map(([, cents]) => Math.round(cents * day / days));
-      yield {key, first, last, categories: monthly.map(([category]) => category), throughDay};
-      month.setUTCMonth(index + 1);
+      yield {key, days, first: key === range.from.slice(0,7) ? +range.from.slice(8) : 1,
+        last: key === range.to.slice(0,7) ? end.getUTCDate() : days};
     }
   }
 
-  function getSampleBudget(range, profile) {
-    const totals = new Map(Object.keys(sampleMonthlyAmounts).map(category => [category, 0]));
-    for (const {first, last, categories, throughDay} of sampleMonthSlices(range, profile)) {
-      const start = throughDay(first - 1);
-      throughDay(last).forEach((cents, i) => totals.set(categories[i], totals.get(categories[i]) + cents - start[i]));
-    }
-    return new Map([...totals].map(([category, cents]) => [category, cents / 100]));
+  function prorate(cents, days, first, last) {
+    return Math.round(cents * last / days) - Math.round(cents * (first - 1) / days);
+  }
+
+  function sampleAmounts(profile) {
+    const factor = sampleProfiles[profile].factor;
+    const flexible = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
+    return Object.entries(sampleMonthlyAmounts).map(([category, amount]) => [category, (amount + factor * (flexible[category] || 0)) * 100]);
+  }
+
+  function sampleCategories(profile) {
+    return Object.keys(profile === 'sample-spend' ? sampleSpendProfiles[0] : sampleMonthlyAmounts);
   }
 
   function readSampleOperations() {
@@ -1922,63 +1555,135 @@ const BudgetCompareEngine = (() => {
     return stored;
   }
 
-  async function recordSampleOperations() {
-    const profile = document.getElementById('cmpPeriodReference').value;
-    if (!Object.hasOwn(sampleProfiles, profile)) return;
-    const range = getNavigationRange();
-    const status = document.getElementById('cmpSampleStatus');
-    if (range.from > range.to) {
-      status.textContent = 'اختر نطاق تواريخ صالحًا للتسجيل.';
-      return false;
+  function addSampleDays(dates, range, monthly) {
+    let added = 0;
+    for (const {key, days, first, last} of monthSlices(range)) {
+      for (let day = first; day <= last; day++) {
+        const date = key + '-' + pad(day);
+        if (Object.hasOwn(dates, date)) continue;
+        dates[date] = monthly.map(([, cents]) => prorate(cents, days, day, day));
+        added += dates[date].filter(Boolean).length;
+      }
     }
-    const register = () => {
+    return added;
+  }
+
+  function withSampleLock(write) {
+    return navigator.locks ? navigator.locks.request(sampleLedgerKey, write) : Promise.resolve().then(write);
+  }
+
+  async function seedDemo() {
+    const newer = periodToRange('lastMonth');
+    const older = previousRange(newer, 'lastMonth');
+    await withSampleLock(() => {
       const ledger = readSampleOperations();
-      const dates = ledger[profile] ||= {};
-      let added = 0;
-      for (const {key, first, last, throughDay} of sampleMonthSlices(range, profile)) {
-        for (let day = first; day <= last; day++) {
-          const date = key + '-' + pad(day);
-          if (Object.hasOwn(dates, date)) continue;
-          const start = throughDay(day - 1);
-          const entries = throughDay(day).map((cents, i) => cents - start[i]);
-          dates[date] = entries;
-          added += entries.length;
-        }
+      if (ledger.demoMonth === newer.from && ledger['sample-spend']) return;
+      const dates = {};
+      for (const [i, range] of [older, newer].entries()) {
+        addSampleDays(dates, range, Object.entries(sampleSpendProfiles[i]).map(([key, value]) => [key, value * 100]));
       }
-      if (added) localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
-      return added;
-    };
+      ledger['sample-spend'] = dates;
+      ledger.demoMonth = newer.from;
+      localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
+    });
+  }
+
+  async function toggleDemo() {
+    const button = byId('cmpDataMode');
+    const period = byId('cmpActualPeriod');
+    const reference = byId('cmpPeriodReference');
+    const note = byId('cmpDemoNote');
+    if (demoMode) {
+      demoMode = false;
+      period.value = _actualPeriod = previousControls.period;
+      reference.value = previousControls.reference;
+      previousControls = null;
+      note.hidden = true;
+      render();
+      return;
+    }
+    button.disabled = true;
     try {
-      const added = navigator.locks ? await navigator.locks.request(sampleLedgerKey, register) : register();
+      await seedDemo();
+      previousControls = {period: _actualPeriod, reference: reference.value};
+      demoMode = true;
+      period.value = _actualPeriod = 'lastMonth';
+      reference.value = 'previous';
+      note.textContent = 'مثال تجريبي مسجّل لآخر شهرين مكتملين. اضغط على مبلغ لعرض عملياته.';
+      note.hidden = false;
+      render();
+    } catch {
+      note.hidden = false;
+      note.textContent = 'تعذّر حفظ عمليات المثال على هذا الجهاز.';
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function onActualPeriodChange(value) {
+    _actualPeriod = value;
+    byId('cmpActualPeriod').value = value;
+    render();
+  }
+
+  function isSampleBudget(profile) {
+    return profile !== 'sample-spend' && Object.hasOwn(sampleProfiles, profile);
+  }
+
+  async function recordSampleOperations() {
+    const profile = byId('cmpPeriodReference').value;
+    const range = getNavigationRange();
+    if (!isSampleBudget(profile) || !validRange(range)) return false;
+    const status = byId('cmpSampleStatus');
+    try {
+      const added = await withSampleLock(() => {
+        const ledger = readSampleOperations();
+        const count = addSampleDays(ledger[profile] ||= {}, range, sampleAmounts(profile));
+        if (count) localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
+        return count;
+      });
       if (status.dataset.scope === [profile, range.from, range.to].join(':')) {
-        status.textContent = added ? 'تم تسجيل ' + added.toLocaleString('ar-EG') + ' عملية تجريبية.' :
-          'العمليات التجريبية لهذه الفترة مسجّلة بالفعل.';
+        status.textContent = added ? 'سُجّلت ' + number.format(added) + ' عملية تجريبية.' : 'هذه الفترة مسجّلة بالفعل.';
       }
-    } catch (error) {
-      console.warn('Could not save sample operations', error);
-      status.textContent = 'تعذر حفظ العمليات التجريبية على هذا الجهاز.';
+      return true;
+    } catch {
+      status.textContent = 'تعذّر حفظ العمليات التجريبية.';
       return false;
     }
   }
 
   function selectReference() {
     render();
-    document.getElementById('cmpSampleStatus').textContent = '';
     return recordSampleOperations();
   }
 
-  async function openSampleOperations(button) {
-    const profile = document.getElementById('cmpPeriodReference').value;
-    if (!Object.hasOwn(sampleProfiles, profile)) return;
-    const {from, to} = getNavigationRange();
-    if (await recordSampleOperations() === false) return;
-    if (document.getElementById('cmpPeriodReference').value !== profile) return;
-    const current = getNavigationRange();
-    if (current.from !== from || current.to !== to) return;
-    sampleReturn = { id: button.id, category: button.dataset.periodCategory, top: window.scrollY };
-    sampleView = {profile, from, to, category: button.dataset.periodCategory, limit: 60};
+  function sampleEntries(ledger, profile, range, category) {
+    const categories = sampleCategories(profile);
+    const result = [];
+    for (const [date, values] of Object.entries(ledger[profile] || {})) {
+      if ((range.from && date < range.from) || (range.to && date > range.to) || !Array.isArray(values)) continue;
+      values.forEach((cents, i) => {
+        const id = categories[i];
+        if (id && Number.isFinite(cents) && cents !== 0 && (!category || id === category)) result.push({date, id, cents, profile});
+      });
+    }
+    return result;
+  }
+
+  function openSampleLedger(profile, range, button) {
+    const category = button.dataset.periodCategory;
+    sampleReturn = {id: button.id, series: button.dataset.periodSeries, category, top: window.scrollY};
+    sampleView = {profile, ...range, category, limit: 60};
     switchAppPage('operations');
     switchOperationsSubTab('sample');
+  }
+
+  async function openSampleOperations(button) {
+    const profile = byId('cmpPeriodReference').value;
+    const range = getNavigationRange();
+    if (!await recordSampleOperations()) return;
+    const current = getNavigationRange();
+    if (byId('cmpPeriodReference').value === profile && current.from === range.from && current.to === range.to) openSampleLedger(profile, range, button);
   }
 
   function returnFromSampleOperations() {
@@ -1991,52 +1696,40 @@ const BudgetCompareEngine = (() => {
     switchBudgetMonthView('compare');
     requestAnimationFrame(() => {
       window.scrollTo(0, previous.top);
-      const target = previous.id ? document.getElementById(previous.id) :
-        document.querySelector('#cmpPeriodChart [data-period-series="reference"][data-period-category="' +
-          CSS.escape(previous.category) + '"]');
+      const target = previous.id ? byId(previous.id) : document.querySelector(periodButtonSelector(previous.series, previous.category));
+      target?.scrollIntoView({block: 'nearest'});
       target?.focus({preventScroll: true});
     });
   }
 
   function renderSampleOperations() {
-    const container = document.getElementById('sampleOperationsList');
+    const container = byId('sampleOperationsList');
     if (!container) return;
-    document.getElementById('sampleOperationsBack').hidden = !sampleReturn;
-    const {profile, from, to, category, limit} = sampleView;
-    document.getElementById('sampleOperationsShowAll').hidden = !profile;
-    const categories = Object.keys(sampleMonthlyAmounts);
-    const records = [];
+    byId('sampleOperationsBack').hidden = !sampleReturn;
+    byId('sampleOperationsShowAll').hidden = !sampleView.profile;
+    byId('sampleOperationsMore').hidden = true;
+    let records;
     try {
       const ledger = readSampleOperations();
-      for (const [key, plan] of Object.entries(sampleProfiles)) {
-        if (profile && key !== profile) continue;
-        for (const [date, amounts] of Object.entries(ledger[key] || {})) {
-          if ((from && date < from) || (to && date > to) || !Array.isArray(amounts)) continue;
-          amounts.forEach((cents, index) => {
-            const item = categories[index];
-            if (!item || (category && item !== category) || !Number.isFinite(cents)) return;
-            records.push({date, item, cents, plan: plan.label});
-          });
-        }
-      }
+      records = Object.keys(sampleProfiles).filter(profile => !sampleView.profile || sampleView.profile === profile)
+        .flatMap(profile => sampleEntries(ledger, profile, sampleView, sampleView.category));
     } catch {
       container.textContent = 'تعذرت قراءة سجل العمليات التجريبية.';
       return;
     }
     records.sort((a,b) => b.date.localeCompare(a.date));
-    const formatter = new Intl.NumberFormat('ar-EG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    const format = cents => formatter.format(cents / 100) + ' ج.م';
-    const total = records.reduce((sum, entry) => sum + entry.cents, 0);
-    const rows = records.slice(0, limit).map(({date, item, cents, plan}) =>
-      '<tr><td><bdi>' + escapeHtml(date) + '</bdi></td><td>' +
-      escapeHtml(item === 'other' ? 'أخرى' : getCategoryObj(item, 'expense')?.name || item) +
-      '</td><td>' + escapeHtml(plan) + '</td><td><bdi>' + format(cents) + '</bdi></td></tr>').join('');
-    container.innerHTML = records.length ?
-      '<p class="sample-operations-summary">' + records.length.toLocaleString('ar-EG') +
-      ' عملية تجريبية · ' + format(total) + '</p><div class="cmp-period-table"><table aria-label="العمليات التجريبية المسجلة">' +
-      '<thead><tr><th scope="col">التاريخ</th><th scope="col">البند</th><th scope="col">الموازنة</th><th scope="col">المبلغ</th></tr></thead>' +
-      '<tbody>' + rows + '</tbody></table></div>' : '<p>لا توجد عمليات تجريبية مسجلة لهذا الاختيار. اختر موازنة تجريبية من المقارنات لتسجيلها.</p>';
-    document.getElementById('sampleOperationsMore').hidden = records.length <= limit;
+    if (!records.length) {
+      container.textContent = 'لا توجد عمليات تجريبية لهذا الاختيار.';
+      return;
+    }
+    const total = records.reduce((sum, record) => sum + record.cents, 0);
+    const rows = records.slice(0,sampleView.limit).map(({date,id,cents,profile}) =>
+      '<tr><td><bdi>' + escapeHtml(date) + '</bdi></td><td>' + escapeHtml(categoryName(id)) +
+      '</td><td>' + sampleProfiles[profile].label + '</td><td><bdi>' + money(cents) + '</bdi></td></tr>').join('');
+    container.innerHTML = '<p class="sample-operations-summary">' + number.format(records.length) + ' عملية تجريبية · ' +
+      money(total) + ' ج.م</p><div class="cmp-period-table"><table aria-label="العمليات التجريبية المسجلة">' +
+      '<thead><tr><th>التاريخ</th><th>البند</th><th>المصدر</th><th>ج.م</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    byId('sampleOperationsMore').hidden = records.length <= sampleView.limit;
   }
 
   function showMoreSampleOperations() {
@@ -2049,258 +1742,226 @@ const BudgetCompareEngine = (() => {
     renderSampleOperations();
   }
 
-  function getNavigationRange() {
-    return periodToRange(_actualPeriod, document.getElementById('cmpActualFrom')?.value, document.getElementById('cmpActualTo')?.value);
+  function aggregate(entries) {
+    const values = new Map();
+    for (const {id, cents} of entries) values.set(id, (values.get(id) || 0) + cents);
+    return values;
   }
 
-  function renderPeriodChart(actual, range) {
-    const root = document.getElementById('cmpPeriodChart');
+  function expensesForRange(range) {
+    if (demoMode) return sampleEntries(readSampleOperations(), 'sample-spend', range);
+    return (state.transactions || []).filter(tx => tx.type === 'expense' && String(tx.date || '').slice(0,10) >= range.from &&
+      String(tx.date || '').slice(0,10) <= range.to).map(tx => ({id: tx.category || 'other', cents: Math.round((Number(tx.amount) || 0) * 100)}));
+  }
+
+  function estimatesForRange(range) {
+    const values = new Map();
+    const missing = [];
+    const plans = state.monthlyBudgets || [];
+    for (const {key, days, first, last} of monthSlices(range)) {
+      const matches = plans.filter(plan => plan.month === key && plan.items?.length);
+      const plan = matches.find(item => item.id === state.activeBudgetId) || matches[0];
+      if (!plan) {
+        missing.push(key);
+        continue;
+      }
+      const entries = aggregate(plan.items.map(item => ({id: item.category || 'other', cents: Math.round((Number(item.amount) || 0) * 100)})));
+      for (const [category, cents] of entries) {
+        values.set(category, (values.get(category) || 0) + prorate(cents, days, first, last));
+      }
+    }
+    return {values, missing};
+  }
+
+  function periodButtonSelector(series, category) {
+    return '#cmpPeriodChart button[data-period-series="' + series + '"][data-period-category="' + CSS.escape(category || '') + '"]';
+  }
+
+  function rangeLabel(range) {
+    return '<bdi>' + escapeHtml(range.from) + ' — ' + escapeHtml(range.to) + '</bdi>';
+  }
+
+  function changeMarkup(actual, baseline) {
+    if (baseline === null) return '<span>—</span>';
+    const difference = actual - baseline;
+    const type = difference > 0 ? 'cmp-rise' : difference < 0 ? 'cmp-fall' : '';
+    const label = !baseline && actual > 0 ? 'بند جديد' : baseline && actual === 0 ? 'توقف الصرف' :
+      baseline > 0 ? (difference > 0 ? '+' : '') + percent.format(difference / baseline * 100) + '٪' : '';
+    return '<bdi class="' + type + '">' + signedMoney(difference) + '</bdi>' + (label ? '<small>' + label + '</small>' : '');
+  }
+
+  function valueMarkup(key, id, cents, clickable) {
+    if (cents === null) return '<span>—</span>';
+    if (!clickable || !cents) return '<bdi>' + money(cents) + '</bdi>';
+    const label = key === 'actual' ? 'الفترة الأساسية' : 'المرجع';
+    return '<button type="button" class="cmp-period-value" data-period-series="' + key + '" data-period-category="' +
+      escapeHtml(id) + '" aria-label="' + escapeHtml((id ? categoryName(id) : 'الإجمالي') + '، ' + label + '، ' + money(cents)) +
+      '"><bdi>' + money(cents) + '</bdi></button>';
+  }
+
+  function renderInsights(rows, entryCount, total, range, comparable) {
+    const rise = rows.filter(row => row.diff > 0);
+    const fall = rows.filter(row => row.diff < 0);
+    const most = (list, sort) => [...list].sort(sort)[0]?.name || '—';
+    const stats = [
+      ['عدد العمليات', number.format(entryCount)],
+      ['متوسط الصرف اليومي', money(Math.round(total / dateDiffDays(range.from,range.to))) + ' ج.م'],
+      ['عدد البنود', number.format(rows.length)],
+      ['بنود زاد فيها الصرف', comparable ? number.format(rise.length) : '—'],
+      ['بنود قل فيها الصرف', comparable ? number.format(fall.length) : '—'],
+      ['بنود بلا تغير', comparable ? number.format(rows.length - rise.length - fall.length) : '—'],
+      ['أكبر زيادة', most(rise, (a,b) => b.diff - a.diff)],
+      ['أكبر انخفاض', most(fall, (a,b) => a.diff - b.diff)],
+      ['أعلى بند صرفًا', most(rows.filter(row => row.a > 0), (a,b) => b.a - a.a)]
+    ];
+    byId('cmpExtraInsightGrid').innerHTML = '<dl class="cmp-metrics">' + stats.map(([name,value]) =>
+      '<div><dt>' + escapeHtml(name) + '</dt><dd>' + escapeHtml(value) + '</dd></div>').join('') + '</dl>';
+  }
+
+  function render() {
+    const root = byId('cmpPeriodChart');
     if (!root) return;
-    const content = document.getElementById('cmpPeriodChartContent');
-    const reference = document.getElementById('cmpPeriodReference').value;
-    const custom = reference === 'custom';
-    const sample = Object.hasOwn(sampleProfiles, reference);
-    document.getElementById('cmpSampleActions').hidden = !sample;
-    const status = document.getElementById('cmpSampleStatus');
-    const scope = [reference, range.from, range.to].join(':');
+    const reference = byId('cmpPeriodReference').value;
+    const isPlan = reference === 'plan';
+    const isSample = isSampleBudget(reference);
+    const range = getNavigationRange();
+    const refDates = datePair('cmpPeriod');
+    const estimDates = datePair('cmpEstim');
+    const baseDates = datePair('cmpActual');
+    const renderLabel = (id, pair, fallback) => {
+      byId(id).textContent = validRange(pair) ? pair.from + ' إلى ' + pair.to : fallback;
+    };
+    renderLabel('cmpActualCustomRangeLabel', baseDates, 'نطاق التواريخ');
+    renderLabel('cmpPeriodCustomRangeLabel', refDates, 'نطاق المرجع');
+    renderLabel('cmpEstimCustomRangeLabel', estimDates, 'تاريخ الموازنة');
+    byId('cmpActualCustomRange').hidden = _actualPeriod !== 'custom';
+    byId('cmpPeriodCustom').hidden = reference !== 'custom';
+    byId('cmpEstimCustomRange').hidden = !isPlan;
+    byId('cmpSampleActions').hidden = !isSample;
+    byId('cmpDataMode').textContent = demoMode ? 'عرض مصرفاتي الفعلية' : 'عرض مثال تجريبي';
+    byId('cmpDataMode').setAttribute('aria-pressed', String(demoMode));
+    const status = byId('cmpSampleStatus');
+    const scope = [reference,range.from,range.to].join(':');
     if (status.dataset.scope !== scope) {
       status.textContent = '';
       status.dataset.scope = scope;
     }
-    document.getElementById('cmpPeriodCustom').hidden = !custom;
-    const validRange = range.from <= range.to;
-    const previous = sample ? range : custom ? {
-      from: document.getElementById('cmpPeriodFrom').value,
-      to: document.getElementById('cmpPeriodTo').value
-    } : validRange ? previousActualRange(range) : range;
+    const baseline = reference === 'custom' ? refDates : isPlan && (estimDates.from || estimDates.to) ? estimDates :
+      reference === 'previous' && validRange(range) ? previousRange(range) : range;
+    const content = byId('cmpPeriodChartContent');
+    const summary = byId('cmpSummary');
+    const details = byId('cmpInsightDetails');
+    const viewTools = root.querySelector('.cmp-view-tools');
+    const ready = validRange(range) && validRange(baseline) && (_actualPeriod !== 'custom' || validRange(baseDates));
+    viewTools.hidden = details.hidden = !ready;
     root.onclick = event => {
       const mode = event.target.closest('button[data-mode]');
       if (mode) {
         periodChartMode = mode.dataset.mode;
-        renderPeriodChart(actual, range);
+        render();
         return;
       }
-      const detail = event.target.closest('button[data-period-category]');
-      if (!detail) return;
-      if (sample && detail.dataset.periodSeries === 'reference') {
-        openSampleOperations(detail);
-        return;
+      const button = event.target.closest('button[data-period-series]');
+      if (!button || !ready) return;
+      const {periodSeries, periodCategory} = button.dataset;
+      const fromReference = periodSeries === 'reference';
+      const selected = fromReference ? baseline : range;
+      if (fromReference && isSample) {
+        openSampleOperations(button);
+      } else if (demoMode) {
+        openSampleLedger('sample-spend', selected, button);
+      } else {
+        window.BudgetDrilldownHub?.open({
+          source:'compare', originNode:button, ...selected, category:periodCategory,
+          label:periodCategory ? categoryName(periodCategory) : 'إجمالي المصروفات',
+          originSelector:periodButtonSelector(periodSeries,periodCategory)
+        });
       }
-      const selected = detail.dataset.periodSeries === 'reference' ? previous : range;
-      window.BudgetDrilldownHub?.open({
-        source: 'compare', originNode: detail, from: selected.from, to: selected.to,
-        category: detail.dataset.periodCategory, label: detail.dataset.periodLabel,
-        originSelector: '#cmpPeriodChart button[data-period-series="' + detail.dataset.periodSeries +
-          '"][data-period-category="' + CSS.escape(detail.dataset.periodCategory) + '"]'
-      });
     };
-    root.querySelectorAll('button[data-mode]').forEach(button =>
-      button.setAttribute('aria-pressed', String(button.dataset.mode === periodChartMode)));
-    if (!previous.from || !previous.to || previous.from > previous.to || range.from > range.to) {
-      content.textContent = 'اختر نطاق تواريخ صالحًا لعرض المقارنة.';
+    root.querySelectorAll('button[data-mode]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.mode === periodChartMode)));
+    if (!ready) {
+      summary.textContent = 'اختر تاريخ البداية والنهاية للفترة المطلوبة.';
+      content.replaceChildren();
       return;
     }
-    const first = new Map(actual.items.map(item => [item.category, item.total]));
-    const second = sample ? getSampleBudget(previous, reference) : new Map(
-      getActualsForRange(previous.from, previous.to).items.map(item => [item.category, item.total]));
-    const rows = [...new Set([...first.keys(), ...second.keys()])].map(category => {
-      const a = first.get(category) || 0;
-      const b = second.get(category) || 0;
-      const name = category === 'other' ? 'أخرى' : getCategoryObj(category, 'expense')?.name || category;
-      return {category, name, a, b, diff: Math.round((a - b) * 100) / 100};
-    }).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
-    const referenceLabel = sample ? sampleProfiles[reference].label : 'الفترة المرجعية';
-    const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 2});
-    const fmt = n => number.format(n);
-    const signed = n => (n > 0 ? '+' : '') + fmt(n);
-    const dates = period => '<bdi>' + escapeHtml(period.from) + ' — ' + escapeHtml(period.to) + '</bdi>';
-    const valueButton = (row, key) => {
-      const value = fmt(row[key]);
-      const label = key === 'a' ? 'الفترة الفعلية' : referenceLabel;
-      return '<button type="button" class="cmp-period-value" data-period-series="' +
-        (key === 'a' ? 'actual' : 'reference') + '" data-period-category="' + escapeHtml(row.category) +
-        '" data-period-label="' + escapeHtml(row.name) + '" aria-label="' + escapeHtml(row.name + '، ' + label + '، ' + value) +
-        '"><bdi>' + value + '</bdi></button>';
-    };
-    const delta = n => '<bdi class="' + (n > 0 ? 'cmp-rise' : n < 0 ? 'cmp-fall' : '') + '">' + signed(n) + '</bdi>';
-    content.innerHTML = '<div class="cmp-period-legend">' +
-      '<span class="cmp-period-key-actual">الفترة الفعلية ' + dates(range) + '</span><span class="cmp-period-key-reference">' +
-      referenceLabel + ' ' + dates(previous) + '</span></div>';
+    const actualEntries = expensesForRange(range);
+    const actual = aggregate(actualEntries);
+    let referenceAmounts;
+    let comparable = true;
+    if (isPlan) {
+      const result = estimatesForRange(baseline);
+      referenceAmounts = result.values;
+      comparable = result.missing.length === 0;
+    } else if (isSample) {
+      referenceAmounts = new Map();
+      for (const {days,first,last} of monthSlices(baseline)) {
+        for (const [category,cents] of sampleAmounts(reference)) {
+          referenceAmounts.set(category,(referenceAmounts.get(category) || 0) + prorate(cents,days,first,last));
+        }
+      }
+    } else {
+      referenceAmounts = aggregate(expensesForRange(baseline));
+    }
+    const baseLabel = demoMode ? 'صرف تجريبي' : 'صرف فعلي';
+    const refLabel = isSample ? sampleProfiles[reference].label : isPlan ? 'الموازنة المسجلة' :
+      reference === 'previous' ? 'الفترة السابقة' : 'الفترة المخصصة';
+    const categories = new Set([...actual.keys(), ...(comparable ? referenceAmounts.keys() : [])]);
+    const rows = [...categories].map(id => {
+      const a = actual.get(id) || 0;
+      const b = comparable ? (referenceAmounts.get(id) || 0) : null;
+      return {id, name:categoryName(id), a, b, diff:comparable ? a-b : 0};
+    });
+    const sort = byId('cmpSort').value;
+    const byName = (a,b) => a.name.localeCompare(b.name,'ar');
+    rows.sort((a,b) => sort === 'name' ? byName(a,b) :
+      (sort === 'spend' ? b.a-a.a : Math.abs(b.diff)-Math.abs(a.diff)) || b.a-a.a || byName(a,b));
+    const total = rows.reduce((sum,row) => ({a:sum.a+row.a,b:sum.b+(row.b || 0)}), {a:0,b:0});
+    const bTotal = comparable ? total.b : null;
+    const difference = comparable ? total.a-total.b : 0;
+    const direction = difference > 0 ? 'الصرف أعلى' : difference < 0 ? 'الصرف أقل' : 'الصرف متساوٍ';
+    const showValue = (row,key) => valueMarkup(key === 'a' ? 'actual':'reference',row.id,row[key],key === 'a' || !isPlan);
+    const dayLabel = item => number.format(dateDiffDays(item.from,item.to)) + ' يوم';
+    summary.innerHTML = '<div class="cmp-summary-grid"><div class="cmp-summary-primary"><small>' + baseLabel +
+      '</small><strong>' + valueMarkup('actual','',total.a,true) + '</strong>' + rangeLabel(range) + '<small>' + dayLabel(range) +
+      '</small></div><div class="cmp-summary-reference"><small>' + refLabel + '</small><strong>' +
+      valueMarkup('reference','',bTotal,!isPlan) + '</strong>' + rangeLabel(baseline) + '<small>' + dayLabel(baseline) +
+      '</small></div><div><small>الفرق</small><strong>' + changeMarkup(total.a,bTotal) + '</strong><small>' +
+      (comparable ? direction : 'المرجع غير مكتمل') + '</small></div></div><p class="cmp-difference-hint">' +
+      (comparable ? 'الفرق = صرف الفترة الأساسية ناقص المرجع · جميع المبالغ بالجنيه المصري' :
+        'لا توجد موازنة مسجّلة لكل أشهر نطاق المرجع. اختر نطاقًا تغطيه الموازنة لعرض الفرق.') + '</p>';
+    renderInsights(rows,actualEntries.length,total.a,range,comparable);
     if (!rows.length) {
-      content.insertAdjacentHTML('beforeend', '<p>لا توجد مصروفات في الفترتين المختارتين.</p>');
+      content.textContent = 'لا توجد مصروفات أو بنود للمقارنة في النطاق المحدد.';
       return;
     }
-    const total = rows.reduce((sum, row) => ({a: sum.a + row.a, b: sum.b + row.b}), {a: 0, b: 0});
-    total.diff = Math.round((total.a - total.b) * 100) / 100;
-    const totalLabel = '<div class="cmp-period-total">الإجمالي <bdi>' + fmt(total.a) + '</bdi> مقابل <bdi>' +
-      fmt(total.b) + '</bdi> · الفرق ' + delta(total.diff) + ' ج.م</div>';
     if (periodChartMode === 'table') {
-      const tableRows = rows.map(row => '<tr><th scope="row">' + escapeHtml(row.name) + '</th><td>' +
-        valueButton(row, 'a') + '</td><td>' + valueButton(row, 'b') + '</td><td>' + delta(row.diff) +
-        '</td><td>' + (row.b > 0 ? signed(row.diff / row.b * 100) + '٪' : '—') + '</td></tr>').join('');
-      content.insertAdjacentHTML('beforeend', '<div class="cmp-period-table"><table aria-label="مقارنة المصروفات بالجنيه المصري"><thead><tr>' +
-        '<th scope="col">البند</th><th scope="col">فعلي</th><th scope="col">مرجعي</th><th scope="col">الفرق</th><th scope="col">التغيّر</th>' +
-        '</tr></thead><tbody>' + tableRows + '</tbody></table></div>' + totalLabel);
+      const tableRows = rows.map(row => '<tr data-budget-category="' + escapeHtml(row.id) + '"><th scope="row">' +
+        escapeHtml(row.name) + '</th><td>' + showValue(row,'a') + '</td><td>' + showValue(row,'b') +
+        '</td><td class="cmp-difference">' + changeMarkup(row.a,row.b) + '</td></tr>').join('');
+      content.innerHTML = '<div class="cmp-period-table"><table aria-label="مقارنة البنود بالجنيه المصري"><thead><tr>' +
+        '<th scope="col">البند</th><th scope="col">الأساسية</th><th scope="col">المرجع</th><th scope="col">الفرق</th>' +
+        '</tr></thead><tbody id="cmpTableBody">' + tableRows + '</tbody></table></div>';
       return;
     }
-    const maxValue = Math.max(1, ...rows.flatMap(row => [Math.abs(row.a), Math.abs(row.b)]));
-    const maxDelta = Math.max(1, ...rows.map(row => Math.abs(row.diff)));
+    const maxValue = rows.reduce((max,row) => Math.max(max,Math.abs(row.a),Math.abs(row.b)),1);
+    const maxDelta = rows.reduce((max,row) => Math.max(max,Math.abs(row.diff)),1);
     const markup = rows.map(row => {
-      const bar = (key, color) => '<div class="cmp-period-bar-row"><div aria-hidden="true" class="cmp-period-track"><i class="' + color +
-        '" style="width:' + Math.abs(row[key]) / maxValue * 100 + '%"></i></div>' + valueButton(row, key) + '</div>';
-      const bars = periodChartMode === 'change' ?
-        '<div class="cmp-period-delta" aria-hidden="true"><i class="' + (row.diff < 0 ? 'negative' : 'positive') +
-        '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div>' :
-        bar('a', 'actual') + bar('b', 'reference');
-      const values = periodChartMode === 'change' ? '<div class="cmp-period-values">' + valueButton(row, 'a') + ' مقابل ' +
-        valueButton(row, 'b') + '</div>' : '';
-      return '<li><div class="cmp-period-row-heading"><strong>' + escapeHtml(row.name) + '</strong>' +
-        delta(row.diff) + '</div>' + bars + values + '</li>';
+      const bar = (key,color) => '<div class="cmp-period-bar-row"><div class="cmp-period-track" aria-hidden="true"><i class="' + color +
+        '" style="width:' + Math.abs(row[key]) / maxValue * 100 + '%"></i></div>' + showValue(row,key) + '</div>';
+      const change = '<div class="cmp-period-delta" aria-hidden="true"><i class="' + (row.diff < 0 ? 'negative':'positive') +
+        '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div><div class="cmp-period-values">' +
+        showValue(row,'a') + ' مقابل ' + showValue(row,'b') + '</div>';
+      return '<li><div class="cmp-period-row-heading"><strong>' + escapeHtml(row.name) + '</strong><div class="cmp-difference">' +
+        changeMarkup(row.a,row.b) + '</div></div>' +
+        (periodChartMode === 'change' ? change : bar('a','actual')+bar('b','reference')) + '</li>';
     }).join('');
-    content.insertAdjacentHTML('beforeend', '<ul class="cmp-period-bars">' + markup + '</ul>' + totalLabel);
-  }
-
-  function renderCharts(actData, totEstim, fromDate, toDate) {
-    if (typeof Chart === 'undefined') return;
-
-    // 2. Horizontal Bar Chart (By Person / Member)
-    const ctxBar = document.getElementById('cmpChartBar');
-    if (ctxBar) {
-      if (_chartBar) { _chartBar.destroy(); _chartBar = null; }
-
-      const membersList = (typeof state !== 'undefined' && Array.isArray(state.members)) ? state.members.map(m => m.name || m) : Object.keys(actData.byMember);
-      const memberNames = Array.from(new Set([...membersList, ...Object.keys(actData.byMember)]));
-      const memberValues = memberNames.map(m => actData.byMember[m] || 0);
-
-      _chartBar = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-          labels: memberNames,
-          datasets: [{
-            label: 'المصروف الفعلي',
-            data: memberValues,
-            backgroundColor: 'rgba(56, 189, 248, 0.75)',
-            borderColor: '#38bdf8',
-            borderWidth: 1.2,
-            borderRadius: 6
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } },
-            y: { ticks: { color: '#f8fafc', font: { weight: 'bold' } }, grid: { display: false } }
-          }
-        }
-      });
-    }
-
-    // 3. Line Chart (Cumulative Daily Actual vs Cumulative Daily Budget)
-    const ctxLine = document.getElementById('cmpChartLine');
-    if (ctxLine) {
-      if (_chartLine) { _chartLine.destroy(); _chartLine = null; }
-
-      const start = new Date(fromDate);
-      const end = new Date(toDate);
-      const dayList = [];
-      const cur = new Date(start);
-      while (cur <= end) {
-        dayList.push(formatDateStr(cur));
-        cur.setDate(cur.getDate() + 1);
-      }
-
-      let cumAct = 0;
-      const actPoints = [];
-      const estimPoints = [];
-      const dailyBudgetCap = (dayList.length > 0) ? (totEstim / dayList.length) : 0;
-      let cumEst = 0;
-
-      dayList.forEach(d => {
-        cumAct += (actData.byDate[d] || 0);
-        cumEst += dailyBudgetCap;
-        actPoints.push(cumAct);
-        estimPoints.push(Math.round(cumEst));
-      });
-
-      _chartLine = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-          labels: dayList.map(d => d.slice(5)), // MM-DD
-          datasets: [
-            {
-              label: 'الفعلي التراكمي',
-              data: actPoints,
-              borderColor: '#f43f5e',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              fill: true,
-              tension: 0.25,
-              borderWidth: 2.2,
-              pointRadius: 2.5
-            },
-            {
-              label: 'سقف التقديري التراكمي',
-              data: estimPoints,
-              borderColor: '#fbbf24',
-              borderDash: [5, 5],
-              fill: false,
-              tension: 0,
-              borderWidth: 2,
-              pointRadius: 0
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 11 } } }
-          },
-          scales: {
-            x: { ticks: { color: '#94a3b8', maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.06)' } },
-            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }
-          }
-        }
-      });
-    }
-  }
-
-  function drillDownToCategory(catKey) {
-    if (typeof switchAppPage === 'function') {
-      switchAppPage('operations');
-      setTimeout(() => {
-        const catFilter = document.getElementById('filterCategory') || document.getElementById('txCategoryFilter');
-        if (catFilter) {
-          catFilter.value = catKey;
-          catFilter.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        if (typeof renderTransactionsTable === 'function') renderTransactionsTable();
-        if (typeof showToast === 'function') {
-          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(catKey, 'expense') : { name: catKey };
-          showToast(`تمت فلترة الحركات على بند: ${catObj.name}`);
-        }
-      }, 100);
-    }
+    content.innerHTML = '<ul class="cmp-period-bars">' + markup + '</ul>';
   }
 
   return {
-    render,
-    onActualPeriodChange,
-    onEstimPeriodChange,
-    buildEstimPeriodOptions,
-    getNavigationRange,
-    selectReference,
-    recordSampleOperations,
-    openSampleOperations,
-    renderSampleOperations,
-    returnFromSampleOperations,
-    showAllSampleOperations,
-    showMoreSampleOperations,
-    drillDownToCategory
+    render, onActualPeriodChange, getNavigationRange, selectReference, recordSampleOperations,
+    toggleDemo, openSampleOperations, renderSampleOperations, returnFromSampleOperations,
+    showAllSampleOperations, showMoreSampleOperations
   };
 })();
 window.BudgetCompareEngine = BudgetCompareEngine;

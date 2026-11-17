@@ -1739,7 +1739,7 @@ body.light-theme #settingsModal .settings-modal-shell .antigravity-card-block {
   #appFrame #budgetDrilldownBack { max-width: 7.25rem; }
 }
 .monthly-insight-card[data-budget-drill-scope],
-.budget-audit-row, #cmpTableBody tr[onclick],
+.budget-audit-row,
 .monthly-week-line[data-budget-week],.monthly-overrun-list [data-budget-cat] {
   cursor:pointer;
 }
@@ -1751,8 +1751,6 @@ button.monthly-insight-card {font:inherit;text-align:start;color:inherit;width:1
 }
 .monthly-insight-card[data-budget-drill-scope]:hover,
 .budget-audit-row:hover {filter:brightness(1.07)}
-#cmpExtraInsightGrid {margin:12px 0;direction:rtl}
-#cmpExtraInsightGrid .monthly-insight-card {align-items:stretch}
 @media(max-width:390px){
   #settingsModal .antigravity-palette-grid {gap:4px !important}
   #settingsModal .antigravity-palette-grid .theme-pill-option {padding:2px 1px !important}
@@ -1854,14 +1852,6 @@ body.light-theme #settingsModal #settingsSec_appearance .card-style-option[aria-
 .commitments-calendar-month button {padding:5px;min-width:24px;min-height:32px}
 .commitments-calendar-month span {min-width:64px;text-align:center}
 
-#cmpExtraInsightGrid .monthly-insights {margin:6px 0;padding:7px}
-#cmpExtraInsightGrid .monthly-insights>p {margin:0 0 5px;line-height:1.35}
-#cmpExtraInsightGrid .monthly-insight-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:0}
-#cmpExtraInsightGrid .monthly-insight-card {gap:1px;padding:4px 5px;min-height:0;border-radius:7px}
-#cmpExtraInsightGrid .monthly-insight-card small,
-#cmpExtraInsightGrid .monthly-insight-card span {font-size:.61rem;line-height:1.25}
-#cmpExtraInsightGrid .monthly-insight-card strong {font-size:.9rem;line-height:1.2}
-
 #cmpPeriodChart {
   --period-actual:#2563eb;
   --period-reference:#8054c7;
@@ -1875,12 +1865,8 @@ body.light-theme #settingsModal #settingsSec_appearance .card-style-option[aria-
   background:var(--bg-card,#1e293b);
 }
 body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
-#cmpPeriodChartTitle {margin:0 0 6px;font-size:.86rem}
-.cmp-period-controls {display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:6px}
-.cmp-period-controls label {font-weight:800;font-size:.72rem}
-.cmp-period-controls select {max-width:100%;flex:1;min-width:0}
 .cmp-period-modes {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
-.cmp-period-modes button,.cmp-period-controls :is(select,button),.cmp-period-value {
+.cmp-period-modes button,.cmp-period-value {
   font:inherit;
   font-size:.69rem;
   color:inherit;
@@ -1890,10 +1876,8 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
   padding:4px;
 }
 .cmp-period-modes button[aria-pressed="true"] {background:#1d4ed8;color:#fff;border-color:#1d4ed8}
-.cmp-period-legend {display:flex;flex-wrap:wrap;gap:4px 10px;margin:8px 0;font-size:.67rem}
-.cmp-period-legend span::before {content:'';display:inline-block;width:.6em;height:.6em;margin-inline-end:4px;border-radius:2px}
-.cmp-period-key-actual::before,.cmp-period-track .actual {background:var(--period-actual)}
-.cmp-period-key-reference::before,.cmp-period-track .reference {background:var(--period-reference)}
+.cmp-period-track .actual {background:var(--period-actual)}
+.cmp-period-track .reference {background:var(--period-reference)}
 .cmp-period-bars {display:grid;gap:5px;margin:0;padding:0;list-style:none;max-height:360px;overflow:auto}
 .cmp-period-bars li {padding:3px 0;border-bottom:1px solid var(--border,#64748b)}
 .cmp-period-row-heading,.cmp-period-bar-row {display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.72rem}
@@ -1907,7 +1891,6 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
 .cmp-period-delta .negative {right:50%;background:var(--period-down)}
 .cmp-period-values {font-size:.68rem;text-align:center}
 .cmp-period-value {padding:1px 3px;background:transparent;border-color:transparent;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
-.cmp-period-total {border-top:1px solid var(--border,#64748b);margin-top:5px;padding-top:5px;font-size:.72rem;font-weight:850}
 .cmp-period-table {max-height:360px;overflow:auto}
 .cmp-period-table table {width:100%;border-collapse:collapse;font-size:.69rem}
 .cmp-period-table :is(th,td) {padding:3px 4px;border-bottom:1px solid var(--border,#64748b);text-align:start}
@@ -1949,3 +1932,89 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
 #cmpEstimCustomRange .cmp-month-range-button { color: #fde68a; background: rgba(245,158,11,.13); }
 body.light-theme #cmpPeriodsFilterBox .cmp-month-range-button { color: #065f46; }
 body.light-theme #cmpPeriodsFilterBox #cmpEstimCustomRange .cmp-month-range-button { color: #854d0e; }
+
+/* One comparison layout and scale shared by the table and both chart views. */
+#cmpPeriodChart.cmp-workspace {
+  padding: 8px;
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+.cmp-heading,.cmp-view-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.cmp-heading h3 { margin: 0; min-width: 0; font-size: .88rem; }
+#cmpPeriodChart :is(#cmpDataMode,select,.cmp-period-modes button) {
+  min-height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px 5px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: inherit;
+  font-size: .71rem;
+  font-weight: 750;
+}
+#cmpPeriodChart :is(#cmpDataMode,.cmp-period-modes button)[aria-pressed="true"] {
+  color: #fff;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+#cmpDemoNote { font-size: .67rem; margin: 2px 0 6px; color: var(--text-muted); }
+.cmp-period-filters { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; margin: 0 0 7px; }
+.cmp-period-filters label { display: block; font-size: .69rem; font-weight: 800; margin-bottom: 3px; }
+.cmp-period-filters select { display: block; width: 100%; min-width: 0; text-overflow: ellipsis; }
+.cmp-summary-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; }
+.cmp-summary-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: start;
+  min-width: 0;
+  padding: 5px 4px;
+  background: var(--bg-card-sub,var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.cmp-summary-grid .cmp-summary-primary { border-block-start: 3px solid var(--period-actual); }
+.cmp-summary-grid .cmp-summary-reference { border-block-start: 3px solid var(--period-reference); }
+.cmp-summary-grid > div:last-child { border-block-start-width: 3px; }
+.cmp-summary-grid small { color: var(--text-muted); font-size: .61rem; line-height: 1.2; }
+.cmp-summary-grid strong { font-size: .85rem; }
+.cmp-summary-grid > div > bdi { font-size: .58rem; }
+.cmp-summary-grid .cmp-period-value { font-size: inherit; font-weight: inherit; }
+.cmp-summary-grid strong small,.cmp-difference small { display: block; font-size: .59rem; color: var(--text-muted); }
+.cmp-difference-hint { margin: 5px 0 6px; color: var(--text-muted); font-size: .63rem; line-height: 1.3; }
+.cmp-view-tools .cmp-period-modes { flex: 1 1 auto; }
+.cmp-view-tools label { display: flex; align-items: center; gap: 3px; font-size: .64rem; }
+#cmpPeriodChartContent { min-width: 0; font-size: .71rem; }
+#cmpPeriodChartContent .cmp-period-table { max-height: none; }
+#cmpPeriodChartContent .cmp-period-table table { table-layout: fixed; font-size: .76rem; }
+#cmpPeriodChartContent .cmp-period-table th:first-child { width: 31%; }
+#cmpPeriodChartContent .cmp-period-table th,#cmpPeriodChartContent .cmp-period-table td {
+  padding: 5px 3px;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+#cmpPeriodChartContent .cmp-period-table thead th { position: static; }
+#cmpPeriodChartContent .cmp-period-table tbody th { font-weight: 800; }
+#cmpPeriodChartContent .cmp-period-table :is(th,td):not(:first-child) { text-align: center; }
+#cmpPeriodChartContent .cmp-period-bars { max-height: none; overflow: visible; }
+#cmpPeriodChartContent .cmp-period-value { max-width: 100%; overflow-wrap: anywhere; }
+#cmpInsightDetails { margin-top: 7px; border-top: 1px solid var(--border); }
+#cmpInsightDetails > summary { padding: 5px 0; cursor: pointer; font-size: .72rem; font-weight: 800; }
+#cmpExtraInsightGrid { margin: 0; }
+.cmp-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; margin: 0; }
+.cmp-metrics > div { min-width: 0; padding: 4px; border: 1px solid var(--border); border-radius: 6px; overflow-wrap: anywhere; }
+.cmp-metrics dt { font-size: .6rem; color: var(--text-muted); }
+.cmp-metrics dd { margin: 0; font-size: .71rem; font-weight: 800; }
+#panelBudgetCompare [hidden] { display: none !important; }
+
+@media (max-width: 600px) {
+  body:has(#viewBudgets.active #btnBudgetSubCurrent[aria-pressed="true"]):has(#viewBudgets.active #btnBudgetInnerCompare[aria-pressed="true"])
+    :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab) { display: none !important; }
+}

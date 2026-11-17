@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.95",
-  "build": "202611171025",
-  "buildId": 202611171025,
-  "updated": "2026-11-17T10:25:00+03:00",
-  "notes": "Align the operations toolbar, cards and comparison return; use the unified date picker for estimated ranges."
+  "version": "v5.3.96",
+  "build": "202611171035",
+  "buildId": 202611171035,
+  "updated": "2026-11-17T10:35:00+03:00",
+  "notes": "Unified mobile category comparison and a recorded two-month example with actual and planned sample data."
 }
