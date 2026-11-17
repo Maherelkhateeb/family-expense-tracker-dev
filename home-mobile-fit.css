@@ -573,3 +573,244 @@ body:has(#viewExpenses.home-alternative-design.active)
   overflow-wrap:anywhere!important;
   text-align:center!important;
 }
+
+
+/* Stage 1 of 5 — user image #1, 940 × 1673: horizontal icon-left expense cards.
+   Only layout 1. Keep native original layout and layouts 2–5 untouched.
+   Reference: RTL first row bills / daily, then house / food, education / transport,
+   health / other, clothes / voice. The voice tile is not a monetary category. */
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid {
+  display:grid!important;
+  direction:rtl!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(5,minmax(0,1fr))!important;
+  align-items:stretch!important;
+  align-content:stretch!important;
+  gap:clamp(5px,1.3cqi,9px)!important;
+  min-width:0!important;
+  width:100%!important;
+  height:100%!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+  display:grid!important;
+  direction:rtl!important;
+  position:relative!important;
+  grid-template-columns:minmax(0,68fr) minmax(0,32fr)!important;
+  grid-template-rows:minmax(0,41fr) minmax(0,59fr)!important;
+  align-content:stretch!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  overflow:hidden!important;
+  height:100%!important;
+  border-width:1.2px!important;
+  border-radius:clamp(11px,2.75cqi,18px)!important;
+  box-shadow:0 2px 4px #35556b2b,inset 0 0 0 1px #fff8!important;
+  background:linear-gradient(to bottom,var(--tint) 0%,color-mix(in srgb,var(--tint) 70%,#fff) 42%,#fff 92%)!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="daily"] {
+  --border:#f7b600!important;--tint:#fff4cb!important;grid-column:1!important;grid-row:1!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="bills"] {
+  --border:#ff6611!important;--tint:#ffe8dd!important;grid-column:2!important;grid-row:1!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="food"] {
+  --border:#00c95a!important;--tint:#cbf8e2!important;grid-column:1!important;grid-row:2!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="house"] {
+  --border:#9834f6!important;--tint:#e8defe!important;grid-column:2!important;grid-row:2!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="transport"] {
+  --border:#078efb!important;--tint:#d3eeff!important;grid-column:1!important;grid-row:3!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="education"] {
+  --border:#078ffc!important;--tint:#d0ecff!important;grid-column:2!important;grid-row:3!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="other"] {
+  --border:#00c95d!important;--tint:#dcfbe7!important;grid-column:1!important;grid-row:4!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="health"] {
+  --border:#ff263e!important;--tint:#ffe0e4!important;grid-column:2!important;grid-row:4!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] {
+  --border:#a72cf7!important;--tint:#f3dcff!important;grid-column:1!important;grid-row:5!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  background:linear-gradient(135deg,#fdf9ff,#eddbff)!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="clothes"] {
+  --border:#ff3098!important;--tint:#ffdeee!important;grid-column:2!important;grid-row:5!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add {
+  box-sizing:border-box!important;
+  position:static!important;
+  display:flex!important;
+  grid-column:1!important;
+  grid-row:1!important;
+  flex-direction:row!important;
+  justify-content:center!important;
+  align-items:center!important;
+  width:100%!important;
+  height:100%!important;
+  padding:2px 3px 0!important;
+  margin:0!important;
+  border:0!important;
+  background:transparent!important;
+  gap:0!important;
+  overflow:visible!important;
+  text-align:center!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add strong {
+  display:block!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  flex:0 1 auto!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+  font:900 clamp(11px,3.13cqi,17px)/1.07 Tahoma,Arial,sans-serif!important;
+  text-align:center!important;
+  color:#070916!important;
+  text-shadow:none!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-icon {
+  position:absolute!important;
+  left:clamp(3px,1.7cqi,10px)!important;
+  right:auto!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  display:block!important;
+  height:clamp(34px,11.5cqi,62px)!important;
+  width:clamp(34px,11.5cqi,62px)!important;
+  margin:0!important;
+  background:url('./assets/home-reference-one.webp') var(--icon-x) var(--icon-y) / 500% 200% no-repeat!important;
+  pointer-events:none!important;
+  z-index:1!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-details {
+  box-sizing:border-box!important;
+  grid-column:1!important;
+  grid-row:2!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-evenly!important;
+  align-items:stretch!important;
+  min-width:0!important;
+  min-height:0!important;
+  width:100%!important;
+  height:100%!important;
+  padding:0 clamp(3px,.7cqi,5px) 2px!important;
+  gap:1px!important;
+  background:transparent!important;
+  overflow:hidden!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-amount {
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:0!important;
+  font:900 clamp(10px,3.05cqi,17px)/1.1 Arial,Tahoma,sans-serif!important;
+  justify-content:center!important;
+  align-items:center!important;
+  flex-wrap:nowrap!important;
+  white-space:nowrap!important;
+  color:#0d1423!important;
+  text-align:center!important;
+  gap:2px!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-spent="true"] .reference-one-amount {
+  color:#cf1215!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-details progress {
+  display:block!important;
+  height:clamp(2px,.55cqi,4px)!important;
+  width:97%!important;
+  margin:0 auto!important;
+  flex-shrink:0!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-details small {
+  width:100%!important;
+  min-height:0!important;
+  max-width:100%!important;
+  font:850 clamp(8px,2.65cqi,14px)/1.08 Tahoma,Arial,sans-serif!important;
+  color:#0d1423!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  text-align:center!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] button {
+  position:relative!important;
+  grid-column:1!important;grid-row:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  height:100%!important;
+  width:100%!important;
+  padding:clamp(3px,1cqi,7px) 4px 3px 28%!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] button strong {
+  font:900 clamp(12px,3.2cqi,17px)/1.1 Tahoma,Arial,sans-serif!important;
+  max-width:100%!important;
+  color:#0d1423!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] .reference-one-icon {
+  left:clamp(4px,1.45cqi,9px)!important;
+  width:clamp(35px,11.5cqi,62px)!important;
+  height:clamp(35px,11.5cqi,62px)!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] .reference-one-wave {
+  position:absolute!important;
+  right:clamp(4px,1.2cqi,8px)!important;
+  bottom:clamp(5px,1.1cqi,8px)!important;
+  left:auto!important;
+  width:66%!important;
+  height:clamp(9px,2.9cqi,21px)!important;
+  gap:clamp(1px,.45cqi,3px)!important;
+  margin:0!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"] .reference-one-wave i {
+  height:calc(var(--wave-height) * .3cqi)!important;
+}
+/* The first user reference places currency immediately left of wallet and
+   summary at the far left. This layout's order is intentionally distinct. */
+#viewExpenses.home-reference-one.active #btnToggleCurrency {order:3!important;}
+#viewExpenses.home-reference-one.active #btnOpenSummaryQuick {order:4!important;}
+/* Phone reference uses a lower 60px financial cockpit and compact tool row. */
+@media(max-width:480px){
+  body:has(#viewExpenses.home-reference-one.active) .app-header {padding:3px 5px 2px!important;gap:2px!important;}
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row {margin-bottom:1px!important;gap:2px!important;}
+  body:has(#viewExpenses.home-reference-one.active)
+  :is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
+    height:clamp(27px,7.4vw,34px)!important;
+    padding:0 3px!important;
+    font-size:clamp(8px,2.15vw,12px)!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer {padding:1px 0!important;}
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-bubble {
+    width:clamp(26px,7.6vw,37px)!important;
+    height:clamp(26px,7.6vw,37px)!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-name-label {
+    font-size:clamp(8px,2.35vw,11px)!important;
+  }
+  #viewExpenses.home-reference-one.active > .period-selector-top-strip {margin:1px 5px 2px!important;}
+  #viewExpenses.home-reference-one.active .period-buttons-group {min-height:31px!important;height:32px!important;padding:2px!important;}
+  #viewExpenses.home-reference-one.active > #topKpiThreeStrip {
+    height:clamp(55px,15vw,66px)!important;min-height:0!important;
+    margin:3px 5px!important;
+  }
+  #viewExpenses.home-reference-one.active #topCardBalance {font-size:clamp(20px,6.2vw,27px)!important;}
+  #viewExpenses.home-reference-one.active > .executive-quick-tools-strip {
+    height:32px!important;min-height:32px!important;max-height:32px!important;
+    margin:3px 5px 6px!important;
+  }
+  #viewExpenses.home-reference-one.active > .executive-quick-tools-strip > * {
+    height:32px!important;min-height:31px!important;max-height:32px!important;
+  }
+}
