@@ -31,3 +31,11 @@ jobs:
         env:
           APP_URL: http://127.0.0.1:8765/
         run: node scripts/test-comparison-navigation.cjs
+
+      - name: Upload merged comparison screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-comparison-phone-and-desktop
+          path: screenshots/comparison-unified-*.png
+          if-no-files-found: ignore
