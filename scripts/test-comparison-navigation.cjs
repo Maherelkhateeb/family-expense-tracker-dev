@@ -3,6 +3,7 @@
 'use strict';
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
+require('node:fs').mkdirSync('screenshots',{recursive:true});
 const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
 (async()=>{
   const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
