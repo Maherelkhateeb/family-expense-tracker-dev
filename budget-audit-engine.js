@@ -1861,7 +1861,7 @@ const BudgetCompareEngine = (() => {
     const budgetMode=opts.reference==='plan'||!opts.reference;
     const sorted=[...rows];
     const est=totals.b||0, actual=totals.a||0, variance=actual-est;
-    const palette={estimated:'#888780',actual:'#378ADD',over:'#E24B4A',save:'#639922'};
+    const palette={estimated:'#2563EB',actual:'#0D9488',over:'#DC2626',save:'#16A34A'};
     const num=value=>Math.round(Number(value)||0);
     const money=value=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(value/100);
     const fmt=value=>'<bdi dir="ltr">'+money(num(value))+'</bdi>';
@@ -1882,7 +1882,7 @@ const BudgetCompareEngine = (() => {
     if(!byId('budgetSpecStyle')){
       const style=document.createElement('style');style.id='budgetSpecStyle';
       style.textContent=[
-        '.budget-spec{--bs-est:#888780;--bs-act:#378ADD;--bs-over:#E24B4A;--bs-save:#639922;color:var(--text-primary,inherit);direction:rtl;font:500 13px/1.65 Tahoma,Arial,sans-serif;max-width:100%;min-width:0}',
+        '.budget-spec{--bs-est:#2563EB;--bs-act:#0D9488;--bs-over:#DC2626;--bs-save:#16A34A;color:var(--text-primary,inherit);direction:rtl;font:500 13px/1.65 Tahoma,Arial,sans-serif;max-width:100%;min-width:0}',
         '.budget-spec *, .budget-spec *::before,.budget-spec *::after{box-sizing:border-box}',
         '.budget-spec h3,.budget-spec h4{margin:0 0 9px;font-size:15px;line-height:1.4;color:inherit}',
         '.budget-spec small{font-size:12px;color:var(--text-secondary,inherit)}',
@@ -2016,9 +2016,9 @@ const BudgetCompareEngine = (() => {
       const style=document.createElement('style');style.id='budgetSpecAdvancedStyle';
       style.textContent=[
         '.budget-spec .bs-bullet-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,2fr) auto;align-items:center;gap:8px;margin:12px 0;font-size:12px}',
-        '.budget-spec .bs-bullet-track{height:18px;position:relative;border-radius:3px;overflow:visible;background:linear-gradient(to right,#8887802e 0 50%,#E24B4A2a 50% 100%)}',
+        '.budget-spec .bs-bullet-track{height:18px;position:relative;border-radius:3px;overflow:visible;background:linear-gradient(to right,#2563EB2e 0 50%,#DC26262a 50% 100%)}',
         '.budget-spec .bs-bullet-track::after{content:"";position:absolute;left:var(--target);top:-3px;bottom:-3px;border-left:2px solid currentColor}',
-        '.budget-spec .bs-bullet-track>i{position:absolute;top:4px;bottom:4px;left:0;background:#378ADD;max-width:100%;display:block}',
+        '.budget-spec .bs-bullet-track>i{position:absolute;top:4px;bottom:4px;left:0;background:#0D9488;max-width:100%;display:block}',
         '.budget-spec .bs-heat-row{display:grid;grid-template-columns:minmax(85px,1.2fr) repeat(var(--months),minmax(0,1fr));align-items:center;gap:3px;margin:3px 0}',
         '.budget-spec .bs-heat-row>span{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
         '.budget-spec .bs-heat-cell{display:grid;place-items:center;min-height:34px;border-radius:4px;text-align:center;font-size:12px;font-weight:800;color:inherit}',
@@ -2034,7 +2034,7 @@ const BudgetCompareEngine = (() => {
         '.budget-spec .bs-stack-key i{display:inline-block;width:12px;height:12px;vertical-align:middle}',
         '.budget-spec .bs-cumulative-legend{display:flex;gap:12px;justify-content:center;font-size:12px;flex-wrap:wrap}',
         '.budget-spec .bs-slope-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center;margin:8px 0;padding-bottom:6px;border-bottom:1px dashed var(--border-color,#cbd5e1)}',
-        '.budget-spec .bs-slope-visual{position:relative;height:30px;background:linear-gradient(to right,transparent 0 2%,#88878026 2% 3%,transparent 3% 96%,#88878026 96% 97%,transparent 97%);min-width:0}',
+        '.budget-spec .bs-slope-visual{position:relative;height:30px;background:linear-gradient(to right,transparent 0 2%,#2563EB26 2% 3%,transparent 3% 96%,#2563EB26 96% 97%,transparent 97%);min-width:0}',
         '.budget-spec .bs-slope-visual svg{width:100%;height:30px;display:block}',
         '.budget-spec .bs-slope-amounts{font-size:12px;display:flex;justify-content:space-between;direction:ltr;gap:5px}',
         '@media(max-width:600px){.budget-spec .bs-heat-desktop{display:none}.budget-spec .bs-heat-mobile{display:block}.budget-spec .bs-bullet-row{grid-template-columns:minmax(70px,1fr) minmax(0,1.6fr) auto;gap:4px}.budget-spec .bs-stack-key{gap:4px}.budget-spec .bs-slope-row{grid-template-columns:minmax(90px,1fr) minmax(0,1.35fr)}}'
@@ -2100,11 +2100,11 @@ const BudgetCompareEngine = (() => {
       '<title>التراكم عبر الفترتين المختارتين</title><desc>خط رمادي متقطع للتقديري وخط أزرق متصل للفعلي؛ الأحمر لتجاوز التقديري والأخضر للتوفير.</desc>'+
       '<path class="bs-grid-line" d="M55 190 H565 M55 115 H565 M55 40 H565"/>';
     for(let i=1;i<monthly.length;i++){
-      const fill=cumA[i]>=cumB[i]?'#E24B4A':'#639922';
+      const fill=cumA[i]>=cumB[i]?'#DC2626':'#16A34A';
       cum+='<polygon points="'+x(i-1)+','+y(cumA[i-1])+' '+x(i)+','+y(cumA[i])+' '+x(i)+','+y(cumB[i])+' '+x(i-1)+','+y(cumB[i-1])+'" fill="'+fill+'" opacity=".16"/>';
     }
-    cum+='<polyline points="'+points(cumB)+'" fill="none" stroke="#888780" stroke-width="2" stroke-dasharray="5 4"/>'+
-      '<polyline points="'+points(cumA)+'" fill="none" stroke="#378ADD" stroke-width="2"/>';
+    cum+='<polyline points="'+points(cumB)+'" fill="none" stroke="#2563EB" stroke-width="2" stroke-dasharray="5 4"/>'+
+      '<polyline points="'+points(cumA)+'" fill="none" stroke="#0D9488" stroke-width="2"/>';
     monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(i+1)+'</text>';});
     cum+='</svg><div class="bs-cumulative-legend"><span>المرجع: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
     grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+'</section>');
@@ -2113,7 +2113,7 @@ const BudgetCompareEngine = (() => {
       const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
       const v=b?(a-b)/b*100:null,abs=Math.abs(v||0);
       const opacity=v===null?.18:abs===0?.15:abs<5?.2:abs<15?.4:abs<30?.62:.85;
-      const shade=v===null?'#888780':v>0?'#E24B4A':v<0?'#639922':'#888780';
+      const shade=v===null?'#2563EB':v>0?'#DC2626':v<0?'#16A34A':'#2563EB';
       const label=v===null?'—':(v>0?'+':v<0?'−':'')+Math.round(abs)+'%';
       return {style:'background:color-mix(in srgb,'+shade+' '+Math.round(opacity*100)+'%, transparent)',label};
     };
@@ -2145,7 +2145,7 @@ const BudgetCompareEngine = (() => {
     // 8. Slope: both sides share one numeric scale, one segment per category.
     const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
     const slope=sorted.map(row=>{
-      const y1=25-(row.b||0)/slopeMax*18,y2=25-row.a/slopeMax*18,stroke=row.diff>0?'#E24B4A':row.diff<0?'#639922':'#888780';
+      const y1=25-(row.b||0)/slopeMax*18,y2=25-row.a/slopeMax*18,stroke=row.diff>0?'#DC2626':row.diff<0?'#16A34A':'#2563EB';
       return '<div class="bs-slope-row"><strong>'+text(row.name)+'</strong><div>'+
       '<div class="bs-slope-amounts"><bdi dir="ltr">'+cash(row.b||0)+'</bdi><bdi dir="ltr">'+cash(row.a)+'</bdi></div>'+
       '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
