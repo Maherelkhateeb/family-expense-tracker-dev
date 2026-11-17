@@ -139,3 +139,40 @@ body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
     margin-bottom: 4px !important;
   }
 }
+
+/* Reference-one horizontal icon-title alignment.
+   Keep the left artwork and right-side Arabic title inside each card's top band. */
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add {
+  display: grid !important;
+  direction: rtl !important;
+  grid-template-columns: minmax(0,1fr) minmax(23px,26%) !important;
+  grid-template-rows: minmax(0,1fr) !important;
+  align-items: center !important;
+  justify-items: center !important;
+  column-gap: 2px !important;
+  padding: 1px 3px !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add .reference-one-icon {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  margin: 0 auto !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add strong {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  min-width: 0 !important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign {
+  font-size: 0 !important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign span {
+  display: none !important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign i,
+#viewExpenses.home-reference-one.active #btnHomeDesign svg {
+  font-size: clamp(15px, 5cqi, 24px) !important;
+  flex: 0 0 auto !important;
+}
