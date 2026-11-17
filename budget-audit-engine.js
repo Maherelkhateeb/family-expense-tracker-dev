@@ -1871,7 +1871,7 @@ const BudgetCompareEngine = (() => {
     const tone=value=>value>0?'bs-over':value<0?'bs-save':'bs-neutral';
     const safe=escapeHtml;
     const actualLink=row=>'<button type="button" class="bs-open-operations" data-period-series="actual" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات '+safe(row.name)+'">'+fmt(row.a)+'</button>';
-    const condition=row=>(row.b||0)===0?(row.a>0?'غير مخطط':'لا حركة'):(row.diff/(row.b||1)*100>5?(budgetMode?'تجاوز':'ارتفاع'):row.diff/(row.b||1)*100< -5?(budgetMode?'توفير':'انخفاض'):'ضمن الحد');
+    const condition=row=>(row.b||0)===0?'غير مخطط':(row.diff/(row.b||1)*100>5?(budgetMode?'تجاوز':'ارتفاع'):row.diff/(row.b||1)*100< -5?(budgetMode?'توفير':'انخفاض'):'ضمن الحد');
     const totalPct=percentValue(variance,est);
     if(est+sorted.reduce((sum,row)=>sum+row.diff,0)!==actual){
       content.innerHTML='<p class="bs-error" role="alert">تعذر عرض المقارنة: إجمالي التقديري ومجموع الفروق لا يتطابقان مع إجمالي الفعلي.</p>';
