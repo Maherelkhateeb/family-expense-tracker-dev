@@ -61,11 +61,11 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.equal(snap.zeroCards,9);
       assert.equal(snap.actions,10);
       assert.equal(snap.detailActions,9);
-      if (snap.toolsOrder[3] !== 'btnOpenSummaryQuick') {
+      if (snap.toolsOrder[3] !== 'btnToggleCurrency') {
         console.log('TOOL_ORDER_DIAGNOSTIC',width,await page.evaluate(()=>[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')].map(x=>({id:x.id,order:getComputedStyle(x).order,style:x.style.getPropertyValue('order'),priority:x.style.getPropertyPriority('order'),parent:x.parentElement?.className}))));
       }
       assert.deepEqual(snap.toolsOrder,[
-        'btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'
+        'btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick'
       ],'Five reference tools are in the wrong RTL order');
       assert.ok(snap.switcherVisible && snap.switcherInQuickTools,'Home switcher was hidden or moved to Settings');
       assert.ok(!snap.bodyOverflow,'Horizontal overflow on phone');
@@ -74,6 +74,9 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.ok(snap.topHeaderPresent,'Original header must remain');
       assert.equal(snap.toolCount,5,'Reference must show five quick tools');
       assert.equal(snap.avatarCount,9,'All nine family filters stay visible');
+      if(!require('node:fs').existsSync('screenshots'))require('node:fs').mkdirSync('screenshots');
+      await page.screenshot({path:'screenshots/home-reference-one-'+width+'.png',fullPage:true});
+      await page.screenshot({path:'screenshots/home-reference-one-viewport-'+width+'.png'});
       const voiceBox = await page.evaluate(()=>{
         const card=document.querySelector('.reference-one-card[data-ref-category="voice"]');
         const text=card?.querySelector('strong');
@@ -86,14 +89,16 @@ const order = ['daily','food','bills','house','education','transport','health','
         assert.ok(r.width>0 && r.height>=65,'Collapsed phone card');
         assert.ok(r.x>=-1 && r.right<=width+1,'Card overflows phone viewport');
       }
+      const placements=snap.rects.map((r,i)=>({...r,id:snap.ids[i]}))
+        .sort((a,b)=>Math.abs(a.y-b.y)>2?a.y-b.y:b.right-a.right);
+      assert.deepEqual(placements.map(x=>x.id),[
+        'daily','bills','food','house','transport','education','other','health','voice','clothes'
+      ],'Visual card order must match first user screenshot');
       for(let i=0;i<10;i+=2){
-        assert.ok(Math.abs(snap.rects[i].y-snap.rects[i+1].y)<2,'Two-column row misaligned');
-        assert.ok(snap.rects[i].x>snap.rects[i+1].x,'RTL two-column order broken');
+        assert.ok(Math.abs(placements[i].y-placements[i+1].y)<2,'Two-column row misaligned');
+        assert.ok(placements[i].x>placements[i+1].x,'RTL two-column order broken');
       }
       assert.notEqual(snap.spritePositions[0],snap.spritePositions[1],'Artwork mapped by index');
-      if(!require('node:fs').existsSync('screenshots'))require('node:fs').mkdirSync('screenshots');
-      await page.screenshot({path:'screenshots/home-reference-one-'+width+'.png',fullPage:true});
-      await page.screenshot({path:'screenshots/home-reference-one-viewport-'+width+'.png'});
       await page.locator('#btnHomeDesign').click();
       await page.waitForFunction(()=>document.getElementById('homeInterfaces')?.dataset.design==='2');
       assert.ok(await page.locator('#btnHomeDesign').isVisible(),'Switcher disappeared after switching');
