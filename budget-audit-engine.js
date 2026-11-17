@@ -1871,6 +1871,8 @@ const BudgetCompareEngine = (() => {
     const tone=value=>value>0?'bs-over':value<0?'bs-save':'bs-neutral';
     const safe=escapeHtml;
     const actualLink=row=>'<button type="button" class="bs-open-operations" data-period-series="actual" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات '+safe(row.name)+'">'+fmt(row.a)+'</button>';
+    const referenceLink=row=>opts.reference==='plan'||!row.b?fmt(row.b):
+      '<button type="button" class="bs-open-operations" data-period-series="reference" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات المرجع: '+safe(row.name)+'">'+fmt(row.b)+'</button>';
     const condition=row=>(row.b||0)===0?'غير مخطط':(row.diff/(row.b||1)*100>5?(budgetMode?'تجاوز':'ارتفاع'):row.diff/(row.b||1)*100< -5?(budgetMode?'توفير':'انخفاض'):'ضمن الحد');
     const totalPct=percentValue(variance,est);
     if(est+sorted.reduce((sum,row)=>sum+row.diff,0)!==actual){
@@ -1924,12 +1926,12 @@ const BudgetCompareEngine = (() => {
       const estShare=est?row.b/est*100:0,actShare=actual?row.a/actual*100:0;
       const type=row.id==='bills'?'ثابت':'متغير';
       const cause=row.b===0&&row.a>0?'بند غير مخطط':'غير محدد';
-      const values=[[referenceLabel,fmt(row.b)],[actualLabel,actualLink(row)],
+      const values=[[referenceLabel,referenceLink(row)],[actualLabel,actualLink(row)],
         ['الفرق','<span class="'+tone(row.diff)+'">'+signed(row.diff)+'</span>'],
         ['الانحراف',pct(ratio)],['الحالة',safe(status)],
         ['الحصة التقديرية',pct(estShare)],['الحصة الفعلية',pct(actShare)]];
       const mobile='<article class="bs-row-card" data-budget-category="'+safe(row.id)+'"><div class="bs-row-head"><strong>'+String(index+1)+'. '+safe(row.name)+'</strong><span class="'+tone(row.diff)+'">'+safe(status)+'</span></div><div class="bs-row-values">'+values.map(kv=>'<div><small>'+kv[0]+'</small><strong>'+kv[1]+'</strong></div>').join('')+'</div><small>النوع: '+type+' · السبب: '+cause+'</small></article>';
-      const desktop='<tr data-budget-category="'+safe(row.id)+'"><th scope="row">'+number.format(index+1)+'. '+safe(row.name)+'</th><td>'+fmt(row.b)+'</td><td>'+actualLink(row)+'</td><td class="'+tone(row.diff)+'">'+signed(row.diff)+'</td><td>'+pct(ratio)+'</td><td>'+status+'</td><td>'+pct(estShare)+'</td><td>'+pct(actShare)+'</td><td>'+type+'</td><td>'+cause+'</td></tr>';
+      const desktop='<tr data-budget-category="'+safe(row.id)+'"><th scope="row">'+number.format(index+1)+'. '+safe(row.name)+'</th><td>'+referenceLink(row)+'</td><td>'+actualLink(row)+'</td><td class="'+tone(row.diff)+'">'+signed(row.diff)+'</td><td>'+pct(ratio)+'</td><td>'+status+'</td><td>'+pct(estShare)+'</td><td>'+pct(actShare)+'</td><td>'+type+'</td><td>'+cause+'</td></tr>';
       return {mobile,desktop};
     });
     const totalRow='<tr><th scope="row">الإجمالي</th><td>'+fmt(est)+'</td><td><button class="bs-open-operations" type="button" data-period-series="actual" data-period-category="">'+fmt(actual)+'</button></td><td class="'+tone(variance)+'">'+signed(variance)+'</td><td>'+pct(totalPct)+'</td><td>'+ (est===0?'غير مخطط':totalPct>5?'تجاوز':totalPct< -5?'توفير':'ضمن الحد')+'</td><td>100%</td><td>100%</td><td>—</td><td>—</td></tr>';
