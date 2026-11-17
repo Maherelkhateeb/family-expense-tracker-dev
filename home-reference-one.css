@@ -900,3 +900,27 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav #navTabExpenses.
 #viewExpenses:not(.home-reference-one):not(.home-alternative-design) #walletSelectCluster {order:1 !important;}
 #viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnOpenSummaryQuick {order:2 !important;}
 #viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnToggleCurrency {order:3 !important;}
+
+
+/* The global notification toast is absolute and used to exceed 320px screens.
+   Constrain its real box instead of hiding document overflow. */
+#toastMsg {
+  box-sizing:border-box !important;
+  width:max-content !important;
+  min-width:0 !important;
+  max-width:calc(100vw - 24px) !important;
+  left:50% !important;
+  right:auto !important;
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+  text-align:center !important;
+  justify-content:center !important;
+}
+#toastMsg #toastTxt {
+  display:block !important;
+  min-width:0 !important;
+  max-width:100% !important;
+  white-space:normal !important;
+  overflow-wrap:anywhere !important;
+  text-align:center !important;
+}
