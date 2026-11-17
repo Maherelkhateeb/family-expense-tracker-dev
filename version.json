@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.0",
-  "build": "202611171236",
-  "buildId": 202611171236,
-  "updated": "2026-11-17T12:36:00+03:00",
-  "notes": "Readable comparison cards and explicit links between primary and reference dates."
+  "version": "v5.4.1",
+  "build": "202611171345",
+  "buildId": 202611171345,
+  "updated": "2026-11-17T13:45:00+03:00",
+  "notes": "Daily expense timeline and monthly expense calendar in registered operations."
 }

@@ -183,6 +183,84 @@ const URL=process.env.APP_URL || 'http://127.0.0.1:8765/';
    assert.deepEqual(requestLayout,{count:2,allocations:2,emptyDate:1,presentDate:2,
      statuses:['pending','approved'],actions:['approve','edit','reject'],clickedId:'REQ-2026-0001',fits:true,notes:1});
 
+   await page.locator('#navTabOperations').click();
+   const fixture = await page.evaluate(() => {
+     switchOperationsSubTab('registered');
+     state.period = 'custom';
+     state.customDateRange = {from:'2024-01-01',to:'2024-02-29'};
+     state.currentWalletId = 'all';
+     state.transactions = [
+       ...Array.from({length:41}, (_, i) => ({
+         id:'expense-mode-' + i, type:'expense', date:'2024-02-29', category:'food',
+         time: i === 0 ? '٢:٠٥ م' : '11:00 AM', amount:100, label:i === 0 ? 'بند اختبار التقويم' : 'مصروف آخر'
+       })),
+       {id:'earlier-expense',type:'expense',date:'2024-01-01',category:'daily',time:'10:00',amount:75},
+       {id:'income-mode',type:'income',date:'2024-02-29',category:'salary',time:'15:00',amount:950}
+     ];
+     opsTypeFilterState = 'income';
+     return {dayTotal:formatMoney(4100),previousTotal:formatMoney(75),emptyTotal:formatMoney(0)};
+   });
+   const timeline = page.locator('#btnOpsModeTimeline');
+   const calendar = page.locator('#btnOpsModeCalendar');
+   await timeline.click({timeout:10000});
+   assert.equal(await timeline.getAttribute('aria-pressed'),'true');
+   const item = page.locator('.ops-timeline-item');
+   const firstDay = page.locator('.ops-timeline-day[data-date="2024-02-29"]');
+   assert.equal(await firstDay.locator('header bdi').textContent(),fixture.dayTotal);
+   assert.equal(await item.count(),40);
+   await item.first().locator('summary').click();
+   assert.equal(await item.first().locator('.ops-timeline-details strong').textContent(),'بند اختبار التقويم');
+   await page.getByRole('button',{name:/عرض المزيد من العمليات/}).click();
+   assert.equal(await item.count(),42);
+   assert.equal(await item.first().locator('.ops-timeline-time bdi').textContent(),'2:05 م');
+
+   await calendar.click();
+   assert.equal(await calendar.getAttribute('aria-pressed'),'true');
+   const current = page.locator('[data-calendar-date="2024-01-01"]');
+   assert.equal(await current.locator('bdi').textContent(),fixture.previousTotal);
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   const leapDay = page.locator('[data-calendar-date="2024-02-29"]');
+   await leapDay.click();
+   assert.equal(await leapDay.getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('.ops-calendar-day').count(),29);
+   assert.equal(await leapDay.locator('bdi').textContent(),fixture.dayTotal);
+   assert.equal(await page.locator('.ops-calendar-month-total bdi').textContent(),fixture.dayTotal);
+   assert.equal(await item.count(),40);
+   await page.getByRole('button',{name:/عرض المزيد من العمليات/}).click();
+   assert.equal(await item.count(),41);
+   await page.locator('[data-calendar-date="2024-02-28"]').click();
+   assert.ok(await page.locator('.ops-calendar-empty').isVisible(),'Blank day should open empty details');
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   assert.equal(await page.locator('.ops-calendar-day').count(),31,'Empty month should remain navigable');
+   assert.equal(await page.locator('.ops-calendar-month-total bdi').textContent(),fixture.emptyTotal);
+   await page.getByRole('button',{name:'الشهر السابق'}).click();
+   const filteredTotal = await page.evaluate(() => {
+     document.getElementById('opsSearchInput').value = 'بند اختبار التقويم';
+     filterOperationsList();
+     return formatMoney(100);
+   });
+   assert.equal(await leapDay.locator('bdi').textContent(),filteredTotal);
+   await leapDay.click();
+   assert.equal(await item.count(),1);
+   const fits = await page.locator('.ops-calendar-grid').evaluate(grid => {
+     const row = grid.getBoundingClientRect();
+     const weekdays = [...grid.querySelectorAll('.ops-calendar-weekday')];
+     return grid.scrollWidth <= grid.clientWidth &&
+       weekdays[0].getBoundingClientRect().right > weekdays[6].getBoundingClientRect().right &&
+       [...grid.querySelectorAll('button')].every(button => {
+         const rect = button.getBoundingClientRect();
+         return rect.left >= row.left && rect.right <= row.right && rect.width > 0;
+       });
+   });
+   assert.ok(fits,'Calendar must fit seven columns in RTL');
+   await page.evaluate(() => {
+     document.getElementById('opsSearchInput').value = '';
+     filterOperationsList();
+   });
+   await page.locator('#btnOpsModeDaily').click();
+   assert.equal(await page.evaluate(() => getRegisteredOperations().map(tx => tx.id).join(',')), 'income-mode',
+     'Returning to daily mode should preserve the original filter');
+
    assert.deepEqual(errors,[],'Uncaught JS exceptions '+JSON.stringify(errors));
    await ctx.close();
   }
