@@ -22,6 +22,9 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
      document.getElementById('viewExpenses').append(spacer);
      state.period='week';state.currentMemberFilter='البيت';state.projectFilter='all';
      const scrollPane=document.getElementById('viewExpenses');
+     // Force an actually overflowing source pane in the disposable test session.
+     scrollPane.style.setProperty('height','440px','important');
+     scrollPane.style.setProperty('overflow-y','auto','important');
      scrollPane.scrollTop=420;
      const before=scrollPane.scrollTop;
      if(before<100)throw Error('QA failed to make expenses page actually scroll');
@@ -55,6 +58,8 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
      search.value='2025-03-17';
      sort.value='name';
      const scrollPane=document.getElementById('viewBudgets');
+     scrollPane.style.setProperty('height','440px','important');
+     scrollPane.style.setProperty('overflow-y','auto','important');
      scrollPane.scrollTop=610;
      const initialTop=scrollPane.scrollTop;
      if(initialTop<100)throw Error('QA failed to make budgets page actually scroll');
