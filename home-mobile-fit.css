@@ -1253,3 +1253,29 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     -webkit-overflow-scrolling:touch;
   }
 }
+
+
+/* PHOTO ONE SHORT-WIDTH HEADER: long sync progress must not cover Search.
+   The sync status can change from "متزامن" to "جار تحديث ومزامنة..." at runtime.
+   Clip only the text label; never shrink or disable the five header controls. */
+@media (max-width:480px) {
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > .brand-box,
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > div:not(.brand-box){
+    overflow:hidden!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row
+  :is(#btnHeaderMasterSync,#btnGlobalSearch,#btnNotificationsBell,#btnHeaderTasksTop,#btnMainSettings){
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    min-width:0!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row #topDriveSyncStatusText{
+    display:block!important;
+    min-width:0!important;
+    max-width:100%!important;
+    flex:1 1 auto!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+}
