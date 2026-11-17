@@ -1279,3 +1279,34 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     white-space:nowrap!important;
   }
 }
+
+
+/* Mobile reference 1: use available viewport height without clipping category cards.
+   The content remains scrollable when the handset is too short to fit all five rows. */
+@media (max-width:480px) {
+  body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+  }
+  #viewExpenses.home-reference-one.active {
+    flex:1 0 auto!important;
+    min-height:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]) {
+    flex:1 0 auto!important;
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+    margin-bottom:6px!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid {
+    flex:1 0 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    grid-template-rows:repeat(5,minmax(67px,1fr))!important;
+    align-content:stretch!important;
+  }
+}
