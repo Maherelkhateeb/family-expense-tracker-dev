@@ -532,3 +532,12 @@ body:has(#viewExpenses.home-alternative-design.active)
 :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)) {
   visibility:hidden!important;
 }
+
+
+/* Layout order is non-animatable for usability: legacy transition:all caused
+   the wallet/summary/currency positions to shift while the page was loading. */
+#viewExpenses.active .executive-quick-tools-strip > * {
+  transition-property:background-color,color,border-color,box-shadow!important;
+  transition-duration:150ms!important;
+  transition-delay:0s!important;
+}
