@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.10';
-    var APP_BUILD_ID = 202611171510;
+    var APP_VERSION = 'v5.4.11';
+    var APP_BUILD_ID = 202611171635;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.10</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.11</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43099,7 +43099,7 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-reference-one.css?v=202611171510">
+<link rel="stylesheet" href="./home-reference-one.css?v=202611171635">
 <style>
 #btnHomeDesign{order:-1;flex:none;width:36px;height:38px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
@@ -43162,6 +43162,11 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       try { localStorage.setItem(preferenceKey, String(design)); } catch {}
       render();
     };
+    // Preserve design switching in Settings without an extra fifth tool in the reference.
+    const appearanceSettings = document.getElementById('settingsSec_appearance');
+    const settingsDesignSlot = document.createElement('div');
+    settingsDesignSlot.className = 'reference-design-settings-slot';
+    if (appearanceSettings) appearanceSettings.prepend(settingsDesignSlot);
     const items = [
       ['daily','☕','#f59e0b'],['food','🛒','#10b981'],['bills','⚡','#f97316'],
       ['house','🛋️','#8b5cf6'],['education','📚','#3b82f6'],['transport','🚗','#0284c7'],
@@ -43169,8 +43174,10 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     ];
     // Row order and icon positions follow the first supplied reference.
     // Approved RTL order: every expense category stays visible, including zero amounts.
-    const referenceCategories = ['daily', 'food', 'bills', 'house', 'education',
-      'transport', 'health', 'other', 'voice', 'clothes'];
+    // Exactly the reference's three RTL rows: bills/food/daily;
+    // transport/education/house; voice/other/health.
+    const referenceCategories = ['bills','food','daily','transport','education',
+      'house','voice','other','health'];
     // Preserve each artwork cell when cards move: artwork coordinates are NOT grid indices.
     const referenceArt = {
       daily:[0,0], bills:[25,0], food:[50,0], house:[75,0], transport:[100,0],
@@ -43218,6 +43225,15 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     function render() {
       host.dataset.design = design;
       expensePage.classList.toggle('home-reference-one', design === 1);
+      if (appearanceSettings) {
+        if (design === 1 && trigger.parentElement !== settingsDesignSlot) {
+          settingsDesignSlot.appendChild(trigger);
+          trigger.textContent = 'تغيير شكل الشاشة الرئيسية';
+        } else if (design !== 1 && trigger.parentElement !== gold.parentElement) {
+          gold.before(trigger);
+          trigger.innerHTML = '<i class="fa-solid fa-border-all" aria-hidden="true"></i>';
+        }
+      }
       const isOriginal = design === 0;
       // Avoid mutating the observed grid style on every refresh.
       // A redundant setProperty used to create an endless MutationObserver/rAF loop.
