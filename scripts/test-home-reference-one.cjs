@@ -58,6 +58,24 @@ const order = ['daily','food','bills','house','education','transport','health','
       if(!require('node:fs').existsSync('screenshots'))require('node:fs').mkdirSync('screenshots');
       await page.screenshot({path:'screenshots/home-reference-one-'+width+'.png',fullPage:true});
       await page.screenshot({path:'screenshots/home-reference-one-viewport-'+width+'.png'});
+      if(width===390) {
+        const head=await page.evaluate(()=>{
+          const row=document.querySelector('.header-brand-row');
+          const brief=el=>{
+            const r=el.getBoundingClientRect();
+            return {id:el.id,cl:String(el.className||'').slice(0,110),tag:el.tagName,
+              text:el.textContent.trim().slice(0,55),x:Math.round(r.x),y:Math.round(r.y),
+              w:Math.round(r.width),h:Math.round(r.height),
+              display:getComputedStyle(el).display,justify:getComputedStyle(el).justifyContent,
+              flex:getComputedStyle(el).flex,grid:getComputedStyle(el).gridTemplateColumns};
+          };
+          return {parent:brief(row),html:row.outerHTML.slice(0,6000),children:[...row.children].map(x=>({...brief(x),children:[...x.children].map(brief)})),
+            ids:['btnMainSettings','btnHeaderMasterSync','btnGlobalSearch','btnHeaderTasksTop','btnNotificationsBell'].map(id=>{
+              const el=document.getElementById(id);return {button:brief(el),parent:brief(el.parentElement)};
+            })};
+        });
+        console.log('STAGE1_HEADER_DIAGNOSTIC',JSON.stringify(head));
+      }
       assert.deepEqual(snap.ids,order,'Wrong category order or missing zero category');
       assert.deepEqual(snap.labels,[
         'مصروف يومي','طعام ومشتريات','فواتير والتزامات','مستلزمات منزل',
