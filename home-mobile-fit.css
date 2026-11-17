@@ -1281,103 +1281,67 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
 }
 
 
-/* Mobile reference 1: use available viewport height without clipping category cards.
-   The content remains scrollable when the handset is too short to fit all five rows. */
+/* Responsive reference-one layout engine, 2026-11-17.
+   Replace the legacy fixed-height/mobile spacer overrides.
+   Keep reference colors, RTL order and original toolbar unchanged.
+   Card sizing responds to font metrics and container width, while the
+   scrollable page owns overflow rather than hiding the last row. */
 @media (max-width:480px) {
   body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
-    display:flex!important;
-    flex-direction:column!important;
+    display:block!important;
     min-height:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    scroll-padding-block-end:env(safe-area-inset-bottom,0px);
   }
   #viewExpenses.home-reference-one.active {
-    flex:1 0 auto!important;
-    min-height:100%!important;
     display:flex!important;
     flex-direction:column!important;
+    flex:0 0 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding-block-end:0!important;
   }
   #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]) {
-    flex:1 0 auto!important;
-    display:flex!important;
-    flex-direction:column!important;
+    display:block!important;
+    flex:0 0 auto!important;
+    height:auto!important;
     min-height:0!important;
-    margin-bottom:6px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    margin-block-end:0!important;
   }
   #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid {
-    flex:1 0 auto!important;
-    min-height:0!important;
+    display:grid!important;
+    flex:0 0 auto!important;
     height:auto!important;
-    grid-template-rows:repeat(5,minmax(67px,1fr))!important;
-    align-content:stretch!important;
-  }
-}
-
-/* 2026-11-17: correct the previous flex/min-height regression on reference home one.
-   The content scrolls beneath the fixed footer; the last row remains reachable. */
-@media(max-width:480px){
- body:has(#viewExpenses.home-reference-one.active) #appScrollBody{
-   display:block!important;overflow-y:auto!important;min-height:0!important;
-   padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
-   scroll-padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
- }
- #viewExpenses.home-reference-one.active{
-   display:block!important;flex:none!important;min-height:0!important;
-   height:auto!important;overflow:visible!important;
- }
- #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]){
-   display:block!important;flex:none!important;min-height:0!important;
-   height:auto!important;margin-bottom:10px!important;overflow:visible!important;
- }
- #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid{
-   display:grid!important;flex:none!important;height:auto!important;
-   grid-template-rows:repeat(5,clamp(67px,18.1cqi,79px))!important;
-   align-content:start!important;overflow:visible!important;
- }
-}
-
-/* Reference 1: one authoritative phone sizing rule, no viewport-height stretching. */
-@media(max-width:480px){
- #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]){
-   flex:0 0 auto!important;max-height:none!important;overflow:visible!important;
- }
- #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid{
-   flex:0 0 auto!important;height:auto!important;min-height:0!important;
-   grid-template-rows:repeat(5,clamp(72px,18.5cqi,88px))!important;
-   align-content:start!important;align-items:stretch!important;
- }
- #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card{
-   height:100%!important;min-height:0!important;max-height:none!important;
- }
-}
-
-/* Short viewport regression: padding on the scroll container does not extend
-   its scroll range; reserve footer clearance inside the scroll CONTENT. */
-@media(max-width:480px){
- #viewExpenses.home-reference-one.active{
-   padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
-   box-sizing:border-box!important;
- }
- #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]){
-   margin-bottom:0!important;
- }
-}
-
-/* Regression fix: real scrollable clearance after the last expense row.
-   The footer is fixed over the scrollport, so scroll-padding and container
-   padding alone do not increase scrollHeight. A normal-flow spacer does. */
-@media (max-width:480px) {
-  #viewExpenses.home-reference-one.active::after {
-    content:""!important;
-    display:block!important;
-    position:static!important;
-    width:100%!important;
-    height:calc(92px + env(safe-area-inset-bottom,0px))!important;
-    min-height:calc(92px + env(safe-area-inset-bottom,0px))!important;
-    flex:none!important;
-    visibility:hidden!important;
-    pointer-events:none!important;
-  }
-  #viewExpenses.home-reference-one.active {
-    padding-bottom:0!important;
+    min-height:0!important;
+    max-height:none!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(5,minmax(max(4.4em,18cqi),auto))!important;
+    align-content:start!important;
+    align-items:stretch!important;
     overflow:visible!important;
+    gap:clamp(3px,.8cqi,6px)!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+    height:auto!important;
+    min-height:4.4em!important;
+    max-height:none!important;
+    overflow:hidden!important;
+  }
+  /* Clearance belongs to the scroll content, not a fixed 92px pseudo-row.
+     The footer stays unobstructed even when a larger font requires scrolling. */
+  #viewExpenses.home-reference-one.active::after {
+    content:none!important;
+    display:none!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #appScrollBody::after {
+    content:"";
+    display:block;
+    block-size:calc(3.75rem + env(safe-area-inset-bottom,0px));
+    pointer-events:none;
   }
 }
