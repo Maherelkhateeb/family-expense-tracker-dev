@@ -328,7 +328,8 @@
     let current=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,"0")].join("-");
     if(!ui.end)ui.end=current;
     if(ui.sample)ui.end="2026-06";
-    const months=monthsFor(ui.end,ui.sample?6:ui.span),data=ui.sample?sampleData():actualData(months),d=compute(data,ui.tolerance);
+    const months=monthsFor(ui.end,ui.sample?6:ui.span),data=ui.sample?sampleData():actualData(months),all=compute(data,ui.tolerance);
+    const display=ui.sample?compute({months:["2026-06"],perMonth:data.perMonth,categories:data.categories,referenceHeatmap:null},ui.tolerance):all;
     const monthVal=ui.sample?"2026-06":ui.end;
     root.innerHTML=`<div class="fbc" dir="rtl"><div class="fbc-intro"><h2>مقارنة الميزانية الفعلية بالتقديرية</h2>
 <p class="fbc-muted">جدول الفروقات، شلال التغير، أولويات التجاوز، واتجاه الإنفاق حسب الشهر والبند.</p></div>
@@ -337,11 +338,11 @@
 <label>عدد الأشهر <select aria-label="الفترة" data-fbc="span" ${ui.sample?"disabled":""}>${[1,3,6,12].map(n=>`<option value="${n}" ${ui.span===n?"selected":""}>${n} ${n===1?"شهر":"أشهر"}</option>`).join("")}</select></label>
 <label>حد السماح <select aria-label="حد الانحراف المسموح" data-fbc="tolerance">${[0,3,5,10,15,20].map(n=>`<option value="${n}" ${ui.tolerance===n?"selected":""}>${n}%</option>`).join("")}</select></label>
 <label class="fbc-switch"><input type="checkbox" data-fbc="sample" ${ui.sample?"checked":""}> عرض بيانات اختبار المستند</label></div>
-${ui.sample?'<p class="fbc-data-note">وضع عينة اختبار مستقل: لا يعدّل معاملات الأسرة ولا موازناتها.</p>':`<p class="fbc-data-note">الفترة: ${esc(months[0])} إلى ${esc(months[months.length-1])} · جميع المصروفات المسجلة، بصرف النظر عن وجود بند تقديري لها.</p>`}
-${summary(d)}${reportTable(d)}${pairedColumns(d)}${waterfall(d)}${varianceBars(d)}
+${ui.sample?'<p class="fbc-data-note">عينة الاختبار: جدول ورسوم البنود لشهر يونيو 2026، والتراكمي والخريطة الحرارية من يناير إلى يونيو. لا يعدّل بيانات الأسرة.</p>':`<p class="fbc-data-note">الفترة: ${esc(months[0])} إلى ${esc(months[months.length-1])} · جميع المصروفات المسجلة، بصرف النظر عن وجود بند تقديري لها.</p>`}
+${summary(display)}${reportTable(display)}${pairedColumns(display)}${waterfall(display)}${varianceBars(display)}
 <div class="fbc-card"><button type="button" data-fbc="toggle" aria-expanded="${ui.advanced}">${ui.advanced?"إخفاء الرسوم الإضافية":"عرض الرسوم الخمسة الإضافية"}</button>
 <p class="fbc-muted">الرصاصة، التراكمي، الخريطة الحرارية، المكدس النسبي، ومخطط الميل.</p></div>
-${ui.advanced?`<div class="fbc-chart-grid">${bulletChart(d)}${svgCum(d)}${heatmap(d)}${stack100(d)}${slope(d)}</div>`:""}
+${ui.advanced?`<div class="fbc-chart-grid">${bulletChart(display)}${svgCum(all)}${heatmap(all)}${stack100(display)}${slope(display)}</div>`:""}
 </div>`;
     if(!mounted){mounted=true;document.addEventListener("change",event=>{
       if(!target||!target.contains(event.target))return;
