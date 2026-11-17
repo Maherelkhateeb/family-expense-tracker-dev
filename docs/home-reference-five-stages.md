@@ -42,6 +42,15 @@ Do not assume existing design numbers match later reference screenshots: inspect
 - Earlier reference first-card arrangement accidentally matched but still had tiny fonts, cramped/incorrect header capsule spacing and excessive card height. The final stage must compare after the refinements, not reuse the baseline.
 - **Stage 1 status**: **IMPLEMENTED, DEPLOYED AND FUNCTIONAL QA PASSED — AWAITING USER VISUAL SIGN-OFF**. Continue visual and interaction QA, inspect the new screenshot, compare against the original and share the result for approval.
 
+## Confirmed Android clipping defect and durable repair (17 November 2026)
+- **User evidence**: mobile browser screenshot with a roughly **345 CSS-pixel width** and a reduced visual viewport caused the bottom `ملابس وأحذية` / `إضافة صوتية للمصروفات` row to disappear behind the fixed footer. The reference image visibly contains all five rows.
+- **Exact root cause**: the original alternative used `#viewExpenses {overflow:hidden}`, `#homeInterfaces {flex:1 1 0%; max-height:100%; overflow:hidden}`, and `.reference-one-grid {height:100%; grid-template-rows:repeat(5,minmax(0,1fr))}`. This combination resized rows to fill an unconstrained flex parent and clipped any overflow at the app/footer boundary.
+- **Permanent first-design-only correction**: append the `FIRST REFERENCE PHONE` CSS section in `home-mobile-fit.css`. Let `#viewExpenses` and `#homeInterfaces` use intrinsic content height, remove overflow hiding on these layers, use five controlled row heights `clamp(68px,18.1cqi,79px)`, and retain scrolling in the real `#appScrollBody` when Chrome's visible viewport is genuinely too short.
+- **Do not 'solve' this by** hiding one expense category, making voice an accounting category, shrinking text to illegibility, or setting `overflow:hidden` on parent views.
+- **Regression test**: `scripts/test-home-short-viewport.cjs` simulates 320×535, 345×590, **345×650 (the user's approximate mobile browser viewport)**, 360×620, 391×695 and 430×700. All ten cards and voice input must be reachable, with full last-row visibility at 345×650 without scrolling. It also checks that short screens can scroll all the way to the last row, with no horizontal overflow. The workflow uploads initial/bottom screenshots and does not alter real data.
+- **Visual acceptance**: `stage1-before-after-fixed.png` shows reference vs the user screenshot before vs 391×695 corrected output. Numerical account values remain dynamic.
+- **Reuse** for remaining reference screens: measure mobile viewport available **after browser chrome**, keep a normal fixed bottom navigation, and create a short-viewport regression for every design. Never infer success from desktop or 844px tall screenshots alone.
+
 ## Repeatable image-to-app matching method (stages 2–5)
 1. Identify correct screenshot reference and app design selector; generate an image contact sheet if needed.
 2. Normalize the reference to a mobile CSS viewport, e.g. 940×1673 → 391×695. Record the bounding boxes of header, family row, time filters, balance card, tools, category cards and bottom nav.
