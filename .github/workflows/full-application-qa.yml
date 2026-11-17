@@ -1,5 +1,18 @@
 name: Full application end-to-end QA
 on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - family-alerts.js
+      - voice-assistant-engine.js
+      - budget-audit-engine.js
+      - appearance-compact.js
+      - market-data.js
+      - gold-market.css
+      - scripts/test-app-end-to-end.cjs
+      - scripts/test-alert-time.cjs
+      - .github/workflows/full-application-qa.yml
   pull_request:
     paths:
       - index.html
@@ -10,6 +23,7 @@ on:
       - market-data.js
       - gold-market.css
       - scripts/test-app-end-to-end.cjs
+      - scripts/test-alert-time.cjs
       - .github/workflows/full-application-qa.yml
   workflow_dispatch:
 
@@ -33,6 +47,7 @@ jobs:
           node --check appearance-compact.js
           node --check market-data.js
           node --check scripts/test-app-end-to-end.cjs
+          node --check scripts/test-alert-time.cjs
       - name: Install Chromium for isolated browser tests
         run: |
           npm install --no-save playwright@1.56.1
@@ -43,6 +58,10 @@ jobs:
         env:
           APP_URL: http://127.0.0.1:8765/
         run: node scripts/test-app-end-to-end.cjs
+      - name: Verify midnight and created-at Arabic notification timestamps
+        env:
+          APP_URL: http://127.0.0.1:8765/
+        run: node scripts/test-alert-time.cjs
       - name: Verify one thousand financial records and reloads
         env:
           APP_URL: http://127.0.0.1:8765/
