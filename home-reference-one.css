@@ -1,324 +1,598 @@
-/* First reference: 940px artwork scaled to the available phone width. */
-.home-reference-one {
-  container-type: inline-size;
-  --reference-ink: #111422;
-  --reference-violet: #6411a9;
-}
-
-/* Do not restyle the existing top toolbar, family avatars or period filters.
-   These are shared with the original/default home screen. */
+/* Reference One: design coordinates measured from user-supplied 940x1674 image.
+   This stylesheet is active ONLY while viewExpenses has .home-reference-one. */
 #viewExpenses.home-reference-one {
-  background: linear-gradient(150deg,#d8f7fa,#e9fafc 65%,#e3f6fb) !important;
+  container-type:inline-size;
+  --ref-ink:#10162a;
+  color:var(--ref-ink);
+  background:linear-gradient(160deg,#d3f8fa,#eafdfe) !important;
 }
-#appFrame #viewExpenses.home-reference-one #topKpiThreeStrip {
-  min-height: 15.5cqi !important;
-  margin: 1.2cqi 2.7cqi !important;
-  padding: .5cqi 1.35cqi !important;
-  background: linear-gradient(115deg, #f9fcff, #f6f7fb) !important;
-  border: 1px solid #d2dfec !important;
-  border-radius: 3.5cqi !important;
-  box-shadow: 0 3px 5px #4b849d36 !important;
+body:has(#viewExpenses.home-reference-one.active) {
+  background:#dbf7f9 !important;
 }
-
-.home-reference-one .cockpit-hero-side { flex: 1.25 1 0 !important; min-width: 0; }
+body:has(#viewExpenses.home-reference-one.active) #appFrame {
+  background:linear-gradient(160deg,#d3f8fa,#eafdfe) !important;
+  border-color:#c1d5e4 !important;
+  overflow-x:hidden !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+  background:linear-gradient(160deg,#d3f8fa,#eafdfe) !important;
+}
+/* The reference header is white with colored capsule controls. */
+body:has(#viewExpenses.home-reference-one.active) .app-header {
+  background:linear-gradient(#fff,#f7faff) !important;
+  color:#0b142b !important;
+  border-color:#c4d2e3 !important;
+  padding:5px 7px 6px !important;
+  gap:4px !important;
+}
+body:has(#viewExpenses.home-reference-one.active) .header-brand-row {
+  gap:3px !important;
+  margin-bottom:3px !important;
+  flex-wrap:nowrap !important;
+}
+body:has(#viewExpenses.home-reference-one.active) .header-brand-row .brand-box,
+body:has(#viewExpenses.home-reference-one.active) .header-brand-row > div {
+  gap:3px !important;
+  min-width:0 !important;
+  flex-shrink:1 !important;
+}
+body:has(#viewExpenses.home-reference-one.active)
+:is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
+  box-sizing:border-box !important;
+  height:clamp(27px,8.1vw,48px) !important;
+  min-height:0 !important;
+  min-width:0 !important;
+  max-width:none !important;
+  border-radius:clamp(12px,3.4vw,22px) !important;
+  display:inline-flex !important;
+  flex-shrink:1 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  padding:0 clamp(3px,.9vw,8px) !important;
+  font:900 clamp(8px,2.35vw,15px)/1 Tahoma,Arial,sans-serif !important;
+  white-space:nowrap !important;
+  text-shadow:none !important;
+  box-shadow:0 2px 5px #173c6b22 !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnNotificationsBell {
+  background:linear-gradient(#fffcef,#fff0d0) !important;
+  border:1px solid #ffa10a !important;color:#cf7300 !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnHeaderTasksTop {
+  background:linear-gradient(#f9f0ff,#e9d5ff) !important;
+  border:1px solid #ae45ff !important;color:#6d1cc1 !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnGlobalSearch {
+  background:linear-gradient(#ebfaff,#d0eeff) !important;
+  border:1px solid #65baff !important;color:#0786d6 !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnHeaderMasterSync {
+  background:linear-gradient(#e8fff9,#b9f3fa) !important;
+  border:1px solid #50c0ff !important;color:#068d3c !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnMainSettings {
+  background:linear-gradient(145deg,#203a75,#0b1029) !important;
+  border:1px solid #7c95d0 !important;color:#fff !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
+  color:#078a3d !important;font:inherit !important;
+}
+body:has(#viewExpenses.home-reference-one.active) .header-brand-row i {
+  font-size:clamp(10px,2.75vw,18px) !important;
+  color:#7c1cbd !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #headerNotifBadge[hidden] {display:none !important;}
+body:has(#viewExpenses.home-reference-one.active) :is(#headerNotifBadge,#headerTasksBadgeCount):not([hidden]) {
+  border-radius:50% !important;
+  padding:0 2px !important;
+  height:clamp(13px,3.8vw,21px) !important;
+  min-width:clamp(13px,3.8vw,21px) !important;
+  display:inline-grid !important;
+  place-items:center !important;
+  background:linear-gradient(#c547f4,#7b22cc) !important;
+  color:#fff !important;
+  font-size:clamp(8px,2.5vw,14px) !important;
+}
+/* All nine people across one row, with matching circular photo size. */
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer {
+  display:grid !important;
+  grid-template-columns:repeat(9,minmax(0,1fr)) !important;
+  width:100% !important;
+  gap:0 !important;
+  align-items:start !important;
+  justify-items:center !important;
+  overflow:visible !important;
+  background:transparent !important;
+  padding:3px 0 2px !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card {
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  gap:2px !important;
+  min-width:0 !important;
+  width:100% !important;
+  padding:0 1px !important;
+  box-sizing:border-box !important;
+  background:transparent !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-bubble {
+  width:clamp(26px,8.2vw,52px) !important;
+  height:clamp(26px,8.2vw,52px) !important;
+  min-width:0 !important;min-height:0 !important;
+  border-radius:50% !important;
+  border:2px solid #fff !important;
+  overflow:hidden !important;
+  box-shadow:0 3px 5px #15345e55 !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-bubble img {
+  width:100% !important;
+  height:100% !important;
+  border-radius:50% !important;
+  object-fit:cover !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-name-label {
+  width:100% !important;
+  max-width:100% !important;
+  display:block !important;
+  color:#0c1530 !important;
+  text-shadow:none !important;
+  font:900 clamp(8px,2.65vw,14px)/1.1 Tahoma,Arial,sans-serif !important;
+  text-align:center !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
+  color:#7229be !important;
+}
+/* Period bar: 75/940 image-width tall. */
+#viewExpenses.home-reference-one .period-selector-top-strip {
+  margin:1.2cqi 3.4cqi 2.05cqi !important;
+  padding:0 !important;
+}
+#viewExpenses.home-reference-one .period-buttons-group {
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-columns:repeat(5,minmax(0,1fr)) !important;
+  gap:0 !important;
+  min-height:clamp(30px,8.1cqi,66px) !important;
+  padding:3px !important;
+  border:1px solid #1a253d !important;
+  border-radius:clamp(12px,2.85cqi,22px) !important;
+  background:linear-gradient(120deg,#25384e,#0c172d) !important;
+  box-shadow:inset 0 2px 5px #0003 !important;
+}
+#viewExpenses.home-reference-one .period-filter-pill {
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  width:100% !important;
+  min-width:0 !important;
+  min-height:27px !important;
+  height:100% !important;
+  padding:0 2px !important;
+  border:0 !important;
+  border-radius:clamp(8px,2cqi,16px) !important;
+  background:transparent !important;
+  color:#bfd4e9 !important;
+  font:900 clamp(9px,2.65cqi,17px)/1 Tahoma,Arial,sans-serif !important;
+  white-space:nowrap !important;
+}
+#viewExpenses.home-reference-one .period-filter-pill i {
+  color:#9d2be4 !important;font-size:1.1em !important;
+}
+#viewExpenses.home-reference-one .period-filter-pill.active {
+  background:linear-gradient(130deg,#10dfff,#0097e8) !important;
+  color:#fff !important;
+  border:1px solid #31cefd !important;
+  box-shadow:0 0 10px #00caffb5,inset 0 0 4px #fff7 !important;
+}
+/* Financial cockpit: one wide white card, right balance + left two cash flows. */
+#viewExpenses.home-reference-one #topKpiThreeStrip {
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex-direction:row !important;
+  width:auto !important;
+  height:clamp(64px,17.1cqi,130px) !important;
+  min-height:0 !important;
+  padding:1.1cqi 1.5cqi !important;
+  margin:1.1cqi 3.1cqi 1.7cqi !important;
+  gap:1.4cqi !important;
+  align-items:stretch !important;
+  background:linear-gradient(110deg,#f8fcff,#fff 65%,#f9fcff) !important;
+  border:1px solid #d0dae8 !important;
+  border-radius:clamp(12px,3.2cqi,28px) !important;
+  box-shadow:0 3px 8px #2b708342 !important;
+  overflow:hidden !important;
+}
+#viewExpenses.home-reference-one .cockpit-hero-side {
+  display:flex !important;
+  box-sizing:border-box !important;
+  flex:1.28 1 0 !important;
+  flex-direction:column !important;
+  justify-content:space-around !important;
+  align-items:stretch !important;
+  min-width:0 !important;
+  text-align:right !important;
+  padding:0 !important;
+}
+#viewExpenses.home-reference-one .cockpit-hero-label {
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:nowrap !important;
+  gap:.7cqi !important;
+  justify-content:flex-start !important;
+  width:100% !important;
+}
+#viewExpenses.home-reference-one .hero-title-text {
+  color:#14203a !important;
+  font:900 clamp(9px,2.47cqi,19px)/1.12 Tahoma,Arial,sans-serif !important;
+  text-shadow:none !important;
+  white-space:nowrap !important;
+}
+#viewExpenses.home-reference-one :is(.hero-wallet-icon-badge,.cockpit-privacy-btn) {
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  color:#7b24c3 !important;
+}
+#viewExpenses.home-reference-one #topCardBalance {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-align:center !important;
+  color:#0883c8 !important;
+  font:900 clamp(18px,5.1cqi,40px)/1.06 Arial,Tahoma,sans-serif !important;
+  text-shadow:none !important;
+}
+#viewExpenses.home-reference-one #topCardBalance * {
+  color:inherit !important;
+  text-shadow:none !important;
+}
+#viewExpenses.home-reference-one .cockpit-divider {
+  display:block !important;
+  flex:0 0 1px !important;
+  background:#b9c7d7 !important;
+  margin:1px 0 !important;
+}
 #viewExpenses.home-reference-one .cockpit-flow-side {
-  flex: 1 1 0 !important;
-  min-width: 0;
-  margin-inline: 0 !important;
-  padding: 0 !important;
-  gap: .85cqi !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex:1 1 0 !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  gap:1cqi !important;
+  min-width:0 !important;
+  padding:0 !important;
+  margin:0 !important;
 }
-.home-reference-one .cockpit-divider { background: #acb9d0 !important; }
-.home-reference-one .hero-title-text {
-  color: #141a30 !important;
-  font: 900 clamp(9px, 2.6cqi, 15px)/1.2 Tahoma, Arial, sans-serif !important;
-  text-shadow: none !important;
+#viewExpenses.home-reference-one .cockpit-flow-pill {
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex:1 1 0 !important;
+  flex-flow:row nowrap !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  min-height:0 !important;
+  height:auto !important;
+  gap:.5cqi !important;
+  padding:0 1.2cqi !important;
+  margin:0 !important;
+  border-radius:clamp(8px,2.25cqi,18px) !important;
+  box-shadow:0 2px 3px #0001 !important;
 }
-
-.home-reference-one .hero-wallet-icon-badge,
-.home-reference-one .cockpit-privacy-btn,
-.home-reference-one .flow-icon-badge { color: #7817b6 !important; }
-.home-reference-one #topCardBalance,
-.home-reference-one #topCardBalance :is(.flow-number-val, .amount-number, .tx-number-val) {
-  color: #0081cd !important;
-  font-size: clamp(14px, 5.55cqi, 35px) !important;
-  text-shadow: none !important;
-  overflow-wrap: anywhere;
+#viewExpenses.home-reference-one .cockpit-flow-pill.inflow {
+  background:linear-gradient(#f1fff0,#dbffea) !important;
+  border:1px solid #44da86 !important;
 }
-
-#viewExpenses.home-reference-one .cockpit-flow-side .cockpit-flow-pill {
-  height: 6.5cqi !important;
-  min-height: 21px !important;
-  padding: 0 1cqi !important;
-  border-radius: 2.5cqi !important;
-  gap: .7cqi !important;
+#viewExpenses.home-reference-one .cockpit-flow-pill.outflow {
+  background:linear-gradient(#fffafa,#ffe5e5) !important;
+  border:1px solid #ff6971 !important;
 }
-.home-reference-one .cockpit-flow-pill.inflow {
-  background: linear-gradient(105deg, #fbfff9, #d9fbe8) !important;
-  border-color: #62dc9b !important;
+#viewExpenses.home-reference-one .flow-pill-left-group {
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:.6cqi !important;
+  white-space:nowrap !important;
 }
-.home-reference-one .cockpit-flow-pill.outflow {
-  background: linear-gradient(105deg, #fffafa, #ffe2e2) !important;
-  border-color: #ff7882 !important;
+#viewExpenses.home-reference-one .flow-title {
+  font:900 clamp(8px,2.5cqi,17px)/1 Tahoma,Arial,sans-serif !important;
 }
-.home-reference-one .inflow-color { color: #008b16 !important; }
-.home-reference-one .outflow-color { color: #c90806 !important; }
-.home-reference-one .cockpit-flow-side .inflow :is(.tx-number-val,.tx-sign-symbol) { color: #008b16 !important; }
-.home-reference-one .cockpit-flow-side .outflow :is(.tx-number-val,.tx-sign-symbol) { color: #c90806 !important; }
-.home-reference-one .flow-amount { font-size: clamp(10px, 3.2cqi, 20px) !important; }
-.home-reference-one .flow-title { font: 900 clamp(7px, 2.15cqi, 13px)/1.2 Tahoma, Arial, sans-serif !important; }
-.home-reference-one .flow-icon-badge { width: 4cqi !important; height: 4cqi !important; }
-
+#viewExpenses.home-reference-one .flow-amount {
+  font:900 clamp(10px,3.0cqi,20px)/1 Arial,Tahoma,sans-serif !important;
+  white-space:nowrap !important;
+  margin:0 !important;
+}
+#viewExpenses.home-reference-one .inflow-color {color:#088b31 !important;}
+#viewExpenses.home-reference-one .outflow-color {color:#d00909 !important;}
+/* In the reference, only four tools: gold, wallet, currency, summary (RTL). */
 #viewExpenses.home-reference-one .executive-quick-tools-strip {
-  display: grid !important;
-  grid-template-columns: 9fr 18fr 27fr 19fr 15fr;
-  gap: 1.6cqi !important;
-  width: auto !important;
-  margin: 0 2.45cqi 1.85cqi !important;
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-columns:minmax(0,.86fr) minmax(0,1.88fr) minmax(0,.62fr) minmax(0,.89fr) !important;
+  align-items:center !important;
+  width:auto !important;
+  margin:1.4cqi 3.1cqi 2.85cqi !important;
+  padding:0 !important;
+  gap:1.3cqi !important;
 }
-
-#viewExpenses.home-reference-one .executive-quick-tools-strip > * {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  height: 6.9cqi !important;
-  min-height: 26px !important;
-  padding: 0 1cqi !important;
-  justify-content: center !important;
-  gap: .8cqi !important;
-  border-radius: 2.2cqi !important;
-  font: 900 clamp(8px, 2.5cqi, 15px)/1 Tahoma, Arial, sans-serif !important;
-  box-shadow: 0 2px 3px #44789b44 !important;
+#viewExpenses.home-reference-one .executive-quick-tools-strip > *:not(#btnHomeDesign) {
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  max-width:none !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  height:clamp(29px,7.5cqi,55px) !important;
+  padding:0 1cqi !important;
+  border-radius:clamp(9px,2.4cqi,18px) !important;
+  gap:.7cqi !important;
+  font:900 clamp(9px,2.68cqi,18px)/1 Arial,Tahoma,sans-serif !important;
+  white-space:nowrap !important;
+  box-shadow:0 2px 3px #20527c30 !important;
+  overflow:hidden !important;
 }
-
-.home-reference-one :is(#btnOpenGold,#btnToggleCurrency) {
-  background: linear-gradient(#fffdf4, #fff4d0) !important;
-  border-color: #ffae15 !important;
-  color: #a44e00 !important;
+#viewExpenses.home-reference-one #btnHomeDesign {display:none !important;}
+#viewExpenses.home-reference-one #btnOpenGold {
+  order:0 !important;color:#9e5100 !important;
+  background:linear-gradient(#fffdf5,#fff0d2) !important;
+  border:1px solid #ffa300 !important;
 }
-.home-reference-one #walletSelectCluster {
-  background: linear-gradient(#fff, #eff6fb) !important;
-  border-color: #a9bddb !important;
-  color: #172342 !important;
+#viewExpenses.home-reference-one #walletSelectCluster {
+  order:1 !important;color:#087abd !important;
+  background:linear-gradient(#fff,#f8fbff) !important;
+  border:1px solid #a9bdd5 !important;
 }
-.home-reference-one #activeWalletSelect { font: inherit !important; color: inherit !important; text-overflow: ellipsis; }
-.home-reference-one :is(#btnHomeDesign,#btnOpenSummaryQuick) {
-  background: linear-gradient(#f5feff, #d2f4ff) !important;
-  border-color: #52bdf8 !important;
-  color: #0078bf !important;
+#viewExpenses.home-reference-one #btnToggleCurrency {
+  order:2 !important;color:#ab5900 !important;
+  background:linear-gradient(#fffef7,#fff1d5) !important;
+  border:1px solid #ffa100 !important;
 }
-.home-reference-one .executive-quick-tools-strip i { color: var(--reference-violet) !important; }
-
-.home-reference-one #homeInterfaces { margin: 0 2.45cqi 7.5cqi; }
-.reference-one-grid {
-  display: grid;
-  direction: rtl;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 1.5cqi;
-  color: var(--reference-ink);
-  font-family: Arial, Tahoma, sans-serif;
+#viewExpenses.home-reference-one #btnOpenSummaryQuick {
+  order:3 !important;color:#057bb9 !important;
+  background:linear-gradient(#ebfaff,#c3efff) !important;
+  border:1px solid #47baff !important;
 }
-.reference-one-card {
-  --border: #ffba0a;
-  --tint: #fff3cb;
-  position: relative;
-  display: grid;
-  grid-template-rows: 36% 64%;
-  min-width: 0;
-  min-height: 17.45cqi;
-  border: max(1px,.31cqi) solid var(--border);
-  border-radius: 4cqi;
-  background: radial-gradient(ellipse at left center,var(--tint),transparent 63%),
-    linear-gradient(var(--tint) 35%,#fffffff2 37%,#f8fbfce8 86%,var(--tint));
-  box-shadow: inset 0 0 0 1px #fff, 0 2px 3px #31465840;
-  overflow: hidden;
+#viewExpenses.home-reference-one #activeWalletSelect {
+  min-width:0 !important;
+  width:100% !important;
+  text-align:center !important;
+  font:inherit !important;
+  color:#087cb9 !important;
+  background:transparent !important;
+  text-overflow:ellipsis !important;
 }
-.reference-one-card[data-ref-category="bills"] { --border: #ff6300; --tint: #ffe5da; }
-.reference-one-card:is([data-ref-category="food"],[data-ref-category="other"]) { --border: #00c447; --tint: #d6fae7; }
-.reference-one-card[data-ref-category="house"] { --border: #8b20ef; --tint: #eee2ff; }
-.reference-one-card:is([data-ref-category="education"],[data-ref-category="transport"]) { --border: #008dff; --tint: #d2eefe; }
-.reference-one-card[data-ref-category="health"] { --border: #ff202b; --tint: #ffdddd; }
-.reference-one-card[data-ref-category="clothes"] { --border: #ff2aa1; --tint: #ffdef0; }
-.reference-one-card[data-ref-category="voice"] {
-  --border: #9a15ff;
-  --tint: #f1ddff;
-  grid-template-rows: auto;
-  background: linear-gradient(130deg, #f6e9ff, #ebd6fa, #fcf0ff);
+#viewExpenses.home-reference-one .executive-quick-tools-strip i {
+  color:#7322ba !important;
+  font-size:1.22em !important;
 }
-
-.reference-one-card button {
-  display: grid;
-  min-width: 0;
-  align-content: center;
-  padding: .15cqi 1.55cqi .15cqi 14.7cqi;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-align: center;
+.reference-design-settings-slot {margin:4px 0;}
+.reference-design-settings-slot #btnHomeDesign {
+  display:block !important;width:100% !important;height:36px !important;
+  color:#6d28d9 !important;border:1px solid #a78bfa !important;
+  background:#f1e9ff !important;border-radius:10px !important;
+  text-align:center !important;font:800 13px Tahoma,Arial,sans-serif !important;
 }
-.reference-one-card button:focus-visible { outline: 2px solid #52108c; outline-offset: -3px; }
-.reference-one-card button strong {
-  font: 900 clamp(10px, 3.25cqi, 20px)/1.12 Arial, Tahoma, sans-serif !important;
+/* Reference categories are a 3x3 array, top icons, titles, values + progress. */
+#viewExpenses.home-reference-one #homeInterfaces {
+  margin:0 3.1cqi 5cqi !important;
+  padding:0 !important;
+  background:transparent !important;
+  color:#121528 !important;
 }
-.reference-one-icon {
-  pointer-events: none;
-  position: absolute;
-  left: 2.25cqi;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12.2cqi;
-  aspect-ratio: 1;
-  background: url('./assets/home-reference-one.webp') var(--icon-x) var(--icon-y) / 500% 200% no-repeat;
-}
-.reference-one-amount {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0 .6cqi;
-  font: 900 clamp(10px,3.1cqi,20px)/1.12 Arial,sans-serif;
-  font-variant-numeric: tabular-nums;
-}
-.reference-one-card[data-spent="true"] .reference-one-amount { color: #c70c09; }
-.reference-one-details { gap: .65cqi; }
-.reference-one-details progress {
-  appearance: none;
-  display: block;
-  width: 100%;
-  height: max(2px,.52cqi);
-  border: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #c6cbd2;
-}
-.reference-one-details progress::-webkit-progress-bar { background: #c6cbd2; }
-.reference-one-details progress::-webkit-progress-value { background: #08a32b; border-radius: 8px; }
-.reference-one-details progress::-moz-progress-bar { background: #08a32b; border-radius: 8px; }
-[data-exceeded="true"] progress::-webkit-progress-value { background: #dc1926; }
-[data-exceeded="true"] progress::-moz-progress-bar { background: #dc1926; }
-.reference-one-details small { font-size: clamp(7px,2.04cqi,13px); font-weight: 900; line-height: 1.17; }
-.reference-one-wave {
-  display: flex;
-  height: 4.5cqi;
-  align-items: center;
-  justify-content: center;
-  gap: .47cqi;
-  margin-top: 1.2cqi;
-}
-.reference-one-wave i {
-  width: .42cqi;
-  height: calc(var(--wave-height) * .24cqi);
-  border-radius: 4px;
-  background: #9014f6;
-}
-body:has(.home-reference-one.active) #btnVoiceAssistantFab.is-listening,
-body:has(.home-reference-one.active) #btnVoiceAssistantFab.is-processing { visibility: visible; }
-body:has(.home-reference-one.active) :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)) {
-  visibility: hidden;
-}
-body:has(.home-reference-one.active) #appBottomNav {
-  background: linear-gradient(#fff,#f4faff) !important;
-  border-color: #d5e5f0 !important;
-  backdrop-filter: none !important;
-  box-shadow: 0 -2px 8px #517baa23 !important;
-}
-body:has(.home-reference-one.active) #appBottomNav .nav-tab-item {
-  color: #202b52 !important;
-  text-shadow: none !important;
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-}
-body:has(.home-reference-one.active) #appBottomNav .nav-tab-item :is(svg,svg *,span) {
-  color: #63379d !important;
-  filter: none !important;
-  text-shadow: none !important;
-}
-body:has(.home-reference-one.active) #appBottomNav .nav-tab-item svg * { stroke: #683ba2 !important; }
-body:has(.home-reference-one.active) #appBottomNav #navTabExpenses.active {
-  background: linear-gradient(#eefbff,#d8f6ff) !important;
-  border-color: #119cff !important;
-}
-
-/* First mobile reference: two even columns, fixed artwork and reliable tap areas. */
-/* Exact RTL control order: design, gold, wallets, summary, currency. */
-#viewExpenses.home-reference-one #btnHomeDesign { order: 0 !important; }
-#viewExpenses.home-reference-one #btnOpenGold { order: 1 !important; }
-#viewExpenses.home-reference-one #walletSelectCluster { order: 2 !important; }
-#viewExpenses.home-reference-one #btnOpenSummaryQuick { order: 3 !important; }
-#viewExpenses.home-reference-one #btnToggleCurrency { order: 4 !important; }
 #viewExpenses.home-reference-one .reference-one-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
-  direction: rtl;
-  gap: clamp(5px,1.5cqi,10px);
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  direction:rtl !important;
+  gap:clamp(5px,1.5cqi,11px) !important;
 }
 #viewExpenses.home-reference-one .reference-one-card {
-  box-sizing: border-box;
-  grid-template-rows: minmax(0,.41fr) minmax(0,.59fr);
-  height: clamp(72px,20.8cqi,108px);
-  min-height: 72px;
+  --border:#ffb800;--tint:#fff0bc;
+  position:relative !important;
+  box-sizing:border-box !important;
+  display:grid !important;
+  grid-template-rows:minmax(0,61fr) minmax(0,39fr) !important;
+  min-height:0 !important;
+  min-width:0 !important;
+  height:clamp(90px,27.5cqi,180px) !important;
+  border:max(1px,.28cqi) solid var(--border) !important;
+  border-radius:clamp(12px,3.3cqi,26px) !important;
+  background:linear-gradient(to bottom,var(--tint) 0%,var(--tint) 61%,#fefefe 61%,#fff 100%) !important;
+  box-shadow:0 3px 5px #245b7c30,inset 0 0 0 1px #fff9 !important;
+  overflow:hidden !important;
+}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="bills"] {--border:#ff6408;--tint:#ffdecf;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="food"],
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="other"] {--border:#04c667;--tint:#c8f9e9;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="house"] {--border:#9430f4;--tint:#e9e0ff;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="education"] {--border:#008df8;--tint:#cde7ff;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="transport"] {--border:#048cdd;--tint:#cbeeff;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="health"] {--border:#ff3547;--tint:#ffd8df;}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] {
+  --border:#be2fff;--tint:#f5ddff;
+  grid-template-rows:minmax(0,1fr) !important;
+  background:linear-gradient(145deg,#fbe8ff,#f1d5fe) !important;
 }
 #viewExpenses.home-reference-one .reference-one-card button {
-  box-sizing: border-box;
-  display: grid;
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
-  overflow: hidden;
-  padding: 2px 1.35cqi 2px 14.7cqi;
-  align-content: center;
-  justify-items: center;
-  text-align: center;
-  touch-action: manipulation;
+  box-sizing:border-box !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  width:100% !important;
+  height:100% !important;
+  padding:1px 2px !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#11172b !important;
+  font:900 clamp(10px,2.85cqi,20px)/1.12 Arial,Tahoma,sans-serif !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:1px !important;
+  text-align:center !important;
+  touch-action:manipulation;
+  cursor:pointer;
 }
-#viewExpenses.home-reference-one .reference-one-icon { pointer-events: none; }
+#viewExpenses.home-reference-one .reference-one-card button:focus-visible {
+  outline:2px solid #5e1eab;outline-offset:-2px;
+}
+#viewExpenses.home-reference-one .reference-one-card button.reference-one-add {
+  border-bottom:1px solid #ffffff !important;
+  justify-content:flex-start !important;
+  gap:1cqi !important;
+  padding-top:1.1cqi !important;
+}
+#viewExpenses.home-reference-one .reference-one-icon {
+  position:relative !important;
+  display:block !important;
+  flex:0 0 auto !important;
+  left:auto !important;
+  top:auto !important;
+  width:clamp(34px,9.2cqi,64px) !important;
+  height:clamp(34px,9.2cqi,64px) !important;
+  aspect-ratio:1 !important;
+  margin:0 auto !important;
+  transform:none !important;
+  background:url('./assets/home-reference-one.webp') var(--icon-x) var(--icon-y) / 500% 200% no-repeat !important;
+  pointer-events:none;
+}
 #viewExpenses.home-reference-one .reference-one-card button strong {
-  text-wrap: balance;
-  overflow-wrap: anywhere;
-  line-height: 1.13 !important;
+  display:block !important;
+  max-width:100% !important;
+  width:100% !important;
+  color:#0b1020 !important;
+  font:900 clamp(10px,2.95cqi,20px)/1.08 Arial,Tahoma,sans-serif !important;
+  text-wrap:balance !important;
+  white-space:normal !important;
+  overflow-wrap:normal !important;
 }
-#viewExpenses.home-reference-one .reference-one-details { gap: 1px; }
+#viewExpenses.home-reference-one .reference-one-details {
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:space-evenly !important;
+  gap:1px !important;
+  padding:1px 3px 2px !important;
+}
 #viewExpenses.home-reference-one .reference-one-amount {
-  width: 100%;
-  align-items: baseline;
-  gap: 0 .55cqi;
-  line-height: 1.1;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:baseline !important;
+  flex-wrap:nowrap !important;
+  max-width:100% !important;
+  gap:1px !important;
+  color:#111729 !important;
+  font:900 clamp(10px,2.85cqi,19px)/1.05 Arial,Tahoma,sans-serif !important;
+  font-variant-numeric:tabular-nums;
 }
 #viewExpenses.home-reference-one .reference-one-amount bdi {
-  max-width: 100%;
-  overflow-wrap: anywhere;
+  min-width:0 !important;
+  max-width:100% !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
 }
-#viewExpenses.home-reference-one .reference-one-details progress { max-width: 100%; }
+#viewExpenses.home-reference-one .reference-one-card[data-spent="true"] .reference-one-amount {
+  color:#c10808 !important;
+}
+#viewExpenses.home-reference-one .reference-one-details progress {
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  display:block !important;
+  flex-shrink:0 !important;
+  width:95% !important;
+  max-width:100% !important;
+  height:clamp(2px,.45cqi,4px) !important;
+  margin:0 auto !important;
+  overflow:hidden !important;
+  background:#c7ccd3 !important;
+  border:0 !important;
+  border-radius:9px !important;
+}
+#viewExpenses.home-reference-one .reference-one-details progress::-webkit-progress-bar {background:#c7ccd3;}
+#viewExpenses.home-reference-one .reference-one-details progress::-webkit-progress-value {background:#00a42c;border-radius:9px;}
+#viewExpenses.home-reference-one .reference-one-card[data-exceeded="true"] progress::-webkit-progress-value {background:#dd1926;}
+#viewExpenses.home-reference-one .reference-one-details progress::-moz-progress-bar {background:#07a92c;}
+#viewExpenses.home-reference-one .reference-one-card[data-exceeded="true"] progress::-moz-progress-bar {background:#dd1926;}
 #viewExpenses.home-reference-one .reference-one-details small {
-  display: block;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-/* The voice card contains one button, so it must occupy the FULL card height.
-   Otherwise it inherits only the first 41% grid row and the title escapes. */
-#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] {
-  grid-template-rows: minmax(0,1fr);
+  display:block !important;
+  overflow:hidden !important;
+  width:100% !important;
+  white-space:nowrap !important;
+  color:#080d1d !important;
+  text-overflow:ellipsis !important;
+  font:900 clamp(8px,2.2cqi,15px)/1.04 Arial,Tahoma,sans-serif !important;
 }
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] button {
-  grid-template-rows: auto auto;
-  align-content: center;
+  display:flex !important;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:1cqi !important;
 }
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] strong {
-  font-size: clamp(10px,2.9cqi,15px) !important;
-  align-self: center;
+  max-width:100% !important;
+  font:900 clamp(11px,3.0cqi,19px)/1.08 Tahoma,Arial,sans-serif !important;
 }
-
-#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] strong { align-self: end; }
-#viewExpenses.home-reference-one .reference-one-wave { margin-top: .7cqi; }
-@container (max-width: 355px) {
-  #viewExpenses.home-reference-one .reference-one-grid { gap: 5px; }
-  #viewExpenses.home-reference-one .reference-one-card { min-height: 70px; }
-  #viewExpenses.home-reference-one .reference-one-card button strong { font-size: 10px !important; }
-  #viewExpenses.home-reference-one .reference-one-details small { font-size: 7px; }
-  #viewExpenses.home-reference-one .reference-one-amount { font-size: 10px; }
+#viewExpenses.home-reference-one .reference-one-wave {
+  display:flex !important;
+  flex:0 0 auto !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:90% !important;
+  height:4.7cqi !important;
+  margin-top:.5cqi !important;
+  gap:.47cqi !important;
+}
+#viewExpenses.home-reference-one .reference-one-wave i {
+  width:max(1px,.36cqi) !important;
+  height:calc(var(--wave-height) * .22cqi) !important;
+  background:#9720eb !important;
+  border-radius:4px !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #btnVoiceAssistantFab.is-listening,
+body:has(#viewExpenses.home-reference-one.active) #btnVoiceAssistantFab.is-processing {visibility:visible;}
+body:has(#viewExpenses.home-reference-one.active)
+:is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)) {
+  visibility:hidden !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav {
+  background:linear-gradient(#fff,#f7faff) !important;
+  border-color:#c4d6e8 !important;
+  box-shadow:0 -2px 6px #266ba02c !important;
+  backdrop-filter:none !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item {
+  color:#232d50 !important;
+  background:transparent !important;
+  text-shadow:none !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item :is(svg,svg *,span) {
+  color:#64399c !important;
+  filter:none !important;
+  text-shadow:none !important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item svg * {stroke:#64399c !important;}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav #navTabExpenses.active {
+  background:linear-gradient(#eaffff,#c9f5ff) !important;
+  border:1px solid #118cff !important;
+  border-radius:17px !important;
+}
+@container (max-width:355px) {
+  #viewExpenses.home-reference-one .reference-one-card {
+    height:clamp(86px,28.2cqi,108px) !important;
+  }
+  #viewExpenses.home-reference-one .reference-one-card button strong {
+    font-size:clamp(9px,2.9cqi,12px) !important;
+  }
+  #viewExpenses.home-reference-one .reference-one-details small {font-size:7px !important;}
+  #viewExpenses.home-reference-one .reference-one-amount {font-size:9px !important;}
 }
