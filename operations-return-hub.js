@@ -73,7 +73,8 @@ function restoreScroll(ctx){
  ctx.scrolls.forEach(e=>{const n=e.node?.isConnected?e.node:e.id?el(e.id):null;
   if(n){n.scrollTop=e.top;n.scrollLeft=e.left;}});
  if(ctx.summary && el('summaryLeftDrawer'))el('summaryLeftDrawer').scrollTop=ctx.summaryTop;
- if(!body&&ctx.windowTop)window.scrollTo(0,ctx.windowTop);
+ // Some layouts scroll the document, others the page pane or app body.
+ if(window.scrollY!==ctx.windowTop)window.scrollTo(0,ctx.windowTop);
 }
 function installUI(){
  if(!el('opsUniversalReturnBar')&&el('viewOperations')){
