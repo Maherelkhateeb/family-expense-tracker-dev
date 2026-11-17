@@ -172,40 +172,40 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      const axis=root.querySelector('.cmp-direction-key');
      if(axis.firstElementChild.getBoundingClientRect().left>=axis.lastElementChild.getBoundingClientRect().left)throw Error('Change axis labels must follow the bar direction');
      root.querySelector('[data-mode="table"]').click();
-     const rankedRows=[...root.querySelectorAll('#cmpTableBody tr')];
+     const rankedRows=[...root.querySelectorAll('.budget-spec .bs-table tbody tr')];
      const ranking=new Intl.NumberFormat('ar-EG');
      if (EXPENSE_CATEGORIES.some(category=>!rankedRows.some(row=>row.dataset.budgetCategory===category.id))) {
        throw Error('All expense categories must appear even when both amounts are zero');
      }
-     if (rankedRows.some((row,index)=>row.querySelector('.cmp-rank')?.textContent!==ranking.format(index+1))) {
+     if (rankedRows.some((row,index)=>!row.querySelector('th')?.textContent.trim().startsWith(ranking.format(index+1)+'.'))) {
        throw Error('Category ranking must follow the displayed row order');
      }
-     const firstRow=root.querySelector('tr[data-budget-category="food"]');
-     const actualColor=getComputedStyle(firstRow.querySelector('.cmp-series-actual')).backgroundColor;
-     const referenceColor=getComputedStyle(firstRow.querySelector('.cmp-series-reference')).backgroundColor;
+     const firstRow=root.querySelector('.budget-spec .bs-table tr[data-budget-category="food"]');
+     const actualColor=getComputedStyle(firstRow.querySelector('td:nth-child(3)')).backgroundColor;
+     const referenceColor=getComputedStyle(firstRow.querySelector('td:nth-child(2)')).backgroundColor;
      if(actualColor===referenceColor)throw Error('Actual and reference must use distinct backgrounds');
-     if(firstRow.querySelector('.cmp-difference bdi').dir!=='ltr')throw Error('Difference sign must use numeric direction');
+     if(firstRow.querySelector('td:nth-child(4) bdi').dir!=='ltr')throw Error('Difference sign must use numeric direction');
      const nums=[...firstRow.querySelectorAll('td bdi')].map(el=>el.textContent.trim());
      select('sample');
      const digits=new Intl.NumberFormat('ar-EG');
-     const totals=root.querySelector('.cmp-summary-reference strong').textContent;
+     const totals=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent;
      const sample=totals.includes(digits.format(12000));
      select('sample-low');
-     const low=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(10000));
+     const low=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent.includes(digits.format(10000));
      select('sample-high');
-     const high=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(14000));
+     const high=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent.includes(digits.format(14000));
      select('sample');
      document.getElementById('cmpActualFrom').value='2024-02-01';
      document.getElementById('cmpActualTo').value='2024-02-29';
      BudgetCompareEngine.render();
-     const leap=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(12000));
+     const leap=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent.includes(digits.format(12000));
      document.getElementById('cmpActualFrom').value='2025-04-01';
      document.getElementById('cmpActualTo').value='2025-04-07';
      BudgetCompareEngine.render();
-     const week=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(2800));
+     const week=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent.includes(digits.format(2800));
      document.getElementById('cmpActualTo').value='2025-04-01';
      BudgetCompareEngine.render();
-     const day=root.querySelector('.cmp-summary-reference strong').textContent.includes(digits.format(400));
+     const day=root.querySelector('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').textContent.includes(digits.format(400));
      document.getElementById('cmpActualTo').value='2025-04-30';
      select('previous');
      state.transactions=state.transactions.filter(tx=>tx.id!=='qa-prev');
