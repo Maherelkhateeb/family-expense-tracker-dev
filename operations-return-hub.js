@@ -10,8 +10,7 @@ const copy=x=>{try{return JSON.parse(JSON.stringify(x));}catch{return x;}};
 let context=null, pending=null, returning=false;
 const currentPage=()=>Object.keys(PAGE).find(k=>el(PAGE[k])?.classList.contains('active'))||
   ((typeof state==='object' && state.activePage)||'expenses');
-const isSummaryOpen=()=>{const e=el('summaryLeftDrawer');return !!e &&
-  (e.classList.contains('open')||(getComputedStyle(e).display!=='none'&&e.getBoundingClientRect().height>0));};
+const isSummaryOpen=()=>!!el('summaryLeftDrawer')?.classList.contains('open');
 function snapshot(){
  const page=currentPage(),root=el(PAGE[page]);
  const modals=[...document.querySelectorAll('[id].open')].filter(e=>/modal/i.test(e.id) &&
@@ -145,6 +144,12 @@ function returnToSource(){
   saved.modals.forEach(id=>{if(el(id)&&!el(id).classList.contains('open')&&typeof openModal==='function')openModal(id);});
   const again=()=>{restoreFields(saved);restoreScroll(saved);};
   again();
+  // Rebuild comparison once the original sort and period controls are restored.
+  if(saved.page==='budgets' && saved.budgetTab==='current' &&
+     saved.budgetView==='compare' && window.BudgetCompareEngine?.render){
+    try{window.BudgetCompareEngine.render();}catch(e){console.warn('Budget restore:',e);}
+    again();
+  }
   requestAnimationFrame(()=>{again();requestAnimationFrame(again);});
   setTimeout(again,75);
   setTimeout(()=>{again();if(saved.focus?.isConnected){try{saved.focus.focus({preventScroll:true});}catch{}}restoreScroll(saved);},180);
