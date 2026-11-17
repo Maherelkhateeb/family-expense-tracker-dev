@@ -12,7 +12,7 @@ const WIDTHS=[320,360,390,430,768];
  fs.mkdirSync('screenshots',{recursive:true});
  try{
   for(const width of WIDTHS){
-   const context=await browser.newContext({viewport:{width,height:852},locale:'ar-EG',serviceWorkers:'block'});
+   const context=await browser.newContext({viewport:{width,height:({320:700,360:760,390:844,430:932,768:1024}[width]||852)},locale:'ar-EG',serviceWorkers:'block'});
    const page=await context.newPage();
    const exceptions=[];
    page.on('pageerror',e=>exceptions.push(e.message));
@@ -80,11 +80,18 @@ const WIDTHS=[320,360,390,430,768];
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
      assert.equal(report.count,10,'Missing expense or voice card '+width+'/'+design);
-     assert.deepEqual(report.ids,IDS,'Wrong card order '+width+'/'+design);
+     assert.deepEqual(report.ids,design===5?[...IDS.filter(id=>id!=='voice'),'voice']:IDS,'Wrong card order '+width+'/'+design);
      assert.ok(report.originalHidden,'Original grid should be hidden on alternatives');
     }
     assert.deepEqual(report.errors,[],'Misaligned/clipped home elements '+width+'/'+design);
     assert.equal(report.bodyOverflow,false,'Horizontal document overflow '+width+'/'+design);
+    if(design>0){
+      const v=report.vertical;
+      assert.ok(v.lastCardBottom<=v.bottomNav.top+2,'Home cards hidden below bottom navigation '+width+'/'+design+': '+JSON.stringify(v));
+      assert.ok(v.host.top>=v.tools.bottom-2,'Home cards overlap top toolbar '+width+'/'+design);
+      assert.ok(v.host.bottom<=v.view.bottom+2,'Home content clips inside home view '+width+'/'+design);
+      assert.ok(v.view.scrollHeight<=v.view.clientHeight+3,'Vertical scroll still required '+width+'/'+design);
+    }
     await page.screenshot({path:'screenshots/home-layout-'+width+'-'+design+'.png',fullPage:false});
    }
    await page.reload({waitUntil:'domcontentloaded',timeout:60000});
