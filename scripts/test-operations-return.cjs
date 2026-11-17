@@ -21,17 +21,18 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
      spacer.className='qa-scroll-spacer';
      document.getElementById('viewExpenses').append(spacer);
      state.period='week';state.currentMemberFilter='البيت';state.projectFilter='all';
-     const body=document.getElementById('appScrollBody');
-     body.scrollTop=420;
-     const before=body.scrollTop;
+     const scrollPane=document.getElementById('viewExpenses');
+     scrollPane.scrollTop=420;
+     const before=scrollPane.scrollTop;
      if(before<100)throw Error('QA failed to make expenses page actually scroll');
+     const body=document.getElementById('appScrollBody');
      openOperationsFiltered({category:'food',type:'expense'});
      const shown=document.getElementById('btnOpsReturnToSource').getBoundingClientRect().width>0;
      const info=OperationsReturnHub.getState();
      document.getElementById('btnOpsReturnToSource').click();
      await new Promise(r=>setTimeout(r,280));
      return {shown,info,page:state.activePage,period:state.period,member:state.currentMemberFilter,
-       scroll:body.scrollTop,before,shownAfter:document.body.classList.contains('ops-return-context')};
+       scroll:scrollPane.scrollTop,before,shownAfter:document.body.classList.contains('ops-return-context')};
    });
    assert.ok(expense.shown,'Return button hidden on expense drilldown');
    assert.equal(expense.info.page,'expenses');
@@ -53,10 +54,11 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
      if(!search||!sort)throw Error('Budget compare fields unavailable');
      search.value='2025-03-17';
      sort.value='name';
-     const body=document.getElementById('appScrollBody');
-     body.scrollTop=610;
-     const initialTop=body.scrollTop;
+     const scrollPane=document.getElementById('viewBudgets');
+     scrollPane.scrollTop=610;
+     const initialTop=scrollPane.scrollTop;
      if(initialTop<100)throw Error('QA failed to make budgets page actually scroll');
+     const body=document.getElementById('appScrollBody');
      openOperationsFiltered({category:'health',type:'expense'});
      const source=OperationsReturnHub.getState()?.page;
      OperationsReturnHub.returnToSource();
@@ -65,7 +67,7 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
        comparison:document.getElementById('btnBudgetInnerCompare').getAttribute('aria-pressed'),
        input:document.getElementById('cmpPeriodFrom')?.value,
        sort:document.getElementById('cmpSort')?.value,
-       scroll:body.scrollTop,initialTop};
+       scroll:scrollPane.scrollTop,initialTop};
    });
    assert.equal(budget.source,'budgets');
    assert.equal(budget.page,'budgets');
