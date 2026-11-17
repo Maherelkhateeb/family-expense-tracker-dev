@@ -23,6 +23,21 @@
     function measure() {
       if (stopped || !view.isConnected || !host.isConnected) return;
       const design = Number(host.dataset.design);
+      // The legacy renderer sets inline !important orders. CSS cannot beat
+      // them, so reconcile only this home's five quick actions here.
+      if (view.classList.contains('active')) {
+        const desired = design === 1
+          ? {btnHomeDesign: 0, btnOpenGold: 1, walletSelectCluster: 2, btnToggleCurrency: 3, btnOpenSummaryQuick: 4}
+          : {btnHomeDesign: 0, btnOpenGold: 1, walletSelectCluster: 2, btnOpenSummaryQuick: 3, btnToggleCurrency: 4};
+        for (const [id, order] of Object.entries(desired)) {
+          const element = document.getElementById(id);
+          if (!element || !view.contains(element)) continue;
+          if (element.style.getPropertyValue('order') !== String(order) ||
+              element.style.getPropertyPriority('order') !== 'important') {
+            element.style.setProperty('order', String(order), 'important');
+          }
+        }
+      }
       const profile = PROFILES[design];
       // Inline important order values from the legacy renderer outrank the
       // reference stylesheet. Update only the two quick-tool positions, and
