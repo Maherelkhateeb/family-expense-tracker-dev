@@ -161,18 +161,31 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      document.getElementById('cmpPeriodTo').value='2025-03-31';
      BudgetCompareEngine.render();
      root.querySelector('[data-mode="paired"]').click();
-     const paired=!!root.querySelector('.cmp-period-track .actual')&&!!root.querySelector('.cmp-period-track .reference');
+     const foodPlot=root.querySelector('.cmp-column-chart [data-budget-category="food"] .cmp-column-plot');
+     const actualBar=foodPlot.querySelector('.cmp-column-actual i');
+     const referenceBar=foodPlot.querySelector('.cmp-column-reference i');
+     const aRect=actualBar.getBoundingClientRect(),bRect=referenceBar.getBoundingClientRect();
+     const paired=aRect.x!==bRect.x&&aRect.bottom===bRect.bottom&&aRect.height>bRect.height&&
+       getComputedStyle(actualBar).backgroundColor!==getComputedStyle(referenceBar).backgroundColor;
      root.querySelector('[data-mode="change"]').click();
      const change=!!root.querySelector('.cmp-period-delta .positive');
      const axis=root.querySelector('.cmp-direction-key');
      if(axis.firstElementChild.getBoundingClientRect().left>=axis.lastElementChild.getBoundingClientRect().left)throw Error('Change axis labels must follow the bar direction');
      root.querySelector('[data-mode="table"]').click();
+     const rankedRows=[...root.querySelectorAll('#cmpTableBody tr')];
+     const ranking=new Intl.NumberFormat('ar-EG');
+     if (EXPENSE_CATEGORIES.some(category=>!rankedRows.some(row=>row.dataset.budgetCategory===category.id))) {
+       throw Error('All expense categories must appear even when both amounts are zero');
+     }
+     if (rankedRows.some((row,index)=>row.querySelector('.cmp-rank')?.textContent!==ranking.format(index+1))) {
+       throw Error('Category ranking must follow the displayed row order');
+     }
      const firstRow=root.querySelector('tr[data-budget-category="food"]');
      const actualColor=getComputedStyle(firstRow.querySelector('.cmp-series-actual')).backgroundColor;
      const referenceColor=getComputedStyle(firstRow.querySelector('.cmp-series-reference')).backgroundColor;
      if(actualColor===referenceColor)throw Error('Actual and reference must use distinct backgrounds');
      if(firstRow.querySelector('.cmp-difference bdi').dir!=='ltr')throw Error('Difference sign must use numeric direction');
-     const nums=[...firstRow.querySelectorAll('td bdi, .cmp-difference small')].map(el=>el.textContent.trim());
+     const nums=[...firstRow.querySelectorAll('td bdi')].map(el=>el.textContent.trim());
      select('sample');
      const digits=new Intl.NumberFormat('ar-EG');
      const totals=root.querySelector('.cmp-summary-reference strong').textContent;
@@ -389,9 +402,13 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map((cell,i)=>i<2?cell.querySelector('bdi').textContent.trim():cell.textContent.trim())])));
    assert.deepEqual(check['food'].slice(0,2),['٣٬٤٠٠','٢٬٨٠٠']);
    assert.deepEqual(check['bills'].slice(0,2),['٢٬١٠٠','٢٬١٠٠']);
-   assert.match(check['trial-leisure'][2],/بند جديد/);
-   assert.match(check['trial-gifts'][2],/توقف الصرف/);
+    assert.equal(check['trial-leisure'][3],'—');
+    assert.match(check['trial-gifts'][3],/-١٠٠٪/);
    assert.equal(await page.locator('#cmpPeriodChartContent .cmp-period-table').evaluate(e=>e.scrollWidth<=e.clientWidth+1),true);
+    await page.locator('#cmpPeriodChart [data-mode="change"]').click();
+    assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-leisure"]').innerText(),/بند جديد/);
+    assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-gifts"]').innerText(),/توقف الصرف/);
+    await page.locator('#cmpPeriodChart [data-mode="table"]').click();
    await page.locator('#cmpTableBody tr[data-budget-category="food"] button[data-period-series="reference"]').click();
    assert.match(await page.locator('#sampleOperationsList').innerText(),/٢٬٨٠٠ ج.م/);
    await page.locator('#sampleOperationsBack').click();
