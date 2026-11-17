@@ -20,9 +20,35 @@
     const footer = opts.footer || document.getElementById('appBottomNav');
     if (!view || !host) return null;
     let stopped = false, frame = 0, observer = null;
+    // Preserve existing inline display rules so non-reference screens are untouched.
+    const floatingControls = new Map();
+    function reconcileFloatingControls(hide) {
+      for (const id of ['leftScreenEdgeHandle','rightScreenEdgeHandle','btnVoiceAssistantFab']) {
+        const element = document.getElementById(id);
+        if (!element) continue;
+        const listening = id === 'btnVoiceAssistantFab' &&
+          (element.classList.contains('is-listening') || element.classList.contains('is-processing'));
+        if (hide && !listening) {
+          if (!floatingControls.has(id)) floatingControls.set(id, {
+            value: element.style.getPropertyValue('display'),
+            priority: element.style.getPropertyPriority('display')
+          });
+          if (element.style.getPropertyValue('display') !== 'none' ||
+              element.style.getPropertyPriority('display') !== 'important') {
+            element.style.setProperty('display','none','important');
+          }
+        } else if (floatingControls.has(id)) {
+          const former = floatingControls.get(id);
+          if (former.value) element.style.setProperty('display',former.value,former.priority);
+          else element.style.removeProperty('display');
+          floatingControls.delete(id);
+        }
+      }
+    }
     function measure() {
       if (stopped || !view.isConnected || !host.isConnected) return;
       const design = Number(host.dataset.design);
+      reconcileFloatingControls(design === 1 && view.classList.contains('active'));
       // The legacy renderer sets inline !important orders. CSS cannot beat
       // them, so reconcile only this home's five quick actions here.
       if (view.classList.contains('active')) {
@@ -119,6 +145,7 @@
     return {
       refresh: schedule,
       destroy() {
+        reconcileFloatingControls(false);
         stopped = true;
         if (frame) root.cancelAnimationFrame(frame);
         if (observer) observer.disconnect();
