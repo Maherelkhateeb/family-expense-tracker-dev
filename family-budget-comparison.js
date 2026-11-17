@@ -1,6 +1,6 @@
 (function comparisonModule(){
   "use strict";
-  const COLORS={estimated:"#888780",actual:"#378ADD",over:"#E24B4A",save:"#639922"};
+  const COLORS={estimated:"#2563EB",actual:"#0D9488",over:"#DC2626",save:"#16A34A"};
   const REFS={food:"#2a78d6",education:"#eb6834",transport:"#1baf7a",entertainment:"#eda100",bills:"#e87ba4",health:"#008300"};
   const DEFAULT_CATS=[
     {id:"daily",name:"مصروف يومي"},{id:"food",name:"طعام ومشتريات"},{id:"bills",name:"فواتير والتزامات"},
