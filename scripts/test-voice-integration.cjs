@@ -38,6 +38,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
       test(['صرفت مية','وخمسين جنيه على الاكل']),
       test(['أودعت ٣٥٠ جنيه']),
       test(['سلفت أحمد ميتين جنيه']),
+      test(['تسلفت من أحمد ٢٥٠ جنيه']),
       test(['فاتورة الكهرباء 400 جنيه'])
     ];
     const savedTx=JSON.parse(localStorage.getItem('family_monefy_v2_tx')||'[]');
@@ -47,16 +48,17 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
       expense:st.transactions.find(t=>t.type==='expense')?.amount,
       income:st.transactions.find(t=>t.type==='income')?.amount,
       debt:st.expectedExpenses.find(t=>t.type==='debt_for_us')?.amount,
+      borrowedDebt:st.expectedExpenses.find(t=>t.type==='debt_on_us')?.amount,
       bill:st.expectedExpenses.find(t=>t.type==='upcoming_bill')?.amount,
       persistedTx:savedTx.length,persistedExpected:savedExpected.length
     };
   });
   console.log('VOICE_MIC_SIMULATION '+JSON.stringify(result));
   assert.ok(result.items.every(x=>x.opened&&x.closed&&x.sentence),'Speech recognition did not complete confirmation flow');
-  assert.deepEqual([result.txCount,result.expectedCount,result.expense,result.income,result.debt,result.bill],
-    [2,2,150,350,200,400]);
+  assert.deepEqual([result.txCount,result.expectedCount,result.expense,result.income,result.debt,result.borrowedDebt,result.bill],
+    [2,3,150,350,200,250,400]);
   assert.equal(result.persistedTx,2,'Native transaction storage missing');
-  assert.equal(result.persistedExpected,2,'Native commitment storage missing');
+  assert.equal(result.persistedExpected,3,'Native commitment storage missing');
   assert.deepEqual(errors,[],'Browser errors');
   console.log('PASS: microphone event simulation, Arabic multi-segment transcription, expenses/deposits/debts/bills confirmation and persistent storage');
  }finally{await context.close();await browser.close();}

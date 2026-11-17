@@ -29,6 +29,12 @@ try{
   await page.waitForFunction(()=>typeof MarketData?.load==='function'&&typeof fetchTradingViewRates==='function',null,{timeout:20000});
   await page.locator('#btnOpenGold').click();
   await page.waitForFunction(()=>document.getElementById('tvUpdateTime').dataset.status==='fresh',null,{timeout:20000});
+  // A fresh source badge can appear a frame before the quote is painted.
+  // Require the actual visible market rate before continuing the test.
+  await page.waitForFunction(() => {
+   const amount=document.getElementById('tvGold21Val');
+   return !!amount && amount.getClientRects().length>0 && /5,250\.00/.test(amount.innerText||'');
+  },null,{timeout:20000});
   const rendered=await page.locator('#tvGold21Val').innerText();
   assert.match(rendered,/5,250\.00/,'Gold 21 must show verified fixture value, received '+rendered);
   for(const mode of ['light','dark']){
@@ -66,6 +72,12 @@ try{
  await page.waitForFunction(()=>typeof MarketData?.load==='function');
  await page.locator('#btnOpenGold').click();
  await page.waitForFunction(()=>document.getElementById('tvUpdateTime').dataset.status==='stale',null,{timeout:20000});
+ // The offline status badge may update before unavailable placeholders paint.
+ // Check that the user can actually see the fallback, not just the badge.
+ await page.waitForFunction(() => {
+  const amount=document.getElementById('tvGold21Val');
+  return !!amount && amount.getClientRects().length>0 && amount.innerText.trim()==='—';
+ },null,{timeout:20000});
  assert.equal((await page.locator('#tvGold21Val').innerText()).trim(),'—');
  assert.match(await page.locator('#calcFinalTotal').innerText(),/غير متاح/);
  console.log('PASS complete source outage: unavailable placeholders, no synthetic quotes');

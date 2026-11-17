@@ -12,6 +12,16 @@ on:
       - scripts/test-card-list-design.cjs
       - .github/workflows/financial-1000-qa.yml
   workflow_dispatch:
+  pull_request:
+    paths:
+      - index.html
+      - budget-audit-engine.js
+      - voice-assistant-engine.js
+      - appearance-compact.js
+      - scripts/test-financial-1000.cjs
+      - scripts/test-voice-integration.cjs
+      - scripts/test-card-list-design.cjs
+      - .github/workflows/financial-1000-qa.yml
 permissions:
   contents: read
 jobs:

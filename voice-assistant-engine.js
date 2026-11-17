@@ -98,13 +98,14 @@ const VoiceAssistantEngine = (() => {
         ? (appState.selectedMember || appState.currentUser) : 'البيت'),
       projectName: null, projectItem: null, personName: null
     };
-    if (/سلفت|اقرضت|استلف مني|دين لي|لي عند|اعطيت.*دين/.test(norm)) {
-      result.type = 'debt_for_us';
-      const person = norm.match(/(?:سلفت|اقرضت|استلف مني|لي عند|اعطيت)\s+([\u0621-\u064a]+)/);
-      if (person) result.personName = person[1];
-    } else if (/تسلفت|استلفت|دين علي|اقترضت من|علي ل/.test(norm)) {
+    // Match borrowing before lending: "تسلفت" contains "سلفت".
+    if (/تسلفت|استلفت|دين علي|اقترضت من|علي ل/.test(norm)) {
       result.type = 'debt_on_us';
       const person = norm.match(/(?:تسلفت من|استلفت من|اقترضت من|علي ل)\s+([\u0621-\u064a]+)/);
+      if (person) result.personName = person[1];
+    } else if (/سلفت|اقرضت|استلف مني|دين لي|لي عند|اعطيت.*دين/.test(norm)) {
+      result.type = 'debt_for_us';
+      const person = norm.match(/(?:سلفت|اقرضت|استلف مني|لي عند|اعطيت)\s+([\u0621-\u064a]+)/);
       if (person) result.personName = person[1];
     } else if (/فاتوره|قسط|اشتراك|ايجار|سداد كهرباء|سداد نت|فواتير/.test(norm)) {
       result.type = 'bill'; result.category = 'bills';
