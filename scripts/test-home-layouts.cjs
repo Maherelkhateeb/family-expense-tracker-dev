@@ -78,7 +78,7 @@ const WIDTHS=[320,360,390,391,430,768];
          if(icon&&title&&icon.right>title.left+6)errors.push('reference-icon-not-left:'+card.dataset.refCategory);
        }
      } else if(design===5) {
-       for(let i=0;i<8;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
+       for(let i=0;i<9;i+=3) if(Math.abs(rects[i].top-rects[i+1].top)>3 || Math.abs(rects[i].top-rects[i+2].top)>3)errors.push('three-column-row-misaligned:'+i);
      } else if(design===2||design===3){
        for(let i=0;i<6;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
        if(Math.abs(rects[6].top-rects[7].top)>3||Math.abs(rects[7].top-rects[8].top)>3)errors.push('three-mini-row-misaligned');
