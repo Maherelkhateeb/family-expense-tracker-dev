@@ -892,3 +892,11 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav #navTabExpenses.
     grid-template-columns:repeat(3,minmax(0,1fr)) !important;
   }
 }
+
+
+/* Shared quick-tool order on the original home (keep its native appearance). */
+#viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnHomeDesign {order:-1 !important;}
+#viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnOpenGold {order:0 !important;}
+#viewExpenses:not(.home-reference-one):not(.home-alternative-design) #walletSelectCluster {order:1 !important;}
+#viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnOpenSummaryQuick {order:2 !important;}
+#viewExpenses:not(.home-reference-one):not(.home-alternative-design) #btnToggleCurrency {order:3 !important;}
