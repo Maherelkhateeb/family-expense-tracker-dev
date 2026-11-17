@@ -86,8 +86,8 @@ body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) 
 /* The 34px icon minimum plus a category title overflowed the top 61%
    of a 68px reference card. Tie icon dimensions to measured card height. */
 #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-icon {
-  width: clamp(23px, calc(var(--dynamic-home-card-height, 72px) * .36), 39px) !important;
-  height: clamp(23px, calc(var(--dynamic-home-card-height, 72px) * .36), 39px) !important;
+  width: clamp(26px, calc(var(--dynamic-home-card-height, 72px) * .48), 39px) !important;
+  height: clamp(26px, calc(var(--dynamic-home-card-height, 72px) * .48), 39px) !important;
 }
 
 /* Other designs retain their independent profiles until their own image
