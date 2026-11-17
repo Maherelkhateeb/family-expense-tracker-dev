@@ -1310,3 +1310,26 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     align-content:stretch!important;
   }
 }
+
+/* 2026-11-17: correct the previous flex/min-height regression on reference home one.
+   The content scrolls beneath the fixed footer; the last row remains reachable. */
+@media(max-width:480px){
+ body:has(#viewExpenses.home-reference-one.active) #appScrollBody{
+   display:block!important;overflow-y:auto!important;min-height:0!important;
+   padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
+   scroll-padding-bottom:calc(88px + env(safe-area-inset-bottom,0px))!important;
+ }
+ #viewExpenses.home-reference-one.active{
+   display:block!important;flex:none!important;min-height:0!important;
+   height:auto!important;overflow:visible!important;
+ }
+ #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]){
+   display:block!important;flex:none!important;min-height:0!important;
+   height:auto!important;margin-bottom:10px!important;overflow:visible!important;
+ }
+ #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid{
+   display:grid!important;flex:none!important;height:auto!important;
+   grid-template-rows:repeat(5,clamp(67px,18.1cqi,79px))!important;
+   align-content:start!important;overflow:visible!important;
+ }
+}
