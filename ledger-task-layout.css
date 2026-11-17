@@ -434,7 +434,7 @@ body.light-theme #secReqWallets, #walletPrintSheet {
 }
 
 #appFrame #viewOperations #opsViewModeToggleBar {
-  grid-template-columns: repeat(5,minmax(0,1fr)) !important;
+  grid-template-columns: repeat(6,minmax(0,1fr)) !important;
   grid-auto-flow: row;
   margin: 0 !important;
 }
@@ -540,11 +540,9 @@ body.light-theme .ops-timeline-day[data-tone="4"] { --day-color: #087082; --day-
   .ops-timeline-chevron { grid-column: 3; grid-row: 1/3; }
 }
 
-#appFrame #viewOperations.is-expense-calendar #opsPeriodFilterStrip { display: none !important; }
+#appFrame #viewOperations.is-monthly-expense-layout #opsPeriodFilterStrip { display: none !important; }
 @media (max-width: 480px) {
-  #appFrame #viewOperations #opsViewModeToggleBar { grid-template-columns: repeat(6,minmax(0,1fr)) !important; }
-  #appFrame #viewOperations #opsViewModeToggleBar > button { grid-column: span 2; }
-  #appFrame #viewOperations #opsViewModeToggleBar > :nth-child(n+4) { grid-column: span 3; }
+  #appFrame #viewOperations #opsViewModeToggleBar { grid-template-columns: repeat(3,minmax(0,1fr)) !important; }
 }
 
 .ops-calendar {
@@ -639,3 +637,49 @@ body.light-theme .ops-timeline-day[data-tone="4"] { --day-color: #087082; --day-
 .ops-calendar-selection { padding-block-start: 4px; border-block-start: 1px solid var(--ledger-line); }
 .ops-calendar-selection > header { padding-block-end: 2px; }
 .ops-calendar-empty { padding: 5px 0; }
+
+.ops-month-trend {
+  display: block;
+  width: 100%;
+  max-height: 285px;
+  direction: ltr;
+  color: #c4a5ff;
+  overflow: visible;
+}
+body.light-theme .ops-month-trend { color: #6d28d9; }
+.ops-month-trend-grid line { stroke: var(--ledger-line); stroke-width: .65; }
+.ops-month-trend-grid text { fill: var(--ledger-muted); font-size: 10px; font-weight: 700; }
+.ops-month-trend-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.ops-month-trend-point { cursor: pointer; }
+.ops-month-trend-point rect { fill: transparent; }
+.ops-month-trend-point circle {
+  fill: var(--ledger-panel);
+  stroke: currentColor;
+  stroke-width: 1.35;
+}
+.ops-month-trend-point:is([aria-pressed="true"],:hover,:focus-visible) circle { fill: currentColor; }
+.ops-month-trend-point:focus-visible { outline: 1px dashed currentColor; }
+.ops-month-trend-label { pointer-events: none; }
+.ops-month-trend-label rect { fill: #632ab5; }
+.ops-month-trend-label text { fill: #fff; font-size: 9px; font-weight: 800; unicode-bidi: plaintext; }
+.ops-month-trend-detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 8px;
+  padding: 5px 8px;
+  margin: 2px 0 0;
+  border-radius: 6px;
+  color: var(--ledger-text);
+  background: var(--ledger-control);
+  font-size: .73rem;
+}
+.ops-month-trend-detail bdi { color: var(--ledger-debit); font-weight: 850; }

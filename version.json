@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.1",
-  "build": "202611171345",
-  "buildId": 202611171345,
-  "updated": "2026-11-17T13:45:00+03:00",
-  "notes": "Daily expense timeline and monthly expense calendar in registered operations."
+  "version": "v5.4.2",
+  "build": "202611171350",
+  "buildId": 202611171350,
+  "updated": "2026-11-17T13:50:00+03:00",
+  "notes": "Interactive monthly expense trend in registered operations."
 }

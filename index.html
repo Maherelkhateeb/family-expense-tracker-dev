@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.1';
-    var APP_BUILD_ID = 202611171345;
+    var APP_VERSION = 'v5.4.2';
+    var APP_BUILD_ID = 202611171350;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171345">
-  <script src="./appearance-compact.js?v=202611171345" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171345">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171350">
+  <script src="./appearance-compact.js?v=202611171350" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171350">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171345"></script>
+  <script src="./budget-audit-engine.js?v=202611171350"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -17593,6 +17593,9 @@ body.light-theme .market-buy-price {
               </button>
               <button type="button" class="ops-view-mode-btn" id="btnOpsModeCalendar" data-view-mode="calendar" aria-pressed="false" onclick="setOperationsViewMode('calendar')">
                 <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span>تقويم المصروفات</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeMonthTrend" data-view-mode="month-trend" aria-pressed="false" onclick="setOperationsViewMode('month-trend')">
+                <i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>المسار الشهرى</span>
               </button>
             </div>
           </div>
@@ -21069,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.1</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.2</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -26967,7 +26970,8 @@ function renderCategoriesGrid(filtered) {
       return Number(converted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    const operationsViewModes = ['daily', 'flat', 'project', 'timeline', 'calendar'];
+    const monthlyExpenseViewModes = ['calendar', 'month-trend'];
+    const operationsViewModes = ['daily', 'flat', 'project', 'timeline', ...monthlyExpenseViewModes];
     function setOperationsViewMode(mode, persist = true) {
       if (!operationsViewModes.includes(mode)) mode = 'daily';
       state.opsViewMode = mode;
@@ -27040,7 +27044,7 @@ function renderCategoriesGrid(filtered) {
       const now = new Date();
       const todayStr = getLocalDateStr(now);
 
-      if (state.opsViewMode === 'calendar') {
+      if (monthlyExpenseViewModes.includes(state.opsViewMode)) {
         if (!expenseCalendar.month) {
           const customStart = p === 'custom' ? state.customDateRange?.from : '';
           expenseCalendar.month = /^\d{4}-(0[1-9]|1[0-2])-\d{2}$/.test(customStart || '') ?
@@ -27071,7 +27075,7 @@ function renderCategoriesGrid(filtered) {
       }
 
       // 3. تطبيق تصفية النوع على العمليات (المصروفات / الدخل / الكل)
-      const operationType = ['timeline', 'calendar'].includes(state.opsViewMode) ? 'expense' : opsTypeFilterState;
+      const operationType = ['timeline', ...monthlyExpenseViewModes].includes(state.opsViewMode) ? 'expense' : opsTypeFilterState;
       if (operationType === 'expense') {
         list = list.filter(t => t.type === 'expense');
       } else if (operationType === 'income') {
@@ -27231,12 +27235,98 @@ function renderCategoriesGrid(filtered) {
       expenseCalendar.date = '';
     }
 
-    function renderExpenseCalendar(list, limit) {
+    function renderExpenseCalendarGrid(month, days, offset, byDate, selectedDate, now) {
+      const padding = '<span class="ops-calendar-blank" aria-hidden="true"></span>';
+      const cells = Array(offset).fill(padding);
+      for (let number = 1; number <= days; number++) {
+        const date = month + '-' + String(number).padStart(2, '0');
+        const day = byDate.get(date);
+        const amount = day ? formatMoney(day.sum) : '';
+        const label = expenseCalendarDateLabel.format(new Date(date + 'T12:00:00Z'));
+        cells.push(`<button type="button" class="ops-calendar-day${day ? ' has-expenses' : ''}"
+          data-calendar-date="${date}" aria-pressed="${date === selectedDate}"
+          ${date === now ? 'aria-current="date"' : ''}
+          aria-label="${escapeHtml(label + '، ' + (amount || 'لا توجد مصروفات'))}">
+            <span>${number}</span><bdi>${amount ? escapeHtml(amount) : '–'}</bdi>
+          </button>`);
+      }
+      while (cells.length % 7) cells.push(padding);
+      const week = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+      return `<div class="ops-calendar-grid">
+        ${week.map(day => `<span class="ops-calendar-weekday">${day}</span>`).join('')}
+        ${cells.join('')}
+      </div>`;
+    }
+
+    function renderMonthlyExpenseTrend(month, days, byDate, selectedDate) {
+      const bounds = {left: 41, right: 351, top: 17, bottom: 116};
+      const dayWidth = (bounds.right - bounds.left) / days;
+      const points = Array.from({length: days}, (_, index) => {
+        const day = index + 1;
+        const date = month + '-' + String(day).padStart(2, '0');
+        return {day, date, amount: byDate.get(date)?.sum || 0, x: bounds.left + dayWidth * (index + 0.5)};
+      });
+      const totals = points.map(point => point.amount);
+      const peak = Math.max(0, ...totals);
+      const floor = Math.min(0, ...totals);
+      const target = Math.max(1, (peak - floor) / 4);
+      const magnitude = 10 ** Math.floor(Math.log10(target));
+      const interval = magnitude * [1,2,2.5,5,10].find(step => step * magnitude >= target);
+      const min = Math.floor(floor / interval) * interval;
+      const intervals = Math.max(4, Math.ceil((peak - min) / interval));
+      const compact = new Intl.NumberFormat('en', {notation: 'compact', maximumFractionDigits: 1});
+      const y = amount => (bounds.bottom - (amount - min) / (interval * intervals) * (bounds.bottom - bounds.top)).toFixed(2);
+      const coordinates = points.map(point => point.x.toFixed(2) + ',' + y(point.amount)).join(' ');
+      const last = points.at(-1);
+      const basePath = `M ${points[0].x.toFixed(2)},${y(0)} L ${coordinates} L ${last.x.toFixed(2)},${y(0)} Z`;
+      const grid = Array.from({length: intervals + 1}, (_, i) => {
+        const amount = min + i * interval;
+        const lineY = y(amount);
+        return `<line x1="${bounds.left}" x2="${bounds.right}" y1="${lineY}" y2="${lineY}"/>
+          <text x="${bounds.left - 6}" y="${lineY}" dominant-baseline="middle" text-anchor="end">${compact.format(amount)}</text>`;
+      }).join('');
+      const xLabels = points.filter(point => point.day === 1 || point.day === days ||
+        (point.day % 5 === 0 && days - point.day > 2))
+        .map(point => `<text x="${point.x.toFixed(2)}" y="136" text-anchor="middle">${point.day}</text>`).join('');
+      const controls = points.map(point => {
+        const active = point.date === selectedDate;
+        const label = expenseCalendarDateLabel.format(new Date(point.date + 'T12:00:00Z')) +
+          '، ' + formatMoney(point.amount);
+        return `<g class="ops-month-trend-point" role="button" tabindex="${active ? 0 : -1}"
+          aria-pressed="${active}" aria-label="${escapeHtml(label)}" data-calendar-date="${point.date}">
+          <rect x="${(point.x - dayWidth / 2).toFixed(2)}" y="${bounds.top - 8}" width="${dayWidth.toFixed(2)}" height="125"/>
+          <circle cx="${point.x.toFixed(2)}" cy="${y(point.amount)}" r="${active ? 4.1 : 2.3}"/>
+        </g>`;
+      }).join('');
+      const selected = points.find(point => point.date === selectedDate);
+      const amountLabel = formatMoney(selected.amount);
+      const labelWidth = Math.min(142, Math.max(50, amountLabel.length * 6.4 + 12));
+      const labelX = Math.max(bounds.left, Math.min(bounds.right - labelWidth, selected.x - labelWidth / 2));
+      const pointY = Number(y(selected.amount));
+      const labelY = pointY < 27 ? pointY + 8 : pointY - 24;
+      return `<svg class="ops-month-trend" viewBox="0 0 360 145" role="group"
+        aria-label="إجمالي المصروفات لكل يوم، استخدم السهمين للتنقل بين الأيام">
+        <defs><linearGradient id="opsMonthTrendFill" x2="0" y2="1">
+          <stop offset="0" stop-color="currentColor" stop-opacity=".34"/>
+          <stop offset="1" stop-color="currentColor" stop-opacity=".02"/>
+        </linearGradient></defs>
+        <g class="ops-month-trend-grid" aria-hidden="true">${grid}${xLabels}</g>
+        <path d="${basePath}" fill="url(#opsMonthTrendFill)" aria-hidden="true"/>
+        <polyline class="ops-month-trend-line" points="${coordinates}" aria-hidden="true"/>
+        ${controls}
+        <g class="ops-month-trend-label" aria-hidden="true">
+          <rect x="${labelX}" y="${labelY}" width="${labelWidth}" height="16" rx="5"/>
+          <text x="${labelX + labelWidth / 2}" y="${labelY + 8.3}" dominant-baseline="middle"
+            text-anchor="middle">${escapeHtml(amountLabel)}</text>
+        </g>
+      </svg>`;
+    }
+
+    function renderMonthlyExpenses(list, limit, showTrend) {
       const now = getLocalDateStr(new Date());
       const monthKey = expenseCalendar.month;
       const first = new Date(monthKey + '-01T12:00:00Z');
       const days = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
-      const offset = (first.getUTCDay() + 1) % 7;
       const byDate = new Map();
       let monthTotal = 0;
       for (const tx of list) {
@@ -27255,43 +27345,28 @@ function renderCategoriesGrid(filtered) {
           [...byDate.keys()].sort().at(-1) || monthKey + '-01';
       }
       const selectedDate = expenseCalendar.date;
-      const padding = '<span class="ops-calendar-blank" aria-hidden="true"></span>';
-      const cells = Array(offset).fill(padding);
-      for (let number = 1; number <= days; number++) {
-        const date = monthKey + '-' + String(number).padStart(2, '0');
-        const day = byDate.get(date);
-        const amount = day ? formatMoney(day.sum) : '';
-        const label = expenseCalendarDateLabel.format(new Date(date + 'T12:00:00Z'));
-        cells.push(`<button type="button" class="ops-calendar-day${day ? ' has-expenses' : ''}"
-          data-calendar-date="${date}" aria-pressed="${date === selectedDate}"
-          ${date === now ? 'aria-current="date"' : ''}
-          aria-label="${escapeHtml(label + '، ' + (amount || 'لا توجد مصروفات'))}">
-            <span>${number}</span><bdi>${amount ? escapeHtml(amount) : '–'}</bdi>
-          </button>`);
-      }
-      while (cells.length % 7) cells.push(padding);
-      const week = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
       const selected = byDate.get(selectedDate);
+      const chart = showTrend ? renderMonthlyExpenseTrend(monthKey, days, byDate, selectedDate) :
+        renderExpenseCalendarGrid(monthKey, days, (first.getUTCDay() + 1) % 7, byDate, selectedDate, now);
+      const title = showTrend ? 'مسار المصروفات خلال الشهر' : 'تقويم المصروفات';
+      const icon = showTrend ? 'fa-solid fa-chart-line' : 'fa-regular fa-calendar';
       const transactions = [];
       const rows = selected ? selected.rows.map(tx => ({tx, minutes: timelineOperationMinutes(tx)}))
         .sort((a,b) => b.minutes - a.minutes).slice(0, limit) : [];
       const dayLabel = expenseCalendarDateLabel.format(new Date(selectedDate + 'T12:00:00Z'));
-      const html = `<section class="ops-calendar" aria-label="تقويم المصروفات">
+      const html = `<section class="ops-calendar" aria-label="${title}">
         <header class="ops-calendar-header">
-          <h3><i class="fa-regular fa-calendar" aria-hidden="true"></i> تقويم المصروفات</h3>
+          <h3><i class="${icon}" aria-hidden="true"></i> ${title}</h3>
           <div class="ops-calendar-navigation">
             <button type="button" data-calendar-step="-1" aria-label="الشهر السابق"><span dir="ltr" aria-hidden="true">›</span></button>
             <strong aria-live="polite">${expenseCalendarMonthLabel.format(first)}</strong>
             <button type="button" data-calendar-step="1" aria-label="الشهر التالي"><span dir="ltr" aria-hidden="true">‹</span></button>
           </div>
         </header>
-        <div class="ops-calendar-grid">
-          ${week.map(day => `<span class="ops-calendar-weekday">${day}</span>`).join('')}
-          ${cells.join('')}
-        </div>
+        ${chart}
         <p class="ops-calendar-month-total">إجمالي الشهر <bdi>${escapeHtml(formatMoney(monthTotal))}</bdi></p>
         <section class="ops-calendar-selection" aria-label="مصروفات اليوم المختار">
-          <header><h4>${dayLabel}</h4>${selected ? `<span>إجمالي اليوم <bdi>${escapeHtml(formatMoney(selected.sum))}</bdi></span>` : ''}</header>
+          <header${showTrend ? ' class="ops-month-trend-detail"' : ''}><h4>${dayLabel}</h4>${showTrend || selected ? `<span>إجمالي اليوم <bdi>${escapeHtml(formatMoney(selected?.sum || 0))}</bdi></span>` : ''}</header>
           ${selected ? rows.map(row => renderExpenseOperationRow(row, transactions)).join('') :
             '<p class="ops-calendar-empty">لا توجد مصروفات مطابقة في هذا اليوم.</p>'}
         </section>
@@ -27304,10 +27379,11 @@ function renderCategoriesGrid(filtered) {
       if (!container) return;
       if (!operationsViewModes.includes(state.opsViewMode)) state.opsViewMode = 'daily';
       const curOpsMode = state.opsViewMode;
-      const expenseLayout = curOpsMode === 'timeline' || curOpsMode === 'calendar';
+      const monthlyExpenseLayout = monthlyExpenseViewModes.includes(curOpsMode);
+      const expenseLayout = curOpsMode === 'timeline' || monthlyExpenseLayout;
       const opsView = document.getElementById('viewOperations');
       opsView.classList.toggle('has-expense-layout', expenseLayout);
-      opsView.classList.toggle('is-expense-calendar', curOpsMode === 'calendar');
+      opsView.classList.toggle('is-monthly-expense-layout', monthlyExpenseLayout);
       for (const button of document.querySelectorAll('#opsViewModeToggleBar [data-view-mode]')) {
         const active = button.dataset.viewMode === curOpsMode;
         button.classList.toggle('active', active);
@@ -27318,7 +27394,7 @@ function renderCategoriesGrid(filtered) {
       const list = getRegisteredOperations(filtered ?? undefined);
       document.getElementById('opsResultCount').textContent = list.length.toLocaleString('ar-EG') + ' عملية مطابقة';
 
-      if (list.length === 0 && curOpsMode !== 'calendar') {
+      if (list.length === 0 && !monthlyExpenseLayout) {
         container.innerHTML = `
           <div class="empty-state" style="padding: 30px 10px; text-align: center;">
             <i class="fa-solid fa-receipt" style="color: #64748b; font-size: 2.2rem; margin-bottom: 10px;"></i>
@@ -27347,7 +27423,7 @@ function renderCategoriesGrid(filtered) {
 
       if (expenseLayout) {
         expenseView = curOpsMode === 'timeline' ?
-          renderDailyExpenseTimeline(list, opsRenderLimit) : renderExpenseCalendar(list, opsRenderLimit);
+          renderDailyExpenseTimeline(list, opsRenderLimit) : renderMonthlyExpenses(list, opsRenderLimit, curOpsMode === 'month-trend');
         cardsHtml = expenseView.html;
       } else if (curOpsMode === 'flat') {
         // =========================================================================
@@ -27559,8 +27635,14 @@ function renderCategoriesGrid(filtered) {
 
       container.innerHTML = cardsHtml;
       if (expenseView) {
-        container.firstElementChild.addEventListener('click', event => {
-          const action = event.target.closest('button');
+        const view = container.firstElementChild;
+        function showExpenseDay(date) {
+          expenseCalendar.date = date;
+          renderOperationsList(filtered);
+          container.querySelector(`[data-calendar-date="${date}"]`)?.focus({preventScroll: true});
+        }
+        view.addEventListener('click', event => {
+          const action = event.target.closest('button, [data-calendar-date]');
           if (!action) return;
           const {timelineAction, timelineIndex, calendarDate, calendarStep} = action.dataset;
           if (timelineAction) {
@@ -27569,14 +27651,24 @@ function renderCategoriesGrid(filtered) {
             if (timelineAction === 'edit') editTx(tx.id);
             else if (timelineAction === 'receipt') openReceiptLightbox(tx.id);
             else if (timelineAction === 'delete') deleteTx(tx.id);
-          } else if (calendarStep || calendarDate) {
-            if (calendarStep) changeExpenseCalendarMonth(Number(calendarStep));
-            else expenseCalendar.date = calendarDate;
+          } else if (calendarStep) {
+            changeExpenseCalendarMonth(Number(calendarStep));
             renderOperationsList(filtered);
-            const selector = calendarStep ? `[data-calendar-step="${calendarStep}"]` : `[data-calendar-date="${calendarDate}"]`;
-            container.querySelector(selector)?.focus({preventScroll: true});
+            container.querySelector(`[data-calendar-step="${calendarStep}"]`)?.focus({preventScroll: true});
+          } else if (calendarDate) {
+            showExpenseDay(calendarDate);
           }
         });
+        if (curOpsMode === 'month-trend') {
+          view.addEventListener('keydown', event => {
+            const point = event.target.closest('.ops-month-trend-point');
+            if (!point || !['ArrowLeft','ArrowRight','Enter',' '].includes(event.key)) return;
+            event.preventDefault();
+            const target = event.key === 'ArrowLeft' ? point.previousElementSibling :
+              event.key === 'ArrowRight' ? point.nextElementSibling : point;
+            if (target?.dataset.calendarDate) showExpenseDay(target.dataset.calendarDate);
+          });
+        }
       }
     }
 function loadMoreOperations() {

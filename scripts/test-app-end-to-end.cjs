@@ -257,6 +257,34 @@ const URL=process.env.APP_URL || 'http://127.0.0.1:8765/';
      document.getElementById('opsSearchInput').value = '';
      filterOperationsList();
    });
+   const trend = page.locator('#btnOpsModeMonthTrend');
+   await trend.click();
+   assert.equal(await trend.getAttribute('aria-pressed'),'true');
+   const graph = page.locator('.ops-month-trend');
+   const points = graph.locator('.ops-month-trend-point');
+   assert.equal(await points.count(),29,'The trend should preserve the calendar month');
+   const firstPoint = points.first();
+   const lastPoint = points.last();
+   assert.ok(Number(await firstPoint.locator('circle').getAttribute('cy')) >
+     Number(await lastPoint.locator('circle').getAttribute('cy')),'Positive spending must plot above zero');
+   assert.equal(await lastPoint.getAttribute('aria-pressed'),'true');
+   assert.equal(await graph.locator('.ops-month-trend-label text').textContent(),fixture.dayTotal);
+   assert.equal(await page.locator('.ops-month-trend-detail bdi').textContent(),fixture.dayTotal);
+   await lastPoint.press('ArrowLeft');
+   assert.equal(await points.nth(27).getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('.ops-month-trend-detail bdi').textContent(),fixture.emptyTotal);
+   await lastPoint.locator('circle').click();
+   assert.equal(await item.count(),40,'Selecting a point should show that day’s expenses');
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   assert.equal(await points.count(),31);
+   assert.ok(await page.locator('.ops-calendar-empty').isVisible());
+   await page.getByRole('button',{name:'الشهر السابق'}).click();
+   const graphFits = await graph.evaluate(el => {
+     const rect = el.getBoundingClientRect();
+     const host = el.parentElement.getBoundingClientRect();
+     return rect.width > 0 && rect.height > 0 && rect.left >= host.left && rect.right <= host.right;
+   });
+   assert.ok(graphFits,'The monthly chart should fit the panel at the tested viewport');
    await page.locator('#btnOpsModeDaily').click();
    assert.equal(await page.evaluate(() => getRegisteredOperations().map(tx => tx.id).join(',')), 'income-mode',
      'Returning to daily mode should preserve the original filter');
