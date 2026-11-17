@@ -43156,7 +43156,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
 .home-design-insights p{margin:5px 0}
 .home-design-insights progress{width:100%;accent-color:#8b5cf6}
 </style>
-<link rel="stylesheet" href="./home-mobile-fit.css?v=202611172245">
+<link rel="stylesheet" href="./home-mobile-fit.css?v=202611172310">
+<script defer src="./home-dynamic-layout-engine.js?v=202611172310"></script>
 <script>
 (() => {
   function installHomeInterfaces() {
@@ -43171,6 +43172,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     const host = document.createElement('section');
     host.id = 'homeInterfaces';
     original.after(host);
+    // Start the isolated geometry engine after the host is mounted.
+    const dynamicHomeEngine = window.HomeDynamicLayoutEngine?.create({view:expensePage,host});
     const trigger = document.createElement('button');
     trigger.id = 'btnHomeDesign';
     trigger.type = 'button';
@@ -43240,6 +43243,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     }
     function render() {
       host.dataset.design = design;
+      dynamicHomeEngine?.refresh();
       expensePage.classList.toggle('home-reference-one', design === 1);
       expensePage.classList.toggle('home-alternative-design', design > 1);
       // Render updates must never move the switcher away from the home screen.
