@@ -1854,8 +1854,12 @@ const BudgetCompareEngine = (() => {
 
   // Reference-spec comparison, 17 Nov 2026: visible only for a registered budget.
   // Monetary values in this engine are cents. No samples or fabricated categories.
-  function renderBudgetReferenceSpecification(content,rows,totals,range) {
-    const sorted=[...rows].sort((a,b)=>(b.b||0)-(a.b||0)||a.name.localeCompare(b.name,'ar'));
+  function renderBudgetReferenceSpecification(content,rows,totals,range,opts={}) {
+    const expanded=Boolean(content.querySelector('#cmpUnifiedAdvancedCharts')?.open);
+    const referenceLabel=opts.referenceLabel||'الموازنة التقديرية';
+    const actualLabel=opts.actualLabel||'الصرف الفعلي';
+    const budgetMode=opts.reference==='plan'||!opts.reference;
+    const sorted=[...rows];
     const est=totals.b||0, actual=totals.a||0, variance=actual-est;
     const palette={estimated:'#888780',actual:'#378ADD',over:'#E24B4A',save:'#639922'};
     const num=value=>Math.round(Number(value)||0);
@@ -1867,7 +1871,7 @@ const BudgetCompareEngine = (() => {
     const tone=value=>value>0?'bs-over':value<0?'bs-save':'bs-neutral';
     const safe=escapeHtml;
     const actualLink=row=>'<button type="button" class="bs-open-operations" data-period-series="actual" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات '+safe(row.name)+'">'+fmt(row.a)+'</button>';
-    const condition=row=>(row.b||0)===0?'غير مخطط':(row.diff/(row.b||1)*100>5?'تجاوز':row.diff/(row.b||1)*100< -5?'توفير':'ضمن الحد');
+    const condition=row=>(row.b||0)===0?(row.a>0?'غير مخطط':'لا حركة'):(row.diff/(row.b||1)*100>5?(budgetMode?'تجاوز':'ارتفاع'):row.diff/(row.b||1)*100< -5?(budgetMode?'توفير':'انخفاض'):'ضمن الحد');
     const totalPct=percentValue(variance,est);
     if(est+sorted.reduce((sum,row)=>sum+row.diff,0)!==actual){
       content.innerHTML='<p class="bs-error" role="alert">تعذر عرض المقارنة: إجمالي التقديري ومجموع الفروق لا يتطابقان مع إجمالي الفعلي.</p>';
@@ -1920,7 +1924,7 @@ const BudgetCompareEngine = (() => {
       const estShare=est?row.b/est*100:0,actShare=actual?row.a/actual*100:0;
       const type=row.id==='bills'?'ثابت':'متغير';
       const cause=row.b===0&&row.a>0?'بند غير مخطط':'غير محدد';
-      const values=[['التقديري',fmt(row.b)],['الفعلي',actualLink(row)],
+      const values=[[referenceLabel,fmt(row.b)],[actualLabel,actualLink(row)],
         ['الفرق','<span class="'+tone(row.diff)+'">'+signed(row.diff)+'</span>'],
         ['الانحراف',pct(ratio)],['الحالة',safe(status)],
         ['الحصة التقديرية',pct(estShare)],['الحصة الفعلية',pct(actShare)]];
@@ -1929,8 +1933,8 @@ const BudgetCompareEngine = (() => {
       return {mobile,desktop};
     });
     const totalRow='<tr><th scope="row">الإجمالي</th><td>'+fmt(est)+'</td><td><button class="bs-open-operations" type="button" data-period-series="actual" data-period-category="">'+fmt(actual)+'</button></td><td class="'+tone(variance)+'">'+signed(variance)+'</td><td>'+pct(totalPct)+'</td><td>'+ (est===0?'غير مخطط':totalPct>5?'تجاوز':totalPct< -5?'توفير':'ضمن الحد')+'</td><td>100%</td><td>100%</td><td>—</td><td>—</td></tr>';
-    const table='<section class="bs-panel bs-full" aria-label="جدول فروقات الموازنة"><h3>جدول الفروقات لكل بند</h3>'+
-      '<div class="bs-table-wrap"><table class="bs-table"><thead><tr><th>البند</th><th>التقديري</th><th>الفعلي</th><th>الفرق</th><th>الانحراف</th><th>الحالة</th><th>حصة التقديري</th><th>حصة الفعلي</th><th>النوع</th><th>سبب الانحراف</th></tr></thead><tbody>'+tableRows.map(r=>r.desktop).join('')+'</tbody><tfoot>'+totalRow+'</tfoot></table></div>'+
+    const table='<section class="bs-panel bs-full" id="cmpUnifiedTable" aria-label="جدول فروقات المقارنة"><h3>جدول الفروقات لكل بند</h3>'+
+      '<div class="bs-table-wrap"><table class="bs-table"><thead><tr><th>البند</th><th>'+safe(referenceLabel)+'</th><th>'+safe(actualLabel)+'</th><th>الفرق</th><th>الانحراف</th><th>الحالة</th><th>حصة التقديري</th><th>حصة الفعلي</th><th>النوع</th><th>سبب الانحراف</th></tr></thead><tbody>'+tableRows.map(r=>r.desktop).join('')+'</tbody><tfoot>'+totalRow+'</tfoot></table></div>'+
       '<div class="bs-mobile-rows">'+tableRows.map(r=>r.mobile).join('')+'</div><p class="bs-note">اضغط على المبلغ الفعلي لعرض العمليات المفلترة. النسبة (—) تعني عدم وجود تقدير لهذا البند. سبب الانحراف غير محدد ما لم يُسجّل في البيانات.</p></section>';
     const max=Math.max(1,...sorted.map(row=>Math.max(row.a,row.b||0)));
     const plotW=Math.max(540,sorted.length*76+100),plotH=260,top=37,baseY=198;
@@ -1981,18 +1985,18 @@ const BudgetCompareEngine = (() => {
     }).join('');
     const stats='<div class="bs-statline"><div><small>إجمالي التقديري</small><strong>'+fmt(est)+'</strong></div><div><small>إجمالي الفعلي</small><strong>'+fmt(actual)+'</strong></div>'+
       '<div><small>الفرق الكلي</small><strong class="'+tone(variance)+'">'+signed(variance)+'</strong></div><div><small>نسبة الانحراف</small><strong class="'+tone(variance)+'">'+pct(totalPct)+'</strong></div></div>';
-    content.innerHTML='<div class="budget-spec"><p class="bs-intro">مقارنة الميزانية المسجلة بالصرف الفعلي · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
+    content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
       '<div class="bs-grid">'+table+
-      '<section class="bs-panel bs-full"><h3>1. الأعمدة المتجاورة: التقديري والفعلي</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> التقديري</span><span><i style="background:'+palette.actual+'"></i> الفعلي</span></div>'+columnSvg+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p></section>'+
-      '<section class="bs-panel bs-full"><h3>2. شلال الفروقات</h3>'+waterfall+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
-      '<section class="bs-panel bs-full"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
-      '</div></div>';
-    renderBudgetReferenceAdvancedCharts(content,sorted,totals,range);
+      '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div>'+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p></section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div>'+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
+      '<details class="bs-more" id="cmpUnifiedAdvancedCharts" '+(expanded?'open':'')+'><summary>عرض الرسوم الخمسة الإضافية (4–8)</summary><div class="bs-more-grid"></div></details></div></div>';
+    renderBudgetReferenceAdvancedCharts(content,sorted,totals,range,opts);
   }
 
   // Five additional views use the same registered budget and actual transactions.
-  function renderBudgetReferenceAdvancedCharts(content,rows,totals,range) {
-    const grid=content.querySelector('.bs-grid');
+  function renderBudgetReferenceAdvancedCharts(content,rows,totals,range,opts={}) {
+    const grid=content.querySelector('.bs-more-grid')||content.querySelector('.bs-grid');
     if(!grid)return;
     const numberFmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
     const cash=value=>numberFmt.format(Math.round(value/100));
@@ -2001,7 +2005,7 @@ const BudgetCompareEngine = (() => {
     const pct=(actual,estimated)=>estimated>0
       ?(actual-estimated>0?'+':actual-estimated<0?'−':'')+Math.abs(Math.round((actual-estimated)/estimated*100))+'%'
       :'—';
-    const sorted=[...rows].sort((a,b)=>(b.b||0)-(a.b||0)||a.name.localeCompare(b.name,'ar'));
+    const sorted=[...rows];
     const colorById={food:'#2a78d6',education:'#eb6834',transport:'#1baf7a',
       leisure:'#eda100',bills:'#e87ba4',health:'#008300',daily:'#8b5cf6',
       house:'#0d9488',clothes:'#c2410c',other:'#64748b'};
@@ -2043,8 +2047,8 @@ const BudgetCompareEngine = (() => {
         '<div class="bs-bullet-track" dir="ltr" style="--target:'+(100/axisMax*100)+'%"><i style="width:'+(ratio/axisMax*100)+'%"></i></div>'+
         '<strong dir="ltr">'+(row.b?pct(row.a,row.b):'—')+'</strong></div>';
     }).join('');
-    const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو التقديري، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مدى الالتزام بالتقديري</h3>'+bullet+bulletLegend+'</section>');
+    const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو المرجع المحدد، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+'</section>');
     // Month chunks: exact partial-month proration and actual entries.
     const monthly=[...monthSlices(range)].map(s=>{
       const period={from:s.key+'-'+pad(s.first),to:s.key+'-'+pad(s.last)};
