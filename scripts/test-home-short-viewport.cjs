@@ -6,7 +6,7 @@ const fs=require('node:fs');
 const {chromium}=require('playwright');
 const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
 const viewports=[
- {width:320,height:535},{width:345,height:590},{width:360,height:620},
+ {width:320,height:535},{width:345,height:590},{width:345,height:650},{width:360,height:620},
  {width:391,height:695},{width:430,height:700}
 ];
 const read=()=>({}); // Purely a test harness; the app handles all transactions.
@@ -50,6 +50,10 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
    assert.ok(initial.voiceAction && initial.lastAmount,'Last row missing active voice or financial content');
    assert.ok(initial.cardHeight>=68 && initial.cardHeight<=80,
      'Reference image card proportions are wrong: '+JSON.stringify(initial));
+   if(viewport.width===345 && viewport.height===650) {
+     assert.ok(initial.last.bottom<=initial.nav.top-2 && initial.voice.bottom<=initial.nav.top-2,
+       'User-matched 345x650 Android browser viewport should show the entire last row WITHOUT scrolling: '+JSON.stringify(initial));
+   }
    assert.ok(initial.hostOverflow!=='hidden' && initial.viewOverflow!=='hidden',
      'Parent hides bottom row: '+JSON.stringify(initial));
    // Screenshot may show the footer on the first frame; collect even if scroll needed.
