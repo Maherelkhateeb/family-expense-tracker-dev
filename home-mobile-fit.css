@@ -476,3 +476,59 @@
 .home-design-voice button {
   font-size:clamp(11px,3cqi,16px)!important;
 }
+
+
+/* Screenshot comparison: give alternatives the pale blue/white canvas used by the supplied references. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="2"],
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"],
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"],
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] {
+  background:linear-gradient(180deg,#f9feff 0%,#e6f6ff 100%)!important;
+  border:1px solid #c0e5f7!important;
+  border-radius:clamp(10px,3cqi,20px)!important;
+  padding:clamp(3px,1cqi,6px)!important;
+  color:#132641!important;
+}
+/* Design 6: two genuinely spacious icon rows and a compact final action row. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr) minmax(0,clamp(66px,11dvh,83px))!important;
+  gap:clamp(2px,.7cqi,7px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-head {
+  min-height:0!important;
+  color:#101e3a!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-head strong {
+  color:#101e3a!important;
+  text-shadow:none!important;
+  font-size:clamp(8px,2.3cqi,12px)!important;
+  line-height:1.05!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-icon {
+  width:clamp(36px,11.5cqi,54px)!important;
+  height:clamp(36px,11.5cqi,54px)!important;
+  flex-basis:clamp(36px,11.5cqi,54px)!important;
+  filter:drop-shadow(0 2px 3px #3a7fac30)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-value bdi {
+  color:#304663!important;
+  font-size:clamp(8px,2.25cqi,12px)!important;
+  opacity:1!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-voice {
+  box-sizing:border-box!important;
+  min-height:0!important;
+  max-height:64px!important;
+  height:clamp(45px,8dvh,64px)!important;
+  align-self:center!important;
+  justify-self:stretch!important;
+  background:linear-gradient(95deg,#8626de,#bd66f8)!important;
+  box-shadow:0 4px 9px #6727b14a!important;
+}
+/* The screenshot references show an integral voice bar, not a second floating mic
+   obscuring amounts and controls. Keep active recording/status visible. */
+body:has(#viewExpenses.home-alternative-design.active)
+:is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)) {
+  visibility:hidden!important;
+}
