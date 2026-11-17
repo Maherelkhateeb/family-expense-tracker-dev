@@ -2018,3 +2018,110 @@ body.light-theme #cmpPeriodsFilterBox #cmpEstimCustomRange .cmp-month-range-butt
   body:has(#viewBudgets.active #btnBudgetSubCurrent[aria-pressed="true"]):has(#viewBudgets.active #btnBudgetInnerCompare[aria-pressed="true"])
     :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab) { display: none !important; }
 }
+
+#requestsListContainer.request-cards { display: grid; gap: 7px; min-width: 0; }
+#requestsListContainer .request-card {
+  --request-muted: #b8c9dc;
+  --request-line: #48607b;
+  --request-detail: #24354a;
+  --request-wait: #fcd593;
+  --request-wait-bg: #403422;
+  --request-ok: #86efac;
+  --request-ok-bg: #163e31;
+  --request-edit: #b8e6ff;
+  --request-edit-bg: #163c59;
+  --request-danger: #fecdd3;
+  --request-danger-bg: #502a3a;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--request-line);
+  border-radius: 11px;
+  color: var(--text-main,#f8fafc);
+  background: var(--bg-card,#182638);
+}
+body.light-theme #requestsListContainer .request-card {
+  --request-muted: #475569;
+  --request-line: #cbd5e1;
+  --request-detail: #f1f5f9;
+  --request-wait: #854d0e;
+  --request-wait-bg: #fef3c7;
+  --request-ok: #065f46;
+  --request-ok-bg: #d1fae5;
+  --request-edit: #075985;
+  --request-edit-bg: #e0f2fe;
+  --request-danger: #9f1239;
+  --request-danger-bg: #ffe4e6;
+}
+.request-card-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,max-content);
+  align-items: start;
+  gap: 7px;
+}
+.request-card-heading h3,.request-card-total { margin: 0; line-height: 1.35; overflow-wrap: anywhere; }
+.request-card-heading h3 { font-size: .85rem; font-weight: 850; }
+.request-card-total { max-width: 9rem; text-align: end; font-size: .94rem; font-weight: 900; }
+.request-card-meta,.request-card-dates { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 5px; }
+.request-card-meta > * {
+  max-width: 100%;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: var(--request-detail);
+  color: var(--request-muted);
+  font-size: .67rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.request-card-serial { font-variant-numeric: tabular-nums; }
+.request-card-status[data-status="pending"] { color: var(--request-wait); background: var(--request-wait-bg); }
+.request-card-status[data-status="approved"] { color: var(--request-ok); background: var(--request-ok-bg); }
+.request-card-status[data-status="rejected"] { color: var(--request-danger); background: var(--request-danger-bg); }
+.request-card-allocations {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.request-card-allocations li {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,max-content);
+  align-items: baseline;
+  gap: 4px 8px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: var(--request-detail);
+  overflow-wrap: anywhere;
+  font-size: .72rem;
+}
+.request-card-allocations bdi { max-width: 8rem; font-weight: 800; }
+.request-card-dates { font-size: .66rem; color: var(--request-muted); }
+.request-card-dates span { max-width: 100%; overflow-wrap: anywhere; }
+.request-card-dates span + span { border-inline-start: 1px solid var(--request-line); padding-inline-start: 5px; }
+.request-card-attachment { justify-self: start; color: var(--request-edit); font-size: .72rem; }
+.request-card-actions { display: flex; justify-content: end; gap: 4px; padding-top: 4px; border-top: 1px solid var(--request-line); }
+.request-card-actions.is-pending { display: grid; grid-template-columns: minmax(0,1.8fr) repeat(2,minmax(0,1fr)); }
+.request-card-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 36px;
+  height: auto;
+  padding: 3px 5px;
+  background: var(--request-edit-bg);
+  color: var(--request-edit);
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 850;
+  line-height: 1.25;
+  white-space: normal;
+  cursor: pointer;
+}
+.request-card-actions .request-card-confirm { color: var(--request-ok); background: var(--request-ok-bg); }
+.request-card-actions .request-card-danger { color: var(--request-danger); background: var(--request-danger-bg); }

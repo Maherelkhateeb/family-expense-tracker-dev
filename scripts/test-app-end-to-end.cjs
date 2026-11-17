@@ -141,6 +141,48 @@ const URL=process.env.APP_URL || 'http://127.0.0.1:8765/';
      return result;
    });
    assert.equal(emptyCount,0,'Deleted tasks were silently re-seeded');
+   const requestLayout=await page.evaluate(()=>{
+     const before=state.moneyRequests;
+     const memberFilter=state.currentMemberFilter;
+     const filter=window.currentRequestStatusFilter;
+     state.currentMemberFilter='الكل';
+     window.currentRequestStatusFilter='all';
+     state.moneyRequests=[
+       {id:'layout-req-1',status:'pending',serialNo:'REQ-2026-0001',member:'مريم',reason:'طلب مصروف بعنوان طويل للتأكد من التفاف النص على الجوال',amount:350,date:'2026-11-14',timestamp:'',allocations:[{category:'food',member:'مريم',amount:250},{category:'daily',member:'محمد',amount:100}]},
+       {id:'layout-req-2',status:'approved',member:'محمد',reason:'طلب سابق',amount:300,date:'2026-11-14',timestamp:'2026-11-12',allocations:[]}
+     ];
+     switchAppPage('requests',true);
+     switchRequestMainSection('requests');
+     switchRequestSubTab('list');
+     const cards=[...document.querySelectorAll('.request-card')];
+     const [first,second]=cards;
+     const actions=[...first.querySelectorAll('.request-card-actions button')];
+     const row=actions.map(el=>el.getBoundingClientRect());
+     const wrap=first.getBoundingClientRect();
+     let clickedId='';
+     const prompt=window.prompt;
+     try {
+       window.prompt=message=>{clickedId=message.match(/REQ-2026-0001/)?.[0]||'';return null;};
+       first.querySelector('[data-action="edit"]').click();
+     } finally {
+       window.prompt=prompt;
+     }
+     const out={count:cards.length,allocations:first.querySelectorAll('.request-card-allocations li').length,
+       emptyDate:first.querySelectorAll('.request-card-dates > span').length,
+       presentDate:second.querySelectorAll('.request-card-dates > span').length,
+       statuses:cards.map(card=>card.querySelector('.request-card-status').dataset.status),
+       actions:actions.map(button=>button.dataset.action),clickedId,
+       fits:row.every(rect=>rect.left>=wrap.left&&rect.right<=wrap.right&&rect.width>0&&rect.height===row[0].height),
+       notes:[...document.querySelectorAll('#opsSubViewArchive button')].filter(el=>el.getAttribute('onclick')?.includes("filterArchiveType('notes'")).length};
+     state.moneyRequests=before;
+     state.currentMemberFilter=memberFilter;
+     window.currentRequestStatusFilter=filter;
+     renderRequestsList();
+     return out;
+   });
+   assert.deepEqual(requestLayout,{count:2,allocations:2,emptyDate:1,presentDate:2,
+     statuses:['pending','approved'],actions:['approve','edit','reject'],clickedId:'REQ-2026-0001',fits:true,notes:1});
+
    assert.deepEqual(errors,[],'Uncaught JS exceptions '+JSON.stringify(errors));
    await ctx.close();
   }

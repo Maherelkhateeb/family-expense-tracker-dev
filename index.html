@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.96';
-    var APP_BUILD_ID = 202611171035;
+    var APP_VERSION = 'v5.3.97';
+    var APP_BUILD_ID = 202611171045;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171035">
-  <script src="./appearance-compact.js?v=202611171035" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171035">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171045">
+  <script src="./appearance-compact.js?v=202611171045" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171045">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171035"></script>
+  <script src="./budget-audit-engine.js?v=202611171045"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -17887,7 +17887,6 @@ body.light-theme .market-buy-price {
             <button class="btn-export-tool" onclick="filterArchiveType('transfer', this)">تحويلات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('delete', this)">حذف</button>
-            <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool excel-btn" onclick="exportActivityLogExcel()" style="margin-right: auto;">
               <i class="fa-solid fa-file-excel"></i> تصدير الأرشيف
             </button>
@@ -18146,7 +18145,7 @@ body.light-theme .market-buy-price {
               <span id="reqSummaryCount" style="font-size: 0.70rem; padding: 2px 7px; border-radius: 7px; background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6;">0 طلب</span>
             </div>
 
-            <div id="requestsListContainer" style="max-height: 65vh; overflow-y: auto;"></div>
+            <div id="requestsListContainer" class="request-cards"></div>
           </div>
 
         </div>
@@ -21072,7 +21071,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.96</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.97</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -29270,106 +29269,58 @@ function saveTx() {
         return;
       }
 
+      const attr = value => escapeHtml(value).replaceAll('"', '&quot;');
+      const statuses = {
+        pending: ['قيد الانتظار', 'fa-hourglass-half'],
+        approved: ['تم الصرف', 'fa-circle-check'],
+        rejected: ['مرفوض', 'fa-circle-xmark']
+      };
+      const actions = {approve: approveRequest, edit: promptEditMoneyRequest, reject: rejectRequest, delete: deleteRequest};
       container.innerHTML = '';
       list.forEach(req => {
-        const card = document.createElement('div');
-        card.className = 'req-card-lux';
-        card.style.cssText = 'background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);';
-
-        let statusBadge = '';
-        if (req.status === 'pending') {
-          statusBadge = `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-hourglass-half"></i> قيد الانتظار</span>`;
-        } else if (req.status === 'approved') {
-          statusBadge = `<span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle-check"></i> تم الصرف</span>`;
-        } else {
-          statusBadge = `<span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle-xmark"></i> مرفوض</span>`;
-        }
-
-        // شارات التوزيعات المتعددة
-        let allocChipsHtml = '';
-        if (req.allocations && Array.isArray(req.allocations) && req.allocations.length > 0) {
-          allocChipsHtml = req.allocations.map(a => {
-            const cObj = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === a.category) || { name: 'مصروف', icon: 'fa-tag', color: '#38bdf8' };
-            return `
-              <span style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.28); padding: 2px 7px; border-radius: 6px; font-size: 0.70rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
-                <i class="fa-solid ${cObj.icon}"></i> ${cObj.name} (${a.member}): <strong>${formatMoney(a.amount)}</strong>
-              </span>
-            `;
-          }).join('');
-        }
-
+        const card = document.createElement('article');
+        card.className = 'req-card-lux request-card';
+        const status = Object.hasOwn(statuses, req.status) ? req.status : 'rejected';
+        const [statusLabel, statusIcon] = statuses[status];
+        const allocations = Array.isArray(req.allocations) ? req.allocations : [];
+        const allocationRows = allocations.map(allocation => {
+          const category = getCategoryObj(allocation.category, 'expense');
+          const member = allocation.member ? ` · ${escapeHtml(allocation.member)}` : '';
+          return `<li><span><i class="fa-solid ${escapeHtml(category?.icon || 'fa-tag')}" aria-hidden="true"></i> ${escapeHtml(category?.name || 'مصروف')}${member}</span><bdi>${escapeHtml(formatMoney(allocation.amount))}</bdi></li>`;
+        }).join('');
         card.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-              <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 850;">
-                <i class="fa-solid fa-user"></i> ${escapeHtml(req.member || 'العائلة')}
-              </span>
-              <span style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 7px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; font-family: monospace;">
-                ${req.serialNo || req.auditSerial || '#REQ-2026'}
-              </span>
-              ${statusBadge}
-              ${req.isModified ? `<span style="background: rgba(14, 165, 233, 0.15); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.3); padding: 1px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 800;" title="تم التعديل: ${escapeHtml(req.lastModifiedReason || '')}">معدل ✏️</span>` : ''}
-            </div>
-            <div style="font-size: 1.05rem; font-weight: 900; color: #fbbf24; direction: ltr; unicode-bidi: isolate; display: inline-flex; align-items: center; gap: 3px;">
-              <span>${Number(req.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              <span style="font-size: 0.78rem; color: #94a3b8;">${typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : 'ج.م'}</span>
-            </div>
+          <header class="request-card-heading">
+            <h3>${escapeHtml(req.reason || 'طلب مصروف')}</h3>
+            <bdi class="request-card-total">${escapeHtml(formatMoney(req.amount))}</bdi>
+          </header>
+          <div class="request-card-meta">
+            <span><i class="fa-solid fa-user" aria-hidden="true"></i> ${escapeHtml(req.member || 'العائلة')}</span>
+            <span class="request-card-status" data-status="${status}"><i class="fa-solid ${statusIcon}" aria-hidden="true"></i> ${statusLabel}</span>
+            <bdi class="request-card-serial">${escapeHtml(req.serialNo || req.auditSerial || '#REQ-2026')}</bdi>
+            ${req.isModified ? `<span title="تم التعديل: ${attr(req.lastModifiedReason || '')}">معدّل</span>` : ''}
           </div>
-
-          <div style="font-size: 0.86rem; font-weight: 800; color: #f8fafc; margin-bottom: 6px; line-height: 1.4;">
-            ${escapeHtml(req.reason)}
+          ${allocationRows ? `<ul class="request-card-allocations" aria-label="توزيع مبلغ الطلب">${allocationRows}</ul>` : ''}
+          <div class="request-card-dates">
+            <span><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> تاريخ الحاجة <bdi>${escapeHtml(req.date || 'اليوم')}</bdi></span>
+            ${req.timestamp ? `<span><i class="fa-regular fa-clock" aria-hidden="true"></i> تم الطلب <bdi>${escapeHtml(req.timestamp)}</bdi></span>` : ''}
           </div>
-
-          <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px;">
-            ${allocChipsHtml}
-            <span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); padding: 2px 6px; border-radius: 6px; font-size: 0.65rem; font-weight: 700;">
-              <i class="fa-regular fa-calendar-check"></i> تاريخ الحاجة: ${req.date || 'اليوم'}
-            </span>
-          </div>
-
-          ${req.photo ? `
-            <div style="margin: 4px 0 6px;">
-              <a href="${req.photo}" target="_blank" download="request-doc-${req.id}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 7px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.72rem; font-weight: 800; text-decoration: none;">
-                <i class="fa-solid fa-paperclip"></i> عرض المستند / الفاتورة المرفقة
-              </a>
-            </div>
-          ` : ''}
-
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.66rem; color: #64748b; margin-top: 4px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-            <span><i class="fa-regular fa-clock"></i> تم الطلب: ${req.timestamp || ''}</span>
-          </div>
-        `;
-
-        if (req.status === 'pending') {
-          const actions = document.createElement('div');
-          actions.className = 'item-entry-actions';
-          actions.style.cssText = 'display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08);';
-          actions.innerHTML = `
-            <button class="btn-item-action btn-item-approve" onclick="approveRequest('${req.id}')" title="موافقة وصرف فوراً" style="flex: 2; height: 34px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 850; font-size: 0.76rem; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-              <i class="fa-solid fa-check"></i> موافقة وصرف فوراً
-            </button>
-            <button class="btn-item-action" onclick="promptEditMoneyRequest('${req.id}')" title="تعديل تفاصيل الطلب" style="flex: 1; height: 34px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; font-weight: 800; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <i class="fa-solid fa-pen-to-square"></i> تعديل
-            </button>
-            <button class="btn-item-action btn-item-reject" onclick="rejectRequest('${req.id}')" title="رفض الطلب" style="flex: 1; height: 34px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; font-weight: 800; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <i class="fa-solid fa-xmark"></i> رفض
-            </button>
-          `;
-          card.appendChild(actions);
-        } else {
-          const actions = document.createElement('div');
-          actions.className = 'item-entry-actions';
-          actions.style.cssText = 'display: flex; justify-content: flex-end; margin-top: 6px;';
-          actions.innerHTML = `
-            <button class="btn-item-action btn-item-delete" onclick="deleteRequest('${req.id}')" title="حذف من السجل" style="height: 30px; padding: 0 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; font-weight: 800; font-size: 0.72rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-trash-can"></i> حذف
-            </button>
-          `;
-          card.appendChild(actions);
-        }
-
+          ${req.photo ? `<a class="request-card-attachment" href="${attr(req.photo)}" target="_blank" rel="noopener" download="request-doc-${attr(req.id)}">
+            <i class="fa-solid fa-paperclip" aria-hidden="true"></i> عرض المستند / الفاتورة المرفقة
+          </a>` : ''}
+          <div class="request-card-actions${status === 'pending' ? ' is-pending' : ''}">
+            ${status === 'pending' ? `
+            <button type="button" class="request-card-confirm" data-action="approve" title="موافقة وصرف فوراً"><i class="fa-solid fa-check" aria-hidden="true"></i><span>موافقة وصرف فوراً</span></button>
+            <button type="button" data-action="edit" title="تعديل تفاصيل الطلب"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>تعديل</span></button>
+            <button type="button" class="request-card-danger" data-action="reject" title="رفض الطلب"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span>رفض</span></button>
+            ` : `<button type="button" class="request-card-danger" data-action="delete" title="حذف من السجل"><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>حذف</span></button>`}
+          </div>`;
+        card.querySelector('.request-card-actions').addEventListener('click', event => {
+          const button = event.target.closest('button[data-action]');
+          if (button) actions[button.dataset.action](req.id);
+        });
         container.appendChild(card);
       });
+
     }
 
     function approveRequest(reqId) {

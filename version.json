@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.96",
-  "build": "202611171035",
-  "buildId": 202611171035,
-  "updated": "2026-11-17T10:35:00+03:00",
-  "notes": "Unified mobile category comparison and a recorded two-month example with actual and planned sample data."
+  "version": "v5.3.97",
+  "build": "202611171045",
+  "buildId": 202611171045,
+  "updated": "2026-11-17T10:45:00+03:00",
+  "notes": "Redesigned mobile request cards and removed the duplicate Notes archive filter."
 }
