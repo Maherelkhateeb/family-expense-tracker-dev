@@ -38,6 +38,20 @@
           }
         }
       }
+      // Preserve the requested two-column RTL reference order without
+      // changing the underlying expense categories or click targets.
+      if (design === 1 && view.classList.contains('active')) {
+        const visualOrder = ['daily','bills','food','house','transport',
+          'education','other','health','voice','clothes'];
+        const positions = new Map(visualOrder.map((category, index) => [category, index]));
+        for (const card of host.querySelectorAll('.reference-one-grid > .reference-one-card')) {
+          const position = positions.get(card.dataset.refCategory);
+          if (position !== undefined && (card.style.getPropertyValue('order') !== String(position) ||
+              card.style.getPropertyPriority('order') !== 'important')) {
+            card.style.setProperty('order', String(position), 'important');
+          }
+        }
+      }
       const profile = PROFILES[design];
       if (!profile || !view.classList.contains('active')) {
         host.style.removeProperty('--dynamic-home-available-height');
