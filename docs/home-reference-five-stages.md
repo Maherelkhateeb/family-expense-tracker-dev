@@ -24,6 +24,9 @@ Do not assume existing design numbers match later reference screenshots: inspect
 
 ## Stage 1 implementation — what was done
 - Existing base selectors: `home-reference-one.css`, `home-mobile-fit.css`; icon sprites in `assets/home-reference-one.webp`.
+- **Avatar filter icon fidelity**: the reference icon artwork for `أخرى` and `الكل` is embedded as a compact **80×40 WebP CSS sprite**, scoped to the first and last avatar bubbles only. Real family portrait images are never overwritten. The reference text/numeric examples remain demonstrations and must not be written to live data.
+- **Footer matte**: first photo has a pale background and rounded white footer, not the opaque dark 1px line rendered by the prior transparent app-frame corner. A scoped `#appBottomNav::before` light matte fixes the seam while leaving navigation click targets intact.
+- **Final image review**: compare `stage1-reference-391.png` against the actual 391×695 Chromium capture after commit `ba2da9186`; the most obvious remaining differences are live account balances, notification counts and user-controlled family portraits, which must stay data-driven. Functional mobile tests passed on that code.
 - **Bottom-nav pixel fidelity**: use the cropped five glossy icons from the user's first image, embedded as a compact **320×64 WebP inline CSS sprite** inside `home-mobile-fit.css` under marker `STAGE 1 NAV PHOTO SPRITE`; scoped to `body:has(#viewExpenses.home-reference-one.active)`. The original SVGs remain in DOM and the navigation handlers are untouched, while pseudo-elements draw [indicators, obligations, request, operations, expenses] from left to right. Keep any obligations badge dynamic — do not hardcode the example's red “11”.
 - `Stage 1 nav/caption final calibration` refines icon scale, white footer background, voice caption and card border; photo-specific adjustments must not spill into other designs.
 - Added only-first-variant CSS in `home-mobile-fit.css` under the marker `Stage 1 of 5` to replace an incorrectly vertical icon-above-title card with:
@@ -37,7 +40,7 @@ Do not assume existing design numbers match later reference screenshots: inspect
 - Main tests: `scripts/test-home-reference-one.cjs` (first photo, actions, all 9 categories + voice, screenshots and default-mode preservation), `scripts/test-home-layouts.cjs` (320, 360, 390, **391×695**, 430 and 768 widths, all six layouts, visual row order, no overflow), `.github/workflows/home-reference-one-qa.yml`.
 - Actual baseline before the refinement: a full phone screenshot `home-layout-391-1.png` from GitHub Actions run 44122502281 and a side-by-side comparison `stage1-comparison-home-layout-391-1.png`.
 - Earlier reference first-card arrangement accidentally matched but still had tiny fonts, cramped/incorrect header capsule spacing and excessive card height. The final stage must compare after the refinements, not reuse the baseline.
-- **Stage 1 status**: **FUNCTIONAL QA PASS — VISUAL USER APPROVAL STILL PENDING**. Continue visual and interaction QA, inspect the new screenshot, compare against the original and share the result for approval.
+- **Stage 1 status**: **IMPLEMENTED, DEPLOYED AND FUNCTIONAL QA PASSED — AWAITING USER VISUAL SIGN-OFF**. Continue visual and interaction QA, inspect the new screenshot, compare against the original and share the result for approval.
 
 ## Repeatable image-to-app matching method (stages 2–5)
 1. Identify correct screenshot reference and app design selector; generate an image contact sheet if needed.
