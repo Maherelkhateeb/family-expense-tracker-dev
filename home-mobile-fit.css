@@ -2,16 +2,16 @@
    The original home, other pages, app header, bottom nav and stored data
    are deliberately outside this stylesheet's layout overrides. */
 
-/* Keep the real application scroll viewport scrollable under the fixed nav.
+/* Keep the real application scroll viewport scrollable across all five designs under the fixed nav.
    A short Android browser viewport must never trap the last category row. */
-body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appScrollBody {
   box-sizing: border-box !important;
   min-height: 0 !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
 }
-#viewExpenses.home-reference-one.active {
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active {
   flex: 0 0 auto !important;
   height: auto !important;
   min-height: 0 !important;
