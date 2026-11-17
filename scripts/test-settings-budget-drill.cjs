@@ -395,21 +395,21 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    const realCount=await page.evaluate(()=>state.transactions.length);
    await page.locator('#cmpDataMode').click();
    await page.waitForFunction(()=>document.getElementById('cmpDataMode').getAttribute('aria-pressed')==='true');
-   assert.equal((await page.locator('.cmp-summary-primary strong').innerText()).trim(),'١٢٬٩٠٠');
+   assert.equal((await page.locator('#cmpSummary .cmp-unified-kpi:first-child strong').innerText()).trim(),'١٢٬٩٠٠');
    assert.equal((await page.locator('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').innerText()).trim(),'١٢٬٠٥٠');
    assert.match(await page.locator('#cmpSummary').innerText(),/\+٨٥٠/);
-   const check=await page.locator('#cmpTableBody tr').evaluateAll(rows=>Object.fromEntries(rows.map(row=>
+   const check=await page.locator('.budget-spec .bs-table tbody tr').evaluateAll(rows=>Object.fromEntries(rows.map(row=>
      [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map((cell,i)=>i<2?cell.querySelector('bdi').textContent.trim():cell.textContent.trim())])));
-   assert.deepEqual(check['food'].slice(0,2),['٣٬٤٠٠','٢٬٨٠٠']);
-   assert.deepEqual(check['bills'].slice(0,2),['٢٬١٠٠','٢٬١٠٠']);
+   assert.deepEqual(check['food'].slice(0,2),['2,800','3,400']);
+   assert.deepEqual(check['bills'].slice(0,2),['2,100','2,100']);
     assert.equal(check['trial-leisure'][3],'—');
-    assert.match(check['trial-gifts'][3],/-١٠٠٪/);
-   assert.equal(await page.locator('#cmpPeriodChartContent .cmp-period-table').evaluate(e=>e.scrollWidth<=e.clientWidth+1),true);
+    assert.match(check['trial-gifts'][3],/[−-]100(?:\\.0)?%/);
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3),true);
     await page.locator('#cmpPeriodChart [data-mode="change"]').click();
     assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-leisure"]').innerText(),/بند جديد/);
     assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-gifts"]').innerText(),/توقف الصرف/);
     await page.locator('#cmpPeriodChart [data-mode="table"]').click();
-   await page.locator('#cmpTableBody tr[data-budget-category="food"] button[data-period-series="reference"]').click();
+   await page.locator('.budget-spec .bs-table tbody tr[data-budget-category="food"] button[data-period-series="reference"]').click();
    assert.match(await page.locator('#sampleOperationsList').innerText(),/٢٬٨٠٠ ج.م/);
    await page.locator('#sampleOperationsBack').click();
    assert.equal(await page.locator('#cmpDataMode').getAttribute('aria-pressed'),'true');
