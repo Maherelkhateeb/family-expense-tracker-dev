@@ -1139,3 +1139,32 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav #navTabExpenses.
   background:linear-gradient(#efffff,#d2f6ff)!important;
   box-shadow:0 1px 5px #2a84ba46!important;
 }
+
+/* Stage 1 nav/caption final calibration against photo one, 391x695. */
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav{
+  border-top:1px solid #c9dce7!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fcfeff 72%,#fbfeff 100%)!important;
+  box-shadow:0 -1px 5px #24527625!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item::before {
+  mix-blend-mode:normal!important;
+  width:clamp(32px,9.25vw,42px)!important;
+  height:clamp(32px,9.25vw,42px)!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item {
+  gap:1px!important;
+  padding:2px 1px!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item > span:not(#navTabExpectedBadge){
+  font-size:clamp(10px,3.02vw,13.5px)!important;
+  line-height:1.08!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+  border-width:1.5px!important;
+}
+@media(max-width:480px){
+  #viewExpenses.home-reference-one.active .reference-one-card[data-ref-category="voice"] button strong{
+    font-size:clamp(12px,3.48vw,17px)!important;
+    line-height:1.04!important;
+  }
+}
