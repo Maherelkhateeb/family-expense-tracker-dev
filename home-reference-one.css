@@ -366,12 +366,12 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
   border:1px solid #a9bdd5 !important;
 }
 #viewExpenses.home-reference-one #btnToggleCurrency {
-  order:4 !important;color:#ab5900 !important;
+  order:3 !important;color:#ab5900 !important;
   background:linear-gradient(#fffef7,#fff1d5) !important;
   border:1px solid #ffa100 !important;
 }
 #viewExpenses.home-reference-one #btnOpenSummaryQuick {
-  order:3 !important;color:#057bb9 !important;
+  order:4 !important;color:#057bb9 !important;
   background:linear-gradient(#ebfaff,#c3efff) !important;
   border:1px solid #47baff !important;
 }
