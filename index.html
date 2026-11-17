@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.7';
-    var APP_BUILD_ID = 202611171450;
+    var APP_VERSION = 'v5.4.8';
+    var APP_BUILD_ID = 202611171455;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.7</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.8</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43099,7 +43099,7 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-reference-one.css?v=202611171450">
+<link rel="stylesheet" href="./home-reference-one.css?v=202611171455">
 <style>
 #btnHomeDesign{order:-1;flex:none;width:36px;height:38px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
@@ -43168,13 +43168,25 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       ['health','💊','#ef4444'],['other','🎁','#14b8a6'],['voice','🎙','#a855f7'],['clothes','👔','#ec4899']
     ];
     // Row order and icon positions follow the first supplied reference.
-    const referenceCategories = ['daily', 'bills', 'food', 'house', 'transport',
-      'education', 'other', 'health', 'voice', 'clothes'];
+    // Approved RTL order: every expense category stays visible, including zero amounts.
+    const referenceCategories = ['daily', 'food', 'bills', 'house', 'education',
+      'transport', 'health', 'other', 'voice', 'clothes'];
+    // Preserve each artwork cell when cards move: artwork coordinates are NOT grid indices.
+    const referenceArt = {
+      daily:[0,0], bills:[25,0], food:[50,0], house:[75,0], transport:[100,0],
+      education:[0,100], other:[25,100], health:[50,100], voice:[75,100], clothes:[100,100]
+    };
+    const referenceLabels = {
+      daily:'مصروف يومي', food:'طعام ومشتريات', bills:'فواتير والتزامات',
+      house:'مستلزمات منزل', education:'تعليم ودروس', transport:'مواصلات وبنزين',
+      health:'صحة وعلاج', other:'أخرى ومشتريات', clothes:'ملابس وأحذية'
+    };
     let referenceCardMarkup = '';
     function renderFirstReference() {
-      const cards = referenceCategories.map((id, index) => {
+      const cards = referenceCategories.map(id => {
+        const sprite = referenceArt[id];
         const icon = '<i class="reference-one-icon" aria-hidden="true" style="--icon-x:' +
-          (index % 5 * 25) + '%;--icon-y:' + (index < 5 ? 0 : 100) + '%"></i>';
+          sprite[0] + '%;--icon-y:' + sprite[1] + '%"></i>';
         if (id === 'voice') {
           const waveform = [2,4,3,7,5,11,14,9,5,12,8,18,12,7,10,4,8,5,3,4,2];
           return '<article class="reference-one-card" data-ref-category="voice"><button type="button" data-voice>' +
@@ -43182,7 +43194,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
             waveform.map(height => '<i style="--wave-height:' + height + '"></i>').join('') + '</span></button></article>';
         }
         const source = original.querySelector('[data-cat-id="' + id + '"]');
-        const name = id === 'other' ? 'أخرى ومشتريات' : source?.querySelector('.cat-label-text')?.textContent.trim() || getCategoryObj(id).name;
+        const name = referenceLabels[id];
         const amount = source?.querySelector('.cat-number-val')?.textContent.trim() || '0.00';
         const currency = source?.querySelector('.cat-currency-label')?.textContent.trim() || getCurrencySymbol();
         const hasSpent = Boolean(source?.querySelector('.cat-amount-sign'));
@@ -43213,6 +43225,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       host.hidden = isOriginal;
       const label = isOriginal ? 'الشكل الأساسي' : 'الشكل ' + (design + 1) + ' من 6';
       trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، ' + label);
+      trigger.title = label + ' — اضغط للانتقال إلى الشكل التالي';
       if (isOriginal) return;
       if (design === 1) {
         renderFirstReference();
