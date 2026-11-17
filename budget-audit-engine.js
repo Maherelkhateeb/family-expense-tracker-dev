@@ -2272,12 +2272,22 @@ const BudgetCompareEngine = (() => {
     const days = dateDiffDays(range.from,range.to);
     const referenceDays = dateDiffDays(baseline.from,baseline.to);
     const timing = days === referenceDays ? '' : ' · الأساسية ' + number.format(days) + ' يوم، والمرجع ' + number.format(referenceDays) + ' يوم';
-    summary.innerHTML = '<div class="cmp-summary-grid"><div class="cmp-summary-primary"><small>' + baseLabel +
-      '</small><strong>' + valueMarkup('actual','',total.a,true) + '</strong></div><div class="cmp-summary-reference"><small>' +
-      refLabel + '</small><strong>' + valueMarkup('reference','',bTotal,!isPlan) +
-      '</strong></div><div><strong>' + changeMarkup(total.a,bTotal,budgetReference) + '</strong></div></div><p class="cmp-difference-hint">' +
-      (comparable ? 'المبالغ بالجنيه المصري' + timing :
-        'لا توجد موازنة مسجّلة لكل أشهر نطاق المرجع. اختر نطاقًا تغطيه الموازنة لعرض الفرق.') + '</p>';
+    // Four shared summary cards stay in sync with the selected comparison periods.
+    const diff=bTotal===null?null:total.a-bTotal;
+    const changePct=bTotal>0?(diff/bTotal*100):null;
+    const deltaTone=diff===null?'slate':diff>0?'red':diff<0?'green':'slate';
+    const percentLabel=changePct===null?'—':(changePct>0?'+':changePct<0?'−':'')+Math.abs(changePct).toFixed(1)+'%';
+    summary.innerHTML='<div class="cmp-unified-summary">'+
+      '<div class="cmp-unified-kpi" data-tone="blue"><small>'+escapeHtml(baseLabel)+'</small><strong>'+
+        valueMarkup('actual','',total.a,true)+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="slate"><small>'+escapeHtml(refLabel)+'</small><strong>'+
+        valueMarkup('reference','',bTotal,!isPlan)+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="'+deltaTone+'"><small>الفرق (الفعلي − المرجع)</small><strong>'+
+        (diff===null?'—':'<bdi dir="ltr">'+signedMoney(diff)+'</bdi>')+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="'+deltaTone+'"><small>نسبة التغير</small><strong><bdi dir="ltr">'+percentLabel+'</bdi></strong></div>'+
+      '</div><p class="cmp-difference-hint">'+
+      (comparable?'المبالغ بالجنيه المصري'+timing:
+        'لا توجد موازنة مسجلة لكل أشهر نطاق المرجع. اختر فترة تغطيها الموازنة.')+'</p>';
     renderInsights(rows,actualEntries.length,total.a,range,comparable);
     if (!rows.length) {
       content.textContent = 'لا توجد مصروفات أو بنود للمقارنة في النطاق المحدد.';
@@ -2286,9 +2296,10 @@ const BudgetCompareEngine = (() => {
     const referenceLabel = isPlan || isSample ? 'التقديري' : refLabel;
     const actualLabel = demoMode ? 'الصرف التجريبي' : 'الصرف الفعلي';
     const rankedName = (row, index) => '<span class="cmp-rank">' + number.format(index + 1) + '</span> ' + escapeHtml(row.name);
-    if (isPlan && comparable) {
-      viewTools.hidden = true;
-      renderBudgetReferenceSpecification(content,rows,total,range);
+    if (comparable && periodChartMode === 'table') {
+      renderBudgetReferenceSpecification(content,rows,total,range,{
+        reference,baseline,referenceLabel:refLabel,actualLabel:baseLabel
+      });
       return;
     }
     if (periodChartMode === 'table') {
@@ -2339,6 +2350,16 @@ const BudgetCompareEngine = (() => {
     content.innerHTML = directionKey + '<ul class="cmp-period-bars">' + markup + '</ul>';
   }
 
+  function showAllCharts() {
+    periodChartMode='table';
+    render();
+    const details=byId('cmpUnifiedAdvancedCharts');
+    if(details){
+      details.open=true;
+      details.scrollIntoView({block:'nearest',behavior:'smooth'});
+    }
+  }
+
   function renderReferenceInto(container,month) {
     if(!container||!/^\d{4}-\d{2}$/.test(String(month||'')))return false;
     const [year,mon]=month.split('-').map(Number);
@@ -2367,7 +2388,7 @@ const BudgetCompareEngine = (() => {
   }
 
   return {
-    render, renderReferenceInto, onActualPeriodChange, getNavigationRange, selectReference, recordSampleOperations, usePrimaryDates,
+    render, showAllCharts, renderReferenceInto, onActualPeriodChange, getNavigationRange, selectReference, recordSampleOperations, usePrimaryDates,
     toggleDemo, openSampleOperations, renderSampleOperations, returnFromSampleOperations,
     showAllSampleOperations, showMoreSampleOperations
   };
