@@ -138,7 +138,12 @@
       root.visualViewport.addEventListener('resize', schedule, { passive: true });
       root.visualViewport.addEventListener('scroll', schedule, { passive: true });
     }
-    const mutations = new MutationObserver(schedule);
+    const mutations = new MutationObserver(records => {
+      // A design switch must reconcile inline quick-tool orders before the
+      // next browser measurement, not one animation frame later.
+      if (records.some(record => record.attributeName === 'data-design')) measure();
+      else schedule();
+    });
     mutations.observe(host, { attributes: true, attributeFilter: ['data-design', 'class'] });
     mutations.observe(view, { attributes: true, attributeFilter: ['class'] });
     schedule();
