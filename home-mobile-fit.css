@@ -985,3 +985,68 @@ body:has(#viewExpenses.home-alternative-design.active)
     height:33px!important;
   }
 }
+
+
+/* STAGE 1 OVERLAY AND PIXEL RHYTHM: final screenshot discrepancies. */
+/* The five reference tool widths are proportional: [switch, gold, wallet,
+   currency, summary]. The reference's switch control is icon-only. */
+#viewExpenses.home-reference-one.active > .executive-quick-tools-strip {
+  grid-template-columns:minmax(29px,.51fr) minmax(49px,.92fr) minmax(82px,1.50fr) minmax(44px,.83fr) minmax(53px,1.02fr)!important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign {
+  font-size:0!important;
+  letter-spacing:0!important;
+  overflow:hidden!important;
+  color:#6721b7!important;
+  text-indent:0!important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign span,
+#viewExpenses.home-reference-one.active #btnHomeDesign .home-design-label {
+  font-size:0!important;
+  line-height:0!important;
+}
+#viewExpenses.home-reference-one.active #btnHomeDesign :is(i,svg) {
+  display:inline-block!important;
+  flex:0 0 auto!important;
+  font-size:clamp(17px,5.1vw,22px)!important;
+  width:clamp(17px,5.1vw,22px)!important;
+  height:clamp(17px,5.1vw,22px)!important;
+  max-width:100%!important;
+  max-height:100%!important;
+}
+/* Remove obstructive edge arrows and duplicate floating voice control from
+   this reference's financial cards. Voice action remains in the purple tile. */
+body:has(#viewExpenses.home-reference-one.active) #leftScreenEdgeHandle,
+body:has(#viewExpenses.home-reference-one.active) #rightScreenEdgeHandle,
+body:has(#viewExpenses.home-reference-one.active) #btnVoiceAssistantFab {
+  display:none!important;
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+/* Keep bottom bar in the same white style, with readable Arabic labels. */
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item {
+  font-size:clamp(10px,2.8vw,13px)!important;
+}
+@media(max-width:480px){
+  body:has(#viewExpenses.home-reference-one.active) .app-header {
+    padding-top:4px!important;
+    padding-bottom:0!important;
+    gap:1px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row {
+    margin-bottom:0!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer {
+    margin-top:-3px!important;
+    padding-top:0!important;
+    padding-bottom:1px!important;
+  }
+  #viewExpenses.home-reference-one.active > .executive-quick-tools-strip {
+    margin-bottom:6px!important;
+    gap:clamp(3px,.9vw,5px)!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]) {
+    margin-top:0!important;
+  }
+}
