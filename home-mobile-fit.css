@@ -1,93 +1,101 @@
-/* Legacy alternative-home CSS removed on 2026-11-17 by request.
-   This file intentionally contains no styling rules.
-   New per-design dynamic layout engine must be implemented separately.
-   Do not restore legacy fixed-height rules or cumulative overrides. */
+/* Dynamic expense-home sizing; only the five alternative home layouts.
+   The original home, other pages, app header, bottom nav and stored data
+   are deliberately outside this stylesheet's layout overrides. */
 
-/* Dynamic home geometry, scoped to alternative expense layouts only.
-   When the cards cannot fit comfortably, the center remains scrollable. */
-#viewExpenses.home-reference-one #homeInterfaces[data-dynamic-home-measured="true"],
-#viewExpenses.home-alternative-design #homeInterfaces[data-dynamic-home-measured="true"] {
-  box-sizing:border-box;
-  min-width:0;
-  max-width:100%;
+/* Keep the real application scroll viewport scrollable under the fixed nav.
+   A short Android browser viewport must never trap the last category row. */
+body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
 }
-#viewExpenses.home-reference-one #homeInterfaces[data-dynamic-home-measured="true"] .reference-one-grid,
-#viewExpenses.home-alternative-design #homeInterfaces[data-dynamic-home-measured="true"] .home-design-grid {
-  box-sizing:border-box;
-  display:grid;
-  grid-template-columns:repeat(var(--dynamic-home-columns,2),minmax(0,1fr));
-  gap:var(--dynamic-home-gap,7px);
-  min-width:0;
-  max-width:100%;
-  align-items:stretch;
+#viewExpenses.home-reference-one.active {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
 }
-#viewExpenses.home-reference-one #homeInterfaces[data-dynamic-home-measured="true"] .reference-one-card,
-#viewExpenses.home-alternative-design #homeInterfaces[data-dynamic-home-measured="true"] .home-design-card {
-  box-sizing:border-box;
-  min-width:0;
-  height:max(74px,var(--dynamic-home-card-height,74px));
-  min-height:0;
-  overflow:hidden;
-}
-#viewExpenses.home-reference-one #homeInterfaces[data-dynamic-home-measured="true"] .reference-one-grid {
-  direction:rtl;
-}
-#viewExpenses.home-reference-one #homeInterfaces[data-dynamic-home-measured="true"] .reference-one-card button,
-#viewExpenses.home-alternative-design #homeInterfaces[data-dynamic-home-measured="true"] .home-design-card button {
-  min-width:0;
-  touch-action:manipulation;
-}
-/* Dynamic expense-home geometry, scoped to alternative designs only.
-   The engine measures real viewport and footer; content remains scrollable when
-   cards cannot fit at a usable touch size. Header and footer are not changed. */
+
+/* No fixed flex-height or overflow clipping around the expense grids. */
 #viewExpenses.home-reference-one #homeInterfaces,
 #viewExpenses.home-alternative-design #homeInterfaces {
-  box-sizing:border-box;
-  min-width:0;
-  max-width:100%;
-  overflow:visible;
-  --home-min-touch-height:64px;
+  box-sizing: border-box;
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible !important;
 }
 #viewExpenses.home-reference-one #homeInterfaces .reference-one-grid,
 #viewExpenses.home-alternative-design #homeInterfaces .home-design-grid {
-  box-sizing:border-box;
-  width:100%;
-  min-width:0;
-  max-width:100%;
-  display:grid;
-  gap:var(--dynamic-home-gap,8px) !important;
-  grid-auto-flow:row;
-  align-content:start;
-  overflow:visible;
+  box-sizing: border-box !important;
+  display: grid !important;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: auto !important;
+  max-height: none !important;
+  grid-template-rows: none !important;
+  grid-auto-flow: row;
+  grid-auto-rows: auto;
+  gap: var(--dynamic-home-gap, 7px) !important;
+  align-content: start;
+  overflow: visible !important;
 }
 #viewExpenses.home-reference-one #homeInterfaces .reference-one-grid {
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  direction: rtl !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
 }
 #viewExpenses.home-alternative-design #homeInterfaces .home-design-grid {
-  grid-template-columns:repeat(var(--dynamic-home-columns,2),minmax(0,1fr)) !important;
+  grid-template-columns: repeat(var(--dynamic-home-columns, 2), minmax(0, 1fr)) !important;
 }
-#viewExpenses.home-reference-one #homeInterfaces .reference-one-card,
+
+/* Design 1: five legible RTL rows; the JS measurement determines each
+   height within the reference's touch-safe 68–80px band. If the viewport is
+   shorter, the scroll container moves rather than the card being cropped. */
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 68px !important;
+  height: clamp(68px, var(--dynamic-home-card-height, 72px), 80px) !important;
+  overflow: hidden !important;
+}
+
+/* Other designs retain their independent profiles until their own image
+   matching stage; never collapse text into a 0–60px calculated row. */
 #viewExpenses.home-alternative-design #homeInterfaces .home-design-card {
-  box-sizing:border-box;
-  min-width:0;
-  max-width:100%;
-  min-height:var(--home-min-touch-height);
-  height:max(var(--home-min-touch-height),var(--dynamic-home-card-height,90px)) !important;
-  overflow:hidden;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 76px !important;
+  height: max(76px, var(--dynamic-home-card-height, 90px)) !important;
+  overflow: hidden !important;
 }
 #viewExpenses.home-reference-one #homeInterfaces .reference-one-card button,
 #viewExpenses.home-alternative-design #homeInterfaces .home-design-card button {
-  min-width:0;
-  max-width:100%;
-  touch-action:manipulation;
+  min-width: 0 !important;
+  max-width: 100%;
+  touch-action: manipulation;
 }
-#viewExpenses.home-reference-one #homeInterfaces .reference-one-details,
-#viewExpenses.home-alternative-design #homeInterfaces .home-design-value {
-  border-top:1px solid rgba(17,24,39,.16);
+
+/* The sync status must not make the five original header controls overlap. */
+body:has(#viewExpenses.home-reference-one.active) #btnHeaderMasterSync {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
-@media (max-height:650px) {
-  #viewExpenses.home-reference-one #homeInterfaces,
-  #viewExpenses.home-alternative-design #homeInterfaces {
-    --home-min-touch-height:60px;
-  }
+body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
+  display: block !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
