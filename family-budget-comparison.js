@@ -14,7 +14,7 @@
     {id:"bills",name:"فواتير",est:600,act:750},{id:"health",name:"صحة",est:500,act:900}];
   const SAMPLE_TOTALS=[5900,6300,6900,7200,7300,6700];
   const SAMPLE_CUM_E=[6100,12200,18300,24400,30500,36600],SAMPLE_CUM_A=[5900,12200,19100,26300,33600,40300];
-  const ui={span:6,end:"",tolerance:5,sample:false,advanced:false};
+  const ui={span:6,end:"",tolerance:5,sample:false,advanced:true};
   let appState=null, target=null, mounted=false;
 
   function esc(v){return String(v===undefined||v===null?"":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
@@ -65,7 +65,7 @@
 .fbc-pair-values{display:flex;justify-content:space-between;gap:4px;font-variant-numeric:tabular-nums}
 .fbc-svg{display:block;width:100%;height:auto;max-width:100%;overflow:visible;color:inherit}
 .fbc-rowbar{display:grid;grid-template-columns:94px minmax(0,1fr);gap:5px;align-items:center;margin:9px 0}
-.fbc-rowbar-label{font-weight:700;overflow-wrap:anywhere}.fbc-rowbar-visual{min-width:0}.fbc-bars-center{display:grid;grid-template-columns:1fr 1fr;height:16px;position:relative;border-left:1px solid var(--fbc-edge);border-right:1px solid var(--fbc-edge);background:var(--fbc-bg)}
+.fbc-rowbar-label{font-weight:700;overflow-wrap:anywhere}.fbc-rowbar-visual{min-width:0}.fbc-bars-center{display:grid;grid-template-columns:1fr 1fr;direction:ltr;height:16px;position:relative;border-left:1px solid var(--fbc-edge);border-right:1px solid var(--fbc-edge);background:var(--fbc-bg)}
 .fbc-bars-center:after{position:absolute;content:"";width:1px;background:currentColor;opacity:.6;top:0;bottom:0;left:50%}
 .fbc-bar-left{display:flex;justify-content:flex-end}.fbc-bar-right{display:flex;justify-content:flex-start}
 .fbc-bars-center i{display:block;height:100%;max-width:100%;font-style:normal}.fbc-rowbar-value{display:block;direction:ltr;text-align:left;font-weight:700;font-variant-numeric:tabular-nums}
@@ -84,7 +84,7 @@
 .fbc svg text{fill:currentColor;font-family:inherit;font-size:12px}.fbc svg line.fbc-grid{stroke:currentColor;stroke-width:.5;stroke-dasharray:3 4;opacity:.23}
 .fbc .fbc-data-note{font-size:12px;color:var(--fbc-muted)}
 @media(min-width:700px){.fbc-controls{grid-template-columns:repeat(4,minmax(0,1fr))}.fbc-kpis{grid-template-columns:repeat(5,minmax(0,1fr))}.fbc-pairs{grid-template-columns:repeat(3,minmax(0,1fr))}.fbc-chart-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.fbc-chart-grid>.fbc-card{min-width:0}}
-@media(max-width:700px){.fbc-table-box{display:none}.fbc-mobile-items{display:block}.fbc-heatmap-desktop{display:none}.fbc-heatmap-mobile{display:block}}
+@media(max-width:700px){.fbc-table-box{display:none}.fbc-mobile-items{display:block}.fbc-heatmap-desktop{display:block}.fbc-heatmap-mobile{display:none}.fbc-heatmap-desktop td,.fbc-heatmap-desktop th{padding:3px 1px}.fbc-heatmap-desktop th:first-child{width:75px;max-width:75px}}
 @media(max-width:379px){.fbc-pairs{grid-template-columns:1fr 1fr}.fbc-rowbar{grid-template-columns:77px minmax(0,1fr)}.fbc-heat-tiles{grid-template-columns:1fr}}
 `;
     document.head.appendChild(style);
@@ -193,22 +193,42 @@
     return chartCard("جدول الفروقات التفصيلي","الفرق = الفعلي − التقديري. لا تُخفى البنود الصفرية؛ جميع النسب محسوبة من الإجماليات.",desktop+mobile);
   }
   function pairedColumns(d){
-    const max=Math.max(1,...d.rows.flatMap(x=>[x.estimated,x.actual]));
-    const html=`<div role="img" aria-label="أعمدة متجاورة للتقديري والفعلي لكل بند" class="fbc-pairs">${d.rows.map(r=>`
-<div class="fbc-pair"><strong>${esc(r.name)}</strong><div class="fbc-pair-diff" style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</div>
-<div class="fbc-two-cols"><span style="background:${COLORS.estimated};height:${r.estimated?Math.max(2,r.estimated/max*100):0}%"></span><span style="background:${COLORS.actual};height:${r.actual?Math.max(2,r.actual/max*100):0}%"></span></div>
-<div class="fbc-pair-values"><span>${bidi(n0(r.estimated))}</span><button type="button" data-fbc-open="${esc(r.id)}" aria-label="عرض عمليات ${esc(r.name)}">${bidi(n0(r.actual))}</button></div></div>`).join("")}</div>`;
-    return chartCard("1. أعمدة متجاورة","رمادي للتقديري وأزرق للفعلي، والمحور يبدأ من الصفر؛ الفرق فوق كل زوج.",
-      `<div class="fbc-legend"><span style="--swatch:${COLORS.estimated}">تقديري</span><span style="--swatch:${COLORS.actual}">فعلي</span></div>${html}`,simpleAlt(d.rows));
+  const rows=d.rows,W=365,H=288,top=50,bottom=228,l=28,r=361,plot=bottom-top;
+  const maxVal=Math.max(1,...rows.flatMap(x=>[x.estimated,x.actual]));
+  const max=Math.ceil(maxVal/500)*500 || 500;
+  const spacing=(r-l)/Math.max(1,rows.length),bar=Math.min(23,spacing*.31);
+  const coord=value=>bottom-Math.max(0,value)/max*plot;
+  let svg=`<svg class="fbc-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="أعمدة متجاورة: التقديري الرمادي والفعلي الأزرق">
+    <title>مقارنة الموازنة التقديرية بالفعلية لكل بند</title>
+    <desc>تقديري ${n0(d.totalEstimated)} وفعلي ${n0(d.totalActual)}. تبدأ جميع الأعمدة من الصفر ويظهر فرق كل بند فوقه.</desc>`;
+  for(let j=0;j<=4;j++){
+    const value=max*j/4,y=coord(value);
+    svg+=`<line class="fbc-grid" x1="${l}" y1="${y}" x2="${r}" y2="${y}"/><text x="${l-3}" y="${y+4}" text-anchor="end" font-size="12">${n0(value)}</text>`;
   }
-  function waterfall(d){
+  rows.forEach((row,i)=>{
+    const x=l+spacing*(i+.5),estY=coord(row.estimated),actY=coord(row.actual);
+    const heading=rows.length<=6 ? row.name : String(i+1);
+    svg+=`<text x="${x}" y="27" text-anchor="middle" fill="${barColor(row.variance)}">${sign(row.variance)}</text>`;
+    svg+=`<rect x="${x-bar-2}" y="${estY}" width="${bar}" height="${Math.max(0,bottom-estY)}" fill="${COLORS.estimated}">
+       <title>${esc(row.name)} التقديري: ${n0(row.estimated)}</title></rect>`;
+    svg+=`<rect x="${x+2}" y="${actY}" width="${bar}" height="${Math.max(0,bottom-actY)}" fill="${COLORS.actual}">
+       <title>${esc(row.name)} الفعلي: ${n0(row.actual)}</title></rect>`;
+    svg+=`<text x="${x}" y="250" text-anchor="middle">${esc(heading)}</text>`;
+  });
+  svg+=`<text x="${l}" y="281" text-anchor="start">0</text></svg>`;
+  const legend=`<div class="fbc-legend"><span style="--swatch:${COLORS.estimated}">تقديري</span><span style="--swatch:${COLORS.actual}">فعلي</span></div>`;
+  const labels=rows.length>6?`<div class="fbc-legend">${rows.map((x,i)=>`<span>${i+1}. ${esc(x.name)}</span>`).join("")}</div>`:"";
+  return chartCard("1. أعمدة متجاورة","الفرق لكل بند بأعلى الرسم؛ عمود رمادي للتقديري وعمود أزرق للفعلي، ومحور رأسي يبدأ من الصفر.",
+    legend+svg+labels,simpleAlt(rows));
+}
+    function waterfall(d){
     const nonzero=d.rows.filter(r=>r.variance!==0);
     const levels=[d.totalEstimated];let s=d.totalEstimated;
     nonzero.forEach(r=>{s+=r.variance;levels.push(s)});
     const exact=Math.abs(s-d.totalActual)<0.001;
     if(!exact)return chartCard("2. شلال الفروقات","فشل التحقق المحاسبي.",`<p class="fbc-error" role="alert">خطأ: إجمالي التقديري + مجموع الفروق لا يساوي إجمالي الفعلي؛ رُفض رسم الشلال.</p>`);
     const min=Math.min(...levels,d.totalActual),max=Math.max(...levels,d.totalActual);
-    const margin=Math.max(50,(max-min)*.15),start=Math.floor((min-margin)/100)*100,end=Math.max(max+margin,start+100);
+    const margin=Math.max(200,(max-min)*.18),start=Math.floor((min-margin)/100)*100,end=Math.max(max+margin,start+100);
     const W=350,H=276,top=25,base=212,plot=base-top,map=v=>base-(v-start)/(end-start)*plot;
     const bars=[{name:"التقديري",from:start,to:d.totalEstimated,val:d.totalEstimated,color:COLORS.estimated,full:true},...nonzero.map((r,i)=>({name:r.name,from:levels[i],to:levels[i+1],val:r.variance,color:barColor(r.variance)})),{name:"الفعلي",from:start,to:d.totalActual,val:d.totalActual,color:COLORS.actual,full:true}];
     const cell=(W-20)/bars.length;let svg=`<svg class="fbc-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="شلال الفروقات من التقديري إلى الفعلي"><title>شلال الفروقات</title><desc>الإجمالي التقديري ${n0(d.totalEstimated)} يليه فروق البنود حتى الإجمالي الفعلي ${n0(d.totalActual)}. يبدأ المحور من ${n0(start)}.</desc>`;
@@ -271,7 +291,8 @@
     const rows=d.rows,m=d.totals.map(x=>x.month);
     const get=(r,i)=>d.referenceHeatmap&&d.referenceHeatmap[r.id]?d.referenceHeatmap[r.id][i]:
       (r.monthly[i].est>0?(r.monthly[i].act-r.monthly[i].est)/r.monthly[i].est*100:null);
-    const head=`<tr><th>البند</th>${m.map(x=>`<th>${esc(x.slice(5))}</th>`).join("")}</tr>`;
+    const monthNames=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+    const head=`<tr><th>البند</th>${m.map(x=>`<th>${monthNames[Number(x.slice(5))-1]||esc(x.slice(5))}</th>`).join("")}</tr>`;
     const table=`<div class="fbc-heatmap-desktop" role="img" aria-label="خريطة حرارية لنسب الانحراف لكل بند وشهر"><table><thead>${head}</thead><tbody>${rows.map(r=>`<tr><th>${esc(r.name)}</th>${m.map((x,i)=>{let v=heatVal(get(r,i));return `<td class="fbc-heat-cell" style="background:${v.background}">${bidi(v.text)}</td>`;}).join("")}</tr>`).join("")}</tbody></table></div>`;
     const mobile=`<div class="fbc-heatmap-mobile">${m.map((x,i)=>`<div class="fbc-heat-month"><strong>${esc(labelMonth(x))}</strong><div class="fbc-heat-tiles">${rows.map(r=>{let v=heatVal(get(r,i));return `<div style="background:${v.background}"><span>${esc(r.name)}</span><b>${bidi(v.text)}</b></div>`;}).join("")}</div></div>`).join("")}</div>`;
     const alt=`<details class="fbc-raw"><summary>عرض جدول النسب البديل</summary><table>${head}${rows.map(r=>`<tr><td>${esc(r.name)}</td>${m.map((x,i)=>`<td>${bidi(pct(get(r,i)))}</td>`).join("")}</tr>`).join("")}</table></details>`;
@@ -285,16 +306,34 @@
     return res;
   }
   function stack100(d){
-    const estimates=largestRemainder(d.rows.map(x=>x.estimated)),actuals=largestRemainder(d.rows.map(x=>x.actual));
-    const palette=["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300","#7c3aed","#64748b","#b45309"];
-    const color=(r,i)=>REFS[r.id]||palette[i%palette.length];
-    const strip=(values,title)=>`<strong>${title}</strong><div role="img" aria-label="الشريط النسبي ${title}، مجموع الحصص 100 بالمئة" class="fbc-stack">${values.map((v,i)=>v?`<span style="width:${v}%;background:${color(d.rows[i],i)}" title="${esc(d.rows[i].name)} ${v}%">${v>=9?v+"%":""}</span>`:"").join("")}</div>`;
-    const html=strip(estimates,"التقديري")+strip(actuals,"الفعلي");
-    const key=`<div class="fbc-stack-key">${d.rows.map((r,i)=>`<span style="--swatch:${color(r,i)}">${esc(r.name)} ${bidi(estimates[i]+"/"+actuals[i]+"%")}</span>`).join("")}</div>`;
-    const alt=`<details class="fbc-raw"><summary>عرض جدول نسب الحصص</summary><table><tr><th>البند</th><th>التقديري %</th><th>الفعلي %</th></tr>${d.rows.map((r,i)=>`<tr><td>${esc(r.name)}</td><td>${bidi(estimates[i])}</td><td>${bidi(actuals[i])}</td></tr>`).join("")}</table></details>`;
-    return chartCard("7. المكدس النسبي 100%","ألوان ثابتة لكل بند، وتقريب بأكبر باقي لضمان 100% بالضبط.",html+key,alt);
-  }
-  function spreadLabels(vals,minSpace,H){
+  const estimates=largestRemainder(d.rows.map(x=>x.estimated)),actuals=largestRemainder(d.rows.map(x=>x.actual));
+  const palette=["#2a78d6","#eb6834","#1baf7a","#eda100","#e87ba4","#008300","#7c3aed","#64748b","#b45309"];
+  const color=(row,i)=>REFS[row.id]||palette[i%palette.length];
+  const W=365,x=8,full=W-16,h=30,y1=16,y2=87;
+  let svg=`<svg class="fbc-svg" viewBox="0 0 ${W} 140" role="img" aria-label="مجموعتا أعمدة مكدسة بالنسب المئوية وتغير الحصص بينهما">
+    <title>مقارنة تغير حصص الميزانية حسب البند</title>
+    <desc>الشريط العلوي يمثل التقديري والسفلي الفعلي، ومجموع حصص كل منهما 100 بالمئة.</desc>`;
+  let prevE=0,prevA=0;
+  d.rows.forEach((r,i)=>{
+    const a=estimates[i]/100*full,b=actuals[i]/100*full,xe=x+prevE,xa=x+prevA,c=color(r,i);
+    svg+=`<polygon points="${xe},${y1+h} ${xe+a},${y1+h} ${xa+b},${y2} ${xa},${y2}" fill="${c}" opacity=".22"/>`;
+    prevE+=a;prevA+=b;
+  });
+  prevE=0;prevA=0;
+  d.rows.forEach((r,i)=>{
+    const a=estimates[i]/100*full,b=actuals[i]/100*full,xe=x+prevE,xa=x+prevA,c=color(r,i);
+    if(a>0)svg+=`<rect x="${xe}" y="${y1}" width="${a}" height="${h}" rx="2" fill="${c}"><title>${esc(r.name)} تقديري ${estimates[i]}%</title></rect>`;
+    if(b>0)svg+=`<rect x="${xa}" y="${y2}" width="${b}" height="${h}" rx="2" fill="${c}"><title>${esc(r.name)} فعلي ${actuals[i]}%</title></rect>`;
+    if(estimates[i]>=7)svg+=`<text x="${xe+a/2}" y="${y1+20}" text-anchor="middle" fill="#fff">${estimates[i]}%</text>`;
+    if(actuals[i]>=7)svg+=`<text x="${xa+b/2}" y="${y2+20}" text-anchor="middle" fill="#fff">${actuals[i]}%</text>`;
+    prevE+=a;prevA+=b;
+  });
+  svg+=`<text x="${x}" y="10" text-anchor="start">التقديري</text><text x="${x}" y="133" text-anchor="start">الفعلي</text></svg>`;
+  const legend=`<div class="fbc-stack-key">${d.rows.map((r,i)=>`<span style="--swatch:${color(r,i)}">${esc(r.name)} ${bidi(estimates[i]+"/"+actuals[i]+"%")}</span>`).join("")}</div>`;
+  const alt=`<details class="fbc-raw"><summary>عرض نسب الحصص في جدول</summary><table><tr><th>البند</th><th>التقديري %</th><th>الفعلي %</th></tr>${d.rows.map((r,i)=>`<tr><td>${esc(r.name)}</td><td>${bidi(estimates[i])}</td><td>${bidi(actuals[i])}</td></tr>`).join("")}</table></details>`;
+  return chartCard("7. المكدس النسبي 100%","شرائط تربط توزيع كل بند في التقديري بالفعلي؛ جميع الحصص تجمع إلى 100% بدقة.",svg+legend,alt);
+}
+    function spreadLabels(vals,minSpace,H){
     const order=vals.map((v,i)=>({i,y:v})).sort((a,b)=>a.y-b.y);if(!order.length)return [];
     order[0].y=Math.max(22,order[0].y);
     for(let i=1;i<order.length;i++)order[i].y=Math.max(order[i].y,order[i-1].y+minSpace);
