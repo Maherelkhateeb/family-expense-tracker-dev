@@ -822,3 +822,166 @@ body:has(#viewExpenses.home-alternative-design.active)
 #viewExpenses.home-reference-one.active .executive-quick-tools-strip > #walletSelectCluster {grid-column:3!important;grid-row:1!important;}
 #viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnToggleCurrency {grid-column:4!important;grid-row:1!important;}
 #viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnOpenSummaryQuick {grid-column:5!important;grid-row:1!important;}
+
+
+/* STAGE 1 REFINEMENT: equal-spaced header capsules, portrait and content rhythm.
+   Derived from the first 940x1673 reference, evaluated at 391x695 CSS pixels.
+   Only applies while reference-one is selected. */
+@media(max-width:480px){
+  body:has(#viewExpenses.home-reference-one.active) .app-header {
+    padding:5px 6px 3px!important;
+    gap:3px!important;
+    background:linear-gradient(#fff,#f8fcff)!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row {
+    box-sizing:border-box!important;
+    display:flex!important;
+    justify-content:space-between!important;
+    align-items:center!important;
+    flex-wrap:nowrap!important;
+    width:100%!important;
+    gap:clamp(3px,.9vw,5px)!important;
+    margin-bottom:2px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > .brand-box {
+    display:flex!important;
+    box-sizing:border-box!important;
+    flex:0 0 56%!important;
+    width:56%!important;
+    min-width:0!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:2px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > div:not(.brand-box) {
+    display:flex!important;
+    box-sizing:border-box!important;
+    flex:1 1 0%!important;
+    width:0!important;
+    min-width:0!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:2px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .brand-box #btnNotificationsBell {
+    flex:0 1 39%!important;
+    width:39%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .brand-box #btnHeaderTasksTop {
+    flex:0 1 35%!important;
+    width:35%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .brand-box #btnGlobalSearch {
+    flex:0 1 24%!important;
+    width:24%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > div:not(.brand-box) #btnHeaderMasterSync {
+    flex:0 1 58%!important;
+    width:58%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row > div:not(.brand-box) #btnMainSettings {
+    flex:0 1 40%!important;
+    width:40%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active)
+  :is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
+    height:clamp(29px,7.6vw,34px)!important;
+    min-height:29px!important;
+    min-width:0!important;
+    padding:0 2px!important;
+    box-sizing:border-box!important;
+    font:900 clamp(9px,2.48vw,12px)/1 Tahoma,Arial,sans-serif!important;
+    gap:2px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
+    font-size:clamp(9px,2.35vw,12px)!important;
+    white-space:nowrap!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer {
+    padding:4px 0 4px!important;
+    gap:0!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card {
+    gap:3px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-bubble {
+    width:clamp(29px,8.6vw,37px)!important;
+    height:clamp(29px,8.6vw,37px)!important;
+    border:2px solid white!important;
+    box-shadow:0 2px 5px #1e437650!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-name-label {
+    font:900 clamp(9px,2.56vw,12px)/1.04 Tahoma,Arial,sans-serif!important;
+  }
+  #viewExpenses.home-reference-one.active .period-filter-pill {
+    font-size:clamp(10px,2.95vw,13px)!important;
+  }
+  #viewExpenses.home-reference-one.active > #topKpiThreeStrip {
+    box-sizing:border-box!important;
+    height:clamp(58px,15.9vw,67px)!important;
+    min-height:58px!important;
+    margin:4px 6px!important;
+  }
+  #viewExpenses.home-reference-one.active #topCardBalance {
+    font-size:clamp(19px,6.12vw,27px)!important;
+  }
+  #viewExpenses.home-reference-one.active .hero-title-text {
+    font-size:clamp(9px,2.72vw,13px)!important;
+  }
+  #viewExpenses.home-reference-one.active .flow-title {
+    font-size:clamp(8px,2.60vw,11px)!important;
+  }
+  #viewExpenses.home-reference-one.active .flow-amount {
+    font-size:clamp(10px,3.5vw,16px)!important;
+  }
+  #viewExpenses.home-reference-one.active > .executive-quick-tools-strip {
+    box-sizing:border-box!important;
+    height:clamp(27px,7.1vw,32px)!important;
+    min-height:27px!important;
+    max-height:32px!important;
+    margin:3px 6px 6px!important;
+  }
+  #viewExpenses.home-reference-one.active > .executive-quick-tools-strip > * {
+    height:100%!important;
+    min-height:27px!important;
+    max-height:32px!important;
+    font-size:clamp(9px,2.66vw,13px)!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]) {
+    box-sizing:border-box!important;
+    margin:2px 6px clamp(17px,4.5dvh,27px)!important;
+    max-height:100%!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card button.reference-one-add strong {
+    font-size:clamp(11px,3.04vw,15px)!important;
+    line-height:1.08!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-amount {
+    font-size:clamp(10px,3.24vw,16px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-details small {
+    font-size:clamp(8px,2.65vw,12px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-icon {
+    width:clamp(36px,11.6vw,55px)!important;
+    height:clamp(36px,11.6vw,55px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card[data-ref-category="voice"] button strong {
+    font-size:clamp(11px,3.02vw,16px)!important;
+    line-height:1.08!important;
+  }
+}
+/* Keep 320px phones usable: no category, label, tool or voice action may be hidden. */
+@media(max-width:340px){
+  body:has(#viewExpenses.home-reference-one.active) .header-brand-row {
+    gap:2px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active)
+  :is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
+    font-size:8px!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-icon {
+    width:33px!important;
+    height:33px!important;
+  }
+}
