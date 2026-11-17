@@ -46,6 +46,27 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
      };
    });
    console.log('REFERENCE_SHORT_INITIAL '+JSON.stringify({viewport,...initial}));
+
+   const header=await page.evaluate(()=>{
+     const status=document.getElementById('topDriveSyncStatusText');
+     const sync=document.getElementById('btnHeaderMasterSync');
+     const search=document.getElementById('btnGlobalSearch');
+     const original=status?.textContent||'';
+     if(status)status.textContent='جار تحديث ومزامنة كل بيانات الأسرة';
+     const r=el=>{const x=el?.getBoundingClientRect();return x?{left:x.left,right:x.right,width:x.width}:null};
+     const result={
+       status:status?{overflow:getComputedStyle(status).overflowX,whiteSpace:getComputedStyle(status).whiteSpace,box:r(status)}:null,
+       sync:r(sync),search:r(search),hiddenLabel:status?getComputedStyle(status).textOverflow:null
+     };
+     if(status)status.textContent=original;
+     return result;
+   });
+   console.log('SYNC_LABEL_REGRESSION '+JSON.stringify({viewport,header}));
+   assert.ok(header.status&&header.status.overflow==='hidden'
+     &&header.hiddenLabel==='ellipsis','Long sync status must ellipsize on a short Android phone');
+   assert.ok(header.status.box.right<=header.sync.right+1&&
+     header.status.box.left>=header.sync.left-1,
+     'Sync label paints beyond its own button: '+JSON.stringify(header));
    assert.equal(initial.categoryCount,10,'Financial categories or voice missing');
    assert.ok(initial.voiceAction && initial.lastAmount,'Last row missing active voice or financial content');
    assert.ok(initial.cardHeight>=67 && initial.cardHeight<=80,
