@@ -39,18 +39,6 @@
         }
       }
       const profile = PROFILES[design];
-      // Inline important order values from the legacy renderer outrank the
-      // reference stylesheet. Update only the two quick-tool positions, and
-      // restore their standard order for other layouts.
-      const setQuickOrder = (id, order) => {
-        const el = document.getElementById(id);
-        if (el && (el.style.getPropertyValue('order') !== order ||
-            el.style.getPropertyPriority('order') !== 'important')) {
-          el.style.setProperty('order', order, 'important');
-        }
-      };
-      setQuickOrder('btnToggleCurrency', design === 1 ? '3' : '4');
-      setQuickOrder('btnOpenSummaryQuick', design === 1 ? '4' : '3');
       if (!profile || !view.classList.contains('active')) {
         host.style.removeProperty('--dynamic-home-available-height');
         host.style.removeProperty('--dynamic-home-card-height');
