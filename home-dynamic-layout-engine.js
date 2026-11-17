@@ -42,7 +42,10 @@
       const gap = clamp(width * profile.gapRatio, profile.minGap, profile.maxGap);
       const grid = host.querySelector('.reference-one-grid, .home-design-grid');
       const gridTop = grid ? Math.max(0, grid.getBoundingClientRect().top - hostRect.top) : 0;
-      const usable = Math.max(0, available - gridTop);
+      // Keep the final row visibly clear of the fixed footer, not flush with it.
+      // When the viewport is too short, CSS preserves a scrollable fallback.
+      const footerClearance = 10;
+      const usable = Math.max(0, available - gridTop - footerClearance);
       const cardHeight = Math.max(0, (usable - (profile.rows - 1) * gap) / profile.rows);
       host.style.setProperty('--dynamic-home-available-height', available.toFixed(2) + 'px');
       host.style.setProperty('--dynamic-home-card-height', cardHeight.toFixed(2) + 'px');
