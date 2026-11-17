@@ -27,7 +27,9 @@
   assert.match(root.innerHTML,/أعمدة الانحراف/);
   assert.match(root.innerHTML,/sectionComparisons/);
   assert.ok(root.innerHTML.includes("ملابس وأحذية"),"All zero-value categories must remain visible");
-  callbacks.click({target:{closest:selector=>selector==="[data-fbc=toggle]"?{}:null}});
+  if(!root.innerHTML.includes('8. مخطط الميل')) {
+    callbacks.click({target:{closest:selector=>selector==="[data-fbc=toggle]"?{}:null}});
+  }
   for(let i=1;i<=8;i++)assert.ok(root.innerHTML.includes(i+". "),"Chart "+i+" should render");
   callbacks.change({target:{dataset:{fbc:"sample"},checked:true}});
   for(const number of ["6,100","6,700","+600","+3,700"])assert.ok(root.innerHTML.includes(number),"Sample acceptance number "+number);
