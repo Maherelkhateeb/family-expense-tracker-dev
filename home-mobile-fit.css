@@ -1348,3 +1348,15 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
    height:100%!important;min-height:0!important;max-height:none!important;
  }
 }
+
+/* Short viewport regression: padding on the scroll container does not extend
+   its scroll range; reserve footer clearance inside the scroll CONTENT. */
+@media(max-width:480px){
+ #viewExpenses.home-reference-one.active{
+   padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
+   box-sizing:border-box!important;
+ }
+ #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]){
+   margin-bottom:0!important;
+ }
+}
