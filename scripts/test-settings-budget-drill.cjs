@@ -409,7 +409,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
     assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-leisure"]').innerText(),/بند جديد/);
     assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-gifts"]').innerText(),/توقف الصرف/);
     await page.locator('#cmpPeriodChart [data-mode="table"]').click();
-   const referenceDrillSelector = width === 360
+   const referenceDrillSelector = width < 600
       ? '.budget-spec .bs-mobile-rows article[data-budget-category="food"] button[data-period-series="reference"]'
       : '.budget-spec .bs-table tbody tr[data-budget-category="food"] button[data-period-series="reference"]';
     await page.locator(referenceDrillSelector).click();
