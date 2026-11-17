@@ -236,7 +236,9 @@
     bars.forEach((b,i)=>{
       const x=10+i*cell+cell*.22,width=cell*.56,y=Math.min(map(b.from),map(b.to)),h=Math.max(1,Math.abs(map(b.from)-map(b.to)));
       svg+=`<rect x="${x}" y="${y}" width="${width}" height="${h}" fill="${b.color}"><title>${esc(b.name)}: ${esc(sign(b.val))}</title></rect>`;
-      svg+=`<text x="${x+width/2}" y="232" text-anchor="middle">${i+1}</text>`;
+      const labelY=b.full?Math.max(13,y-6):(b.val>=0?Math.max(13,y-6):Math.min(211,y+h+15));
+      svg+=`<text x="${x+width/2}" y="${labelY}" text-anchor="middle">${b.full?n0(b.val):sign(b.val)}</text>`;
+      svg+=`<text x="${x+width/2}" y="232" text-anchor="middle">${bars.length<=7?esc(b.name):i+1}</text>`;
       if(i<bars.length-1){let connector=map(b.to);svg+=`<line x1="${x+width}" y1="${connector}" x2="${10+(i+1)*cell+cell*.22}" y2="${connector}" stroke="currentColor" opacity=".45" stroke-dasharray="3 3" stroke-width="1"/>`;}
     });
     svg+=`<text x="175" y="257" text-anchor="middle">بداية المحور: ${n0(start)}</text></svg>`;
@@ -355,7 +357,7 @@
       const ya=Y(row.estimated),yb=Y(row.actual),c=barColor(row.variance);
       svg+=`<line x1="${l}" y1="${ya}" x2="${r}" y2="${yb}" stroke="${c}" stroke-width="2"/><circle cx="${l}" cy="${ya}" r="3" fill="${COLORS.estimated}"/><circle cx="${r}" cy="${yb}" r="3" fill="${COLORS.actual}"/>
 <line x1="${l}" x2="${l-6}" y1="${ya}" y2="${leftY[i]}" stroke="currentColor" opacity=".28"/><line x1="${r}" x2="${r+6}" y1="${yb}" y2="${rightY[i]}" stroke="currentColor" opacity=".28"/>
-<text x="${l-8}" y="${leftY[i]+4}" text-anchor="end">${n0(row.estimated)}</text><text x="${r+8}" y="${rightY[i]+4}" text-anchor="start">${n0(row.actual)}</text>`;
+<text x="${l-8}" y="${leftY[i]+4}" text-anchor="end">${esc(row.name.slice(0,8))} ${n0(row.estimated)}</text><text x="${r+8}" y="${rightY[i]+4}" text-anchor="start">${n0(row.actual)} ${esc(row.name.slice(0,8))}</text>`;
     });
     svg+="</svg>";
     const legend=`<div class="fbc-legend">${rows.map((x,i)=>`<span style="--swatch:${barColor(x.variance)}">${i+1}. ${esc(x.name)} ${bidi(sign(x.variance))}</span>`).join("")}</div>`;
