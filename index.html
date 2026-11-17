@@ -43267,7 +43267,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
         renderFirstReference();
         return;
       }
-      const displayItems = [2,3,5].includes(design) ? [...items.filter(([id]) => id !== 'voice'),items.find(([id]) => id === 'voice')] : items;
+      const displayItems = [2,3,4,5].includes(design) ? [...items.filter(([id]) => id !== 'voice'),items.find(([id]) => id === 'voice')] : items;
       const cards = displayItems.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
