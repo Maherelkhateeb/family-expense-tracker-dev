@@ -29,13 +29,13 @@ const numbers=s=>String(s||'').replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨
         const tab=document.getElementById('btnBudgetSubComparisons');
         const rows=document.querySelectorAll('#cmpAuditApp .cmp-audit-row');
         return {monthlyVisible:getComputedStyle(monthly).display!=='none',
-          obsoleteHidden:getComputedStyle(obsolete).display==='none',
+          originalVisible:getComputedStyle(obsolete).display!=='none',
           tabLabel:tab.textContent.trim(),rowCount:rows.length,
           summaryCount:document.querySelectorAll('#cmpAuditApp .cmp-audit-kpi').length,
           overflow:document.documentElement.scrollWidth-innerWidth};
       });
       assert.equal(start.monthlyVisible,true,'Monthly budget workspace must remain the host');
-      assert.equal(start.obsoleteHidden,true,'No secondary comparisons page');
+      assert.equal(start.originalVisible,true,'Preserve the original comparisons panel and charts');
       assert.ok(!start.tabLabel.includes('الجديدة'),'Only one comparisons button remains');
       assert.equal(start.rowCount,9,'Show all expense categories including zero amounts');
       assert.equal(start.summaryCount,4,'Show estimated, actual, difference and rate');
@@ -95,10 +95,10 @@ const numbers=s=>String(s||'').replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨
         &&!!document.querySelector('#cmpAuditApp .cmp-audit-row'),null,{timeout:20000});
       const deep=await page.evaluate(()=>({
         rows:document.querySelectorAll('#cmpAuditApp .cmp-audit-row').length,
-        oldHidden:getComputedStyle(document.getElementById('panelBudgetComparisons')).display==='none',
+        originalVisible:getComputedStyle(document.getElementById('panelBudgetComparisons')).display!=='none',
         overflow:document.documentElement.scrollWidth-innerWidth}));
       assert.equal(deep.rows,9);
-      assert.equal(deep.oldHidden,true);
+      assert.equal(deep.originalVisible,true);
       assert.ok(deep.overflow<=3);
       assert.deepEqual(errors,[],'Uncaught page errors: '+errors.join(' | '));
       await context.close();
