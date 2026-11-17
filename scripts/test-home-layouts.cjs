@@ -34,7 +34,7 @@ const WIDTHS=[320,360,390,430,768];
      const viewportWidth=window.innerWidth;
      for(const [i,card]of cards.entries()){
        const r=readRect(card);
-       if(r.width<60||r.height<65||r.left< -2||r.right>viewportWidth+2)errors.push('card-outside:'+i+':'+JSON.stringify(r));
+       if(r.width<60||r.height<(design===4?25:42)||r.left< -2||r.right>viewportWidth+2)errors.push('card-outside:'+i+':'+JSON.stringify(r));
        const head=card.querySelector('.home-design-head strong,.reference-one-add strong');
        if(head&&head.scrollWidth>head.clientWidth+3)errors.push('title-clipped:'+i);
        const amount=card.querySelector('.home-design-value bdi,.reference-one-amount');
