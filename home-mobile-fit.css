@@ -384,3 +384,31 @@
     width:23px!important;height:23px!important;flex-basis:23px!important;
   }
 }
+
+
+/* Override historic row minimums that otherwise force scrolling in compact list. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card:not(.home-design-voice),
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-voice {
+  min-height:0!important;
+  height:100%!important;
+  max-height:100%!important;
+  overflow:hidden!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card .home-design-head,
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card .home-design-value {
+  min-height:0!important;
+  height:100%!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card .home-design-head {
+  padding:0 4px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card .home-design-voice button {
+  min-height:0!important;
+}
+/* Disable fixed row minimums in four-icon layout too. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-card,
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-voice {
+  min-height:0!important;
+  height:100%!important;
+  max-height:100%!important;
+}
