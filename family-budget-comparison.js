@@ -331,7 +331,7 @@
     const months=monthsFor(ui.end,ui.sample?6:ui.span),data=ui.sample?sampleData():actualData(months),all=compute(data,ui.tolerance);
     const display=ui.sample?compute({months:["2026-06"],perMonth:data.perMonth,categories:data.categories,referenceHeatmap:null},ui.tolerance):all;
     const monthVal=ui.sample?"2026-06":ui.end;
-    root.innerHTML=`<div class="fbc" dir="rtl"><div class="fbc-intro"><h2>مقارنة الميزانية الفعلية بالتقديرية</h2>
+    root.innerHTML=`<div id="sectionComparisons" class="fbc" dir="rtl"><div class="fbc-intro"><h2>مقارنة الميزانية الفعلية بالتقديرية</h2>
 <p class="fbc-muted">جدول الفروقات، شلال التغير، أولويات التجاوز، واتجاه الإنفاق حسب الشهر والبند.</p></div>
 <div class="fbc-controls">
 <label>حتى شهر <input aria-label="الشهر الأخير" type="month" min="2020-01" max="2099-12" data-fbc="end" value="${monthVal}" ${ui.sample?"disabled":""}></label>
