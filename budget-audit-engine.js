@@ -1309,19 +1309,36 @@ window.BudgetAuditEngine = (() => {
   }
 
   function renderExecutiveComparisonsAudit() {
-    // تبويب المقارنات والرقابة يتكامل مع نفس محرك المقارنات الشامل
+    // Dedicated actual-vs-estimated dashboard. Keep monthly and project audit engines untouched.
     const container = document.getElementById('panelBudgetComparisons');
     if (!container) return;
-
-    comparisonMode = 'period';
-    container.innerHTML = `
-      <div id="sectionComparisons" style="display: block; padding: 0 4px 10px;">
-        <div id="budgetComparisonsDedicatedContainer"></div>
-      </div>
-    `;
-
-    // توجيه العرض لمحرك الرقابة المقارن
-    refreshActiveBudgetAudit();
+    const draw = () => {
+      if (!container.isConnected || !window.FamilyBudgetComparison) return;
+      window.FamilyBudgetComparison.render(container, state);
+    };
+    if (window.FamilyBudgetComparison) {
+      draw();
+      return;
+    }
+    container.textContent = 'يتم تحميل لوحة مقارنة الفعلي والتقديري...';
+    if (window.__familyBudgetComparisonScriptLoading) {
+      window.__familyBudgetComparisonScriptLoading.then(draw).catch(() => {
+        container.textContent = 'تعذّر تحميل لوحة المقارنة. يُرجى تحديث التطبيق.';
+      });
+      return;
+    }
+    window.__familyBudgetComparisonScriptLoading = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = './family-budget-comparison.js?v=20261117-v1';
+      script.defer = true;
+      script.onload = () => window.FamilyBudgetComparison ? resolve() : reject(new Error('Comparison module unavailable'));
+      script.onerror = () => reject(new Error('Comparison module could not be loaded'));
+      document.head.appendChild(script);
+    });
+    window.__familyBudgetComparisonScriptLoading.then(draw).catch(() => {
+      container.textContent = 'تعذّر تحميل لوحة المقارنة. يُرجى تحديث التطبيق.';
+      window.__familyBudgetComparisonScriptLoading = null;
+    });
   }
 
   function renderBudgetHistoryAdvanced() {
