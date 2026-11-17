@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.8';
-    var APP_BUILD_ID = 202611171455;
+    var APP_VERSION = 'v5.4.9';
+    var APP_BUILD_ID = 202611171505;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.8</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.9</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43219,9 +43219,15 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       host.dataset.design = design;
       expensePage.classList.toggle('home-reference-one', design === 1);
       const isOriginal = design === 0;
-      original.hidden = !isOriginal;
-      if (isOriginal) original.style.removeProperty('display');
-      else original.style.setProperty('display', 'none', 'important');
+      // Avoid mutating the observed grid style on every refresh.
+      // A redundant setProperty used to create an endless MutationObserver/rAF loop.
+      if (original.hidden === isOriginal) original.hidden = !isOriginal;
+      if (isOriginal) {
+        if (original.style.getPropertyValue('display')) original.style.removeProperty('display');
+      } else if (original.style.getPropertyValue('display') !== 'none' ||
+                 original.style.getPropertyPriority('display') !== 'important') {
+        original.style.setProperty('display', 'none', 'important');
+      }
       host.hidden = isOriginal;
       const label = isOriginal ? 'الشكل الأساسي' : 'الشكل ' + (design + 1) + ' من 6';
       trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، ' + label);
