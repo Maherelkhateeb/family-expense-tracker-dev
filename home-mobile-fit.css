@@ -1209,3 +1209,47 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
   pointer-events:none!important;
   z-index:0!important;
 }
+
+
+/* FIRST REFERENCE PHONE: prevent fifth row being clipped behind the bottom nav.
+   Cause: 1fr × five stretched cards inside 100%-height flex host + overflow:hidden.
+   Match the source image's card aspect ratio, and let short Chrome/Android
+   visual viewports scroll instead of deleting the bottom row. Scope: design 1. */
+@media (max-width:480px) {
+  #viewExpenses.home-reference-one.active {
+    flex:0 0 auto!important;
+    min-height:max-content!important;
+    overflow:visible!important;
+    contain:none!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces:not([hidden]) {
+    flex:0 0 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    margin:2px 6px clamp(15px,3.5vw,22px)!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid {
+    flex:0 0 auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(5,clamp(71px,18.1cqi,79px))!important;
+    align-content:start!important;
+    align-items:stretch!important;
+    gap:clamp(4px,1.3cqi,7px)!important;
+    overflow:visible!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+    min-height:0!important;
+    max-height:none!important;
+    height:100%!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch;
+  }
+}
