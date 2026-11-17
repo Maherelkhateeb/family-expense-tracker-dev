@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.13",
-  "build": "202611171820",
-  "buildId": 202611171820,
-  "updated": "2026-11-17T16:20:00+03:00",
-  "notes": "Universal operations back restores source view, filters, scroll, budget comparison, summary drawer, request and debt drafts; verified 360/390/430 phone widths."
+  "version": "v5.4.14",
+  "build": "202611171845",
+  "buildId": 202611171845,
+  "updated": "2026-11-17T16:40:00+03:00",
+  "notes": "Restored home-screen layout switcher on all layouts; five RTL quick tools; fixed mobile two-column reference and preserved all 9 expense categories plus voice action, including zero amounts."
 }
