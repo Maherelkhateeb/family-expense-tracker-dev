@@ -64,7 +64,7 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.equal(budget.scroll,budget.initialTop,'Budget scroll did not restore');
 
    const operations=await page.evaluate(()=>{
-     switchAppPage('operations',false);
+     document.getElementById('navTabOperations').click();
      switchOperationsSubTab('analytics');
      const previous=state.activeOpsSubTab;
      openOperationsFiltered({category:'daily',type:'expense'});
