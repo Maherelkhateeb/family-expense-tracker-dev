@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.11",
-  "build": "202611171635",
-  "buildId": 202611171635,
-  "updated": "2026-11-17T16:35:00+03:00",
-  "notes": "Rebuild first reference: 3x3 mobile categories, header, wallet KPI, four controls, original home preserved."
+  "version": "v5.4.12",
+  "build": "202611171745",
+  "buildId": 202611171745,
+  "updated": "2026-11-17T17:45:00+03:00",
+  "notes": "Universal operations back button returns to original page, scroll, layout, filters and unfinished form drafts."
 }
