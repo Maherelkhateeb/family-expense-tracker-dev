@@ -7,7 +7,7 @@
   const PROFILES = Object.freeze({
     1: { columns: 2, gapRatio: .018, minGap: 5, maxGap: 14, rows: 5 },
     2: { columns: 2, gapRatio: .019, minGap: 5, maxGap: 14, rows: 5 },
-    3: { columns: 1, gapRatio: .013, minGap: 4, maxGap: 10, rows: 10 },
+    3: { columns: 2, gapRatio: .013, minGap: 4, maxGap: 10, rows: 5 },
     4: { columns: 2, gapRatio: .019, minGap: 5, maxGap: 14, rows: 5 },
     5: { columns: 3, gapRatio: .014, minGap: 4, maxGap: 11, rows: 4 }
   });
