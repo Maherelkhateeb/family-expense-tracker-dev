@@ -29,28 +29,46 @@
         host.style.removeProperty('--dynamic-home-card-height');
         host.style.removeProperty('--dynamic-home-gap');
         host.style.removeProperty('--dynamic-home-columns');
+        delete host.dataset.dynamicHomeMeasured;
+        delete host.dataset.dynamicHomeFit;
         return;
       }
       const vv = root.visualViewport;
-      const viewportHeight = vv ? vv.height : root.innerHeight;
       const viewportTop = vv ? vv.offsetTop : 0;
-      const footerTop = footer && footer.getBoundingClientRect().height
-        ? footer.getBoundingClientRect().top : viewportTop + viewportHeight;
+      const viewportBottom = viewportTop + (vv ? vv.height : root.innerHeight);
+      const navRect = footer && footer.getBoundingClientRect();
+      const navTop = navRect && navRect.height ? navRect.top : viewportBottom;
+      const scroll = document.getElementById('appScrollBody');
+      const scrollRect = scroll && scroll.getBoundingClientRect();
       const hostRect = host.getBoundingClientRect();
-      const available = Math.max(0, Math.min(footerTop, viewportTop + viewportHeight) - hostRect.top);
+      // Respect the actual scroll viewport and the fixed footer.
+      const visibleBottom = Math.min(viewportBottom, navTop, scrollRect ? scrollRect.bottom : viewportBottom);
+      // Keep geometry stable if a viewport resize happens mid-scroll.
+      const hostAtRest = hostRect.top + (scroll ? scroll.scrollTop : 0);
+      const footerClearance = 10;
+      const available = Math.max(0, visibleBottom - hostAtRest - footerClearance);
       const width = Math.max(0, hostRect.width);
       const gap = clamp(width * profile.gapRatio, profile.minGap, profile.maxGap);
       const grid = host.querySelector('.reference-one-grid, .home-design-grid');
       const gridTop = grid ? Math.max(0, grid.getBoundingClientRect().top - hostRect.top) : 0;
-      // Keep the final row visibly clear of the fixed footer, not flush with it.
-      // When the viewport is too short, CSS preserves a scrollable fallback.
-      const footerClearance = 10;
-      const usable = Math.max(0, available - gridTop - footerClearance);
-      const cardHeight = Math.max(0, (usable - (profile.rows - 1) * gap) / profile.rows);
-      host.style.setProperty('--dynamic-home-available-height', available.toFixed(2) + 'px');
-      host.style.setProperty('--dynamic-home-card-height', cardHeight.toFixed(2) + 'px');
-      host.style.setProperty('--dynamic-home-gap', gap.toFixed(2) + 'px');
-      host.style.setProperty('--dynamic-home-columns', String(profile.columns));
+      const cardCount = grid ? Array.from(grid.children).filter(el => el.getClientRects().length).length : 0;
+      const rows = cardCount ? Math.ceil(cardCount / profile.columns) : profile.rows;
+      const usable = Math.max(0, available - gridTop);
+      const calculated = (usable - Math.max(0, rows - 1) * gap) / Math.max(rows, 1);
+      // Do not claim that ten touch targets fit by shrinking them below
+      // their accessible content minimum. On short viewports, scroll instead.
+      const minimum = design === 1 ? 68 : 76;
+      const cardHeight = Math.max(minimum, calculated);
+      const properties = {
+        '--dynamic-home-available-height': available.toFixed(2) + 'px',
+        '--dynamic-home-card-height': cardHeight.toFixed(2) + 'px',
+        '--dynamic-home-gap': gap.toFixed(2) + 'px',
+        '--dynamic-home-columns': String(profile.columns)
+      };
+      for (const [key, value] of Object.entries(properties)) {
+        if (host.style.getPropertyValue(key) !== value) host.style.setProperty(key, value);
+      }
+      host.dataset.dynamicHomeFit = calculated >= minimum ? 'fit' : 'scroll';
       host.dataset.dynamicHomeMeasured = 'true';
     }
     function schedule() {
@@ -58,10 +76,13 @@
     }
     if (typeof root.ResizeObserver === 'function') {
       observer = new root.ResizeObserver(schedule);
-      [view, host, header, footer].filter(Boolean).forEach(node => observer.observe(node));
+      [view, host, header, footer, document.getElementById('appScrollBody')].filter(Boolean).forEach(node => observer.observe(node));
     }
     root.addEventListener('resize', schedule, { passive: true });
-    if (root.visualViewport) root.visualViewport.addEventListener('resize', schedule, { passive: true });
+    if (root.visualViewport) {
+      root.visualViewport.addEventListener('resize', schedule, { passive: true });
+      root.visualViewport.addEventListener('scroll', schedule, { passive: true });
+    }
     const mutations = new MutationObserver(schedule);
     mutations.observe(host, { attributes: true, attributeFilter: ['data-design', 'class'] });
     mutations.observe(view, { attributes: true, attributeFilter: ['class'] });
@@ -74,9 +95,13 @@
         if (observer) observer.disconnect();
         mutations.disconnect();
         root.removeEventListener('resize', schedule);
-        if (root.visualViewport) root.visualViewport.removeEventListener('resize', schedule);
+        if (root.visualViewport) {
+          root.visualViewport.removeEventListener('resize', schedule);
+          root.visualViewport.removeEventListener('scroll', schedule);
+        }
         ['--dynamic-home-available-height','--dynamic-home-card-height','--dynamic-home-gap','--dynamic-home-columns'].forEach(key => host.style.removeProperty(key));
         delete host.dataset.dynamicHomeMeasured;
+        delete host.dataset.dynamicHomeFit;
       }
     };
   }
