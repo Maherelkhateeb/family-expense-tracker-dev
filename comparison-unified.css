@@ -1,0 +1,136 @@
+/* Unified family comparison page — one set of filters / results for all visualizations.
+   Scoped to the existing monthly comparison panel. Does not alter global theme settings. */
+#viewBudgets #panelMonthlyBudget,
+#viewBudgets #panelBudgetCompare,
+#viewBudgets #cmpPeriodChart,
+#viewBudgets #cmpPeriodChartContent { box-sizing:border-box;max-width:100%;min-width:0; }
+#viewBudgets #cmpPeriodChart { --uc-border:color-mix(in srgb,currentColor 15%,transparent);
+  --uc-muted:color-mix(in srgb,currentColor 70%,transparent);
+  --uc-surface:color-mix(in srgb,var(--bg-card,#fff) 94%,transparent);
+  direction:rtl; padding:10px !important; border-radius:14px !important;
+  border:1px solid var(--uc-border) !important; background:var(--bg-card,transparent);
+  display:flex;flex-direction:column;gap:10px;color:inherit;overflow:clip; }
+#viewBudgets #cmpPeriodChart :where(button,select,input){font-family:inherit;}
+#viewBudgets #cmpPeriodChart :where(button,select):focus-visible{outline:2px solid #378add;outline-offset:2px}
+#viewBudgets #cmpPeriodChart .cmp-heading {display:flex;align-items:center;justify-content:space-between;
+  gap:8px;flex-wrap:wrap;margin:0;padding:0 2px;min-width:0;}
+#viewBudgets #cmpPeriodChart .cmp-heading h3{margin:0;font-size:15px;font-weight:900;color:inherit;line-height:1.45;flex:1 1 175px;}
+#viewBudgets #cmpPeriodChart #cmpDataMode {min-height:34px;padding:6px 10px;font-size:12px;
+  white-space:normal;border:1px solid var(--uc-border);border-radius:9px;font-weight:750;max-width:145px;}
+#viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox {display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:9px !important;
+  margin:0 !important; padding:10px !important;border-radius:12px;
+  border:1px solid var(--uc-border);background:color-mix(in srgb,var(--bg-card,#fff) 78%,transparent);}
+#viewBudgets #cmpPeriodsFilterBox > div {display:flex;flex-direction:column;gap:6px;min-width:0 !important;max-width:100% !important;padding:0 !important}
+#viewBudgets #cmpPeriodsFilterBox label{font-size:12px;font-weight:850;margin:0;line-height:1.3}
+#viewBudgets #cmpPeriodsFilterBox select {display:block;max-width:100%;width:100%;min-width:0;
+  min-height:38px;height:auto !important;border-radius:9px;padding:6px 9px;
+  background:var(--bg-card,#fff);color:inherit;font-size:13px;}
+#viewBudgets #cmpPeriodsFilterBox :where(.cmp-range-preview,.cmp-month-custom-range){max-width:100%;min-width:0 !important;
+  margin:0 !important;overflow-wrap:anywhere;}
+#viewBudgets #cmpPeriodsFilterBox .cmp-range-preview {font-size:12px;line-height:1.5;
+  border-radius:9px;min-height:50px;padding:7px !important;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;}
+#viewBudgets #cmpPeriodsFilterBox .cmp-range-preview bdi {font-size:12px;max-width:100%;white-space:normal;word-break:normal;direction:ltr;}
+#viewBudgets #cmpPeriodsFilterBox .cmp-range-preview small {font-size:11px;line-height:1.35;font-weight:700}
+#viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range[hidden],#viewBudgets #cmpPeriodChart [hidden]{display:none !important;}
+#viewBudgets #cmpPeriodChart #cmpSummary {margin:0}
+#viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary {
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;direction:rtl;}
+#viewBudgets #cmpSummary .cmp-unified-kpi {
+ border:1px solid var(--uc-border);border-radius:11px;min-width:0;
+ background:color-mix(in srgb,var(--bg-card,#fff) 86%,transparent);padding:9px 10px;
+ display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;}
+#viewBudgets #cmpSummary .cmp-unified-kpi small {font-size:12px;line-height:1.3;color:var(--uc-muted);font-weight:800}
+#viewBudgets #cmpSummary .cmp-unified-kpi strong {display:block;max-width:100%;font-size:16px;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:inherit;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="red"] strong{color:#E24B4A;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="green"] strong{color:#639922;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="blue"] strong{color:#378ADD;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="slate"] strong{color:inherit;}
+#viewBudgets #cmpSummary .cmp-difference-hint{margin:7px 3px 0;font-size:11px;line-height:1.5;color:var(--uc-muted)}
+#viewBudgets #cmpPeriodChart .cmp-view-tools {display:flex !important;align-items:center;
+ justify-content:space-between;gap:8px;flex-wrap:wrap;max-width:100%;padding:0;margin:0;}
+#viewBudgets #cmpPeriodChart .cmp-period-modes {display:flex;gap:5px;min-width:0;max-width:100%;
+ overflow-x:auto;scrollbar-width:thin;align-items:center;}
+#viewBudgets #cmpPeriodChart .cmp-period-modes button {flex:0 0 auto;padding:8px 10px;
+ min-height:36px;border-radius:9px;font-size:12px;font-weight:800;}
+#viewBudgets #cmpPeriodChart .cmp-view-tools > label {display:flex;gap:7px;align-items:center;min-width:0;margin:0;}
+#viewBudgets #cmpPeriodChart #cmpSort {max-width:152px;min-height:36px;border-radius:9px;background:var(--bg-card,#fff);
+ color:inherit;padding:5px 9px;font-size:12px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec {max-width:100%;min-width:0;color:inherit;font-size:12px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-intro {display:none}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-statline {display:none}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid,
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid{
+ display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:10px;min-width:0;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel{
+ border-radius:12px;min-width:0;max-width:100%;padding:12px !important;
+ background:color-mix(in srgb,var(--bg-card,#fff) 96%,transparent);
+ border:1px solid var(--uc-border) !important;box-shadow:none !important;overflow:hidden;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel h3 {font-size:14px;font-weight:900;
+ color:inherit;line-height:1.5;margin:0 0 7px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel :where(p,small){font-size:12px;line-height:1.5;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel .bs-legend{margin:6px 0;gap:12px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-mobile-rows article.bs-row-card {
+ border-radius:9px;padding:8px 9px;margin:5px 0;border:1px solid var(--uc-border);
+ background:color-mix(in srgb,var(--bg-card,#fff) 92%,transparent);}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-head strong{font-size:13px;line-height:1.35}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values {
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px 5px;margin:7px 0 4px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values > div {display:flex;flex-direction:column;
+ gap:2px;align-items:flex-start;min-width:0;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values strong{font-size:12px;line-height:1.3;
+ overflow-wrap:anywhere;font-variant-numeric:tabular-nums;max-width:100%}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values small{font-size:11px;color:var(--uc-muted)}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-open-operations {min-height:24px;padding:1px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window{max-width:100%;overflow-x:auto;overflow-y:hidden;
+ scrollbar-width:thin;overscroll-behavior-inline:contain;padding:3px 0;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window .bs-viz{
+ display:block;width:100%;height:auto;max-width:none;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window:focus-visible{outline:2px solid #378add}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more {margin:0;border:1px solid var(--uc-border);
+ border-radius:12px;padding:9px 10px;max-width:100%;min-width:0;grid-column:1/-1;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more > summary{cursor:pointer;
+ font-weight:850;color:inherit;min-height:34px;display:flex;align-items:center;gap:6px;font-size:13px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more > summary:before{content:"▾";color:#378ADD;font-size:18px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more:not([open]) > summary:before{transform:rotate(90deg)}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid{padding-top:8px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid .bs-panel{min-width:0}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-heat-desktop{
+ overflow-x:auto;max-width:100%;scrollbar-width:thin;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-heat-row{min-width:480px}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-heat-row .bs-heat-cell{min-width:0}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-stack{height:32px}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-stack-key{margin-top:8px}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-bullet-row{margin:9px 0}
+#viewBudgets #cmpPeriodChart #cmpInsightDetails {margin:0;border:1px solid var(--uc-border);padding:9px;border-radius:10px;}
+#viewBudgets #cmpPeriodChart #cmpInsightDetails > summary{cursor:pointer;font-weight:800;}
+#viewBudgets #cmpPeriodChartContent .bs-variance-row{min-width:0;grid-template-columns:minmax(0,1fr) minmax(0,1.75fr);}
+#viewBudgets #cmpPeriodChartContent .bs-variance-value{overflow-wrap:anywhere;white-space:normal;font-size:11px}
+#viewBudgets #cmpPeriodChartContent .bs-track{max-width:100%;min-width:0}
+@media(min-width:780px){
+ #viewBudgets #cmpPeriodChart {padding:14px !important}
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox {gap:12px !important}
+ #viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid,
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid > .bs-full,
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid > .bs-full{grid-column:1/-1}
+}
+@media(max-width:599px){
+ #viewBudgets #cmpPeriodChart {padding:8px !important;gap:8px}
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{grid-template-columns:minmax(0,1fr) !important;gap:8px !important}
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox > div {display:grid;grid-template-columns:minmax(0,1fr)}
+ #viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #viewBudgets #cmpPeriodChart .cmp-view-tools{flex-wrap:nowrap;align-items:center;}
+ #viewBudgets #cmpPeriodChart .cmp-period-modes{flex:1 1 auto}
+ #viewBudgets #cmpPeriodChart .cmp-view-tools > label {flex:0 0 auto;font-size:0}
+ #viewBudgets #cmpPeriodChart .cmp-view-tools > label > span {display:none}
+ #viewBudgets #cmpPeriodChart #cmpSort{max-width:116px}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-heat-desktop{display:block}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-heat-mobile{display:none}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window .bs-viz{
+  width:max(100%,540px);max-width:none}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-slope-row {grid-template-columns:minmax(84px,1fr) minmax(0,1.65fr)}
+}
