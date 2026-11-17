@@ -61,6 +61,9 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.equal(snap.zeroCards,9);
       assert.equal(snap.actions,10);
       assert.equal(snap.detailActions,9);
+      if (snap.toolsOrder[3] !== 'btnOpenSummaryQuick') {
+        console.log('TOOL_ORDER_DIAGNOSTIC',width,await page.evaluate(()=>[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')].map(x=>({id:x.id,order:getComputedStyle(x).order,style:x.style.getPropertyValue('order'),priority:x.style.getPropertyPriority('order'),parent:x.parentElement?.className}))));
+      }
       assert.deepEqual(snap.toolsOrder,[
         'btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'
       ],'Five reference tools are in the wrong RTL order');
