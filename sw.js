@@ -1,9 +1,9 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-tracker-v5.4.12-r1';
+const CACHE_NAME = 'family-expense-tracker-v5.4.13-r1';
 const STATIC_ASSETS = [
   './',
   './index.html',
-  './operations-return-hub.js?v=202611171745',
+  './operations-return-hub.js?v=202611171820',
   './manifest.json',
   './version.json',
   './family-alerts.js?v=202611161015',
