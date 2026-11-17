@@ -14,16 +14,22 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.goto(BASE+'?opsReturnQA=1',{waitUntil:'domcontentloaded',timeout:60000});
    await page.waitForFunction(()=>typeof OperationsReturnHub==='object'&&
      typeof openOperationsFiltered==='function'&&typeof switchAppPage==='function',null,{timeout:30000});
-   const expense=await page.evaluate(()=>{
+   const expense=await page.evaluate(async()=>{
      switchAppPage('expenses',false);
+     const spacer=document.createElement('div');
+     spacer.style.height='1700px';
+     spacer.className='qa-scroll-spacer';
+     document.getElementById('viewExpenses').append(spacer);
      state.period='week';state.currentMemberFilter='البيت';state.projectFilter='all';
      const body=document.getElementById('appScrollBody');
-     body.scrollTop=50;
+     body.scrollTop=420;
      const before=body.scrollTop;
+     if(before<100)throw Error('QA failed to make expenses page actually scroll');
      openOperationsFiltered({category:'food',type:'expense'});
      const shown=document.getElementById('btnOpsReturnToSource').getBoundingClientRect().width>0;
      const info=OperationsReturnHub.getState();
      document.getElementById('btnOpsReturnToSource').click();
+     await new Promise(r=>setTimeout(r,280));
      return {shown,info,page:state.activePage,period:state.period,member:state.currentMemberFilter,
        scroll:body.scrollTop,before,shownAfter:document.body.classList.contains('ops-return-context')};
    });
@@ -35,8 +41,12 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.equal(expense.shownAfter,false);
    assert.equal(expense.scroll,expense.before,'Source scroll not restored');
 
-   const budget=await page.evaluate(()=>{
+   const budget=await page.evaluate(async()=>{
      switchAppPage('budgets',false);
+     const spacer=document.createElement('div');
+     spacer.style.height='1700px';
+     spacer.className='qa-scroll-spacer';
+     document.getElementById('viewBudgets').append(spacer);
      switchBudgetSubTab('current');switchBudgetMonthView('compare');
      const search=document.getElementById('cmpPeriodFrom');
      const sort=document.getElementById('cmpSort');
@@ -44,11 +54,13 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
      search.value='2025-03-17';
      sort.value='name';
      const body=document.getElementById('appScrollBody');
-     body.scrollTop=120;
+     body.scrollTop=610;
      const initialTop=body.scrollTop;
+     if(initialTop<100)throw Error('QA failed to make budgets page actually scroll');
      openOperationsFiltered({category:'health',type:'expense'});
      const source=OperationsReturnHub.getState()?.page;
      OperationsReturnHub.returnToSource();
+     await new Promise(r=>setTimeout(r,280));
      return {source,page:state.activePage,budgetPressed:document.getElementById('btnBudgetSubCurrent').classList.contains('active'),
        comparison:document.getElementById('btnBudgetInnerCompare').getAttribute('aria-pressed'),
        input:document.getElementById('cmpPeriodFrom')?.value,
@@ -62,6 +74,59 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.equal(budget.input,'2025-03-17','Unfinished budget form was cleared');
    assert.equal(budget.sort,'name','Budget row ordering changed after back');
    assert.equal(budget.scroll,budget.initialTop,'Budget scroll did not restore');
+
+   const requests=await page.evaluate(async()=>{
+     switchAppPage('requests',false);
+     const reason=document.getElementById('inpReqReason');
+     if(!reason)throw Error('Request draft field missing');
+     reason.value='طلب تجريبي لم يتم حفظه';
+     openOperationsFiltered({type:'expense'});
+     const source=OperationsReturnHub.getState()?.page;
+     OperationsReturnHub.returnToSource();
+     await new Promise(r=>setTimeout(r,230));
+     return {source,page:state.activePage,reason:document.getElementById('inpReqReason')?.value};
+   });
+   assert.equal(requests.source,'requests');
+   assert.equal(requests.page,'requests');
+   assert.equal(requests.reason,'طلب تجريبي لم يتم حفظه','Unsaved request draft lost');
+
+   const expected=await page.evaluate(async()=>{
+     switchAppPage('expected',false);
+     const notes=document.getElementById('inpUnifiedDebtNotes');
+     if(!notes)throw Error('Expected/debt draft field missing');
+     notes.value='ملاحظات دين تجريبية غير محفوظة';
+     openOperationsFiltered({type:'all'});
+     const source=OperationsReturnHub.getState()?.page;
+     OperationsReturnHub.returnToSource();
+     await new Promise(r=>setTimeout(r,230));
+     return {source,page:state.activePage,notes:document.getElementById('inpUnifiedDebtNotes')?.value};
+   });
+   assert.equal(expected.source,'expected');
+   assert.equal(expected.page,'expected');
+   assert.equal(expected.notes,'ملاحظات دين تجريبية غير محفوظة','Unsaved debt draft lost');
+
+   const summary=await page.evaluate(async()=>{
+     switchAppPage('expenses',false);
+     openSummaryDrawer();
+     const drawer=document.getElementById('summaryLeftDrawer');
+     if(!drawer.classList.contains('open'))throw Error('Summary drawer did not open');
+     const draft=document.getElementById('summaryCustomDateFrom');
+     if(!draft)throw Error('Summary date field missing');
+     draft.value='2025-03-09';
+     drillDownFromProjectCategory('all','food','طعام ومشتريات');
+     const info=OperationsReturnHub.getState();
+     const back=document.body.classList.contains('ops-return-context');
+     OperationsReturnHub.returnToSource();
+     await new Promise(r=>setTimeout(r,260));
+     return {source:info?.page,wasSummary:info?.summary,back,page:state.activePage,
+       drawerOpen:drawer.classList.contains('open'),draft:document.getElementById('summaryCustomDateFrom')?.value};
+   });
+   assert.equal(summary.source,'expenses');
+   assert.ok(summary.wasSummary,'Summary must be captured before close');
+   assert.ok(summary.back,'Back control absent when opened from summary');
+   assert.equal(summary.page,'expenses');
+   assert.equal(summary.drawerOpen,true,'Summary drawer not reopened');
+   assert.equal(summary.draft,'2025-03-09','Unfinished summary date lost');
 
    const operations=await page.evaluate(()=>{
      document.getElementById('navTabOperations').click();
@@ -89,7 +154,7 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    });
    assert.equal(normal.page,'operations');
    assert.equal(normal.returnContext,null,'Bottom-navigation created a false drilldown');
-   console.log('UNIVERSAL_LEDGER_BACK',width,JSON.stringify({expense,budget,operations,normal}));
+   console.log('UNIVERSAL_LEDGER_BACK',width,JSON.stringify({expense,budget,requests,expected,summary,operations,normal}));
    assert.deepEqual(errors,[],'Application JavaScript errors');
    await context.close();
   }
