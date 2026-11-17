@@ -43150,6 +43150,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
 .home-design-insights p{margin:5px 0}
 .home-design-insights progress{width:100%;accent-color:#8b5cf6}
 </style>
+<link rel="stylesheet" href="./home-mobile-fit.css?v=202611172140">
 <script>
 (() => {
   function installHomeInterfaces() {
@@ -43265,7 +43266,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
         renderFirstReference();
         return;
       }
-      const cards = items.map(([id,icon,tone]) => {
+      const displayItems = design === 5 ? [...items.filter(([id]) => id !== 'voice'),items.find(([id]) => id === 'voice')] : items;
+      const cards = displayItems.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
         // Preserve all expense categories, including zero/missing-source categories.
@@ -43273,20 +43275,11 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
         const amount = source?.querySelector('.cat-amount-val')?.textContent.replace(/\s+/g,' ').trim() || '0.00 ' + getCurrencySymbol();
         const budget = source?.querySelector('.cat-budget-ceiling-text')?.textContent.trim() || 'لم تُحدَّد موازنة';
         const fill = Math.max(0, Math.min(100, parseFloat(source?.querySelector('.cat-budget-progress-fill')?.style.width) || 0));
-        return '<article class="home-design-card" style="--tone:'+tone+'"><button type="button" class="home-design-head" data-add="'+id+'"><strong>'+escapeHtml(name)+'</strong><span class="home-design-icon" aria-hidden="true">'+icon+'</span></button><button type="button" class="home-design-value" data-details="'+id+'"><bdi>'+escapeHtml(amount)+'</bdi><progress max="100" value="'+fill+'" aria-label="استخدام الموازنة"></progress><small>'+escapeHtml(budget)+'</small></button></article>';
+        const art = referenceArt[id] || [0,0];
+        return '<article class="home-design-card" style="--tone:'+tone+'"><button type="button" class="home-design-head" data-add="'+id+'"><strong>'+escapeHtml(name)+'</strong><span class="home-design-icon" style="--icon-x:'+art[0]+'%;--icon-y:'+art[1]+'%" aria-hidden="true">'+icon+'</span></button><button type="button" class="home-design-value" data-details="'+id+'"><bdi>'+escapeHtml(amount)+'</bdi><progress max="100" value="'+fill+'" aria-label="استخدام الموازنة"></progress><small>'+escapeHtml(budget)+'</small></button></article>';
       }).join('');
-      let insights = '';
-      if (design === 5) {
-        const txs = getFilteredTransactions().filter(tx => tx.type === 'expense' && tx.category !== 'transfer');
-        const sum = txs.reduce((total,tx) => total + (Number(tx.amount)||0),0);
-        const ceilings = getCategoryBudgetCeilings();
-        const budget = Object.values(ceilings).reduce((total,n) => total + (Number(n)||0),0);
-        const totals = {};
-        for (const tx of txs) totals[tx.category] = (totals[tx.category] || 0) + (Number(tx.amount)||0);
-        const top = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,3);
-        insights = '<div class="home-design-insights"><div><h3>مصروفات الفترة المختارة</h3><p>'+escapeHtml(formatMoney(sum))+'</p><h3>الموازنة الشهرية</h3><p>'+escapeHtml(formatMoney(budget))+'</p></div><div><h3>أعلى البنود صرفًا</h3>'+top.map(([id,n])=>'<p>'+escapeHtml(getCategoryObj(id,'expense').name)+' <bdi>'+escapeHtml(formatMoney(n))+'</bdi></p><progress max="'+Math.max(1,sum)+'" value="'+n+'"></progress>').join('')+'</div></div>';
-      }
-      host.innerHTML = insights + '<div class="home-design-grid">'+cards+'</div>';
+      // The image-reference icon grid intentionally does not add an extra insights panel.
+      host.innerHTML = '<div class="home-design-grid">'+cards+'</div>';
     }
     host.addEventListener('click',event => {
       const button = event.target.closest('button');
