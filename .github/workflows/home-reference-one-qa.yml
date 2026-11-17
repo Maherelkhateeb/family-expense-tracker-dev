@@ -6,6 +6,7 @@ on:
     paths:
       - index.html
       - home-reference-one.css
+      - home-mobile-fit.css
       - scripts/test-home-reference-one.cjs
       - scripts/test-home-layouts.cjs
       - .github/workflows/home-reference-one-qa.yml
