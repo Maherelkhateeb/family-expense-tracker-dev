@@ -271,3 +271,34 @@
 #viewBudgets #cmpAuditApp [data-tone="over"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:#DC2626}
 #viewBudgets #cmpAuditApp [data-tone="under"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:#16A34A}
 #viewBudgets .budget-spec{--bs-est:#2563EB;--bs-act:#0D9488;--bs-over:#DC2626;--bs-save:#16A34A}
+
+
+/* Keep actual and reference date selectors symmetrical on phone screens.
+   Suppress a redundant static preview only when an editable date-range control
+   is present in the same selector; never hide the date inputs themselves. */
+@media(max-width:599px){
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox {
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   align-items:stretch!important;
+   gap:6px!important;
+   padding:7px!important;
+ }
+ #viewBudgets #cmpPeriodsFilterBox > div {
+   min-width:0!important;
+   display:flex!important;
+   flex-direction:column!important;
+   justify-content:flex-start!important;
+   gap:4px!important;
+ }
+ #viewBudgets #cmpPeriodsFilterBox :is(input,select,.cmp-month-custom-range){
+   min-width:0!important;max-width:100%!important;box-sizing:border-box!important;
+ }
+ #viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range {
+   display:flex;flex-wrap:nowrap;align-items:center;gap:3px;
+ }
+ #viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range input {
+   flex:1 1 0;width:0;min-width:0;font-size:11px;padding:5px 2px;
+ }
+ #viewBudgets #cmpPeriodsFilterBox > div:has(.cmp-month-custom-range:not([hidden]))
+ .cmp-range-preview {display:none!important}
+}
