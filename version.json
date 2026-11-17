@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.12",
-  "build": "202611171745",
-  "buildId": 202611171745,
-  "updated": "2026-11-17T17:45:00+03:00",
-  "notes": "Universal operations back button returns to original page, scroll, layout, filters and unfinished form drafts."
+  "version": "v5.4.13",
+  "build": "202611171820",
+  "buildId": 202611171820,
+  "updated": "2026-11-17T16:20:00+03:00",
+  "notes": "Universal operations back restores source view, filters, scroll, budget comparison, summary drawer, request and debt drafts; verified 360/390/430 phone widths."
 }
