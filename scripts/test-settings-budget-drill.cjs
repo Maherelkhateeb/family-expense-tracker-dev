@@ -320,7 +320,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.locator('#customDatePickerConfirmButton').click();
    assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'2025-04-03');
    assert.equal(await page.locator('#cmpEstimTo').inputValue(),'2025-04-07');
-   assert.equal((await page.locator('.cmp-summary-reference strong').innerText()).trim(),'٢٥٠');
+   assert.equal((await page.locator('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').innerText()).trim(),'٢٥٠');
    assert.match(await page.locator('#cmpEstimCustomRangeLabel').innerText(),/2025-04-03.*2025-04-07/);
    assert.ok(!(await page.locator('#cmpEstimFrom').isVisible()));
    assert.ok(!(await page.locator('#cmpEstimTo').isVisible()));
@@ -345,7 +345,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      }));
      console.log('COMPARE_EXTRA '+JSON.stringify(compare));
      // The comparison tab can be hidden in layouts without its dedicated table.
-     if(await page.locator('#cmpTableBody').count()){
+     if(await page.locator('.budget-spec .bs-table tbody tr').count()){
        assert.equal(compare.kpis,9,'Comparison must provide nine extra metrics');
      }
    }
@@ -396,7 +396,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    await page.locator('#cmpDataMode').click();
    await page.waitForFunction(()=>document.getElementById('cmpDataMode').getAttribute('aria-pressed')==='true');
    assert.equal((await page.locator('.cmp-summary-primary strong').innerText()).trim(),'١٢٬٩٠٠');
-   assert.equal((await page.locator('.cmp-summary-reference strong').innerText()).trim(),'١٢٬٠٥٠');
+   assert.equal((await page.locator('#cmpSummary .cmp-unified-kpi:nth-child(2) strong').innerText()).trim(),'١٢٬٠٥٠');
    assert.match(await page.locator('#cmpSummary').innerText(),/\+٨٥٠/);
    const check=await page.locator('#cmpTableBody tr').evaluateAll(rows=>Object.fromEntries(rows.map(row=>
      [row.dataset.budgetCategory,[...row.querySelectorAll('td')].map((cell,i)=>i<2?cell.querySelector('bdi').textContent.trim():cell.textContent.trim())])));
