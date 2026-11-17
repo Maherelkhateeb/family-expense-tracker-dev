@@ -39,7 +39,7 @@
     style.textContent=`
 #panelBudgetComparisons{padding:10px!important;background:transparent!important;border:0!important;box-shadow:none!important;max-width:100%;min-width:0;overflow-x:clip}
 .fbc{--fbc-edge:rgba(127,137,153,.32);--fbc-bg:rgba(127,137,153,.055);--fbc-muted:var(--text-muted,#8492a5);direction:rtl;color:inherit;font-size:12px;line-height:1.5;width:100%;min-width:0;max-width:100%;overflow-wrap:anywhere;box-sizing:border-box}
-.fbc *{box-sizing:border-box}.fbc h2,.fbc h3,.fbc h4{font-weight:800;color:inherit;margin:0 0 6px}.fbc h2{font-size:17px}.fbc h3{font-size:14px}.fbc p{margin:4px 0 10px}.fbc small{font-size:11px}.fbc-intro{margin-bottom:10px}.fbc-muted{color:var(--fbc-muted)}
+.fbc *{box-sizing:border-box}.fbc h2,.fbc h3,.fbc h4{font-weight:800;color:inherit;margin:0 0 6px}.fbc h2{font-size:17px}.fbc h3{font-size:14px}.fbc p{margin:4px 0 10px}.fbc small{font-size:12px}.fbc-intro{margin-bottom:10px}.fbc-muted{color:var(--fbc-muted)}
 .fbc-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:10px;border:1px solid var(--fbc-edge);border-radius:12px;background:var(--fbc-bg);margin-bottom:10px}
 .fbc-controls label{display:flex;flex-direction:column;gap:3px;min-width:0;font-weight:700}.fbc-controls input,.fbc-controls select{min-width:0;width:100%;font-family:inherit;min-height:34px;padding:5px;border-radius:8px;border:1px solid var(--fbc-edge);color:inherit;background:var(--fbc-bg);font-size:13px}
 .fbc-controls input[type="checkbox"]{width:auto;min-height:auto}.fbc-controls .fbc-switch{display:flex;align-items:center;flex-direction:row;gap:7px}
@@ -69,15 +69,15 @@
 .fbc-bars-center:after{position:absolute;content:"";width:1px;background:currentColor;opacity:.6;top:0;bottom:0;left:50%}
 .fbc-bar-left{display:flex;justify-content:flex-end}.fbc-bar-right{display:flex;justify-content:flex-start}
 .fbc-bars-center i{display:block;height:100%;max-width:100%;font-style:normal}.fbc-rowbar-value{display:block;direction:ltr;text-align:left;font-weight:700;font-variant-numeric:tabular-nums}
-.fbc-bullet{height:17px;position:relative;border:1px solid var(--fbc-edge);background:linear-gradient(to right,rgba(136,135,128,.14) 0%,rgba(136,135,128,.14) var(--target),rgba(226,75,74,.12) var(--target),rgba(226,75,74,.12) 100%);border-radius:2px}
-.fbc-bullet .fbc-bullet-fill{position:absolute;left:0;top:4px;bottom:4px;background:${COLORS.actual}}
+.fbc-bullet{height:17px;position:relative;border:1px solid var(--fbc-edge);background:rgba(226,75,74,.12);border-radius:2px}
+.fbc-bullet:before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--target);background:rgba(136,135,128,.14)}.fbc-bullet .fbc-bullet-fill{position:absolute;left:0;top:4px;bottom:4px;background:${COLORS.actual}}
 .fbc-bullet .fbc-bullet-target{position:absolute;left:var(--target);top:-2px;bottom:-2px;width:2px;background:currentColor}
 .fbc-heatmap-desktop{overflow-x:auto;max-width:100%}.fbc-heatmap-desktop table{width:100%;border-collapse:separate;border-spacing:3px;min-width:0}
 .fbc-heatmap-desktop td,.fbc-heatmap-desktop th{text-align:center;padding:4px 2px;font-size:12px}.fbc-heatmap-desktop th:first-child{text-align:right;max-width:90px;overflow-wrap:anywhere}
 .fbc-heat-cell{border-radius:3px;font-variant-numeric:tabular-nums;font-weight:800;min-width:29px}
 .fbc-heatmap-mobile{display:none}.fbc-heat-month{padding:8px;border:1px solid var(--fbc-edge);border-radius:8px;margin-bottom:7px}
 .fbc-heat-month>strong{display:block;margin-bottom:6px}.fbc-heat-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.fbc-heat-tiles div{padding:4px;border-radius:5px;display:flex;justify-content:space-between;gap:2px}
-.fbc-stack{display:flex;width:100%;height:28px;border-radius:3px;overflow:hidden;direction:ltr;border:1px solid var(--fbc-edge);margin:3px 0 11px}.fbc-stack span{height:100%;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:800;min-width:0}
+.fbc-stack{display:flex;width:100%;height:28px;border-radius:3px;overflow:hidden;direction:ltr;border:1px solid var(--fbc-edge);margin:3px 0 11px}.fbc-stack span{height:100%;display:flex;align-items:center;justify-content:center;font-size:12px;color:white;font-weight:800;min-width:0}
 .fbc-stack-key{display:flex;flex-wrap:wrap;gap:6px}.fbc-stack-key span:before{content:"";display:inline-block;width:9px;height:9px;margin-left:4px;background:var(--swatch)}
 .fbc-raw table{width:100%;border-collapse:collapse}.fbc-raw th,.fbc-raw td{border-bottom:1px solid var(--fbc-edge);text-align:right;padding:4px;font-size:12px}.fbc-raw{max-width:100%;overflow-wrap:anywhere}
 .fbc-chart-grid{display:grid;grid-template-columns:1fr;gap:0}.fbc-sep{border-top:1px dashed var(--fbc-edge);margin:10px 0}.fbc-error{border:1px solid ${COLORS.over};padding:8px;border-radius:7px}
@@ -120,7 +120,7 @@
         cell.est+=num(item.amount===undefined?item.estimated:item.amount);
         cell.kind=item.item_type||item.itemType||(item.isFixed===true?"fixed":cell.kind);
         cell.cause=item.cause||item.varianceCause||cell.cause;
-        known.set(id,String(item.title||known.get(id)||id));
+        if(!known.has(id))known.set(id,String(item.title||id));
       }
     }
     for(const tx of (Array.isArray(st.transactions)?st.transactions:[])){
@@ -153,11 +153,13 @@
       r.status=r.percentage===null?"غير مخطط":r.percentage>tolerance?"تجاوز":r.percentage < -tolerance?"توفير":"ضمن الحد";
       r.shareEstimated=totalEstimated?r.estimated/totalEstimated*100:0;r.shareActual=totalActual?r.actual/totalActual*100:0;
       const rYtd=r.monthly.filter(x=>x.month<=nowMonth).reduce((s,x)=>s+x.act,0);
+      r.ytdVariance=rYtd-r.monthly.filter(x=>x.month<=nowMonth).reduce((s,x)=>s+x.est,0);
+      r.remaining=r.estimated-rYtd;
       r.forecast=elapsed?rYtd+(rYtd/elapsed)*remainingMonths:0;
     }
     const variance=totalActual-totalEstimated;
     return {rows,totals,totalEstimated,totalActual,variance,percentage:totalEstimated?variance/totalEstimated*100:null,
-      remaining:totalEstimated-totalActual,forecast,elapsed,remainingMonths,referenceHeatmap:data.referenceHeatmap};
+      remaining:totalEstimated-ytdActual,forecast,elapsed,remainingMonths,referenceHeatmap:data.referenceHeatmap};
   }
   function statusColor(s){return s==="تجاوز"?COLORS.over:s==="توفير"?COLORS.save:"inherit";}
   function cellsLine(r){return `<tr><td>${esc(r.name)}</td><td>${bidi(n0(r.estimated))}</td><td>${bidi(n0(r.actual))}</td><td style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</td></tr>`;}
@@ -174,19 +176,19 @@
   function reportTable(d){
     const headings=["البند","التقديري","الفعلي","فرق المبلغ","الانحراف","الحالة","حصة ت / ف","YTD","المتبقي","التوقع","النوع","السبب"];
     const row=r=>{
-      return `<tr><td>${esc(r.name)}</td><td>${bidi(n0(r.estimated))}</td><td>${bidi(n0(r.actual))}</td>
+      return `<tr><td>${r.id?`<button type="button" data-fbc-open="${esc(r.id)}">${esc(r.name)}</button>`:esc(r.name)}</td><td>${bidi(n0(r.estimated))}</td><td>${bidi(n0(r.actual))}</td>
 <td style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</td><td>${bidi(pct(r.percentage,1))}</td>
 <td style="color:${statusColor(r.status)}">${esc(r.status)}</td><td>${bidi(n1(r.shareEstimated)+"% / "+n1(r.shareActual)+"%")}</td>
-<td>${bidi(sign(r.variance))}</td><td>${bidi(n0(r.estimated-r.actual))}</td><td>${bidi(n0(r.forecast))}</td><td>${typeName(r.kind)}</td><td>${causeName(r.cause)}</td></tr>`;
+<td>${bidi(sign(r.ytdVariance===undefined?r.variance:r.ytdVariance))}</td><td>${bidi(n0(r.remaining===undefined?r.estimated-r.actual:r.remaining))}</td><td>${bidi(n0(r.forecast))}</td><td>${typeName(r.kind)}</td><td>${causeName(r.cause)}</td></tr>`;
     };
     const total={name:"إجمالي الفترة",estimated:d.totalEstimated,actual:d.totalActual,variance:d.variance,
       percentage:d.percentage,status:d.percentage===null?"غير مخطط":d.percentage>ui.tolerance?"تجاوز":d.percentage < -ui.tolerance?"توفير":"ضمن الحد",
-      shareEstimated:100,shareActual:100,forecast:d.forecast,kind:"",cause:""};
+      shareEstimated:100,shareActual:100,forecast:d.forecast,ytdVariance:d.totals.filter(t=>t.month<=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,"0")].join("-")).reduce((a,t)=>a+t.actual-t.estimated,0),remaining:d.remaining,kind:"",cause:""};
     const desktop=`<div class="fbc-table-box"><table class="fbc-table"><thead><tr>${headings.map(h=>"<th>"+h+"</th>").join("")}</tr></thead><tbody>${d.rows.map(row).join("")}</tbody><tfoot>${row(total)}</tfoot></table></div>`;
-    const mobile=`<div class="fbc-mobile-items">${d.rows.map(r=>`<div class="fbc-mobile-item"><div class="fbc-mobile-title"><span>${esc(r.name)}</span><span style="color:${statusColor(r.status)}">${esc(r.status)}</span></div>
+    const mobile=`<div class="fbc-mobile-items">${d.rows.map(r=>`<div class="fbc-mobile-item"><div class="fbc-mobile-title"><button type="button" data-fbc-open="${esc(r.id)}">${esc(r.name)}</button><span style="color:${statusColor(r.status)}">${esc(r.status)}</span></div>
 <div class="fbc-mobile-stat"><span>التقديري<b>${bidi(n0(r.estimated))}</b></span><span>الفعلي<b>${bidi(n0(r.actual))}</b></span><span>الفرق<b style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</b></span></div>
-<div class="fbc-mobile-stat"><span>الانحراف<b>${bidi(pct(r.percentage,1))}</b></span><span>المتبقي<b>${bidi(n0(r.estimated-r.actual))}</b></span><span>التوقع<b>${bidi(n0(r.forecast))}</b></span></div>
-<details><summary>الحصص والسبب والنوع</summary><p>حصة التقديري: ${bidi(n1(r.shareEstimated)+"%")}، حصة الفعلي: ${bidi(n1(r.shareActual)+"%")}، فرق الفترة التراكمي: ${bidi(sign(r.variance))}</p><p>نوع البند: ${typeName(r.kind)}، سبب الانحراف: ${causeName(r.cause)}</p>${r.kind==="fixed"&&r.variance!==0?"<p>تنبيه: تقدير البند الثابت يحتاج مراجعة.</p>":r.kind==="variable"&&r.variance!==0?"<p>انحراف بند متغير قابل للتحكم.</p>":""}</details></div>`).join("")}
+<div class="fbc-mobile-stat"><span>الانحراف<b>${bidi(pct(r.percentage,1))}</b></span><span>المتبقي<b>${bidi(n0(r.remaining))}</b></span><span>التوقع<b>${bidi(n0(r.forecast))}</b></span></div>
+<details><summary>الحصص والسبب والنوع</summary><p>حصة التقديري: ${bidi(n1(r.shareEstimated)+"%")}، حصة الفعلي: ${bidi(n1(r.shareActual)+"%")}، فرق الفترة التراكمي: ${bidi(sign(r.ytdVariance))}</p><p>نوع البند: ${typeName(r.kind)}، سبب الانحراف: ${causeName(r.cause)}</p>${r.kind==="fixed"&&r.variance!==0?"<p>تنبيه: تقدير البند الثابت يحتاج مراجعة.</p>":r.kind==="variable"&&r.variance!==0?"<p>انحراف بند متغير قابل للتحكم.</p>":""}</details></div>`).join("")}
 <div class="fbc-mobile-item"><div class="fbc-mobile-title">إجمالي الفترة <b style="color:${barColor(d.variance)}">${bidi(sign(d.variance))} ${esc(currency())}</b></div><div class="fbc-mobile-stat"><span>التقديري<b>${bidi(n0(d.totalEstimated))}</b></span><span>الفعلي<b>${bidi(n0(d.totalActual))}</b></span><span>الانحراف<b>${bidi(pct(d.percentage,1))}</b></span></div></div></div>`;
     return chartCard("جدول الفروقات التفصيلي","الفرق = الفعلي − التقديري. لا تُخفى البنود الصفرية؛ جميع النسب محسوبة من الإجماليات.",desktop+mobile);
   }
@@ -350,6 +352,15 @@ ${ui.advanced?`<div class="fbc-chart-grid">${bulletChart(d)}${svgCum(d)}${heatma
       if(a==="sample"){ui.sample=t.checked;if(!ui.sample)ui.end=current;}
       render(target,window.state||appState);
     });document.addEventListener("click",event=>{
+      const open=event.target.closest?.("[data-fbc-open]");
+      if(open&&target?.contains(open)){
+        const id=open.dataset.fbcOpen;
+        if(typeof window.openOperationsFiltered==="function"){
+          const endDate=new Date(Date.UTC(Number(ui.end.slice(0,4)),Number(ui.end.slice(5,7)),0)).toISOString().slice(0,10);
+          window.openOperationsFiltered({category:id,type:"expense",dateFrom:monthsFor(ui.end,ui.sample?6:ui.span)[0]+"-01",dateTo:endDate,resetFilters:true,returnTitle:"مقارنات الميزانية"});
+        }
+        return;
+      }
       const btn=event.target.closest?.("[data-fbc=toggle]");if(!btn||!target?.contains(btn))return;
       ui.advanced=!ui.advanced;render(target,window.state||appState);
     });}
