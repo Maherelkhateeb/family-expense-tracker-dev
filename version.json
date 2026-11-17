@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.6",
-  "build": "202611171430",
-  "buildId": 202611171430,
-  "updated": "2026-11-17T14:30:00+03:00",
-  "notes": "Ranked expense comparison, paired vertical columns, and category changes."
+  "version": "v5.4.7",
+  "build": "202611171450",
+  "buildId": 202611171450,
+  "updated": "2026-11-17T14:50:00+03:00",
+  "notes": "First reference-based alternative expense home screen."
 }

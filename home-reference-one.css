@@ -1,0 +1,356 @@
+/* First reference: 940px artwork scaled to the available phone width. */
+.home-reference-one {
+  container-type: inline-size;
+  --reference-ink: #111422;
+  --reference-violet: #6411a9;
+}
+
+body:has(.home-reference-one.active) :is(.header-brand-row button > i,#avatarsContainer #avatarImgAllFamily),
+.home-reference-one :is(.period-filter-pill i,.hero-wallet-icon-badge i,#iconBalancePrivacy.fa-eye,.flow-icon-badge i,.executive-quick-tools-strip i) {
+  display: inline-block !important;
+  flex: 0 0 auto;
+  width: var(--ref-icon-size,12px);
+  height: var(--ref-icon-size,12px);
+  background: url('./assets/home-reference-one-controls.webp') var(--ref-icon-x,0%) var(--ref-icon-y,0%) / 1000% 200% no-repeat !important;
+  font-size: 0 !important;
+}
+body:has(.home-reference-one.active) :is(.header-brand-row button > i,#avatarImgAllFamily)::before,
+.home-reference-one :is(.period-filter-pill i,.hero-wallet-icon-badge i,#iconBalancePrivacy.fa-eye,.flow-icon-badge i,.executive-quick-tools-strip i)::before {
+  content: none !important;
+}
+body:has(.home-reference-one.active) #btnHeaderMasterSync > i { --ref-icon-x: 11.1111%; }
+body:has(.home-reference-one.active) #btnGlobalSearch > i { --ref-icon-x: 22.2222%; }
+body:has(.home-reference-one.active) #btnHeaderTasksTop > i { --ref-icon-x: 33.3333%; }
+body:has(.home-reference-one.active) #btnNotificationsBell > i { --ref-icon-x: 44.4444%; }
+body:has(.home-reference-one.active) #avatarImgAllFamily { --ref-icon-x: 100%; --ref-icon-y: 100%; --ref-icon-size: 20px; }
+body:has(.home-reference-one.active) #avatarsContainer .avatar-card:first-child .avatar-bubble {
+  background: linear-gradient(#f8f7ff,#ddd5fa) !important;
+}
+.home-reference-one #pillPeriodToday i { --ref-icon-x: 55.5556%; }
+.home-reference-one #pillPeriodWeek i { --ref-icon-x: 66.6667%; }
+.home-reference-one #pillPeriodMonth i { --ref-icon-x: 77.7778%; }
+.home-reference-one #pillPeriodAll i { --ref-icon-x: 88.8889%; }
+.home-reference-one #pillPeriodCustom i { --ref-icon-x: 100%; }
+.home-reference-one :is(.hero-wallet-icon-badge,#iconBalancePrivacy.fa-eye,.flow-icon-badge,.executive-quick-tools-strip) { --ref-icon-y: 100%; }
+.home-reference-one #iconBalancePrivacy.fa-eye { --ref-icon-x: 11.1111%; }
+.home-reference-one .inflow-badge i { --ref-icon-x: 22.2222%; }
+.home-reference-one .outflow-badge i { --ref-icon-x: 33.3333%; }
+.home-reference-one #btnHomeDesign i { --ref-icon-x: 44.4444%; --ref-icon-size: 17px; }
+.home-reference-one #btnOpenGold i { --ref-icon-x: 55.5556%; }
+.home-reference-one #walletSelectCluster > i { --ref-icon-x: 66.6667%; }
+.home-reference-one #btnToggleCurrency i { --ref-icon-x: 77.7778%; }
+.home-reference-one #btnOpenSummaryQuick i { --ref-icon-x: 88.8889%; }
+
+body:has(#viewExpenses.home-reference-one.active) #appFrame {
+  background: linear-gradient(150deg, #d8f7fa, #e9fafc 65%, #e3f6fb) !important;
+  border-color: #bfdafa !important;
+}
+
+body:has(.home-reference-one.active) #appFrame #appScrollBody #viewExpenses {
+  background: linear-gradient(150deg, #d8f7fa, #e9fafc 65%, #e3f6fb) !important;
+}
+
+body:has(.home-reference-one.active) #appFrame .app-header {
+  background: linear-gradient(#fff, #f4f8fb) !important;
+  border-color: #d2deef !important;
+  gap: 4px !important;
+  padding-block: 4px 3px !important;
+}
+
+body:has(.home-reference-one.active) #appFrame .header-brand-row :is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
+  border-radius: 100px !important;
+  font-family: Tahoma, Arial, sans-serif !important;
+  font-weight: 900 !important;
+  min-width: 0;
+  height: clamp(22px,6.1vw,34px) !important;
+  min-height: 0 !important;
+}
+
+body:has(.home-reference-one.active) #btnNotificationsBell {
+  background: linear-gradient(#fff9e5, #ffedcb) !important;
+  color: #a95400 !important;
+  border-color: #f4aa1b !important;
+}
+
+body:has(.home-reference-one.active) #btnHeaderTasksTop {
+  background: linear-gradient(#f6eaff, #e6d5f9) !important;
+  color: #6516a9 !important;
+  border-color: #b469ee !important;
+}
+
+body:has(.home-reference-one.active) :is(#btnGlobalSearch, #btnHeaderMasterSync) {
+  background: linear-gradient(#e6f8fc, #c6eef9) !important;
+  color: #006fbd !important;
+  border-color: #76caff !important;
+}
+
+body:has(.home-reference-one.active) #topDriveSyncStatusText { color: #078533 !important; }
+body:has(.home-reference-one.active) #btnMainSettings { background: #101d38 !important; }
+body:has(.home-reference-one.active) .header-brand-row button > i { color: #7619bc !important; }
+body:has(.home-reference-one.active) #appFrame #avatarsContainer .avatar-bubble {
+  border-color: #fff !important;
+  box-shadow: 0 2px 5px #344e7655 !important;
+  width: clamp(23px,7.7vw,38px) !important;
+  height: clamp(23px,7.7vw,38px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+}
+body:has(.home-reference-one.active) .avatar-name-label {
+  color: #111a32 !important;
+  font-family: Tahoma, Arial, sans-serif !important;
+  font-weight: 900 !important;
+  text-shadow: none !important;
+}
+
+#viewExpenses.home-reference-one .period-selector-top-strip { margin: 2px 2.1cqi !important; padding: 0 !important; }
+#viewExpenses.home-reference-one .period-selector-top-strip .period-buttons-group {
+  background: linear-gradient(160deg, #233145, #0b1428) !important;
+  border-color: #192438 !important;
+  border-radius: 12px !important;
+  padding: 2px !important;
+}
+
+#viewExpenses.home-reference-one .period-filter-pill {
+  height: 7.45cqi !important;
+  min-height: 23px !important;
+  color: #bdd9eb !important;
+  font: 900 clamp(10px, 2.9cqi, 15px)/1 Tahoma, Arial, sans-serif !important;
+}
+
+.home-reference-one .period-filter-pill i { color: #ab47ed !important; }
+.home-reference-one .period-filter-pill.active {
+  background: linear-gradient(100deg, #00c3f6, #009dde) !important;
+  color: #fff !important;
+  box-shadow: 0 0 8px #01beef88, inset 0 0 5px #b7f5ff !important;
+}
+
+#appFrame #viewExpenses.home-reference-one #topKpiThreeStrip {
+  min-height: 15.5cqi !important;
+  margin: 1.2cqi 2.7cqi !important;
+  padding: .5cqi 1.35cqi !important;
+  background: linear-gradient(115deg, #f9fcff, #f6f7fb) !important;
+  border: 1px solid #d2dfec !important;
+  border-radius: 3.5cqi !important;
+  box-shadow: 0 3px 5px #4b849d36 !important;
+}
+
+.home-reference-one .cockpit-hero-side { flex: 1.25 1 0 !important; min-width: 0; }
+#viewExpenses.home-reference-one .cockpit-flow-side {
+  flex: 1 1 0 !important;
+  min-width: 0;
+  margin-inline: 0 !important;
+  padding: 0 !important;
+  gap: .85cqi !important;
+}
+.home-reference-one .cockpit-divider { background: #acb9d0 !important; }
+.home-reference-one .hero-title-text {
+  color: #141a30 !important;
+  font: 900 clamp(9px, 2.6cqi, 15px)/1.2 Tahoma, Arial, sans-serif !important;
+  text-shadow: none !important;
+}
+
+.home-reference-one .hero-wallet-icon-badge,
+.home-reference-one .cockpit-privacy-btn,
+.home-reference-one .flow-icon-badge { color: #7817b6 !important; }
+.home-reference-one #topCardBalance,
+.home-reference-one #topCardBalance :is(.flow-number-val, .amount-number, .tx-number-val) {
+  color: #0081cd !important;
+  font-size: clamp(14px, 5.55cqi, 35px) !important;
+  text-shadow: none !important;
+  overflow-wrap: anywhere;
+}
+
+#viewExpenses.home-reference-one .cockpit-flow-side .cockpit-flow-pill {
+  height: 6.5cqi !important;
+  min-height: 21px !important;
+  padding: 0 1cqi !important;
+  border-radius: 2.5cqi !important;
+  gap: .7cqi !important;
+}
+.home-reference-one .cockpit-flow-pill.inflow {
+  background: linear-gradient(105deg, #fbfff9, #d9fbe8) !important;
+  border-color: #62dc9b !important;
+}
+.home-reference-one .cockpit-flow-pill.outflow {
+  background: linear-gradient(105deg, #fffafa, #ffe2e2) !important;
+  border-color: #ff7882 !important;
+}
+.home-reference-one .inflow-color { color: #008b16 !important; }
+.home-reference-one .outflow-color { color: #c90806 !important; }
+.home-reference-one .cockpit-flow-side .inflow :is(.tx-number-val,.tx-sign-symbol) { color: #008b16 !important; }
+.home-reference-one .cockpit-flow-side .outflow :is(.tx-number-val,.tx-sign-symbol) { color: #c90806 !important; }
+.home-reference-one .flow-amount { font-size: clamp(10px, 3.2cqi, 20px) !important; }
+.home-reference-one .flow-title { font: 900 clamp(7px, 2.15cqi, 13px)/1.2 Tahoma, Arial, sans-serif !important; }
+.home-reference-one .flow-icon-badge { width: 4cqi !important; height: 4cqi !important; }
+
+#viewExpenses.home-reference-one .executive-quick-tools-strip {
+  display: grid !important;
+  grid-template-columns: 9fr 18fr 27fr 15fr 19fr;
+  gap: 1.6cqi !important;
+  width: auto !important;
+  margin: 0 2.45cqi 1.85cqi !important;
+}
+
+#viewExpenses.home-reference-one .executive-quick-tools-strip > * {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  height: 6.9cqi !important;
+  min-height: 26px !important;
+  padding: 0 1cqi !important;
+  justify-content: center !important;
+  gap: .8cqi !important;
+  border-radius: 2.2cqi !important;
+  font: 900 clamp(8px, 2.5cqi, 15px)/1 Tahoma, Arial, sans-serif !important;
+  box-shadow: 0 2px 3px #44789b44 !important;
+}
+
+.home-reference-one :is(#btnOpenGold,#btnToggleCurrency) {
+  background: linear-gradient(#fffdf4, #fff4d0) !important;
+  border-color: #ffae15 !important;
+  color: #a44e00 !important;
+}
+.home-reference-one #walletSelectCluster {
+  background: linear-gradient(#fff, #eff6fb) !important;
+  border-color: #a9bddb !important;
+  color: #172342 !important;
+}
+.home-reference-one #activeWalletSelect { font: inherit !important; color: inherit !important; text-overflow: ellipsis; }
+.home-reference-one :is(#btnHomeDesign,#btnOpenSummaryQuick) {
+  background: linear-gradient(#f5feff, #d2f4ff) !important;
+  border-color: #52bdf8 !important;
+  color: #0078bf !important;
+}
+.home-reference-one .executive-quick-tools-strip i { color: var(--reference-violet) !important; }
+
+.home-reference-one #homeInterfaces { margin: 0 2.45cqi 7.5cqi; }
+.reference-one-grid {
+  display: grid;
+  direction: rtl;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 1.5cqi;
+  color: var(--reference-ink);
+  font-family: Arial, Tahoma, sans-serif;
+}
+.reference-one-card {
+  --border: #ffba0a;
+  --tint: #fff3cb;
+  position: relative;
+  display: grid;
+  grid-template-rows: 36% 64%;
+  min-width: 0;
+  min-height: 17.45cqi;
+  border: max(1px,.31cqi) solid var(--border);
+  border-radius: 4cqi;
+  background: radial-gradient(ellipse at left center,var(--tint),transparent 63%),
+    linear-gradient(var(--tint) 35%,#fffffff2 37%,#f8fbfce8 86%,var(--tint));
+  box-shadow: inset 0 0 0 1px #fff, 0 2px 3px #31465840;
+  overflow: hidden;
+}
+.reference-one-card[data-ref-category="bills"] { --border: #ff6300; --tint: #ffe5da; }
+.reference-one-card:is([data-ref-category="food"],[data-ref-category="other"]) { --border: #00c447; --tint: #d6fae7; }
+.reference-one-card[data-ref-category="house"] { --border: #8b20ef; --tint: #eee2ff; }
+.reference-one-card:is([data-ref-category="education"],[data-ref-category="transport"]) { --border: #008dff; --tint: #d2eefe; }
+.reference-one-card[data-ref-category="health"] { --border: #ff202b; --tint: #ffdddd; }
+.reference-one-card[data-ref-category="clothes"] { --border: #ff2aa1; --tint: #ffdef0; }
+.reference-one-card[data-ref-category="voice"] {
+  --border: #9a15ff;
+  --tint: #f1ddff;
+  grid-template-rows: auto;
+  background: linear-gradient(130deg, #f6e9ff, #ebd6fa, #fcf0ff);
+}
+
+.reference-one-card button {
+  display: grid;
+  min-width: 0;
+  align-content: center;
+  padding: .15cqi 1.55cqi .15cqi 14.7cqi;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+.reference-one-card button:focus-visible { outline: 2px solid #52108c; outline-offset: -3px; }
+.reference-one-card button strong {
+  font: 900 clamp(10px, 3.25cqi, 20px)/1.12 Arial, Tahoma, sans-serif !important;
+}
+.reference-one-icon {
+  pointer-events: none;
+  position: absolute;
+  left: 2.25cqi;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12.2cqi;
+  aspect-ratio: 1;
+  background: url('./assets/home-reference-one.webp') var(--icon-x) var(--icon-y) / 500% 200% no-repeat;
+}
+.reference-one-amount {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 .6cqi;
+  font: 900 clamp(10px,3.1cqi,20px)/1.12 Arial,sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.reference-one-card[data-spent="true"] .reference-one-amount { color: #c70c09; }
+.reference-one-details { gap: .65cqi; }
+.reference-one-details progress {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: max(2px,.52cqi);
+  border: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #c6cbd2;
+}
+.reference-one-details progress::-webkit-progress-bar { background: #c6cbd2; }
+.reference-one-details progress::-webkit-progress-value { background: #08a32b; border-radius: 8px; }
+.reference-one-details progress::-moz-progress-bar { background: #08a32b; border-radius: 8px; }
+[data-exceeded="true"] progress::-webkit-progress-value { background: #dc1926; }
+[data-exceeded="true"] progress::-moz-progress-bar { background: #dc1926; }
+.reference-one-details small { font-size: clamp(7px,2.04cqi,13px); font-weight: 900; line-height: 1.17; }
+.reference-one-wave {
+  display: flex;
+  height: 4.5cqi;
+  align-items: center;
+  justify-content: center;
+  gap: .47cqi;
+  margin-top: 1.2cqi;
+}
+.reference-one-wave i {
+  width: .42cqi;
+  height: calc(var(--wave-height) * .24cqi);
+  border-radius: 4px;
+  background: #9014f6;
+}
+body:has(.home-reference-one.active) #btnVoiceAssistantFab.is-listening,
+body:has(.home-reference-one.active) #btnVoiceAssistantFab.is-processing { visibility: visible; }
+body:has(.home-reference-one.active) :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)) {
+  visibility: hidden;
+}
+body:has(.home-reference-one.active) #appBottomNav {
+  background: linear-gradient(#fff,#f4faff) !important;
+  border-color: #d5e5f0 !important;
+  backdrop-filter: none !important;
+  box-shadow: 0 -2px 8px #517baa23 !important;
+}
+body:has(.home-reference-one.active) #appBottomNav .nav-tab-item {
+  color: #202b52 !important;
+  text-shadow: none !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+body:has(.home-reference-one.active) #appBottomNav .nav-tab-item :is(svg,svg *,span) {
+  color: #63379d !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+body:has(.home-reference-one.active) #appBottomNav .nav-tab-item svg * { stroke: #683ba2 !important; }
+body:has(.home-reference-one.active) #appBottomNav #navTabExpenses.active {
+  background: linear-gradient(#eefbff,#d8f6ff) !important;
+  border-color: #119cff !important;
+}

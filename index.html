@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.6';
-    var APP_BUILD_ID = 202611171430;
+    var APP_VERSION = 'v5.4.7';
+    var APP_BUILD_ID = 202611171450;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171430">
-  <script src="./appearance-compact.js?v=202611171430" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171430">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171450">
+  <script src="./appearance-compact.js?v=202611171450" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171450">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171430"></script>
+  <script src="./budget-audit-engine.js?v=202611171450"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.6</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.7</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43099,6 +43099,7 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
+<link rel="stylesheet" href="./home-reference-one.css?v=202611171450">
 <style>
 #btnHomeDesign{order:-1;flex:none;width:36px;height:38px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
@@ -43141,9 +43142,11 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     const original = document.getElementById('catGrid');
     const gold = document.getElementById('btnOpenGold');
     if (!original || !gold) return;
+    const expensePage = document.getElementById('viewExpenses');
     const preferenceKey = 'family_monefy_expense_home_layout';
     let design = 0;
     try { design = Math.max(0, Math.min(5, Number.parseInt(localStorage.getItem(preferenceKey), 10) || 0)); } catch {}
+    if (new URLSearchParams(location.search).get('homeLayout') === 'reference-1') design = 1;
     const host = document.createElement('section');
     host.id = 'homeInterfaces';
     original.after(host);
@@ -43164,8 +43167,45 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       ['house','🛋️','#8b5cf6'],['education','📚','#3b82f6'],['transport','🚗','#0284c7'],
       ['health','💊','#ef4444'],['other','🎁','#14b8a6'],['voice','🎙','#a855f7'],['clothes','👔','#ec4899']
     ];
+    // Row order and icon positions follow the first supplied reference.
+    const referenceCategories = ['daily', 'bills', 'food', 'house', 'transport',
+      'education', 'other', 'health', 'voice', 'clothes'];
+    let referenceCardMarkup = '';
+    function renderFirstReference() {
+      const cards = referenceCategories.map((id, index) => {
+        const icon = '<i class="reference-one-icon" aria-hidden="true" style="--icon-x:' +
+          (index % 5 * 25) + '%;--icon-y:' + (index < 5 ? 0 : 100) + '%"></i>';
+        if (id === 'voice') {
+          const waveform = [2,4,3,7,5,11,14,9,5,12,8,18,12,7,10,4,8,5,3,4,2];
+          return '<article class="reference-one-card" data-ref-category="voice"><button type="button" data-voice>' +
+            icon + '<strong>إضافة صوتية<br>للمصروفات</strong><span class="reference-one-wave" aria-hidden="true">' +
+            waveform.map(height => '<i style="--wave-height:' + height + '"></i>').join('') + '</span></button></article>';
+        }
+        const source = original.querySelector('[data-cat-id="' + id + '"]');
+        const name = id === 'other' ? 'أخرى ومشتريات' : source?.querySelector('.cat-label-text')?.textContent.trim() || getCategoryObj(id).name;
+        const amount = source?.querySelector('.cat-number-val')?.textContent.trim() || '0.00';
+        const currency = source?.querySelector('.cat-currency-label')?.textContent.trim() || getCurrencySymbol();
+        const hasSpent = Boolean(source?.querySelector('.cat-amount-sign'));
+        const budget = source?.querySelector('.cat-budget-ceiling-text')?.textContent.trim();
+        const exceeded = budget?.startsWith('تجاوز');
+        const fill = Math.max(0, Math.min(100, parseFloat(source?.querySelector('.cat-budget-progress-fill')?.style.width) || 0));
+        return '<article class="reference-one-card" data-ref-category="' + id +
+          '" data-spent="' + hasSpent + '" data-exceeded="' + Boolean(exceeded) + '">' +
+          '<button type="button" class="reference-one-add" data-add="' + id + '">' + icon +
+          '<strong>' + escapeHtml(name) + '</strong></button>' +
+          '<button type="button" class="reference-one-details" data-details="' + id + '" aria-label="عرض عمليات ' +
+          escapeHtml(name) + '"><span class="reference-one-amount" dir="rtl">' + (hasSpent ? '<span>−</span>' : '') +
+          '<bdi dir="ltr">' + escapeHtml(amount) + '</bdi><span>' + escapeHtml(currency) + '</span></span>' +
+          '<progress max="100" value="' + fill + '" aria-label="استخدام الموازنة"></progress>' +
+          '<small>' + escapeHtml(budget || 'لم تُحدَّد موازنة') + '</small></button></article>';
+      }).join('');
+      if (cards === referenceCardMarkup && host.firstElementChild?.classList.contains('reference-one-grid')) return;
+      referenceCardMarkup = cards;
+      host.innerHTML = '<div class="reference-one-grid">' + cards + '</div>';
+    }
     function render() {
       host.dataset.design = design;
+      expensePage.classList.toggle('home-reference-one', design === 1);
       const isOriginal = design === 0;
       original.hidden = !isOriginal;
       if (isOriginal) original.style.removeProperty('display');
@@ -43174,6 +43214,10 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       const label = isOriginal ? 'الشكل الأساسي' : 'الشكل ' + (design + 1) + ' من 6';
       trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، ' + label);
       if (isOriginal) return;
+      if (design === 1) {
+        renderFirstReference();
+        return;
+      }
       const cards = items.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
