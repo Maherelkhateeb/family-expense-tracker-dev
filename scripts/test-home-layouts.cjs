@@ -70,6 +70,7 @@ const WIDTHS=[320,360,390,391,430,768];
        const r=toolRects[i];if(r.width<20||r.left< -2||r.right>viewportWidth+2)errors.push('tool-outside:'+tool.id+':'+JSON.stringify(r));
      });
      const toolOrder=tools.slice().sort((a,b)=>Number(getComputedStyle(a).order)-Number(getComputedStyle(b).order)).map(x=>x.id);
+     const toolVisualOrder=tools.slice().sort((a,b)=>b.getBoundingClientRect().right-a.getBoundingClientRect().right).map(x=>x.id);
      const ids=design===1?cards.map(x=>x.dataset.refCategory):design>1?
        cards.map(x=>x.querySelector('[data-add]')?.dataset.add||(x.querySelector('[data-voice]')?'voice':null)):[];
      const rect=(selector)=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),scrollHeight:el.scrollHeight,clientHeight:el.clientHeight}};
@@ -88,14 +89,14 @@ const WIDTHS=[320,360,390,391,430,768];
      }).filter(o=>o.w>0&&o.display!=='none'&&o.visibility!=='hidden'&&(o.l< -3||o.r>viewportWidth+3)).slice(0,22):[];
      return {vertical,offscreen,pageScrollWidth:document.documentElement.scrollWidth,design,width:viewportWidth,originalHidden:document.getElementById('catGrid').hidden,
        count:cards.length,ids,gridCols:grid?getComputedStyle(grid).gridTemplateColumns:'',
-       toolOrder,toolCount:tools.length,switcherVisible:cs.display!=='none'&&cs.visibility!=='hidden',
+       toolOrder,toolVisualOrder,toolCount:tools.length,switcherVisible:cs.display!=='none'&&cs.visibility!=='hidden',
        switcherInside:document.getElementById('btnHomeDesign').parentElement.classList.contains('executive-quick-tools-strip'),
        bodyOverflow,errors};
     });
     console.log('HOME_LAYOUT_QA '+JSON.stringify(report));
     assert.ok(report.switcherVisible&&report.switcherInside,'Switcher missing '+width+'/'+design);
     assert.equal(report.toolCount,5,'Five tools must stay visible '+width+'/'+design);
-    assert.deepEqual(report.toolOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
+    assert.deepEqual(report.toolVisualOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
       'Unexpected tool order '+width+'/'+design);
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
