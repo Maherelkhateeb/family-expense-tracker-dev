@@ -7,6 +7,7 @@ on:
       - index.html
       - home-reference-one.css
       - home-mobile-fit.css
+      - home-dynamic-layout-engine.js
       - scripts/test-home-reference-one.cjs
       - scripts/test-home-layouts.cjs
       - scripts/test-home-short-viewport.cjs
