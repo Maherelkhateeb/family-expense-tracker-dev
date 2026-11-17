@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.14",
-  "build": "202611171845",
-  "buildId": 202611171845,
-  "updated": "2026-11-17T16:40:00+03:00",
-  "notes": "Restored home-screen layout switcher on all layouts; five RTL quick tools; fixed mobile two-column reference and preserved all 9 expense categories plus voice action, including zero amounts."
+  "version": "v5.4.15",
+  "build": "202611172010",
+  "buildId": 202611172010,
+  "updated": "2026-11-17T17:05:00+03:00",
+  "notes": "Fixed responsive cards and text alignment for all 6 home designs; ten categories including zeros; restored quick tool order, constrained toast widths and synchronized auto-update build."
 }
