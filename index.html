@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.3';
-    var APP_BUILD_ID = 202611171410;
+    var APP_VERSION = 'v5.4.4';
+    var APP_BUILD_ID = 202611171420;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171410">
-  <script src="./appearance-compact.js?v=202611171410" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171410">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171420">
+  <script src="./appearance-compact.js?v=202611171420" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171420">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171410"></script>
+  <script src="./budget-audit-engine.js?v=202611171420"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.3</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.4</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43100,10 +43100,6 @@ window.filterArchiveType = filterArchiveType;
   </div>
 
 <style>
-#homeDesignPicker{border:1px solid #a78bfa;border-radius:16px;background:#17243a;color:#f8fafc;max-width:340px;width:calc(100% - 28px)}
-#homeDesignPicker::backdrop{background:#02061799}
-#homeDesignPicker button{display:block;width:100%;padding:12px;margin:5px 0;border:1px solid #a78bfa;border-radius:9px;background:#243552;color:inherit;font:inherit;cursor:pointer}
-#homeDesignPicker button[aria-pressed=true]{background:#6d28d9}
 #btnHomeDesign{order:-1;flex:none;width:36px;height:38px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
 body.light-theme #homeInterfaces{--home-panel:#fff;--home-text:#142037}
@@ -43145,9 +43141,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     const original = document.getElementById('catGrid');
     const gold = document.getElementById('btnOpenGold');
     if (!original || !gold) return;
-    const labels = ['١ · بطاقات مصوّرة','٢ · بطاقات أفقية','٣ · شبكة ثلاثية','٤ · قائمة تفصيلية','٥ · لوحة المؤشرات'];
     let design = 1;
-    try { design = Math.max(1,Math.min(5,Number(localStorage.getItem('expenseHomeDesign')) || 1)); } catch {}
+    try { design = Math.max(1, Math.min(5, Number.parseInt(localStorage.getItem('expenseHomeDesign'), 10) || 1)); } catch {}
     const host = document.createElement('section');
     host.id = 'homeInterfaces';
     original.after(host);
@@ -43160,21 +43155,11 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     trigger.setAttribute('aria-label','اختيار تصميم شاشة المصروفات');
     trigger.title = 'تغيير شكل الشاشة';
     gold.before(trigger);
-    const picker = document.createElement('dialog');
-    picker.id = 'homeDesignPicker';
-    picker.innerHTML = '<h3>تصميم شاشة المصروفات</h3>' + labels.map((label,i) => '<button type="button" data-design="'+(i+1)+'">'+label+'</button>').join('') + '<button type="button" data-close>إغلاق</button>';
-    document.body.append(picker);
-    trigger.onclick = () => picker.showModal();
-    picker.addEventListener('click', event => {
-      const button = event.target.closest('button');
-      if (!button) return;
-      if (button.dataset.design) {
-        design = Number(button.dataset.design);
-        try { localStorage.setItem('expenseHomeDesign',String(design)); } catch {}
-        render();
-      }
-      picker.close();
-    });
+    trigger.onclick = () => {
+      design = design % 5 + 1;
+      try { localStorage.setItem('expenseHomeDesign', String(design)); } catch {}
+      render();
+    };
     const items = [
       ['daily','☕','#f59e0b'],['food','🛒','#10b981'],['bills','⚡','#f97316'],
       ['house','🛋️','#8b5cf6'],['education','📚','#3b82f6'],['transport','🚗','#0284c7'],
@@ -43182,7 +43167,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     ];
     function render() {
       host.dataset.design = design;
-      picker.querySelectorAll('[data-design]').forEach(button => button.setAttribute('aria-pressed',String(Number(button.dataset.design) === design)));
+      trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، الشكل ' + design + ' من 5');
       const cards = items.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
