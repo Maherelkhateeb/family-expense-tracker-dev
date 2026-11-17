@@ -1360,3 +1360,24 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
    margin-bottom:0!important;
  }
 }
+
+/* Regression fix: real scrollable clearance after the last expense row.
+   The footer is fixed over the scrollport, so scroll-padding and container
+   padding alone do not increase scrollHeight. A normal-flow spacer does. */
+@media (max-width:480px) {
+  #viewExpenses.home-reference-one.active::after {
+    content:""!important;
+    display:block!important;
+    position:static!important;
+    width:100%!important;
+    height:calc(92px + env(safe-area-inset-bottom,0px))!important;
+    min-height:calc(92px + env(safe-area-inset-bottom,0px))!important;
+    flex:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  #viewExpenses.home-reference-one.active {
+    padding-bottom:0!important;
+    overflow:visible!important;
+  }
+}
