@@ -412,3 +412,67 @@
   height:100%!important;
   max-height:100%!important;
 }
+
+
+/* Reference screenshots 3 and 4: three paired rows, three small cards, full-width voice bar. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="2"] .home-design-grid,
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-grid {
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-template-rows:repeat(3,minmax(0,1.06fr)) minmax(0,.92fr) minmax(0,.67fr)!important;
+  gap:clamp(3px,.85cqi,6px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(-n+6) {
+  grid-column:span 3!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) {
+  grid-column:span 2!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-voice {
+  grid-column:1 / -1!important;
+  border-radius:clamp(15px,4cqi,28px)!important;
+  box-shadow:0 3px 6px #6022a54a!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) .home-design-head {
+  flex-direction:column-reverse!important;
+  gap:0!important;
+  padding:0 1px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) .home-design-head strong {
+  font-size:clamp(8px,2.25cqi,11px)!important;
+  line-height:1!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) .home-design-icon {
+  flex-basis:clamp(18px,4.5cqi,26px)!important;
+  height:clamp(18px,4.5cqi,26px)!important;
+  width:clamp(18px,4.5cqi,26px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) .home-design-value {
+  gap:0!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-grid > .home-design-card:nth-child(n+7):nth-child(-n+9) .home-design-value small {
+  display:none!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="2"] .home-design-head {
+  flex-direction:row!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-voice {
+  --tone:#18b40b!important;
+  background:linear-gradient(90deg,#0c9111,#44d82b)!important;
+  border-color:#00a800!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-voice span {
+  color:#fff!important;
+}
+/* No extra numeric panel in the voice control: it is a single action. */
+#viewExpenses.home-alternative-design.active #homeInterfaces:is([data-design="2"],[data-design="3"])
+.home-design-voice button {
+  font-size:clamp(11px,3cqi,16px)!important;
+}
