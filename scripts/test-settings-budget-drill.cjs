@@ -256,6 +256,44 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
        assert.equal(compare.kpis,9,'Comparison must provide nine extra metrics');
      }
    }
+   await page.evaluate(async()=>{
+     switchAppPage('budgets',true);
+     switchBudgetSubTab('monthly');
+     switchBudgetMonthView('compare');
+     const ledgerKey='family_monefy_budget_trial_operations_v1';
+     await navigator.locks.request(ledgerKey,()=>localStorage.removeItem(ledgerKey));
+     const from=document.getElementById('cmpActualFrom'), to=document.getElementById('cmpActualTo');
+     BudgetCompareEngine.onActualPeriodChange('custom');
+     from.value='2025-04-01';to.value='2025-04-07';
+     const actual=JSON.stringify(state.transactions);
+     const reference=document.getElementById('cmpPeriodReference');
+     reference.value='sample';
+     await BudgetCompareEngine.selectReference();
+     const stored=localStorage.getItem(ledgerKey);
+     const week=JSON.parse(stored).sample;
+     if(Object.keys(week).length!==7||Object.values(week).flat().reduce((sum,cents)=>sum+cents,0)!==280000) {
+       throw Error('Sample operations do not match the one-week total');
+     }
+     await BudgetCompareEngine.recordSampleOperations();
+     if(localStorage.getItem(ledgerKey)!==stored)throw Error('Sample registration produced duplicates');
+     to.value='2025-04-08';
+     BudgetCompareEngine.render();
+     await BudgetCompareEngine.recordSampleOperations();
+     if(Object.keys(JSON.parse(localStorage.getItem(ledgerKey)).sample).length!==8)throw Error('Overlapping registration did not merge days');
+     if(JSON.stringify(state.transactions)!==actual)throw Error('Sample registration changed real transactions');
+     document.querySelector('#cmpPeriodChart [data-period-series="reference"][data-period-category="food"]').click();
+   });
+   await page.waitForFunction(()=>state.activeOpsSubTab==='sample');
+   const sampleDetails=await page.locator('#sampleOperationsList tbody tr').allTextContents();
+   assert.equal(sampleDetails.length,8);
+   assert.ok(sampleDetails.every(row=>row.includes('طعام ومشتريات')&&row.includes('التجريبية الأساسية')));
+   await page.locator('#sampleOperationsBack').click();
+   await page.waitForFunction(()=>getComputedStyle(document.getElementById('panelBudgetCompare')).display!=='none');
+   await page.reload({waitUntil:'domcontentloaded'});
+   await page.waitForFunction(()=>typeof BudgetCompareEngine==='object'&&typeof switchAppPage==='function');
+   await page.evaluate(()=>{switchAppPage('operations');switchOperationsSubTab('sample');});
+   assert.match(await page.locator('#sampleOperationsList').innerText(),/٧٢ عملية تجريبية/);
+
    assert.deepEqual(errors,[],'Browser errors '+JSON.stringify(errors));
    await context.close();
   }

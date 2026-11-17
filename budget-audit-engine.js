@@ -1872,25 +1872,181 @@ const BudgetCompareEngine = (() => {
     };
   }
 
-  function getSampleBudget(range, profile) {
-    const adjustment = { 'sample-low': -1, sample: 0, 'sample-high': 1 }[profile];
-    const flexibleAmounts = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
-    const totals = new Map(Object.keys(sampleMonthlyAmounts).map(category => [category, 0]));
-    const end = new Date(range.to);
+  const sampleLedgerKey = 'family_monefy_budget_trial_operations_v1';
+  const sampleProfiles = {
+    'sample-low': { adjustment: -1, label: 'التجريبية الاقتصادية' },
+    sample: { adjustment: 0, label: 'التجريبية الأساسية' },
+    'sample-high': { adjustment: 1, label: 'التجريبية المرنة' }
+  };
+  let sampleView = { limit: 60 };
+  let sampleReturn = null;
+
+  function* sampleMonthSlices(range, profile) {
+    const adjustment = sampleProfiles[profile].adjustment;
+    const flexible = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
+    const monthly = Object.entries(sampleMonthlyAmounts).map(([key, amount]) => [
+      key, (amount + adjustment * (flexible[key] || 0)) * 100
+    ]);
     const month = new Date(range.from.slice(0, 7) + '-01');
+    const end = new Date(range.to);
     while (month <= end) {
-      const year = month.getUTCFullYear();
+      const key = month.toISOString().slice(0, 7);
       const index = month.getUTCMonth();
-      const days = new Date(Date.UTC(year, index + 1, 0)).getUTCDate();
-      const first = month.toISOString().slice(0, 7) === range.from.slice(0, 7) ? Number(range.from.slice(8)) : 1;
-      const last = year === end.getUTCFullYear() && index === end.getUTCMonth() ? end.getUTCDate() : days;
-      for (const [category, monthly] of Object.entries(sampleMonthlyAmounts)) {
-        const upToDay = day => Math.round((monthly + adjustment * (flexibleAmounts[category] || 0)) * 100 * day / days);
-        totals.set(category, totals.get(category) + upToDay(last) - upToDay(first - 1));
-      }
+      const endOfMonth = new Date(month);
+      endOfMonth.setUTCMonth(index + 1, 0);
+      const days = endOfMonth.getUTCDate();
+      const first = key === range.from.slice(0, 7) ? Number(range.from.slice(8)) : 1;
+      const last = key === range.to.slice(0, 7) ? Number(range.to.slice(8)) : days;
+      const throughDay = day => monthly.map(([, cents]) => Math.round(cents * day / days));
+      yield {key, first, last, categories: monthly.map(([category]) => category), throughDay};
       month.setUTCMonth(index + 1);
     }
+  }
+
+  function getSampleBudget(range, profile) {
+    const totals = new Map(Object.keys(sampleMonthlyAmounts).map(category => [category, 0]));
+    for (const {first, last, categories, throughDay} of sampleMonthSlices(range, profile)) {
+      const start = throughDay(first - 1);
+      throughDay(last).forEach((cents, i) => totals.set(categories[i], totals.get(categories[i]) + cents - start[i]));
+    }
     return new Map([...totals].map(([category, cents]) => [category, cents / 100]));
+  }
+
+  function readSampleOperations() {
+    const stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
+    if (!stored || Array.isArray(stored) || typeof stored !== 'object') throw new Error('Invalid sample ledger');
+    return stored;
+  }
+
+  async function recordSampleOperations() {
+    const profile = document.getElementById('cmpPeriodReference').value;
+    if (!Object.hasOwn(sampleProfiles, profile)) return;
+    const range = getNavigationRange();
+    const status = document.getElementById('cmpSampleStatus');
+    if (range.from > range.to) {
+      status.textContent = 'اختر نطاق تواريخ صالحًا للتسجيل.';
+      return false;
+    }
+    const register = () => {
+      const ledger = readSampleOperations();
+      const dates = ledger[profile] ||= {};
+      let added = 0;
+      for (const {key, first, last, throughDay} of sampleMonthSlices(range, profile)) {
+        for (let day = first; day <= last; day++) {
+          const date = key + '-' + pad(day);
+          if (Object.hasOwn(dates, date)) continue;
+          const start = throughDay(day - 1);
+          const entries = throughDay(day).map((cents, i) => cents - start[i]);
+          dates[date] = entries;
+          added += entries.length;
+        }
+      }
+      if (added) localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
+      return added;
+    };
+    try {
+      const added = navigator.locks ? await navigator.locks.request(sampleLedgerKey, register) : register();
+      if (status.dataset.scope === [profile, range.from, range.to].join(':')) {
+        status.textContent = added ? 'تم تسجيل ' + added.toLocaleString('ar-EG') + ' عملية تجريبية.' :
+          'العمليات التجريبية لهذه الفترة مسجّلة بالفعل.';
+      }
+    } catch (error) {
+      console.warn('Could not save sample operations', error);
+      status.textContent = 'تعذر حفظ العمليات التجريبية على هذا الجهاز.';
+      return false;
+    }
+  }
+
+  function selectReference() {
+    render();
+    document.getElementById('cmpSampleStatus').textContent = '';
+    return recordSampleOperations();
+  }
+
+  async function openSampleOperations(button) {
+    const profile = document.getElementById('cmpPeriodReference').value;
+    if (!Object.hasOwn(sampleProfiles, profile)) return;
+    const {from, to} = getNavigationRange();
+    if (await recordSampleOperations() === false) return;
+    if (document.getElementById('cmpPeriodReference').value !== profile) return;
+    const current = getNavigationRange();
+    if (current.from !== from || current.to !== to) return;
+    sampleReturn = { id: button.id, category: button.dataset.periodCategory, top: window.scrollY };
+    sampleView = {profile, from, to, category: button.dataset.periodCategory, limit: 60};
+    switchAppPage('operations');
+    switchOperationsSubTab('sample');
+  }
+
+  function returnFromSampleOperations() {
+    if (!sampleReturn) return;
+    const previous = sampleReturn;
+    sampleReturn = null;
+    sampleView = {limit: 60};
+    switchAppPage('budgets');
+    switchBudgetSubTab('monthly');
+    switchBudgetMonthView('compare');
+    requestAnimationFrame(() => {
+      window.scrollTo(0, previous.top);
+      const target = previous.id ? document.getElementById(previous.id) :
+        document.querySelector('#cmpPeriodChart [data-period-series="reference"][data-period-category="' +
+          CSS.escape(previous.category) + '"]');
+      target?.focus({preventScroll: true});
+    });
+  }
+
+  function renderSampleOperations() {
+    const container = document.getElementById('sampleOperationsList');
+    if (!container) return;
+    document.getElementById('sampleOperationsBack').hidden = !sampleReturn;
+    const {profile, from, to, category, limit} = sampleView;
+    document.getElementById('sampleOperationsShowAll').hidden = !profile;
+    const categories = Object.keys(sampleMonthlyAmounts);
+    const records = [];
+    try {
+      const ledger = readSampleOperations();
+      for (const [key, plan] of Object.entries(sampleProfiles)) {
+        if (profile && key !== profile) continue;
+        for (const [date, amounts] of Object.entries(ledger[key] || {})) {
+          if ((from && date < from) || (to && date > to) || !Array.isArray(amounts)) continue;
+          amounts.forEach((cents, index) => {
+            const item = categories[index];
+            if (!item || (category && item !== category) || !Number.isFinite(cents)) return;
+            records.push({date, item, cents, plan: plan.label});
+          });
+        }
+      }
+    } catch {
+      container.textContent = 'تعذرت قراءة سجل العمليات التجريبية.';
+      return;
+    }
+    records.sort((a,b) => b.date.localeCompare(a.date));
+    const formatter = new Intl.NumberFormat('ar-EG', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const format = cents => formatter.format(cents / 100) + ' ج.م';
+    const total = records.reduce((sum, entry) => sum + entry.cents, 0);
+    const rows = records.slice(0, limit).map(({date, item, cents, plan}) =>
+      '<tr><td><bdi>' + escapeHtml(date) + '</bdi></td><td>' +
+      escapeHtml(item === 'other' ? 'أخرى' : getCategoryObj(item, 'expense')?.name || item) +
+      '</td><td>' + escapeHtml(plan) + '</td><td><bdi>' + format(cents) + '</bdi></td></tr>').join('');
+    container.innerHTML = records.length ?
+      '<p class="sample-operations-summary">' + records.length.toLocaleString('ar-EG') +
+      ' عملية تجريبية · ' + format(total) + '</p><div class="cmp-period-table"><table aria-label="العمليات التجريبية المسجلة">' +
+      '<thead><tr><th scope="col">التاريخ</th><th scope="col">البند</th><th scope="col">الموازنة</th><th scope="col">المبلغ</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody></table></div>' : '<p>لا توجد عمليات تجريبية مسجلة لهذا الاختيار. اختر موازنة تجريبية من المقارنات لتسجيلها.</p>';
+    document.getElementById('sampleOperationsMore').hidden = records.length <= limit;
+  }
+
+  function showMoreSampleOperations() {
+    sampleView.limit += 60;
+    renderSampleOperations();
+  }
+
+  function showAllSampleOperations() {
+    sampleView = {limit: 60};
+    renderSampleOperations();
+  }
+
+  function getNavigationRange() {
+    return periodToRange(_actualPeriod, document.getElementById('cmpActualFrom')?.value, document.getElementById('cmpActualTo')?.value);
   }
 
   function renderPeriodChart(actual, range) {
@@ -1899,7 +2055,14 @@ const BudgetCompareEngine = (() => {
     const content = document.getElementById('cmpPeriodChartContent');
     const reference = document.getElementById('cmpPeriodReference').value;
     const custom = reference === 'custom';
-    const sample = reference.startsWith('sample');
+    const sample = Object.hasOwn(sampleProfiles, reference);
+    document.getElementById('cmpSampleActions').hidden = !sample;
+    const status = document.getElementById('cmpSampleStatus');
+    const scope = [reference, range.from, range.to].join(':');
+    if (status.dataset.scope !== scope) {
+      status.textContent = '';
+      status.dataset.scope = scope;
+    }
     document.getElementById('cmpPeriodCustom').hidden = !custom;
     const validRange = range.from <= range.to;
     const previous = sample ? range : custom ? {
@@ -1915,6 +2078,10 @@ const BudgetCompareEngine = (() => {
       }
       const detail = event.target.closest('button[data-period-category]');
       if (!detail) return;
+      if (sample && detail.dataset.periodSeries === 'reference') {
+        openSampleOperations(detail);
+        return;
+      }
       const selected = detail.dataset.periodSeries === 'reference' ? previous : range;
       window.BudgetDrilldownHub?.open({
         source: 'compare', originNode: detail, from: selected.from, to: selected.to,
@@ -1938,15 +2105,13 @@ const BudgetCompareEngine = (() => {
       const name = category === 'other' ? 'أخرى' : getCategoryObj(category, 'expense')?.name || category;
       return {category, name, a, b, diff: Math.round((a - b) * 100) / 100};
     }).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
-    const sampleNames = { 'sample-low': 'التجريبية الاقتصادية', sample: 'التجريبية الأساسية', 'sample-high': 'التجريبية المرنة' };
-    const referenceLabel = sampleNames[reference] || 'الفترة المرجعية';
+    const referenceLabel = sample ? sampleProfiles[reference].label : 'الفترة المرجعية';
     const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 2});
     const fmt = n => number.format(n);
     const signed = n => (n > 0 ? '+' : '') + fmt(n);
     const dates = period => '<bdi>' + escapeHtml(period.from) + ' — ' + escapeHtml(period.to) + '</bdi>';
     const valueButton = (row, key) => {
       const value = fmt(row[key]);
-      if (key === 'b' && sample) return '<bdi>' + value + '</bdi>';
       const label = key === 'a' ? 'الفترة الفعلية' : referenceLabel;
       return '<button type="button" class="cmp-period-value" data-period-series="' +
         (key === 'a' ? 'actual' : 'reference') + '" data-period-category="' + escapeHtml(row.category) +
@@ -2123,7 +2288,14 @@ const BudgetCompareEngine = (() => {
     onActualPeriodChange,
     onEstimPeriodChange,
     buildEstimPeriodOptions,
-    getNavigationRange: () => periodToRange(_actualPeriod, document.getElementById('cmpActualFrom')?.value, document.getElementById('cmpActualTo')?.value),
+    getNavigationRange,
+    selectReference,
+    recordSampleOperations,
+    openSampleOperations,
+    renderSampleOperations,
+    returnFromSampleOperations,
+    showAllSampleOperations,
+    showMoreSampleOperations,
     drillDownToCategory
   };
 })();

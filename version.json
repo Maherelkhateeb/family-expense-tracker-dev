@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.93",
-  "build": "202611170945",
-  "buildId": 202611170945,
-  "updated": "2026-11-17T09:45:00+03:00",
-  "notes": "Legible settings card labels, period comparison views, selectable illustrative EGP budgets, and tighter calendar and comparison indicators."
+  "version": "v5.3.94",
+  "build": "202611171015",
+  "buildId": 202611171015,
+  "updated": "2026-11-17T10:15:00+03:00",
+  "notes": "Record selectable comparison budgets as persistent, separate sample operations."
 }

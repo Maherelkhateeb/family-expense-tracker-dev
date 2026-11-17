@@ -1901,3 +1901,13 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
 .cmp-period-table thead th {position:sticky;top:0;background:var(--bg-card,#1e293b)}
 .cmp-rise {color:var(--period-up);font-weight:850}
 .cmp-fall {color:var(--period-down);font-weight:850}
+
+/* Keep the simulated operations close to the registered operations navigation. */
+#btnOpsSubSample {flex:1;min-width:0;font-size:.76rem;font-weight:850;padding:6px 4px}
+#opsSubViewSample {margin:0 8px 10px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-main)}
+.sample-operations-header {display:flex;align-items:center;justify-content:space-between;gap:6px}
+.sample-operations-header h3 {margin:0;font-size:.86rem}
+.cmp-sample-actions:not([hidden]) {display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.cmp-sample-actions button,#opsSubViewSample button {padding:4px 6px;border:1px solid var(--border);border-radius:6px;color:var(--text-main);background:var(--bg-card);font:inherit;font-size:.69rem;cursor:pointer}
+.cmp-sample-actions [role="status"],.sample-operations-summary {font-size:.69rem}
+#sampleOperationsShowAll,#sampleOperationsMore {margin-top:5px}

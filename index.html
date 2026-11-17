@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.93';
-    var APP_BUILD_ID = 202611170945;
+    var APP_VERSION = 'v5.3.94';
+    var APP_BUILD_ID = 202611171015;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611170945">
-  <script src="./appearance-compact.js?v=202611170945" defer></script>
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171015">
+  <script src="./appearance-compact.js?v=202611171015" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611170945"></script>
+  <script src="./budget-audit-engine.js?v=202611171015"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -17538,6 +17538,9 @@ body.light-theme .market-buy-price {
           <button class="segmented-tab-btn" id="btnOpsSubArchive" onclick="switchOperationsSubTab('archive')" style="flex: 1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
             <i class="fa-solid fa-clock-rotate-left"></i> <span>الأرشيف وسجل النشاط</span>
           </button>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubSample" onclick="switchOperationsSubTab('sample')">
+            <i class="fa-solid fa-flask" aria-hidden="true"></i> <span>تجريبية</span>
+          </button>
         </div>
         <div id="opsSubViewRegistered">
           <div class="ops-header-tools">
@@ -17678,6 +17681,15 @@ body.light-theme .market-buy-price {
         </div>
 
         <!-- الجزء الثاني: تحليل المصروفات والشارتات الفعلية (منقول من المؤشرات) -->
+        <section id="opsSubViewSample" hidden aria-labelledby="sampleOperationsTitle">
+          <div class="sample-operations-header">
+            <h3 id="sampleOperationsTitle">العمليات التجريبية للموازنات</h3>
+            <button type="button" id="sampleOperationsBack" onclick="BudgetCompareEngine.returnFromSampleOperations()" hidden>العودة إلى المقارنة</button>
+          </div>
+          <button type="button" id="sampleOperationsShowAll" onclick="BudgetCompareEngine.showAllSampleOperations()" hidden>عرض جميع العمليات التجريبية</button>
+          <div id="sampleOperationsList" aria-live="polite"></div>
+          <button type="button" id="sampleOperationsMore" onclick="BudgetCompareEngine.showMoreSampleOperations()" hidden>عرض عمليات أكثر</button>
+        </section>
         <div id="opsSubViewAnalytics" style="display: none;">
           <!-- 2. لوحة التحكم بالفترة الزمنية للمؤشرات: واضحة وثابتة لكافة الأقسام -->
         <div class="analytics-control-panel" style="position: sticky; top: 0px; z-index: 60; margin: 0 8px 10px; border-radius: 14px; padding: 8px 10px;">
@@ -19035,7 +19047,7 @@ body.light-theme .market-buy-price {
                 <h3 id="cmpPeriodChartTitle" class="cmp-chart-card-title">تغيّر المصروفات حسب البند</h3>
                 <div class="cmp-period-controls">
                   <label for="cmpPeriodReference">المقارنة مع</label>
-                  <select id="cmpPeriodReference" onchange="BudgetCompareEngine.render()">
+                  <select id="cmpPeriodReference" onchange="BudgetCompareEngine.selectReference()">
                     <option value="previous">الفترة الفعلية السابقة</option>
                     <option value="custom">فترة فعلية أختارها</option>
                     <optgroup label="موازنات تجريبية شهرية">
@@ -19049,6 +19061,11 @@ body.light-theme .market-buy-price {
                     <input type="date" id="cmpPeriodFrom" hidden onchange="BudgetCompareEngine.render()">
                     <input type="date" id="cmpPeriodTo" hidden onchange="BudgetCompareEngine.render()">
                   </div>
+                </div>
+                <div id="cmpSampleActions" class="cmp-sample-actions" hidden>
+                  <button type="button" onclick="BudgetCompareEngine.recordSampleOperations()">تسجيل هذه الفترة</button>
+                  <button type="button" id="cmpSampleView" onclick="BudgetCompareEngine.openSampleOperations(this)">عرض العمليات التجريبية</button>
+                  <span id="cmpSampleStatus" role="status"></span>
                 </div>
                 <div class="cmp-period-modes" role="group" aria-label="شكل عرض المقارنة">
                   <button type="button" data-mode="paired" aria-pressed="true">أعمدة متجاورة</button>
@@ -21239,7 +21256,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.93</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.94</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -24859,6 +24876,10 @@ function toggleAnalyticsCustomRange() {
       const viewReg = document.getElementById('opsSubViewRegistered');
       const viewAna = document.getElementById('opsSubViewAnalytics');
       const viewArc = document.getElementById('opsSubViewArchive');
+      const btnSample = document.getElementById('btnOpsSubSample');
+      const viewSample = document.getElementById('opsSubViewSample');
+      btnSample?.classList.toggle('active', tab === 'sample');
+      if (viewSample) viewSample.hidden = tab !== 'sample';
 
       if (btnReg) btnReg.classList.remove('active');
       if (btnAna) btnAna.classList.remove('active');
@@ -24867,7 +24888,9 @@ function toggleAnalyticsCustomRange() {
       if (viewAna) viewAna.style.display = 'none';
       if (viewArc) viewArc.style.display = 'none';
 
-      if (tab === 'analytics') {
+      if (tab === 'sample') {
+        window.BudgetCompareEngine?.renderSampleOperations();
+      } else if (tab === 'analytics') {
         if (btnAna) btnAna.classList.add('active');
         if (viewAna) viewAna.style.display = 'block';
         if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
