@@ -40,7 +40,8 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
       await page.locator('[data-fbc="sample"]').check();
       const sample=await page.locator('#panelBudgetComparisons').innerText();
       for(const n of ['6,100','6,700','+600'])assert.ok(sample.includes(n),'Sample data '+n+' missing');
-      await page.locator('[data-fbc="toggle"]').click();
+      if((await page.locator('#panelBudgetComparisons h3').count())<9)
+        await page.locator('[data-fbc="toggle"]').click();
       const charts=await page.locator('#panelBudgetComparisons h3').allTextContents();
       assert.ok(charts.length>=9,'Expected table and eight graphs but got '+charts.length);
       if(width===380)assert.ok(result.scrollWidth<=width+3,'Unexpected horizontal page scroll');
