@@ -2049,15 +2049,44 @@ const BudgetCompareEngine = (() => {
     }).join('');
     const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو المرجع المحدد، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
     grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+'</section>');
-    // Month chunks: exact partial-month proration and actual entries.
-    const monthly=[...monthSlices(range)].map(s=>{
-      const period={from:s.key+'-'+pad(s.first),to:s.key+'-'+pad(s.last)};
+    // Six aligned relative slices from the ACTUAL selected period and reference.
+    const baseRange=opts.baseline||range;
+    const n=Math.min(6,dateDiffDays(range.from,range.to),dateDiffDays(baseRange.from,baseRange.to));
+    const divide=(period,count)=>{
+      const start=Date.parse(period.from+'T00:00:00Z');
+      const days=dateDiffDays(period.from,period.to);
+      return Array.from({length:count},(_,i)=>{
+        const first=Math.floor(days*i/count),last=Math.floor(days*(i+1)/count)-1;
+        const day=k=>new Date(start+k*86400000).toISOString().slice(0,10);
+        return {from:day(first),to:day(last)};
+      });
+    };
+    const referenceAmounts=period=>{
+      if(opts.reference==='plan')return estimatesForRange(period).values;
+      if(isSampleBudget(opts.reference)){
+        const totals=new Map();
+        for(const {days,first,last} of monthSlices(period)){
+          for(const [id,cents] of sampleAmounts(opts.reference))
+            totals.set(id,(totals.get(id)||0)+prorate(cents,days,first,last));
+        }
+        return totals;
+      }
+      return aggregate(expensesForRange(period));
+    };
+    const primarySlices=divide(range,n),referenceSlices=divide(baseRange,n);
+    const monthly=primarySlices.map((period,i)=>{
       const a=aggregate(expensesForRange(period));
-      const planned=estimatesForRange(period);
-      return {key:s.key,actual:a,estimated:planned.values,complete:planned.missing.length===0,
-        sumA:[...a.values()].reduce((v,x)=>v+x,0),
-        sumB:[...planned.values.values()].reduce((v,x)=>v+x,0)};
+      const b=referenceAmounts(referenceSlices[i]);
+      const sum=map=>[...map.values()].reduce((acc,x)=>acc+x,0);
+      const label=period.from===period.to?period.from.slice(5):(period.from.slice(5)+'–'+period.to.slice(5));
+      return {key:label,actual:a,estimated:b,sumA:sum(a),sumB:sum(b)};
     });
+    // Correct only sub-cent proration drift in summary totals.
+    if(monthly.length){
+      const last=monthly[monthly.length-1];
+      last.sumA+=(totals.a||0)-monthly.reduce((v,m)=>v+m.sumA,0);
+      last.sumB+=(totals.b||0)-monthly.reduce((v,m)=>v+m.sumB,0);
+    }
     // 5. Cumulative: one vertical scale beginning at zero; gaps use red/green fills.
     const cumA=[],cumB=[];let runningA=0,runningB=0;
     monthly.forEach(m=>{runningA+=m.sumA;runningB+=m.sumB;cumA.push(runningA);cumB.push(runningB)});
@@ -2066,7 +2095,7 @@ const BudgetCompareEngine = (() => {
     const y=value=>190-value/top*150;
     const points=series=>series.map((v,i)=>x(i)+','+y(v)).join(' ');
     let cum='<svg class="bs-viz" role="img" aria-label="الخطان التراكميان: التقديري والفعلي" viewBox="0 0 '+width+' '+height+'" xmlns="http://www.w3.org/2000/svg">'+
-      '<title>التقديري والفعلي التراكمي شهريًا</title><desc>خط رمادي متقطع للتقديري وخط أزرق متصل للفعلي؛ الأحمر لتجاوز التقديري والأخضر للتوفير.</desc>'+
+      '<title>التراكم عبر الفترتين المختارتين</title><desc>خط رمادي متقطع للتقديري وخط أزرق متصل للفعلي؛ الأحمر لتجاوز التقديري والأخضر للتوفير.</desc>'+
       '<path class="bs-grid-line" d="M55 190 H565 M55 115 H565 M55 40 H565"/>';
     for(let i=1;i<monthly.length;i++){
       const fill=cumA[i]>=cumB[i]?'#E24B4A':'#639922';
@@ -2074,9 +2103,9 @@ const BudgetCompareEngine = (() => {
     }
     cum+='<polyline points="'+points(cumB)+'" fill="none" stroke="#888780" stroke-width="2" stroke-dasharray="5 4"/>'+
       '<polyline points="'+points(cumA)+'" fill="none" stroke="#378ADD" stroke-width="2"/>';
-    monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(m.key.slice(5))+'/'+text(m.key.slice(2,4))+'</text>';});
-    cum+='</svg><div class="bs-cumulative-legend"><span>التقديري: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكمي شهريًا</h3>'+cum+'</section>');
+    monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(i+1)+'</text>';});
+    cum+='</svg><div class="bs-cumulative-legend"><span>المرجع: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+'</section>');
     // 6. Diverging heatmap; color and numeric sign together.
     const heat=(row,month)=>{
       const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
@@ -2094,7 +2123,7 @@ const BudgetCompareEngine = (() => {
     heatGrid+='</div><div class="bs-heat-mobile">'+monthly.map(m=>'<div class="bs-heat-month"><strong dir="ltr">'+text(m.key)+'</strong><div class="bs-heat-month-list">'+
       sorted.map(row=>{const h=heat(row,m);return '<div class="bs-heat-month-item" style="'+h.style+'">'+text(row.name)+' <bdi dir="ltr">'+h.label+'</bdi></div>'}).join('')+
       '</div></div>').join('')+'</div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للانحراف الشهري</h3>'+heatGrid+
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للفترتين</h3>'+heatGrid+
       '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p></section>');
     // 7. Largest-remainder integer allocation guarantees both stacks sum to 100.
     function apportion(values){
@@ -2108,7 +2137,7 @@ const BudgetCompareEngine = (() => {
     const partsEst=apportion(sorted.map(r=>r.b||0)),partsAct=apportion(sorted.map(r=>r.a||0));
     const bar=(values,label)=>'<div><div class="bs-stack-label"><strong>'+label+'</strong><span dir="ltr">'+values.join(' / ')+'%</span></div><div class="bs-stack" role="img" aria-label="'+label+' وحصص البنود" dir="ltr">'+
       values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. أوزان البنود من الإجمالي</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
       bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+
       '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p></section>');
     // 8. Slope: both sides share one numeric scale, one segment per category.
@@ -2119,7 +2148,7 @@ const BudgetCompareEngine = (() => {
       '<div class="bs-slope-amounts"><bdi dir="ltr">'+cash(row.b||0)+'</bdi><bdi dir="ltr">'+cash(row.a)+'</bdi></div>'+
       '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
     }).join('');
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. اتجاه تغير البنود (الميل)</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. مخطط الميل</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
       slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p></section>');
   }
 
