@@ -1050,3 +1050,28 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item {
     margin-top:0!important;
   }
 }
+
+
+/* STAGE 1 REFERENCE CALIBRATION 391x695 — photo proportions and text. */
+@media(max-width:480px){
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer {
+    margin-top:0!important;
+    padding-bottom:3px!important;
+  }
+  body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-bubble {
+    width:clamp(30px,9vw,38px)!important;
+    height:clamp(30px,9vw,38px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card button.reference-one-add strong {
+    font-size:clamp(11px,3.31vw,16px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-amount {
+    font-size:clamp(11px,3.51vw,17px)!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-card .reference-one-details small {
+    font-size:clamp(8px,2.8vw,12px)!important;
+  }
+  #viewExpenses.home-reference-one.active #topCardBalance {
+    font-size:clamp(20px,6.55vw,29px)!important;
+  }
+}
