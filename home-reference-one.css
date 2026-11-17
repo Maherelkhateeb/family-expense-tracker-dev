@@ -5,125 +5,11 @@
   --reference-violet: #6411a9;
 }
 
-body:has(.home-reference-one.active) :is(.header-brand-row button > i,#avatarsContainer #avatarImgAllFamily),
-.home-reference-one :is(.period-filter-pill i,.hero-wallet-icon-badge i,#iconBalancePrivacy.fa-eye,.flow-icon-badge i,.executive-quick-tools-strip i) {
-  display: inline-block !important;
-  flex: 0 0 auto;
-  width: var(--ref-icon-size,12px);
-  height: var(--ref-icon-size,12px);
-  background: url('./assets/home-reference-one-controls.webp') var(--ref-icon-x,0%) var(--ref-icon-y,0%) / 1000% 200% no-repeat !important;
-  font-size: 0 !important;
+/* Do not restyle the existing top toolbar, family avatars or period filters.
+   These are shared with the original/default home screen. */
+#viewExpenses.home-reference-one {
+  background: linear-gradient(150deg,#d8f7fa,#e9fafc 65%,#e3f6fb) !important;
 }
-body:has(.home-reference-one.active) :is(.header-brand-row button > i,#avatarImgAllFamily)::before,
-.home-reference-one :is(.period-filter-pill i,.hero-wallet-icon-badge i,#iconBalancePrivacy.fa-eye,.flow-icon-badge i,.executive-quick-tools-strip i)::before {
-  content: none !important;
-}
-body:has(.home-reference-one.active) #btnHeaderMasterSync > i { --ref-icon-x: 11.1111%; }
-body:has(.home-reference-one.active) #btnGlobalSearch > i { --ref-icon-x: 22.2222%; }
-body:has(.home-reference-one.active) #btnHeaderTasksTop > i { --ref-icon-x: 33.3333%; }
-body:has(.home-reference-one.active) #btnNotificationsBell > i { --ref-icon-x: 44.4444%; }
-body:has(.home-reference-one.active) #avatarImgAllFamily { --ref-icon-x: 100%; --ref-icon-y: 100%; --ref-icon-size: 20px; }
-body:has(.home-reference-one.active) #avatarsContainer .avatar-card:first-child .avatar-bubble {
-  background: linear-gradient(#f8f7ff,#ddd5fa) !important;
-}
-.home-reference-one #pillPeriodToday i { --ref-icon-x: 55.5556%; }
-.home-reference-one #pillPeriodWeek i { --ref-icon-x: 66.6667%; }
-.home-reference-one #pillPeriodMonth i { --ref-icon-x: 77.7778%; }
-.home-reference-one #pillPeriodAll i { --ref-icon-x: 88.8889%; }
-.home-reference-one #pillPeriodCustom i { --ref-icon-x: 100%; }
-.home-reference-one :is(.hero-wallet-icon-badge,#iconBalancePrivacy.fa-eye,.flow-icon-badge,.executive-quick-tools-strip) { --ref-icon-y: 100%; }
-.home-reference-one #iconBalancePrivacy.fa-eye { --ref-icon-x: 11.1111%; }
-.home-reference-one .inflow-badge i { --ref-icon-x: 22.2222%; }
-.home-reference-one .outflow-badge i { --ref-icon-x: 33.3333%; }
-.home-reference-one #btnHomeDesign i { --ref-icon-x: 44.4444%; --ref-icon-size: 17px; }
-.home-reference-one #btnOpenGold i { --ref-icon-x: 55.5556%; }
-.home-reference-one #walletSelectCluster > i { --ref-icon-x: 66.6667%; }
-.home-reference-one #btnToggleCurrency i { --ref-icon-x: 77.7778%; }
-.home-reference-one #btnOpenSummaryQuick i { --ref-icon-x: 88.8889%; }
-
-body:has(#viewExpenses.home-reference-one.active) #appFrame {
-  background: linear-gradient(150deg, #d8f7fa, #e9fafc 65%, #e3f6fb) !important;
-  border-color: #bfdafa !important;
-}
-
-body:has(.home-reference-one.active) #appFrame #appScrollBody #viewExpenses {
-  background: linear-gradient(150deg, #d8f7fa, #e9fafc 65%, #e3f6fb) !important;
-}
-
-body:has(.home-reference-one.active) #appFrame .app-header {
-  background: linear-gradient(#fff, #f4f8fb) !important;
-  border-color: #d2deef !important;
-  gap: 4px !important;
-  padding-block: 4px 3px !important;
-}
-
-body:has(.home-reference-one.active) #appFrame .header-brand-row :is(#btnNotificationsBell,#btnHeaderTasksTop,#btnGlobalSearch,#btnHeaderMasterSync,#btnMainSettings) {
-  border-radius: 100px !important;
-  font-family: Tahoma, Arial, sans-serif !important;
-  font-weight: 900 !important;
-  min-width: 0;
-  height: clamp(22px,6.1vw,34px) !important;
-  min-height: 0 !important;
-}
-
-body:has(.home-reference-one.active) #btnNotificationsBell {
-  background: linear-gradient(#fff9e5, #ffedcb) !important;
-  color: #a95400 !important;
-  border-color: #f4aa1b !important;
-}
-
-body:has(.home-reference-one.active) #btnHeaderTasksTop {
-  background: linear-gradient(#f6eaff, #e6d5f9) !important;
-  color: #6516a9 !important;
-  border-color: #b469ee !important;
-}
-
-body:has(.home-reference-one.active) :is(#btnGlobalSearch, #btnHeaderMasterSync) {
-  background: linear-gradient(#e6f8fc, #c6eef9) !important;
-  color: #006fbd !important;
-  border-color: #76caff !important;
-}
-
-body:has(.home-reference-one.active) #topDriveSyncStatusText { color: #078533 !important; }
-body:has(.home-reference-one.active) #btnMainSettings { background: #101d38 !important; }
-body:has(.home-reference-one.active) .header-brand-row button > i { color: #7619bc !important; }
-body:has(.home-reference-one.active) #appFrame #avatarsContainer .avatar-bubble {
-  border-color: #fff !important;
-  box-shadow: 0 2px 5px #344e7655 !important;
-  width: clamp(23px,7.7vw,38px) !important;
-  height: clamp(23px,7.7vw,38px) !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-}
-body:has(.home-reference-one.active) .avatar-name-label {
-  color: #111a32 !important;
-  font-family: Tahoma, Arial, sans-serif !important;
-  font-weight: 900 !important;
-  text-shadow: none !important;
-}
-
-#viewExpenses.home-reference-one .period-selector-top-strip { margin: 2px 2.1cqi !important; padding: 0 !important; }
-#viewExpenses.home-reference-one .period-selector-top-strip .period-buttons-group {
-  background: linear-gradient(160deg, #233145, #0b1428) !important;
-  border-color: #192438 !important;
-  border-radius: 12px !important;
-  padding: 2px !important;
-}
-
-#viewExpenses.home-reference-one .period-filter-pill {
-  height: 7.45cqi !important;
-  min-height: 23px !important;
-  color: #bdd9eb !important;
-  font: 900 clamp(10px, 2.9cqi, 15px)/1 Tahoma, Arial, sans-serif !important;
-}
-
-.home-reference-one .period-filter-pill i { color: #ab47ed !important; }
-.home-reference-one .period-filter-pill.active {
-  background: linear-gradient(100deg, #00c3f6, #009dde) !important;
-  color: #fff !important;
-  box-shadow: 0 0 8px #01beef88, inset 0 0 5px #b7f5ff !important;
-}
-
 #appFrame #viewExpenses.home-reference-one #topKpiThreeStrip {
   min-height: 15.5cqi !important;
   margin: 1.2cqi 2.7cqi !important;
@@ -353,4 +239,69 @@ body:has(.home-reference-one.active) #appBottomNav .nav-tab-item svg * { stroke:
 body:has(.home-reference-one.active) #appBottomNav #navTabExpenses.active {
   background: linear-gradient(#eefbff,#d8f6ff) !important;
   border-color: #119cff !important;
+}
+
+/* First mobile reference: two even columns, fixed artwork and reliable tap areas. */
+#viewExpenses.home-reference-one .reference-one-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  direction: rtl;
+  gap: clamp(5px,1.5cqi,10px);
+}
+#viewExpenses.home-reference-one .reference-one-card {
+  box-sizing: border-box;
+  grid-template-rows: minmax(0,.41fr) minmax(0,.59fr);
+  height: clamp(72px,20.8cqi,108px);
+  min-height: 72px;
+}
+#viewExpenses.home-reference-one .reference-one-card button {
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: 2px 1.35cqi 2px 14.7cqi;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  touch-action: manipulation;
+}
+#viewExpenses.home-reference-one .reference-one-icon { pointer-events: none; }
+#viewExpenses.home-reference-one .reference-one-card button strong {
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  line-height: 1.13 !important;
+}
+#viewExpenses.home-reference-one .reference-one-details { gap: 1px; }
+#viewExpenses.home-reference-one .reference-one-amount {
+  width: 100%;
+  align-items: baseline;
+  gap: 0 .55cqi;
+  line-height: 1.1;
+}
+#viewExpenses.home-reference-one .reference-one-amount bdi {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+#viewExpenses.home-reference-one .reference-one-details progress { max-width: 100%; }
+#viewExpenses.home-reference-one .reference-one-details small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] button {
+  grid-template-rows: auto auto;
+}
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] strong { align-self: end; }
+#viewExpenses.home-reference-one .reference-one-wave { margin-top: .7cqi; }
+@container (max-width: 355px) {
+  #viewExpenses.home-reference-one .reference-one-grid { gap: 5px; }
+  #viewExpenses.home-reference-one .reference-one-card { min-height: 70px; }
+  #viewExpenses.home-reference-one .reference-one-card button strong { font-size: 10px !important; }
+  #viewExpenses.home-reference-one .reference-one-details small { font-size: 7px; }
+  #viewExpenses.home-reference-one .reference-one-amount { font-size: 10px; }
 }
