@@ -5,6 +5,8 @@ const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
 require('node:fs').mkdirSync('screenshots',{recursive:true});
 const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
+const normalizeNumbers=s=>String(s||'').replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(ch)))
+  .replace(/٬/g,',').replace(/٫/g,'.');
 (async()=>{
   const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
   try{
@@ -69,7 +71,12 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
           foot:root.querySelector('.bs-table tfoot')?.innerText};
       });
       assert.equal(plan.count,9,'Plan should include all eight reference charts');
-      assert.ok(plan.summary.includes('6,700')&&plan.summary.includes('6,100')&&plan.summary.includes('600'),
+      console.log('UNIFIED_PLAN_'+width+' '+JSON.stringify({
+        summary:normalizeNumbers(plan.summary),foot:normalizeNumbers(plan.foot)
+      }));
+      assert.ok(normalizeNumbers(plan.summary).includes('6,700')&&
+        normalizeNumbers(plan.summary).includes('6,100')&&
+        normalizeNumbers(plan.summary).includes('600'),
         'Plan totals must reconcile from the same selected filters');
       assert.ok(plan.foot.includes('6,700')&&plan.foot.includes('6,100'),'Table totals must equal summary totals');
 
@@ -93,7 +100,8 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
           extraOpen:document.getElementById('cmpUnifiedAdvancedCharts').open};
       });
       console.log('UNIFIED_PREVIOUS '+width+' '+JSON.stringify(previous));
-      assert.ok(previous.summary.includes('6,700')&&previous.summary.includes('3,600'),
+      assert.ok(normalizeNumbers(previous.summary).includes('6,700')&&
+        normalizeNumbers(previous.summary).includes('3,600'),
         'Selected previous-period totals ignored');
       assert.ok(previous.cumulative.includes('3,600')&&previous.cumulative.includes('6,700'),
         'Cumulative chart must use the selected previous period');
