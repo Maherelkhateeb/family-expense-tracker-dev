@@ -231,6 +231,28 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.ok(drill.banner.includes('طعام'),'Wrong category in drilldown banner');
    assert.ok(drill.banner.includes('2'),'Budget drilldown did not match two expenses');
    assert.ok(!drill.displayed.includes('دواء'),'Irrelevant category leaked into drilldown');
+   const layout=await page.evaluate(()=>{
+     const tabs=document.getElementById('opsSectionTabs');
+     const toolbar=document.querySelector('#viewOperations .ops-search-row');
+     const box=el=>el.getBoundingClientRect();
+     const fits=(outer,inner)=>inner.left>=outer.left-1&&inner.right<=outer.right+1;
+     const controls=[...toolbar.children].map(box);
+     const panels=[tabs,toolbar,document.getElementById('budgetDrilldownBanner')];
+     return {
+       tabs:tabs.children.length,
+       labels:[...tabs.querySelectorAll('button span')].every(label=>fits(box(label.parentElement),box(label))),
+       toolbar:controls.every(item=>fits(box(toolbar),item))&&new Set(controls.map(item=>Math.round(item.top))).size===2,
+       panels:panels.every(panel=>fits(box(document.getElementById('appFrame')),box(panel))),
+       chips:[...document.querySelectorAll('#txOperationsList .ops-compact-chips')]
+          .every(row=>[...row.children].every(chip=>fits(box(row),box(chip))))
+     };
+   });
+   assert.deepEqual(layout,{tabs:4,labels:true,toolbar:true,panels:true,chips:true});
+   await page.locator('#btnToggleOpsFilters').click();
+   assert.equal(await page.locator('#btnToggleOpsFilters').getAttribute('aria-expanded'),'true');
+   await page.locator('#btnToggleOpsFilters').click();
+   assert.equal(await page.locator('#btnToggleOpsFilters').getAttribute('aria-expanded'),'false');
+
    await page.evaluate(()=>document.getElementById('budgetDrilldownBack').click());
    const back=await page.evaluate(()=>({
      active:BudgetDrilldownHub.isActive(),period:state.period,budgetId:state.activeBudgetId,
@@ -241,6 +263,32 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.deepEqual({active:back.active,period:back.period,budgetId:back.budgetId,
      banner:back.banner,rowCount:back.rowCount},
      {active:false,period:'all',budgetId:'qa-drill-2025-04',banner:false,rowCount:initial.rows});
+   await page.evaluate(()=>{
+     switchBudgetSubTab('monthly');
+     switchBudgetMonthView('compare');
+     BudgetCompareEngine.onActualPeriodChange('custom');
+     document.getElementById('cmpEstimFrom').value='2025-04-01';
+     document.getElementById('cmpEstimTo').value='2025-04-30';
+     BudgetCompareEngine.render();
+   });
+   await page.locator('#cmpEstimCustomRange button').click();
+   assert.ok(await page.locator('#customDatePickerDrawer').isVisible());
+   for(const date of ['2025-04-03','2025-04-07']){
+     await page.locator('#customRangeCalendarMonths [onclick="selectCustomRangeDate(\''+date+'\')"]').click();
+   }
+   await page.locator('#customDatePickerConfirmButton').click();
+   assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'2025-04-03');
+   assert.equal(await page.locator('#cmpEstimTo').inputValue(),'2025-04-07');
+   assert.match(await page.locator('#cmpEstimCustomRangeLabel').innerText(),/2025-04-03.*2025-04-07/);
+   assert.ok(!(await page.locator('#cmpEstimFrom').isVisible()));
+   assert.ok(!(await page.locator('#cmpEstimTo').isVisible()));
+   assert.equal(await page.locator('#cmpActualFrom').inputValue(),'2025-04-01');
+   await page.locator('#cmpEstimCustomRange button').click();
+   await page.locator('#customDatePickerResetButton').click();
+   assert.equal(await page.locator('#cmpEstimFrom').inputValue(),'');
+   assert.equal(await page.locator('#cmpEstimTo').inputValue(),'');
+   assert.equal(await page.locator('#cmpEstimCustomRangeLabel').innerText(),'نطاق التواريخ');
+
    if(width===360){
      await page.evaluate(()=>{
        if(typeof switchBudgetSubTab==='function')switchBudgetSubTab('comparisons');

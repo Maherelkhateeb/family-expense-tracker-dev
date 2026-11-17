@@ -34,7 +34,6 @@ body.light-theme #appFrame #viewOperations {
   border-radius: 11px !important;
   padding: 3px !important;
 }
-#appFrame #viewOperations .ops-section-tabs { margin-block: 0 8px !important; }
 #appFrame #viewOperations .ops-view-mode-bar { margin: 0 !important; }
 #appFrame #viewOperations :is(.ops-section-tabs,.ops-view-mode-bar,.ops-period-strip,.archive-period-strip,#opsTypeFilterPills) > button {
   min-width: 0;
@@ -60,6 +59,20 @@ body.light-theme #appFrame #viewOperations {
   border-color: var(--ledger-accent) !important;
   color: var(--ledger-accent) !important;
 }
+#appFrame #viewOperations #opsSectionTabs {
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  grid-auto-flow: row;
+  margin-block: 0 6px !important;
+}
+#appFrame #viewOperations #opsSectionTabs > button {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 32px !important;
+  height: auto !important;
+  white-space: normal !important;
+}
+#appFrame #viewOperations #opsSectionTabs > button span { min-width: 0; overflow-wrap: anywhere; }
 #appFrame #viewOperations .ops-header-tools {
   display: grid;
   gap: 5px !important;
@@ -70,7 +83,42 @@ body.light-theme #appFrame #viewOperations {
   margin-block-end: 6px !important;
   color: var(--ledger-text);
 }
-#appFrame #viewOperations .ops-search-row { display: flex !important; }
+#appFrame #viewOperations .ops-search-row {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  grid-template-areas: "search search results results" "filters clear pdf excel";
+  align-items: stretch;
+  gap: 4px;
+}
+#appFrame #viewOperations .ops-search-field { grid-area: search; }
+#appFrame #viewOperations #opsResultCount {
+  grid-area: results;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 2px 4px;
+  text-align: center;
+  border: 1px solid var(--ledger-line);
+  border-radius: 7px;
+  background: var(--ledger-active);
+  color: var(--ledger-accent);
+  font-size: .72rem;
+  font-weight: 800;
+}
+#btnToggleOpsFilters { grid-area: filters; }
+#btnToggleOpsFilters[aria-expanded="true"] #iconToggleOpsFilters { transform: rotate(180deg); }
+#btnOpsClearFilters { grid-area: clear; }
+#btnOpsExportPdf { grid-area: pdf; }
+#btnOpsExportExcel { grid-area: excel; }
+#appFrame #viewOperations .ops-entry-compact > div { min-width: 0; }
+#appFrame #viewOperations .ops-compact-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 4px;
+  font-size: .62rem;
+}
+#appFrame #viewOperations .ops-compact-chips > span { max-width: 100%; overflow-wrap: anywhere; }
 #appFrame #viewOperations .ops-filter-footer { display: none !important; }
 #appFrame #viewOperations .ops-search-row label { min-width: 0; flex: 1; position: relative; }
 #appFrame #viewOperations .ops-search-row label > i { position: absolute; inset-inline-start: 9px; top: 50%; transform: translateY(-50%); color: var(--ledger-muted); pointer-events: none; font-size: .72rem; }
@@ -81,7 +129,15 @@ body.light-theme #appFrame #viewOperations {
 }
 #appFrame #viewOperations #opsSearchInput::placeholder { color: var(--ledger-muted); }
 #appFrame #viewOperations :is(.ops-search-row > button,#btnOpsClearFilters) {
-  min-height: 29px !important; height: 29px !important; flex: none; padding: 2px 7px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 32px !important;
+  height: auto !important;
+  padding: 2px 4px !important;
+  white-space: normal !important;
   background: var(--ledger-control) !important; color: var(--ledger-accent) !important;
   border: 1px solid var(--ledger-line) !important; border-radius: 7px !important; box-shadow: none !important;
   font: inherit; font-size: .69rem !important; font-weight: 800;
@@ -222,6 +278,7 @@ body.light-theme #appFrame #viewOperations .ops-entry-meta time {
 @media (max-width: 380px) {
   #appFrame #viewOperations :is(.ops-section-tabs,.ops-header-tools,.ops-feed-container,#opsSubViewArchive) { margin-inline: 7px; }
   #appFrame #viewOperations .ops-header-tools { padding: 6px; }
+  #appFrame #viewOperations .ops-section-tabs > button i { display: none; }
   #appFrame #viewOperations :is(.ops-period-strip,.archive-period-strip) i { display: none; }
   #appFrame #viewOperations .ops-picker-panel { width: min(220px, calc(100vw - 44px)); }
   #appFrame #viewOperations .ops-entry-icon { width: 27px; height: 27px; }

@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.94';
-    var APP_BUILD_ID = 202611171015;
+    var APP_VERSION = 'v5.3.95';
+    var APP_BUILD_ID = 202611171025;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171015">
-  <script src="./appearance-compact.js?v=202611171015" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171025">
+  <script src="./appearance-compact.js?v=202611171025" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171025">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171015"></script>
+  <script src="./budget-audit-engine.js?v=202611171025"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -16765,12 +16765,6 @@ body.light-theme .analytics-date-range-trigger {
       gap: 6px !important;
       margin: 4px 0 8px !important;
       width: 100% !important;
-    }
-    #appFrame #viewOperations .ops-search-row {
-      display: flex !important;
-      flex-wrap: nowrap !important;
-      align-items: center !important;
-      gap: 4px !important;
     }
 </style>
 <style id="summaryHierarchicalStyles">
@@ -17528,18 +17522,18 @@ body.light-theme .market-buy-price {
            الصفحة 2: العمليات والأرشيف (Page 2: Operations & Audit Archive)
            ================================================================ -->
       <div class="page-view" id="viewOperations" style="display: none;">
-        <div class="segmented-tabs-bar ops-section-tabs" style="display: flex; gap: 4px; margin: 4px 6px 10px; background: rgba(15, 23, 42, 0.7); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
-          <button class="segmented-tab-btn active" id="btnOpsSubRegistered" onclick="switchOperationsSubTab('registered')" style="flex: 1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-receipt"></i> <span>العمليات المسجلة</span>
+        <div id="opsSectionTabs" class="segmented-tabs-bar ops-section-tabs" role="group" aria-label="أقسام العمليات">
+          <button type="button" class="segmented-tab-btn active" id="btnOpsSubRegistered" onclick="switchOperationsSubTab('registered')" title="العمليات المسجلة">
+            <i class="fa-solid fa-receipt" aria-hidden="true"></i><span>المسجلة</span>
           </button>
-          <button class="segmented-tab-btn" id="btnOpsSubAnalytics" onclick="switchOperationsSubTab('analytics')" style="flex: 1.1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i> <span>تحليل المصروفات الفعلية</span>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubAnalytics" onclick="switchOperationsSubTab('analytics')" title="تحليل المصروفات الفعلية">
+            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>التحليل</span>
           </button>
-          <button class="segmented-tab-btn" id="btnOpsSubArchive" onclick="switchOperationsSubTab('archive')" style="flex: 1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-clock-rotate-left"></i> <span>الأرشيف وسجل النشاط</span>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubArchive" onclick="switchOperationsSubTab('archive')" title="الأرشيف وسجل النشاط">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>الأرشيف</span>
           </button>
-          <button type="button" class="segmented-tab-btn" id="btnOpsSubSample" onclick="switchOperationsSubTab('sample')">
-            <i class="fa-solid fa-flask" aria-hidden="true"></i> <span>تجريبية</span>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubSample" onclick="switchOperationsSubTab('sample')" title="العمليات التجريبية">
+            <i class="fa-solid fa-flask" aria-hidden="true"></i><span>تجريبية</span>
           </button>
         </div>
         <div id="opsSubViewRegistered">
@@ -17554,20 +17548,20 @@ body.light-theme .market-buy-price {
               <i class="fa-solid fa-arrow-turn-up" style="transform: rotate(-90deg);"></i> رجوع للمؤشرات
             </button>
           </div>
-          <div class="ops-search-row" style="display: flex !important; align-items: center; gap: 4px; padding: 2px 0; margin-bottom: 6px;">
-              <button type="button" class="btn-export-tool clear-btn" id="btnOpsClearFilters" onclick="resetOperationsFilters()" title="مسح الفلاتر" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-filter-circle-xmark"></i> مسح
+            <div class="ops-search-row">
+              <label class="ops-search-field">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()">
+              </label>
+              <span id="opsResultCount" role="status">— عملية</span>
+              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" aria-controls="opsFiltersCollapsibleBody" aria-expanded="false">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i><span id="lblToggleOpsFilters">الفلاتر</span><i id="iconToggleOpsFilters" class="fa-solid fa-chevron-down" aria-hidden="true"></i>
               </button>
-              <span id="opsResultCount" role="status" style="white-space: nowrap; font-size: 0.70rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 4px 6px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
-                -- عملية
-              </span>
-              <!-- زر طي / إظهار الفلاتر الإضافية لتوفير مساحة الشاشة (مطوي افتراضياً) -->
-              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" title="طي أو إظهار خيارات الفلترة المتقدمة" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.06); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 800;">
-                <i class="fa-solid fa-sliders"></i> <span id="lblToggleOpsFilters">خيارات الفلترة</span> <i id="iconToggleOpsFilters" class="fa-solid fa-chevron-down" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
+              <button type="button" class="btn-export-tool clear-btn" id="btnOpsClearFilters" onclick="resetOperationsFilters()" title="مسح الفلاتر" aria-label="مسح الفلاتر">
+                <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><span>مسح</span>
               </button>
-              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
-              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
-              <label style="flex: 1; min-width: 0; margin: 0; position: relative;"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
+              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDF</span></button>
+              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i><span>إكسيل</span></button>
             </div>
             <!-- بداية الحاوية القابلة للطي لصفوف الفلترة المتقدمة (مطوية في الوضع الافتراضي) -->
             <div id="opsFiltersCollapsibleBody" style="display: none; transition: all 0.25s ease;">
@@ -18927,15 +18921,12 @@ body.light-theme .market-buy-price {
                   <option value="thisYear">السنة الحالية</option>
                   <option value="custom">منتقى التواريخ (مخصص)</option>
                 </select>
-                <div id="cmpActualCustomRange" style="display:none;align-items:center;gap:4px;margin-top:4px;">
-                  <button type="button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')"
-                    style="flex:1;height:30px;font-size:0.70rem;font-weight:850;border-radius:7px;
-                      border:1px solid rgba(16,185,129,0.5);background:rgba(16,185,129,0.15);color:#34d399;
-                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
-                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
+                <div id="cmpActualCustomRange" class="cmp-month-custom-range" style="display:none">
+                  <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
+                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
                   </button>
-                  <input type="date" id="cmpActualFrom" style="display:none;" onchange="BudgetCompareEngine.render()">
-                  <input type="date" id="cmpActualTo" style="display:none;" onchange="BudgetCompareEngine.render()">
+                  <input type="date" id="cmpActualFrom" hidden onchange="BudgetCompareEngine.render()">
+                  <input type="date" id="cmpActualTo" hidden onchange="BudgetCompareEngine.render()">
                 </div>
               </div>
 
@@ -18952,13 +18943,12 @@ body.light-theme .market-buy-price {
                   <option value="lastMonth">الشهر السابق</option>
                   <option value="custom">منتقى بشهر محدد</option>
                 </select>
-                <div id="cmpEstimCustomRange" style="display:none;gap:4px;margin-top:4px;">
-                  <input type="date" id="cmpEstimFrom" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
-                  <input type="date" id="cmpEstimTo" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
+                <div id="cmpEstimCustomRange" class="cmp-month-custom-range" style="display:none">
+                  <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpEstimFrom','cmpEstimTo')">
+                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpEstimCustomRangeLabel">نطاق التواريخ</span>
+                  </button>
+                  <input type="date" id="cmpEstimFrom" hidden onchange="BudgetCompareEngine.render()">
+                  <input type="date" id="cmpEstimTo" hidden onchange="BudgetCompareEngine.render()">
                 </div>
               </div>
             </div>
@@ -21256,7 +21246,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.94</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.95</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -24833,35 +24823,11 @@ function toggleAnalyticsCustomRange() {
     
     function toggleOpsFiltersCollapse(forceOpen = null) {
       const body = document.getElementById('opsFiltersCollapsibleBody');
-      const icon = document.getElementById('iconToggleOpsFilters');
-      const lbl = document.getElementById('lblToggleOpsFilters');
-      const btn = document.getElementById('btnToggleOpsFilters');
       if (!body) return;
-
-      const isCurrentlyCollapsed = (body.style.display === 'none');
-      const shouldCollapse = forceOpen !== null ? !forceOpen : !isCurrentlyCollapsed;
-
-      if (shouldCollapse) {
-        body.style.display = 'none';
-        if (icon) icon.style.transform = 'rotate(180deg)';
-        if (lbl) lbl.textContent = 'خيارات الفلترة';
-        if (btn) {
-          btn.style.background = 'rgba(255, 255, 255, 0.06)';
-          btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-          btn.style.color = '#94a3b8';
-        }
-        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'true'); } catch(e) {}
-      } else {
-        body.style.display = 'block';
-        if (icon) icon.style.transform = 'rotate(0deg)';
-        if (lbl) lbl.textContent = 'طي الفلاتر';
-        if (btn) {
-          btn.style.background = 'rgba(56, 189, 248, 0.14)';
-          btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-          btn.style.color = '#38bdf8';
-        }
-        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'false'); } catch(e) {}
-      }
+      const open = forceOpen ?? (body.style.display === 'none');
+      body.style.display = open ? 'block' : 'none';
+      document.getElementById('btnToggleOpsFilters')?.setAttribute('aria-expanded', String(open));
+      try { localStorage.setItem('family_monefy_ops_filters_collapsed', String(!open)); } catch(e) {}
     }
     window.toggleOpsFiltersCollapse = toggleOpsFiltersCollapse;
 
@@ -25315,11 +25281,6 @@ function toggleAnalyticsCustomRange() {
         dispatchCustomDatePickerChange(context.fromInput);
         dispatchCustomDatePickerChange(context.toInput);
 
-        if (context.fromInput.id === 'cmpActualFrom') {
-          const lbl = document.getElementById('cmpActualCustomRangeLabel');
-          if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
-          if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
-        }
         if (context.fromInput.id === 'cmpProjActualFrom') {
           const lbl = document.getElementById('cmpProjActualCustomRangeLabel');
           if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
@@ -27436,7 +27397,7 @@ function renderCategoriesGrid(filtered) {
                       <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
-                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                    <div class="ops-compact-chips">
                       <span style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
@@ -27554,7 +27515,7 @@ function renderCategoriesGrid(filtered) {
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
                     <!-- السطر الثاني: رقائق مدمجة وبجانب المحفظة رقم العملية مباشرة -->
-                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                    <div class="ops-compact-chips">
                       <span style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}

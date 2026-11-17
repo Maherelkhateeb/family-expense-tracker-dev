@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.94",
-  "build": "202611171015",
-  "buildId": 202611171015,
-  "updated": "2026-11-17T10:15:00+03:00",
-  "notes": "Record selectable comparison budgets as persistent, separate sample operations."
+  "version": "v5.3.95",
+  "build": "202611171025",
+  "buildId": 202611171025,
+  "updated": "2026-11-17T10:25:00+03:00",
+  "notes": "Align the operations toolbar, cards and comparison return; use the unified date picker for estimated ranges."
 }

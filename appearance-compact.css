@@ -1704,26 +1704,39 @@ body.light-theme #settingsModal .settings-modal-shell .antigravity-card-block {
 }
 
 /* Monthly-budget drill-through: visible context and a dependable return control. */
-#budgetDrilldownBanner {
-  position:sticky;top:0;z-index:110;
-  display:flex;align-items:center;justify-content:space-between;gap:9px;
-  flex-wrap:wrap;padding:10px 12px;margin:0 0 12px;
-  background:var(--card-bg,#eff6ff);color:var(--text-primary,#172033);
-  border:1px solid var(--accent,#0284c7);border-radius:12px;
-  box-shadow:0 3px 12px rgba(15,23,42,.12);direction:rtl;
+#appFrame #viewOperations #budgetDrilldownBanner {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 110;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  margin: 0 12px 6px;
+  background: var(--ledger-panel);
+  color: var(--ledger-text);
+  border: 1px solid var(--ledger-line);
+  border-radius: 10px;
 }
-#budgetDrilldownBanner .budget-drill-copy {flex:1 1 160px;min-width:0;line-height:1.6;font-size:.76rem}
-#budgetDrilldownBanner .budget-drill-copy strong {display:block;font-size:.84rem}
-#budgetDrilldownBanner button {
-  flex:0 0 auto;padding:7px 10px;border:1px solid var(--accent,#0284c7);
-  border-radius:8px;color:var(--accent,#0284c7);font-size:.75rem;
-  font-weight:900;background:transparent;cursor:pointer;
+#budgetDrilldownBanner .budget-drill-copy { min-width: 0; line-height: 1.35; font-size: .66rem; color: var(--ledger-muted); }
+#budgetDrilldownBanner .budget-drill-copy strong { display: block; font-size: .77rem; color: var(--ledger-text); overflow-wrap: anywhere; }
+#appFrame #budgetDrilldownBack {
+  min-height: 32px;
+  max-width: 9rem;
+  padding: 3px 7px;
+  border: 1px solid var(--ledger-accent);
+  border-radius: 7px;
+  color: var(--ledger-accent);
+  background: var(--ledger-active);
+  font-size: .7rem;
+  font-weight: 850;
+  white-space: normal;
+  cursor: pointer;
 }
-body:not(.light-theme) #budgetDrilldownBanner {
-  background:#17243a;color:#f8fafc;border-color:#38bdf8;
-}
-body:not(.light-theme) #budgetDrilldownBanner button {
-  color:#7dd3fc;border-color:#38bdf8;
+@media (max-width:380px) {
+  #appFrame #viewOperations #budgetDrilldownBanner { margin-inline: 7px; }
+  #appFrame #budgetDrilldownBack { max-width: 7.25rem; }
 }
 .monthly-insight-card[data-budget-drill-scope],
 .budget-audit-row, #cmpTableBody tr[onclick],
@@ -1911,3 +1924,28 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
 .cmp-sample-actions button,#opsSubViewSample button {padding:4px 6px;border:1px solid var(--border);border-radius:6px;color:var(--text-main);background:var(--bg-card);font:inherit;font-size:.69rem;cursor:pointer}
 .cmp-sample-actions [role="status"],.sample-operations-summary {font-size:.69rem}
 #sampleOperationsShowAll,#sampleOperationsMore {margin-top:5px}
+
+#cmpPeriodsFilterBox > div { min-width: 0; }
+.cmp-month-custom-range { margin-top: 4px; width: 100%; }
+#cmpPeriodsFilterBox .cmp-month-range-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 3px 4px;
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  background: rgba(16,185,129,.12);
+  color: #86efac;
+  font: inherit;
+  font-weight: 800;
+  font-size: .69rem;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+#cmpEstimCustomRange .cmp-month-range-button { color: #fde68a; background: rgba(245,158,11,.13); }
+body.light-theme #cmpPeriodsFilterBox .cmp-month-range-button { color: #065f46; }
+body.light-theme #cmpPeriodsFilterBox #cmpEstimCustomRange .cmp-month-range-button { color: #854d0e; }

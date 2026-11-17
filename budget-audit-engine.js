@@ -1600,6 +1600,10 @@ const BudgetCompareEngine = (() => {
     const customEstTo = estInpTo ? estInpTo.value : null;
 
     const estRange = periodToRange(_estimPeriod, customEstFrom || actRange.from, customEstTo || actRange.to);
+    const actualLabel = document.getElementById('cmpActualCustomRangeLabel');
+    const estimatedLabel = document.getElementById('cmpEstimCustomRangeLabel');
+    if (actualLabel) actualLabel.textContent = customActFrom && customActTo ? customActFrom + ' إلى ' + customActTo : 'نطاق التواريخ';
+    if (estimatedLabel) estimatedLabel.textContent = customEstFrom && customEstTo ? customEstFrom + ' إلى ' + customEstTo : 'نطاق التواريخ';
 
     const actData = getActualsForRange(actRange.from, actRange.to);
     const daysCount = dateDiffDays(estRange.from, estRange.to);
