@@ -176,7 +176,7 @@
   function reportTable(d){
     const headings=["البند","التقديري","الفعلي","فرق المبلغ","الانحراف","الحالة","حصة ت / ف","YTD","المتبقي","التوقع","النوع","السبب"];
     const row=r=>{
-      return `<tr><td>${r.id?`<button type="button" data-fbc-open="${esc(r.id)}">${esc(r.name)}</button>`:esc(r.name)}</td><td>${bidi(n0(r.estimated))}</td><td>${bidi(n0(r.actual))}</td>
+      return `<tr><td>${r.id?`<button type="button" data-fbc-open="${esc(r.id)}">${esc(r.name)}</button>`:esc(r.name)}</td><td>${bidi(n0(r.estimated))}</td><td>${r.id?`<button type="button" data-fbc-open="${esc(r.id)}" aria-label="عرض عمليات ${esc(r.name)}">${bidi(n0(r.actual))}</button>`:bidi(n0(r.actual))}</td>
 <td style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</td><td>${bidi(pct(r.percentage,1))}</td>
 <td style="color:${statusColor(r.status)}">${esc(r.status)}</td><td>${bidi(n1(r.shareEstimated)+"% / "+n1(r.shareActual)+"%")}</td>
 <td>${bidi(sign(r.ytdVariance===undefined?r.variance:r.ytdVariance))}</td><td>${bidi(n0(r.remaining===undefined?r.estimated-r.actual:r.remaining))}</td><td>${bidi(n0(r.forecast))}</td><td>${typeName(r.kind)}</td><td>${causeName(r.cause)}</td></tr>`;
@@ -186,7 +186,7 @@
       shareEstimated:100,shareActual:100,forecast:d.forecast,ytdVariance:d.totals.filter(t=>t.month<=[new Date().getFullYear(),String(new Date().getMonth()+1).padStart(2,"0")].join("-")).reduce((a,t)=>a+t.actual-t.estimated,0),remaining:d.remaining,kind:"",cause:""};
     const desktop=`<div class="fbc-table-box"><table class="fbc-table"><thead><tr>${headings.map(h=>"<th>"+h+"</th>").join("")}</tr></thead><tbody>${d.rows.map(row).join("")}</tbody><tfoot>${row(total)}</tfoot></table></div>`;
     const mobile=`<div class="fbc-mobile-items">${d.rows.map(r=>`<div class="fbc-mobile-item"><div class="fbc-mobile-title"><button type="button" data-fbc-open="${esc(r.id)}">${esc(r.name)}</button><span style="color:${statusColor(r.status)}">${esc(r.status)}</span></div>
-<div class="fbc-mobile-stat"><span>التقديري<b>${bidi(n0(r.estimated))}</b></span><span>الفعلي<b>${bidi(n0(r.actual))}</b></span><span>الفرق<b style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</b></span></div>
+<div class="fbc-mobile-stat"><span>التقديري<b>${bidi(n0(r.estimated))}</b></span><span>الفعلي<b><button type="button" data-fbc-open="${esc(r.id)}" aria-label="عرض عمليات ${esc(r.name)}">${bidi(n0(r.actual))}</button></b></span><span>الفرق<b style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</b></span></div>
 <div class="fbc-mobile-stat"><span>الانحراف<b>${bidi(pct(r.percentage,1))}</b></span><span>المتبقي<b>${bidi(n0(r.remaining))}</b></span><span>التوقع<b>${bidi(n0(r.forecast))}</b></span></div>
 <details><summary>الحصص والسبب والنوع</summary><p>حصة التقديري: ${bidi(n1(r.shareEstimated)+"%")}، حصة الفعلي: ${bidi(n1(r.shareActual)+"%")}، فرق الفترة التراكمي: ${bidi(sign(r.ytdVariance))}</p><p>نوع البند: ${typeName(r.kind)}، سبب الانحراف: ${causeName(r.cause)}</p>${r.kind==="fixed"&&r.variance!==0?"<p>تنبيه: تقدير البند الثابت يحتاج مراجعة.</p>":r.kind==="variable"&&r.variance!==0?"<p>انحراف بند متغير قابل للتحكم.</p>":""}</details></div>`).join("")}
 <div class="fbc-mobile-item"><div class="fbc-mobile-title">إجمالي الفترة <b style="color:${barColor(d.variance)}">${bidi(sign(d.variance))} ${esc(currency())}</b></div><div class="fbc-mobile-stat"><span>التقديري<b>${bidi(n0(d.totalEstimated))}</b></span><span>الفعلي<b>${bidi(n0(d.totalActual))}</b></span><span>الانحراف<b>${bidi(pct(d.percentage,1))}</b></span></div></div></div>`;
@@ -197,7 +197,7 @@
     const html=`<div role="img" aria-label="أعمدة متجاورة للتقديري والفعلي لكل بند" class="fbc-pairs">${d.rows.map(r=>`
 <div class="fbc-pair"><strong>${esc(r.name)}</strong><div class="fbc-pair-diff" style="color:${barColor(r.variance)}">${bidi(sign(r.variance))}</div>
 <div class="fbc-two-cols"><span style="background:${COLORS.estimated};height:${r.estimated?Math.max(2,r.estimated/max*100):0}%"></span><span style="background:${COLORS.actual};height:${r.actual?Math.max(2,r.actual/max*100):0}%"></span></div>
-<div class="fbc-pair-values"><span>${bidi(n0(r.estimated))}</span><span>${bidi(n0(r.actual))}</span></div></div>`).join("")}</div>`;
+<div class="fbc-pair-values"><span>${bidi(n0(r.estimated))}</span><button type="button" data-fbc-open="${esc(r.id)}" aria-label="عرض عمليات ${esc(r.name)}">${bidi(n0(r.actual))}</button></div></div>`).join("")}</div>`;
     return chartCard("1. أعمدة متجاورة","رمادي للتقديري وأزرق للفعلي، والمحور يبدأ من الصفر؛ الفرق فوق كل زوج.",
       `<div class="fbc-legend"><span style="--swatch:${COLORS.estimated}">تقديري</span><span style="--swatch:${COLORS.actual}">فعلي</span></div>${html}`,simpleAlt(d.rows));
   }
@@ -357,6 +357,7 @@ ${ui.advanced?`<div class="fbc-chart-grid">${bulletChart(display)}${svgCum(all)}
       if(open&&target?.contains(open)){
         const id=open.dataset.fbcOpen;
         if(typeof window.openOperationsFiltered==="function"){
+          window.OperationsReturnHub?.stageOrigin?.();
           const endDate=new Date(Date.UTC(Number(ui.end.slice(0,4)),Number(ui.end.slice(5,7)),0)).toISOString().slice(0,10);
           window.openOperationsFiltered({category:id,type:"expense",dateFrom:monthsFor(ui.end,ui.sample?6:ui.span)[0]+"-01",dateTo:endDate,resetFilters:true,returnTitle:"مقارنات الميزانية"});
         }
