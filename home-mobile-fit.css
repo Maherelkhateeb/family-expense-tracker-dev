@@ -109,19 +109,23 @@ body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
     padding: 0 !important;
   }
   #viewExpenses.home-reference-one .period-buttons-group {
-    min-height: 28px !important;
+    min-height: 27px !important;
+    padding: 1px !important;
+  }
+  #viewExpenses.home-reference-one .period-filter-pill {
+    min-height: 25px !important;
   }
   #viewExpenses.home-reference-one #topKpiThreeStrip {
-    height: 54px !important;
-    margin: 2px 3.1cqi 2px !important;
+    height: 48px !important;
+    margin: 0 3.1cqi !important;
     padding: 2px 4px !important;
   }
   #viewExpenses.home-reference-one .executive-quick-tools-strip {
-    margin: 2px 3.1cqi 2px !important;
+    margin: 0 3.1cqi !important;
     padding: 0 !important;
   }
   #viewExpenses.home-reference-one .executive-quick-tools-strip > * {
-    height: 27px !important;
+    height: 26px !important;
   }
   #viewExpenses.home-reference-one #homeInterfaces {
     margin-top: 0 !important;
