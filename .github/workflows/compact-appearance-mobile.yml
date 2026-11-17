@@ -15,6 +15,8 @@ on:
       - scripts/test-project-budget.cjs
       - scripts/test-market-data.cjs
       - scripts/test-compact-appearance.cjs
+      - scripts/test-home-reference-one.cjs
+      - home-reference-one.css
       - scripts/test-summary-tight-filters.cjs
       - scripts/test-control-alignment.cjs
       - .github/workflows/compact-appearance-mobile.yml
@@ -29,6 +31,8 @@ on:
       - scripts/test-project-budget.cjs
       - scripts/test-market-data.cjs
       - scripts/test-compact-appearance.cjs
+      - scripts/test-home-reference-one.cjs
+      - home-reference-one.css
       - scripts/test-summary-tight-filters.cjs
       - scripts/test-control-alignment.cjs
       - .github/workflows/compact-appearance-mobile.yml
@@ -64,6 +68,7 @@ jobs:
           node scripts/test-project-budget.cjs
           node scripts/test-gold-market.cjs
           node scripts/test-mobile-appearance.cjs
+          node scripts/test-home-reference-one.cjs
       - name: Upload mobile screenshots
         if: always()
         uses: actions/upload-artifact@v4
