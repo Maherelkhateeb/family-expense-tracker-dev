@@ -1428,3 +1428,38 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     position:relative!important; z-index:1!important;
   }
 }
+
+/* Fill the real center viewport without a blank footer gap — 2026-11-17 */
+@media (max-width:480px) {
+  body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appScrollBody {
+    display:flex!important; flex-direction:column!important;
+    padding-bottom:0!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active {
+    flex:1 0 auto!important; min-height:100%!important;
+    display:flex!important; flex-direction:column!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces:not([hidden]) {
+    flex:1 0 auto!important; display:flex!important; flex-direction:column!important;
+    margin-bottom:0!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces :is(.reference-one-grid,.home-design-grid) {
+    flex:1 0 auto!important; min-height:0!important; height:auto!important;
+    align-content:stretch!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid,
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='2'] .home-design-grid,
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='3'] .home-design-grid {
+    grid-template-rows:repeat(5,minmax(4.4em,1fr))!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='4'] .home-design-grid {
+    grid-template-rows:repeat(10,minmax(3.8em,1fr))!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='5'] .home-design-grid {
+    grid-template-rows:repeat(3,minmax(4.4em,1fr))!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active::after,
+  body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appScrollBody::after {
+    content:none!important; display:none!important;
+  }
+}
