@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.8",
-  "build": "202611171455",
-  "buildId": 202611171455,
-  "updated": "2026-11-17T14:55:00+03:00",
-  "notes": "First reference mobile refinement: correct category order, stable icon mapping, original header preserved."
+  "version": "v5.4.9",
+  "build": "202611171505",
+  "buildId": 202611171505,
+  "updated": "2026-11-17T15:05:00+03:00",
+  "notes": "First alternative home mobile layout; eliminate observer loop; keep original default."
 }
