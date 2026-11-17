@@ -110,6 +110,14 @@ function sync(){
   el('opsUniversalReturnFloat').textContent='رجوع إلى '+destination;
  }
 }
+function stageOrigin(){
+ // Summary drawers may close before openOperationsFiltered is called.
+ // Capture at the moment a summary amount is selected, while draft fields exist.
+ if(returning)return false;
+ const page=currentPage();
+ pending={time:Date.now(),page,capture:snapshot()};
+ return true;
+}
 function beforeNavigate(opts={}){
  if(returning)return false;
  const page=currentPage();
@@ -167,7 +175,7 @@ function initialize(){
  },true);
  sync();
 }
-window.OperationsReturnHub={beforeNavigate,onLeavePage,returnToSource,sync,
+window.OperationsReturnHub={stageOrigin,beforeNavigate,onLeavePage,returnToSource,sync,
  getState:()=>context?{page:context.page,summary:context.summary,scrollTop:context.bodyTop,fields:context.fields.length}:null};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize,{once:true});
 else initialize();
