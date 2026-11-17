@@ -541,3 +541,35 @@ body:has(#viewExpenses.home-alternative-design.active)
   transition-duration:150ms!important;
   transition-delay:0s!important;
 }
+
+/* Reassert switcher visibility on every home design without touching the
+   existing header, family portraits, date controls, or the original cards. */
+#viewExpenses.active .executive-quick-tools-strip > #btnHomeDesign {
+  display:inline-flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+  position:relative!important;
+  z-index:2!important;
+  align-items:center!important;
+  justify-content:center!important;
+  transform:none!important;
+  min-width:32px!important;
+  min-height:31px!important;
+  overflow:visible!important;
+}
+#viewExpenses.active .executive-quick-tools-strip > #btnHomeDesign:focus-visible {
+  outline:2px solid #2563eb!important;
+  outline-offset:2px!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active
+.executive-quick-tools-strip > :is(#btnHomeDesign,#btnOpenGold,#walletSelectCluster,#btnOpenSummaryQuick,#btnToggleCurrency) {
+  transform:none!important;
+  transition-property:background-color,color,border-color,box-shadow!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active
+#homeInterfaces .home-design-card :is(.home-design-head strong,.home-design-value bdi),
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card strong {
+  overflow-wrap:anywhere!important;
+  text-align:center!important;
+}
