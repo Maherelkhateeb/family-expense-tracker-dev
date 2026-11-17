@@ -163,9 +163,9 @@
 
 
 /* 17 Nov 2026 — one phone-first financial oversight, no duplicated dashboards. */
-#viewBudgets #panelBudgetComparisons{display:none!important}
+#viewBudgets #panelBudgetComparisons{display:block!important}
 #viewBudgets #cmpPeriodChart{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;width:100%!important;max-width:100%!important;min-width:0!important}
-#viewBudgets #cmpPeriodChart > :not(#cmpAuditApp){display:none!important}
+/* Preserve original charts, date-range controls and historical comparison workspace. */
 #viewBudgets #cmpAuditApp,
 #viewBudgets #cmpAuditApp *{box-sizing:border-box}
 #viewBudgets #cmpAuditApp{--audit-border:rgba(148,163,184,.26);--audit-muted:#94a3b8;
