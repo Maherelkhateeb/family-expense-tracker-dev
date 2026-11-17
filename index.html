@@ -26924,7 +26924,8 @@ function renderCategoriesGrid(filtered) {
       // 10. التمرير السلس إلى قائمة العمليات المفلترة
       const targetScroll = document.getElementById('opsSubViewRegistered') || document.getElementById('txOperationsList');
       if (targetScroll) {
-        targetScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Avoid a pending smooth-scroll animation overwriting exact position on Back.
+        targetScroll.scrollIntoView({ behavior: 'instant', block: 'start' });
       }
 
       // 11. إشعار فوري توضيحي لطيف
