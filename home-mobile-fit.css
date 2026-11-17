@@ -1,0 +1,386 @@
+/* Height-fit + reference palette for new family-expense home designs.
+   v5.4.16: only alternative home layouts. No money/state mutation.
+   Desktop and the original home design retain their existing appearance. */
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active {
+  container-type:inline-size;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  gap:2px!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .period-selector-top-strip,
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > #topKpiThreeStrip,
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .executive-quick-tools-strip {
+  flex:0 0 auto!important;
+  min-height:0!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > #topKpiThreeStrip {
+  box-sizing:border-box!important;
+  height:clamp(65px,10dvh,84px)!important;
+  min-height:65px!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .period-selector-top-strip {
+  box-sizing:border-box!important;
+  margin:2px 6px 3px!important;
+  padding:0!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .period-selector-top-strip .period-filter-pill {
+  min-height:30px!important;
+  padding:3px 2px!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .executive-quick-tools-strip {
+  box-sizing:border-box!important;
+  height:36px!important;
+  min-height:36px!important;
+  margin:3px 6px 5px!important;
+  align-items:center!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active > .executive-quick-tools-strip > * {
+  box-sizing:border-box!important;
+  height:36px!important;
+  min-height:0!important;
+  max-height:36px!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces:not([hidden]) {
+  box-sizing:border-box!important;
+  flex:1 1 0%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+  height:auto!important;
+  max-height:100%!important;
+  min-width:0!important;
+  width:auto!important;
+  margin:2px 6px 6px!important;
+  padding:0!important;
+  overflow:hidden!important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active
+#homeInterfaces :is(.reference-one-grid,.home-design-grid) {
+  box-sizing:border-box!important;
+  flex:1 1 0%!important;
+  display:grid!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:0!important;
+  height:100%!important;
+  align-items:stretch!important;
+  align-content:stretch!important;
+  gap:clamp(3px,.8cqi,6px)!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-grid,
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="2"] .home-design-grid,
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-grid {
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(5,minmax(0,1fr))!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-template-rows:repeat(3,minmax(0,1fr))!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-grid {
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:repeat(10,minmax(0,1fr))!important;
+  gap:clamp(2px,.6cqi,4px)!important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card,
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card {
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-height:100%!important;
+  height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:hidden!important;
+  align-self:stretch!important;
+}
+/* Layout 2: bright, colorful illustrated cards from the supplied reference. */
+#viewExpenses.home-reference-one.active .reference-one-card {
+  grid-template-rows:minmax(0,61fr) minmax(0,39fr)!important;
+  border-width:1px!important;
+  border-radius:clamp(9px,2.9cqi,16px)!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-card button {
+  min-width:0!important;
+  min-height:0!important;
+  padding:1px 2px!important;
+  gap:0!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-card button.reference-one-add {
+  padding:1px 2px 0!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-icon {
+  width:clamp(18px,4dvh,33px)!important;
+  height:clamp(18px,4dvh,33px)!important;
+  margin:0 auto!important;
+  flex:0 0 auto!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-card button strong {
+  font:850 clamp(8px,2.6cqi,13px)/1.08 Tahoma,Arial,sans-serif!important;
+  text-wrap:balance!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-details {
+  justify-content:center!important;
+  gap:2px!important;
+  padding:1px 3px!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-amount {
+  font:900 clamp(9px,2.8cqi,14px)/1.1 Tahoma,Arial,sans-serif!important;
+  white-space:nowrap!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-details progress {
+  width:96%!important;
+  height:3px!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-details small {
+  font:750 clamp(7px,2.2cqi,10px)/1.04 Tahoma,Arial,sans-serif!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-card[data-ref-category="voice"] strong {
+  font-size:clamp(9px,2.8cqi,13px)!important;
+}
+#viewExpenses.home-reference-one.active .reference-one-wave {
+  height:clamp(7px,2dvh,16px)!important;
+  margin:1px 0!important;
+}
+/* All non-reference alternatives share the pastel palette and illustrated sprites. */
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card {
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,54fr) minmax(0,46fr)!important;
+  border-radius:clamp(9px,2.8cqi,17px)!important;
+  border:1px solid var(--tone)!important;
+  background:linear-gradient(120deg,color-mix(in srgb,var(--tone) 14%,#fff),#fff 64%)!important;
+  color:#16233c!important;
+  box-shadow:0 2px 4px #123b5a20!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card :is(.home-design-head,.home-design-value) {
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:100%!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:2px 4px!important;
+  overflow:hidden!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-head {
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-head strong {
+  flex:1 1 0%!important;
+  min-width:0!important;
+  width:100%!important;
+  color:#10243c!important;
+  font:850 clamp(9px,2.9cqi,13px)/1.13 Tahoma,Arial,sans-serif!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-icon {
+  display:block!important;
+  flex:0 0 clamp(22px,6.6cqi,36px)!important;
+  width:clamp(22px,6.6cqi,36px)!important;
+  height:clamp(22px,6.6cqi,36px)!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent url('./assets/home-reference-one.webp') var(--icon-x) var(--icon-y) / 500% 200% no-repeat!important;
+  box-shadow:none!important;
+  font-size:0!important;
+  line-height:0!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-value {
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:2px!important;
+  border-top:1px solid color-mix(in srgb,var(--tone) 24%,#fff)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-value bdi {
+  display:block!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-height:40%!important;
+  color:#bf1427!important;
+  font:900 clamp(9px,2.7cqi,14px)/1.1 Tahoma,Arial,sans-serif!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-value progress {
+  flex:0 0 auto!important;
+  width:94%!important;
+  height:3px!important;
+  margin:0!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-value small {
+  display:block!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-height:0!important;
+  max-height:35%!important;
+  color:#35455f!important;
+  font:750 clamp(7px,2.12cqi,10px)/1.07 Tahoma,Arial,sans-serif!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+/* The reference cards use a full-width purple voice action (not a financial category). */
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-voice {
+  --tone:#8e20df;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  border:1px solid #a349eb!important;
+  background:linear-gradient(110deg,#8f16e1,#bd65f9)!important;
+  color:#fff!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-voice button {
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding:2px 5px!important;
+  color:#fff!important;
+  font:900 clamp(9px,2.5cqi,13px)/1.1 Tahoma,Arial,sans-serif!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-voice span {
+  display:block!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+  font-size:clamp(19px,5.5cqi,28px)!important;
+}
+/* Layout 4: icon above caption as shown in colorful alternatives. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-head {
+  flex-direction:column-reverse!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="3"] .home-design-card {
+  grid-template-rows:minmax(0,62fr) minmax(0,38fr)!important;
+}
+/* Layout 5: dense single-column list, rows and arrows exactly as the short-list concept. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-card:not(.home-design-voice) {
+  display:grid!important;
+  grid-template-columns:minmax(0,1.45fr) minmax(0,.85fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  border-radius:clamp(7px,1.9cqi,11px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-head {
+  flex-direction:row!important;
+  gap:3px!important;
+  padding:1px 6px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-icon {
+  width:clamp(18px,4.5cqi,27px)!important;
+  height:clamp(18px,4.5cqi,27px)!important;
+  flex-basis:clamp(18px,4.5cqi,27px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-head strong {
+  font-size:clamp(9px,2.6cqi,12px)!important;
+  text-align:right!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-value {
+  border:0!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:space-around!important;
+  gap:3px!important;
+  padding:1px 4px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-value::after {
+  content:'‹';
+  display:inline-flex;
+  align-items:center;
+  font-size:clamp(15px,5cqi,22px);
+  color:#27364f;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-value :is(progress,small) {
+  display:none!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-value bdi {
+  width:auto!important;
+  max-height:none!important;
+  font-size:clamp(9px,2.8cqi,13px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="4"] .home-design-voice {
+  min-height:0!important;
+  grid-column:1!important;
+}
+/* Layout 6: four glossy round icon tiles, with wide purple voice button at bottom. */
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-card:not(.home-design-voice) {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,24%)!important;
+  justify-items:center!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-head {
+  flex-direction:column-reverse!important;
+  justify-content:center!important;
+  gap:3px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-icon {
+  width:clamp(28px,8cqi,52px)!important;
+  height:clamp(28px,8cqi,52px)!important;
+  flex-basis:clamp(28px,8cqi,52px)!important;
+  border-radius:50%!important;
+  box-shadow:0 2px 6px #18417a30!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-head strong {
+  font:900 clamp(8px,2.2cqi,11px)/1.1 Tahoma,Arial,sans-serif!important;
+  text-align:center!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-value {
+  border:0!important;
+  padding:0 1px 2px!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-value :is(progress,small) {
+  display:none!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-value bdi {
+  color:#42526e!important;
+  font-size:clamp(8px,2.2cqi,11px)!important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces[data-design="5"] .home-design-voice {
+  grid-column:span 3!important;
+  border-radius:30px!important;
+  align-self:center!important;
+  height:min(62px,100%)!important;
+}
+/* Insets: never sacrifice data or accessible controls to a decorative crop. */
+@media (max-height:720px) {
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active > #topKpiThreeStrip {
+    height:60px!important;min-height:60px!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active > .period-selector-top-strip .period-filter-pill {
+    min-height:25px!important;
+    font-size:10px!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active > .executive-quick-tools-strip,
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active > .executive-quick-tools-strip > * {
+    height:31px!important;min-height:31px!important;max-height:31px!important;
+  }
+  #viewExpenses.home-reference-one.active .reference-one-icon {
+    width:clamp(16px,3.8dvh,23px)!important;
+    height:clamp(16px,3.8dvh,23px)!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces .home-design-icon {
+    width:23px!important;height:23px!important;flex-basis:23px!important;
+  }
+}
