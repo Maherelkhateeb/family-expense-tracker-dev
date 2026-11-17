@@ -814,3 +814,11 @@ body:has(#viewExpenses.home-alternative-design.active)
     height:32px!important;min-height:31px!important;max-height:32px!important;
   }
 }
+
+/* The legacy runtime sets inline !important order on tools. Explicit grid cells
+   preserve the pixel order in reference #1 without overriding those mutations. */
+#viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnHomeDesign {grid-column:1!important;grid-row:1!important;}
+#viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnOpenGold {grid-column:2!important;grid-row:1!important;}
+#viewExpenses.home-reference-one.active .executive-quick-tools-strip > #walletSelectCluster {grid-column:3!important;grid-row:1!important;}
+#viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnToggleCurrency {grid-column:4!important;grid-row:1!important;}
+#viewExpenses.home-reference-one.active .executive-quick-tools-strip > #btnOpenSummaryQuick {grid-column:5!important;grid-row:1!important;}
