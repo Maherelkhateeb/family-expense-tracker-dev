@@ -16216,7 +16216,8 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
   <script src="./family-budget-comparison.js?v=20261117-v5"></script>
-  <script src="./budget-audit-engine.js?v=20261117-compare-v3"></script>
+  <script src="./budget-audit-engine.js?v=20261117-compare-unified-v1"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=20261117-unified-v1">
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18897,6 +18898,7 @@ body.light-theme .market-buy-price {
                   <button type="button" data-mode="table" aria-pressed="true">جدول البنود</button>
                   <button type="button" data-mode="paired" aria-pressed="false">الأعمدة</button>
                   <button type="button" data-mode="change" aria-pressed="false">التغيّر</button>
+                  <button type="button" id="cmpUnifiedShowAll" onclick="BudgetCompareEngine.showAllCharts()" title="فتح جميع الرسوم الثمانية">الرسوم 1–8</button>
                 </div>
                 <label><span>ترتيب</span>
                   <select id="cmpSort" aria-label="ترتيب بنود المقارنة" onchange="BudgetCompareEngine.render()">
@@ -37251,15 +37253,14 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.color = '#fff';
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
-        if (secComp) secComp.style.display = 'block';
-        // Dedicated new dashboard is the authoritative comparison renderer.
-        if (secComp && window.FamilyBudgetComparison && typeof window.FamilyBudgetComparison.render === 'function') {
-          window.FamilyBudgetComparison.render(secComp, state);
-        } else if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderExecutiveComparisonsAudit === 'function') {
-          BudgetAuditEngine.renderExecutiveComparisonsAudit();
-        } else if (secComp) {
-          secComp.textContent = 'تعذر تحميل المقارنات الجديدة، يرجى إعادة تحميل التطبيق.';
+        // Both comparison entry points now show ONE unified comparison workspace.
+        // The old stand-alone panel stays hidden to prevent contradictory data.
+        if (secCurr) secCurr.style.display = 'block';
+        if (secComp) secComp.style.display = 'none';
+        if (typeof switchBudgetMonthView === 'function') {
+          switchBudgetMonthView('compare');
         }
+        if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
       } else if (tab === 'history') {
         if (bHist) {
           bHist.classList.add('active');
