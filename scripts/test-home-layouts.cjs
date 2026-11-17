@@ -41,9 +41,11 @@ const WIDTHS=[320,360,390,430,768];
        if(amount&&amount.scrollWidth>amount.clientWidth+5)errors.push('value-clipped:'+i);
      }
      const rects=cards.map(readRect);
-     for(let i=0;i<rects.length-1;i+=design===4?1:2){
-       if(design===0||design===4)continue;
-       if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
+     if(design===1 || design===5) {
+       for(let i=0;i<8;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
+     } else if(design===2||design===3){
+       for(let i=0;i<6;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
+       if(Math.abs(rects[6].top-rects[7].top)>3||Math.abs(rects[7].top-rects[8].top)>3)errors.push('three-mini-row-misaligned');
      }
      const toolRects=tools.map(readRect);
      tools.forEach((tool,i)=>{
@@ -80,7 +82,7 @@ const WIDTHS=[320,360,390,430,768];
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
      assert.equal(report.count,10,'Missing expense or voice card '+width+'/'+design);
-     assert.deepEqual(report.ids,design===5?[...IDS.filter(id=>id!=='voice'),'voice']:IDS,'Wrong card order '+width+'/'+design);
+     assert.deepEqual(report.ids,[2,3,5].includes(design)?[...IDS.filter(id=>id!=='voice'),'voice']:IDS,'Wrong card order '+width+'/'+design);
      assert.ok(report.originalHidden,'Original grid should be hidden on alternatives');
     }
     assert.deepEqual(report.errors,[],'Misaligned/clipped home elements '+width+'/'+design);
