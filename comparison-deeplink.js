@@ -121,7 +121,7 @@
   function relative(num){return num==null?'غير متاح':(num>0?'+':num<0?'−':'')+money(Math.abs(num))+'%';}
   function tone(row){return row.estimated<=0?(row.actual>0?'unplanned':'neutral'):(row.difference>0?'over':row.difference<0?'under':'neutral');}
   function status(row){return row.estimated<=0?(row.actual>0?'بدون موازنة':'لا يوجد تقدير'):row.difference>0?'تجاوز':row.difference<0?'أقل من المقدر':'مطابق للمقدر';}
-  function barHeight(value,max){return Math.max(2,Math.min(100,Math.abs(value)/Math.max(1,max)*100));}
+  function barHeight(value,max){return value<=0?0:Math.max(5,Math.min(100,value/Math.max(1,max)*100));}
   function render(){
     const panel=document.getElementById('cmpPeriodChart');
     if(!panel)return false;
@@ -157,8 +157,8 @@
           '<div class="cmp-audit-row-body"><div class="cmp-audit-values">'+
           '<div><small>المقدر</small><b dir="ltr">'+money(r.estimated)+'</b></div>'+
           '<div><small>الفعلي</small><b dir="ltr">'+money(r.actual)+'</b></div>'+
-          '<div class="cmp-audit-variance"><small>الفرق</small><b dir="ltr">'+signed(r.difference)+'</b><em dir="ltr">'+relative(r.percent)+'</em></div>'+
-          '</div><div class="cmp-audit-pair" role="img" aria-label="عمود رمادي للتقديري وعمود أزرق للفعلي">'+
+          '<div class="cmp-audit-variance"><small>'+ (r.estimated<=0?'الفرق':'التغيّر: '+(r.difference>0?'زيادة':r.difference<0?'انخفاض':'دون تغيّر')) +'</small><b dir="ltr">'+signed(r.difference)+'</b><em dir="ltr">'+relative(r.percent)+'</em></div>'+
+          '</div><div class="cmp-audit-pair" role="img" aria-label="عمود أزرق للموازنة التقديرية وعمود فيروزي للمصروف الفعلي؛ ارتفاع كل عمود يتناسب مع المبلغ داخل البند">'+
           '<div><i style="height:'+barHeight(r.estimated,max)+'%"></i><small>مقدر</small></div>'+
           '<div><i style="height:'+barHeight(r.actual,max)+'%"></i><small>فعلي</small></div></div></div>'+
           '<div class="cmp-audit-row-foot"><span>'+r.count+' عملية · '+c+'</span>'+
