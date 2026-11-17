@@ -1840,3 +1840,148 @@ body.light-theme .monthly-insight-details>div{border-color:#e2e8f0}
 body.light-theme .monthly-week-track{background:#e2e8f0}
 body.light-theme .monthly-insight-details p{color:#64748b}
 @media(min-width:650px){.monthly-insight-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.monthly-insight-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* v5.3.92 — Settings must be a live preview of palette, icon and card style.
+   Every visible app-colour choice fits in exactly four columns, including mobile. */
+#settingsModal #settingsSec_appearance :is(.antigravity-palette-grid,.appearance-palette-grid),
+#settingsModal .antigravity-palette-grid {
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:5px !important;
+  max-width:100% !important;
+  width:100% !important;
+}
+#settingsModal .antigravity-palette-grid > *,
+#settingsModal #settingsSec_appearance .appearance-palette-grid > * {
+  min-width:0 !important;
+  max-width:100% !important;
+  margin:0 !important;
+  padding-inline:2px !important;
+}
+#settingsModal .antigravity-palette-grid .theme-pill-option span {
+  font-size:clamp(.51rem,1.9vw,.69rem) !important;
+}
+#settingsModal {
+  --settings-accent:#059669;
+  --settings-icon:#059669;
+  --settings-card-radius:12px;
+  --settings-card-shadow:0 3px 12px rgba(12,30,50,.12);
+  --settings-card-border:rgba(5,150,105,.32);
+  --settings-card-surface-dark:linear-gradient(135deg,#172d31,#17243a);
+  --settings-card-surface-light:linear-gradient(135deg,#fff,#eefaf5);
+  --settings-shell-dark:linear-gradient(165deg,#152d30,#101d30);
+  --settings-shell-light:linear-gradient(165deg,#fff,#e9f8f1);
+  --settings-head-dark:linear-gradient(135deg,#193a3e,#162337);
+  --settings-head-light:linear-gradient(135deg,#f9fffc,#e4f4ee);
+}
+#settingsModal .settings-modal-shell.antigravity-settings-shell {
+  background:var(--settings-shell-dark) !important;
+  border-color:var(--settings-card-border) !important;
+}
+body.light-theme #settingsModal .settings-modal-shell.antigravity-settings-shell {
+  background:var(--settings-shell-light) !important;
+  border-color:var(--settings-card-border) !important;
+}
+#settingsModal .antigravity-settings-head {
+  background:var(--settings-head-dark) !important;
+  border-bottom-color:var(--settings-card-border) !important;
+}
+body.light-theme #settingsModal .antigravity-settings-head {
+  background:var(--settings-head-light) !important;
+  border-bottom-color:var(--settings-card-border) !important;
+}
+#settingsModal :is(.antigravity-card-block,.compact-appearance-section) {
+  background:var(--settings-card-surface-dark) !important;
+  border:1.2px solid var(--settings-card-border) !important;
+  border-radius:var(--settings-card-radius) !important;
+  box-shadow:var(--settings-card-shadow) !important;
+  transition:background .16s,border-color .16s,border-radius .16s,box-shadow .16s !important;
+}
+body.light-theme #settingsModal :is(.antigravity-card-block,.compact-appearance-section) {
+  background:var(--settings-card-surface-light) !important;
+  border-color:var(--settings-card-border) !important;
+  border-radius:var(--settings-card-radius) !important;
+  box-shadow:var(--settings-card-shadow) !important;
+}
+#settingsModal :is(.antigravity-head-icon,.antigravity-card-title i,.compact-appearance-heading-icon,.antigravity-action-tile i) {
+  color:var(--settings-icon) !important;
+}
+#settingsModal :is(.antigravity-settings-head,.antigravity-card-title,.antigravity-tab-pane) .active:not(.theme-pill-option):not(.icon-theme-pill) {
+  border-color:var(--settings-accent) !important;
+}
+#settingsModal[data-settings-card-style="flat"] :is(.antigravity-card-block,.compact-appearance-section) {
+  backdrop-filter:none !important;
+}
+#settingsModal[data-settings-card-style="neon"] :is(.antigravity-card-block,.compact-appearance-section) {
+  border-width:2px !important;
+  box-shadow:0 0 0 1px var(--settings-accent),var(--settings-card-shadow) !important;
+}
+#settingsModal[data-settings-card-style="outlined"] :is(.antigravity-card-block,.compact-appearance-section) {
+  border-width:2px !important;
+  box-shadow:none !important;
+}
+#settingsModal[data-settings-card-style="minimal"] :is(.antigravity-card-block,.compact-appearance-section) {
+  box-shadow:none !important;
+}
+
+/* Monthly-budget drill-through: visible context and a dependable return control. */
+#budgetDrilldownBanner {
+  position:sticky;top:0;z-index:110;
+  display:flex;align-items:center;justify-content:space-between;gap:9px;
+  flex-wrap:wrap;padding:10px 12px;margin:0 0 12px;
+  background:var(--card-bg,#eff6ff);color:var(--text-primary,#172033);
+  border:1px solid var(--accent,#0284c7);border-radius:12px;
+  box-shadow:0 3px 12px rgba(15,23,42,.12);direction:rtl;
+}
+#budgetDrilldownBanner .budget-drill-copy {flex:1 1 160px;min-width:0;line-height:1.6;font-size:.76rem}
+#budgetDrilldownBanner .budget-drill-copy strong {display:block;font-size:.84rem}
+#budgetDrilldownBanner button {
+  flex:0 0 auto;padding:7px 10px;border:1px solid var(--accent,#0284c7);
+  border-radius:8px;color:var(--accent,#0284c7);font-size:.75rem;
+  font-weight:900;background:transparent;cursor:pointer;
+}
+body:not(.light-theme) #budgetDrilldownBanner {
+  background:#17243a;color:#f8fafc;border-color:#38bdf8;
+}
+body:not(.light-theme) #budgetDrilldownBanner button {
+  color:#7dd3fc;border-color:#38bdf8;
+}
+.monthly-insight-card[data-budget-drill-scope],
+.budget-audit-row, #cmpTableBody tr[onclick],
+.monthly-week-line[data-budget-week],.monthly-overrun-list [data-budget-cat] {
+  cursor:pointer;
+}
+button.monthly-insight-card {font:inherit;text-align:start;color:inherit;width:100%}
+.monthly-insight-card[data-budget-drill-scope]:focus-visible,
+.budget-audit-row:focus-visible,
+.monthly-week-line[data-budget-week]:focus-visible {
+  outline:2px solid #0284c7;outline-offset:2px;
+}
+.monthly-insight-card[data-budget-drill-scope]:hover,
+.budget-audit-row:hover {filter:brightness(1.07)}
+#cmpExtraInsightGrid {margin:12px 0;direction:rtl}
+#cmpExtraInsightGrid .monthly-insight-card {align-items:stretch}
+@media(max-width:390px){
+  #settingsModal .antigravity-palette-grid {gap:4px !important}
+  #settingsModal .antigravity-palette-grid .theme-pill-option {padding:2px 1px !important}
+  #settingsModal .antigravity-palette-grid .theme-pill-option span {font-size:.55rem !important}
+}
+
+
+/* The current settings modal is rendered with both compact and legacy shells.
+   Apply the palette to whichever shell is actually present in this build. */
+#settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card,.antigravity-settings-body) {
+  border-color:var(--settings-card-border) !important;
+}
+#settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card) {
+  background:var(--settings-shell-dark) !important;
+}
+body.light-theme #settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card) {
+  background:var(--settings-shell-light) !important;
+}
+#settingsModal .antigravity-palette-grid > .theme-pill-option {
+  grid-column:auto !important;
+  grid-row:auto !important;
+  align-self:stretch !important;
+}

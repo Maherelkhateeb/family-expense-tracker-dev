@@ -342,7 +342,7 @@ window.BudgetAuditEngine = (() => {
     let totalActualA = 0;
     let totalBenchmark = 0;
 
-    const rowsHtml = plan.items.map(it => {
+    const rowsHtml = plan.items.map((it, budgetIndex) => {
       const cat = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === it.category) || { name: it.title || 'بند', icon: 'fa-tag', color: '#38bdf8' };
 
       // حساب المنصرف الفعلي المسجل لهذا البند في الفترة أ
@@ -395,7 +395,7 @@ window.BudgetAuditEngine = (() => {
       const diffSign = isOver ? (comparisonMode === 'budget' ? '- ' : '+ ') : (comparisonMode === 'budget' ? '+ ' : '- ');
 
       return `
-        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.74rem;">
+        <tr class="budget-audit-row" tabindex="0" role="button" aria-label="عرض عمليات هذا البند" data-budget-item-index="${budgetIndex}" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.74rem;">
           <td style="padding: 8px 6px; text-align: right;">
             <div style="display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid ${cat.icon}" style="color: ${cat.color || '#38bdf8'}; font-size: 0.8rem;"></i>
@@ -960,13 +960,13 @@ window.BudgetAuditEngine = (() => {
       item.actual += Number(tx.amount) || 0;
       cats.set(cat, item);
     }
-    const over = Array.from(cats.values())
+    const over = Array.from(cats.entries()).map(([category, item]) => ({...item,category}))
       .filter(x => x.actual > x.planned && x.actual > 0)
       .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned)).slice(0, 4);
     const fmt = v => Number.isFinite(v) ? v.toLocaleString('ar-EG', {maximumFractionDigits:0}) : '—';
-    const metric = (name, value, hint) =>
-      '<div class="monthly-insight-card"><small>' + name + '</small><strong>' + value +
-      '</strong><span>' + hint + '</span></div>';
+    const metric = (name, value, hint, scope = 'actual', details = '') =>
+      '<button type="button" class="monthly-insight-card" data-budget-drill-scope="' + scope + '" ' + details + '><small>' + name + '</small><strong>' + value +
+      '</strong><span>' + hint + ' · اضغط للتفاصيل</span></button>';
     const pct = value => value === null ? '—' : (value >= 0 ? '+' : '') + value.toFixed(1) + '%';
     const variance = monthlyPlan - actual;
     const completionLabel = isCurrent ? ('حتى يوم ' + elapsed + ' من ' + days) : (isPast ? 'شهر مكتمل' : 'شهر لم يبدأ');
@@ -976,6 +976,27 @@ window.BudgetAuditEngine = (() => {
       if (day >= 1 && day <= days) weekly[Math.min(4, Math.floor((day - 1) / 7))] += Number(tx.amount) || 0;
     }
     const largest = Math.max(1, ...weekly);
+    const activeDays = new Set(expenses.map(t => t.date).filter(Boolean)).size;
+    const avgTransaction = expenses.length ? actual / expenses.length : 0;
+    const dailyTotals = new Map();
+    for (const tx of expenses) dailyTotals.set(tx.date, (dailyTotals.get(tx.date) || 0) + (Number(tx.amount) || 0));
+    const highestDay = [...dailyTotals.entries()].sort((a,b) => b[1] - a[1])[0] || ['',0];
+    const largestTx = [...expenses].sort((a,b) => (Number(b.amount)||0) - (Number(a.amount)||0))[0] || null;
+    const catsBySpend = [...cats.entries()].filter(([,item]) => item.actual>0)
+      .sort((a,b) => b[1].actual - a[1].actual);
+    const topCategory = catsBySpend[0] || ['',{name:'—',actual:0}];
+    const topThreeShare = actual>0
+      ? catsBySpend.slice(0,3).reduce((sum,[,item])=>sum+item.actual,0)/actual*100 : 0;
+    const budgetCategoryIds = new Set((plan.items || []).map(it=>it.category || 'other'));
+    const unplannedAmount = expenses.filter(t=>!budgetCategoryIds.has(t.category || 'other'))
+      .reduce((sum,t)=>sum+(Number(t.amount)||0),0);
+    const spentShare = monthlyPlan>0 ? actual/monthlyPlan*100 : null;
+    const elapsedShare = elapsed>0 ? elapsed/days*100 : null;
+    const paceDelta = (spentShare!==null && elapsedShare!==null)
+      ? spentShare-elapsedShare : null;
+    const daysWithoutSpend = Math.max(0, elapsed-activeDays);
+    const realOverrunCategories = [...cats.values()].filter(x=>x.planned>0&&x.actual>x.planned).length;
+    const safeAttr = v=>escapeHtml(String(v==null?'':v));
     return '<section class="monthly-insights" aria-label="تحليلات موازنة الشهر">' +
       '<h3>تحليل الموازنة والتوقعات • ' + month + '</h3>' +
       '<p>جميع الأرقام محسوبة من عمليات الشهر المختار؛ التوقع تقديري وليس عملية مسجلة. ' + completionLabel + '</p>' +
@@ -986,12 +1007,29 @@ window.BudgetAuditEngine = (() => {
         metric('التغير عن الشهر السابق', pct(prevChange), isCurrent ? 'لنفس عدد الأيام المنقضية' : 'مقارنة بالشهر السابق') +
         metric('توقع نهاية الشهر', forecast === null ? '—' : fmt(forecast), !isCurrent ? 'يظهر للشهر الجاري فقط' : (forecast > monthlyPlan && monthlyPlan > 0 ? 'تحذير: أعلى من المخطط' : 'بافتراض استمرار المعدل الحالي')) +
         metric('الحد اليومي المتاح', permittedPerDay === null ? '—' : fmt(permittedPerDay), 'للأيام المتبقية دون تجاوز الموازنة') +
+        metric('عدد عمليات المصروفات', fmt(expenses.length), 'العمليات الفعلية في الشهر المحدد') +
+        metric('متوسط قيمة العملية', fmt(avgTransaction), 'المنصرف ÷ عدد العمليات') +
+        metric('أيام حدث فيها إنفاق', fmt(activeDays), 'من ' + elapsed + ' يومًا منقضيًا') +
+        metric('أيام بدون مصروف', isPast || isCurrent ? fmt(daysWithoutSpend) : '—', 'أيام بدون عمليات حتى تاريخ التقرير') +
+        metric('أعلى يوم إنفاق', fmt(highestDay[1]), highestDay[0] || 'لا توجد عمليات', 'highest-day',
+          'data-budget-date="'+safeAttr(highestDay[0])+'"') +
+        metric('أكبر عملية منفردة', largestTx ? fmt(Number(largestTx.amount)||0) : '—',
+          largestTx ? (escapeHtml(largestTx.label || largestTx.date || '')) : 'لا توجد عمليات', 'largest-transaction',
+          'data-budget-tx-id="'+safeAttr(largestTx?.id)+'"') +
+        metric('أعلى تصنيف إنفاقًا', safeAttr(topCategory[1].name),
+          fmt(topCategory[1].actual) + ' من المنصرف', 'top-category',
+          'data-budget-category="'+safeAttr(topCategory[0])+'"') +
+        metric('حصة أعلى 3 تصنيفات', topThreeShare.toFixed(1)+'%', 'مؤشر تركز الإنفاق') +
+        metric('مصروفات خارج بنود الموازنة', fmt(unplannedAmount), 'فئات لم تدخل بالخطة', 'unplanned') +
+        metric('فرق الإيقاع عن الوقت', paceDelta===null ? '—' :
+          ((paceDelta>0?'+':'')+paceDelta.toFixed(1)+' نقطة'), 'المستهلك من الموازنة مقارنة بنسبة أيام الشهر') +
+        metric('عدد التصنيفات المتجاوزة', fmt(realOverrunCategories), 'فئات تخطت سقفها التقديري') +
       '</div>' +
       '<div class="monthly-insight-details"><div><h4>توزيع المصروفات حسب أسابيع الشهر</h4><div class="monthly-week-bars">' +
-        weekly.map((v, i) => '<div class="monthly-week-line"><span>أسبوع ' + (i + 1) + '</span><div class="monthly-week-track"><i style="width:' + (Math.max(0, v) / largest * 100).toFixed(1) + '%"></i></div><b>' + fmt(v) + '</b></div>').join('') +
+        weekly.map((v, i) => '<div class="monthly-week-line" tabindex="0" role="button" data-budget-week="'+i+'"><span>أسبوع ' + (i + 1) + '</span><div class="monthly-week-track"><i style="width:' + (Math.max(0, v) / largest * 100).toFixed(1) + '%"></i></div><b>' + fmt(v) + '</b></div>').join('') +
       '</div></div><div><h4>أكبر تجاوزات البنود</h4>' +
         (over.length ? '<div class="monthly-overrun-list">' + over.map(x =>
-          '<div><span>' + String(x.name).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) +
+          '<div tabindex="0" role="button" data-budget-cat="'+safeAttr(x.category)+'"><span>' + String(x.name).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) +
           '</span><b>+' + fmt(x.actual - x.planned) + '</b></div>').join('') + '</div>' :
           '<p>لا توجد تجاوزات على البنود المسجلة لهذا الشهر.</p>') +
       '</div></div></section>';
@@ -1337,6 +1375,7 @@ window.BudgetAuditEngine = (() => {
     switchArchiveTab,
     cloneBudget,
     exportBudgetToExcel,
+    getNavigationContext: () => ({period:activeTimePeriod,month:(state.monthlyBudgets||[]).find(b=>b.id===state.activeBudgetId)?.month || targetMonthStr,benchmarkMonth:benchmarkMonthStr,comparisonMode,customStart:customStartDate,customEnd:customEndDate}),
     refreshActiveBudgetAudit,
     renderProjectBudgetsAdvanced,
     renderExecutiveComparisonsAudit,
@@ -1632,7 +1671,7 @@ const BudgetCompareEngine = (() => {
           }
 
           return `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: background 0.15s;"
+            <tr data-budget-category="${escapeHtml(r.catKey)}" style="border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: background 0.15s;"
                 onclick="BudgetCompareEngine.drillDownToCategory('${r.catKey}')"
                 title="اضغط لعرض كافة حركات ${catObj.name} المفلترة"
                 onmouseover="this.style.background='rgba(56,189,248,0.08)'"
@@ -1766,8 +1805,50 @@ const BudgetCompareEngine = (() => {
     }
 
 
+    // Extra verified actuals vs plan insights.
+    renderExtraComparisonMetrics(rowsData, actRange, totEstim, totActual);
     // Render 3 Charts
     renderCharts(rowsData, actData, totEstim, actRange.from, actRange.to);
+  }
+
+
+  function renderExtraComparisonMetrics(rowsData, range, budgetAmount, actual) {
+    const table = document.getElementById('cmpTableBody')?.closest('table');
+    if (!table) return;
+    let slot = document.getElementById('cmpExtraInsightGrid');
+    if (!slot) {
+      slot = document.createElement('div');
+      slot.id = 'cmpExtraInsightGrid';
+      table.parentElement.insertAdjacentElement('afterend',slot);
+    }
+    const transactions=(state.transactions||[]).filter(t=>t.type==='expense'&&
+      String(t.date||'')>=range.from&&String(t.date||'')<=range.to);
+    const daily=new Map();
+    transactions.forEach(t=>daily.set(t.date,(daily.get(t.date)||0)+(Number(t.amount)||0)));
+    const highest=[...daily.entries()].sort((a,b)=>b[1]-a[1])[0]||['',0];
+    const avg=transactions.length?actual/transactions.length:0;
+    const unplanned=rowsData.filter(x=>x.estAmt===0&&x.actualAmt>0);
+    const top=rowsData.filter(x=>x.actualAmt>0).slice(0,3);
+    const concentration=actual>0?top.reduce((sum,x)=>sum+x.actualAmt,0)/actual*100:0;
+    const overCount=rowsData.filter(x=>x.actualAmt>x.estAmt).length;
+    const covered=rowsData.filter(x=>x.estAmt>0).length;
+    const fmt=n=>Number(n||0).toLocaleString('ar-EG',{maximumFractionDigits:0});
+    const card=(name,value,hint,scope='actual',attrs='')=>
+      '<button type="button" class="monthly-insight-card" data-budget-drill-scope="'+scope+'" '+attrs+
+      '><small>'+name+'</small><strong>'+value+'</strong><span>'+hint+' · اضغط للتفاصيل</span></button>';
+    slot.innerHTML='<div class="monthly-insights"><h3>مؤشرات إضافية للمقارنة</h3>'+
+      '<p>تحليلات العمليات الفعلية المسجلة خلال '+escapeHtml(range.from)+' إلى '+escapeHtml(range.to)+'.</p>'+
+      '<div class="monthly-insight-grid">'+
+      card('عدد العمليات',fmt(transactions.length),'مصروفات الفترة المختارة')+
+      card('متوسط العملية',fmt(avg),'متوسط قيمة المصروف المسجل')+
+      card('أيام الإنفاق الفعلي',fmt(daily.size),'عدد الأيام ذات المصروف')+
+      card('أعلى يوم إنفاق',fmt(highest[1]),escapeHtml(highest[0]),'highest-day','data-budget-date="'+escapeHtml(highest[0])+'"')+
+      card('حصة أكبر 3 فئات',concentration.toFixed(1)+'%','تركز الإنفاق الفعلي')+
+      card('الفئات المتجاوزة',fmt(overCount),'الأعلى من المقدر')+
+      card('فئات دون موازنة',fmt(unplanned.length),'مصروفات دون تقدير معتمد')+
+      card('الفئات ذات المخصص',fmt(covered),'المغطاة بموازنة تقديرية')+
+      card('نسبة استخدام التقديري',budgetAmount>0?(actual/budgetAmount*100).toFixed(1)+'%':'—','الفعلي ÷ المقدر')+
+      '</div></div>';
   }
 
   function renderCharts(rowsData, actData, totEstim, fromDate, toDate) {
@@ -1939,6 +2020,7 @@ const BudgetCompareEngine = (() => {
     onActualPeriodChange,
     onEstimPeriodChange,
     buildEstimPeriodOptions,
+    getNavigationRange: () => periodToRange(_actualPeriod, document.getElementById('cmpActualFrom')?.value, document.getElementById('cmpActualTo')?.value),
     drillDownToCategory
   };
 })();

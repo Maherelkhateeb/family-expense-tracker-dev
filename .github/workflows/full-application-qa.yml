@@ -8,6 +8,8 @@ on:
       - voice-assistant-engine.js
       - budget-audit-engine.js
       - appearance-compact.js
+      - appearance-compact.css
+      - scripts/test-settings-budget-drill.cjs
       - market-data.js
       - gold-market.css
       - scripts/test-app-end-to-end.cjs
@@ -20,6 +22,8 @@ on:
       - voice-assistant-engine.js
       - budget-audit-engine.js
       - appearance-compact.js
+      - appearance-compact.css
+      - scripts/test-settings-budget-drill.cjs
       - market-data.js
       - gold-market.css
       - scripts/test-app-end-to-end.cjs
@@ -48,6 +52,7 @@ jobs:
           node --check market-data.js
           node --check scripts/test-app-end-to-end.cjs
           node --check scripts/test-alert-time.cjs
+          node --check scripts/test-settings-budget-drill.cjs
       - name: Install Chromium for isolated browser tests
         run: |
           npm install --no-save playwright@1.56.1
@@ -62,6 +67,10 @@ jobs:
         env:
           APP_URL: http://127.0.0.1:8765/
         run: node scripts/test-alert-time.cjs
+      - name: Verify settings palette and budget drilldown on mobile and desktop
+        env:
+          APP_URL: http://127.0.0.1:8765/
+        run: node scripts/test-settings-budget-drill.cjs
       - name: Verify one thousand financial records and reloads
         env:
           APP_URL: http://127.0.0.1:8765/

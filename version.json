@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.91",
-  "build": "202611170644",
-  "buildId": 202611170644,
-  "updated": "2026-11-17T06:44:00+03:00",
-  "notes": "Full browser QA passed; preserve truly empty task lists, Arabic voice debt direction, robust mobile gold display and offline states."
+  "version": "v5.3.92",
+  "build": "202611170915",
+  "buildId": 202611170915,
+  "updated": "2026-11-17T09:15:00+03:00",
+  "notes": "Live settings palette, icon colors and card styles; four-by-two color choices; 20 new monthly/comparison indicators; exact transaction drilldown and return; verified browser QA."
 }

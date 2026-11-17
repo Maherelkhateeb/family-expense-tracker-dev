@@ -245,3 +245,375 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();
+
+
+/* v5.3.92 — Live settings preview: previous settings modal was styled with
+   fixed !important colors and fixed card radii, unrelated to the app theme. */
+(function () {
+  'use strict';
+  const palette = {
+    facebook:['#0866ff','#102c55','#edf3ff'],
+    navy:['#2563eb','#0c2145','#f1f6ff'],
+    emerald:['#059669','#0b3635','#ebfaf4'],
+    purple:['#7c3aed','#30164f','#f5efff'],
+    rose:['#be123c','#441626','#fff0f4'],
+    ocean:['#0891b2','#0b3444','#effbfe'],
+    gold:['#b45309','#462b12','#fff6e8'],
+    slate:['#64748b','#253345','#f0f4f7'],
+    midnight:['#4338ca','#1f1c4a','#f0efff'],
+    sapphire:['#2563eb','#112c57','#eff6ff']
+  };
+  const iconColors = {vibrant:'#0284c7',gold:'#b45309',emerald:'#059669',
+    ocean:'#0891b2',purple:'#7c3aed',ruby:'#be123c',amber:'#c2410c',
+    indigo:'#4338ca',rose:'#db2777',silver:'#64748b'};
+  const presets = {
+    glass:['15px','0 5px 15px rgba(15,23,42,.14)'],
+    minimal:['7px','none'],
+    neumorphic:['19px','5px 5px 12px rgba(15,23,42,.19), -3px -3px 12px rgba(255,255,255,.10)'],
+    neon:['12px','0 0 14px rgba(56,189,248,.42)'],
+    clear:['11px','none'],elevated:['19px','0 10px 22px rgba(15,23,42,.24)'],
+    outlined:['9px','none'],gradient:['17px','0 7px 18px rgba(15,23,42,.16)'],
+    flat:['3px','none'],facebook:['8px','0 1px 4px rgba(0,0,0,.15)']
+  };
+  let queued = false;
+  function apply() {
+    queued = false;
+    const root = document.getElementById('settingsModal');
+    if (!root) return;
+    const theme = document.querySelector('#settingsModal .theme-pill-option.active')?.dataset.theme ||
+      (typeof state !== 'undefined' ? state.appTheme : '') ||
+      localStorage.getItem('family_monefy_app_theme') || 'emerald';
+    const icon = document.querySelector('#settingsModal .icon-theme-pill.active')?.dataset.iconTheme ||
+      (typeof state !== 'undefined' ? state.iconTheme : '') || 'emerald';
+    const style = document.querySelector('#settingsModal [data-card-style].active')?.dataset.cardStyle ||
+      document.body.getAttribute('data-card-style') || 'glass';
+    const colors = palette[theme] || palette.emerald, card = presets[style] || presets.glass;
+    root.dataset.settingsActiveTheme = theme;
+    root.dataset.settingsCardStyle = style;
+    root.style.setProperty('--settings-accent', colors[0]);
+    root.style.setProperty('--settings-icon', iconColors[icon] || colors[0]);
+    root.style.setProperty('--settings-card-radius',card[0]);
+    root.style.setProperty('--settings-card-shadow',card[1]);
+    root.style.setProperty('--settings-card-border',colors[0]+'75');
+    root.style.setProperty('--settings-card-surface-dark',
+      style==='gradient' ? 'linear-gradient(132deg,'+colors[1]+',#24365a)' :
+      'linear-gradient(145deg,'+colors[1]+',#17243a)');
+    root.style.setProperty('--settings-card-surface-light',
+      style==='gradient' ? 'linear-gradient(125deg,'+colors[2]+',#e0ebff)' :
+      'linear-gradient(145deg,#ffffff,'+colors[2]+')');
+    root.style.setProperty('--settings-shell-dark','linear-gradient(165deg,'+colors[1]+',#101b2d)');
+    root.style.setProperty('--settings-shell-light','linear-gradient(165deg,#ffffff,'+colors[2]+')');
+    root.style.setProperty('--settings-head-dark','linear-gradient(135deg,'+colors[1]+',#1d2940)');
+    root.style.setProperty('--settings-head-light','linear-gradient(135deg,#ffffff,'+colors[2]+')');
+    // Legacy inline !important styles otherwise leave the actual modal shell
+    // white/dark-navy regardless of the selected application palette.
+    const light=document.body.classList.contains('light-theme');
+    const shell=root.querySelector('.settings-modal-shell.antigravity-settings-shell');
+    const head=root.querySelector('.antigravity-settings-head');
+    if(shell){
+      shell.style.setProperty('background',light
+        ? 'linear-gradient(165deg,#ffffff,'+colors[2]+')'
+        : 'linear-gradient(165deg,'+colors[1]+',#101b2d)','important');
+      shell.style.setProperty('border-color',colors[0]+'75','important');
+    }
+    if(head)head.style.setProperty('background',light
+      ? 'linear-gradient(135deg,#ffffff,'+colors[2]+')'
+      : 'linear-gradient(135deg,'+colors[1]+',#1d2940)','important');
+  }
+  function schedule() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () {requestAnimationFrame(apply);});
+  }
+  function init() {
+    const root = document.getElementById('settingsModal');
+    if (!root || root.dataset.liveSettingsPreviewReady==='1') return;
+    root.dataset.liveSettingsPreviewReady='1';
+    root.addEventListener('click',function(e){
+      if (e.target.closest('.theme-pill-option,.icon-theme-pill,[data-card-style],.appearance-mode-button')) schedule();
+    });
+    const appearance = document.getElementById('settingsSec_appearance') || root;
+    new MutationObserver(schedule).observe(appearance,{
+      subtree:true,attributes:true,attributeFilter:['class','aria-pressed','data-theme','data-card-style']
+    });
+    new MutationObserver(schedule).observe(document.body,{
+      attributes:true,attributeFilter:['class','data-card-style','data-color-mode','data-theme']
+    });
+    apply();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+}());
+
+/* v5.3.92 — Exact transaction drill-through from monthly budget/comparison.
+   Uses current transactions only; never persists demo data or mutates balances.
+   Remembers the source view/scroll and restores the native operation filters. */
+(function () {
+  'use strict';
+  let active = null;
+  let originalRenderer = null;
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = d => [d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate())].join('-');
+  const categoryName = c => {
+    try { return getCategoryName(c,'expense') || c; }catch(e){return c || 'كافة البنود';}
+  };
+  const monthRange = month => {
+    if(!/^\d{4}-\d{2}$/.test(String(month||'')))return {from:'',to:''};
+    const a=month.split('-').map(Number);
+    return {from:month+'-01',to:dateStr(new Date(a[0],a[1],0))};
+  };
+  function getMonthlyRange(ctx, scope) {
+    let month = ctx.month || dateStr(new Date()).slice(0,7);
+    if(scope==='benchmark' && ctx.comparisonMode==='period')
+      month=ctx.benchmarkMonth || month;
+    if(scope==='previous' && ctx.comparisonMode!=='period'){
+      const nums=month.split('-').map(Number);
+      month=dateStr(new Date(nums[0],nums[1]-2,1)).slice(0,7);
+    }
+    const base=monthRange(month);
+    if(scope==='benchmark'||scope==='previous'||scope==='fullmonth')return base;
+    if(ctx.period==='all')return {from:'',to:''};
+    if(ctx.period==='custom')return {from:ctx.customStart||base.from,to:ctx.customEnd||base.to};
+    if(ctx.period==='today'){const d=dateStr(new Date());return {from:d,to:d};}
+    if(ctx.period==='week'){
+      const now=new Date();
+      const sat=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((now.getDay()+1)%7));
+      return {from:dateStr(sat),to:dateStr(now)};
+    }
+    if(ctx.period==='prev_month'){
+      const nums=month.split('-').map(Number);
+      return monthRange(dateStr(new Date(nums[0],nums[1]-2,1)).slice(0,7));
+    }
+    return base;
+  }
+  function choices() {
+    return ['opsFilterCategory','opsFilterMember','opsFilterProject']
+      .reduce((result,id)=>{
+        const select=document.getElementById(id);
+        if(select)result[id]=(typeof getOperationFilterValues==='function')
+          ? getOperationFilterValues(id) : Array.from(select.selectedOptions).map(o=>o.value);
+        return result;
+      },{});
+  }
+  function setChoices(id,values) {
+    const select=document.getElementById(id);
+    if(!select)return;
+    if(typeof setOperationFilterValues==='function')setOperationFilterValues(id,values);
+    else {
+      Array.from(select.options).forEach(o=>o.selected=values.length?values.includes(o.value):o.value==='all');
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+  }
+  function preserveFilters() {
+    let opsType = 'all';
+    try{if(typeof opsTypeFilterState!=='undefined')opsType=opsTypeFilterState;}catch(e){}
+    return {period:state.period,custom:state.customDateRange?{...state.customDateRange}:null,
+      member:state.currentMemberFilter,wallet:state.currentWalletId,project:state.projectFilter,
+      opsType,search:document.getElementById('opsSearchInput')?.value||'',
+      choices:choices()};
+  }
+  function restoreFilters(snapshot) {
+    if(!snapshot)return;
+    state.period=snapshot.period;
+    state.customDateRange=snapshot.custom;
+    state.currentMemberFilter=snapshot.member;
+    state.currentWalletId=snapshot.wallet;
+    state.projectFilter=snapshot.project;
+    try{if(typeof opsTypeFilterState!=='undefined')opsTypeFilterState=snapshot.opsType;}catch(e){}
+    const search=document.getElementById('opsSearchInput');
+    if(search)search.value=snapshot.search;
+    Object.keys(snapshot.choices).forEach(id=>setChoices(id,snapshot.choices[id]));
+    if(typeof filterOperationsList==='function')filterOperationsList();
+  }
+  function installRenderer() {
+    if(originalRenderer||typeof window.renderOperationsList!=='function')return;
+    originalRenderer=window.renderOperationsList;
+    window.renderOperationsList=function(filtered,appendMore) {
+      if(!active)return originalRenderer.apply(this,arguments);
+      const initial=Array.isArray(filtered)?filtered:(state.transactions||[]);
+      const exact=initial.filter(t=>active.ids.has(String(t.id)));
+      if(!exact.length) {
+        const host=document.getElementById('txOperationsList');
+        if(host)host.innerHTML='<div class="empty-state" style="padding:25px;text-align:center">لا توجد عمليات فعلية مطابقة لهذا الرقم والفترة.</div>';
+        return;
+      }
+      return originalRenderer.call(this,exact,appendMore);
+    };
+  }
+  function showBanner(label,count) {
+    const view=document.getElementById('viewOperations');
+    if(!view)return;
+    let banner=document.getElementById('budgetDrilldownBanner');
+    if(!banner){banner=document.createElement('div');banner.id='budgetDrilldownBanner';view.prepend(banner);}
+    banner.replaceChildren();
+    const copy=document.createElement('div');copy.className='budget-drill-copy';
+    const strong=document.createElement('strong');strong.textContent='تفاصيل موازنة الشهر: '+label;
+    const span=document.createElement('span');span.textContent='عدد العمليات المطابقة: '+count+' · المصروفات الفعلية فقط';
+    copy.append(strong,span);
+    const btn=document.createElement('button');btn.type='button';
+    btn.id='budgetDrilldownBack';btn.textContent='العودة إلى نفس المقارنة';
+    btn.addEventListener('click',returnToBudget);
+    banner.append(copy,btn);
+  }
+  function clear() {
+    const banner=document.getElementById('budgetDrilldownBanner');
+    if(banner)banner.remove();
+    active=null;
+  }
+  function gotoBudgetTab(source) {
+    if(typeof switchAppPage==='function')switchAppPage('budgets',true);
+    if(typeof switchBudgetSubTab==='function') {
+      try{switchBudgetSubTab(source==='executive'?'comparisons':'current');}catch(e){}
+    }
+    if(source==='compare'){
+      if(typeof switchBudgetMonthView==='function')switchBudgetMonthView('compare');
+      if(window.BudgetCompareEngine)try{BudgetCompareEngine.render();}catch(e){}
+    }
+    if(source!=='compare' && window.BudgetAuditEngine)
+      try{BudgetAuditEngine.refreshActiveBudgetAudit();}catch(e){}
+  }
+  function returnToBudget() {
+    if(!active)return;
+    const origin=active.origin,previous=active.previous;
+    clear();
+    restoreFilters(previous);
+    if(origin.budgetId && Array.isArray(state.monthlyBudgets) &&
+       state.monthlyBudgets.some(b=>b.id===origin.budgetId)) {
+      state.activeBudgetId=origin.budgetId;
+    }
+    gotoBudgetTab(origin.source);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      for(const rec of origin.scrollers){
+        if(rec.el.isConnected)rec.el.scrollTop=rec.top;
+      }
+      window.scrollTo({top:origin.windowY,behavior:'instant'});
+      let focus=origin.node.isConnected?origin.node:null;
+      if(!focus&&origin.selector)focus=document.querySelector(origin.selector);
+      if(focus && focus.isConnected){
+        focus.scrollIntoView({block:'nearest',behavior:'instant'});
+        if(focus.matches('button,[tabindex]'))focus.focus({preventScroll:true});
+      }
+    }));
+  }
+  function open(args) {
+    if(typeof state==='undefined'||!Array.isArray(state.transactions))return;
+    const source=args.source||'monthly';
+    const ctx=source==='compare'
+      ? {period:'custom',month:'',...((window.BudgetCompareEngine?.getNavigationRange?.())||{})}
+      : (window.BudgetAuditEngine?.getNavigationContext?.()||{});
+    const range=source==='compare'
+      ? {from:ctx.from||'',to:ctx.to||''}
+      : getMonthlyRange(ctx,args.scope||'actual');
+    if(args.from!==undefined)range.from=args.from;
+    if(args.to!==undefined)range.to=args.to;
+    let candidates=state.transactions.filter(t=>t.type==='expense' &&
+      (!range.from||String(t.date||'')>=range.from) &&
+      (!range.to||String(t.date||'')<=range.to));
+    if(args.category)candidates=candidates.filter(t=>String(t.category||'')===String(args.category));
+    if(args.member)candidates=candidates.filter(t=>String(t.member||t.author||'')===String(args.member));
+    const plan=(state.monthlyBudgets||[]).find(b=>b.id===state.activeBudgetId);
+    if(Number.isInteger(args.itemIndex) && plan?.items?.[args.itemIndex]){
+      const item=plan.items[args.itemIndex];
+      const expenseCandidates=candidates;
+      if(typeof getExpensesForBudgetItem==='function'){
+        candidates=getExpensesForBudgetItem(item,expenseCandidates,plan.items);
+      }else {
+        candidates=expenseCandidates.filter(t=>t.budgetItemId===item.id ||
+          (!t.budgetItemId&&t.category===item.category));
+      }
+    }
+    if(args.onlyIds) {
+      const allowed=new Set(args.onlyIds.map(String));
+      candidates=candidates.filter(t=>allowed.has(String(t.id)));
+    }
+    if(active){clear();}
+    const originNode=args.originNode||document.activeElement||document.body;
+    const scrollers=[];
+    for(let p=originNode;p&&p!==document.documentElement;p=p.parentElement){
+      if(p.scrollHeight>p.clientHeight+5)scrollers.push({el:p,top:p.scrollTop});
+    }
+    active={ids:new Set(candidates.map(t=>String(t.id))),previous:preserveFilters(),
+      origin:{source,node:originNode,windowY:window.scrollY,scrollers,
+        selector:args.originSelector||'',
+        budgetId:state.activeBudgetId}};
+    installRenderer();
+    if(typeof switchAppPage==='function')switchAppPage('operations',true);
+    if(typeof switchOperationsSubTab==='function')switchOperationsSubTab('registered');
+    state.period=(range.from||range.to)?'custom':'all';
+    state.customDateRange={from:range.from,to:range.to};
+    state.currentMemberFilter='الكل';
+    state.currentWalletId='all';
+    state.projectFilter='all';
+    try{if(typeof opsTypeFilterState!=='undefined')opsTypeFilterState='expense';}catch(e){}
+    const search=document.getElementById('opsSearchInput');if(search)search.value='';
+    setChoices('opsFilterCategory',args.category?[String(args.category)]:[]);
+    setChoices('opsFilterMember',args.member?[String(args.member)]:[]);
+    setChoices('opsFilterProject',[]);
+    if(typeof filterOperationsList==='function')filterOperationsList();
+    showBanner(args.label||categoryName(args.category),candidates.length);
+  }
+  function onClick(event) {
+    if(event.target.closest('#budgetDrilldownBack'))return;
+    const scopeButton=event.target.closest('[data-budget-drill-scope]');
+    const auditRow=event.target.closest('#budgetActualVsEstimatedContainer tbody tr[data-budget-item-index]');
+    const compareRow=event.target.closest('#cmpTableBody tr');
+    const week=event.target.closest('.monthly-week-line[data-budget-week]');
+    const over=event.target.closest('[data-budget-cat]');
+    const basic=event.target.closest('#budgetKpiActual,#budgetKpiExpense,#budgetKpiSurplus,#cmpKpiTotalActual,#cmpKpiTotalEstim,#cmpKpiTotalDiff');
+    if(!scopeButton&&!auditRow&&!compareRow&&!week&&!over&&!basic)return;
+    if(!document.getElementById('viewBudgets')?.contains(event.target) &&
+       !document.getElementById('panelMonthlyBudget')?.contains(event.target) &&
+       !document.getElementById('panelBudgetComparisons')?.contains(event.target))return;
+    event.preventDefault();event.stopImmediatePropagation();
+    const source=(compareRow || event.target.closest('#panelBudgetCompare')) ? 'compare' :
+      (event.target.closest('#panelBudgetComparisons') ? 'executive' : 'monthly');
+    const a={source,originNode:scopeButton||auditRow||compareRow||week||over||basic};
+    if(auditRow){
+      a.itemIndex=Number(auditRow.dataset.budgetItemIndex);
+      const c=window.BudgetAuditEngine?.getNavigationContext?.()||{};
+      const plan=(state.monthlyBudgets||[]).find(p=>p.id===state.activeBudgetId);
+      const it=plan?.items?.[a.itemIndex];
+      a.label=it?.title||'البند المختار';
+      const cells=auditRow.querySelectorAll('td');
+      if(event.target.closest('td')===cells[2] && c.comparisonMode==='period')a.scope='benchmark';
+    }else if(compareRow){
+      a.category=compareRow.dataset.budgetCategory||'';
+      a.label=categoryName(a.category);
+    }else if(over){
+      a.category=over.dataset.budgetCat;
+      a.scope='fullmonth';
+      a.label='تجاوز '+categoryName(a.category);
+    }else if(week){
+      const ctx=window.BudgetAuditEngine?.getNavigationContext?.()||{};
+      const n=Number(week.dataset.budgetWeek);
+      const s=monthRange(ctx.month),m=ctx.month||'';
+      if(m&&s.from){
+        const first=m+'-'+pad(n*7+1),last=m+'-'+pad(Math.min(n*7+7,Number(s.to.slice(8))));
+        a.from=first;a.to=last;
+      }
+      a.label='الأسبوع '+(n+1);
+    }else if(scopeButton){
+      const scope=scopeButton.dataset.budgetDrillScope;
+      const ctx=window.BudgetAuditEngine?.getNavigationContext?.()||{};
+      if(scope==='previous')a.scope='previous';
+      if(scope==='highest-day')a.from=a.to=scopeButton.dataset.budgetDate;
+      if(scope==='top-category')a.category=scopeButton.dataset.budgetCategory;
+      if(scope==='unplanned')a.onlyIds=(state.transactions||[])
+        .filter(t=>t.type==='expense' && !((state.monthlyBudgets||[])
+          .find(b=>b.id===state.activeBudgetId)?.items||[])
+          .some(it=>it.category===t.category)).map(t=>t.id);
+      if(scope==='largest-transaction')a.onlyIds=[scopeButton.dataset.budgetTxId];
+      a.label=scopeButton.querySelector('small')?.textContent||'مؤشر الموازنة';
+    }else a.label='إجمالي المقارنة';
+    open(a);
+  }
+  function init(){
+    if(document.body.dataset.budgetDrillReady==='1')return;
+    document.body.dataset.budgetDrillReady='1';
+    document.addEventListener('click',onClick,true);
+    installRenderer();
+    window.BudgetDrilldownHub={open,returnToBudget,isActive:()=>!!active};
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+}());
