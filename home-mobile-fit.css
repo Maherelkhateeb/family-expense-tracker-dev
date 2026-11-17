@@ -192,3 +192,9 @@ body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
   font-size: clamp(15px, 5cqi, 24px) !important;
   flex: 0 0 auto !important;
 }
+
+/* Reference-one pale background through the scroll viewport, including the
+   short unused space above the persistent white bottom navigation. */
+body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
+  background: linear-gradient(180deg,#dff8fd 0%,#eafbff 100%) !important;
+}
