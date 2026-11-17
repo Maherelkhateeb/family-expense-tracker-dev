@@ -134,3 +134,22 @@
   width:max(100%,540px);max-width:none}
  #viewBudgets #cmpPeriodChartContent .budget-spec .bs-slope-row {grid-template-columns:minmax(84px,1fr) minmax(0,1.65fr)}
 }
+
+/* Consistent series colours in responsive table and category cards. */
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-table :is(th,td):first-child{
+ position:sticky;right:0;z-index:1;background:var(--bg-card,#fff);
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-table td:nth-child(2){
+ background:color-mix(in srgb,#a78bfa 13%,var(--bg-card,#fff));
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-table td:nth-child(3){
+ background:color-mix(in srgb,#378add 13%,var(--bg-card,#fff));
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values >div:first-child{
+ border-radius:7px;padding:5px;background:color-mix(in srgb,#a78bfa 12%,transparent);
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values >div:nth-child(2){
+ border-radius:7px;padding:5px;background:color-mix(in srgb,#378add 12%,transparent);
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-table-wrap{max-width:100%;overscroll-behavior-inline:contain}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-table{min-width:750px}
