@@ -1,0 +1,33 @@
+name: Comparison Tab Navigation (Mobile and Desktop)
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - family-budget-comparison.js
+      - budget-audit-engine.js
+      - comparison-deeplink.js
+      - scripts/test-comparison-navigation.cjs
+      - .github/workflows/comparison-navigation-qa.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  visible-comparison:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Start app without real user data
+        run: python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/comparison-nav-http.log 2>&1 &
+      - name: Test tabs, deep link and screenshots
+        env:
+          APP_URL: http://127.0.0.1:8765/
+        run: node scripts/test-comparison-navigation.cjs
