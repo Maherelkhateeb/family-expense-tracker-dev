@@ -37710,7 +37710,7 @@ function getTodoTasks() {
     const raw = localStorage.getItem('family_monefy_tasks');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed; // Respect a legitimately empty saved task list.
     }
   } catch (e) {
     console.warn('Error reading tasks:', e);
