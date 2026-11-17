@@ -1189,3 +1189,23 @@ body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card
 body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:is(:first-child,:last-child) .avatar-bubble > * {
   opacity:0!important;
 }
+
+/* STAGE 1 FOOTER MATTE: avoid dark rounded-corner seam from transparent app frame. */
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav {
+  border-radius:0!important;
+  border-top:0!important;
+  background:#fff!important;
+  box-shadow:0 -1px 5px #80b5cb30!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:-6px!important;
+  height:9px!important;
+  border-radius:18px 18px 0 0!important;
+  background:linear-gradient(180deg,#e7f8fc,#fff)!important;
+  pointer-events:none!important;
+  z-index:0!important;
+}
