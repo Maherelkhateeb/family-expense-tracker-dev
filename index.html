@@ -43113,9 +43113,9 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-reference-one.css?v=202611171635">
+<link rel="stylesheet" href="./home-reference-one.css?v=202611171845">
 <style>
-#btnHomeDesign{order:-1;flex:none;width:36px;height:38px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer}
+#btnHomeDesign{order:-1;flex:0 1 auto;min-width:44px;max-width:66px;height:38px;padding:0 5px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:3px;font:850 10px Tahoma,Arial,sans-serif;white-space:nowrap}
 #homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
 body.light-theme #homeInterfaces{--home-panel:#fff;--home-text:#142037}
 .home-design-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;direction:rtl}
@@ -43167,7 +43167,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     const trigger = document.createElement('button');
     trigger.id = 'btnHomeDesign';
     trigger.type = 'button';
-    trigger.innerHTML = '<i class="fa-solid fa-border-all" aria-hidden="true"></i>';
+    trigger.innerHTML = '<i class="fa-solid fa-border-all" aria-hidden="true"></i><span>الأشكال</span>';
     trigger.setAttribute('aria-label','اختيار تصميم شاشة المصروفات');
     trigger.title = 'تغيير شكل الشاشة';
     gold.before(trigger);
@@ -43176,11 +43176,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       try { localStorage.setItem(preferenceKey, String(design)); } catch {}
       render();
     };
-    // Preserve design switching in Settings without an extra fifth tool in the reference.
-    const appearanceSettings = document.getElementById('settingsSec_appearance');
-    const settingsDesignSlot = document.createElement('div');
-    settingsDesignSlot.className = 'reference-design-settings-slot';
-    if (appearanceSettings) appearanceSettings.prepend(settingsDesignSlot);
+    // The switcher always stays in the home quick-tools strip, for every design.
     const items = [
       ['daily','☕','#f59e0b'],['food','🛒','#10b981'],['bills','⚡','#f97316'],
       ['house','🛋️','#8b5cf6'],['education','📚','#3b82f6'],['transport','🚗','#0284c7'],
@@ -43188,10 +43184,9 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     ];
     // Row order and icon positions follow the first supplied reference.
     // Approved RTL order: every expense category stays visible, including zero amounts.
-    // Exactly the reference's three RTL rows: bills/food/daily;
-    // transport/education/house; voice/other/health.
-    const referenceCategories = ['bills','food','daily','transport','education',
-      'house','voice','other','health'];
+    // Consistent two-column RTL order; the final row is voice action and clothes.
+    const referenceCategories = ['daily','food','bills','house','education',
+      'transport','health','other','voice','clothes'];
     // Preserve each artwork cell when cards move: artwork coordinates are NOT grid indices.
     const referenceArt = {
       daily:[0,0], bills:[25,0], food:[50,0], house:[75,0], transport:[100,0],
@@ -43239,15 +43234,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     function render() {
       host.dataset.design = design;
       expensePage.classList.toggle('home-reference-one', design === 1);
-      if (appearanceSettings) {
-        if (design === 1 && trigger.parentElement !== settingsDesignSlot) {
-          settingsDesignSlot.appendChild(trigger);
-          trigger.textContent = 'تغيير شكل الشاشة الرئيسية';
-        } else if (design !== 1 && trigger.parentElement !== gold.parentElement) {
-          gold.before(trigger);
-          trigger.innerHTML = '<i class="fa-solid fa-border-all" aria-hidden="true"></i>';
-        }
-      }
+      // Render updates must never move the switcher away from the home screen.
+      if (trigger.parentElement !== gold.parentElement) gold.before(trigger);
       const isOriginal = design === 0;
       // Avoid mutating the observed grid style on every refresh.
       // A redundant setProperty used to create an endless MutationObserver/rAF loop.
