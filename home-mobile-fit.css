@@ -1084,3 +1084,12 @@ body:has(#viewExpenses.home-reference-one.active) #appScrollBody,
 #viewExpenses.home-reference-one.active {
   background:linear-gradient(180deg,#e2f7fc 0%,#e9f8fc 57%,#effbfe 100%)!important;
 }
+
+
+/* Stage 1 final icon button outline from reference. */
+#viewExpenses.home-reference-one.active #btnHomeDesign {
+  background:linear-gradient(#f8fdff,#ddf4ff)!important;
+  border:1px solid #088fff!important;
+  color:#6524b7!important;
+  box-shadow:0 2px 4px #008dff24!important;
+}
