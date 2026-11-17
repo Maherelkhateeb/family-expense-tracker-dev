@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.11';
-    var APP_BUILD_ID = 202611171635;
+    var APP_VERSION = 'v5.4.12';
+    var APP_BUILD_ID = 202611171745;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.11</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.12</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -24564,6 +24564,12 @@ function toggleAnalyticsCustomRange() {
     }
 
     function switchAppPage(pageId, pushHistory = true) {
+      // Route all ledger/detail entries through the reversible navigation context.
+      if (pageId === 'operations') {
+        window.OperationsReturnHub?.beforeNavigate({kind:'page'});
+      } else {
+        window.OperationsReturnHub?.onLeavePage(pageId);
+      }
       state.activePage = pageId;
       document.querySelectorAll('.page-view').forEach(p => {
         p.classList.remove('active');
@@ -24635,6 +24641,7 @@ function toggleAnalyticsCustomRange() {
       }
 
       renderUI();
+      window.OperationsReturnHub?.sync();
     }
 
     // تبديل التابين داخل صفحة العمليات (العمليات المسجلة / الأرشيف)
@@ -26765,6 +26772,8 @@ function renderCategoriesGrid(filtered) {
     }
 
     function openOperationsFiltered({ category = null, categoryName = null, member = null, type = 'all', date = null, month = null, dateFrom = null, dateTo = null, walletId = null, project = null, resetFilters = false, returnToIndicators = false, returnTitle = '' } = {}) {
+      // Capture the original filters, view position and unfinished input BEFORE drilldown changes them.
+      window.OperationsReturnHub?.beforeNavigate({kind:'detail', label:returnTitle || categoryName || category});
       if (returnToIndicators) {
         saveIndicatorsReturnState(returnTitle || categoryName || (category ? category : 'المؤشرات'));
       }
@@ -43295,5 +43304,6 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
   else installHomeInterfaces();
 })();
 </script>
+<script src="./operations-return-hub.js?v=202611171745"></script>
 </body>
 </html>
