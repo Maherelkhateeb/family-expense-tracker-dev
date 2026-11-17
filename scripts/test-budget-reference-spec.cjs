@@ -61,7 +61,7 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
     assert.ok(report.noPlanning,'Unplanned zero-budget items must be labeled');
     assert.ok(report.sums.includes('6,100')&&report.sums.includes('6,700')&&report.sums.includes('600'),
       'Reference sample total reconciliation failed');
-    assert.ok(report.oldToolsHidden,'Legacy chart modes should not appear in the new budget view');
+    assert.equal(report.oldToolsHidden,false,'Unified comparison tools should remain accessible');
     assert.ok(report.svgTitles.length>=3,'Charts need accessible SVG titles');
     assert.ok(report.scroll<=report.viewport+3,'No horizontal scroll at '+width);
     assert.equal(report.mobileCards,width===380?'block':'none','Incorrect responsive table/mobile mode');
