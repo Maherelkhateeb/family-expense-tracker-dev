@@ -31393,6 +31393,8 @@ function switchSettingsTab(tabName) {
     window.currentMemberAnalysisTab = 'person_breakdown'; // 'person_breakdown' | 'category_breakdown' | 'matrix'
 
     function saveSummaryReturnState(extra = {}) {
+      // Preserve the live summary screen before drill-down closes the drawer.
+      window.OperationsReturnHub?.stageOrigin();
       const drawer = document.getElementById('summaryLeftDrawer');
       const scrollTop = drawer ? drawer.scrollTop : 0;
       window.summaryReturnState = {
