@@ -1778,7 +1778,7 @@ const BudgetCompareEngine = (() => {
   }
 
   function rangeLabel(range) {
-    return '<bdi>' + escapeHtml(range.from) + ' — ' + escapeHtml(range.to) + '</bdi>';
+    return '<bdi dir="ltr">' + escapeHtml(range.from) + ' — ' + escapeHtml(range.to) + '</bdi>';
   }
 
   function changeMarkup(actual, baseline) {
@@ -1787,16 +1787,16 @@ const BudgetCompareEngine = (() => {
     const type = difference > 0 ? 'cmp-rise' : difference < 0 ? 'cmp-fall' : '';
     const label = !baseline && actual > 0 ? 'بند جديد' : baseline && actual === 0 ? 'توقف الصرف' :
       baseline > 0 ? (difference > 0 ? '+' : '') + percent.format(difference / baseline * 100) + '٪' : '';
-    return '<bdi class="' + type + '">' + signedMoney(difference) + '</bdi>' + (label ? '<small>' + label + '</small>' : '');
+    return '<bdi dir="ltr" class="' + type + '">' + signedMoney(difference) + '</bdi>' + (label ? '<small' + (baseline > 0 && actual !== 0 ? ' dir="ltr"' : '') + '>' + label + '</small>' : '');
   }
 
   function valueMarkup(key, id, cents, clickable) {
     if (cents === null) return '<span>—</span>';
-    if (!clickable || !cents) return '<bdi>' + money(cents) + '</bdi>';
+    if (!clickable || !cents) return '<bdi dir="ltr" class="cmp-plain-value">' + money(cents) + '</bdi>';
     const label = key === 'actual' ? 'الفترة الأساسية' : 'المرجع';
     return '<button type="button" class="cmp-period-value" data-period-series="' + key + '" data-period-category="' +
       escapeHtml(id) + '" aria-label="' + escapeHtml((id ? categoryName(id) : 'الإجمالي') + '، ' + label + '، ' + money(cents)) +
-      '"><bdi>' + money(cents) + '</bdi></button>';
+      '"><bdi dir="ltr">' + money(cents) + '</bdi></button>';
   }
 
   function renderInsights(rows, entryCount, total, range, comparable) {
@@ -1934,28 +1934,42 @@ const BudgetCompareEngine = (() => {
       content.textContent = 'لا توجد مصروفات أو بنود للمقارنة في النطاق المحدد.';
       return;
     }
+    const columnLabel = isPlan || isSample ? 'التقديري' : refLabel;
+    const actualLabel = demoMode ? 'صرف تجريبي' : 'الفعلي';
+    const scale = '<div class="cmp-scale-key"><span class="cmp-key-actual">' + actualLabel +
+      '</span><span class="cmp-key-reference">' + columnLabel + '</span></div>';
     if (periodChartMode === 'table') {
       const tableRows = rows.map(row => '<tr data-budget-category="' + escapeHtml(row.id) + '"><th scope="row">' +
-        escapeHtml(row.name) + '</th><td>' + showValue(row,'a') + '</td><td>' + showValue(row,'b') +
+        escapeHtml(row.name) + '</th><td class="cmp-series-actual">' + showValue(row,'a') +
+        '</td><td class="cmp-series-reference">' + showValue(row,'b') +
         '</td><td class="cmp-difference">' + changeMarkup(row.a,row.b) + '</td></tr>').join('');
       content.innerHTML = '<div class="cmp-period-table"><table aria-label="مقارنة البنود بالجنيه المصري"><thead><tr>' +
-        '<th scope="col">البند</th><th scope="col">الأساسية</th><th scope="col">المرجع</th><th scope="col">الفرق</th>' +
+        '<th scope="col">البند</th><th class="cmp-key-actual" scope="col">' + actualLabel +
+        '</th><th class="cmp-key-reference" scope="col">' + columnLabel + '</th><th scope="col">الفرق</th>' +
         '</tr></thead><tbody id="cmpTableBody">' + tableRows + '</tbody></table></div>';
       return;
     }
     const maxValue = rows.reduce((max,row) => Math.max(max,Math.abs(row.a),Math.abs(row.b)),1);
     const maxDelta = rows.reduce((max,row) => Math.max(max,Math.abs(row.diff)),1);
+    const changeMode = periodChartMode === 'change';
     const markup = rows.map(row => {
-      const bar = (key,color) => '<div class="cmp-period-bar-row"><div class="cmp-period-track" aria-hidden="true"><i class="' + color +
-        '" style="width:' + Math.abs(row[key]) / maxValue * 100 + '%"></i></div>' + showValue(row,key) + '</div>';
-      const change = '<div class="cmp-period-delta" aria-hidden="true"><i class="' + (row.diff < 0 ? 'negative':'positive') +
-        '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div><div class="cmp-period-values">' +
-        showValue(row,'a') + ' مقابل ' + showValue(row,'b') + '</div>';
+      const bar = (key,series) => '<div class="cmp-period-bar-row cmp-series-' + series + '">' +
+        '<div class="cmp-period-track" aria-hidden="true"><i class="' + series + '" style="width:' +
+        Math.abs(row[key]) / maxValue * 100 + '%"></i></div>' + showValue(row,key) + '</div>';
+      const pair = '<div class="cmp-pair-values"><div class="cmp-series-actual">' + showValue(row,'a') +
+        '</div><div class="cmp-series-reference">' + showValue(row,'b') + '</div></div>';
+      let body = bar('a','actual') + bar('b','reference');
+      if (changeMode) {
+        const delta = !comparable ? '' : '<div class="cmp-period-delta" aria-hidden="true"><i class="' +
+          (row.diff < 0 ? 'negative':'positive') + '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div>';
+        body = delta + pair;
+      }
       return '<li><div class="cmp-period-row-heading"><strong>' + escapeHtml(row.name) + '</strong><div class="cmp-difference">' +
-        changeMarkup(row.a,row.b) + '</div></div>' +
-        (periodChartMode === 'change' ? change : bar('a','actual')+bar('b','reference')) + '</li>';
+        changeMarkup(row.a,row.b) + '</div></div>' + body + '</li>';
     }).join('');
-    content.innerHTML = '<ul class="cmp-period-bars">' + markup + '</ul>';
+    const directionKey = !changeMode || !comparable ? '' :
+      '<div class="cmp-direction-key" dir="ltr"><span class="cmp-fall">صرف أقل</span><span>صفر</span><span class="cmp-rise">صرف أعلى</span></div>';
+    content.innerHTML = scale + directionKey + '<ul class="cmp-period-bars">' + markup + '</ul>';
   }
 
   return {

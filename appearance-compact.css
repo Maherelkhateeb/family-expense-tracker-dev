@@ -1889,7 +1889,6 @@ body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
 .cmp-period-delta i {position:absolute}
 .cmp-period-delta .positive {left:50%;background:var(--period-up)}
 .cmp-period-delta .negative {right:50%;background:var(--period-down)}
-.cmp-period-values {font-size:.68rem;text-align:center}
 .cmp-period-value {padding:1px 3px;background:transparent;border-color:transparent;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .cmp-period-table {max-height:360px;overflow:auto}
 .cmp-period-table table {width:100%;border-collapse:collapse;font-size:.69rem}
@@ -2125,3 +2124,90 @@ body.light-theme #requestsListContainer .request-card {
 }
 .request-card-actions .request-card-confirm { color: var(--request-ok); background: var(--request-ok-bg); }
 .request-card-actions .request-card-danger { color: var(--request-danger); background: var(--request-danger-bg); }
+
+#cmpPeriodChart {
+  --cmp-primary-text: #bfdbfe;
+  --cmp-primary-surface: #1d3459;
+  --cmp-reference-text: #e9d5ff;
+  --cmp-reference-surface: #3a2956;
+  --cmp-row-border: #40536b;
+  --period-actual: #60a5fa;
+  --period-reference: #c084fc;
+}
+body.light-theme #cmpPeriodChart {
+  --cmp-primary-text: #153977;
+  --cmp-primary-surface: #e8f1ff;
+  --cmp-reference-text: #592b88;
+  --cmp-reference-surface: #f2eaff;
+  --cmp-row-border: #cbd5e1;
+  --period-actual: #2563eb;
+  --period-reference: #8054c7;
+}
+#cmpPeriodChart .cmp-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+#cmpPeriodChart .cmp-summary-grid > div {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 2px 4px;
+  align-items: baseline;
+  padding: 4px 6px;
+}
+#cmpPeriodChart .cmp-summary-grid > div > bdi { grid-column: 1/-1; font-size: .64rem; }
+#cmpPeriodChart .cmp-summary-grid > div > small:last-child { font-size: .63rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child {
+  grid-column: 1/-1;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 6px;
+  border-top-width: 1px;
+}
+.cmp-summary-grid > div:last-child strong small { display: inline; margin-inline-start: 5px; }
+#cmpPeriodChart .cmp-summary-primary { background: var(--cmp-primary-surface); color: var(--cmp-primary-text); }
+#cmpPeriodChart .cmp-summary-reference { background: var(--cmp-reference-surface); color: var(--cmp-reference-text); }
+#cmpPeriodChart .cmp-summary-grid small { color: inherit; }
+.cmp-key-actual,.cmp-series-actual { color: var(--cmp-primary-text); background: var(--cmp-primary-surface); }
+.cmp-key-reference,.cmp-series-reference { color: var(--cmp-reference-text); background: var(--cmp-reference-surface); }
+#cmpPeriodChartContent .cmp-period-table table { border-collapse: separate; border-spacing: 2px 3px; }
+#cmpPeriodChartContent .cmp-period-table th:first-child { width: 34%; }
+#cmpPeriodChartContent .cmp-period-table :is(th,td) { padding: 3px 4px; border: 0; }
+#cmpPeriodChartContent .cmp-period-table tr > :is(th,td) { border-radius: 5px; }
+#cmpPeriodChartContent .cmp-period-table tbody th { line-height: 1.25; }
+#cmpPeriodChartContent .cmp-period-table thead :is(.cmp-key-actual,.cmp-key-reference) { font-size: .7rem; }
+#cmpPeriodChartContent .cmp-period-table tbody td:last-child { background: var(--bg-card-sub,var(--bg-card)); }
+#cmpPeriodChartContent .cmp-period-value {
+  min-height: 28px;
+  font-size: .81rem;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+#cmpPeriodChartContent .cmp-difference { font-variant-numeric: tabular-nums; }
+#cmpPeriodChartContent .cmp-difference small { line-height: 1.15; }
+.cmp-scale-key,.cmp-direction-key { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: .68rem; }
+.cmp-scale-key > span { padding: 2px 6px; border-radius: 5px; font-weight: 800; }
+.cmp-direction-key { justify-content: space-between; padding-inline: 4px; }
+#cmpPeriodChartContent .cmp-period-bars li {
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 8px;
+  padding: 4px 6px;
+  display: grid;
+  gap: 3px;
+}
+#cmpPeriodChartContent .cmp-period-row-heading { min-height: 22px; }
+#cmpPeriodChartContent .cmp-period-row-heading > strong { overflow-wrap: anywhere; }
+#cmpPeriodChartContent .cmp-period-row-heading small { text-align: end; }
+#cmpPeriodChartContent .cmp-period-bar-row { border-radius: 5px; padding: 0 4px; }
+#cmpPeriodChartContent .cmp-period-track { height: 8px; }
+#cmpPeriodChartContent .cmp-period-delta { height: 8px; margin: 3px 0; }
+.cmp-pair-values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px; text-align: center; }
+.cmp-pair-values > div { min-width: 0; border-radius: 5px; }
+@media (max-width: 360px) {
+  #cmpPeriodChart .cmp-summary-grid > div { grid-template-columns: minmax(0,1fr); }
+  #cmpPeriodChart .cmp-summary-grid > div:last-child { grid-template-columns: auto minmax(0,1fr) auto; }
+  #cmpPeriodChartContent .cmp-period-table th:first-child { width: 30%; }
+  #cmpPeriodChartContent .cmp-period-table :is(th,td) { padding-inline: 2px; }
+}
+
+#cmpPeriodChartContent .cmp-plain-value { font-size: .81rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+#cmpPeriodChart :is(bdi,small)[dir="ltr"],#cmpPeriodChart .cmp-direction-key {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}

@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.98",
-  "build": "202611171055",
-  "buildId": 202611171055,
-  "updated": "2026-11-17T10:55:00+03:00",
-  "notes": "Open the unified date picker when a custom primary or reference period is selected."
+  "version": "v5.3.99",
+  "build": "202611171105",
+  "buildId": 202611171105,
+  "updated": "2026-11-17T11:05:00+03:00",
+  "notes": "Compact, color-coded budget comparisons across the table, paired bars, and change views."
 }
