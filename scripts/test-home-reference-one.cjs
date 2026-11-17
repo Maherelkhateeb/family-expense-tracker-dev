@@ -77,6 +77,10 @@ const order = ['daily','food','bills','house','education','transport','health','
         console.log('STAGE1_HEADER_DIAGNOSTIC',JSON.stringify(head));
       }
       if(width===390) console.log('STAGE1_NAV_DIAGNOSTIC',await page.evaluate(()=>({nav:document.getElementById('appBottomNav')?.outerHTML.slice(0,10000),items:[...document.querySelectorAll('#appBottomNav .nav-tab-item')].map(el=>({id:el.id,html:el.outerHTML.slice(0,1300),rect:(()=>{let r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()}))})));
+      if(width===390){console.log('STAGE1_NAV_STYLE',await page.evaluate(()=>{
+        const css=id=>{const e=document.getElementById(id),s=getComputedStyle(e),r=e.getBoundingClientRect();return {id,top:r.top,bottom:r.bottom,background:s.background,border:s.border,borderTop:s.borderTop,outline:s.outline,boxShadow:s.boxShadow,borderRadius:s.borderRadius,overflow:s.overflow};};
+        return [css('appBottomNav'),css('appFrame'),css('appScrollBody')];
+      }));}
       assert.deepEqual(snap.ids,order,'Wrong category order or missing zero category');
       assert.deepEqual(snap.labels,[
         'مصروف يومي','طعام ومشتريات','فواتير والتزامات','مستلزمات منزل',
