@@ -69,6 +69,9 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
       hostOverflow:getComputedStyle(host).overflowY,
       viewOverflow:getComputedStyle(view).overflowY,
       categoryCount:host.querySelectorAll('.reference-one-card').length,
+      engineMeasured:host.dataset.dynamicHomeMeasured,
+      engineFit:host.dataset.dynamicHomeFit,
+      engineCardHeight:host.style.getPropertyValue('--dynamic-home-card-height'),
       voiceAction:!!voice.querySelector('button[data-voice]'),
       lastAmount:!!last.querySelector('.reference-one-amount'),
       lastDetails:last.querySelector('.reference-one-details')?.getBoundingClientRect().bottom
@@ -97,6 +100,9 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
      header.status.box.left>=header.sync.left-1,
      'Sync label paints beyond its own button: '+JSON.stringify(header));
    assert.equal(initial.categoryCount,10,'Financial categories or voice missing');
+   assert.equal(initial.engineMeasured,'true','Dynamic home engine did not measure this viewport');
+   assert.ok(parseFloat(initial.engineCardHeight)>=68,'Dynamic home engine returned an invalid card height');
+   assert.ok(['fit','scroll'].includes(initial.engineFit),'Dynamic home engine did not report fit/scroll outcome');
    assert.ok(initial.voiceAction && initial.lastAmount,'Last row missing active voice or financial content');
    assert.ok(initial.cardHeight>=67 && initial.cardHeight<=80,
      'Reference image card proportions are wrong: '+JSON.stringify(initial));
