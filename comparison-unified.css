@@ -160,3 +160,103 @@
  #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{grid-template-columns:minmax(0,1fr) !important}
 }
 #viewBudgets #cmpPeriodChart .cmp-view-tools[hidden]{display:none !important}
+
+
+/* 17 Nov 2026 — one phone-first financial oversight, no duplicated dashboards. */
+#viewBudgets #panelBudgetComparisons{display:none!important}
+#viewBudgets #cmpPeriodChart{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;width:100%!important;max-width:100%!important;min-width:0!important}
+#viewBudgets #cmpPeriodChart > :not(#cmpAuditApp){display:none!important}
+#viewBudgets #cmpAuditApp,
+#viewBudgets #cmpAuditApp *{box-sizing:border-box}
+#viewBudgets #cmpAuditApp{--audit-border:rgba(148,163,184,.26);--audit-muted:#94a3b8;
+  --audit-surface:rgba(148,163,184,.075);--audit-actual:#378add;--audit-est:#868e9b;
+  --audit-over:#ef4444;--audit-under:#22a06b;direction:rtl;max-width:100%;min-width:0;
+  width:100%;padding:4px 2px 20px;color:inherit;font-size:13px;line-height:1.5;overflow-x:clip}
+#viewBudgets #cmpAuditApp .cmp-audit-head{margin:2px 1px 10px}
+#viewBudgets #cmpAuditApp h2{font-size:18px;margin:0 0 3px;font-weight:900;line-height:1.4}
+#viewBudgets #cmpAuditApp h3{font-size:15px;margin:0;font-weight:900;line-height:1.45}
+#viewBudgets #cmpAuditApp p{font-size:12px;color:var(--audit-muted);margin:2px 0 0;line-height:1.55}
+#viewBudgets #cmpAuditApp .cmp-audit-filter{display:grid;grid-template-columns:auto minmax(0,1.2fr) auto minmax(0,.9fr);
+  gap:6px;align-items:center;border:1px solid var(--audit-border);padding:9px;border-radius:12px;
+  background:var(--audit-surface);min-width:0}
+#viewBudgets #cmpAuditApp .cmp-audit-filter label{font-size:12px;font-weight:800;white-space:nowrap}
+#viewBudgets #cmpAuditApp :is(input,select){width:100%;min-width:0;max-width:100%;height:36px;
+  color:inherit;background:var(--bg-card,#172032);border:1px solid var(--audit-border);
+  border-radius:8px;font:inherit;font-size:12px;padding:4px 6px;line-height:1.2}
+#viewBudgets #cmpAuditApp :is(button,input,select,summary):focus-visible{outline:2px solid var(--audit-actual);outline-offset:2px}
+#viewBudgets #cmpAuditApp .cmp-audit-period{margin:7px 3px 9px;font-weight:800;text-align:center}
+#viewBudgets #cmpAuditApp .cmp-audit-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 10px}
+#viewBudgets #cmpAuditApp .cmp-audit-kpi{min-width:0;display:flex;flex-direction:column;align-items:flex-start;
+  gap:2px;border:1px solid var(--audit-border);border-radius:11px;padding:10px;
+  background:var(--audit-surface);min-height:88px}
+#viewBudgets #cmpAuditApp .cmp-audit-kpi span{font-size:12px;color:var(--audit-muted);font-weight:750}
+#viewBudgets #cmpAuditApp .cmp-audit-kpi strong{font-size:clamp(14px,4vw,19px);line-height:1.3;
+  color:inherit;font-weight:900;font-variant-numeric:tabular-nums;max-width:100%;overflow-wrap:anywhere}
+#viewBudgets #cmpAuditApp .cmp-audit-kpi small{color:var(--audit-muted);font-size:11px}
+#viewBudgets #cmpAuditApp [data-tone="over"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:var(--audit-over)}
+#viewBudgets #cmpAuditApp [data-tone="under"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:var(--audit-under)}
+#viewBudgets #cmpAuditApp [data-tone="blue"] strong{color:var(--audit-actual)}
+#viewBudgets #cmpAuditApp .cmp-audit-verdict{border-inline-start:3px solid var(--audit-est);
+  padding:7px 11px;margin:4px 1px 16px;background:var(--audit-surface);border-radius:8px;
+  display:flex;gap:3px;flex-direction:column}
+#viewBudgets #cmpAuditApp .cmp-audit-verdict[data-tone="over"]{border-inline-start-color:var(--audit-over)}
+#viewBudgets #cmpAuditApp .cmp-audit-verdict[data-tone="under"]{border-inline-start-color:var(--audit-under)}
+#viewBudgets #cmpAuditApp .cmp-audit-verdict strong{font-size:13px}
+#viewBudgets #cmpAuditApp .cmp-audit-verdict span{font-size:12px;color:var(--audit-muted);line-height:1.55}
+#viewBudgets #cmpAuditApp .cmp-audit-section-head{display:flex;justify-content:space-between;align-items:flex-start;
+  gap:8px;margin:5px 1px 10px;min-width:0}
+#viewBudgets #cmpAuditApp .cmp-audit-section-head>div{min-width:0;flex:1}
+#viewBudgets #cmpAuditApp .cmp-audit-section-head>small{white-space:nowrap;border:1px solid var(--audit-border);
+  color:var(--audit-muted);border-radius:999px;padding:4px 7px;font-size:11px}
+#viewBudgets #cmpAuditApp .cmp-audit-rows{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+#viewBudgets #cmpAuditApp .cmp-audit-row{min-width:0;border:1px solid var(--audit-border);
+  border-radius:12px;background:var(--audit-surface);padding:10px}
+#viewBudgets #cmpAuditApp .cmp-audit-row-title{display:flex;align-items:flex-start;
+  justify-content:space-between;gap:7px;margin-bottom:8px}
+#viewBudgets #cmpAuditApp .cmp-audit-row-title strong{font-size:13px;font-weight:900;line-height:1.4;
+  min-width:0;color:inherit}
+#viewBudgets #cmpAuditApp .cmp-audit-row-title span{color:var(--audit-muted);font-size:11px;
+  font-weight:800;flex:0 0 auto}
+#viewBudgets #cmpAuditApp .cmp-audit-row[data-tone="over"] .cmp-audit-row-title span{color:var(--audit-over)}
+#viewBudgets #cmpAuditApp .cmp-audit-row[data-tone="under"] .cmp-audit-row-title span{color:var(--audit-under)}
+#viewBudgets #cmpAuditApp .cmp-audit-row-body{display:grid;grid-template-columns:minmax(0,1fr) 54px;
+  align-items:stretch;gap:10px;min-width:0}
+#viewBudgets #cmpAuditApp .cmp-audit-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;min-width:0}
+#viewBudgets #cmpAuditApp .cmp-audit-values>div{display:flex;flex-direction:column;min-width:0;
+  padding:5px 7px;border:1px solid var(--audit-border);border-radius:8px}
+#viewBudgets #cmpAuditApp .cmp-audit-values small{font-size:11px;color:var(--audit-muted)}
+#viewBudgets #cmpAuditApp .cmp-audit-values b{font-size:13px;font-weight:850;
+  font-variant-numeric:tabular-nums;text-align:right;white-space:normal;overflow-wrap:anywhere}
+#viewBudgets #cmpAuditApp .cmp-audit-values>div:nth-child(2) b{color:var(--audit-actual)}
+#viewBudgets #cmpAuditApp .cmp-audit-values .cmp-audit-variance{grid-column:1/-1;display:grid;
+  grid-template-columns:auto 1fr auto;gap:7px;align-items:center}
+#viewBudgets #cmpAuditApp .cmp-audit-variance b{justify-self:start}
+#viewBudgets #cmpAuditApp .cmp-audit-variance em{font-size:12px;font-weight:900;font-style:normal;text-align:left}
+#viewBudgets #cmpAuditApp .cmp-audit-pair{display:flex;justify-content:center;align-items:flex-end;
+  gap:4px;height:102px;min-width:54px;border:1px solid var(--audit-border);border-radius:8px;padding:6px 4px}
+#viewBudgets #cmpAuditApp .cmp-audit-pair>div{height:100%;width:19px;display:flex;
+  flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;min-width:0}
+#viewBudgets #cmpAuditApp .cmp-audit-pair i{display:block;width:15px;border-radius:4px 4px 0 0;
+  background:var(--audit-est);min-height:2px;flex-shrink:0}
+#viewBudgets #cmpAuditApp .cmp-audit-pair>div:nth-child(2) i{background:var(--audit-actual)}
+#viewBudgets #cmpAuditApp .cmp-audit-pair small{font-size:9px;line-height:1.2;color:var(--audit-muted)}
+#viewBudgets #cmpAuditApp .cmp-audit-row-foot{display:flex;justify-content:space-between;align-items:center;
+  gap:8px;padding-top:7px;margin-top:7px;border-top:1px solid var(--audit-border);
+  font-size:11px;color:var(--audit-muted)}
+#viewBudgets #cmpAuditApp .cmp-audit-row-foot button{font:inherit;font-size:11px;font-weight:800;
+  border:1px solid var(--audit-border);border-radius:7px;color:var(--audit-actual);
+  padding:4px 8px;background:transparent;min-height:26px;cursor:pointer}
+#viewBudgets #cmpAuditApp .cmp-audit-help{margin-top:12px;border:1px solid var(--audit-border);
+  border-radius:10px;padding:10px;background:var(--audit-surface)}
+#viewBudgets #cmpAuditApp .cmp-audit-help summary{cursor:pointer;font-weight:850;font-size:12px}
+#viewBudgets #cmpAuditApp .cmp-audit-help p{margin-top:8px}
+@media(min-width:740px){
+  #viewBudgets #cmpAuditApp .cmp-audit-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #viewBudgets #cmpAuditApp .cmp-audit-rows{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:340px){
+  #viewBudgets #cmpAuditApp .cmp-audit-filter{grid-template-columns:auto minmax(0,1fr)}
+  #viewBudgets #cmpAuditApp .cmp-audit-row-body{gap:6px}
+  #viewBudgets #cmpAuditApp .cmp-audit-row{padding:8px}
+}
