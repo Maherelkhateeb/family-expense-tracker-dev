@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.10",
-  "build": "202611171510",
-  "buildId": 202611171510,
-  "updated": "2026-11-17T15:10:00+03:00",
-  "notes": "First reference home: corrected voice card and quick-tool RTL ordering; four-phone QA."
+  "version": "v5.4.11",
+  "build": "202611171635",
+  "buildId": 202611171635,
+  "updated": "2026-11-17T16:35:00+03:00",
+  "notes": "Rebuild first reference: 3x3 mobile categories, header, wallet KPI, four controls, original home preserved."
 }
