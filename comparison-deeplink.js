@@ -184,7 +184,7 @@
       if(labels.some(x=>label.includes(x))){el.hidden=true;el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');}
     });
     const legacy=document.getElementById('panelBudgetComparisons');
-    if(legacy){legacy.hidden=true;legacy.style.setProperty('display','none','important');}
+    if(legacy){legacy.hidden=false;legacy.style.removeProperty('display');legacy.removeAttribute('aria-hidden');}
   }
   function sync(force){
     hideOldTab();
