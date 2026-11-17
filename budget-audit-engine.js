@@ -1840,6 +1840,143 @@ const BudgetCompareEngine = (() => {
       '<div><dt>' + escapeHtml(name) + '</dt><dd>' + escapeHtml(value) + '</dd></div>').join('') + '</dl>';
   }
 
+
+  // Reference-spec comparison, 17 Nov 2026: visible only for a registered budget.
+  // Monetary values in this engine are cents. No samples or fabricated categories.
+  function renderBudgetReferenceSpecification(content,rows,totals,range) {
+    const sorted=[...rows].sort((a,b)=>(b.b||0)-(a.b||0)||a.name.localeCompare(b.name,'ar'));
+    const est=totals.b||0, actual=totals.a||0, variance=actual-est;
+    const palette={estimated:'#888780',actual:'#378ADD',over:'#E24B4A',save:'#639922'};
+    const num=value=>Math.round(Number(value)||0);
+    const fmt=value=>'<bdi dir="ltr">'+money(num(value))+'</bdi>';
+    const signed=value=>'<bdi dir="ltr">'+(value>0?'+':value<0?'−':'')+money(Math.abs(num(value)))+'</bdi>';
+    const percentValue=(difference,base)=>base>0?(difference/base*100):null;
+    const pct=value=>value===null?'—':'<bdi dir="ltr">'+(value>0?'+':value<0?'−':'')+Math.abs(value).toFixed(1)+'%</bdi>';
+    const tone=value=>value>0?'bs-over':value<0?'bs-save':'bs-neutral';
+    const safe=escapeHtml;
+    const actualLink=row=>'<button type="button" class="bs-open-operations" data-period-series="actual" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات '+safe(row.name)+'">'+fmt(row.a)+'</button>';
+    const condition=row=>(row.b||0)===0?'غير مخطط':(row.diff/(row.b||1)*100>5?'تجاوز':row.diff/(row.b||1)*100< -5?'توفير':'ضمن الحد');
+    const totalPct=percentValue(variance,est);
+    if(est+sorted.reduce((sum,row)=>sum+row.diff,0)!==actual){
+      content.innerHTML='<p class="bs-error" role="alert">تعذر عرض المقارنة: إجمالي التقديري ومجموع الفروق لا يتطابقان مع إجمالي الفعلي.</p>';
+      return;
+    }
+    if(!byId('budgetSpecStyle')){
+      const style=document.createElement('style');style.id='budgetSpecStyle';
+      style.textContent=[
+        '.budget-spec{--bs-est:#888780;--bs-act:#378ADD;--bs-over:#E24B4A;--bs-save:#639922;color:var(--text-primary,inherit);direction:rtl;font:500 13px/1.65 Tahoma,Arial,sans-serif;max-width:100%;min-width:0}',
+        '.budget-spec *, .budget-spec *::before,.budget-spec *::after{box-sizing:border-box}',
+        '.budget-spec h3,.budget-spec h4{margin:0 0 9px;font-size:15px;line-height:1.4;color:inherit}',
+        '.budget-spec small{font-size:12px;color:var(--text-secondary,inherit)}',
+        '.budget-spec .bs-intro{margin:0 0 12px;color:inherit}',
+        '.budget-spec .bs-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}',
+        '.budget-spec .bs-panel{min-width:0;max-width:100%;overflow:hidden;border:1px solid var(--border-color,#cbd5e1);background:var(--card-bg,transparent);border-radius:12px;padding:12px}',
+        '.budget-spec .bs-note{font-size:12px;margin:9px 0 0}',
+        '.budget-spec .bs-over{color:var(--bs-over)}.budget-spec .bs-save{color:var(--bs-save)}.budget-spec .bs-neutral{color:inherit}',
+        '.budget-spec .bs-open-operations{border:0;border-bottom:1px dashed currentColor;background:transparent;font:inherit;color:var(--bs-act);padding:2px;cursor:pointer;min-height:30px}',
+        '.budget-spec .bs-statline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:9px 0 12px}',
+        '.budget-spec .bs-statline>div{padding:9px;border:1px solid var(--border-color,#cbd5e1);border-radius:8px;min-width:0}',
+        '.budget-spec .bs-statline strong{display:block;font-size:15px;overflow-wrap:anywhere}',
+        '.budget-spec .bs-statline small{display:block}',
+        '.budget-spec .bs-table-wrap{max-width:100%;width:100%;overflow-x:auto}',
+        '.budget-spec .bs-table{width:100%;border-collapse:collapse;min-width:720px;text-align:right;font-variant-numeric:tabular-nums}',
+        '.budget-spec .bs-table th,.budget-spec .bs-table td{padding:7px 6px;border-bottom:1px solid var(--border-color,#cbd5e1);white-space:nowrap;font-size:12px}',
+        '.budget-spec .bs-table th{font-weight:900}.budget-spec .bs-table tfoot{font-weight:900}',
+        '.budget-spec .bs-mobile-rows{display:none}',
+        '.budget-spec .bs-row-card{border:1px solid var(--border-color,#cbd5e1);border-radius:9px;padding:10px;margin:7px 0}',
+        '.budget-spec .bs-row-head{display:flex;align-items:center;justify-content:space-between;gap:6px}',
+        '.budget-spec .bs-row-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 9px;margin-top:6px}',
+        '.budget-spec .bs-row-values>div{display:flex;gap:4px;min-width:0;flex-wrap:wrap;justify-content:space-between}',
+        '.budget-spec .bs-viz{width:100%;height:auto;display:block;overflow:visible}',
+        '.budget-spec .bs-viz text{fill:currentColor;font:12px Tahoma,Arial,sans-serif}',
+        '.budget-spec .bs-viz .bs-grid-line{stroke:var(--border-color,#cbd5e1);stroke-width:1;stroke-dasharray:3 4}',
+        '.budget-spec .bs-variance-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,2fr);gap:7px;align-items:center;margin:8px 0}',
+        '.budget-spec .bs-variance-label{font-size:12px;text-align:right;overflow-wrap:anywhere}',
+        '.budget-spec .bs-track{height:19px;position:relative;display:flex;align-items:center;background:color-mix(in srgb,var(--bs-est) 9%,transparent);border-radius:3px}',
+        '.budget-spec .bs-track::after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px solid currentColor;opacity:.45}',
+        '.budget-spec .bs-track>i{position:absolute;top:3px;bottom:3px;max-width:50%;display:block}',
+        '.budget-spec .bs-variance-value{font-size:12px;text-align:left;white-space:nowrap}',
+        '.budget-spec .bs-legend{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px}',
+        '.budget-spec .bs-legend i{display:inline-block;width:12px;height:12px;vertical-align:middle;margin-inline-end:4px}',
+        '.budget-spec [dir="ltr"],.budget-spec bdi{unicode-bidi:isolate;font-variant-numeric:tabular-nums}',
+        '@media(min-width:880px){.budget-spec .bs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.budget-spec .bs-grid>.bs-full{grid-column:1/-1}}',
+        '@media(max-width:600px){.budget-spec .bs-table-wrap{display:none}.budget-spec .bs-mobile-rows{display:block}.budget-spec .bs-panel{padding:9px}.budget-spec .bs-statline strong{font-size:13px}.budget-spec .bs-viz text{font-size:12px}}'
+      ].join('\n');document.head.append(style);
+    }
+    const tableRows=sorted.map((row,index)=>{
+      const ratio=percentValue(row.diff,row.b||0), status=condition(row);
+      const estShare=est?row.b/est*100:0,actShare=actual?row.a/actual*100:0;
+      const type=row.id==='bills'?'ثابت':'متغير';
+      const cause=row.b===0&&row.a>0?'بند غير مخطط':'غير محدد';
+      const values=[['التقديري',fmt(row.b)],['الفعلي',actualLink(row)],
+        ['الفرق','<span class="'+tone(row.diff)+'">'+signed(row.diff)+'</span>'],
+        ['الانحراف',pct(ratio)],['الحالة',safe(status)],
+        ['الحصة التقديرية',pct(estShare)],['الحصة الفعلية',pct(actShare)]];
+      const mobile='<article class="bs-row-card" data-budget-category="'+safe(row.id)+'"><div class="bs-row-head"><strong>'+number.format(index+1)+'. '+safe(row.name)+'</strong><span class="'+tone(row.diff)+'">'+safe(status)+'</span></div><div class="bs-row-values">'+values.map(kv=>'<div><small>'+kv[0]+'</small><strong>'+kv[1]+'</strong></div>').join('')+'</div><small>النوع: '+type+' · السبب: '+cause+'</small></article>';
+      const desktop='<tr data-budget-category="'+safe(row.id)+'"><th scope="row">'+number.format(index+1)+'. '+safe(row.name)+'</th><td>'+fmt(row.b)+'</td><td>'+actualLink(row)+'</td><td class="'+tone(row.diff)+'">'+signed(row.diff)+'</td><td>'+pct(ratio)+'</td><td>'+status+'</td><td>'+pct(estShare)+'</td><td>'+pct(actShare)+'</td><td>'+type+'</td><td>'+cause+'</td></tr>';
+      return {mobile,desktop};
+    });
+    const totalRow='<tr><th scope="row">الإجمالي</th><td>'+fmt(est)+'</td><td><button class="bs-open-operations" type="button" data-period-series="actual" data-period-category="">'+fmt(actual)+'</button></td><td class="'+tone(variance)+'">'+signed(variance)+'</td><td>'+pct(totalPct)+'</td><td>'+ (est===0?'غير مخطط':totalPct>5?'تجاوز':totalPct< -5?'توفير':'ضمن الحد')+'</td><td>100%</td><td>100%</td><td>—</td><td>—</td></tr>';
+    const table='<section class="bs-panel bs-full" aria-label="جدول فروقات الموازنة"><h3>جدول الفروقات لكل بند</h3>'+
+      '<div class="bs-table-wrap"><table class="bs-table"><thead><tr><th>البند</th><th>التقديري</th><th>الفعلي</th><th>الفرق</th><th>الانحراف</th><th>الحالة</th><th>حصة التقديري</th><th>حصة الفعلي</th><th>النوع</th><th>سبب الانحراف</th></tr></thead><tbody>'+tableRows.map(r=>r.desktop).join('')+'</tbody><tfoot>'+totalRow+'</tfoot></table></div>'+
+      '<div class="bs-mobile-rows">'+tableRows.map(r=>r.mobile).join('')+'</div><p class="bs-note">اضغط على المبلغ الفعلي لعرض العمليات المفلترة. النسبة (—) تعني عدم وجود تقدير لهذا البند. سبب الانحراف غير محدد ما لم يُسجّل في البيانات.</p></section>';
+    const max=Math.max(1,...sorted.map(row=>Math.max(row.a,row.b||0)));
+    const plotW=Math.max(540,sorted.length*76+100),plotH=260,top=37,baseY=198;
+    const columnWidth=18,slot=(plotW-85)/Math.max(sorted.length,1);
+    let columnSvg='<svg class="bs-viz" role="img" aria-label="أعمدة التقديري والفعلي لكل بند" viewBox="0 0 '+plotW+' '+plotH+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<title>مقارنة الأعمدة المتجاورة</title><desc>الرمادي يمثل التقديري والأزرق يمثل الفعلي، والفرق موضح أعلى كل بند.</desc>'+
+      '<path class="bs-grid-line" d="M 46 '+baseY+' H '+(plotW-16)+' M 46 '+(baseY-70)+' H '+(plotW-16)+' M 46 '+(baseY-140)+' H '+(plotW-16)+'"/>';
+    sorted.forEach((row,i)=>{
+      const center=50+slot*(i+.5),eh=(row.b||0)/max*140,ah=row.a/max*140;
+      columnSvg+='<rect x="'+(center-20)+'" y="'+(baseY-eh)+'" width="'+columnWidth+'" height="'+eh+'" fill="'+palette.estimated+'"/>'+
+        '<rect x="'+(center+2)+'" y="'+(baseY-ah)+'" width="'+columnWidth+'" height="'+ah+'" fill="'+palette.actual+'"/>'+
+        '<text x="'+center+'" y="22" text-anchor="middle">'+(row.diff>0?'+':row.diff<0?'−':'')+money(Math.abs(row.diff))+'</text>'+
+        '<text x="'+center+'" y="218" text-anchor="middle">'+safe(row.name.length>12?row.name.slice(0,11)+'…':row.name)+'</text>';
+    });
+    columnSvg+='</svg>';
+    // Waterfall uses a truncated axis to make small month-end differences legible.
+    const steps=[{name:'التقديري',value:est,total:true}], nonZero=sorted.filter(r=>r.diff!==0);
+    nonZero.forEach(r=>steps.push({name:r.name,value:r.diff,total:false}));
+    steps.push({name:'الفعلي',value:actual,total:true});
+    let cumulative=est;
+    const levels=[est];
+    nonZero.forEach(r=>{cumulative+=r.diff;levels.push(cumulative)});
+    const low=Math.min(...levels,actual),high=Math.max(...levels,actual);
+    const margin=Math.max(1,(high-low)*.12),floor=Math.floor((low-margin)/10000)*10000;
+    const ceil=Math.max(high+margin,floor+10000),vertical=value=>205-(value-floor)/(ceil-floor)*150;
+    const stepW=Math.max(560,steps.length*76+50),pace=(stepW-90)/Math.max(steps.length,1);
+    let waterfall='<svg class="bs-viz" role="img" aria-label="شلال الفروقات من التقديري إلى الفعلي" viewBox="0 0 '+stepW+' 258" xmlns="http://www.w3.org/2000/svg"><title>شلال فروقات الميزانية</title><desc>أعمدة تجاوز باللون الأحمر وتوفير باللون الأخضر، من إجمالي التقديري إلى الفعلي.</desc>';
+    let running=est;
+    steps.forEach((step,i)=>{
+      const x=50+i*pace+pace*.25,w=Math.min(24,pace*.52),start=step.total?floor:running,end=step.total?step.value:running+step.value;
+      const y=Math.min(vertical(start),vertical(end)),height=Math.max(1,Math.abs(vertical(start)-vertical(end)));
+      const color=step.total?(i===0?palette.estimated:palette.actual):(step.value>0?palette.over:palette.save);
+      waterfall+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+height+'" fill="'+color+'"/>'+
+        '<text x="'+(x+w/2)+'" y="20" text-anchor="middle">'+(step.total?'':step.value>0?'+':'−')+money(Math.abs(step.value))+'</text>'+
+        '<text x="'+(x+w/2)+'" y="236" text-anchor="middle">'+safe(step.name.length>11?step.name.slice(0,10)+'…':step.name)+'</text>';
+      if(!step.total)running+=step.value;
+      const next=i<steps.length-1?x+pace:w;
+      if(i<steps.length-1)waterfall+='<line x1="'+(x+w)+'" x2="'+(x+pace)+'" y1="'+vertical(i===0?est:running)+'" y2="'+vertical(i===0?est:running)+'" stroke="currentColor" stroke-dasharray="3 4" opacity=".3"/>';
+    });
+    waterfall+='</svg>';
+    const maxDelta=Math.max(1,...sorted.map(row=>Math.abs(row.diff)));
+    const variances=[...sorted].sort((a,b)=>b.diff-a.diff);
+    const variancesHtml=variances.map(row=>{
+      const frac=Math.abs(row.diff)/maxDelta*50;
+      const layout=row.diff>=0?'left:50%;width:'+frac+'%;background:'+palette.over:'right:50%;width:'+frac+'%;background:'+palette.save;
+      return '<div class="bs-variance-row"><div class="bs-variance-label">'+safe(row.name)+'<div class="bs-variance-value '+tone(row.diff)+'">'+signed(row.diff)+' ('+pct(percentValue(row.diff,row.b||0))+')</div></div>'+
+        '<div class="bs-track" dir="ltr"><i style="'+layout+'"></i></div></div>';
+    }).join('');
+    const stats='<div class="bs-statline"><div><small>إجمالي التقديري</small><strong>'+fmt(est)+'</strong></div><div><small>إجمالي الفعلي</small><strong>'+fmt(actual)+'</strong></div>'+
+      '<div><small>الفرق الكلي</small><strong class="'+tone(variance)+'">'+signed(variance)+'</strong></div><div><small>نسبة الانحراف</small><strong class="'+tone(variance)+'">'+pct(totalPct)+'</strong></div></div>';
+    content.innerHTML='<div class="budget-spec"><p class="bs-intro">مقارنة الميزانية المسجلة بالصرف الفعلي · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
+      '<div class="bs-grid">'+table+
+      '<section class="bs-panel bs-full"><h3>1. الأعمدة المتجاورة: التقديري والفعلي</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> التقديري</span><span><i style="background:'+palette.actual+'"></i> الفعلي</span></div>'+columnSvg+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p></section>'+
+      '<section class="bs-panel bs-full"><h3>2. شلال الفروقات</h3>'+waterfall+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
+      '<section class="bs-panel bs-full"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
+      '</div></div>';
+  }
+
   function render() {
     const root = byId('cmpPeriodChart');
     if (!root) return;
@@ -1973,6 +2110,11 @@ const BudgetCompareEngine = (() => {
     const referenceLabel = isPlan || isSample ? 'التقديري' : refLabel;
     const actualLabel = demoMode ? 'الصرف التجريبي' : 'الصرف الفعلي';
     const rankedName = (row, index) => '<span class="cmp-rank">' + number.format(index + 1) + '</span> ' + escapeHtml(row.name);
+    if (isPlan && comparable) {
+      viewTools.hidden = true;
+      renderBudgetReferenceSpecification(content,rows,total,range);
+      return;
+    }
     if (periodChartMode === 'table') {
       const tableRows = rows.map((row,index) => {
         const tone = row.diff > 0 ? 'cmp-rise' : row.diff < 0 ? 'cmp-fall' : '';
