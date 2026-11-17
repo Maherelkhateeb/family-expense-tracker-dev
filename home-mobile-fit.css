@@ -1168,3 +1168,24 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item > 
     line-height:1.04!important;
   }
 }
+
+/* STAGE 1 PHOTO FILTER ARTWORK — the non-person filter icons "أخرى" and "الكل"
+   are copied from the supplied first screenshot, personal portraits unchanged. */
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:first-child .avatar-bubble,
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:last-child .avatar-bubble {
+  background-image:url("data:image/webp;base64,UklGRvoEAABXRUJQVlA4IO4EAADwGQCdASpQACgAPiEQhkKhoQmdVlYMAQJYgC9E3WDwgR6cHmA/SX/Vf4D2dOoA/p/9y6wD0AP2A9LL9oPgy/cj9ivgI/Wesa85vpH2Wyhz4n8pPw50rX4q/lBmIf7j+Q9y493ecvz1v8/8dPX79Bf7f3BP5T/Sv9B+Yf+C+aPqX/20USw9dDoyUZ/avZxOOUqownhtmNwsQ5Zh06zYZI6NSX+sJ3Hd7Ffjd498knQVSLV5S0PiJvul06h9QvPtIcRVmIuqfcVGfSQXgdqQAqoc9p4ajIgtnQAA/v/+w2nezOVFBhMDCkzP1zG8tviwIoABpFPjNNxCLDFyV6vf1qkzsZpyX7MgIwAWDUbeOvMitjsj7uAL7Fdhxrh/Pi+1SfCub96AgsiQzHrJgcpqqEJRphjI4tTAPwWIvSHFH+WhmzwNaLKIfYzGpCTQ3tTEi09hFItSEZFR1pBPynO+FGfE1YlagcauHtCSscB0xvpb4L67L0xV9gDOoetrQ6e23/CssJ6xPwqTPT6S1oMOIuMOpN+aL/zQy6ROMXgvRDDxFKJf3n4SvTioo/xCL/czFxBzzfynKv5WUa7Gz/uYgteKUloBjpMO+cZL3y+cl0pj1OPvf7/QNWgabvskePk/rsEM3Rom+7x55J4ZbZnW//FJXJ2ZlG9nd9Waw8G1kYzH0/1WuaNlsBhG6MlCb0B4656v5Zmgn8wQ5X9naeyMQHVkh33fYnhMOVD3Bzx1Znc1SE7t0iJ6/eabOpuXKxNTN6iq+Fq58YMqlvr09OOaceJ6R2vEf4fF+Q/auQnER9BEanlaTprXjRP7lbbAV5Z2XwfOvFz9qxYOAXa/yxYnBnqwe8xsSaPmc7C6L5BOHon432BF59c0v/97DeEBiDU2bF8OUiNa+0lqr8WssllvYNM/DD9NAjjo/Fnj/9AXgZ7NfScRlqpsZIjle1W4jT0hTmpL7qnp5SmtKk/Ms5ERK1/VZYdzMwpVtLtJ3qX+gfu1o3lIG+l2QZUGJBv1/9nxFs4uefS6yVZqCOzGEKl4Whzpzbdn87tyYTT8Wp2OSseG3L77qw/81QrJcAiZ/D3bjFByjm1vODqUiP//B7Gf9r6JSFUpLqMhuJYtyk4bEFAd977l4KQWe1/whIhV3hdgCvnNzjJfOjv/RTv/ef/6XuP0i3moH/zfrObGqUKp7STft68fpQ+F7R/cVtDfSyTfDOuX1h22WfHP3lvbNde8Rq1vV9oI1PYCMJy2m++bwZ8+T/gdnHnW3c8GFSp+Ce8+OcLC1P+XZkLVDhOfRXKPtWY/RxJo1wJfNW3rIECoBp6gZ3a52l77SvKVJyXld3i8S+TkUW68uluvLtI0cE7RRevdsVrN/BFLa5jDzb/xVpR7hNy7BJY5/7r+zl3jcac+nm5LpTiHKcidYZxlVReJIeReFQzn2HW5E6L1N4vsfLMff/iapQxXF/FbA67JviehvP09sMHx6SZULJVeZnb172RxIvVgHsiJW+6uTh4/+7u/h+O36KCKC3CY9jV2HCqy/31LSlRGENVSzWnBlVVkbb6Ra9w5vOnFlGDjAQ3LhVeBCJgfG21R9foBWTVYHya8jsYGaCuGP0FO3MTksvHVPlQzqNXHrvxAyFkjJdQzlcFNK63oGCxsuNWLb0bABRxbtjo44sT5ndzbGn/50UMAAA==")!important;
+  background-size:200% 100%!important;
+  background-repeat:no-repeat!important;
+  border:0!important;
+  box-shadow:none!important;
+  position:relative!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:first-child .avatar-bubble {
+  background-position:100% 50%!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:last-child .avatar-bubble {
+  background-position:0% 50%!important;
+}
+body:has(#viewExpenses.home-reference-one.active) #avatarsContainer .avatar-card:is(:first-child,:last-child) .avatar-bubble > * {
+  opacity:0!important;
+}
