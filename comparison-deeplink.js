@@ -149,7 +149,7 @@
       '<p class="cmp-audit-period">'+safe(monthLabel(months[0]))+(months.length>1?' — '+safe(monthLabel(months[months.length-1])):'')+'</p>'+
       '<div class="cmp-audit-summary">'+summary.map(e=>'<div class="cmp-audit-kpi" data-tone="'+e[2]+'"><span>'+e[0]+'</span><strong dir="ltr">'+safe(e[1])+'</strong><small>'+((e[0]==='نسبة الفرق')?'':c)+'</small></div>').join('')+'</div>'+
       '<div class="cmp-audit-verdict" data-tone="'+(report.estimated<=0?'neutral':report.difference>0?'over':report.difference<0?'under':'neutral')+'"><strong>'+headline+'</strong><span>'+safe(note)+'</span></div>'+
-      '<div class="cmp-audit-section-head"><div><h3>الفروق حسب بنود المصروفات</h3><p>الفرق الموجب زيادة في الصرف، والسالب توفير. كل البنود ظاهرة حتى لو قيمتها صفر.</p></div><small>'+report.actualCount+' عملية صرف</small></div>'+
+      '<div class="cmp-audit-section-head"><div><h3>الفروق حسب بنود المصروفات</h3><p>الأزرق للموازنة التقديرية والفيروزي للمصروف الفعلي. العمود الأطول يعني مبلغًا أكبر داخل البند نفسه. الفرق الموجب زيادة، والسالب أقل من المقدر. كل البنود ظاهرة حتى لو صفر.</p></div><small>'+report.actualCount+' عملية صرف</small></div>'+
       '<div class="cmp-audit-rows">'+report.rows.map((r,i)=>{
         const state=tone(r),max=Math.max(1,r.estimated,r.actual);
         return '<article class="cmp-audit-row" data-tone="'+state+'">'+
@@ -166,7 +166,7 @@
           '</div></article>';
       }).join('')+'</div>'+
       '<details class="cmp-audit-help"><summary>طريقة حساب الفرق والنِّسب</summary>'+
-      '<p>الفرق = المصروف الفعلي − الميزانية التقديرية. نسبة الفرق = (الفرق ÷ الميزانية التقديرية) × 100. لو المقدر صفر، النسبة بتظهر «غير متاح» بدل نسبة مضللة. الأزرق للفعلي، والرمادي للمقدر، والأحمر للتجاوز، والأخضر لأقل من المقدر.</p></details>';
+      '<p>الفرق = المصروف الفعلي − الميزانية التقديرية. نسبة الفرق = (الفرق ÷ الميزانية التقديرية) × 100. لو المقدر صفر، النسبة بتظهر «غير متاح» بدل نسبة مضللة. الأزرق للتقديري، والفيروزي للفعلي، والأحمر للتجاوز، والأخضر لأقل من المقدر. ارتفاع العمودين نسبي داخل كل بند.</p></details>';
     return true;
   }
   function hideOldTab(){
