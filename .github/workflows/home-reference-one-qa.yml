@@ -9,6 +9,7 @@ on:
       - home-mobile-fit.css
       - scripts/test-home-reference-one.cjs
       - scripts/test-home-layouts.cjs
+      - scripts/test-home-short-viewport.cjs
       - .github/workflows/home-reference-one-qa.yml
   workflow_dispatch:
 
@@ -38,6 +39,7 @@ jobs:
           mkdir -p screenshots
           node scripts/test-home-reference-one.cjs
           node scripts/test-home-layouts.cjs
+          node scripts/test-home-short-viewport.cjs
       - name: Store reference screen shots
         if: always()
         uses: actions/upload-artifact@v4
@@ -46,4 +48,5 @@ jobs:
           path: |
             screenshots/home-reference-one-*.png
             screenshots/home-layout-*.png
+            screenshots/home-reference-one-short-*.png
           if-no-files-found: ignore
