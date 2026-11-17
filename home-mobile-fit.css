@@ -1381,3 +1381,50 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav::before {
     display:none!important;
   }
 }
+
+/* Shared mobile interaction zones and center scroll — 2026-11-17 */
+@media (max-width:480px) {
+  body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appFrame {
+    display:flex!important; flex-direction:column!important;
+    height:100dvh!important; max-height:100dvh!important; min-height:0!important; overflow:hidden!important;
+  }
+  body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appScrollBody {
+    flex:1 1 0%!important; min-height:0!important; height:auto!important;
+    overflow-y:auto!important; overflow-x:hidden!important; overscroll-behavior-y:contain!important;
+  }
+  body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) #appBottomNav {
+    position:relative!important; inset:auto!important; flex:0 0 auto!important; width:100%!important; z-index:30!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active {
+    height:auto!important; max-height:none!important; min-height:0!important; overflow:visible!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces:not([hidden]) {
+    height:auto!important; max-height:none!important; min-height:0!important; flex:0 0 auto!important; overflow:visible!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces :is(.reference-one-grid,.home-design-grid) {
+    height:auto!important; max-height:none!important; flex:0 0 auto!important; align-content:start!important; overflow:visible!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='2'] .home-design-grid,
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='3'] .home-design-grid {
+    grid-template-rows:repeat(5,minmax(4.4em,auto))!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='4'] .home-design-grid {
+    grid-template-rows:repeat(10,minmax(3.8em,auto))!important;
+  }
+  #viewExpenses.home-alternative-design.active #homeInterfaces[data-design='5'] .home-design-grid {
+    grid-template-rows:repeat(3,minmax(4.4em,auto))!important;
+  }
+  #viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces :is(.reference-one-card,.home-design-card) {
+    min-height:4.4em!important; height:auto!important; max-height:none!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-amount,
+  #viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card .home-design-value {
+    position:relative!important; z-index:2!important;
+    border-block-start:1px solid color-mix(in srgb,currentColor 22%,transparent)!important;
+    min-height:1.65em!important; padding-block:0.25em!important;
+  }
+  #viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add,
+  #viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card .home-design-head {
+    position:relative!important; z-index:1!important;
+  }
+}
