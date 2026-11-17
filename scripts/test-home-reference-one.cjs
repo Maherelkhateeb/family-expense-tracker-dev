@@ -76,6 +76,7 @@ const order = ['daily','food','bills','house','education','transport','health','
         });
         console.log('STAGE1_HEADER_DIAGNOSTIC',JSON.stringify(head));
       }
+      if(width===390) console.log('STAGE1_NAV_DIAGNOSTIC',await page.evaluate(()=>({nav:document.getElementById('appBottomNav')?.outerHTML.slice(0,10000),items:[...document.querySelectorAll('#appBottomNav .nav-tab-item')].map(el=>({id:el.id,html:el.outerHTML.slice(0,1300),rect:(()=>{let r=el.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()}))})));
       assert.deepEqual(snap.ids,order,'Wrong category order or missing zero category');
       assert.deepEqual(snap.labels,[
         'مصروف يومي','طعام ومشتريات','فواتير والتزامات','مستلزمات منزل',
