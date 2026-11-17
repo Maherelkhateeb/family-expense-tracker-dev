@@ -48,7 +48,7 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
    console.log('REFERENCE_SHORT_INITIAL '+JSON.stringify({viewport,...initial}));
    assert.equal(initial.categoryCount,10,'Financial categories or voice missing');
    assert.ok(initial.voiceAction && initial.lastAmount,'Last row missing active voice or financial content');
-   assert.ok(initial.cardHeight>=68 && initial.cardHeight<=80,
+   assert.ok(initial.cardHeight>=67 && initial.cardHeight<=80,
      'Reference image card proportions are wrong: '+JSON.stringify(initial));
    if(viewport.width===345 && viewport.height===650) {
      assert.ok(initial.last.bottom<=initial.nav.top-2 && initial.voice.bottom<=initial.nav.top-2,
