@@ -42,6 +42,22 @@ const WIDTHS=[320,360,390,391,430,768];
      }
      const rects=cards.map(readRect);
      if(design===1) {
+       const overlays=['leftScreenEdgeHandle','rightScreenEdgeHandle','btnVoiceAssistantFab'];
+       for(const id of overlays){
+         const node=document.getElementById(id);
+         if(node&&getComputedStyle(node).display!=='none')
+           errors.push('reference-overlay-visible:'+id);
+       }
+       const brand=document.querySelector('.header-brand-row');
+       if(brand && viewportWidth<=430){
+         const parts=[...brand.children].filter(el=>getComputedStyle(el).display!=='none');
+         const positions=parts.map(el=>readRect(el)).sort((a,b)=>a.left-b.left);
+         if(positions.length>=2 && positions[1].left-positions[0].right>14)
+           errors.push('header-unnecessary-gap:'+Math.round(positions[1].left-positions[0].right));
+       }
+       const switchEl=document.getElementById('btnHomeDesign');
+       const switchFont=parseFloat(getComputedStyle(switchEl).fontSize)||0;
+       if(switchFont>2)errors.push('switch-control-is-not-icon-only');
        const order=[...cards].sort((a,b)=>{
          const ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
          return Math.abs(ra.top-rb.top)>3?ra.top-rb.top:rb.right-ra.right;
