@@ -181,13 +181,23 @@
     const legacy=document.getElementById('panelBudgetComparisons');
     if(legacy){legacy.hidden=true;legacy.style.setProperty('display','none','important');}
   }
-  function sync(){
+  function sync(force){
     hideOldTab();
     const panel=document.getElementById('cmpPeriodChart');
-    if(panel&&!document.getElementById('cmpAuditApp'))render();
+    if(panel&&(force||!document.getElementById('cmpAuditApp')))render();
   }
-  let pending=false;
-  function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;sync();});}
+  let pending=false,needsRefresh=false;
+  function schedule(force){
+    needsRefresh=needsRefresh||force===true;
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(()=>{
+      pending=false;
+      const refresh=needsRefresh;
+      needsRefresh=false;
+      sync(refresh);
+    });
+  }
   document.addEventListener('change',event=>{
     if(event.target.id==='cmpAuditMonth'&&/^\d{4}-(0[1-9]|1[0-2])$/.test(event.target.value)){
       settings.month=event.target.value;render();
@@ -197,7 +207,11 @@
   });
   document.addEventListener('click',event=>{
     const btn=event.target.closest?.('[data-audit-category]');
-    if(!btn)return;
+    if(!btn){
+      const nav=event.target.closest?.('button,[role="tab"]');
+      if(nav&&nav.id==='btnBudgetSubComparisons')setTimeout(render,0);
+      return;
+    }
     const id=btn.getAttribute('data-audit-category');
     if(typeof window.openOperationsFiltered!=='function')return;
     const start=monthShift(settings.month,1-settings.span)+'-01',end=dateTo(settings.month);
@@ -209,6 +223,12 @@
   window.addEventListener('focus',()=>render());
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});
   else schedule();
-  if(document.documentElement) new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true});
+  if(document.documentElement) new MutationObserver(mutations=>{
+    const changed=mutations.some(m=>{
+      const node=m.target;
+      return !!node.closest?.('#cmpPeriodChartContent,#cmpSummary');
+    });
+    schedule(changed);
+  }).observe(document.documentElement,{childList:true,subtree:true});
   window.FamilyComparisonAudit={render,calculate,version:'2026-11-17-mobile-1'};
 })();
