@@ -120,7 +120,7 @@
 }
 @media(max-width:599px){
  #viewBudgets #cmpPeriodChart {padding:8px !important;gap:8px}
- #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{grid-template-columns:minmax(0,1fr) !important;gap:8px !important}
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:7px !important}
  #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox > div {display:grid;grid-template-columns:minmax(0,1fr)}
  #viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
  #viewBudgets #cmpPeriodChart .cmp-view-tools{flex-wrap:nowrap;align-items:center;}
@@ -153,3 +153,10 @@
 }
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-table-wrap{max-width:100%;overscroll-behavior-inline:contain}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-table{min-width:750px}
+
+/* Keep the two comparison selectors on one row on normal phone widths.
+   Only stack on exceptionally narrow devices. */
+@media(max-width:355px){
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{grid-template-columns:minmax(0,1fr) !important}
+}
+#viewBudgets #cmpPeriodChart .cmp-view-tools[hidden]{display:none !important}
