@@ -1075,3 +1075,12 @@ body:has(#viewExpenses.home-reference-one.active) #appBottomNav .nav-tab-item {
     font-size:clamp(20px,6.55vw,29px)!important;
   }
 }
+
+
+/* STAGE 1 PALETTE — sampled background from photo 1 at 391px. */
+body:has(#viewExpenses.home-reference-one.active),
+body:has(#viewExpenses.home-reference-one.active) #appFrame,
+body:has(#viewExpenses.home-reference-one.active) #appScrollBody,
+#viewExpenses.home-reference-one.active {
+  background:linear-gradient(180deg,#e2f7fc 0%,#e9f8fc 57%,#effbfe 100%)!important;
+}
