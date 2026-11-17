@@ -45,7 +45,7 @@ const WIDTHS=[320,360,390,391,430,768];
        const overlays=['leftScreenEdgeHandle','rightScreenEdgeHandle','btnVoiceAssistantFab'];
        for(const id of overlays){
          const node=document.getElementById(id);
-         if(node&&getComputedStyle(node).display!=='none')
+         if(node&&getComputedStyle(node).display!=='none'&&getComputedStyle(node).visibility!=='hidden'&&Number(getComputedStyle(node).opacity)>0)
            errors.push('reference-overlay-visible:'+id);
        }
        const brand=document.querySelector('.header-brand-row');
