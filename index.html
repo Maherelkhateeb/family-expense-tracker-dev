@@ -34204,7 +34204,8 @@ function switchSettingsTab(tabName) {
           const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
           const isNewer = remoteBuild && (
             (remoteBNum > currentBuildNum) ||
-            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
+            (remoteBNum === 0 && remoteBuild.version &&
+             String(remoteBuild.version).localeCompare(String(currentVerStr), undefined, { numeric: true, sensitivity: 'base' }) > 0)
           );
 
           if (isNewer || (options.isManual && options.force)) {
@@ -34275,7 +34276,8 @@ function switchSettingsTab(tabName) {
         const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
           const isNewer = remoteBuild && (
             (remoteBNum > currentBuildNum) ||
-            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
+            (remoteBNum === 0 && remoteBuild.version &&
+             String(remoteBuild.version).localeCompare(String(currentVerStr), undefined, { numeric: true, sensitivity: 'base' }) > 0)
           );
 
         if (isNewer) {
