@@ -1392,9 +1392,12 @@ window.BudgetAuditEngine = (() => {
 const BudgetCompareEngine = (() => {
   let _actualPeriod = 'thisMonth';
   let _estimPeriod = 'thisMonth';
-  let _actualFrom = null, _actualTo = null;
-  let _estimFrom = null, _estimTo = null;
-  let _chartDough = null, _chartBar = null, _chartLine = null;
+  let _chartBar = null, _chartLine = null;
+  let periodChartMode = 'paired';
+  const sampleMonthlyAmounts = {
+    food: 3000, bills: 2100, education: 1800, transport: 1200,
+    house: 1000, daily: 950, health: 850, clothes: 650, other: 450
+  };
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -1807,8 +1810,8 @@ const BudgetCompareEngine = (() => {
 
     // Extra verified actuals vs plan insights.
     renderExtraComparisonMetrics(rowsData, actRange, totEstim, totActual);
-    // Render 3 Charts
-    renderCharts(rowsData, actData, totEstim, actRange.from, actRange.to);
+    renderPeriodChart(actData, actRange);
+    renderCharts(actData, totEstim, actRange.from, actRange.to);
   }
 
 
@@ -1835,7 +1838,7 @@ const BudgetCompareEngine = (() => {
     const fmt=n=>Number(n||0).toLocaleString('ar-EG',{maximumFractionDigits:0});
     const card=(name,value,hint,scope='actual',attrs='')=>
       '<button type="button" class="monthly-insight-card" data-budget-drill-scope="'+scope+'" '+attrs+
-      '><small>'+name+'</small><strong>'+value+'</strong><span>'+hint+' · اضغط للتفاصيل</span></button>';
+      '><small>'+name+'</small><strong>'+value+'</strong><span>'+hint+'</span></button>';
     slot.innerHTML='<div class="monthly-insights"><h3>مؤشرات إضافية للمقارنة</h3>'+
       '<p>تحليلات العمليات الفعلية المسجلة خلال '+escapeHtml(range.from)+' إلى '+escapeHtml(range.to)+'.</p>'+
       '<div class="monthly-insight-grid">'+
@@ -1851,45 +1854,145 @@ const BudgetCompareEngine = (() => {
       '</div></div>';
   }
 
-  function renderCharts(rowsData, actData, totEstim, fromDate, toDate) {
-    if (typeof Chart === 'undefined') return;
-
-    // 1. Doughnut Chart (Distribution of actuals by category)
-    const ctxDough = document.getElementById('cmpChartDoughnut');
-    if (ctxDough) {
-      if (_chartDough) { _chartDough.destroy(); _chartDough = null; }
-
-      const filteredRows = rowsData.filter(r => r.actualAmt > 0);
-      const labels = filteredRows.map(r => {
-        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey };
-        return obj.name;
-      });
-      const data = filteredRows.map(r => r.actualAmt);
-      const colors = filteredRows.map(r => {
-        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { color: '#38bdf8' };
-        return obj.color || '#38bdf8';
-      });
-
-      _chartDough = new Chart(ctxDough, {
-        type: 'doughnut',
-        data: {
-          labels: labels.length ? labels : ['لا توجد بيانات'],
-          datasets: [{
-            data: data.length ? data : [1],
-            backgroundColor: colors.length ? colors : ['rgba(255,255,255,0.1)'],
-            borderWidth: 1.5,
-            borderColor: '#0f172a'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { family: 'inherit', size: 11 } } }
-          }
-        }
-      });
+  function previousActualRange(range) {
+    if (_actualPeriod === 'lastMonth') {
+      const start = new Date(range.from + 'T00:00:00');
+      const year = start.getFullYear();
+      const month = start.getMonth();
+      return {from: formatDateStr(new Date(year, month - 1, 1)), to: formatDateStr(new Date(year, month, 0))};
     }
+    const periods = {thisWeek: 'lastWeek', thisMonth: 'lastMonth', thisYear: 'lastYear'};
+    if (periods[_actualPeriod]) return periodToRange(periods[_actualPeriod]);
+    const day = 86400000;
+    const start = Date.parse(range.from);
+    const length = dateDiffDays(range.from, range.to);
+    return {
+      from: new Date(start - length * day).toISOString().slice(0, 10),
+      to: new Date(start - day).toISOString().slice(0, 10)
+    };
+  }
+
+  function getSampleBudget(range, profile) {
+    const adjustment = { 'sample-low': -1, sample: 0, 'sample-high': 1 }[profile];
+    const flexibleAmounts = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
+    const totals = new Map(Object.keys(sampleMonthlyAmounts).map(category => [category, 0]));
+    const end = new Date(range.to);
+    const month = new Date(range.from.slice(0, 7) + '-01');
+    while (month <= end) {
+      const year = month.getUTCFullYear();
+      const index = month.getUTCMonth();
+      const days = new Date(Date.UTC(year, index + 1, 0)).getUTCDate();
+      const first = month.toISOString().slice(0, 7) === range.from.slice(0, 7) ? Number(range.from.slice(8)) : 1;
+      const last = year === end.getUTCFullYear() && index === end.getUTCMonth() ? end.getUTCDate() : days;
+      for (const [category, monthly] of Object.entries(sampleMonthlyAmounts)) {
+        const upToDay = day => Math.round((monthly + adjustment * (flexibleAmounts[category] || 0)) * 100 * day / days);
+        totals.set(category, totals.get(category) + upToDay(last) - upToDay(first - 1));
+      }
+      month.setUTCMonth(index + 1);
+    }
+    return new Map([...totals].map(([category, cents]) => [category, cents / 100]));
+  }
+
+  function renderPeriodChart(actual, range) {
+    const root = document.getElementById('cmpPeriodChart');
+    if (!root) return;
+    const content = document.getElementById('cmpPeriodChartContent');
+    const reference = document.getElementById('cmpPeriodReference').value;
+    const custom = reference === 'custom';
+    const sample = reference.startsWith('sample');
+    document.getElementById('cmpPeriodCustom').hidden = !custom;
+    const validRange = range.from <= range.to;
+    const previous = sample ? range : custom ? {
+      from: document.getElementById('cmpPeriodFrom').value,
+      to: document.getElementById('cmpPeriodTo').value
+    } : validRange ? previousActualRange(range) : range;
+    root.onclick = event => {
+      const mode = event.target.closest('button[data-mode]');
+      if (mode) {
+        periodChartMode = mode.dataset.mode;
+        renderPeriodChart(actual, range);
+        return;
+      }
+      const detail = event.target.closest('button[data-period-category]');
+      if (!detail) return;
+      const selected = detail.dataset.periodSeries === 'reference' ? previous : range;
+      window.BudgetDrilldownHub?.open({
+        source: 'compare', originNode: detail, from: selected.from, to: selected.to,
+        category: detail.dataset.periodCategory, label: detail.dataset.periodLabel,
+        originSelector: '#cmpPeriodChart button[data-period-series="' + detail.dataset.periodSeries +
+          '"][data-period-category="' + CSS.escape(detail.dataset.periodCategory) + '"]'
+      });
+    };
+    root.querySelectorAll('button[data-mode]').forEach(button =>
+      button.setAttribute('aria-pressed', String(button.dataset.mode === periodChartMode)));
+    if (!previous.from || !previous.to || previous.from > previous.to || range.from > range.to) {
+      content.textContent = 'اختر نطاق تواريخ صالحًا لعرض المقارنة.';
+      return;
+    }
+    const first = new Map(actual.items.map(item => [item.category, item.total]));
+    const second = sample ? getSampleBudget(previous, reference) : new Map(
+      getActualsForRange(previous.from, previous.to).items.map(item => [item.category, item.total]));
+    const rows = [...new Set([...first.keys(), ...second.keys()])].map(category => {
+      const a = first.get(category) || 0;
+      const b = second.get(category) || 0;
+      const name = category === 'other' ? 'أخرى' : getCategoryObj(category, 'expense')?.name || category;
+      return {category, name, a, b, diff: Math.round((a - b) * 100) / 100};
+    }).sort((x, y) => Math.abs(y.diff) - Math.abs(x.diff));
+    const sampleNames = { 'sample-low': 'التجريبية الاقتصادية', sample: 'التجريبية الأساسية', 'sample-high': 'التجريبية المرنة' };
+    const referenceLabel = sampleNames[reference] || 'الفترة المرجعية';
+    const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 2});
+    const fmt = n => number.format(n);
+    const signed = n => (n > 0 ? '+' : '') + fmt(n);
+    const dates = period => '<bdi>' + escapeHtml(period.from) + ' — ' + escapeHtml(period.to) + '</bdi>';
+    const valueButton = (row, key) => {
+      const value = fmt(row[key]);
+      if (key === 'b' && sample) return '<bdi>' + value + '</bdi>';
+      const label = key === 'a' ? 'الفترة الفعلية' : referenceLabel;
+      return '<button type="button" class="cmp-period-value" data-period-series="' +
+        (key === 'a' ? 'actual' : 'reference') + '" data-period-category="' + escapeHtml(row.category) +
+        '" data-period-label="' + escapeHtml(row.name) + '" aria-label="' + escapeHtml(row.name + '، ' + label + '، ' + value) +
+        '"><bdi>' + value + '</bdi></button>';
+    };
+    const delta = n => '<bdi class="' + (n > 0 ? 'cmp-rise' : n < 0 ? 'cmp-fall' : '') + '">' + signed(n) + '</bdi>';
+    content.innerHTML = '<div class="cmp-period-legend">' +
+      '<span class="cmp-period-key-actual">الفترة الفعلية ' + dates(range) + '</span><span class="cmp-period-key-reference">' +
+      referenceLabel + ' ' + dates(previous) + '</span></div>';
+    if (!rows.length) {
+      content.insertAdjacentHTML('beforeend', '<p>لا توجد مصروفات في الفترتين المختارتين.</p>');
+      return;
+    }
+    const total = rows.reduce((sum, row) => ({a: sum.a + row.a, b: sum.b + row.b}), {a: 0, b: 0});
+    total.diff = Math.round((total.a - total.b) * 100) / 100;
+    const totalLabel = '<div class="cmp-period-total">الإجمالي <bdi>' + fmt(total.a) + '</bdi> مقابل <bdi>' +
+      fmt(total.b) + '</bdi> · الفرق ' + delta(total.diff) + ' ج.م</div>';
+    if (periodChartMode === 'table') {
+      const tableRows = rows.map(row => '<tr><th scope="row">' + escapeHtml(row.name) + '</th><td>' +
+        valueButton(row, 'a') + '</td><td>' + valueButton(row, 'b') + '</td><td>' + delta(row.diff) +
+        '</td><td>' + (row.b > 0 ? signed(row.diff / row.b * 100) + '٪' : '—') + '</td></tr>').join('');
+      content.insertAdjacentHTML('beforeend', '<div class="cmp-period-table"><table aria-label="مقارنة المصروفات بالجنيه المصري"><thead><tr>' +
+        '<th scope="col">البند</th><th scope="col">فعلي</th><th scope="col">مرجعي</th><th scope="col">الفرق</th><th scope="col">التغيّر</th>' +
+        '</tr></thead><tbody>' + tableRows + '</tbody></table></div>' + totalLabel);
+      return;
+    }
+    const maxValue = Math.max(1, ...rows.flatMap(row => [Math.abs(row.a), Math.abs(row.b)]));
+    const maxDelta = Math.max(1, ...rows.map(row => Math.abs(row.diff)));
+    const markup = rows.map(row => {
+      const bar = (key, color) => '<div class="cmp-period-bar-row"><div aria-hidden="true" class="cmp-period-track"><i class="' + color +
+        '" style="width:' + Math.abs(row[key]) / maxValue * 100 + '%"></i></div>' + valueButton(row, key) + '</div>';
+      const bars = periodChartMode === 'change' ?
+        '<div class="cmp-period-delta" aria-hidden="true"><i class="' + (row.diff < 0 ? 'negative' : 'positive') +
+        '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div>' :
+        bar('a', 'actual') + bar('b', 'reference');
+      const values = periodChartMode === 'change' ? '<div class="cmp-period-values">' + valueButton(row, 'a') + ' مقابل ' +
+        valueButton(row, 'b') + '</div>' : '';
+      return '<li><div class="cmp-period-row-heading"><strong>' + escapeHtml(row.name) + '</strong>' +
+        delta(row.diff) + '</div>' + bars + values + '</li>';
+    }).join('');
+    content.insertAdjacentHTML('beforeend', '<ul class="cmp-period-bars">' + markup + '</ul>' + totalLabel);
+  }
+
+  function renderCharts(actData, totEstim, fromDate, toDate) {
+    if (typeof Chart === 'undefined') return;
 
     // 2. Horizontal Bar Chart (By Person / Member)
     const ctxBar = document.getElementById('cmpChartBar');

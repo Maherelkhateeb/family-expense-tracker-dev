@@ -63,10 +63,46 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.deepEqual(appearance.choicesPerRow,[4,4],'Palette must stay two rows with four tiles');
    assert.equal(new Set(appearance.themeSamples.map(x=>x.shell)).size,8,'Settings shell palette is fixed');
    assert.equal(new Set(appearance.themeSamples.map(x=>x.panel)).size,8,'Settings cards ignore palette');
+   assert.ok(appearance.themeSamples.every(x=>x.panel.startsWith('linear-gradient')), 'A palette ignored the settings cards');
    assert.equal(new Set(appearance.iconSamples.map(x=>x.colour)).size,8,'Settings icons ignore icon palette');
    assert.ok(new Set(appearance.styleSamples.map(x=>x.radius+'|'+x.shadow)).size>=7,
      'Settings cards ignore design presets');
    assert.ok(appearance.scrollWidth<=appearance.viewport+4,'Settings horizontal overflow');
+   for (const mode of ['dark','light']) {
+     const labels=await page.evaluate(async mode=>{
+       setAppColorMode(mode);
+       const root=document.getElementById('settingsModal');
+       const output=[];
+       for(const choice of root.querySelectorAll('.card-style-option')){
+         choice.click();
+         await new Promise(resolve=>setTimeout(resolve,50));
+         const label=choice.querySelector('strong');
+         const styles=getComputedStyle(label);
+         const color=getComputedStyle(choice);
+         const luminance=rgb=>{
+           const [r,g,b]=rgb.match(/\d+(?:\.\d+)?/g).slice(0,3).map(Number).map(value=>{
+             const srgb=value/255;
+             return srgb<=.04045?srgb/12.92:((srgb+.055)/1.055)**2.4;
+           });
+           return .2126*r+.7152*g+.0722*b;
+         };
+         const toRgb=value=>{
+           const ctx=document.createElement('canvas').getContext('2d',{willReadFrequently:true});
+           ctx.fillStyle=value;ctx.fillRect(0,0,1,1);
+           return Array.from(ctx.getImageData(0,0,1,1).data).slice(0,3).join(' ');
+         };
+         const text=luminance(toRgb(styles.webkitTextFillColor));
+         const background=luminance(toRgb(color.backgroundColor));
+         output.push({label:label.textContent.trim(),visible:label.getBoundingClientRect().width>0&&
+           label.getBoundingClientRect().height>0&&styles.visibility==='visible',selected:choice.getAttribute('aria-pressed'),
+           contrast:(Math.max(text,background)+.05)/(Math.min(text,background)+.05)});
+       }
+       return output;
+     },mode);
+     assert.equal(labels.length,9);
+     assert.ok(labels.every(x=>x.label&&x.visible&&x.selected==='true'&&x.contrast>=4.5),JSON.stringify(labels));
+   }
+
    await page.evaluate(()=>{
      if(typeof closeModal==='function')closeModal('settingsModal');
      if(typeof switchAppPage==='function')switchAppPage('budgets',true);
@@ -94,6 +130,74 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
      document.getElementById('cmpActualTo').value='2025-04-30';
      BudgetCompareEngine.render();
    });
+   const display=await page.evaluate(()=>{
+     const root=document.getElementById('cmpPeriodChart');
+     const content=document.getElementById('cmpPeriodChartContent');
+     const reference=document.getElementById('cmpPeriodReference');
+     const select=value=>{reference.value=value;reference.dispatchEvent(new Event('change'));};
+     state.transactions.push({id:'qa-prev',type:'expense',date:'2025-03-13',category:'food',amount:200,member:'البيت'});
+     select('custom');
+     const invalid=content.textContent.includes('اختر نطاق تواريخ');
+     document.getElementById('cmpPeriodFrom').value='2025-03-01';
+     document.getElementById('cmpPeriodTo').value='2025-03-31';
+     BudgetCompareEngine.render();
+     root.querySelector('[data-mode="paired"]').click();
+     const paired=!!root.querySelector('.cmp-period-track .actual')&&!!root.querySelector('.cmp-period-track .reference');
+     root.querySelector('[data-mode="change"]').click();
+     const change=!!root.querySelector('.cmp-period-delta .positive');
+     root.querySelector('[data-mode="table"]').click();
+     const nums=[...root.querySelectorAll('tr:first-child td')].map(td=>td.textContent.trim());
+     select('sample');
+     const digits=new Intl.NumberFormat('ar-EG');
+     const totals=root.querySelector('.cmp-period-total').textContent;
+     const sample=totals.includes(digits.format(12000));
+     select('sample-low');
+     const low=root.querySelector('.cmp-period-total').textContent.includes(digits.format(10000));
+     select('sample-high');
+     const high=root.querySelector('.cmp-period-total').textContent.includes(digits.format(14000));
+     select('sample');
+     document.getElementById('cmpActualFrom').value='2024-02-01';
+     document.getElementById('cmpActualTo').value='2024-02-29';
+     BudgetCompareEngine.render();
+     const leap=root.querySelector('.cmp-period-total').textContent.includes(digits.format(12000));
+     document.getElementById('cmpActualFrom').value='2025-04-01';
+     document.getElementById('cmpActualTo').value='2025-04-07';
+     BudgetCompareEngine.render();
+     const week=root.querySelector('.cmp-period-total').textContent.includes(digits.format(2800));
+     document.getElementById('cmpActualTo').value='2025-04-01';
+     BudgetCompareEngine.render();
+     const day=root.querySelector('.cmp-period-total').textContent.includes(digits.format(400));
+     document.getElementById('cmpActualTo').value='2025-04-30';
+     select('previous');
+     state.transactions=state.transactions.filter(tx=>tx.id!=='qa-prev');
+     BudgetCompareEngine.render();
+     return {invalid,paired,change,nums,sample,low,high,leap,week,day,columns:getComputedStyle(
+       document.querySelector('#cmpExtraInsightGrid .monthly-insight-grid')).gridTemplateColumns.split(/\s+/).length};
+   });
+   assert.deepEqual(display,{invalid:true,paired:true,change:true,nums:['٣٥٠','٢٠٠','+١٥٠','+٧٥٪'],
+     sample:true,low:true,high:true,leap:true,week:true,day:true,columns:3});
+   await page.evaluate(()=>{
+     switchAppPage('expected',true);
+     const nav=document.querySelector('.commitments-calendar-month');
+     const title=document.getElementById('commitmentsCalendarMonthTitle');
+     const toggle=document.getElementById('btnCommitmentsCalendarToggle');
+     renderCommitmentsCalendar();
+     const initial=title.textContent;
+     const initialExpanded=toggle.getAttribute('aria-expanded');
+     nav.lastElementChild.click();
+     if(title.textContent===initial||toggle.getAttribute('aria-expanded')!==initialExpanded)throw Error('Calendar next/collapse interaction failed');
+     nav.firstElementChild.click();
+     if(title.textContent!==initial)throw Error('Calendar previous did not restore month');
+     const labelBox=toggle.getBoundingClientRect(), navBox=nav.getBoundingClientRect();
+     if(labelBox.width>0 && (navBox.right>labelBox.left+1||navBox.bottom<labelBox.top||navBox.top>labelBox.bottom))throw Error('Calendar navigation is not left of title');
+     toggle.click();
+     if(toggle.getAttribute('aria-expanded')===initialExpanded)throw Error('Calendar toggle did not update expanded state');
+     toggle.click();
+     switchAppPage('budgets',true);
+     switchBudgetSubTab('monthly');
+     switchBudgetMonthView('compare');
+   });
+
    const initial=await page.evaluate(()=>({
      metrics:document.querySelectorAll('.monthly-insights .monthly-insight-card').length,
      rows:document.querySelectorAll('#cmpTableBody tr[data-budget-category]').length,

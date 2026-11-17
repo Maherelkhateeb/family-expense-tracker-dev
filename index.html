@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.92';
-    var APP_BUILD_ID = 202611170915;
+    var APP_VERSION = 'v5.3.93';
+    var APP_BUILD_ID = 202611170945;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -11837,9 +11837,7 @@ body.light-theme .cat-budget-progress-track {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js').then(function(reg) {
           console.log('[SW] PWA ServiceWorker active with scope:', reg.scope);
-          try {
-            reg.update();
-          } catch(e) {}
+          reg.update().catch(err => console.warn('[SW] Update check failed:', err));
         }).catch(function(err) {
           console.warn('[SW] Registration failed:', err);
         });
@@ -16212,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611170915">
-  <script src="./appearance-compact.js?v=202611170915" defer></script>
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611170945">
+  <script src="./appearance-compact.js?v=202611170945" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611170915"></script>
+  <script src="./budget-audit-engine.js?v=202611170945"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18680,33 +18678,24 @@ body.light-theme .market-buy-price {
                (Interactive Collapsible Commitments & Due Dates Calendar)
                ======================================================== -->
           <div id="commitmentsCalendarSection" class="commitments-calendar-box" style="background: var(--bg-card, rgba(15, 23, 42, 0.90)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);">
-            <!-- شريط هيدر التقويم: العنوان وزر الطي/البسط وأدوات التنقل -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCommitmentsCalendarCollapse()">
-                <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.88rem;">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
-                <div>
-                  <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
-                    <span>تقويم الاستحقاقات الشهرية</span>
-                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
-                  </div>
-                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق (انقر للتوسيع)</div>
-                </div>
-              </div>
-
-              <!-- أدوات تصفح الشهر وزر تصفية الكل -->
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display: none; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 0.66rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; cursor: pointer; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
-                </button>
-                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                  <button type="button" onclick="navigateCommitmentsCalendar(-1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-right"></i></button>
-                  <span id="commitmentsCalendarMonthTitle" style="font-size: 0.74rem; font-weight: 900; color: var(--text-main, #f8fafc); min-width: 82px; text-align: center;">نوفمبر 2026</span>
-                  <button type="button" onclick="navigateCommitmentsCalendar(1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-left"></i></button>
-                </div>
+            <div class="commitments-calendar-header">
+              <button type="button" id="btnCommitmentsCalendarToggle" class="commitments-calendar-toggle"
+                aria-controls="commitmentsCalendarCollapseBody" aria-expanded="false" onclick="toggleCommitmentsCalendarCollapse()">
+                <i class="fa-solid fa-calendar-days commitments-calendar-icon" aria-hidden="true"></i>
+                <span>
+                  <strong>تقويم الاستحقاقات الشهرية <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" aria-hidden="true"></i></strong>
+                  <small id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق</small>
+                </span>
+              </button>
+              <div class="commitments-calendar-month" role="group" aria-label="التنقّل بين الشهور">
+                <button type="button" onclick="navigateCommitmentsCalendar(-1)" aria-label="الشهر السابق"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                <span id="commitmentsCalendarMonthTitle" aria-live="polite"></span>
+                <button type="button" onclick="navigateCommitmentsCalendar(1)" aria-label="الشهر التالي"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
               </div>
             </div>
+            <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display:none;height:26px;padding:0 8px;border-radius:6px;font-size:.66rem;font-weight:850;background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.35);color:#f43f5e;cursor:pointer;align-items:center;gap:4px">
+              <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
+            </button>
 
             <!-- محتوى التقويم القابل للطي (مطوي في الوضع الافتراضي) -->
             <div id="commitmentsCalendarCollapseBody" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
@@ -19041,16 +19030,33 @@ body.light-theme .market-buy-price {
             </div>
 
             <!-- مؤشرات ورسوم بيانية (Chart.js) متوافقة 100% مع الوضع الفاتح وبدون أي شاشات داكنة -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 12px;">
-              <!-- رسم دائري: توزيع الفعلية بالبند -->
-              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-chart-pie"></i> <span>توزيع المصروفات الفعلية بالبند</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; margin-bottom: 12px;">
+              <section id="cmpPeriodChart" class="cmp-chart-card chart-glass-panel" aria-labelledby="cmpPeriodChartTitle">
+                <h3 id="cmpPeriodChartTitle" class="cmp-chart-card-title">تغيّر المصروفات حسب البند</h3>
+                <div class="cmp-period-controls">
+                  <label for="cmpPeriodReference">المقارنة مع</label>
+                  <select id="cmpPeriodReference" onchange="BudgetCompareEngine.render()">
+                    <option value="previous">الفترة الفعلية السابقة</option>
+                    <option value="custom">فترة فعلية أختارها</option>
+                    <optgroup label="موازنات تجريبية شهرية">
+                      <option value="sample-low">اقتصادية · ١٠٬٠٠٠ ج.م</option>
+                      <option value="sample">أساسية · ١٢٬٠٠٠ ج.م</option>
+                      <option value="sample-high">مرنة · ١٤٬٠٠٠ ج.م</option>
+                    </optgroup>
+                  </select>
+                  <div id="cmpPeriodCustom" hidden>
+                    <button type="button" onclick="openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">اختيار نطاق المقارنة</button>
+                    <input type="date" id="cmpPeriodFrom" hidden onchange="BudgetCompareEngine.render()">
+                    <input type="date" id="cmpPeriodTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
                 </div>
-                <div style="height: 220px; position: relative;">
-                  <canvas id="cmpChartDoughnut"></canvas>
+                <div class="cmp-period-modes" role="group" aria-label="شكل عرض المقارنة">
+                  <button type="button" data-mode="paired" aria-pressed="true">أعمدة متجاورة</button>
+                  <button type="button" data-mode="change" aria-pressed="false">الزيادة والانخفاض</button>
+                  <button type="button" data-mode="table" aria-pressed="false">جدول الأرقام</button>
                 </div>
-              </div>
+                <div id="cmpPeriodChartContent" aria-live="polite"></div>
+              </section>
 
               <!-- رسم شريطي أفقي: مقارنة المصروفات بالشخص -->
               <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
@@ -21233,7 +21239,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.92</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.3.93</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -21396,16 +21402,16 @@ body.light-theme .market-buy-price {
                   </div>
                   <span id="activeDesignStyleBadge" class="appearance-active-badge">زجاجي (افتراضي)</span>
                 </div>
-                <div class="settings-segmented-grid antigravity-style-grid" role="group" aria-label="أنماط الكروت" style="display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4px !important; width: 100% !important;">
-                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>تأثير ضبابي</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleMinimal" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>هادئ</strong><small>خلفية موحدة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeumorphic" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>نيومورفيك</strong><small>ظلال مجسمة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>توهج حاد</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>شفاف</strong><small>بدون حواف</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleFlat" data-card-style="flat" onclick="setAppDesignStyle('flat')" aria-pressed="false"><strong>مسطّح</strong><small>تعبئة صامتة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
+                <div class="antigravity-style-grid" role="group" aria-label="أنماط الكروت">
+                  <button type="button" class="card-style-option active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>تأثير ضبابي</small></button>
+                  <button type="button" class="card-style-option" id="designStyleMinimal" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>هادئ</strong><small>خلفية موحدة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleNeumorphic" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>نيومورفيك</strong><small>ظلال مجسمة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>توهج حاد</small></button>
+                  <button type="button" class="card-style-option" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>شفاف</strong><small>بدون حواف</small></button>
+                  <button type="button" class="card-style-option" id="designStyleFlat" data-card-style="flat" onclick="setAppDesignStyle('flat')" aria-pressed="false"><strong>مسطّح</strong><small>تعبئة صامتة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
+                  <button type="button" class="card-style-option" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
                 </div>
               </div>
             </div>
@@ -23511,7 +23517,7 @@ function toggleAnalyticsCustomRange() {
         : colors;
 
       const canvas = document.getElementById('anaCategoryCanvas') || document.getElementById('executiveCategoryCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execCatChart) execCatChart.destroy();
         const ctx = canvas.getContext('2d');
         execCatChart = new Chart(ctx, {
@@ -24117,7 +24123,7 @@ function toggleAnalyticsCustomRange() {
       }
 
       const canvas = document.getElementById('dailyTimelineCanvas') || document.getElementById('anaTimelineCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execTimeChart) execTimeChart.destroy();
         const ctx = canvas.getContext('2d');
         execTimeChart = new Chart(ctx, {
@@ -24225,7 +24231,7 @@ function toggleAnalyticsCustomRange() {
       const expVals = compareCats.map(c => expByCat[c.id] || 0);
 
       const canvas = document.getElementById('anaRequestsCompareCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execReqCompareChart) execReqCompareChart.destroy();
         const ctx = canvas.getContext('2d');
         execReqCompareChart = new Chart(ctx, {
@@ -30877,7 +30883,9 @@ function switchSettingsTab(tabName) {
       if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
         renderCategoriesGrid(getFilteredTransactions());
       }
-      if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + targetStyle);
+      const selectedName = document.querySelector('#settingsSec_appearance .card-style-option.active strong')?.textContent;
+      if (selectedName) document.getElementById('activeDesignStyleBadge').textContent = selectedName;
+      if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + (selectedName || 'فيسبوك'));
     }
 
 
@@ -34660,7 +34668,7 @@ function switchSettingsTab(tabName) {
     window.commitmentsCalendarYear = new Date().getFullYear();
     window.commitmentsCalendarMonth = new Date().getMonth(); // 0-based
     state.selectedCommitmentDate = null;
-    window.isCommitmentsCalendarCollapsed = false;
+    window.isCommitmentsCalendarCollapsed = true;
 
     function toggleCommitmentsCalendarCollapse() {
       window.isCommitmentsCalendarCollapsed = !window.isCommitmentsCalendarCollapsed;
@@ -34668,6 +34676,7 @@ function switchSettingsTab(tabName) {
       const icon = document.getElementById('iconCommitmentsCalendarToggle');
       if (body) body.style.display = window.isCommitmentsCalendarCollapsed ? 'none' : 'block';
       if (icon) icon.className = window.isCommitmentsCalendarCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+      document.getElementById('btnCommitmentsCalendarToggle')?.setAttribute('aria-expanded', String(!window.isCommitmentsCalendarCollapsed));
     }
 
     function navigateCommitmentsCalendar(dir) {

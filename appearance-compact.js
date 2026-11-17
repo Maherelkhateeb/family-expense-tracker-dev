@@ -1,113 +1,3 @@
-/* Mobile-first compact settings. Structure-only enhancement: keep all existing
- * buttons/handlers and local data untouched. */
-(function () {
-  'use strict';
-
-  function initCompactAppearance() {
-    var root = document.getElementById('settingsSec_appearance');
-    if (!root || root.dataset.compactReady === 'true') return;
-
-    var paletteGroup = root.querySelector('.appearance-settings-block');
-    var iconGroup = paletteGroup && paletteGroup.nextElementSibling;
-    var mode = root.querySelector('.appearance-mode-row');
-    var preview = root.querySelector('#settingsThemePreview');
-    var palettes = root.querySelector('.appearance-palette-grid');
-    var icons = root.querySelector('.appearance-icon-grid');
-    var fonts = root.querySelector('.settings-font-grid');
-    var sizeStyle = root.querySelector('.settings-size-style-grid');
-    var cardButtons = root.querySelector('#cardStyleButtonsContainer');
-    var paletteBadge = root.querySelector('#activeThemeBadge');
-    var iconBadge = root.querySelector('#activeIconThemeBadge');
-    var fontBadge = root.querySelector('#activeFontBadge');
-    var sizeBadge = root.querySelector('#activeFontSizeBadge');
-
-    // Stop rather than damaging an older or unexpected layout.
-    if (![paletteGroup, iconGroup, mode, preview, palettes, icons,
-          fonts, sizeStyle, cardButtons, paletteBadge, iconBadge, fontBadge,
-          sizeBadge].every(Boolean) || sizeStyle.children.length !== 2) return;
-
-    var fontGroup = fonts.parentElement;
-    var sizeTile = sizeStyle.children[0];
-    var styleTile = sizeStyle.children[1];
-
-    function makeSection(name, label, icon, selected) {
-      var section = document.createElement('section');
-      section.className = 'compact-appearance-section';
-      section.dataset.appearanceSection = name;
-
-      var heading = document.createElement('h4');
-      heading.className = 'compact-appearance-heading';
-      heading.id = 'compactAppearanceHeading-' + name;
-      heading.innerHTML =
-        '<i class="compact-appearance-heading-icon fa-solid ' + icon + '" aria-hidden="true"></i>' +
-        '<span class="compact-appearance-title">' + label + '</span>';
-
-      var summary = selected || document.createElement('span');
-      summary.classList.add('compact-appearance-summary');
-      heading.appendChild(summary);
-
-      var panel = document.createElement('div');
-      panel.className = 'compact-appearance-panel compact-appearance-' + name + '-panel';
-      panel.id = 'compactAppearancePanel-' + name;
-      section.setAttribute('aria-labelledby', heading.id);
-
-      section.append(heading, panel);
-      return { section: section, panel: panel, summary: summary };
-    }
-
-    var basics = makeSection('basics', 'الوضع والمعاينة', 'fa-circle-half-stroke');
-    var colors = makeSection('colors', 'ألوان التطبيق', 'fa-palette', paletteBadge);
-    var iconColors = makeSection('icons', 'ألوان الأيقونات', 'fa-icons', iconBadge);
-    var typography = makeSection('font', 'الخط وحجم النص', 'fa-font', fontBadge);
-    var cards = makeSection('cards', 'تصميم الكروت', 'fa-layer-group');
-
-    // Move rather than recreate: the original inline onClick handlers and IDs survive.
-    basics.panel.append(mode, preview);
-    colors.panel.append(palettes);
-    iconColors.panel.append(icons);
-    typography.panel.append(fontGroup, sizeTile);
-    cards.panel.append(styleTile);
-    root.replaceChildren(
-      basics.section, colors.section, iconColors.section,
-      typography.section, cards.section
-    );
-    root.dataset.compactReady = 'true';
-
-    var fontTitle = fontGroup.querySelector(':scope > div:first-child');
-    if (fontTitle) fontTitle.hidden = true;
-
-    var cardNames = {
-      glass:'زجاجي', minimal:'بسيط', neumorphic:'مجسّم', neon:'نيون',
-      clear:'واضح', elevated:'مرتفع', outlined:'محدّد',
-      gradient:'متدرّج', flat:'مسطح', facebook:'فيسبوك', compact:'مدمج', soft:'ناعم'
-    };
-    function updateSummaries() {
-      basics.summary.textContent = document.body.classList.contains('light-theme') ? 'فاتح' : 'داكن';
-      var chosen = document.body.getAttribute('data-card-style') || 'glass';
-      cards.summary.textContent = cardNames[chosen] || 'زجاجي';
-      // Keep the existing app-maintained font badge and expose size in its tooltip.
-      typography.summary.title = 'حجم الخط: ' + (sizeBadge.textContent || '').trim();
-    }
-
-    root.addEventListener('click', function (event) {
-      if (event.target.closest('.appearance-mode-button, .font-size-pill, .appearance-palette-grid button, .appearance-icon-grid button, #cardStyleButtonsContainer button, .settings-font-grid button')) {
-        requestAnimationFrame(updateSummaries);
-      }
-    });
-    new MutationObserver(updateSummaries).observe(document.body, {
-      attributes: true, attributeFilter: ['data-card-style', 'data-color-mode']
-    });
-    updateSummaries();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCompactAppearance, {once: true});
-  } else {
-    initCompactAppearance();
-  }
-}());
-
-
 /* Contrast guard for dynamically rendered expense amounts.
  * The app rebuilds and recolors category cards when settings change.
  * Reassert accessible amount styles after those updates, without touching data. */
@@ -265,7 +155,7 @@
   };
   const iconColors = {vibrant:'#0284c7',gold:'#b45309',emerald:'#059669',
     ocean:'#0891b2',purple:'#7c3aed',ruby:'#be123c',amber:'#c2410c',
-    indigo:'#4338ca',rose:'#db2777',silver:'#64748b'};
+    monochrome:'#475569'};
   const presets = {
     glass:['15px','0 5px 15px rgba(15,23,42,.14)'],
     minimal:['7px','none'],
@@ -508,8 +398,8 @@
     if(args.to!==undefined)range.to=args.to;
     let candidates=state.transactions.filter(t=>t.type==='expense' &&
       (!range.from||String(t.date||'')>=range.from) &&
-      (!range.to||String(t.date||'')<=range.to));
-    if(args.category)candidates=candidates.filter(t=>String(t.category||'')===String(args.category));
+      (!range.to||String(t.date||'').slice(0,10)<=range.to));
+    if(args.category)candidates=candidates.filter(t=>String(t.category||'other')===String(args.category));
     if(args.member)candidates=candidates.filter(t=>String(t.member||t.author||'')===String(args.member));
     const plan=(state.monthlyBudgets||[]).find(b=>b.id===state.activeBudgetId);
     if(Number.isInteger(args.itemIndex) && plan?.items?.[args.itemIndex]){

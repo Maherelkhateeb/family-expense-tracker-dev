@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.92",
-  "build": "202611170915",
-  "buildId": 202611170915,
-  "updated": "2026-11-17T09:15:00+03:00",
-  "notes": "Live settings palette, icon colors and card styles; four-by-two color choices; 20 new monthly/comparison indicators; exact transaction drilldown and return; verified browser QA."
+  "version": "v5.3.93",
+  "build": "202611170945",
+  "buildId": 202611170945,
+  "updated": "2026-11-17T09:45:00+03:00",
+  "notes": "Legible settings card labels, period comparison views, selectable illustrative EGP budgets, and tighter calendar and comparison indicators."
 }
