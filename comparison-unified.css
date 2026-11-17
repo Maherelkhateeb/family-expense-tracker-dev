@@ -302,3 +302,29 @@
  #viewBudgets #cmpPeriodsFilterBox > div:has(.cmp-month-custom-range:not([hidden]))
  .cmp-range-preview {display:none!important}
 }
+
+/* 2026-11-17 phone comparison density and legible paired columns */
+@media(max-width:599px){
+ #viewBudgets #cmpPeriodChart{gap:6px!important}
+ #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox{align-items:stretch!important;padding:6px!important;gap:6px!important}
+ #viewBudgets #cmpPeriodsFilterBox>div{min-height:0!important;align-self:stretch!important}
+ #viewBudgets #cmpPeriodsFilterBox .cmp-range-preview{min-height:42px!important;padding:5px!important;font-size:11px!important}
+ #viewBudgets #cmpPeriodsFilterBox select{min-height:34px!important;padding:4px 5px!important;font-size:12px!important}
+ #viewBudgets #cmpSummary .cmp-unified-kpi{min-height:0!important;padding:7px 8px!important;gap:2px!important}
+ #viewBudgets #cmpSummary .cmp-unified-kpi strong{font-size:clamp(15px,4.2vw,19px)!important;line-height:1.25!important}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel{padding:8px!important}
+ #viewBudgets #cmpAuditApp{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+ #viewBudgets #cmpAuditApp .cmp-audit-summary{gap:6px;margin-bottom:7px}
+ #viewBudgets #cmpAuditApp .cmp-audit-kpi{min-height:0;padding:7px 9px;gap:1px}
+ #viewBudgets #cmpAuditApp .cmp-audit-kpi strong{font-size:clamp(15px,4.3vw,19px)}
+ #viewBudgets #cmpAuditApp .cmp-audit-verdict{margin-bottom:9px;padding:6px 8px}
+ #viewBudgets #cmpAuditApp .cmp-audit-rows{gap:6px}
+ #viewBudgets #cmpAuditApp .cmp-audit-row{padding:7px 8px}
+ #viewBudgets #cmpAuditApp .cmp-audit-row-title{margin-bottom:5px}
+ #viewBudgets #cmpAuditApp .cmp-audit-row-body{grid-template-columns:minmax(0,1fr) 72px;gap:7px}
+ #viewBudgets #cmpAuditApp .cmp-audit-pair{height:94px;min-width:72px;gap:7px;padding:5px 7px}
+ #viewBudgets #cmpAuditApp .cmp-audit-pair>div{width:24px}
+ #viewBudgets #cmpAuditApp .cmp-audit-pair i{width:21px}
+ #viewBudgets #cmpAuditApp .cmp-audit-values>div{padding:4px 5px}
+ #viewBudgets #cmpAuditApp .cmp-audit-row-foot{padding-top:5px;margin-top:5px}
+}
