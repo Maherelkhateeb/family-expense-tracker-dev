@@ -82,7 +82,7 @@ const WIDTHS=[320,360,390,430,768];
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
      assert.equal(report.count,10,'Missing expense or voice card '+width+'/'+design);
-     assert.deepEqual(report.ids,[2,3,5].includes(design)?[...IDS.filter(id=>id!=='voice'),'voice']:IDS,'Wrong card order '+width+'/'+design);
+     assert.deepEqual(report.ids,[2,3,4,5].includes(design)?[...IDS.filter(id=>id!=='voice'),'voice']:IDS,'Wrong card order '+width+'/'+design);
      assert.ok(report.originalHidden,'Original grid should be hidden on alternatives');
     }
     assert.deepEqual(report.errors,[],'Misaligned/clipped home elements '+width+'/'+design);
