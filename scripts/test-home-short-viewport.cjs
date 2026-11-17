@@ -23,6 +23,35 @@ const read=()=>({}); // Purely a test harness; the app handles all transactions.
    await page.waitForFunction(()=>document.querySelector('#homeInterfaces')?.dataset.design==='1'
      && document.querySelectorAll('#homeInterfaces .reference-one-card').length===10,
      null,{timeout:30000});
+   // Regression: bottom navigation must remain visible, readable and tappable.
+   const bottomNav=await page.evaluate(()=>{
+     const nav=document.getElementById('appBottomNav');
+     const nr=nav.getBoundingClientRect();
+     const tabs=[...nav.querySelectorAll('.nav-tab-item')].map(el=>{
+       const r=el.getBoundingClientRect(),style=getComputedStyle(el);
+       const x=Math.max(0,Math.min(innerWidth-1,r.left+r.width/2));
+       const y=Math.max(0,Math.min(innerHeight-1,r.top+r.height/2));
+       const hit=document.elementFromPoint(x,y);
+       return {id:el.id,label:el.textContent.trim(),left:r.left,right:r.right,
+         top:r.top,bottom:r.bottom,width:r.width,height:r.height,
+         display:style.display,visibility:style.visibility,opacity:Number(style.opacity),
+         hit:hit===el||el.contains(hit)};
+     });
+     return {nav:{top:nr.top,bottom:nr.bottom,left:nr.left,right:nr.right,
+       display:getComputedStyle(nav).display},tabs,viewport:{width:innerWidth,height:innerHeight}};
+   });
+   console.log('BOTTOM_NAV_VISIBILITY '+JSON.stringify({viewport,bottomNav}));
+   assert.ok(bottomNav.tabs.length>=4,'Missing bottom navigation tabs');
+   assert.ok(bottomNav.nav.top>=0&&bottomNav.nav.bottom<=bottomNav.viewport.height+2,
+     'Bottom navigation clipped by phone viewport: '+JSON.stringify(bottomNav));
+   for(const tab of bottomNav.tabs){
+     assert.ok(tab.display!=='none'&&tab.visibility==='visible'&&tab.opacity>0.05,
+       'Hidden bottom tab: '+JSON.stringify(tab));
+     assert.ok(tab.width>=28&&tab.height>=28&&tab.left>=-1&&tab.right<=bottomNav.viewport.width+1
+       &&tab.top>=bottomNav.nav.top-1&&tab.bottom<=bottomNav.viewport.height+2,
+       'Clipped bottom tab: '+JSON.stringify(tab));
+     assert.ok(tab.hit,'Bottom tab blocked by overlay: '+JSON.stringify(tab));
+   }
    const initial=await page.evaluate(()=>{
      const rect=node=>{const r=node.getBoundingClientRect();return {top:r.top,bottom:r.bottom,height:r.height,left:r.left,right:r.right}};
      const host=document.querySelector('#homeInterfaces'),grid=host.querySelector('.reference-one-grid');
