@@ -52,6 +52,13 @@ const WIDTHS=[320,360,390,430,768];
      const toolOrder=tools.slice().sort((a,b)=>Number(getComputedStyle(a).order)-Number(getComputedStyle(b).order)).map(x=>x.id);
      const ids=design===1?cards.map(x=>x.dataset.refCategory):design>1?
        cards.map(x=>x.querySelector('[data-add]')?.dataset.add||(x.querySelector('[data-voice]')?'voice':null)):[];
+     const rect=(selector)=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),scrollHeight:el.scrollHeight,clientHeight:el.clientHeight}};
+     const vertical={header:rect('.app-header'),app:rect('#appFrame'),scroll:rect('.app-scroll-body'),
+       view:rect('#viewExpenses'),period:rect('#viewExpenses .period-selector-top-strip'),
+       cockpit:rect('#topKpiThreeStrip'),tools:rect('#viewExpenses .executive-quick-tools-strip'),
+       host:rect('#homeInterfaces'),grid:rect('#homeInterfaces .reference-one-grid,#homeInterfaces .home-design-grid'),
+       bottomNav:rect('#appBottomNav'),viewportHeight:innerHeight,
+       lastCardBottom:cards.length?Math.round(Math.max(...cards.map(c=>c.getBoundingClientRect().bottom))):null};
      const bodyOverflow=document.documentElement.scrollWidth>viewportWidth+3;
      const offscreen=bodyOverflow?[...document.querySelectorAll('body *')].map(el=>{
        const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
@@ -59,7 +66,7 @@ const WIDTHS=[320,360,390,430,768];
          l:Math.round(r.left),r:Math.round(r.right),w:Math.round(r.width),
          position:cs.position,display:cs.display,visibility:cs.visibility};
      }).filter(o=>o.w>0&&o.display!=='none'&&o.visibility!=='hidden'&&(o.l< -3||o.r>viewportWidth+3)).slice(0,22):[];
-     return {offscreen,pageScrollWidth:document.documentElement.scrollWidth,design,width:viewportWidth,originalHidden:document.getElementById('catGrid').hidden,
+     return {vertical,offscreen,pageScrollWidth:document.documentElement.scrollWidth,design,width:viewportWidth,originalHidden:document.getElementById('catGrid').hidden,
        count:cards.length,ids,gridCols:grid?getComputedStyle(grid).gridTemplateColumns:'',
        toolOrder,toolCount:tools.length,switcherVisible:cs.display!=='none'&&cs.visibility!=='hidden',
        switcherInside:document.getElementById('btnHomeDesign').parentElement.classList.contains('executive-quick-tools-strip'),
