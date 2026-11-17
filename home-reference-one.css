@@ -71,7 +71,7 @@
 
 #viewExpenses.home-reference-one .executive-quick-tools-strip {
   display: grid !important;
-  grid-template-columns: 9fr 18fr 27fr 15fr 19fr;
+  grid-template-columns: 9fr 18fr 27fr 19fr 15fr;
   gap: 1.6cqi !important;
   width: auto !important;
   margin: 0 2.45cqi 1.85cqi !important;
@@ -242,6 +242,12 @@ body:has(.home-reference-one.active) #appBottomNav #navTabExpenses.active {
 }
 
 /* First mobile reference: two even columns, fixed artwork and reliable tap areas. */
+/* Exact RTL control order: design, gold, wallets, summary, currency. */
+#viewExpenses.home-reference-one #btnHomeDesign { order: 0 !important; }
+#viewExpenses.home-reference-one #btnOpenGold { order: 1 !important; }
+#viewExpenses.home-reference-one #walletSelectCluster { order: 2 !important; }
+#viewExpenses.home-reference-one #btnOpenSummaryQuick { order: 3 !important; }
+#viewExpenses.home-reference-one #btnToggleCurrency { order: 4 !important; }
 #viewExpenses.home-reference-one .reference-one-grid {
   display: grid !important;
   grid-template-columns: repeat(2,minmax(0,1fr)) !important;
@@ -293,9 +299,20 @@ body:has(.home-reference-one.active) #appBottomNav #navTabExpenses.active {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* The voice card contains one button, so it must occupy the FULL card height.
+   Otherwise it inherits only the first 41% grid row and the title escapes. */
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] {
+  grid-template-rows: minmax(0,1fr);
+}
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] button {
   grid-template-rows: auto auto;
+  align-content: center;
 }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] strong {
+  font-size: clamp(10px,2.9cqi,15px) !important;
+  align-self: center;
+}
+
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] strong { align-self: end; }
 #viewExpenses.home-reference-one .reference-one-wave { margin-top: .7cqi; }
 @container (max-width: 355px) {
