@@ -80,7 +80,12 @@
     let planMonths=0,actualCount=0;
     const plans=Array.isArray(s.monthlyBudgets)?s.monthlyBudgets:[];
     for(const m of months){
-      const monthPlans=plans.filter(b=>b&&b.month===m&&!b.project&&b.type!=='project');
+      const matches=plans.filter(b=>b&&b.month===m&&!b.project&&b.type!=='project');
+      // Match the application's original comparison engine: one selected plan per month,
+      // never add overlapping drafts as if they were separate monthly budgets.
+      const selected=matches.find(b=>b.id===s.activeBudgetId)||
+        matches.find(b=>Array.isArray(b.items)&&b.items.length)||matches[0];
+      const monthPlans=selected?[selected]:[];
       if(monthPlans.length)planMonths++;
       for(const plan of monthPlans){
         const items=Array.isArray(plan.items)&&plan.items.length
