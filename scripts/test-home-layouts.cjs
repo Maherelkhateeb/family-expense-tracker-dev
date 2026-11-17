@@ -112,7 +112,7 @@ const WIDTHS=[320,360,390,391,430,768];
     console.log('HOME_LAYOUT_QA '+JSON.stringify(report));
     assert.ok(report.switcherVisible&&report.switcherInside,'Switcher missing '+width+'/'+design);
     assert.equal(report.toolCount,5,'Five tools must stay visible '+width+'/'+design);
-    assert.deepEqual(report.toolVisualOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnToggleCurrency','btnOpenSummaryQuick']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
+    assert.deepEqual(report.toolVisualOrder,design===1?['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency']:['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'],
       'Unexpected tool order '+width+'/'+design);
     if(design===0){assert.equal(report.originalHidden,false,'Default home grid hidden');}
     else {
