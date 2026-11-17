@@ -403,7 +403,7 @@ const URL=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.deepEqual(check['food'].slice(0,2),['2,800','3,400']);
    assert.deepEqual(check['bills'].slice(0,2),['2,100','2,100']);
     assert.equal(check['trial-leisure'][3],'—');
-    assert.match(check['trial-gifts'][3],/[−-]100(?:\\.0)?%/);
+    assert.match(check['trial-gifts'][3],/[−-]100(?:\.0)?%/);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3),true);
     await page.locator('#cmpPeriodChart [data-mode="change"]').click();
     assert.match(await page.locator('.cmp-period-bars [data-budget-category="trial-leisure"]').innerText(),/بند جديد/);
