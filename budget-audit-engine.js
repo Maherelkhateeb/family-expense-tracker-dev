@@ -1848,6 +1848,7 @@ const BudgetCompareEngine = (() => {
     const est=totals.b||0, actual=totals.a||0, variance=actual-est;
     const palette={estimated:'#888780',actual:'#378ADD',over:'#E24B4A',save:'#639922'};
     const num=value=>Math.round(Number(value)||0);
+    const money=value=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(value/100);
     const fmt=value=>'<bdi dir="ltr">'+money(num(value))+'</bdi>';
     const signed=value=>'<bdi dir="ltr">'+(value>0?'+':value<0?'−':'')+money(Math.abs(num(value)))+'</bdi>';
     const percentValue=(difference,base)=>base>0?(difference/base*100):null;
@@ -1912,7 +1913,7 @@ const BudgetCompareEngine = (() => {
         ['الفرق','<span class="'+tone(row.diff)+'">'+signed(row.diff)+'</span>'],
         ['الانحراف',pct(ratio)],['الحالة',safe(status)],
         ['الحصة التقديرية',pct(estShare)],['الحصة الفعلية',pct(actShare)]];
-      const mobile='<article class="bs-row-card" data-budget-category="'+safe(row.id)+'"><div class="bs-row-head"><strong>'+number.format(index+1)+'. '+safe(row.name)+'</strong><span class="'+tone(row.diff)+'">'+safe(status)+'</span></div><div class="bs-row-values">'+values.map(kv=>'<div><small>'+kv[0]+'</small><strong>'+kv[1]+'</strong></div>').join('')+'</div><small>النوع: '+type+' · السبب: '+cause+'</small></article>';
+      const mobile='<article class="bs-row-card" data-budget-category="'+safe(row.id)+'"><div class="bs-row-head"><strong>'+String(index+1)+'. '+safe(row.name)+'</strong><span class="'+tone(row.diff)+'">'+safe(status)+'</span></div><div class="bs-row-values">'+values.map(kv=>'<div><small>'+kv[0]+'</small><strong>'+kv[1]+'</strong></div>').join('')+'</div><small>النوع: '+type+' · السبب: '+cause+'</small></article>';
       const desktop='<tr data-budget-category="'+safe(row.id)+'"><th scope="row">'+number.format(index+1)+'. '+safe(row.name)+'</th><td>'+fmt(row.b)+'</td><td>'+actualLink(row)+'</td><td class="'+tone(row.diff)+'">'+signed(row.diff)+'</td><td>'+pct(ratio)+'</td><td>'+status+'</td><td>'+pct(estShare)+'</td><td>'+pct(actShare)+'</td><td>'+type+'</td><td>'+cause+'</td></tr>';
       return {mobile,desktop};
     });
@@ -1975,7 +1976,138 @@ const BudgetCompareEngine = (() => {
       '<section class="bs-panel bs-full"><h3>2. شلال الفروقات</h3>'+waterfall+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
       '<section class="bs-panel bs-full"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
       '</div></div>';
+    renderBudgetReferenceAdvancedCharts(content,sorted,totals,range);
   }
+
+  // Five additional views use the same registered budget and actual transactions.
+  function renderBudgetReferenceAdvancedCharts(content,rows,totals,range) {
+    const grid=content.querySelector('.bs-grid');
+    if(!grid)return;
+    const numberFmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+    const cash=value=>numberFmt.format(Math.round(value/100));
+    const text=value=>escapeHtml(String(value));
+    const signed=value=>(value>0?'+':value<0?'−':'')+cash(Math.abs(value));
+    const pct=(actual,estimated)=>estimated>0
+      ?(actual-estimated>0?'+':actual-estimated<0?'−':'')+Math.abs(Math.round((actual-estimated)/estimated*100))+'%'
+      :'—';
+    const sorted=[...rows].sort((a,b)=>(b.b||0)-(a.b||0)||a.name.localeCompare(b.name,'ar'));
+    const colorById={food:'#2a78d6',education:'#eb6834',transport:'#1baf7a',
+      leisure:'#eda100',bills:'#e87ba4',health:'#008300',daily:'#8b5cf6',
+      house:'#0d9488',clothes:'#c2410c',other:'#64748b'};
+    const color=id=>colorById[id]||('#'+(0x666666+String(id).split('').reduce((sum,c)=>sum+c.charCodeAt(0)*173,0)%0x777777).toString(16).padStart(6,'0'));
+    if(!byId('budgetSpecAdvancedStyle')){
+      const style=document.createElement('style');style.id='budgetSpecAdvancedStyle';
+      style.textContent=[
+        '.budget-spec .bs-bullet-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,2fr) auto;align-items:center;gap:8px;margin:12px 0;font-size:12px}',
+        '.budget-spec .bs-bullet-track{height:18px;position:relative;border-radius:3px;overflow:visible;background:linear-gradient(to right,#8887802e 0 50%,#E24B4A2a 50% 100%)}',
+        '.budget-spec .bs-bullet-track::after{content:"";position:absolute;left:var(--target);top:-3px;bottom:-3px;border-left:2px solid currentColor}',
+        '.budget-spec .bs-bullet-track>i{position:absolute;top:4px;bottom:4px;left:0;background:#378ADD;max-width:100%;display:block}',
+        '.budget-spec .bs-heat-row{display:grid;grid-template-columns:minmax(85px,1.2fr) repeat(var(--months),minmax(0,1fr));align-items:center;gap:3px;margin:3px 0}',
+        '.budget-spec .bs-heat-row>span{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+        '.budget-spec .bs-heat-cell{display:grid;place-items:center;min-height:34px;border-radius:4px;text-align:center;font-size:12px;font-weight:800;color:inherit}',
+        '.budget-spec .bs-heat-mobile{display:none}.budget-spec .bs-heat-month{margin:8px 0 12px;border-bottom:1px solid var(--border-color,#cbd5e1);padding-bottom:6px}',
+        '.budget-spec .bs-heat-month-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}',
+        '.budget-spec .bs-heat-month-item{padding:5px;border-radius:6px;font-size:12px;min-width:0;overflow-wrap:anywhere}',
+        '.budget-spec .bs-stacked-bars{display:grid;gap:12px}',
+        '.budget-spec .bs-stack{display:flex;direction:ltr;width:100%;height:36px;overflow:hidden;border-radius:5px;border:1px solid var(--border-color,#cbd5e1)}',
+        '.budget-spec .bs-stack>div{height:100%;min-width:0;position:relative;opacity:.95}',
+        '.budget-spec .bs-stack-label{display:flex;gap:6px;justify-content:space-between;font-size:12px}',
+        '.budget-spec .bs-stack-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-top:12px}',
+        '.budget-spec .bs-stack-key>span{font-size:12px}',
+        '.budget-spec .bs-stack-key i{display:inline-block;width:12px;height:12px;vertical-align:middle}',
+        '.budget-spec .bs-cumulative-legend{display:flex;gap:12px;justify-content:center;font-size:12px;flex-wrap:wrap}',
+        '.budget-spec .bs-slope-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center;margin:8px 0;padding-bottom:6px;border-bottom:1px dashed var(--border-color,#cbd5e1)}',
+        '.budget-spec .bs-slope-visual{position:relative;height:30px;background:linear-gradient(to right,transparent 0 2%,#88878026 2% 3%,transparent 3% 96%,#88878026 96% 97%,transparent 97%);min-width:0}',
+        '.budget-spec .bs-slope-visual svg{width:100%;height:30px;display:block}',
+        '.budget-spec .bs-slope-amounts{font-size:12px;display:flex;justify-content:space-between;direction:ltr;gap:5px}',
+        '@media(max-width:600px){.budget-spec .bs-heat-desktop{display:none}.budget-spec .bs-heat-mobile{display:block}.budget-spec .bs-bullet-row{grid-template-columns:minmax(70px,1fr) minmax(0,1.6fr) auto;gap:4px}.budget-spec .bs-stack-key{gap:4px}.budget-spec .bs-slope-row{grid-template-columns:minmax(90px,1fr) minmax(0,1.35fr)}}'
+      ].join('\n');document.head.append(style);
+    }
+    // 4. Bullet chart: common ratio scale, with the exact 100% target.
+    const topRatio=Math.max(0,...sorted.map(r=>r.b>0?r.a/r.b*100:0));
+    const axisMax=Math.max(200,Math.ceil(topRatio/50)*50);
+    const bullet=sorted.map(row=>{
+      const ratio=row.b>0?Math.min(axisMax,row.a/row.b*100):0;
+      return '<div class="bs-bullet-row"><span>'+text(row.name)+'</span>'+
+        '<div class="bs-bullet-track" dir="ltr" style="--target:'+(100/axisMax*100)+'%"><i style="width:'+(ratio/axisMax*100)+'%"></i></div>'+
+        '<strong dir="ltr">'+(row.b?pct(row.a,row.b):'—')+'</strong></div>';
+    }).join('');
+    const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو التقديري، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مدى الالتزام بالتقديري</h3>'+bullet+bulletLegend+'</section>');
+    // Month chunks: exact partial-month proration and actual entries.
+    const monthly=[...monthSlices(range)].map(s=>{
+      const period={from:s.key+'-'+pad(s.first),to:s.key+'-'+pad(s.last)};
+      const a=aggregate(expensesForRange(period));
+      const planned=estimatesForRange(period);
+      return {key:s.key,actual:a,estimated:planned.values,complete:planned.missing.length===0,
+        sumA:[...a.values()].reduce((v,x)=>v+x,0),
+        sumB:[...planned.values.values()].reduce((v,x)=>v+x,0)};
+    });
+    // 5. Cumulative: one vertical scale beginning at zero; gaps use red/green fills.
+    const cumA=[],cumB=[];let runningA=0,runningB=0;
+    monthly.forEach(m=>{runningA+=m.sumA;runningB+=m.sumB;cumA.push(runningA);cumB.push(runningB)});
+    const top=Math.max(1,...cumA,...cumB),width=620,height=245;
+    const x=i=>monthly.length===1?width/2:55+i*(width-100)/(monthly.length-1);
+    const y=value=>190-value/top*150;
+    const points=series=>series.map((v,i)=>x(i)+','+y(v)).join(' ');
+    let cum='<svg class="bs-viz" role="img" aria-label="الخطان التراكميان: التقديري والفعلي" viewBox="0 0 '+width+' '+height+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<title>التقديري والفعلي التراكمي شهريًا</title><desc>خط رمادي متقطع للتقديري وخط أزرق متصل للفعلي؛ الأحمر لتجاوز التقديري والأخضر للتوفير.</desc>'+
+      '<path class="bs-grid-line" d="M55 190 H565 M55 115 H565 M55 40 H565"/>';
+    for(let i=1;i<monthly.length;i++){
+      const fill=cumA[i]>=cumB[i]?'#E24B4A':'#639922';
+      cum+='<polygon points="'+x(i-1)+','+y(cumA[i-1])+' '+x(i)+','+y(cumA[i])+' '+x(i)+','+y(cumB[i])+' '+x(i-1)+','+y(cumB[i-1])+'" fill="'+fill+'" opacity=".16"/>';
+    }
+    cum+='<polyline points="'+points(cumB)+'" fill="none" stroke="#888780" stroke-width="2" stroke-dasharray="5 4"/>'+
+      '<polyline points="'+points(cumA)+'" fill="none" stroke="#378ADD" stroke-width="2"/>';
+    monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(m.key.slice(5))+'/'+text(m.key.slice(2,4))+'</text>';});
+    cum+='</svg><div class="bs-cumulative-legend"><span>التقديري: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكمي شهريًا</h3>'+cum+'</section>');
+    // 6. Diverging heatmap; color and numeric sign together.
+    const heat=(row,month)=>{
+      const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
+      const v=b?(a-b)/b*100:null,abs=Math.abs(v||0);
+      const opacity=v===null?.18:abs===0?.15:abs<5?.2:abs<15?.4:abs<30?.62:.85;
+      const shade=v===null?'#888780':v>0?'#E24B4A':v<0?'#639922':'#888780';
+      const label=v===null?'—':(v>0?'+':v<0?'−':'')+Math.round(abs)+'%';
+      return {style:'background:color-mix(in srgb,'+shade+' '+Math.round(opacity*100)+'%, transparent)',label};
+    };
+    let heatGrid='<div class="bs-heat-desktop"><div class="bs-heat-row" style="--months:'+monthly.length+'"><span>البند / الشهر</span>'+monthly.map(m=>'<span dir="ltr">'+text(m.key)+'</span>').join('')+'</div>';
+    sorted.forEach(row=>{
+      heatGrid+='<div class="bs-heat-row" style="--months:'+monthly.length+'"><span>'+text(row.name)+'</span>'+
+        monthly.map(m=>{const h=heat(row,m);return '<div class="bs-heat-cell" style="'+h.style+'" dir="ltr">'+h.label+'</div>'}).join('')+'</div>';
+    });
+    heatGrid+='</div><div class="bs-heat-mobile">'+monthly.map(m=>'<div class="bs-heat-month"><strong dir="ltr">'+text(m.key)+'</strong><div class="bs-heat-month-list">'+
+      sorted.map(row=>{const h=heat(row,m);return '<div class="bs-heat-month-item" style="'+h.style+'">'+text(row.name)+' <bdi dir="ltr">'+h.label+'</bdi></div>'}).join('')+
+      '</div></div>').join('')+'</div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للانحراف الشهري</h3>'+heatGrid+
+      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p></section>');
+    // 7. Largest-remainder integer allocation guarantees both stacks sum to 100.
+    function apportion(values){
+      const total=values.reduce((s,v)=>s+v,0);if(!total)return values.map(()=>0);
+      const shares=values.map(v=>v/total*100),whole=shares.map(Math.floor);
+      const ranked=shares.map((v,i)=>({i,frac:v-whole[i]})).sort((a,b)=>b.frac-a.frac||a.i-b.i);
+      let remainder=100-whole.reduce((s,v)=>s+v,0);
+      for(let i=0;i<remainder;i++)whole[ranked[i].i]++;
+      return whole;
+    }
+    const partsEst=apportion(sorted.map(r=>r.b||0)),partsAct=apportion(sorted.map(r=>r.a||0));
+    const bar=(values,label)=>'<div><div class="bs-stack-label"><strong>'+label+'</strong><span dir="ltr">'+values.join(' / ')+'%</span></div><div class="bs-stack" role="img" aria-label="'+label+' وحصص البنود" dir="ltr">'+
+      values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. أوزان البنود من الإجمالي</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
+      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+
+      '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p></section>');
+    // 8. Slope: both sides share one numeric scale, one segment per category.
+    const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
+    const slope=sorted.map(row=>{
+      const y1=25-(row.b||0)/slopeMax*18,y2=25-row.a/slopeMax*18,stroke=row.diff>0?'#E24B4A':row.diff<0?'#639922':'#888780';
+      return '<div class="bs-slope-row"><strong>'+text(row.name)+'</strong><div>'+
+      '<div class="bs-slope-amounts"><bdi dir="ltr">'+cash(row.b||0)+'</bdi><bdi dir="ltr">'+cash(row.a)+'</bdi></div>'+
+      '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
+    }).join('');
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. اتجاه تغير البنود (الميل)</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
+      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p></section>');
+  }
+
 
   function render() {
     const root = byId('cmpPeriodChart');
