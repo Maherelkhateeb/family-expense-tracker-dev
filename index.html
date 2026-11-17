@@ -43237,6 +43237,15 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
       expensePage.classList.toggle('home-alternative-design', design > 1);
       // Render updates must never move the switcher away from the home screen.
       if (trigger.parentElement !== gold.parentElement) gold.before(trigger);
+      // Keep the five controls in the same RTL order even if older theme styles override CSS.
+      ['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'].forEach((id,position) => {
+        const node = document.getElementById(id);
+        if (!node || node.parentElement !== gold.parentElement) return;
+        const expected = String(position);
+        if (node.style.getPropertyValue('order') !== expected || node.style.getPropertyPriority('order') !== 'important') {
+          node.style.setProperty('order',expected,'important');
+        }
+      });
       const isOriginal = design === 0;
       // Avoid mutating the observed grid style on every refresh.
       // A redundant setProperty used to create an endless MutationObserver/rAF loop.
