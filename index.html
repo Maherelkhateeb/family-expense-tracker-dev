@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.4';
-    var APP_BUILD_ID = 202611171420;
+    var APP_VERSION = 'v5.4.5';
+    var APP_BUILD_ID = 202611171425;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16210,12 +16210,12 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611171420">
-  <script src="./appearance-compact.js?v=202611171420" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171420">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171425">
+  <script src="./appearance-compact.js?v=202611171425" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171425">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611171420"></script>
+  <script src="./budget-audit-engine.js?v=202611171425"></script>
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -21072,7 +21072,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.4.4</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.5</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -43141,13 +43141,12 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     const original = document.getElementById('catGrid');
     const gold = document.getElementById('btnOpenGold');
     if (!original || !gold) return;
-    let design = 1;
-    try { design = Math.max(1, Math.min(5, Number.parseInt(localStorage.getItem('expenseHomeDesign'), 10) || 1)); } catch {}
+    const preferenceKey = 'family_monefy_expense_home_layout';
+    let design = 0;
+    try { design = Math.max(0, Math.min(5, Number.parseInt(localStorage.getItem(preferenceKey), 10) || 0)); } catch {}
     const host = document.createElement('section');
     host.id = 'homeInterfaces';
     original.after(host);
-    original.hidden = true;
-    original.style.setProperty('display','none','important');
     const trigger = document.createElement('button');
     trigger.id = 'btnHomeDesign';
     trigger.type = 'button';
@@ -43156,8 +43155,8 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     trigger.title = 'تغيير شكل الشاشة';
     gold.before(trigger);
     trigger.onclick = () => {
-      design = design % 5 + 1;
-      try { localStorage.setItem('expenseHomeDesign', String(design)); } catch {}
+      design = (design + 1) % 6;
+      try { localStorage.setItem(preferenceKey, String(design)); } catch {}
       render();
     };
     const items = [
@@ -43167,7 +43166,14 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     ];
     function render() {
       host.dataset.design = design;
-      trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، الشكل ' + design + ' من 5');
+      const isOriginal = design === 0;
+      original.hidden = !isOriginal;
+      if (isOriginal) original.style.removeProperty('display');
+      else original.style.setProperty('display', 'none', 'important');
+      host.hidden = isOriginal;
+      const label = isOriginal ? 'الشكل الأساسي' : 'الشكل ' + (design + 1) + ' من 6';
+      trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، ' + label);
+      if (isOriginal) return;
       const cards = items.map(([id,icon,tone]) => {
         if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
         const source = original.querySelector('[data-cat-id="'+id+'"]');
@@ -43200,7 +43206,7 @@ body.light-theme .home-design-value bdi{color:#b91c1c}
     });
     let scheduled = false;
     new MutationObserver(() => {
-      if (scheduled) return;
+      if (scheduled || design === 0) return;
       scheduled = true;
       requestAnimationFrame(() => { scheduled = false; render(); });
     }).observe(original,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['style']});

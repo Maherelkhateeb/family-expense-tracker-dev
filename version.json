@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.4",
-  "build": "202611171420",
-  "buildId": 202611171420,
-  "updated": "2026-11-17T14:20:00+03:00",
+  "version": "v5.4.5",
+  "build": "202611171425",
+  "buildId": 202611171425,
+  "updated": "2026-11-17T14:25:00+03:00",
   "notes": "Interactive monthly expense trend in registered operations."
 }
