@@ -11,7 +11,7 @@
   border:1px solid var(--uc-border) !important; background:var(--bg-card,transparent);
   display:flex;flex-direction:column;gap:10px;color:inherit;overflow:clip; }
 #viewBudgets #cmpPeriodChart :where(button,select,input){font-family:inherit;}
-#viewBudgets #cmpPeriodChart :where(button,select):focus-visible{outline:2px solid #378add;outline-offset:2px}
+#viewBudgets #cmpPeriodChart :where(button,select):focus-visible{outline:2px solid #0D9488;outline-offset:2px}
 #viewBudgets #cmpPeriodChart .cmp-heading {display:flex;align-items:center;justify-content:space-between;
   gap:8px;flex-wrap:wrap;margin:0;padding:0 2px;min-width:0;}
 #viewBudgets #cmpPeriodChart .cmp-heading h3{margin:0;font-size:15px;font-weight:900;color:inherit;line-height:1.45;flex:1 1 175px;}
@@ -44,9 +44,9 @@
 #viewBudgets #cmpSummary .cmp-unified-kpi small {font-size:12px;line-height:1.3;color:var(--uc-muted);font-weight:800}
 #viewBudgets #cmpSummary .cmp-unified-kpi strong {display:block;max-width:100%;font-size:16px;
  font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:inherit;}
-#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="red"] strong{color:#E24B4A;}
-#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="green"] strong{color:#639922;}
-#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="blue"] strong{color:#378ADD;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="red"] strong{color:#DC2626;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="green"] strong{color:#16A34A;}
+#viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="blue"] strong{color:#0D9488;}
 #viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="slate"] strong{color:inherit;}
 #viewBudgets #cmpSummary .cmp-difference-hint{margin:7px 3px 0;font-size:11px;line-height:1.5;color:var(--uc-muted)}
 #viewBudgets #cmpPeriodChart .cmp-view-tools {display:flex !important;align-items:center;
@@ -88,12 +88,12 @@
  scrollbar-width:thin;overscroll-behavior-inline:contain;padding:3px 0;}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window .bs-viz{
  display:block;width:100%;height:auto;max-width:none;}
-#viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window:focus-visible{outline:2px solid #378add}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-plot-window:focus-visible{outline:2px solid #0D9488}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more {margin:0;border:1px solid var(--uc-border);
  border-radius:12px;padding:9px 10px;max-width:100%;min-width:0;grid-column:1/-1;}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more > summary{cursor:pointer;
  font-weight:850;color:inherit;min-height:34px;display:flex;align-items:center;gap:6px;font-size:13px;}
-#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more > summary:before{content:"▾";color:#378ADD;font-size:18px;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more > summary:before{content:"▾";color:#0D9488;font-size:18px;}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more:not([open]) > summary:before{transform:rotate(90deg)}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid{padding-top:8px;}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid .bs-panel{min-width:0}
@@ -143,13 +143,13 @@
  background:color-mix(in srgb,#a78bfa 13%,var(--bg-card,#fff));
 }
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-table td:nth-child(3){
- background:color-mix(in srgb,#378add 13%,var(--bg-card,#fff));
+ background:color-mix(in srgb,#0D9488 13%,var(--bg-card,#fff));
 }
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values >div:first-child{
  border-radius:7px;padding:5px;background:color-mix(in srgb,#a78bfa 12%,transparent);
 }
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-row-values >div:nth-child(2){
- border-radius:7px;padding:5px;background:color-mix(in srgb,#378add 12%,transparent);
+ border-radius:7px;padding:5px;background:color-mix(in srgb,#0D9488 12%,transparent);
 }
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-table-wrap{max-width:100%;overscroll-behavior-inline:contain}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-table{min-width:750px}
@@ -169,7 +169,7 @@
 #viewBudgets #cmpAuditApp,
 #viewBudgets #cmpAuditApp *{box-sizing:border-box}
 #viewBudgets #cmpAuditApp{--audit-border:rgba(148,163,184,.26);--audit-muted:#94a3b8;
-  --audit-surface:rgba(148,163,184,.075);--audit-actual:#378add;--audit-est:#868e9b;
+  --audit-surface:rgba(148,163,184,.075);--audit-actual:#0D9488;--audit-est:#2563EB;
   --audit-over:#ef4444;--audit-under:#22a06b;direction:rtl;max-width:100%;min-width:0;
   width:100%;padding:4px 2px 20px;color:inherit;font-size:13px;line-height:1.5;overflow-x:clip}
 #viewBudgets #cmpAuditApp .cmp-audit-head{margin:2px 1px 10px}
@@ -260,3 +260,14 @@
   #viewBudgets #cmpAuditApp .cmp-audit-row-body{gap:6px}
   #viewBudgets #cmpAuditApp .cmp-audit-row{padding:8px}
 }
+
+/* Consistent semantic palette across comparison KPIs, tables, bars and ratios. */
+#viewBudgets #cmpAuditApp{--audit-actual:#0D9488;--audit-est:#2563EB;--audit-over:#DC2626;--audit-under:#16A34A}
+#viewBudgets #cmpAuditApp .cmp-audit-values>div:first-child b,
+#viewBudgets #cmpAuditApp .cmp-audit-pair>div:first-child i{color:#2563EB;background-color:#2563EB}
+#viewBudgets #cmpAuditApp .cmp-audit-values>div:first-child b{background:transparent}
+#viewBudgets #cmpAuditApp .cmp-audit-values>div:nth-child(2) b{color:#0D9488}
+#viewBudgets #cmpAuditApp .cmp-audit-pair>div:nth-child(2) i{background:#0D9488}
+#viewBudgets #cmpAuditApp [data-tone="over"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:#DC2626}
+#viewBudgets #cmpAuditApp [data-tone="under"] :is(strong,.cmp-audit-variance b,.cmp-audit-variance em){color:#16A34A}
+#viewBudgets .budget-spec{--bs-est:#2563EB;--bs-act:#0D9488;--bs-over:#DC2626;--bs-save:#16A34A}
