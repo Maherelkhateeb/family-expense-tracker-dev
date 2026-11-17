@@ -417,6 +417,17 @@ body:has(#viewExpenses.home-reference-one.active) #avatarImgAllFamily {
   box-shadow:0 3px 5px #245b7c30,inset 0 0 0 1px #fff9 !important;
   overflow:hidden !important;
 }
+/* The photo reference uses paired RTL rows; preserve DOM category IDs and actions. */
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="daily"] { order:0 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="bills"] { order:1 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="food"] { order:2 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="house"] { order:3 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="transport"] { order:4 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="education"] { order:5 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="other"] { order:6 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="health"] { order:7 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="voice"] { order:8 !important; }
+#viewExpenses.home-reference-one .reference-one-card[data-ref-category="clothes"] { order:9 !important; }
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="bills"] {--border:#ff6408;--tint:#ffdecf;}
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="food"],
 #viewExpenses.home-reference-one .reference-one-card[data-ref-category="other"] {--border:#04c667;--tint:#c8f9e9;}
