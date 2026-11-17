@@ -168,6 +168,14 @@
     const labels=['المقارنات الجديدة','مقارنات جديدة'];
     document.querySelectorAll('button,a,[role="tab"]').forEach(el=>{
       const label=(el.textContent||'').replace(/\s+/g,' ').trim();
+      if(el.id==='btnBudgetSubComparisons'){
+        if(label.includes('المقارنات الجديدة')||label.includes('مقارنات جديدة')){
+          const textEl=el.querySelector('span')||el;
+          textEl.textContent='المقارنات';
+        }
+        el.hidden=false;el.style.removeProperty('display');el.removeAttribute('aria-hidden');
+        return;
+      }
       if(labels.some(x=>label.includes(x))){el.hidden=true;el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');}
     });
     const legacy=document.getElementById('panelBudgetComparisons');
