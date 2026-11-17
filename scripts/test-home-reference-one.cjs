@@ -38,6 +38,9 @@ const order = ['daily','food','bills','house','education','transport','health','
           actions:cards.filter(el=>el.querySelector('button[data-add],button[data-voice]')).length,
           detailActions:cards.filter(el=>el.querySelector('button[data-details]')).length,
           spritePositions:cards.map(el=>el.querySelector('.reference-one-icon')?.style.getPropertyValue('--icon-x')),
+          toolsOrder:[...document.querySelectorAll('#viewExpenses .executive-quick-tools-strip > *')]
+            .sort((a,b)=>Number(getComputedStyle(a).order)-Number(getComputedStyle(b).order))
+            .map(el=>el.id),
           bodyOverflow:document.documentElement.scrollWidth > window.innerWidth + 2
         };
       });
@@ -50,8 +53,19 @@ const order = ['daily','food','bills','house','education','transport','health','
       assert.equal(snap.zeroCards,9);
       assert.equal(snap.actions,10);
       assert.equal(snap.detailActions,9);
+      assert.deepEqual(snap.toolsOrder.slice(0,5),[
+        'btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'
+      ],'The five tools are in the wrong RTL order');
       assert.ok(snap.originalHidden,'Original category grid must hide only for the alternative');
       assert.ok(snap.topHeaderPresent,'Original header must remain');
+      const voiceBox = await page.evaluate(()=>{
+        const card=document.querySelector('.reference-one-card[data-ref-category="voice"]');
+        const text=card?.querySelector('strong');
+        const a=card?.getBoundingClientRect(), b=text?.getBoundingClientRect();
+        return {top:a?.top,bottom:a?.bottom,textTop:b?.top,textBottom:b?.bottom};
+      });
+      assert.ok(voiceBox.textTop>=voiceBox.top-1 && voiceBox.textBottom<=voiceBox.bottom+1,
+        'Voice heading protrudes from its card');
       for(const r of snap.rects){
         assert.ok(r.width>0 && r.height>=65,'Collapsed phone card');
         assert.ok(r.x>=-1 && r.right<=width+1,'Card overflows phone viewport');
