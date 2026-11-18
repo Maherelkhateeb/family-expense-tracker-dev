@@ -40,6 +40,12 @@ const numbers=s=>String(s||'').replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨
       assert.equal(start.rowCount,9,'Show all expense categories including zero amounts');
       assert.equal(start.summaryCount,4,'Show estimated, actual, difference and rate');
       assert.ok(start.overflow<=3,'Mobile layout must not scroll horizontally');
+      const overlayState=await page.evaluate(()=>Object.fromEntries(
+        ['leftScreenEdgeHandle','rightScreenEdgeHandle','btnVoiceAssistantFab']
+          .map(id=>[id,getComputedStyle(document.getElementById(id)).display])));
+      for(const [id,display] of Object.entries(overlayState)){
+        assert.equal(display,'none','Comparison overlay must not cover expense charts: '+id);
+      }
 
       await page.evaluate(()=>{
         state.transactions=[
@@ -77,6 +83,27 @@ const numbers=s=>String(s||'').replace(/[٠-٩]/g,ch=>String('٠١٢٣٤٥٦٧٨
       assert.equal(actual.count,9);
       assert.ok(actual.overflow<=3,'No horizontal overflow after actual data');
       await page.screenshot({path:'screenshots/comparison-mobile-'+width+'.png',fullPage:true});
+
+      // Three-month report with only one budget: amounts are visible but a
+      // percentage across partially unbudgeted months is not mathematically fair.
+      await page.evaluate(()=>{
+        const span=document.getElementById('cmpAuditSpan');
+        span.value='3';
+        span.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      const partial=await page.evaluate(()=>({
+        percentage:document.querySelectorAll('#cmpAuditApp .cmp-audit-kpi strong')[3]?.textContent.trim(),
+        notice:document.querySelector('#cmpAuditApp .cmp-audit-verdict')?.textContent||'',
+        rows:document.querySelectorAll('#cmpAuditApp .cmp-audit-row').length
+      }));
+      assert.ok(partial.percentage.includes('غير متاح'),'Partial budgets must not imply a complete-period variance rate');
+      assert.ok(partial.notice.includes('غير مكتملة'),'Incomplete plans need an explicit warning');
+      assert.equal(partial.rows,9);
+      await page.evaluate(()=>{
+        const span=document.getElementById('cmpAuditSpan');
+        span.value='1';
+        span.dispatchEvent(new Event('change',{bubbles:true}));
+      });
 
       await page.evaluate(()=>{
         state.monthlyBudgets=[];
