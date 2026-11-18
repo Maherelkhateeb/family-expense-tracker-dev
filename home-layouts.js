@@ -1,20 +1,22 @@
 /**
  * Cloud Firestore & Family Expense Tracker
- * Home Screen Alternative Layouts Engine (v5.5.0)
+ * Home Screen Alternative Layouts Engine (v5.6.0)
  *
  * Implements 5 alternative layouts + original Monefy layout:
  * - Layout 1: 2-column cards (Text on Right, Icon on Left, matching Image 1)
  * - Layout 2: Single-column horizontal list cards (matching Image 2)
  * - Layout 3: Top Donut chart + Top 3 spenders + 2-column cards (matching Image 3)
  * - Layout 4: Modern cards with hero daily/food row (matching Image 4)
- * - Layout 5: 3-column compact grid (3x3 + centered clothes) with exact pastel styling (matching Image 5)
+ * - Layout 5: 3-column compact grid (3x3 + wide bottom voice) with exact pastel styling (matching Image 5)
  *
- * Features:
- * - Edge-to-edge 6-Segment dial switcher icon with 3 internal diameters (أقطار داخلية)
- * - Dial button matches the circle itself (no wasted frame margins)
+ * Enhanced Dynamic Engine Features:
+ * - True DOM Bounding Box & visualViewport measurement (zero cut-off / no hidden bottom cards)
+ * - Dynamic width-responsive scaler (<365px, 375px-400px, >400px)
+ * - Proportional font and icon scaling synchronized with Settings font size
+ * - Harmonious text, amounts, progress bars, and badge placements
+ * - Edge-to-edge 6-Segment dial switcher icon with 3 internal diameters
  * - Currency switcher moved to far left
- * - Dynamic layout engine measuring screen height and adjusting card heights
- * - Dynamic font scaler reacting to Settings data-font-size
+ * - Permanent side flaps (Gold & Summary handles)
  * - Zero impact on expense recording (openQuickCategoryExpense)
  */
 
@@ -183,73 +185,139 @@
   let cachedFiltered = null;
 
   /* -------------------------------------------------------------
-     Dynamic Layout & Font Scaling Engine
+     Dynamic Layout & Font Scaling Engine (v5.6.0)
+     Accurately measures screen geometry and adapts cards & typography
   ------------------------------------------------------------- */
   function measureAndApplyDynamicLayout() {
-    const header = document.querySelector('.app-header');
-    const tools = document.querySelector('.executive-quick-tools-strip');
-    const bottomNav = document.querySelector('.app-bottom-nav') || document.querySelector('.bottom-dock-nav');
     const container = document.getElementById('homeInterfaces');
     if (!container) return;
 
-    const viewportH = window.innerHeight || 800;
-    const headerH = header ? header.offsetHeight : 54;
-    const toolsH = tools ? tools.offsetHeight : 44;
-    const navH = bottomNav ? bottomNav.offsetHeight : 64;
+    const bottomNav = document.getElementById('appBottomNav') ||
+                      document.querySelector('.app-bottom-nav') ||
+                      document.querySelector('.bottom-dock-nav');
+    const tools = document.querySelector('.executive-quick-tools-strip');
+    const header = document.querySelector('.app-header');
+    const period = document.querySelector('.period-selector-top-strip') || document.querySelector('.period-filter-container');
+    const balance = document.getElementById('topKpiThreeStrip') || document.getElementById('mainBalanceCard');
 
-    const availableH = Math.max(340, viewportH - headerH - toolsH - navH - 80);
+    // 1. Precise Viewport Measurements (visualViewport handles mobile URL bar / keyboard)
+    const vv = window.visualViewport;
+    const viewportW = (vv ? vv.width : window.innerWidth) || document.documentElement.clientWidth || 390;
+    const viewportH = (vv ? vv.height : window.innerHeight) || document.documentElement.clientHeight || 800;
 
-    let cardH = 88;
-    let gap = 8;
+    // 2. Measure Bottom Boundary (top edge of bottom dock nav)
+    const navRect = bottomNav ? bottomNav.getBoundingClientRect() : null;
+    const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 64);
+
+    // 3. Measure Top Boundary (where homeInterfaces begins without scrolling)
+    const viewExpenses = document.getElementById('viewExpenses');
+    const scrollY = (viewExpenses ? viewExpenses.scrollTop : 0) || window.scrollY || 0;
+
+    let containerTop = 0;
+    if (container && container.offsetParent !== null) {
+      containerTop = container.getBoundingClientRect().top + scrollY;
+    }
+
+    // Fallback calculation if container is not yet rendered in layout tree
+    if (containerTop <= 40) {
+      const hH = header ? header.offsetHeight : 52;
+      const pH = period ? period.offsetHeight : 44;
+      const bH = balance ? balance.offsetHeight : 84;
+      const tH = tools ? tools.offsetHeight : 42;
+      containerTop = hH + pH + bH + tH + 12;
+    }
+
+    // 4. Calculate True Available Height for the Home Layouts Grid
+    // Subtract safe container padding and bottom margin (10px)
+    const availableH = Math.max(270, Math.floor(bottomLimit - containerTop - 10));
+
+    // 5. Width-Responsive Scale Factor for Mobile Screens (<365, 375-400, >400)
+    let widthScale = 1.0;
+    if (viewportW < 365) {
+      widthScale = 0.84;
+    } else if (viewportW < 385) {
+      widthScale = 0.92;
+    } else if (viewportW < 415) {
+      widthScale = 0.97;
+    } else {
+      widthScale = 1.00;
+    }
+
+    // Dynamic icon size adaptation
+    let iconSize = Math.round(36 * widthScale);
+    iconSize = Math.max(28, Math.min(38, iconSize));
+    container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
+
+    // 6. Layout-Specific Exact Sizing & Spacing
+    let cardH = 78;
+    let gap = 6;
 
     switch (currentLayout) {
-      case 1:
-        cardH = Math.floor((availableH - (4 * gap)) / 5);
-        cardH = Math.max(68, Math.min(100, cardH));
+      case 1: { // 2 Columns, 5 Rows
+        gap = viewportH < 720 ? 5 : 7;
+        const totalGaps = 4 * gap;
+        const paddingY = 10;
+        cardH = Math.floor((availableH - totalGaps - paddingY) / 5);
+        cardH = Math.max(62, Math.min(86, cardH));
         break;
-      case 2:
-        gap = 5;
-        cardH = Math.floor((availableH - (9 * gap)) / 10);
-        cardH = Math.max(42, Math.min(62, cardH));
+      }
+      case 2: { // Single Column List, 10 Rows
+        gap = viewportH < 720 ? 3 : 4;
+        const totalGaps = 9 * gap;
+        const paddingY = 10;
+        cardH = Math.floor((availableH - totalGaps - paddingY) / 10);
+        cardH = Math.max(40, Math.min(50, cardH));
         break;
-      case 3:
-        const heroH = 150;
-        const remainingH = availableH - heroH - 12;
-        cardH = Math.floor((remainingH - (4 * gap)) / 5);
-        cardH = Math.max(64, Math.min(94, cardH));
+      }
+      case 3: { // Analytics Hero + 2 Columns, 5 Rows
+        gap = viewportH < 720 ? 4 : 5;
+        const heroH = Math.max(86, Math.min(104, Math.floor(availableH * 0.23)));
+        const remainingForGrid = availableH - heroH - 6 - 10;
+        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
+        cardH = Math.max(56, Math.min(74, cardH));
+        container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
-      case 4:
-        cardH = Math.floor((availableH - (4 * gap)) / 5.2);
-        cardH = Math.max(68, Math.min(105, cardH));
+      }
+      case 4: { // Asymmetric Modern Cards, 2 Columns, 5 Rows
+        gap = viewportH < 720 ? 5 : 7;
+        const totalGaps = 4 * gap;
+        const paddingY = 10;
+        cardH = Math.floor((availableH - totalGaps - paddingY) / 5);
+        cardH = Math.max(62, Math.min(86, cardH));
         break;
-      case 5:
-        gap = 6;
-        const voiceBannerH = 50;
-        const gridCategoryH = availableH - voiceBannerH - (3 * gap);
-        cardH = Math.floor(gridCategoryH / 3);
-        cardH = Math.max(94, Math.min(106, cardH));
-        container.style.setProperty('--dynamic-home-voice-height', `${voiceBannerH}px`);
+      }
+      case 5: { // 3x3 Grid + Full-Width Voice Banner
+        gap = viewportH < 720 ? 5 : 6;
+        const voiceH = Math.max(42, Math.min(48, Math.floor(availableH * 0.11)));
+        const remainingForGrid = availableH - voiceH - (3 * gap) - 10;
+        cardH = Math.floor(remainingForGrid / 3);
+        cardH = Math.max(80, Math.min(100, cardH));
+        container.style.setProperty('--dynamic-home-voice-height', `${voiceH}px`);
         break;
-      default:
-        cardH = 84;
+      }
+      default: {
+        cardH = 78;
         break;
+      }
     }
 
     container.style.setProperty('--dynamic-home-card-height', `${cardH}px`);
     container.style.setProperty('--dynamic-home-gap', `${gap}px`);
 
+    // 7. Combined Font Scaling (Settings Font Mode * Width Adaptation)
     const docEl = document.documentElement;
     const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
     const fontScales = {
       micro: 0.82,
       small: 0.90,
       medium: 1.00,
-      large: 1.12,
-      xlarge: 1.24,
-      huge: 1.36
+      large: 1.10,
+      xlarge: 1.20,
+      huge: 1.30
     };
-    const scale = fontScales[fontMode] || 1.00;
-    container.style.setProperty('--dynamic-home-font-scale', String(scale));
+    const baseScale = fontScales[fontMode] || 1.00;
+    const finalFontScale = (baseScale * widthScale).toFixed(3);
+    container.style.setProperty('--dynamic-home-font-scale', String(finalFontScale));
 
     const fontFamily = docEl.getAttribute('data-font-family') || localStorage.getItem('family_expense_font_family') || 'inherit';
     if (fontFamily && fontFamily !== 'inherit') {
@@ -391,9 +459,9 @@
     const remainingPct = Math.max(0, Math.min(100, Math.abs(pct)));
     let budgetText = '';
     if (isExceeded) {
-      budgetText = `تجاوز: ${remainingPct}% - ${remValStr} ${currSymbol}`;
+      budgetText = `تجاوز: ${remainingPct}% • ${remValStr} ${currSymbol}`;
     } else {
-      budgetText = `متبقي: ${remainingPct}% - ${remValStr} ${currSymbol}`;
+      budgetText = `متبقي: ${remainingPct}% • ${remValStr} ${currSymbol}`;
     }
 
     return {
@@ -425,12 +493,12 @@
       if (id === 'voice') {
         return `
           <article class="reference-one-card hl-card-l1 hl-card-l1-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice class="hl-card-l1-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
-              <div class="hl-card-l1-right" style="flex:1;min-width:0;text-align:right;">
-                <strong class="hl-voice-title" style="display:block;color:#7c3aed;font-weight:900;line-height:1.2;font-size:calc(0.84rem * var(--dynamic-home-font-scale, 1.0));">إضافة صوتية للمصروفات</strong>
-                <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(16)}</div>
+            <button type="button" data-voice class="hl-card-l1-btn">
+              <div class="hl-card-l1-right">
+                <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
+                <div class="hl-voice-wave-wrap">${getWaveHtml(16)}</div>
               </div>
-              <div class="hl-card-l1-icon" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 3px 8px rgba(124,58,237,0.3);margin-inline-start:8px;">
+              <div class="hl-card-l1-icon hl-voice-icon-box">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -443,23 +511,24 @@
 
       return `
         <article class="reference-one-card hl-card-l1" data-ref-category="${id}" data-spent="${s.hasSpent}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div class="hl-card-l1-inner" style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
-            <div class="hl-card-l1-right" style="flex:1;min-width:0;text-align:right;">
-              <button type="button" class="hl-cat-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
-                <strong class="hl-card-l1-name" style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
+          <div class="hl-card-l1-inner">
+            <div class="hl-card-l1-right">
+              <button type="button" class="hl-cat-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
+                <strong class="hl-card-l1-name">${s.cat.name}</strong>
               </button>
-              <button type="button" class="hl-cat-amt-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
-                <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
-                </span>
-                <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+              <button type="button" class="hl-cat-amt-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}">
+                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                  <span class="hl-amt-curr">${currSymbol}</span>
                 </div>
-                <small class="hl-budget-info" style="display:block;color:${s.statusColor};font-size:calc(0.64rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.budgetText}</small>
+                <div class="hl-progress-track">
+                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                </div>
+                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" class="hl-cat-icon-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;flex-shrink:0;margin-inline-start:8px;">
-              <div class="hl-card-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(0,0,0,0.12);">
+            <button type="button" class="hl-cat-icon-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
+              <div class="hl-card-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
             </button>
@@ -481,16 +550,16 @@
       if (id === 'voice') {
         return `
           <article class="home-design-card hl-row-l2 hl-row-l2-voice" data-ref-category="voice">
-            <button type="button" data-voice style="border:none;background:none;width:100%;cursor:pointer;padding:6px 12px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;">
-              <div class="hl-row-l2-right" style="display:flex;align-items:center;gap:10px;">
-                <div class="hl-row-l2-icon" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">
+            <button type="button" data-voice class="hl-row-l2-btn">
+              <div class="hl-row-l2-right">
+                <div class="hl-row-l2-icon hl-row-voice-icon">
                   <i class="fa-solid fa-microphone"></i>
                 </div>
-                <strong style="font-weight:900;color:#7c3aed;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">إضافة صوتية للمصروفات</strong>
+                <strong class="hl-row-voice-title">إضافة صوتية للمصروفات</strong>
               </div>
-              <div style="height:24px;width:1px;background:rgba(0,0,0,0.12);margin:0 8px;"></div>
-              <div class="hl-row-l2-middle" style="flex:1;max-width:140px;">${getWaveHtml(14)}</div>
-              <div class="hl-row-l2-chevron" style="color:#a855f7;font-size:0.85rem;"><i class="fa-solid fa-chevron-left"></i></div>
+              <div class="hl-row-divider"></div>
+              <div class="hl-row-l2-middle">${getWaveHtml(14)}</div>
+              <div class="hl-row-l2-chevron"><i class="fa-solid fa-chevron-left"></i></div>
             </button>
           </article>
         `;
@@ -501,36 +570,37 @@
 
       return `
         <article class="home-design-card hl-row-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-          <div class="hl-row-l2-content" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:6px 10px;box-sizing:border-box;">
-            <div class="hl-row-l2-right" style="display:flex;align-items:center;gap:8px;flex:1.2;min-width:0;">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;flex-shrink:0;">
-                <div class="hl-row-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:11px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+          <div class="hl-row-l2-content">
+            <div class="hl-row-l2-right">
+              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn">
+                <div class="hl-row-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                   <i class="${s.cat.iconClass}"></i>
                 </div>
               </button>
-              <div style="min-width:0;">
-                <strong class="hl-row-l2-name" style="display:block;font-weight:800;font-size:calc(0.85rem * var(--dynamic-home-font-scale, 1.0));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
-                <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));">
-                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
-                </span>
+              <div class="hl-row-name-amt">
+                <strong class="hl-row-l2-name">${s.cat.name}</strong>
+                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                  <span class="hl-amt-curr">${currSymbol}</span>
+                </div>
               </div>
             </div>
 
-            <div style="height:26px;width:1px;background:rgba(0,0,0,0.1);margin:0 8px;flex-shrink:0;"></div>
+            <div class="hl-row-divider"></div>
 
-            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;flex:1.4;text-align:right;min-width:0;">
-              <div style="font-size:calc(0.68rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;color:#334155;">المتبقي: ${s.remValStr} ${currSymbol}</div>
-              <div style="font-size:calc(0.64rem * var(--dynamic-home-font-scale, 1.0));color:#64748b;">الميزانية: ${s.budValStr} ${currSymbol}</div>
-              <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin-top:2px;width:100%;">
-                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn">
+              <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
+              <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
               </div>
             </button>
 
-            <div class="hl-row-l2-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border-radius:10px;padding:2px 7px;font-weight:800;font-size:calc(0.70rem * var(--dynamic-home-font-scale, 1.0));margin:0 6px;flex-shrink:0;">
+            <div class="hl-row-l2-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};">
               %${s.remainingPct}
             </div>
 
-            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;color:#94a3b8;font-size:0.8rem;flex-shrink:0;">
+            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
           </div>
@@ -560,20 +630,20 @@
     const top3Html = top3.length > 0 ? top3.map(item => {
       const pct = totalExpense > 0 ? Math.round((item.spent / totalExpense) * 100) : 0;
       return `
-        <div class="hl-top3-item" style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:calc(0.70rem * var(--dynamic-home-font-scale, 1.0));margin-bottom:3px;">
-          <div style="display:flex;align-items:center;gap:4px;min-width:0;">
-            <i class="${item.cat.iconClass}" style="color:${item.cat.color};font-size:0.8rem;"></i>
-            <span style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.cat.name}</span>
+        <div class="hl-top3-item">
+          <div class="hl-top3-cat">
+            <i class="${item.cat.iconClass}" style="color:${item.cat.color};"></i>
+            <span>${item.cat.name}</span>
           </div>
-          <div style="display:flex;align-items:center;gap:4px;flex:1;max-width:80px;">
-            <div style="flex:1;height:5px;background:rgba(0,0,0,0.06);border-radius:3px;overflow:hidden;">
-              <div style="width:${pct}%;background:${item.cat.color};height:100%;border-radius:3px;"></div>
+          <div class="hl-top3-bar-wrap">
+            <div class="hl-top3-bar-track">
+              <div class="hl-top3-bar-fill" style="width:${pct}%;background:${item.cat.color};"></div>
             </div>
-            <strong style="color:${item.cat.color};font-size:0.68rem;">%${pct}</strong>
+            <strong style="color:${item.cat.color};">%${pct}</strong>
           </div>
         </div>
       `;
-    }).join('') : '<div style="color:#94a3b8;font-size:0.75rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
+    }).join('') : '<div style="color:#94a3b8;font-size:0.72rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
 
     const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'clothes', 'voice', 'other'];
 
@@ -583,12 +653,12 @@
       if (id === 'voice') {
         return `
           <article class="reference-one-card hl-card-l3 hl-card-l3-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
-              <div style="flex:1;text-align:right;">
-                <strong style="display:block;color:#7c3aed;font-weight:900;font-size:calc(0.84rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;">إضافة صوتية للمصروفات</strong>
-                <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(14)}</div>
+            <button type="button" data-voice class="hl-card-l3-btn">
+              <div class="hl-card-l3-right">
+                <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
+                <div class="hl-voice-wave-wrap">${getWaveHtml(14)}</div>
               </div>
-              <div style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;margin-inline-start:8px;">
+              <div class="hl-card-l3-icon hl-voice-icon-box">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -601,23 +671,24 @@
 
       return `
         <article class="reference-one-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
-            <div style="flex:1;min-width:0;text-align:right;">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
-                <strong style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
+          <div class="hl-card-l3-inner">
+            <div class="hl-card-l3-right">
+              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                <strong class="hl-card-l3-name">${s.cat.name}</strong>
               </button>
-              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
-                <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
-                </span>
-                <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn">
+                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                  <span class="hl-amt-curr">${currSymbol}</span>
                 </div>
-                <small style="display:block;color:${s.statusColor};font-size:calc(0.64rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.budgetText}</small>
+                <div class="hl-progress-track">
+                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                </div>
+                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;flex-shrink:0;margin-inline-start:8px;">
-              <div style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(0,0,0,0.1);">
+            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+              <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
             </button>
@@ -628,32 +699,30 @@
 
     return `
       <div class="hl-layout-3-wrapper">
-        <section class="hl-hero-analytics" style="background:#ffffff;border:1.5px solid #e2e8f0;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 3px 12px rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <section class="hl-hero-analytics">
           <!-- Left: Donut Chart -->
-          <div class="hl-donut-box" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;width:86px;height:86px;flex-shrink:0;">
-            <svg viewBox="0 0 36 36" style="width:100%;height:100%;transform:rotate(-90deg);">
+          <div class="hl-donut-box">
+            <svg viewBox="0 0 36 36" class="hl-donut-svg">
               <circle cx="18" cy="18" r="14" fill="none" stroke="#e2e8f0" stroke-width="4"></circle>
               <circle cx="18" cy="18" r="14" fill="none" stroke="#0284c7" stroke-width="4" stroke-dasharray="${overallPct}, 100" stroke-linecap="round"></circle>
             </svg>
-            <div style="position:absolute;text-align:center;line-height:1.1;">
-              <strong style="font-size:0.95rem;font-weight:900;color:#0f172a;">%${overallPct}</strong>
-              <small style="display:block;font-size:0.56rem;color:#64748b;">من الموازنة</small>
+            <div class="hl-donut-text">
+              <strong>%${overallPct}</strong>
+              <small>من الموازنة</small>
             </div>
           </div>
 
           <!-- Center: Monthly Budget Summary -->
-          <div class="hl-budget-summary" style="flex:1;text-align:right;font-size:calc(0.72rem * var(--dynamic-home-font-scale, 1.0));line-height:1.45;padding:0 6px;border-inline:1px solid #f1f5f9;">
-            <div style="font-weight:800;color:#0f172a;margin-bottom:2px;"><i class="fa-solid fa-bullseye" style="color:#a855f7;margin-inline-end:4px;"></i>الميزانية الشهرية</div>
+          <div class="hl-budget-summary">
+            <div class="hl-budget-summary-title"><i class="fa-solid fa-bullseye"></i>الميزانية الشهرية</div>
             <div>الموازنة : <strong>${totalBudget.toLocaleString()} ${currSymbol}</strong></div>
             <div style="color:#b91c1c;">المصروف : <strong>${totalExpense.toLocaleString()} ${currSymbol}</strong></div>
             <div style="color:#15803d;">المتبقي : <strong>${remainingBudget.toLocaleString()} ${currSymbol}</strong></div>
           </div>
 
           <!-- Right: Top 3 Spenders -->
-          <div class="hl-top3-box" style="flex:1.2;min-width:0;text-align:right;">
-            <div style="font-weight:800;font-size:calc(0.72rem * var(--dynamic-home-font-scale, 1.0));color:#0f172a;margin-bottom:4px;">
-              <i class="fa-solid fa-chart-simple" style="color:#0284c7;margin-inline-end:4px;"></i>أعلى 3 بنود صرفاً
-            </div>
+          <div class="hl-top3-box">
+            <div class="hl-top3-title"><i class="fa-solid fa-chart-simple"></i>أعلى 3 بنود صرفاً</div>
             ${top3Html}
           </div>
         </section>
@@ -674,13 +743,13 @@
 
       if (id === 'voice') {
         return `
-          <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice" style="order: ${pos} !important; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important; border: 1.5px solid #c084fc !important; color: #ffffff !important; box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;">
-            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
-              <div style="flex:1;text-align:right;">
-                <strong style="display:block;color:#ffffff;font-weight:900;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;">إضافة صوتية<br>للمصروفات</strong>
-                <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(16)}</div>
+          <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice" style="order: ${pos} !important;">
+            <button type="button" data-voice class="hl-card-l4-btn">
+              <div class="hl-card-l4-right">
+                <strong class="hl-voice-title" style="color:#ffffff;">إضافة صوتية<br>للمصروفات</strong>
+                <div class="hl-voice-wave-wrap" style="margin-top:4px;">${getWaveHtml(16)}</div>
               </div>
-              <div style="background:rgba(255,255,255,0.25);color:#fff;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 0 10px rgba(255,255,255,0.4);margin-inline-start:8px;">
+              <div class="hl-card-l4-icon hl-voice-icon-box" style="background:rgba(255,255,255,0.25);color:#fff;border-radius:50%;">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -693,23 +762,24 @@
 
       return `
         <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
-            <div style="flex:1;min-width:0;text-align:right;">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
-                <strong style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
+          <div class="hl-card-l4-inner">
+            <div class="hl-card-l4-right">
+              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                <strong class="hl-card-l4-name">${s.cat.name}</strong>
               </button>
-              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
-                <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
-                </span>
-                <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn">
+                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                  <span class="hl-amt-curr">${currSymbol}</span>
                 </div>
-                <small style="display:block;color:${s.statusColor};font-size:calc(0.64rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.budgetText}</small>
+                <div class="hl-progress-track">
+                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                </div>
+                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;flex-shrink:0;margin-inline-start:8px;">
-              <div style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(0,0,0,0.1);">
+            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+              <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
             </button>
@@ -738,17 +808,17 @@
       if (id === 'voice') {
         return `
           <article class="home-design-card hl-card-l5-voice-wide" data-ref-category="voice" style="order: ${pos} !important; grid-column: 1 / -1 !important;">
-            <button type="button" data-voice class="hl-voice-wide-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 14px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
-              <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                <div class="hl-voice-icon-box" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(124, 58, 237, 0.25);flex-shrink:0;">
+            <button type="button" data-voice class="hl-voice-wide-btn">
+              <div class="hl-voice-wide-right">
+                <div class="hl-voice-icon-box">
                   <i class="fa-solid fa-microphone"></i>
                 </div>
-                <div style="text-align:right;min-width:0;">
-                  <strong class="hl-voice-title" style="display:block;font-weight:900;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));color:#7c3aed;line-height:1.2;white-space:nowrap;">إضافة صوتية للمصروفات</strong>
-                  <small class="hl-voice-subtitle" style="display:block;font-size:calc(0.68rem * var(--dynamic-home-font-scale, 1.0));color:#9333ea;font-weight:700;margin-top:2px;white-space:nowrap;">اضغط وتحدث لتسجيل المصروف بالذكاء الاصطناعي</small>
+                <div class="hl-voice-wide-titles">
+                  <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
+                  <small class="hl-voice-subtitle">اضغط وتحدث لتسجيل المصروف بالذكاء الاصطناعي</small>
                 </div>
               </div>
-              <div style="flex-shrink:0;margin-inline-start:8px;">
+              <div class="hl-voice-wide-wave">
                 ${getWaveHtml(18)}
               </div>
             </button>
@@ -762,22 +832,23 @@
 
       return `
         <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div class="hl-card-l5-body" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px;box-sizing:border-box;">
-            <button type="button" class="hl-card-l5-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;padding:0;margin:0;font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <div class="hl-card-l5-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 2px 6px rgba(0,0,0,0.08);margin-bottom:3px;">
+          <div class="hl-card-l5-body">
+            <button type="button" class="hl-card-l5-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
+              <div class="hl-card-l5-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
-              <strong class="hl-card-l5-name" style="display:block;font-weight:800;font-size:calc(0.76rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;margin-bottom:3px;">${catDisplayName}</strong>
+              <strong class="hl-card-l5-name">${catDisplayName}</strong>
             </button>
 
-            <button type="button" class="hl-card-l5-foot-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;padding:0;margin:0;font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="display:block;font-size:calc(0.82rem * var(--dynamic-home-font-scale, 1.0));font-weight:900;line-height:1.2;margin-bottom:3px;text-align:center;">
-                <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
-              </span>
-              <div class="hl-progress-track" style="height:2.5px;background:rgba(0,0,0,0.06);border-radius:2px;width:86%;margin:0 auto 3px;">
-                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+            <button type="button" class="hl-card-l5-foot-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}">
+              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                <span class="hl-amt-curr">${currSymbol}</span>
               </div>
-              <small class="hl-budget-info" style="color:${s.statusColor};font-size:calc(0.60rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:center;">${s.budgetText}</small>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+              </div>
+              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
             </button>
           </div>
         </article>
@@ -988,10 +1059,17 @@
       if (voiceBtn) {
         e.preventDefault();
         e.stopPropagation();
-        if (typeof root.toggleVoiceAssistantModal === 'function') {
-          root.toggleVoiceAssistantModal(true);
-        } else if (typeof root.toggleVoiceAssistantDrawer === 'function') {
-          root.toggleVoiceAssistantDrawer(true);
+        if (root.VoiceAssistantEngine && typeof root.VoiceAssistantEngine.toggleListening === 'function') {
+          root.VoiceAssistantEngine.toggleListening();
+        } else {
+          const fab = document.getElementById('btnVoiceAssistantFab');
+          if (fab) {
+            fab.click();
+          } else if (typeof root.toggleVoiceAssistantModal === 'function') {
+            root.toggleVoiceAssistantModal(true);
+          } else if (typeof root.toggleVoiceAssistantDrawer === 'function') {
+            root.toggleVoiceAssistantDrawer(true);
+          }
         }
         return;
       }
@@ -1021,7 +1099,7 @@
   }
 
   /* -------------------------------------------------------------
-     Initialization
+     Initialization & Dynamic Listeners
   ------------------------------------------------------------- */
   function init() {
     try {
@@ -1047,7 +1125,14 @@
     setupEventDelegation();
     updateDesignButtonDial();
 
+    // Responsive and dynamic layout listeners
     window.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
+    }
+    window.addEventListener('orientationchange', () => {
+      setTimeout(measureAndApplyDynamicLayout, 150);
+    }, { passive: true });
 
     const fontObserver = new MutationObserver(() => {
       measureAndApplyDynamicLayout();
