@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.4.16';
-    var APP_BUILD_ID = 202611172245;
+    var APP_VERSION = 'v5.4.17';
+    var APP_BUILD_ID = 202611181100;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -26659,6 +26659,9 @@ function renderCategoriesGrid(filtered) {
           }
         });
       }
+      if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
+        window.HomeLayouts.render(filtered);
+      }
     }
 
     function openQuickCategoryExpense(catId) {
@@ -43119,198 +43122,8 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-reference-one.css?v=202611172010">
-<style>
-#btnHomeDesign{order:-1;flex:0 1 auto;min-width:44px;max-width:66px;height:38px;padding:0 5px;border:1px solid #a78bfa;border-radius:12px;background:#ede9fe;color:#6d28d9;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:3px;font:850 10px Tahoma,Arial,sans-serif;white-space:nowrap}
-#homeInterfaces{margin:8px 8px 16px;--home-panel:#18263c;--home-text:#f8fafc;color:var(--home-text)}
-body.light-theme #homeInterfaces{--home-panel:#fff;--home-text:#142037}
-.home-design-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;direction:rtl}
-.home-design-card{min-width:0;border:1.5px solid var(--tone);border-radius:17px;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--tone) 22%,var(--home-panel)),var(--home-panel));box-shadow:0 3px 6px #0002}
-.home-design-card button{color:inherit;font:inherit;border:0;background:none;width:100%;cursor:pointer;padding:7px;min-width:0}
-.home-design-head{display:flex;align-items:center;gap:6px;min-height:60px}
-.home-design-head strong{font-size:.85rem;flex:1;line-height:1.35}
-.home-design-icon{display:grid;place-items:center;flex:none;width:39px;height:43px;font-size:1.8rem;border-radius:13px;background:linear-gradient(145deg,var(--tone),color-mix(in srgb,var(--tone) 65%,#111));box-shadow:0 3px 5px #0003}
-.home-design-value{display:grid;gap:4px;border-top:1px solid color-mix(in srgb,var(--tone) 25%,transparent)!important}
-.home-design-value bdi{font-size:.95rem;font-weight:900;color:#ff8b9b;overflow-wrap:anywhere}
-body.light-theme .home-design-value bdi{color:#b91c1c}
-.home-design-value small{font-size:.62rem;line-height:1.4;overflow-wrap:anywhere}
-.home-design-value progress{width:100%;height:5px;accent-color:var(--tone)}
-.home-design-voice{--tone:#a855f7;display:grid;place-items:center;min-height:104px}
-.home-design-voice button{font-weight:900;font-size:.85rem}
-.home-design-voice span{display:block;font-size:2rem;margin-bottom:5px}
-#homeInterfaces[data-design="1"] .home-design-icon{background:none;box-shadow:none;font-size:2.4rem}
-#homeInterfaces[data-design="1"] .home-design-head{flex-direction:row-reverse}
-#homeInterfaces[data-design="2"] .home-design-head{flex-direction:row-reverse}
-#homeInterfaces[data-design="3"] .home-design-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-#homeInterfaces[data-design="3"] .home-design-head{flex-direction:column;min-height:104px}
-#homeInterfaces[data-design="3"] .home-design-head strong{font-size:.75rem}
-#homeInterfaces[data-design="3"] .home-design-value bdi{font-size:.76rem}
-#homeInterfaces[data-design="4"] .home-design-grid{grid-template-columns:1fr}
-#homeInterfaces[data-design="4"] .home-design-card{display:grid;grid-template-columns:1.1fr 1fr;border-radius:13px}
-#homeInterfaces[data-design="4"] .home-design-value{border-top:0!important;border-inline-start:1px solid var(--tone)}
-#homeInterfaces[data-design="4"] .home-design-head{min-height:65px}
-#homeInterfaces[data-design="4"] .home-design-voice{grid-template-columns:1fr;min-height:55px}
-#homeInterfaces[data-design="4"] .home-design-voice span{display:inline;font-size:1.3rem}
-.home-design-insights{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;border:1px solid #a78bfa;border-radius:14px;padding:10px;background:var(--home-panel);font-size:.72rem}
-.home-design-insights h3{font-size:.8rem;margin:0 0 8px}
-.home-design-insights p{margin:5px 0}
-.home-design-insights progress{width:100%;accent-color:#8b5cf6}
-</style>
-<link rel="stylesheet" href="./home-mobile-fit.css?v=202611172310">
-<script defer src="./home-dynamic-layout-engine.js?v=202611172310"></script>
-<script>
-(() => {
-  function installHomeInterfaces() {
-    const original = document.getElementById('catGrid');
-    const gold = document.getElementById('btnOpenGold');
-    if (!original || !gold) return;
-    const expensePage = document.getElementById('viewExpenses');
-    const preferenceKey = 'family_monefy_expense_home_layout';
-    let design = 0;
-    try { design = Math.max(0, Math.min(5, Number.parseInt(localStorage.getItem(preferenceKey), 10) || 0)); } catch {}
-    if (new URLSearchParams(location.search).get('homeLayout') === 'reference-1') design = 1;
-    const host = document.createElement('section');
-    host.id = 'homeInterfaces';
-    original.after(host);
-    // Start the isolated geometry engine after the host is mounted.
-    const dynamicHomeEngine = window.HomeDynamicLayoutEngine?.create({view:expensePage,host});
-    const trigger = document.createElement('button');
-    trigger.id = 'btnHomeDesign';
-    trigger.type = 'button';
-    trigger.innerHTML = '<i class="fa-solid fa-border-all" aria-hidden="true"></i><span>الأشكال</span>';
-    trigger.setAttribute('aria-label','اختيار تصميم شاشة المصروفات');
-    trigger.title = 'تغيير شكل الشاشة';
-    gold.before(trigger);
-    trigger.onclick = () => {
-      design = (design + 1) % 6;
-      try { localStorage.setItem(preferenceKey, String(design)); } catch {}
-      render();
-    };
-    // The switcher always stays in the home quick-tools strip, for every design.
-    const items = [
-      ['daily','☕','#f59e0b'],['food','🛒','#10b981'],['bills','⚡','#f97316'],
-      ['house','🛋️','#8b5cf6'],['education','📚','#3b82f6'],['transport','🚗','#0284c7'],
-      ['health','💊','#ef4444'],['other','🎁','#14b8a6'],['voice','🎙','#a855f7'],['clothes','👔','#ec4899']
-    ];
-    // Row order and icon positions follow the first supplied reference.
-    // Approved RTL order: every expense category stays visible, including zero amounts.
-    // Consistent two-column RTL order; the final row is voice action and clothes.
-    const referenceCategories = ['daily','food','bills','house','education',
-      'transport','health','other','voice','clothes'];
-    // Preserve each artwork cell when cards move: artwork coordinates are NOT grid indices.
-    const referenceArt = {
-      daily:[0,0], bills:[25,0], food:[50,0], house:[75,0], transport:[100,0],
-      education:[0,100], other:[25,100], health:[50,100], voice:[75,100], clothes:[100,100]
-    };
-    const referenceLabels = {
-      daily:'مصروف يومي', food:'طعام ومشتريات', bills:'فواتير والتزامات',
-      house:'مستلزمات منزل', education:'تعليم ودروس', transport:'مواصلات وبنزين',
-      health:'صحة وعلاج', other:'أخرى ومشتريات', clothes:'ملابس وأحذية'
-    };
-    let referenceCardMarkup = '';
-    function renderFirstReference() {
-      const cards = referenceCategories.map(id => {
-        const sprite = referenceArt[id];
-        const icon = '<i class="reference-one-icon" aria-hidden="true" style="--icon-x:' +
-          sprite[0] + '%;--icon-y:' + sprite[1] + '%"></i>';
-        if (id === 'voice') {
-          const waveform = [2,4,3,7,5,11,14,9,5,12,8,18,12,7,10,4,8,5,3,4,2];
-          return '<article class="reference-one-card" data-ref-category="voice"><button type="button" data-voice>' +
-            icon + '<strong>إضافة صوتية<br>للمصروفات</strong><span class="reference-one-wave" aria-hidden="true">' +
-            waveform.map(height => '<i style="--wave-height:' + height + '"></i>').join('') + '</span></button></article>';
-        }
-        const source = original.querySelector('[data-cat-id="' + id + '"]');
-        const name = referenceLabels[id];
-        const amount = source?.querySelector('.cat-number-val')?.textContent.trim() || '0.00';
-        const currency = source?.querySelector('.cat-currency-label')?.textContent.trim() || getCurrencySymbol();
-        const hasSpent = Boolean(source?.querySelector('.cat-amount-sign'));
-        const budget = source?.querySelector('.cat-budget-ceiling-text')?.textContent.trim();
-        const exceeded = budget?.startsWith('تجاوز');
-        const fill = Math.max(0, Math.min(100, parseFloat(source?.querySelector('.cat-budget-progress-fill')?.style.width) || 0));
-        return '<article class="reference-one-card" data-ref-category="' + id +
-          '" data-spent="' + hasSpent + '" data-exceeded="' + Boolean(exceeded) + '">' +
-          '<button type="button" class="reference-one-add" data-add="' + id + '">' + icon +
-          '<strong>' + escapeHtml(name) + '</strong></button>' +
-          '<button type="button" class="reference-one-details" data-details="' + id + '" aria-label="عرض عمليات ' +
-          escapeHtml(name) + '"><span class="reference-one-amount" dir="rtl">' + (hasSpent ? '<span>−</span>' : '') +
-          '<bdi dir="ltr">' + escapeHtml(amount) + '</bdi><span>' + escapeHtml(currency) + '</span></span>' +
-          '<progress max="100" value="' + fill + '" aria-label="استخدام الموازنة"></progress>' +
-          '<small>' + escapeHtml(budget || 'لم تُحدَّد موازنة') + '</small></button></article>';
-      }).join('');
-      if (cards === referenceCardMarkup && host.firstElementChild?.classList.contains('reference-one-grid')) return;
-      referenceCardMarkup = cards;
-      host.innerHTML = '<div class="reference-one-grid">' + cards + '</div>';
-    }
-    function render() {
-      host.dataset.design = design;
-      dynamicHomeEngine?.refresh();
-      expensePage.classList.toggle('home-reference-one', design === 1);
-      expensePage.classList.toggle('home-alternative-design', design > 1);
-      // Render updates must never move the switcher away from the home screen.
-      if (trigger.parentElement !== gold.parentElement) gold.before(trigger);
-      // Keep five actions physically ordered and preserve handlers across all themes.
-      const toolHost = gold.parentElement;
-      ['btnHomeDesign','btnOpenGold','walletSelectCluster','btnOpenSummaryQuick','btnToggleCurrency'].forEach((id,position) => {
-        const node = document.getElementById(id);
-        if (!node || node.parentElement !== toolHost) return;
-        if (node.style.getPropertyValue('order') !== String(position) || node.style.getPropertyPriority('order') !== 'important') {
-          node.style.setProperty('order',String(position),'important');
-        }
-        if (toolHost.children[position] !== node) toolHost.insertBefore(node,toolHost.children[position] || null);
-      });
-      const isOriginal = design === 0;
-      // Avoid mutating the observed grid style on every refresh.
-      // A redundant setProperty used to create an endless MutationObserver/rAF loop.
-      if (original.hidden === isOriginal) original.hidden = !isOriginal;
-      if (isOriginal) {
-        if (original.style.getPropertyValue('display')) original.style.removeProperty('display');
-      } else if (original.style.getPropertyValue('display') !== 'none' ||
-                 original.style.getPropertyPriority('display') !== 'important') {
-        original.style.setProperty('display', 'none', 'important');
-      }
-      host.hidden = isOriginal;
-      const label = isOriginal ? 'الشكل الأساسي' : 'الشكل ' + (design + 1) + ' من 6';
-      trigger.setAttribute('aria-label', 'تغيير شكل شاشة المصروفات، ' + label);
-      trigger.title = label + ' — اضغط للانتقال إلى الشكل التالي';
-      if (isOriginal) return;
-      if (design === 1) {
-        renderFirstReference();
-        return;
-      }
-      const displayItems = [2,3,4,5].includes(design) ? [...items.filter(([id]) => id !== 'voice'),items.find(([id]) => id === 'voice')] : items;
-      const cards = displayItems.map(([id,icon,tone]) => {
-        if (id === 'voice') return '<article class="home-design-card home-design-voice"><button type="button" data-voice><span aria-hidden="true">🎙</span>إضافة صوتية للمصروفات</button></article>';
-        const source = original.querySelector('[data-cat-id="'+id+'"]');
-        // Preserve all expense categories, including zero/missing-source categories.
-        const name = source?.querySelector('.cat-label-text')?.textContent.trim() || referenceLabels[id] || id;
-        const amount = source?.querySelector('.cat-amount-val')?.textContent.replace(/\s+/g,' ').trim() || '0.00 ' + getCurrencySymbol();
-        const budget = source?.querySelector('.cat-budget-ceiling-text')?.textContent.trim() || 'لم تُحدَّد موازنة';
-        const fill = Math.max(0, Math.min(100, parseFloat(source?.querySelector('.cat-budget-progress-fill')?.style.width) || 0));
-        const art = referenceArt[id] || [0,0];
-        return '<article class="home-design-card" style="--tone:'+tone+'"><button type="button" class="home-design-head" data-add="'+id+'"><strong>'+escapeHtml(name)+'</strong><span class="home-design-icon" style="--icon-x:'+art[0]+'%;--icon-y:'+art[1]+'%" aria-hidden="true">'+icon+'</span></button><button type="button" class="home-design-value" data-details="'+id+'"><bdi>'+escapeHtml(amount)+'</bdi><progress max="100" value="'+fill+'" aria-label="استخدام الموازنة"></progress><small>'+escapeHtml(budget)+'</small></button></article>';
-      }).join('');
-      // The image-reference icon grid intentionally does not add an extra insights panel.
-      host.innerHTML = '<div class="home-design-grid">'+cards+'</div>';
-    }
-    host.addEventListener('click',event => {
-      const button = event.target.closest('button');
-      if (!button) return;
-      if (button.hasAttribute('data-voice')) VoiceAssistantEngine.toggleListening();
-      else if (button.dataset.add) openQuickCategoryExpense(button.dataset.add);
-      else if (button.dataset.details) openOperationsFiltered({category:button.dataset.details,type:'expense'});
-    });
-    let scheduled = false;
-    new MutationObserver(() => {
-      if (scheduled || design === 0) return;
-      scheduled = true;
-      requestAnimationFrame(() => { scheduled = false; render(); });
-    }).observe(original,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['style']});
-    render();
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',installHomeInterfaces,{once:true});
-  else installHomeInterfaces();
-})();
-</script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181100">
+<script defer src="./home-layouts.js?v=202611181100"></script>
 <script src="./operations-return-hub.js?v=202611171820"></script>
 <script src="./comparison-deeplink.js?v=20261117-unified-v2"></script>
 </body>

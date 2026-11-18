@@ -1,7 +1,7 @@
 {
-  "version": "v5.4.16",
-  "build": "202611172245",
-  "buildId": 202611172245,
-  "updated": "2026-11-17T22:45:00+03:00",
-  "notes": "All six home layouts fit mobile screen heights without vertical scrolling on tested phone sizes, match reference pastel colors and tile arrangements, preserve ten categories and voice action, and keep tool order."
+  "version": "v5.4.17",
+  "build": "202611181100",
+  "buildId": 202611181100,
+  "updated": "2026-11-18T11:00:00+03:00",
+  "notes": "محرك شاشات المصروفات الجديد بالكامل: تصميم 5 شاشات بديلة متطابقة مع النماذج + الشاشة الأصلية، مع الحفاظ التام على تسجيل المصروفات وكافة وظائف البرنامج."
 }

@@ -1,8 +1,10 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-tracker-v5.4.16-r12-restore-comparison-charts';
+const CACHE_NAME = 'family-expense-tracker-v5.4.17-home-layouts';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './home-layouts.css?v=202611181100',
+  './home-layouts.js?v=202611181100',
   './operations-return-hub.js?v=202611171820',
   './comparison-deeplink.js?v=20261117-audit-mobile-v1',
   './manifest.json',
@@ -20,8 +22,6 @@ const STATIC_ASSETS = [
   './appearance-compact.js?v=202611171450',
   './voice-assistant-engine.js?v=202611170915',
   './voice-assistant-engine.css?v=202611170915',
-  './home-reference-one.css?v=202611172010',
-  './home-mobile-fit.css?v=home-safe-fifth-row-20261117',
   './assets/home-reference-one.webp',
   './assets/home-reference-one-controls.webp',
   './assets/icon-192.png',
