@@ -256,3 +256,30 @@ body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
   z-index: 0 !important;
   min-height: 0 !important;
 }
+
+
+/* Fifth reference is a three-column grid for the nine financial categories.
+   The tenth tile is an action (voice input), not a tenth category: it must
+   occupy its own full-width rectangular row, below all three category rows. */
+#viewExpenses.home-alternative-design.active
+#homeInterfaces[data-design="5"] .home-design-grid > .home-design-card:nth-child(10),
+#viewExpenses.home-alternative-design.active
+#homeInterfaces[data-design="5"] .home-design-grid > .home-design-card:has([data-voice]) {
+  grid-column: 1 / -1 !important;
+  grid-row: auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  border-radius: clamp(12px, 3cqi, 21px) !important;
+}
+/* Never duplicate a voice-input microphone on top of the expense cards.
+   The card remains interactive; ordinary non-voice home screens retain
+   their floating control. */
+body:has(#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card[data-ref-category="voice"])
+#btnVoiceAssistantFab,
+body:has(#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card [data-voice])
+#btnVoiceAssistantFab {
+  display: none !important;
+}
