@@ -1,1003 +1,544 @@
 /* ==========================================================================
-   Home Screen Layouts Engine - Production CSS (v5.4.17)
-   Supports 5 alternative layouts + original layout
+   Home Screen Layouts Engine - Production CSS (v5.5.0)
+   Pixel-perfect matching for all 5 screens in authentic light pastel styling,
+   edge-to-edge 6-segment dial with 3 internal diameters, far-left currency switcher,
+   dynamic layout and font scaling.
    ========================================================================== */
 
-/* Background styling matching reference screenshots in light mode */
-body.light-theme:has(#viewExpenses.home-reference-one.active),
-body.light-theme:has(#viewExpenses.home-alternative-design.active) {
-  background: #dff8fd !important;
+/* -------------------------------------------------------------
+   Background Styling for Alternative Layouts (Always Authentic Light Pastel)
+------------------------------------------------------------- */
+body.has-alt-home-layout,
+body.has-alt-home-layout #appFrame,
+body.has-alt-home-layout #appScrollBody,
+body.has-alt-home-layout #viewExpenses {
+  background: linear-gradient(180deg, #d8f5fc 0%, #edfafd 45%, #e6f7fc 100%) !important;
 }
 
-body.light-theme:has(#viewExpenses.home-reference-one.active) #appFrame,
-body.light-theme:has(#viewExpenses.home-alternative-design.active) #appFrame,
-body.light-theme:has(#viewExpenses.home-reference-one.active) #appScrollBody,
-body.light-theme:has(#viewExpenses.home-alternative-design.active) #appScrollBody {
-  background: linear-gradient(160deg, #d3f8fa 0%, #eafdfe 100%) !important;
+/* Light Balance Card on Alternative Layouts */
+body.has-alt-home-layout .executive-balance-card,
+body.has-alt-home-layout .home-main-balance-card,
+body.has-alt-home-layout .balance-unified-card {
+  background: #ffffff !important;
+  border: 1.5px solid #e0f2fe !important;
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.08) !important;
 }
 
-/* Root and Base Container */
+body.has-alt-home-layout .balance-net-amount,
+body.has-alt-home-layout .balance-curr {
+  color: #0284c7 !important;
+}
+
+body.has-alt-home-layout .balance-title {
+  color: #0f172a !important;
+}
+
+/* Tools strip buttons on Alternative Layouts */
+body.has-alt-home-layout #walletSelectCluster {
+  background: #ffffff !important;
+  border: 1.5px solid #bae6fd !important;
+  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12) !important;
+}
+
+body.has-alt-home-layout #activeWalletSelect {
+  color: #0284c7 !important;
+}
+
+body.has-alt-home-layout #btnOpenSummaryQuick {
+  background: #ffffff !important;
+  border: 1.2px solid #bae6fd !important;
+  color: #0284c7 !important;
+}
+
+body.has-alt-home-layout #btnOpenGold {
+  background: #ffffff !important;
+  border: 1.2px solid #fde68a !important;
+  color: #d97706 !important;
+}
+
+body.has-alt-home-layout #btnToggleCurrency {
+  background: #ffffff !important;
+  border: 1.2px solid #bae6fd !important;
+  color: #0284c7 !important;
+}
+
+/* Base Container */
 #homeInterfaces {
   width: 100%;
   box-sizing: border-box;
-  padding: 4px 6px 16px;
+  padding: 4px 8px 18px;
   direction: rtl;
   user-select: none;
   -webkit-user-select: none;
+  font-family: var(--dynamic-home-font-family, inherit);
 }
 
 #homeInterfaces[hidden] {
   display: none !important;
 }
 
-/* Quick Tools Switcher Button (6-Segment Dial Icon Button) */
+/* -------------------------------------------------------------
+   Hide Floating Screen Flaps & Assistant FAB on Alternative Layouts
+------------------------------------------------------------- */
+body.has-alt-home-layout .side-screen-edge-handle,
+body:has(#homeInterfaces:not([hidden])) .side-screen-edge-handle,
+body.has-alt-home-layout #btnVoiceAssistantFab,
+body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------
+   Quick Tools Bar & Controls
+------------------------------------------------------------- */
+/* Edge-to-Edge 6-Segment Dial Button (The circle is the button frame) */
 #btnHomeDesign {
   width: 38px !important;
   height: 38px !important;
   min-width: 38px !important;
   max-width: 38px !important;
   padding: 0 !important;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 1.2px solid rgba(168, 85, 247, 0.45);
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.20), rgba(139, 92, 246, 0.12));
-  color: #c084fc;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-body.light-theme #btnHomeDesign {
-  background: #ffffff;
-  border: 1.2px solid rgba(168, 85, 247, 0.35);
-  color: #7c3aed;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  border: none !important;
+  background: transparent !important;
+  flex-shrink: 0 !important;
+  box-shadow: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
 }
 
 #btnHomeDesign:active {
   transform: scale(0.92);
 }
 
-/* 6-Segment Dial SVG Icon */
+/* Edge-to-Edge Dial SVG with 3 Internal Diameters (أقطار داخلية) */
 .home-dial-icon {
   display: block;
-  transition: transform 0.3s ease;
+  width: 38px;
+  height: 38px;
 }
 
-.home-dial-icon .hl-segment {
-  transition: stroke 0.25s ease, stroke-width 0.25s ease, opacity 0.25s ease;
-}
-
-.home-dial-icon .hl-segment.is-active {
-  stroke: #a855f7 !important;
-  stroke-width: 3.2px !important;
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.8));
-}
-
-body.light-theme .home-dial-icon .hl-segment.is-active {
+.home-dial-icon .hl-dial-track {
   stroke: #7c3aed !important;
-  filter: drop-shadow(0 0 2px rgba(124, 58, 237, 0.5));
+  fill: #f8fafc !important;
+}
+
+.home-dial-icon .hl-dial-slice {
+  transition: fill-opacity 0.25s ease, opacity 0.25s ease;
+}
+
+.home-dial-icon .hl-dial-slice.is-active {
+  fill: #8b5cf6 !important;
+  fill-opacity: 0.96 !important;
+}
+
+.home-dial-icon .hl-dial-diameter {
+  stroke: #7c3aed !important;
 }
 
 .home-dial-icon .hl-dial-center {
-  transition: fill 0.25s ease;
-  fill: #a855f7;
+  fill: #7c3aed !important;
 }
 
-body.light-theme .home-dial-icon .hl-dial-center {
-  fill: #7c3aed;
-}
-
-/* Moving currency switcher to far left */
-.executive-quick-tools-strip #btnToggleCurrency {
-  order: 4 !important;
+/* Currency Switcher at the Far Left of the Screen (أقصى يسار الشاشة) */
+#btnToggleCurrency {
+  order: 99 !important;
   margin-inline-start: auto !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
 }
 
-/* Layout 5 adjustments: clothes centered on row 4 */
-.hl-grid-layout-5 [data-ref-category="clothes"] {
-  grid-column: 2 / 3;
-}
-
-/* Hide floating mic button when an alternative layout with embedded voice card is active */
-body.has-alt-home-layout #btnVoiceAssistantFab {
-  display: none !important;
-}
-
-/* ==========================================================================
+/* -------------------------------------------------------------
    Sound Wave Animation for Voice Cards
-   ========================================================================== */
-.hl-wave-container, .reference-one-wave {
+------------------------------------------------------------- */
+.hl-wave-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2.5px;
-  height: 20px;
-  width: 100%;
-  margin-top: 3px;
-  overflow: hidden;
+  gap: 2px;
+  height: 18px;
 }
 
-.hl-wave-bar, .reference-one-wave i {
-  display: inline-block;
-  width: 2.5px;
-  background: #a855f7;
-  border-radius: 3px;
+.hl-wave-bar {
+  width: 2.2px;
+  background: #7c3aed;
+  border-radius: 2px;
   animation: hlWaveAnim 1.2s ease-in-out infinite alternate;
 }
 
-.hl-wave-bar:nth-child(2n), .reference-one-wave i:nth-child(2n) { animation-delay: 0.15s; }
-.hl-wave-bar:nth-child(3n), .reference-one-wave i:nth-child(3n) { animation-delay: 0.3s; }
-.hl-wave-bar:nth-child(4n), .reference-one-wave i:nth-child(4n) { animation-delay: 0.45s; }
-.hl-wave-bar:nth-child(5n), .reference-one-wave i:nth-child(5n) { animation-delay: 0.6s; }
-
 @keyframes hlWaveAnim {
-  0% { height: 3px; opacity: 0.4; }
-  100% { height: 16px; opacity: 1; }
+  0% { transform: scaleY(0.3); opacity: 0.5; }
+  100% { transform: scaleY(1.0); opacity: 1; }
 }
 
-/* Common Card Typography & Elements */
-.hl-amount, .reference-one-amount {
-  font-family: var(--font-numbers, 'Segoe UI', Tahoma, sans-serif);
-  font-weight: 950;
-  font-variant-numeric: tabular-nums;
-  direction: rtl;
-  display: inline-flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 2px;
-}
-
-.hl-amount.spent, .reference-one-amount.spent {
-  color: #b91c1c !important;
-}
-body:not(.light-theme) .hl-amount.spent,
-body:not(.light-theme) .reference-one-amount.spent {
-  color: #ff4d6d !important;
-}
-
-.hl-amount.zero, .reference-one-amount.zero {
-  color: #64748b;
-}
-body.light-theme .hl-amount.zero,
-body.light-theme .reference-one-amount.zero {
-  color: #475569;
-}
-
-.hl-progress-track {
-  width: 100%;
-  height: 4px;
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-  margin: 3px 0 2px;
-}
-
-.hl-progress-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
-
-.hl-budget-info {
-  font-size: 0.66rem;
-  font-weight: 800;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  line-height: 1.2;
-}
-
-/* ==========================================================================
-   LAYOUT 1: 2-Column Pastel Cards (Matches Image 1)
-   ========================================================================== */
-.reference-one-grid, .hl-grid-layout-1 {
+/* -------------------------------------------------------------
+   Layout 1: 2-Column Balanced Cards (Image 1)
+   Always Light Pastel with Colored Borders
+------------------------------------------------------------- */
+.hl-grid-layout-1 {
   display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 8px !important;
-  width: 100% !important;
-  direction: rtl !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: var(--dynamic-home-gap, 8px) !important;
 }
 
-.reference-one-card, .hl-card-l1 {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.8px solid var(--cat-color, #cbd5e1);
-  border-radius: 17px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  min-height: 72px;
-  box-sizing: border-box;
-}
-
-body:not(.light-theme) .reference-one-card,
-body:not(.light-theme) .hl-card-l1 {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-
-.reference-one-card:active, .hl-card-l1:active {
-  transform: scale(0.975);
-}
-
-.reference-one-add, .hl-card-l1-top {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 8px !important;
-  padding: 8px 10px 6px !important;
-  cursor: pointer !important;
-  background: rgba(var(--cat-rgb, 148, 163, 184), 0.08) !important;
-  width: 100% !important;
-  border: none !important;
+.hl-card-l1 {
+  border-radius: 16px !important;
+  min-height: var(--dynamic-home-card-height, 82px) !important;
   box-sizing: border-box !important;
-}
-
-.reference-one-icon, .hl-card-l1-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  flex-shrink: 0;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.10);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-}
-
-.hl-card-l1-name, .reference-one-add strong {
-  font-size: 0.84rem !important;
-  font-weight: 900 !important;
-  color: #0f172a !important;
-  line-height: 1.25 !important;
-  flex: 1 !important;
-  text-align: right !important;
-}
-body:not(.light-theme) .hl-card-l1-name,
-body:not(.light-theme) .reference-one-add strong {
-  color: #f8fafc !important;
-}
-
-.reference-one-details, .hl-card-l1-bottom {
-  padding: 6px 10px 8px !important;
-  border-top: 1px solid rgba(var(--cat-rgb, 148, 163, 184), 0.2) !important;
-  cursor: pointer !important;
   display: flex !important;
   flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  background: transparent !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: none !important;
-  box-sizing: border-box !important;
+  justify-content: space-between !important;
+  transition: transform 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
 }
 
-.hl-card-l1-voice, .reference-one-card[data-ref-category="voice"] {
-  border-color: #a855f7 !important;
-  background: linear-gradient(145deg, rgba(168, 85, 247, 0.12), rgba(147, 51, 234, 0.04)) !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  padding: 8px 8px !important;
-  text-align: center !important;
+.hl-card-l1:active {
+  transform: scale(0.97);
 }
 
-.hl-card-l1-voice .hl-voice-title,
-.reference-one-card[data-ref-category="voice"] strong {
-  font-size: 0.86rem !important;
-  font-weight: 900 !important;
-  color: #a855f7 !important;
-  margin-top: 2px !important;
-  display: block !important;
+.hl-card-l1 .hl-card-l1-name {
+  color: #0f172a !important;
 }
 
-/* ==========================================================================
-   LAYOUT 2: Full-Width Horizontal List (Matches Image 2)
-   ========================================================================== */
+.hl-card-l1 .amt-num {
+  color: #0f172a !important;
+}
+
+.hl-card-l1 .spent .amt-num,
+.hl-card-l1 .spent-minus {
+  color: #dc2626 !important;
+}
+
+.hl-card-l1-voice {
+  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
+  border: 1.5px solid #d8b4fe !important;
+}
+
+/* -------------------------------------------------------------
+   Layout 2: Single Column Horizontal Rows (Image 3)
+------------------------------------------------------------- */
 .hl-list-layout-2 {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--dynamic-home-gap, 5px) !important;
 }
 
 .hl-row-l2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.2px solid rgba(var(--cat-rgb, 148, 163, 184), 0.35);
-  border-radius: 14px;
-  padding: 6px 10px;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.04);
-  gap: 6px;
-  transition: transform 0.12s ease;
-  min-height: 52px;
-  box-sizing: border-box;
-}
-
-body:not(.light-theme) .hl-row-l2 {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.95));
-  border-color: rgba(var(--cat-rgb, 148, 163, 184), 0.25);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 14px !important;
+  min-height: var(--dynamic-home-card-height, 50px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 10px !important;
+  transition: transform 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1.2px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
 }
 
 .hl-row-l2:active {
   transform: scale(0.985);
 }
 
-.hl-row-l2-right {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  flex: 1 1 auto;
-  min-width: 105px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  text-align: right;
-}
-
-.hl-row-l2-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  border: 1.2px solid rgba(255, 255, 255, 0.7);
-}
-
-.hl-row-l2-name {
-  font-size: 0.83rem;
-  font-weight: 900;
-  color: #0f172a;
-  white-space: nowrap;
-}
-body:not(.light-theme) .hl-row-l2-name {
-  color: #f8fafc;
-}
-
-.hl-row-l2-amount-wrap {
-  flex: 0 0 auto;
-  text-align: center;
-  cursor: pointer;
-  padding: 0 2px;
-  background: none;
-  border: none;
-}
-
-.hl-row-l2-divider {
-  width: 1px;
-  height: 30px;
-  background: rgba(148, 163, 184, 0.25);
-  flex-shrink: 0;
-}
-
-.hl-row-l2-budget-wrap {
-  flex: 0 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 82px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.hl-row-l2-budget-text {
-  font-size: 0.60rem;
-  font-weight: 800;
-  color: #64748b;
-  line-height: 1.25;
-  white-space: nowrap;
-}
-body:not(.light-theme) .hl-row-l2-budget-text {
-  color: #94a3b8;
-}
-
-.hl-row-l2-left {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  flex-shrink: 0;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.hl-row-l2-pill {
-  padding: 2.5px 6px;
-  border-radius: 9px;
-  font-size: 0.70rem;
-  font-weight: 900;
-  font-family: var(--font-numbers);
-}
-
-.hl-row-l2-pill.ok {
-  background: #dcfce7;
-  color: #16a34a;
-}
-body:not(.light-theme) .hl-row-l2-pill.ok {
-  background: rgba(22, 163, 74, 0.25);
-  color: #4ade80;
-}
-
-.hl-row-l2-pill.warn {
-  background: #fef3c7;
-  color: #d97706;
-}
-body:not(.light-theme) .hl-row-l2-pill.warn {
-  background: rgba(217, 119, 6, 0.25);
-  color: #fbbf24;
-}
-
-.hl-row-l2-pill.over {
-  background: #fee2e2;
-  color: #dc2626;
-}
-body:not(.light-theme) .hl-row-l2-pill.over {
-  background: rgba(220, 38, 38, 0.25);
-  color: #f87171;
-}
-
-.hl-row-l2-chevron {
-  color: #94a3b8;
-  font-size: 0.75rem;
+.hl-row-l2 .hl-row-l2-name {
+  color: #0f172a !important;
 }
 
 .hl-row-l2-voice {
-  border-color: #a855f7 !important;
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(147, 51, 234, 0.04)) !important;
-  cursor: pointer;
+  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
+  border: 1.2px solid #d8b4fe !important;
 }
 
-.hl-row-l2-voice .hl-voice-title {
-  font-size: 0.88rem;
-  font-weight: 900;
-  color: #a855f7;
-  white-space: nowrap;
+/* -------------------------------------------------------------
+   Layout 3: Hero Analytics + 2-Column Cards (Image 2)
+------------------------------------------------------------- */
+.hl-hero-analytics {
+  background: #ffffff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
 }
 
-/* ==========================================================================
-   LAYOUT 3: Dashboard Grid with Mini-Charts (Matches Image 3)
-   ========================================================================== */
-.hl-dashboard-l3 {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  width: 100%;
+.hl-grid-layout-3 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: var(--dynamic-home-gap, 8px) !important;
 }
 
-.hl-mini-dash-wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-  margin-bottom: 2px;
+.hl-card-l3 {
+  border-radius: 16px !important;
+  min-height: var(--dynamic-home-card-height, 80px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: transform 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
 }
 
-.hl-dash-card {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.5px solid #cbd5e1;
-  border-radius: 16px;
-  padding: 8px 10px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  min-height: 115px;
-  box-sizing: border-box;
-}
-
-body:not(.light-theme) .hl-dash-card {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-  border-color: rgba(148, 163, 184, 0.25);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-}
-
-.hl-dash-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 5px;
-  margin-bottom: 6px;
-  font-size: 0.78rem;
-  font-weight: 900;
-  color: #0f172a;
-}
-body:not(.light-theme) .hl-dash-card-header {
-  color: #f8fafc;
-}
-
-/* Top 3 Spenders */
-.hl-top3-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  flex: 1;
-  justify-content: center;
-}
-
-.hl-top3-item {
-  display: grid;
-  grid-template-columns: 28px 1fr auto;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.68rem;
-  font-weight: 850;
-}
-
-.hl-top3-pct {
-  font-family: var(--font-numbers);
-  color: #64748b;
-  text-align: left;
-}
-body:not(.light-theme) .hl-top3-pct {
-  color: #94a3b8;
-}
-
-.hl-top3-bar-wrap {
-  width: 100%;
-  height: 6px;
-  background: rgba(148, 163, 184, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.hl-top3-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-}
-
-.hl-top3-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  white-space: nowrap;
-  color: #1e293b;
-}
-body:not(.light-theme) .hl-top3-label {
-  color: #f1f5f9;
-}
-
-/* Monthly Budget Donut Chart */
-.hl-donut-body {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-}
-
-.hl-donut-chart-wrap {
-  position: relative;
-  width: 58px;
-  height: 58px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hl-donut-svg {
-  transform: rotate(-90deg);
-  width: 100%;
-  height: 100%;
-}
-
-.hl-donut-center-text {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.hl-donut-pct {
-  font-size: 0.82rem;
-  font-weight: 950;
-  font-family: var(--font-numbers);
-  line-height: 1;
-  color: #0f172a;
-}
-body:not(.light-theme) .hl-donut-pct {
-  color: #f8fafc;
-}
-
-.hl-donut-sub {
-  font-size: 0.48rem;
-  font-weight: 800;
-  color: #64748b;
-  line-height: 1;
-  margin-top: 2px;
-}
-
-.hl-donut-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 0.64rem;
-  font-weight: 850;
-}
-
-.hl-donut-stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  white-space: nowrap;
-}
-
-.hl-donut-stat-row span:first-child {
-  color: #64748b;
-}
-body:not(.light-theme) .hl-donut-stat-row span:first-child {
-  color: #94a3b8;
-}
-
-.hl-donut-stat-row span:last-child {
-  font-family: var(--font-numbers);
-  font-weight: 950;
-}
-
-/* ==========================================================================
-   LAYOUT 4: Modern Illustrated 3D Cards (Matches Image 4)
-   ========================================================================== */
-.hl-grid-layout-4 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-  width: 100%;
-}
-
-.hl-card-l4 {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.5px solid var(--cat-color, #cbd5e1);
-  border-radius: 18px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.15s ease;
-  min-height: 105px;
-}
-
-body:not(.light-theme) .hl-card-l4 {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
-.hl-card-l4:active {
-  transform: scale(0.975);
-}
-
-.hl-card-l4-top {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
-  padding: 9px 10px 6px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  width: 100%;
-}
-
-.hl-card-l4-art {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  flex-shrink: 0;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-  border: 1.8px solid rgba(255, 255, 255, 0.85);
-}
-
-.hl-card-l4-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
-  min-width: 0;
-}
-
-.hl-card-l4-name {
-  font-size: 0.86rem;
-  font-weight: 900;
-  color: #0f172a;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  text-align: right;
-}
-body:not(.light-theme) .hl-card-l4-name {
-  color: #f8fafc;
-}
-
-.hl-card-l4-bottom {
-  padding: 6px 10px 8px;
-  border-top: 1px solid rgba(var(--cat-rgb, 148, 163, 184), 0.18);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-  width: 100%;
-}
-
-.hl-card-l4-voice {
-  border-color: #a855f7 !important;
-  background: linear-gradient(145deg, rgba(168, 85, 247, 0.14), rgba(147, 51, 234, 0.05)) !important;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 12px 10px;
-  text-align: center;
-}
-
-.hl-card-l4-voice .hl-voice-title {
-  font-size: 0.9rem;
-  font-weight: 900;
-  color: #a855f7;
-  margin-top: 3px;
-}
-
-/* ==========================================================================
-   LAYOUT 5: 3-Column Compact Grid (Matches Image 5)
-   ========================================================================== */
-.hl-grid-layout-5 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
-  width: 100%;
-}
-
-.hl-card-l5 {
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.5px solid var(--cat-color, #cbd5e1);
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.15s ease;
-  min-height: 98px;
-  padding: 6px 4px;
-  box-sizing: border-box;
-  text-align: center;
-  align-items: center;
-}
-
-body:not(.light-theme) .hl-card-l5 {
-  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
-}
-
-.hl-card-l5:active {
+.hl-card-l3:active {
   transform: scale(0.97);
 }
 
-.hl-card-l5-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  width: 100%;
-  cursor: pointer;
-  background: none;
-  border: none;
+.hl-card-l3 .spent .amt-num,
+.hl-card-l3 .spent-minus {
+  color: #dc2626 !important;
 }
 
-.hl-card-l5-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  border: 1.5px solid rgba(255, 255, 255, 0.8);
+.hl-card-l3-voice {
+  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
+  border: 1.5px solid #d8b4fe !important;
 }
 
-.hl-card-l5-name {
-  font-size: 0.76rem;
-  font-weight: 900;
-  color: #0f172a;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  padding: 0 2px;
-}
-body:not(.light-theme) .hl-card-l5-name {
-  color: #f8fafc;
+/* -------------------------------------------------------------
+   Layout 4: 3D Realistic Cards (Image 4)
+------------------------------------------------------------- */
+.hl-grid-layout-4 {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: var(--dynamic-home-gap, 8px) !important;
 }
 
-.hl-card-l5-bottom {
-  width: 100%;
-  margin-top: 3px;
-  padding-top: 3px;
-  border-top: 1px solid rgba(var(--cat-rgb, 148, 163, 184), 0.2);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-}
-
-.hl-card-l5-voice-full {
-  grid-column: 1 / -1;
-  background: linear-gradient(145deg, rgba(168, 85, 247, 0.12), rgba(147, 51, 234, 0.04)) !important;
-  border-color: #a855f7 !important;
+.hl-card-l4 {
+  border-radius: 16px !important;
+  min-height: var(--dynamic-home-card-height, 84px) !important;
+  box-sizing: border-box !important;
   display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
+  flex-direction: column !important;
   justify-content: space-between !important;
-  padding: 8px 14px !important;
-  min-height: 48px !important;
-  cursor: pointer;
-  border-radius: 14px;
-  box-sizing: border-box;
+  transition: transform 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
 }
 
-.hl-card-l5-voice-full .hl-voice-title {
-  font-size: 0.86rem;
-  font-weight: 900;
-  color: #a855f7;
-  white-space: nowrap;
+.hl-card-l4:active {
+  transform: scale(0.97);
 }
 
-/* ==========================================================================
-   Layout Picker Drawer (Interactive Selection)
-   ========================================================================== */
-#homeLayoutPickerModal {
+.hl-card-l4-voice {
+  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
+  border: 1.5px solid #d8b4fe !important;
+}
+
+/* -------------------------------------------------------------
+   Layout 5: 3-Column Compact Grid (Image 5)
+   Strictly Light Pastel matching Image 5 (Zero Dark Mode Overrides)
+------------------------------------------------------------- */
+.hl-grid-layout-5 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: var(--dynamic-home-gap, 6px) !important;
+}
+
+/* Center clothes in row 4 */
+.hl-grid-layout-5 [data-ref-category="clothes"] {
+  grid-column: 2 / 3 !important;
+}
+
+.hl-card-l5 {
+  border-radius: 15px !important;
+  min-height: var(--dynamic-home-card-height, 105px) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: transform 0.15s ease !important;
+  background: var(--cat-pastel-bg, #ffffff) !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+.hl-card-l5:active {
+  transform: scale(0.96);
+}
+
+.hl-card-l5 .hl-card-l5-name {
+  color: #0f172a !important;
+}
+
+.hl-card-l5 .amt-num {
+  color: #0f172a !important;
+}
+
+.hl-card-l5 .spent .amt-num,
+.hl-card-l5 .spent-minus {
+  color: #b91c1c !important;
+}
+
+.hl-card-l5-voice {
+  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
+  border: 1.5px solid #c084fc !important;
+}
+
+.hl-card-l5-voice .hl-voice-lbl {
+  color: #7c3aed !important;
+}
+
+/* -------------------------------------------------------------
+   Layout Picker Modal
+------------------------------------------------------------- */
+.hl-picker-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 999999;
+  z-index: 10000;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease;
+  direction: rtl;
 }
 
-#homeLayoutPickerModal.active {
+.hl-picker-modal.is-open {
   opacity: 1;
   pointer-events: auto;
 }
 
 .hl-picker-sheet {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   background: #ffffff;
   border-radius: 24px 24px 0 0;
   padding: 16px 18px 24px;
   box-sizing: border-box;
   transform: translateY(100%);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  direction: rtl;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
+  color: #0f172a;
 }
 
-body:not(.light-theme) .hl-picker-sheet {
+html[data-color-mode="dark"] .hl-picker-sheet,
+body.dark-theme .hl-picker-sheet {
   background: #0f172a;
-  border-top: 1px solid #334155;
   color: #f8fafc;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
 }
 
-#homeLayoutPickerModal.active .hl-picker-sheet {
+.hl-picker-modal.is-open .hl-picker-sheet {
   transform: translateY(0);
 }
 
-.hl-picker-handle {
-  width: 42px;
-  height: 4px;
-  border-radius: 3px;
-  background: #cbd5e1;
-  margin: 0 auto 14px;
+.hl-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
-body:not(.light-theme) .hl-picker-handle {
-  background: #475569;
+
+html[data-color-mode="dark"] .hl-picker-header,
+body.dark-theme .hl-picker-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .hl-picker-title {
+  margin: 0;
   font-size: 1.05rem;
   font-weight: 900;
-  text-align: center;
-  margin-bottom: 14px;
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
 }
 
-.hl-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+.hl-picker-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  line-height: 1;
+  padding: 0 4px;
 }
 
-.hl-picker-option {
-  border: 2px solid #e2e8f0;
-  border-radius: 14px;
-  padding: 10px 12px;
+.hl-picker-list {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.hl-picker-item {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1.2px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  background: #f8fafc;
   transition: all 0.15s ease;
-  text-align: center;
 }
 
-body:not(.light-theme) .hl-picker-option {
-  border-color: #334155;
-  background: #1e293b;
+html[data-color-mode="dark"] .hl-picker-item,
+body.dark-theme .hl-picker-item {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
 }
 
-.hl-picker-option:hover, .hl-picker-option:active {
-  transform: scale(0.97);
-}
-
-.hl-picker-option.selected {
-  border-color: #8b5cf6;
-  background: #f5f3ff;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
-}
-
-body:not(.light-theme) .hl-picker-option.selected {
+.hl-picker-item:hover,
+.hl-picker-item.is-active {
+  background: rgba(168, 85, 247, 0.12);
   border-color: #a855f7;
-  background: rgba(168, 85, 247, 0.15);
 }
 
-.hl-picker-opt-icon {
-  font-size: 1.5rem;
-  color: #8b5cf6;
+.hl-picker-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  flex-shrink: 0;
 }
 
-.hl-picker-opt-name {
-  font-size: 0.85rem;
-  font-weight: 900;
+.hl-picker-text {
+  flex: 1;
+  min-width: 0;
 }
 
-.hl-picker-opt-desc {
-  font-size: 0.65rem;
+.hl-picker-text strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 2px;
+}
+
+.hl-picker-text small {
+  display: block;
+  font-size: 0.72rem;
   color: #64748b;
+  line-height: 1.3;
 }
-body:not(.light-theme) .hl-picker-opt-desc {
+
+html[data-color-mode="dark"] .hl-picker-text small,
+body.dark-theme .hl-picker-text small {
   color: #94a3b8;
+}
+
+.hl-picker-check {
+  color: #a855f7;
+  font-size: 1.15rem;
 }
