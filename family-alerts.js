@@ -64,24 +64,38 @@ const familyAlerts = (() => {
 
   // --- تنسيق التاريخ والوقت بدقة كاملة: الساعة ١٢ مساء 22/10/2026 ---
   function formatArabicDateTime(tx, fallbackTime) {
-    let dateObj = null;
+    // Preserve the original transaction date while using its real recorded time.
+    // A missing tx.time must not be silently displayed as 12:00 noon.
+    function parsedTimestamp(value) {
+      if (value === null || value === undefined || value === '') return null;
+      const date = new Date(value);
+      return Number.isFinite(date.getTime()) ? date : null;
+    }
 
-    if (tx?.date) {
-      const parts = String(tx.date).split('T')[0].split('-');
-      if (parts.length === 3) {
-        let h = 12, m = 0;
-        if (tx.time) {
-          const tParts = String(tx.time).split(':');
-          h = parseInt(tParts[0], 10) || 12;
-          m = parseInt(tParts[1], 10) || 0;
+    const recorded = parsedTimestamp(fallbackTime) || parsedTimestamp(tx && tx.createdAt);
+    let dateObj = null;
+    if (tx && tx.date) {
+      const dateOnly = String(tx.date).split('T')[0];
+      const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateOnly);
+      if (match) {
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+        let h = recorded ? recorded.getHours() : 12;
+        let m = recorded ? recorded.getMinutes() : 0;
+        const explicitTime = /^([01]?\d|2[0-3]):([0-5]\d)/.exec(String(tx.time || '').trim());
+        if (explicitTime) {
+          h = Number(explicitTime[1]); // 00:xx must remain midnight, not noon.
+          m = Number(explicitTime[2]);
         }
-        dateObj = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), h, m);
+        const candidate = new Date(year, month - 1, day, h, m);
+        if (candidate.getFullYear() === year &&
+            candidate.getMonth() === month - 1 && candidate.getDate() === day) {
+          dateObj = candidate;
+        }
       }
     }
-
-    if (!dateObj || isNaN(dateObj.getTime())) {
-      dateObj = new Date(Number(fallbackTime) || Date.now());
-    }
+    if (!dateObj) dateObj = recorded || new Date();
 
     let h = dateObj.getHours();
     const m = dateObj.getMinutes();
@@ -90,13 +104,12 @@ const familyAlerts = (() => {
 
     const hStr = toArabicDigits(h);
     const mStr = m > 0 ? ':' + toArabicDigits(m, 2) : '';
+    const dayStr = String(dateObj.getDate()).padStart(2, '0');
+    const monthStr = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const yearStr = dateObj.getFullYear();
 
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-    const year = dateObj.getFullYear();
-    const dateStr = `${day}/${month}/${year}`;
-
-    return `الساعة ${hStr}${mStr} ${period} ${dateStr}`;
+    return 'الساعة ' + hStr + mStr + ' ' + period + ' ' +
+      dayStr + '/' + monthStr + '/' + yearStr;
   }
 
   // --- محرك توليد نص التنبيه المالي التفصيلي ---

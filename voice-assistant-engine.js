@@ -9,15 +9,16 @@ const VoiceAssistantEngine = (() => {
 
   function normalizeArabic(text) {
     if (!text) return '';
-    return text
-      .replace(/[إأآا]/g, 'ا')
-      .replace(/ة/g, 'ه')
-      .replace(/ى/g, 'ي')
-      .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d))
-      .trim();
+    return String(text).normalize('NFKC')
+      .replace(/[\u064b-\u065f\u0670\u0640]/g, '')
+      .replace(/[إأآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')
+      .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+      .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+      .replace(/٫/g, '.').replace(/٬/g, ',')
+      .replace(/[،؛؟!]/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  // Raw Arabic Numbers Mapping
+    // Raw Arabic Numbers Mapping
   const RAW_AR_NUMS = {
     'صفر': 0, 'واحد': 1, 'واحدة': 1, 'اثنان': 2, 'اثنين': 2, 'ثلاثة': 3, 'ثلاث': 3, 'تلاتة': 3,
     'اربعة': 4, 'أربعة': 4, 'اربع': 4, 'خمسة': 5, 'خمس': 5, 'ستة': 6, 'ست': 6,
@@ -40,182 +41,110 @@ const VoiceAssistantEngine = (() => {
   }
 
   function parseArabicAmount(text) {
-    if (!text) return 0;
-    // 1. Direct digits
-    const digitMatch = text.match(/(\d+(?:\.\d+)?)/);
-    if (digitMatch) {
-      return parseFloat(digitMatch[1]);
+    const norm = normalizeArabic(text);
+    if (!norm) return 0;
+
+    // Currency-marked amounts take priority over dates or incidental numbers.
+    const numberPattern = '([0-9][0-9,]*(?:\\.[0-9]+)?)';
+    const currency = new RegExp(numberPattern + '\\s*(?:جنيه|جنيهات|جنيها|ريال|ريالات|ريالا|درهم|دولار|دينار)', 'i');
+    const verb = new RegExp('(?:صرفت|دفعت|اشتريت|اودعت|استلمت|قبضت|دخل|سلفت|استلفت|سددت|بمبلغ|بقيمة|ب|مبلغ)\\s*' + numberPattern, 'i');
+    const direct = norm.match(currency) || norm.match(verb) || norm.match(new RegExp(numberPattern));
+    if (direct) {
+      const value = Number(direct[1].replace(/,/g, ''));
+      if (Number.isFinite(value) && value > 0) return value;
     }
-    // 2. Arabic words parser
-    const words = text.split(/\s+/);
-    let total = 0;
-    let current = 0;
-    for (const rawW of words) {
-      let w = normalizeArabic(rawW);
-      // Remove leading conjunction 'و' if word not in AR_NUMS (e.g. 'وخمسين' -> 'خمسين', 'وميه' -> 'ميه')
-      if (AR_NUMS[w] === undefined && w.startsWith('و') && w.length > 2) {
-        w = w.slice(1);
+
+    const words = norm.split(/\s+/);
+    let total = 0, group = 0, found = false, lastScale = 1;
+    for (let i = 0; i < words.length; i++) {
+      let word = words[i].replace(/^[^\u0621-\u064a]+|[^\u0621-\u064a]+$/g, '');
+      if (word.startsWith('ب') && AR_NUMS[word.slice(1)] !== undefined) word = word.slice(1);
+      if (word.startsWith('ال') && AR_NUMS[word.slice(2)] !== undefined) word = word.slice(2);
+      if (AR_NUMS[word] === undefined && word.startsWith('و') && word.length > 2) word = word.slice(1);
+      const next = words[i + 1] ? normalizeArabic(words[i + 1]) : '';
+      if (AR_NUMS[word + ' ' + next] !== undefined) {
+        word += ' ' + next;
+        i++;
       }
-      if (AR_NUMS[w] !== undefined) {
-        const val = AR_NUMS[w];
-        if (val === 1000 || val === 2000) {
-          current = (current === 0 ? 1 : current) * val;
-          total += current;
-          current = 0;
-        } else {
-          total += val;
-        }
+      const val = AR_NUMS[word];
+      if (val === undefined) continue;
+      found = true;
+      if (val >= 1000000 || val === 1000 || val === 2000) {
+        const multiplier = val;
+        total += (group || 1) * multiplier;
+        group = 0;
+        lastScale = multiplier === 2000 ? 1000 : multiplier;
+      } else if (val === 0.5 || val === 0.25) {
+        if (total > 0 && group === 0) total += lastScale * val;
+        else group += val;
+      } else if (val >= 100 && val < 1000 && group > 0 && group < 10) {
+        group *= val;
+      } else {
+        group += val;
       }
     }
-    total += current;
-    return total;
+    return found ? total + group : 0;
   }
 
-  function parseSpokenText(raw) {
+    function parseSpokenText(raw) {
     const norm = normalizeArabic(raw);
+    const appState = typeof state !== 'undefined' ? state : null;
     const result = {
-      rawText: raw,
-      type: 'expense', // 'expense' | 'debt_for_us' | 'debt_on_us' | 'bill' | 'project'
-      amount: 0,
-      category: 'other',
-      label: raw,
-      walletId: (window.state && state.currentWalletId) || 'cash',
-      member: (window.state && state.members && state.members[0] && state.members[0].name) || 'البيت',
-      projectName: null,
-      projectItem: null,
-      personName: null
+      rawText: String(raw || ''), type: 'expense',
+      amount: parseArabicAmount(raw), category: 'other', label: String(raw || '').trim(),
+      walletId: appState && appState.currentWalletId && appState.currentWalletId !== 'all'
+        ? appState.currentWalletId : ((appState && appState.wallets && appState.wallets[0] && appState.wallets[0].id) || 'cash'),
+      member: (appState && (appState.currentUser || appState.selectedMember) && appState.selectedMember !== 'الكل'
+        ? (appState.selectedMember || appState.currentUser) : 'البيت'),
+      projectName: null, projectItem: null, personName: null
     };
-
-    // 1. Extract Amount
-    result.amount = parseArabicAmount(raw);
-
-    // 2. Detect Intent / Type
-    if (/سلفت|اقرضت|استلف مني|دين لي|اعطيت .* دين|لي عند/.test(norm)) {
-      result.type = 'debt_for_us';
-      const mPerson = raw.match(/(?:سلفت|اقرضت|استلف مني|لي عند|اعطيت)\s+([\u0600-\u06FFa-zA-Z]+)/);
-      if (mPerson) result.personName = mPerson[1];
-    } else if (/تسلفت|استلفت|دين علي|اقترضت من|علي ل/.test(norm)) {
+    // Match borrowing before lending: "تسلفت" contains "سلفت".
+    if (/تسلفت|استلفت|دين علي|اقترضت من|علي ل/.test(norm)) {
       result.type = 'debt_on_us';
-      const mPerson = raw.match(/(?:تسلفت من|استلفت من|اقترضت من|علي ل)\s+([\u0600-\u06FFa-zA-Z]+)/);
-      if (mPerson) result.personName = mPerson[1];
-    } else if (/فاتوره|قسط|اشتراك|ايجار|سداد كهرباء|سداد نت|مياه|فاتورة/.test(norm)) {
-      result.type = 'bill';
-      result.category = 'bills';
+      const person = norm.match(/(?:تسلفت من|استلفت من|اقترضت من|علي ل)\s+([\u0621-\u064a]+)/);
+      if (person) result.personName = person[1];
+    } else if (/سلفت|اقرضت|استلف مني|دين لي|لي عند|اعطيت.*دين/.test(norm)) {
+      result.type = 'debt_for_us';
+      const person = norm.match(/(?:سلفت|اقرضت|استلف مني|لي عند|اعطيت)\s+([\u0621-\u064a]+)/);
+      if (person) result.personName = person[1];
+    } else if (/فاتوره|قسط|اشتراك|ايجار|سداد كهرباء|سداد نت|فواتير/.test(norm)) {
+      result.type = 'bill'; result.category = 'bills';
+    } else if (/ايداع|اودعت|ايدعت|استلمت|قبضت|دخل|راتب|تحويل وارد|مكافاه/.test(norm)) {
+      result.type = 'income'; result.category = 'other_inc';
     } else if (/مشروع/.test(norm)) {
       result.type = 'project';
       if (typeof getKnownProjects === 'function') {
-        const known = getKnownProjects();
-        for (const p of known) {
-          if (raw.includes(p)) {
-            result.projectName = p;
-            break;
-          }
+        for (const p of getKnownProjects()) {
+          if (normalizeArabic(raw).includes(normalizeArabic(p))) { result.projectName = p; break; }
         }
       }
     }
-
-    // 3. Match Category if expense
-    if (result.type === 'expense') {
+    if (result.type === 'expense' || result.type === 'project') {
       if (/بنزين|سياره|اوبر|تاكسي|مواصلات|كارته|موقف/.test(norm)) result.category = 'transport';
       else if (/اكل|مطعم|سوبرماركت|خضار|لحوم|جبن|لبن|عيش|طعام|فطار|غدا|عشا/.test(norm)) result.category = 'food';
       else if (/دواء|صيدليه|علاج|كشف|طبيب|دكتور|تحليل|مستشفي/.test(norm)) result.category = 'health';
-      else if (/قهوه|كافيه|مصروف|شاي|سجاير|يومي/.test(norm)) result.category = 'daily';
-      else if (/منزل|ادوات|صيانه|منظفات|كهرباء بيت|سباكه/.test(norm)) result.category = 'house';
+      else if (/قهوه|كافيه|مصروف|شاي|يومي/.test(norm)) result.category = 'daily';
+      else if (/منزل|ادوات|صيانه|منظفات|سباكه/.test(norm)) result.category = 'house';
       else if (/ملابس|قميص|حذاء|بنطلون|فستان|جاكت/.test(norm)) result.category = 'clothes';
       else if (/مدرسه|دروس|جامعه|كتب|تعليم|كورس/.test(norm)) result.category = 'education';
-      else if (/فاتوره|نت|شحن|موبايل/.test(norm)) result.category = 'bills';
-      else result.category = 'other';
+      else if (/انترنت|نت|شحن|موبايل/.test(norm)) result.category = 'bills';
     }
-
-    // 4. Match Wallet
-    if (window.state && Array.isArray(state.wallets)) {
-      for (const w of state.wallets) {
-        const wNameNorm = normalizeArabic(w.name);
-        if (wNameNorm && norm.includes(wNameNorm)) {
-          result.walletId = w.id;
-          break;
+    if (appState && Array.isArray(appState.wallets)) {
+      for (const wallet of appState.wallets) {
+        if (wallet.name && norm.includes(normalizeArabic(wallet.name))) {
+          result.walletId = wallet.id; break;
         }
       }
     }
-
     return result;
   }
 
-  function initSpeech() {
-    const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechClass) return false;
+    let _speechText = '';
+  let _isStarting = false;
+  let _speechError = null;
 
-    _recognition = new SpeechClass();
-    _recognition.lang = 'ar-EG';
-    _recognition.interimResults = true;
-    _recognition.continuous = false;
-
-    _recognition.onstart = () => {
-      _isListening = true;
-      const fab = document.getElementById('btnVoiceAssistantFab');
-      const overlay = document.getElementById('voiceLiveOverlay');
-      if (fab) {
-        fab.classList.add('is-listening');
-        fab.innerHTML = '<i class="fa-solid fa-microphone-lines"></i>';
-      }
-      if (overlay) {
-        overlay.classList.add('show');
-        document.getElementById('voiceLiveText').textContent = 'جارٍ الاستماع... تفضل بالتحدث';
-      }
-    };
-
-    _recognition.onresult = (e) => {
-      let interim = '';
-      let final = '';
-      for (let i = e.resultIndex; i < e.results.length; ++i) {
-        if (e.results[i].isFinal) final += e.results[i][0].transcript;
-        else interim += e.results[i][0].transcript;
-      }
-      const text = final || interim;
-      const liveEl = document.getElementById('voiceLiveText');
-      if (liveEl && text) liveEl.textContent = text;
-
-      if (final) {
-        handleSpokenResult(final);
-      }
-    };
-
-    _recognition.onerror = (e) => {
-      console.warn('[Voice Assistant] Error:', e.error);
-      stopListening();
-      if (typeof showToast === 'function') {
-        if (e.error === 'not-allowed') showToast('⚠️ يرجى السماح بالوصول إلى المايك لتفعيل التسجيل الصوتي');
-        else if (e.error !== 'no-speech') showToast('⚠️ تعذر التعرف على الصوت، حاول مرة أخرى');
-      }
-    };
-
-    _recognition.onend = () => {
-      stopListening();
-    };
-
-    return true;
-  }
-
-  function toggleListening() {
-    if (_isListening) {
-      stopListening();
-      return;
-    }
-    if (!_recognition && !initSpeech()) {
-      if (typeof showToast === 'function') {
-        showToast('⚠️ متصفحك الحالي لا يدعم التعرف الصوتي المباشر، يُرجى استخدام Chrome أو Edge');
-      }
-      return;
-    }
-    try {
-      _recognition.start();
-    } catch (err) {
-      console.warn('Speech start error:', err);
-    }
-  }
-
-  function stopListening() {
-    _isListening = false;
+  function resetListeningUi() {
+    _isListening = false; _isStarting = false;
     const fab = document.getElementById('btnVoiceAssistantFab');
     const overlay = document.getElementById('voiceLiveOverlay');
     if (fab) {
@@ -223,26 +152,104 @@ const VoiceAssistantEngine = (() => {
       fab.innerHTML = '<i class="fa-solid fa-microphone"></i>';
     }
     if (overlay) overlay.classList.remove('show');
-    if (_recognition) {
-      try { _recognition.stop(); } catch (e) {}
+  }
+
+  function initSpeech() {
+    const SpeechClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechClass) return false;
+    _recognition = new SpeechClass();
+    _recognition.lang = 'ar-EG';
+    _recognition.interimResults = true;
+    _recognition.continuous = true;
+    _recognition.maxAlternatives = 3;
+
+    _recognition.onstart = () => {
+      _isStarting = false; _isListening = true;
+      const fab = document.getElementById('btnVoiceAssistantFab');
+      const overlay = document.getElementById('voiceLiveOverlay');
+      if (fab) {
+        fab.classList.add('is-listening');
+        fab.innerHTML = '<i class="fa-solid fa-stop"></i>';
+      }
+      if (overlay) overlay.classList.add('show');
+      const textEl = document.getElementById('voiceLiveText');
+      if (textEl) textEl.textContent = 'جارٍ الاستماع... اضغط للإيقاف بعد اكتمال الجملة';
+    };
+    _recognition.onresult = (event) => {
+      const finals = [], interim = [];
+      for (let i = 0; i < event.results.length; i++) {
+        const segment = event.results[i];
+        const transcript = String(segment[0] && segment[0].transcript || '').trim();
+        if (!transcript) continue;
+        (segment.isFinal ? finals : interim).push(transcript);
+      }
+      _speechText = finals.concat(interim).join(' ').trim();
+      const liveEl = document.getElementById('voiceLiveText');
+      if (liveEl && _speechText) liveEl.textContent = _speechText;
+    };
+    _recognition.onerror = (event) => {
+      _speechError = event.error || 'unknown';
+      if (typeof showToast !== 'function') return;
+      if (_speechError === 'not-allowed' || _speechError === 'service-not-allowed') {
+        showToast('يرجى منح المتصفح إذن استخدام الميكروفون ثم إعادة المحاولة');
+      } else if (_speechError === 'audio-capture') {
+        showToast('لم يتم العثور على ميكروفون متاح');
+      } else if (_speechError === 'network') {
+        showToast('التعرف الصوتي يحتاج إلى اتصال بالخدمة الصوتية؛ تحقق من الإنترنت');
+      } else if (_speechError !== 'no-speech' && _speechError !== 'aborted') {
+        showToast('تعذر التعرف على الصوت: ' + _speechError);
+      }
+    };
+    _recognition.onend = () => {
+      const phrase = _speechText.trim();
+      const error = _speechError;
+      resetListeningUi();
+      _speechText = ''; _speechError = null;
+      if (phrase && !['not-allowed', 'service-not-allowed', 'audio-capture'].includes(error)) {
+        handleSpokenResult(phrase);
+      } else if (!phrase && (!error || error === 'no-speech') && typeof showToast === 'function') {
+        showToast('لم يتم التقاط كلمات واضحة. حاول التحدث مجددًا');
+      }
+    };
+    return true;
+  }
+
+  function toggleListening() {
+    if (_isListening || _isStarting) {
+      stopListening();
+      return;
+    }
+    if (!_recognition && !initSpeech()) {
+      if (typeof showToast === 'function') showToast('التعرف الصوتي غير مدعوم في هذا المتصفح. جرّب Chrome');
+      return;
+    }
+    _speechText = ''; _speechError = null; _isStarting = true;
+    try {
+      _recognition.start();
+    } catch (err) {
+      _isStarting = false;
+      console.warn('[Voice] start failed', err);
+      if (typeof showToast === 'function') showToast('تعذر بدء الاستماع؛ أغلق التسجيل السابق وأعد المحاولة');
     }
   }
 
-  function handleSpokenResult(rawText) {
-    stopListening();
-    const fab = document.getElementById('btnVoiceAssistantFab');
-    if (fab) fab.classList.add('is-processing');
-
-    const parsed = parseSpokenText(rawText);
-    _currentParsed = parsed;
-
-    setTimeout(() => {
-      if (fab) fab.classList.remove('is-processing');
-      openConfirmDrawer(parsed);
-    }, 250);
+  function stopListening() {
+    if (!_recognition || (!_isListening && !_isStarting)) return;
+    try { _recognition.stop(); } catch (err) { resetListeningUi(); }
   }
 
-  function openConfirmDrawer(p) {
+  function handleSpokenResult(rawText) {
+    const text = String(rawText || '').trim();
+    if (!text) return;
+    const fab = document.getElementById('btnVoiceAssistantFab');
+    if (fab) fab.classList.add('is-processing');
+    const parsed = parseSpokenText(text);
+    _currentParsed = parsed;
+    if (fab) fab.classList.remove('is-processing');
+    openConfirmDrawer(parsed);
+  }
+
+    function openConfirmDrawer(p) {
     const drawer = document.getElementById('voiceConfirmDrawer');
     const backdrop = document.getElementById('voiceDrawerBackdrop');
     if (!drawer || !backdrop) return;
@@ -264,6 +271,11 @@ const VoiceAssistantEngine = (() => {
     } else if (p.type === 'bill') {
       typeLabel = '⚡ فاتورة / التزام دوري';
       badgeHtml = `<span style="background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-bolt"></i> التزام دوري</span>`;
+    } else if (p.type === 'income') {
+      typeLabel = 'إيداع أو دخل';
+      badgeHtml = '<span style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-arrow-down-left"></i> إيداع</span>';
+      signPrefix = '+ ';
+      amountColor = '#34d399';
     } else if (p.type === 'project') {
       typeLabel = '🟣 مصروف مشروع خاص';
       badgeHtml = `<span style="background:rgba(168,85,247,0.2);color:#c084fc;border:1px solid rgba(168,85,247,0.4);border-radius:8px;padding:3px 10px;font-size:0.76rem;font-weight:900;"><i class="fa-solid fa-trowel-bricks"></i> مشروع</span>`;
@@ -298,7 +310,7 @@ const VoiceAssistantEngine = (() => {
         <div class="voice-card-box" style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
           <div style="display:flex;justify-content:space-between;font-size:0.80rem;">
             <span style="color:#94a3b8;"><i class="fa-solid fa-quote-right" style="color:#38bdf8;"></i> العبارة المنطوقة:</span>
-            <span style="color:#f8fafc;font-weight:800;">"${p.rawText}"</span>
+            <span style="color:#f8fafc;font-weight:800;">"${String(p.rawText).replace(/[&<>"\']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"\'":'&#39;'}[c]))}"</span>
           </div>
           <div style="display:flex;justify-content:space-between;font-size:0.80rem;">
             <span style="color:#94a3b8;"><i class="fa-solid fa-shapes" style="color:${catObj.color || '#38bdf8'};"></i> البند:</span>
@@ -337,114 +349,102 @@ const VoiceAssistantEngine = (() => {
   }
 
   function commitTransaction() {
-    if (!_currentParsed) return;
     const p = _currentParsed;
-    if (!p.amount || p.amount <= 0) {
-      if (typeof showToast === 'function') showToast('⚠️ تعذر تحديد المبلغ من الصوت، يرجى الفتح للتعديل');
+    if (!p) return;
+    if (!Number.isFinite(p.amount) || p.amount <= 0) {
+      if (typeof showToast === 'function') showToast('المبلغ غير واضح؛ يرجى مراجعته قبل الحفظ');
       openInModalForEdit();
       return;
     }
-
-    const todayStr = new Date().toISOString().slice(0, 10);
-
-    if (p.type === 'debt_for_us' || p.type === 'debt_on_us') {
-      if (!window.state.debts) window.state.debts = [];
-      const newDebt = {
-        id: 'd_' + Date.now(),
-        person: p.personName || 'شخص غير محدد',
-        type: (p.type === 'debt_for_us') ? 'for_us' : 'on_us',
-        amount: p.amount,
-        remaining: p.amount,
-        date: todayStr,
-        notes: `مسجل صوتياً: ${p.rawText}`
-      };
-      state.debts.unshift(newDebt);
-      if (typeof saveDebts === 'function') saveDebts();
-      if (typeof showToast === 'function') showToast(`✅ تم تسجيل الدين (${newDebt.person}) بنجاح`);
-    } else if (p.type === 'bill') {
-      if (!window.state.expectedExpenses) window.state.expectedExpenses = [];
-      const newBill = {
-        id: 'exp_' + Date.now(),
-        name: p.label || 'فاتورة دورية',
-        category: p.category || 'bills',
-        amount: p.amount,
-        dueDate: todayStr,
-        period: 'monthly',
-        status: 'unpaid',
-        notes: `مسجل صوتياً: ${p.rawText}`
-      };
-      state.expectedExpenses.unshift(newBill);
-      if (typeof saveExpectedExpenses === 'function') saveExpectedExpenses();
-      if (typeof showToast === 'function') showToast(`✅ تم جدولة الفاتورة (${newBill.name}) بنجاح`);
-    } else {
-      // Standard Expense / Project Expense
-      const newTx = {
-        id: 'tx_' + Date.now(),
-        date: todayStr,
-        type: 'expense',
-        category: p.category || 'other',
-        amount: p.amount,
-        label: p.label || 'مصروف صوتي',
-        walletId: p.walletId,
-        member: p.member || 'البيت',
-        project: p.projectName || null,
-        projectItem: p.projectItem || null,
-        notes: `مسجل صوتياً: ${p.rawText}`,
-        createdAt: new Date().toISOString()
-      };
-
-      if (!window.state.transactions) window.state.transactions = [];
-      state.transactions.unshift(newTx);
-
-      // Deduct from wallet
-      if (window.state.wallets) {
-        const w = state.wallets.find(x => x.id === p.walletId);
-        if (w) w.balance = (w.balance || 0) - p.amount;
-      }
-
-      if (typeof saveTx === 'function') saveTx();
-      else if (typeof saveTransactions === 'function') saveTransactions();
-
-      if (typeof logActivity === 'function') {
-        logActivity('voice_tx_add', `إضافة مصروف صوتي: ${newTx.label} بمبلغ ${newTx.amount}`);
-      }
-      if (typeof showToast === 'function') {
-        showToast(`✅ تم تسجيل المصروف (-${p.amount} ج.م) بنجاح`);
-      }
+    if (typeof state === 'undefined') {
+      if (typeof showToast === 'function') showToast('تعذر الوصول إلى بيانات البرنامج');
+      return;
     }
 
-    closeConfirmDrawer();
-    if (typeof refreshAppDisplay === 'function') refreshAppDisplay();
-    else if (typeof renderTransactionsTable === 'function') renderTransactionsTable();
+    const date = new Date();
+    const today = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+    try {
+      if (p.type === 'debt_for_us' || p.type === 'debt_on_us' || p.type === 'bill') {
+        // Same commitments schema and storage as the native application.
+        if (!Array.isArray(state.expectedExpenses)) state.expectedExpenses = [];
+        const item = {
+          id: 'exp-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          type: p.type === 'bill' ? 'upcoming_bill' : p.type,
+          title: p.personName || p.label || 'التزام صوتي',
+          amount: p.amount, dueDate: '', priority: 'normal',
+          member: p.member || 'البيت', status: 'upcoming',
+          photo: null, createdAt: new Date().toISOString(),
+          notes: 'تسجيل صوتي: ' + p.rawText
+        };
+        state.expectedExpenses.unshift(item);
+        localStorage.setItem('family_monefy_expected', JSON.stringify(state.expectedExpenses));
+        if (typeof renderExpectedList === 'function') renderExpectedList();
+      } else {
+        const tx = {
+          id: 'tx-voice-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          date: today,
+          type: p.type === 'income' ? 'income' : 'expense',
+          category: p.category || (p.type === 'income' ? 'other_inc' : 'other'),
+          amount: p.amount,
+          label: p.label || 'عملية صوتية',
+          walletId: p.walletId,
+          member: p.member || 'البيت',
+          project: p.projectName || null,
+          projectItem: p.projectItem || null,
+          notes: 'مسجل صوتياً: ' + p.rawText,
+          createdAt: new Date().toISOString()
+        };
+        if (!Array.isArray(state.transactions)) state.transactions = [];
+        state.transactions.unshift(tx);
+        // The native save flow re-computes wallet balances. Never deduct manually.
+        if (typeof saveTx === 'function') saveTx();
+        else localStorage.setItem('family_monefy_v2_tx', JSON.stringify(state.transactions));
+      }
+      if (typeof renderUI === 'function') renderUI();
+      closeConfirmDrawer();
+      if (typeof showToast === 'function') showToast('تم تسجيل العملية الصوتية بنجاح');
+    } catch (err) {
+      console.error('[Voice] Save error', err);
+      if (typeof showToast === 'function') showToast('تعذر حفظ العملية. راجع البيانات وحاول مجددًا');
+    }
   }
 
-  function openInModalForEdit() {
+    function openInModalForEdit() {
     if (!_currentParsed) return;
     const p = _currentParsed;
     closeConfirmDrawer();
-
-    if (p.type === 'debt_for_us' || p.type === 'debt_on_us') {
-      if (typeof openDebtModal === 'function') openDebtModal();
-    } else if (p.type === 'bill') {
-      if (typeof openExpectedExpenseModal === 'function') openExpectedExpenseModal();
-    } else {
-      if (typeof openTxModal === 'function') {
-        openTxModal('expense');
-        setTimeout(() => {
-          const amtInput = document.getElementById('txAmount');
-          const lblInput = document.getElementById('txLabel');
-          const catSelect = document.getElementById('txCategory');
-          const walSelect = document.getElementById('txWallet');
-          if (amtInput && p.amount > 0) amtInput.value = p.amount;
-          if (lblInput) lblInput.value = p.label || '';
-          if (catSelect && p.category) catSelect.value = p.category;
-          if (walSelect && p.walletId) walSelect.value = p.walletId;
-        }, 150);
+    if (p.type === 'debt_for_us' || p.type === 'debt_on_us' || p.type === 'bill') {
+      if (typeof switchAppPage === 'function') switchAppPage('expected');
+      if (typeof switchExpectedTab === 'function') switchExpectedTab('new');
+      const fields = {
+        inpExpType: p.type === 'bill' ? 'upcoming_bill' : p.type,
+        inpExpTitle: p.personName || p.label,
+        inpExpAmount: p.amount > 0 ? String(p.amount) : ''
+      };
+      for (const id of Object.keys(fields)) {
+        const element = document.getElementById(id);
+        if (element) element.value = fields[id];
       }
+      document.getElementById('inpExpAmount')?.focus();
+      return;
     }
+    if (typeof openTxModal !== 'function') return;
+    openTxModal(p.type === 'income' ? 'income' : 'expense', p.category);
+    const fields = {
+      inpTxAmount: p.amount > 0 ? String(p.amount) : '',
+      inpTxLabel: p.label,
+      inpTxCategory: p.category,
+      inpTxWallet: p.walletId,
+      inpTxMember: p.member
+    };
+    for (const id of Object.keys(fields)) {
+      const element = document.getElementById(id);
+      if (element) element.value = fields[id];
+    }
+    document.getElementById('inpTxAmount')?.focus();
   }
 
-  return {
+    return {
     toggleListening,
     stopListening,
     commitTransaction,

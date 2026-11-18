@@ -534,60 +534,12 @@ body.light-theme .antigravity-mode-btn[aria-pressed="true"] {
 
 /* Grids for Color Themes, Icons & Cards: Exact 3x3 Balanced Matrix */
 .antigravity-palette-grid,
-.antigravity-icon-grid,
-.antigravity-card-style-grid {
+.antigravity-icon-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 5px !important;
   width: 100% !important;
   box-sizing: border-box !important;
-}
-
-/* Legacy chunk removed - using rich vibrant gradients */
-
-/* Card Styles Grid - 3x3 Compact */
-#settingsModal .antigravity-card-style-grid button {
-  min-height: 38px !important;
-  height: 38px !important;
-  border-radius: 8px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  background: rgba(30, 41, 59, 0.55) !important;
-  color: #cbd5e1 !important;
-  padding: 2px 4px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-body.light-theme #settingsModal .antigravity-card-style-grid button {
-  background: #f8fafc !important;
-  border-color: #e2e8f0 !important;
-  color: #334155 !important;
-}
-#settingsModal .antigravity-card-style-grid button.active {
-  border: 1.5px solid #38bdf8 !important;
-  background: rgba(56, 189, 248, 0.18) !important;
-  color: #38bdf8 !important;
-}
-body.light-theme #settingsModal .antigravity-card-style-grid button.active {
-  border-color: #0284c7 !important;
-  background: #f0f9ff !important;
-  color: #0284c7 !important;
-}
-#settingsModal .antigravity-card-style-grid button strong {
-  font-size: 0.68rem !important;
-  line-height: 1.1 !important;
-}
-#settingsModal .antigravity-card-style-grid button small {
-  font-size: 0.52rem !important;
-  color: #94a3b8 !important;
-  line-height: 1 !important;
-}
-body.light-theme #settingsModal .antigravity-card-style-grid button small {
-  color: #64748b !important;
 }
 
 /* Font Grid - Mandatory 3 columns, 100% width, no vertical single column! */
@@ -1012,45 +964,6 @@ body:not(.light-theme) #appFrame #viewExpenses .cat-card .cat-card-bottom-half.h
   #summaryLeftDrawer .summary-period-grid .summary-period-btn { font-size: .52rem !important; }
 }
 
-/* Card choices: 10 items fill rows 3 + 3 + 4 with no two empty cells.
-   Preserve every original selectable card style and its click handler. */
-#settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid,
-#settingsSec_appearance #cardStyleButtonsContainer.antigravity-card-style-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 6px !important;
-  align-content: start !important;
-  align-items: stretch !important;
-  margin: 4px 0 0 !important;
-  padding: 0 !important;
-  min-height: 0 !important;
-  width: 100% !important;
-}
-#settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
-  grid-column: auto !important;
-  min-width: 0 !important;
-  width: 100% !important;
-  margin: 0 !important;
-}
-#settingsSec_appearance .compact-appearance-cards-panel,
-#settingsSec_appearance .compact-appearance-card-tile {
-  min-height: 0 !important;
-  height: auto !important;
-  align-content: start !important;
-  justify-content: flex-start !important;
-}
-#settingsSec_appearance .compact-appearance-cards-panel {
-  padding-bottom: 7px !important;
-}
-@media (max-width: 365px) {
-  #settingsSec_appearance #cardStyleButtonsContainer.appearance-card-style-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-  #settingsSec_appearance #cardStyleButtonsContainer > button[data-card-style] {
-    grid-column: span 1 !important;
-  }
-}
-
 /* Summary: centered filters, inline range calendar, and single-line totals. */
 #summaryLeftDrawer .summary-member-btn,
 #summaryLeftDrawer .summary-period-btn {
@@ -1308,141 +1221,6 @@ body.light-theme #settingsModal .antigravity-icon-grid .icon-theme-pill.active {
   outline: 2.5px solid #0284c7 !important;
   outline-offset: 1.5px !important;
   box-shadow: 0 0 14px rgba(2, 132, 199, 0.6), 0 4px 10px rgba(0, 0, 0, 0.25) !important;
-}
-
-/* 3. Card Styles (9 Styles - 3x3 Rows - Each Choice Demonstrates Its Style) */
-.antigravity-card-style-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 6px !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-#settingsModal .antigravity-card-style-grid button {
-  height: 38px !important;
-  min-height: 38px !important;
-  border-radius: 9px !important;
-  padding: 3px 5px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  line-height: 1.15 !important;
-  color: #f8fafc !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, outline 0.15s ease !important;
-}
-
-#settingsModal .antigravity-card-style-grid button strong {
-  font-size: 0.70rem !important;
-  font-weight: 850 !important;
-}
-#settingsModal .antigravity-card-style-grid button small {
-  font-size: 0.58rem !important;
-  opacity: 0.8 !important;
-}
-
-body.light-theme #settingsModal .antigravity-card-style-grid button {
-  color: #1e293b !important;
-}
-
-#settingsModal #designStyleGlass {
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
-}
-#settingsModal #designStyleMin {
-  background: rgba(30, 41, 59, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-}
-#settingsModal #designStyleNeu {
-  background: #1e293b !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.15), 2px 2px 6px rgba(0, 0, 0, 0.45) !important;
-}
-#settingsModal #designStyleNeon {
-  background: rgba(15, 23, 42, 0.85) !important;
-  border: 1.5px solid #38bdf8 !important;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4) !important;
-}
-#settingsModal #designStyleClear {
-  background: transparent !important;
-  border: 2px solid #94a3b8 !important;
-}
-#settingsModal #designStyleElevated {
-  background: #1e293b !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.6) !important;
-}
-#settingsModal #designStyleOutlined {
-  background: transparent !important;
-  border: 1.5px dashed #94a3b8 !important;
-}
-#settingsModal #designStyleGradient {
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2)) !important;
-  border: 1px solid rgba(56, 189, 248, 0.35) !important;
-}
-#settingsModal #designStyleSoft {
-  background: rgba(30, 41, 59, 0.7) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 16px !important;
-}
-
-/* Light Theme Card Styles */
-body.light-theme #settingsModal #designStyleGlass {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border: 1px solid rgba(203, 213, 225, 0.85) !important;
-}
-body.light-theme #settingsModal #designStyleMin {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-}
-body.light-theme #settingsModal #designStyleNeu {
-  background: #f1f5f9 !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  box-shadow: inset 1px 1px 2px #ffffff, 2px 2px 4px rgba(15, 23, 42, 0.12) !important;
-}
-body.light-theme #settingsModal #designStyleNeon {
-  background: #f0f9ff !important;
-  border: 1.5px solid #0284c7 !important;
-  box-shadow: 0 0 10px rgba(2, 132, 199, 0.35) !important;
-}
-body.light-theme #settingsModal #designStyleClear {
-  background: #ffffff !important;
-  border: 2px solid #475569 !important;
-}
-body.light-theme #settingsModal #designStyleElevated {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 8px 16px -2px rgba(15, 23, 42, 0.15) !important;
-}
-body.light-theme #settingsModal #designStyleOutlined {
-  background: #ffffff !important;
-  border: 1.5px dashed #64748b !important;
-}
-body.light-theme #settingsModal #designStyleGradient {
-  background: linear-gradient(135deg, rgba(224, 242, 254, 0.8), rgba(243, 232, 255, 0.8)) !important;
-  border: 1px solid rgba(14, 165, 233, 0.4) !important;
-}
-body.light-theme #settingsModal #designStyleSoft {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-  border-radius: 16px !important;
-}
-
-#settingsModal .antigravity-card-style-grid button.active {
-  outline: 2.5px solid #38bdf8 !important;
-  outline-offset: 1px !important;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5) !important;
-  transform: translateY(-1.5px) scale(1.02) !important;
-}
-body.light-theme #settingsModal .antigravity-card-style-grid button.active {
-  outline: 2.5px solid #0284c7 !important;
-  outline-offset: 1px !important;
-  box-shadow: 0 0 12px rgba(2, 132, 199, 0.45) !important;
 }
 
 /* 4. Fonts Grid (9 Fonts - 3x3 Rows - Each Choice In Its Own Font) */
@@ -1776,4 +1554,835 @@ body.light-theme .budget-health-banner {
 body.light-theme .budget-chart-panel {
   background: #f8fafc !important;
   border-color: #e2e8f0 !important;
+}
+
+/* Current antigravity appearance controls: avoid legacy fixed-width card tiles
+   causing 32px horizontal overflow at 360px device widths. */
+#settingsSec_appearance,
+#settingsSec_appearance > .antigravity-card-block,
+#settingsSec_appearance .antigravity-style-grid {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+#settingsSec_appearance .antigravity-style-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+#settingsSec_appearance .antigravity-style-grid button[data-card-style] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  grid-column: auto !important;
+  margin-inline: 0 !important;
+}
+#settingsModal #settingsSec_appearance .antigravity-icon-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+@media (min-width: 480px) {
+  #settingsModal #settingsSec_appearance .antigravity-icon-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+/* v5.3.90 — Monthly Budget Analytics: responsive RTL, light and dark modes. */
+.monthly-insights{margin:14px 0 4px;padding:12px;border-radius:14px;background:rgba(15,23,42,.55);border:1px solid rgba(148,163,184,.24);color:#f1f5f9;direction:rtl;box-sizing:border-box;max-width:100%;overflow:hidden}
+.monthly-insights h3{font-size:.98rem;font-weight:900;margin:0 0 5px;color:#e2e8f0}
+.monthly-insights>p{font-size:.73rem;opacity:.81;margin:0 0 12px;line-height:1.6}
+.monthly-insight-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.monthly-insight-card{padding:10px;border:1px solid rgba(148,163,184,.2);background:rgba(30,41,59,.76);border-radius:11px;display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}
+.monthly-insight-card small{font-size:.68rem;color:#cbd5e1}
+.monthly-insight-card strong{font-size:1.06rem;font-weight:900;color:#f8fafc;line-height:1.45}
+.monthly-insight-card span{font-size:.65rem;color:#cbd5e1;line-height:1.55}
+.monthly-insight-details{display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:12px}
+.monthly-insight-details>div{padding:10px;border-radius:11px;border:1px solid rgba(148,163,184,.19)}
+.monthly-insight-details h4{margin:0 0 8px;font-size:.78rem;font-weight:850;color:#e2e8f0}
+.monthly-insight-details p{font-size:.72rem;color:#94a3b8}
+.monthly-week-bars{display:grid;gap:7px}
+.monthly-week-line{display:grid;grid-template-columns:50px minmax(0,1fr) 62px;align-items:center;gap:7px;font-size:.67rem}
+.monthly-week-line b{font-variant-numeric:tabular-nums;text-align:left}
+.monthly-week-track{height:7px;border-radius:20px;background:rgba(148,163,184,.19);overflow:hidden}
+.monthly-week-track i{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#0ea5e9,#10b981)}
+.monthly-overrun-list{display:grid;gap:7px}
+.monthly-overrun-list>div{display:flex;gap:8px;justify-content:space-between;align-items:center;font-size:.73rem}
+.monthly-overrun-list b{color:#fb7185;font-variant-numeric:tabular-nums}
+body.light-theme .monthly-insights{background:#fff;border-color:#dbe2ea;color:#172033}
+body.light-theme .monthly-insights h3,body.light-theme .monthly-insight-details h4{color:#1e293b}
+body.light-theme .monthly-insight-card{background:#f8fafc;border-color:#e2e8f0}
+body.light-theme .monthly-insight-card small,body.light-theme .monthly-insight-card span{color:#475569}
+body.light-theme .monthly-insight-card strong{color:#0f172a}
+body.light-theme .monthly-insight-details>div{border-color:#e2e8f0}
+body.light-theme .monthly-week-track{background:#e2e8f0}
+body.light-theme .monthly-insight-details p{color:#64748b}
+@media(min-width:650px){.monthly-insight-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.monthly-insight-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* v5.3.92 — Settings must be a live preview of palette, icon and card style.
+   Every visible app-colour choice fits in exactly four columns, including mobile. */
+#settingsModal #settingsSec_appearance :is(.antigravity-palette-grid,.appearance-palette-grid),
+#settingsModal .antigravity-palette-grid {
+  display:grid !important;
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:5px !important;
+  max-width:100% !important;
+  width:100% !important;
+}
+#settingsModal .antigravity-palette-grid > *,
+#settingsModal #settingsSec_appearance .appearance-palette-grid > * {
+  min-width:0 !important;
+  max-width:100% !important;
+  margin:0 !important;
+  padding-inline:2px !important;
+}
+#settingsModal .antigravity-palette-grid .theme-pill-option span {
+  font-size:clamp(.51rem,1.9vw,.69rem) !important;
+}
+#settingsModal {
+  --settings-accent:#059669;
+  --settings-icon:#059669;
+  --settings-card-radius:12px;
+  --settings-card-shadow:0 3px 12px rgba(12,30,50,.12);
+  --settings-card-border:rgba(5,150,105,.32);
+  --settings-card-surface-dark:linear-gradient(135deg,#172d31,#17243a);
+  --settings-card-surface-light:linear-gradient(135deg,#fff,#eefaf5);
+  --settings-shell-dark:linear-gradient(165deg,#152d30,#101d30);
+  --settings-shell-light:linear-gradient(165deg,#fff,#e9f8f1);
+  --settings-head-dark:linear-gradient(135deg,#193a3e,#162337);
+  --settings-head-light:linear-gradient(135deg,#f9fffc,#e4f4ee);
+}
+#settingsModal .settings-modal-shell.antigravity-settings-shell {
+  background:var(--settings-shell-dark) !important;
+  border-color:var(--settings-card-border) !important;
+}
+body.light-theme #settingsModal .settings-modal-shell.antigravity-settings-shell {
+  background:var(--settings-shell-light) !important;
+  border-color:var(--settings-card-border) !important;
+}
+#settingsModal .antigravity-settings-head {
+  background:var(--settings-head-dark) !important;
+  border-bottom-color:var(--settings-card-border) !important;
+}
+body.light-theme #settingsModal .antigravity-settings-head {
+  background:var(--settings-head-light) !important;
+  border-bottom-color:var(--settings-card-border) !important;
+}
+#settingsModal .settings-modal-shell .antigravity-card-block {
+  background:var(--settings-card-surface-dark) !important;
+  border:1.2px solid var(--settings-card-border) !important;
+  border-radius:var(--settings-card-radius) !important;
+  box-shadow:var(--settings-card-shadow) !important;
+  transition:background .16s,border-color .16s,border-radius .16s,box-shadow .16s !important;
+}
+body.light-theme #settingsModal .settings-modal-shell .antigravity-card-block {
+  background:var(--settings-card-surface-light) !important;
+  border-color:var(--settings-card-border) !important;
+  border-radius:var(--settings-card-radius) !important;
+  box-shadow:var(--settings-card-shadow) !important;
+}
+#settingsModal :is(.antigravity-head-icon,.antigravity-card-title i,.antigravity-action-tile i) {
+  color:var(--settings-icon) !important;
+}
+#settingsModal :is(.antigravity-settings-head,.antigravity-card-title,.antigravity-tab-pane) .active:not(.theme-pill-option):not(.icon-theme-pill) {
+  border-color:var(--settings-accent) !important;
+}
+#settingsModal[data-settings-card-style="flat"] .antigravity-card-block {
+  backdrop-filter:none !important;
+}
+#settingsModal[data-settings-card-style="neon"] .antigravity-card-block {
+  border-width:2px !important;
+  box-shadow:0 0 0 1px var(--settings-accent),var(--settings-card-shadow) !important;
+}
+#settingsModal[data-settings-card-style="outlined"] .antigravity-card-block {
+  border-width:2px !important;
+  box-shadow:none !important;
+}
+#settingsModal[data-settings-card-style="minimal"] .antigravity-card-block {
+  box-shadow:none !important;
+}
+
+/* Monthly-budget drill-through: visible context and a dependable return control. */
+#appFrame #viewOperations #budgetDrilldownBanner {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 110;
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  margin: 0 12px 6px;
+  background: var(--ledger-panel);
+  color: var(--ledger-text);
+  border: 1px solid var(--ledger-line);
+  border-radius: 10px;
+}
+#budgetDrilldownBanner .budget-drill-copy { min-width: 0; line-height: 1.35; font-size: .66rem; color: var(--ledger-muted); }
+#budgetDrilldownBanner .budget-drill-copy strong { display: block; font-size: .77rem; color: var(--ledger-text); overflow-wrap: anywhere; }
+#appFrame #budgetDrilldownBack {
+  min-height: 32px;
+  max-width: 9rem;
+  padding: 3px 7px;
+  border: 1px solid var(--ledger-accent);
+  border-radius: 7px;
+  color: var(--ledger-accent);
+  background: var(--ledger-active);
+  font-size: .7rem;
+  font-weight: 850;
+  white-space: normal;
+  cursor: pointer;
+}
+@media (max-width:380px) {
+  #appFrame #viewOperations #budgetDrilldownBanner { margin-inline: 7px; }
+  #appFrame #budgetDrilldownBack { max-width: 7.25rem; }
+}
+.monthly-insight-card[data-budget-drill-scope],
+.budget-audit-row,
+.monthly-week-line[data-budget-week],.monthly-overrun-list [data-budget-cat] {
+  cursor:pointer;
+}
+button.monthly-insight-card {font:inherit;text-align:start;color:inherit;width:100%}
+.monthly-insight-card[data-budget-drill-scope]:focus-visible,
+.budget-audit-row:focus-visible,
+.monthly-week-line[data-budget-week]:focus-visible {
+  outline:2px solid #0284c7;outline-offset:2px;
+}
+.monthly-insight-card[data-budget-drill-scope]:hover,
+.budget-audit-row:hover {filter:brightness(1.07)}
+@media(max-width:390px){
+  #settingsModal .antigravity-palette-grid {gap:4px !important}
+  #settingsModal .antigravity-palette-grid .theme-pill-option {padding:2px 1px !important}
+  #settingsModal .antigravity-palette-grid .theme-pill-option span {font-size:.55rem !important}
+}
+
+
+/* The current settings modal is rendered with both compact and legacy shells.
+   Apply the palette to whichever shell is actually present in this build. */
+#settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card,.antigravity-settings-body) {
+  border-color:var(--settings-card-border) !important;
+}
+#settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card) {
+  background:var(--settings-shell-dark) !important;
+}
+body.light-theme #settingsModal :is(.settings-modal-shell,.antigravity-settings-shell,.modal-content-card) {
+  background:var(--settings-shell-light) !important;
+}
+#settingsModal .antigravity-palette-grid > .theme-pill-option {
+  grid-column:auto !important;
+  grid-row:auto !important;
+  align-self:stretch !important;
+}
+
+/* Settings card choices use the modal's contrast colors in every palette. */
+#settingsModal #settingsSec_appearance .card-style-option {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  min-height:44px;
+  padding:5px 3px;
+  border:1px solid var(--settings-card-border);
+  border-radius:9px;
+  background:#19263a;
+  color:#f8fafc;
+  font:inherit;
+  line-height:1.25;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  cursor:pointer;
+}
+#settingsModal #settingsSec_appearance .card-style-option strong,
+#settingsModal #settingsSec_appearance .card-style-option small {
+  color:inherit !important;
+  -webkit-text-fill-color:currentColor !important;
+  font-size:.69rem;
+}
+#settingsModal #settingsSec_appearance .card-style-option small {font-size:.59rem}
+#settingsModal #settingsSec_appearance .card-style-option[aria-pressed="true"] {
+  background:color-mix(in srgb,var(--settings-accent) 25%,#101828);
+  border-color:var(--settings-accent);
+  box-shadow:inset 0 0 0 1px var(--settings-accent);
+}
+body.light-theme #settingsModal #settingsSec_appearance .card-style-option {
+  color:#17243a;
+  background:#fff;
+}
+body.light-theme #settingsModal #settingsSec_appearance .card-style-option[aria-pressed="true"] {
+  background:color-mix(in srgb,var(--settings-accent) 13%,#fff);
+}
+
+.commitments-calendar-header {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:6px;
+}
+.commitments-calendar-toggle,.commitments-calendar-month button {
+  border:0;
+  background:transparent;
+  color:var(--text-main,#f8fafc);
+  cursor:pointer;
+}
+.commitments-calendar-toggle {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+  padding:0;
+  text-align:start;
+  font:inherit;
+}
+.commitments-calendar-toggle strong {display:block;font-size:.78rem;line-height:1.25}
+.commitments-calendar-toggle small {display:block;font-size:.62rem;line-height:1.3;color:var(--text-muted,#94a3b8)}
+.commitments-calendar-icon {flex:none;color:var(--accent,#38bdf8)}
+.commitments-calendar-month {
+  display:flex;
+  align-items:center;
+  border:1px solid var(--border,#94a3b8);
+  border-radius:8px;
+  color:var(--text-main,#f8fafc);
+  font-size:.72rem;
+  font-weight:850;
+  white-space:nowrap;
+}
+.commitments-calendar-month button {padding:5px;min-width:24px;min-height:32px}
+.commitments-calendar-month span {min-width:64px;text-align:center}
+
+#cmpPeriodChart {
+  --period-actual:#2563eb;
+  --period-reference:#8054c7;
+  --period-up:#fda4af;
+  --period-down:#6ee7b7;
+  min-width:0;
+  padding:10px;
+  border:1px solid var(--border,#64748b);
+  border-radius:12px;
+  color:var(--text-main,#f8fafc);
+  background:var(--bg-card,#1e293b);
+}
+body.light-theme #cmpPeriodChart {--period-up:#a81231;--period-down:#096448}
+.cmp-period-modes {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.cmp-period-modes button,.cmp-period-value {
+  font:inherit;
+  font-size:.69rem;
+  color:inherit;
+  background:var(--bg-card,#1e293b);
+  border:1px solid var(--border,#64748b);
+  border-radius:6px;
+  padding:4px;
+}
+.cmp-period-modes button[aria-pressed="true"] {background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.cmp-period-track .actual {background:var(--period-actual)}
+.cmp-period-track .reference {background:var(--period-reference)}
+.cmp-period-bars {display:grid;gap:5px;margin:0;padding:0;list-style:none;max-height:360px;overflow:auto}
+.cmp-period-bars li {padding:3px 0;border-bottom:1px solid var(--border,#64748b)}
+.cmp-period-row-heading,.cmp-period-bar-row {display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.72rem}
+.cmp-period-bar-row {display:grid;grid-template-columns:minmax(0,1fr) minmax(2.5rem,max-content);min-height:20px}
+.cmp-period-track,.cmp-period-delta {position:relative;height:7px;background:rgba(148,163,184,.22);border-radius:4px}
+.cmp-period-track i,.cmp-period-delta i {display:block;height:100%;border-radius:4px}
+.cmp-period-delta {direction:ltr;margin:4px 0}
+.cmp-period-delta::after {content:'';position:absolute;left:50%;top:-2px;bottom:-2px;border-left:1px solid currentColor}
+.cmp-period-delta i {position:absolute}
+.cmp-period-delta .positive {left:50%;background:var(--period-up)}
+.cmp-period-delta .negative {right:50%;background:var(--period-down)}
+.cmp-period-value {padding:1px 3px;background:transparent;border-color:transparent;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.cmp-period-table {max-height:360px;overflow:auto}
+.cmp-period-table table {width:100%;border-collapse:collapse;font-size:.69rem}
+.cmp-period-table :is(th,td) {padding:3px 4px;border-bottom:1px solid var(--border,#64748b);text-align:start}
+.cmp-period-table thead th {position:sticky;top:0;background:var(--bg-card,#1e293b)}
+.cmp-rise {color:var(--period-up);font-weight:850}
+.cmp-fall {color:var(--period-down);font-weight:850}
+
+/* Keep the simulated operations close to the registered operations navigation. */
+#btnOpsSubSample {flex:1;min-width:0;font-size:.76rem;font-weight:850;padding:6px 4px}
+#opsSubViewSample {margin:0 8px 10px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--bg-card);color:var(--text-main)}
+.sample-operations-header {display:flex;align-items:center;justify-content:space-between;gap:6px}
+.sample-operations-header h3 {margin:0;font-size:.86rem}
+.cmp-sample-actions:not([hidden]) {display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.cmp-sample-actions button,#opsSubViewSample button {padding:4px 6px;border:1px solid var(--border);border-radius:6px;color:var(--text-main);background:var(--bg-card);font:inherit;font-size:.69rem;cursor:pointer}
+.cmp-sample-actions [role="status"],.sample-operations-summary {font-size:.69rem}
+#sampleOperationsShowAll,#sampleOperationsMore {margin-top:5px}
+
+#cmpPeriodsFilterBox > div { min-width: 0; }
+.cmp-month-custom-range { margin-top: 4px; width: 100%; }
+#cmpPeriodsFilterBox .cmp-month-range-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 3px 4px;
+  border: 1px solid currentColor;
+  border-radius: 7px;
+  background: rgba(16,185,129,.12);
+  color: #86efac;
+  font: inherit;
+  font-weight: 800;
+  font-size: .69rem;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+#cmpEstimCustomRange .cmp-month-range-button { color: #fde68a; background: rgba(245,158,11,.13); }
+body.light-theme #cmpPeriodsFilterBox .cmp-month-range-button { color: #065f46; }
+body.light-theme #cmpPeriodsFilterBox #cmpEstimCustomRange .cmp-month-range-button { color: #854d0e; }
+
+/* One comparison layout and scale shared by the table and both chart views. */
+#cmpPeriodChart.cmp-workspace {
+  padding: 8px;
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+.cmp-heading,.cmp-view-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+.cmp-heading h3 { margin: 0; min-width: 0; font-size: .88rem; }
+#cmpPeriodChart :is(#cmpDataMode,select,.cmp-period-modes button) {
+  min-height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 3px 5px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: inherit;
+  font-size: .71rem;
+  font-weight: 750;
+}
+#cmpPeriodChart :is(#cmpDataMode,.cmp-period-modes button)[aria-pressed="true"] {
+  color: #fff;
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+#cmpDemoNote { font-size: .67rem; margin: 2px 0 6px; color: var(--text-muted); }
+.cmp-period-filters { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px; margin: 0 0 7px; }
+.cmp-period-filters label { display: block; font-size: .69rem; font-weight: 800; margin-bottom: 3px; }
+.cmp-period-filters select { display: block; width: 100%; min-width: 0; text-overflow: ellipsis; }
+.cmp-summary-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; }
+.cmp-summary-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  justify-content: start;
+  min-width: 0;
+  padding: 5px 4px;
+  background: var(--bg-card-sub,var(--bg-card));
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+.cmp-summary-grid .cmp-summary-primary { border-block-start: 3px solid var(--period-actual); }
+.cmp-summary-grid .cmp-summary-reference { border-block-start: 3px solid var(--period-reference); }
+.cmp-summary-grid > div:last-child { border-block-start-width: 3px; }
+.cmp-summary-grid small { color: var(--text-muted); font-size: .61rem; line-height: 1.2; }
+.cmp-summary-grid strong { font-size: .85rem; }
+.cmp-summary-grid > div > bdi { font-size: .58rem; }
+.cmp-summary-grid .cmp-period-value { font-size: inherit; font-weight: inherit; }
+.cmp-summary-grid strong small,.cmp-difference small { display: block; font-size: .59rem; color: var(--text-muted); }
+.cmp-difference-hint { margin: 5px 0 6px; color: var(--text-muted); font-size: .63rem; line-height: 1.3; }
+.cmp-view-tools .cmp-period-modes { flex: 1 1 auto; }
+.cmp-view-tools label { display: flex; align-items: center; gap: 3px; font-size: .64rem; }
+#cmpPeriodChartContent { min-width: 0; font-size: .71rem; }
+#cmpPeriodChartContent .cmp-period-table { max-height: none; }
+#cmpPeriodChartContent .cmp-period-table table { table-layout: fixed; font-size: .76rem; }
+#cmpPeriodChartContent .cmp-period-table th:first-child { width: 31%; }
+#cmpPeriodChartContent .cmp-period-table th,#cmpPeriodChartContent .cmp-period-table td {
+  padding: 5px 3px;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+#cmpPeriodChartContent .cmp-period-table thead th { position: static; }
+#cmpPeriodChartContent .cmp-period-table tbody th { font-weight: 800; }
+#cmpPeriodChartContent .cmp-period-table :is(th,td):not(:first-child) { text-align: center; }
+#cmpPeriodChartContent .cmp-period-bars { max-height: none; overflow: visible; }
+#cmpPeriodChartContent .cmp-period-value { max-width: 100%; overflow-wrap: anywhere; }
+#cmpInsightDetails { margin-top: 7px; border-top: 1px solid var(--border); }
+#cmpInsightDetails > summary { padding: 5px 0; cursor: pointer; font-size: .72rem; font-weight: 800; }
+#cmpExtraInsightGrid { margin: 0; }
+.cmp-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 4px; margin: 0; }
+.cmp-metrics > div { min-width: 0; padding: 4px; border: 1px solid var(--border); border-radius: 6px; overflow-wrap: anywhere; }
+.cmp-metrics dt { font-size: .6rem; color: var(--text-muted); }
+.cmp-metrics dd { margin: 0; font-size: .71rem; font-weight: 800; }
+#panelBudgetCompare [hidden] { display: none !important; }
+
+@media (max-width: 600px) {
+  body:has(#viewBudgets.active #btnBudgetSubCurrent[aria-pressed="true"]):has(#viewBudgets.active #btnBudgetInnerCompare[aria-pressed="true"])
+    :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab) { display: none !important; }
+}
+
+#requestsListContainer.request-cards { display: grid; gap: 7px; min-width: 0; }
+#requestsListContainer .request-card {
+  --request-muted: #b8c9dc;
+  --request-line: #48607b;
+  --request-detail: #24354a;
+  --request-wait: #fcd593;
+  --request-wait-bg: #403422;
+  --request-ok: #86efac;
+  --request-ok-bg: #163e31;
+  --request-edit: #b8e6ff;
+  --request-edit-bg: #163c59;
+  --request-danger: #fecdd3;
+  --request-danger-bg: #502a3a;
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--request-line);
+  border-radius: 11px;
+  color: var(--text-main,#f8fafc);
+  background: var(--bg-card,#182638);
+}
+body.light-theme #requestsListContainer .request-card {
+  --request-muted: #475569;
+  --request-line: #cbd5e1;
+  --request-detail: #f1f5f9;
+  --request-wait: #854d0e;
+  --request-wait-bg: #fef3c7;
+  --request-ok: #065f46;
+  --request-ok-bg: #d1fae5;
+  --request-edit: #075985;
+  --request-edit-bg: #e0f2fe;
+  --request-danger: #9f1239;
+  --request-danger-bg: #ffe4e6;
+}
+.request-card-heading {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,max-content);
+  align-items: start;
+  gap: 7px;
+}
+.request-card-heading h3,.request-card-total { margin: 0; line-height: 1.35; overflow-wrap: anywhere; }
+.request-card-heading h3 { font-size: .85rem; font-weight: 850; }
+.request-card-total { max-width: 9rem; text-align: end; font-size: .94rem; font-weight: 900; }
+.request-card-meta,.request-card-dates { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 5px; }
+.request-card-meta > * {
+  max-width: 100%;
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: var(--request-detail);
+  color: var(--request-muted);
+  font-size: .67rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.request-card-serial { font-variant-numeric: tabular-nums; }
+.request-card-status[data-status="pending"] { color: var(--request-wait); background: var(--request-wait-bg); }
+.request-card-status[data-status="approved"] { color: var(--request-ok); background: var(--request-ok-bg); }
+.request-card-status[data-status="rejected"] { color: var(--request-danger); background: var(--request-danger-bg); }
+.request-card-allocations {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.request-card-allocations li {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,max-content);
+  align-items: baseline;
+  gap: 4px 8px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: var(--request-detail);
+  overflow-wrap: anywhere;
+  font-size: .72rem;
+}
+.request-card-allocations bdi { max-width: 8rem; font-weight: 800; }
+.request-card-dates { font-size: .66rem; color: var(--request-muted); }
+.request-card-dates span { max-width: 100%; overflow-wrap: anywhere; }
+.request-card-dates span + span { border-inline-start: 1px solid var(--request-line); padding-inline-start: 5px; }
+.request-card-attachment { justify-self: start; color: var(--request-edit); font-size: .72rem; }
+.request-card-actions { display: flex; justify-content: end; gap: 4px; padding-top: 4px; border-top: 1px solid var(--request-line); }
+.request-card-actions.is-pending { display: grid; grid-template-columns: minmax(0,1.8fr) repeat(2,minmax(0,1fr)); }
+.request-card-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  min-height: 36px;
+  height: auto;
+  padding: 3px 5px;
+  background: var(--request-edit-bg);
+  color: var(--request-edit);
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 850;
+  line-height: 1.25;
+  white-space: normal;
+  cursor: pointer;
+}
+.request-card-actions .request-card-confirm { color: var(--request-ok); background: var(--request-ok-bg); }
+.request-card-actions .request-card-danger { color: var(--request-danger); background: var(--request-danger-bg); }
+
+#cmpPeriodChart {
+  --cmp-primary-text: #bfdbfe;
+  --cmp-primary-surface: #1d3459;
+  --cmp-reference-text: #e9d5ff;
+  --cmp-reference-surface: #3a2956;
+  --cmp-row-border: #40536b;
+  --period-actual: #60a5fa;
+  --period-reference: #c084fc;
+}
+body.light-theme #cmpPeriodChart {
+  --cmp-primary-text: #153977;
+  --cmp-primary-surface: #e8f1ff;
+  --cmp-reference-text: #592b88;
+  --cmp-reference-surface: #f2eaff;
+  --cmp-row-border: #cbd5e1;
+  --period-actual: #2563eb;
+  --period-reference: #8054c7;
+}
+#cmpPeriodChart .cmp-summary-grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+#cmpPeriodChart .cmp-summary-grid > div {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 2px 4px;
+  align-items: baseline;
+  padding: 4px 6px;
+}
+#cmpPeriodChart .cmp-summary-grid > div > bdi { grid-column: 1/-1; font-size: .64rem; }
+#cmpPeriodChart .cmp-summary-grid > div > small:last-child { font-size: .63rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child {
+  grid-column: 1/-1;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 6px;
+  border-top-width: 1px;
+}
+.cmp-summary-grid > div:last-child strong small { display: inline; margin-inline-start: 5px; }
+#cmpPeriodChart .cmp-summary-primary { background: var(--cmp-primary-surface); color: var(--cmp-primary-text); }
+#cmpPeriodChart .cmp-summary-reference { background: var(--cmp-reference-surface); color: var(--cmp-reference-text); }
+#cmpPeriodChart .cmp-summary-grid small { color: inherit; }
+.cmp-key-actual,.cmp-series-actual { color: var(--cmp-primary-text); background: var(--cmp-primary-surface); }
+.cmp-key-reference,.cmp-series-reference { color: var(--cmp-reference-text); background: var(--cmp-reference-surface); }
+#cmpPeriodChartContent .cmp-period-table table { border-collapse: separate; border-spacing: 2px 3px; }
+#cmpPeriodChartContent .cmp-period-table th:first-child { width: 34%; }
+#cmpPeriodChartContent .cmp-period-table :is(th,td) { padding: 3px 4px; border: 0; }
+#cmpPeriodChartContent .cmp-period-table tr > :is(th,td) { border-radius: 5px; }
+#cmpPeriodChartContent .cmp-period-table tbody th { line-height: 1.25; }
+#cmpPeriodChartContent .cmp-period-table thead :is(.cmp-key-actual,.cmp-key-reference) { font-size: .7rem; }
+#cmpPeriodChartContent .cmp-period-table tbody td:last-child { background: var(--bg-card-sub,var(--bg-card)); }
+#cmpPeriodChartContent .cmp-period-value {
+  min-height: 28px;
+  font-size: .81rem;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+#cmpPeriodChartContent .cmp-difference { font-variant-numeric: tabular-nums; }
+#cmpPeriodChartContent .cmp-difference small { line-height: 1.15; }
+.cmp-scale-key,.cmp-direction-key { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: .68rem; }
+.cmp-scale-key > span { padding: 2px 6px; border-radius: 5px; font-weight: 800; }
+.cmp-direction-key { justify-content: space-between; padding-inline: 4px; }
+#cmpPeriodChartContent .cmp-period-bars li {
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 8px;
+  padding: 4px 6px;
+  display: grid;
+  gap: 3px;
+}
+#cmpPeriodChartContent .cmp-period-row-heading { min-height: 22px; }
+#cmpPeriodChartContent .cmp-period-row-heading > strong { overflow-wrap: anywhere; }
+#cmpPeriodChartContent .cmp-period-row-heading small { text-align: end; }
+#cmpPeriodChartContent .cmp-period-bar-row { border-radius: 5px; padding: 0 4px; }
+#cmpPeriodChartContent .cmp-period-track { height: 8px; }
+#cmpPeriodChartContent .cmp-period-delta { height: 8px; margin: 3px 0; }
+.cmp-pair-values { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 3px; text-align: center; }
+.cmp-pair-values > div { min-width: 0; border-radius: 5px; }
+@media (max-width: 360px) {
+  #cmpPeriodChart .cmp-summary-grid > div { grid-template-columns: minmax(0,1fr); }
+  #cmpPeriodChart .cmp-summary-grid > div:last-child { grid-template-columns: auto minmax(0,1fr) auto; }
+  #cmpPeriodChartContent .cmp-period-table th:first-child { width: 30%; }
+  #cmpPeriodChartContent .cmp-period-table :is(th,td) { padding-inline: 2px; }
+}
+
+#cmpPeriodChartContent .cmp-plain-value { font-size: .81rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+#cmpPeriodChart :is(bdi,small)[dir="ltr"],#cmpPeriodChart .cmp-direction-key {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+}
+
+#cmpPeriodChartContent .cmp-period-bars li {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 4px;
+  margin: 0 0 5px;
+  padding: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 8px;
+}
+#cmpPeriodChartContent .cmp-period-bars { gap: 0; }
+#cmpPeriodChartContent .cmp-period-row-heading {
+  grid-column: 1/-1;
+  width: auto;
+  padding: 0 1px;
+  font-size: .86rem;
+  color: var(--text-main);
+  font-weight: 850;
+}
+#cmpPeriodChartContent :is(.cmp-period-value,.cmp-plain-value) { font-size: .94rem; line-height: 1.2; }
+#cmpPeriodChartContent .cmp-period-bars .cmp-difference {
+  grid-column: 1/-1;
+  min-height: 23px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  gap: 3px 6px;
+  color: var(--text-main);
+  background: var(--bg-card-sub,var(--bg-card));
+  border-radius: 5px;
+  padding: 3px 5px;
+  font-size: .72rem;
+  text-align: start;
+}
+#cmpPeriodChartContent .cmp-difference .cmp-delta-caption { font-size: .71rem; font-weight: 800; }
+#cmpPeriodChartContent .cmp-difference .cmp-delta-amount { font-size: .84rem; }
+#cmpPeriodChartContent .cmp-difference small { display: inline; color: var(--text-main); opacity: .85; font-size: .69rem; }
+#cmpPeriodChartContent :is(.cmp-change-values,.cmp-period-delta) { grid-column: 1/-1; }
+#cmpPeriodChartContent .cmp-period-delta { height: 11px; }
+#cmpPeriodChart .cmp-summary-grid :is(.cmp-summary-primary,.cmp-summary-reference) { grid-template-columns: minmax(0,1fr); }
+#cmpPeriodChart .cmp-summary-grid strong { font-size: 1rem; }
+#cmpPeriodChart .cmp-summary-grid small { font-size: .68rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child { grid-template-columns: minmax(0,1fr); }
+#cmpPeriodChart .cmp-summary-grid > div:last-child > small:last-child { display: none; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child strong { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 5px; font-size: .82rem; }
+#cmpPeriodChart .cmp-summary-grid > div:last-child strong small { margin: 0; }
+#cmpPeriodChart .cmp-view-tools { gap: 5px; flex-wrap: wrap; }
+#cmpPeriodChart .cmp-view-tools .cmp-period-modes { min-width: 190px; }
+
+.cmp-range-preview {
+  min-width: 0;
+  margin: 3px 0 0;
+  padding: 4px 5px;
+  border-radius: 5px;
+  color: var(--text-muted,var(--text-main));
+  background: var(--bg-card-sub,var(--bg-card));
+  font-size: .68rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.cmp-range-preview small { display: block; font-size: .65rem; font-weight: 800; }
+.cmp-range-preview bdi { font-variant-numeric: tabular-nums; }
+.cmp-preview-actual { color: var(--cmp-primary-text); background: var(--cmp-primary-surface); }
+.cmp-preview-reference { color: var(--cmp-reference-text); background: var(--cmp-reference-surface); }
+#cmpEstimCustomRange .cmp-restore-link {
+  display: block;
+  width: 100%;
+  margin-top: 3px;
+  padding: 3px;
+  background: var(--cmp-reference-surface);
+  color: var(--cmp-reference-text);
+  border: 0;
+  border-radius: 5px;
+  font: inherit;
+  font-size: .68rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cmp-delta-value { display: inline-flex; align-items: baseline; gap: 3px; white-space: nowrap; }
+#cmpPeriodChartContent .cmp-period-row-heading { font-size: .86rem; }
+
+#cmpPeriodChartContent .cmp-ranked-table {
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 9px;
+}
+#cmpPeriodChartContent .cmp-ranked-table table {
+  width: 100%;
+  border-spacing: 0;
+}
+#cmpPeriodChartContent .cmp-ranked-table :is(th,td) {
+  padding: 5px 3px;
+  border-bottom: 1px solid var(--cmp-row-border);
+  border-radius: 0;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+#cmpPeriodChartContent .cmp-ranked-table tr:last-child td,
+#cmpPeriodChartContent .cmp-ranked-table tbody tr:last-child th { border-bottom: 0; }
+#cmpPeriodChartContent .cmp-ranked-table th:first-child { width: 30%; text-align: start; }
+#cmpPeriodChartContent .cmp-ranked-table thead th { font-size: .68rem; }
+#cmpPeriodChartContent .cmp-ranked-table tbody tr:nth-child(even) th { background: var(--bg-card-sub,var(--bg-card)); }
+#cmpPeriodChartContent .cmp-ranked-table .cmp-difference,
+#cmpPeriodChartContent .cmp-ranked-table :is(.cmp-period-value,.cmp-plain-value) {
+  font-size: inherit;
+  font-weight: 800;
+}
+.cmp-rank {
+  display: inline-block;
+  min-width: 1.45em;
+  border-radius: 4px;
+  background: var(--bg-card-sub,var(--bg-card));
+  font-size: .64rem;
+  text-align: center;
+}
+.cmp-column-chart {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(min(100%,86px),1fr));
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cmp-column-chart li {
+  min-width: 0;
+  padding: 5px;
+  border: 1px solid var(--cmp-row-border);
+  border-radius: 8px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.cmp-column-chart .cmp-column-plot {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 3px;
+  height: 82px;
+  padding-inline: 13%;
+  background: repeating-linear-gradient(to top,var(--cmp-row-border) 0 1px,transparent 1px 25%);
+}
+.cmp-column-plot::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: var(--zero);
+  border-top: 1px solid var(--text-muted,var(--text-main));
+}
+.cmp-column-plot > div { position: relative; }
+.cmp-column-plot i {
+  position: absolute;
+  inset-inline: 0;
+  bottom: var(--start);
+  height: var(--height);
+  min-height: 1px;
+  border-radius: 3px;
+}
+.cmp-column-actual i { background: var(--period-actual); }
+.cmp-column-reference i { background: var(--period-reference); }
+.cmp-column-values,
+.cmp-change-values {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 3px;
+}
+.cmp-column-values { margin-block: 4px; }
+:is(.cmp-column-values,.cmp-change-values) > span {
+  padding: 2px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+.cmp-change-values { text-align: center; }
+#cmpPeriodChartContent :is(.cmp-column-values,.cmp-change-values) :is(.cmp-period-value,.cmp-plain-value) {
+  font-size: inherit;
 }

@@ -342,7 +342,7 @@ window.BudgetAuditEngine = (() => {
     let totalActualA = 0;
     let totalBenchmark = 0;
 
-    const rowsHtml = plan.items.map(it => {
+    const rowsHtml = plan.items.map((it, budgetIndex) => {
       const cat = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === it.category) || { name: it.title || 'بند', icon: 'fa-tag', color: '#38bdf8' };
 
       // حساب المنصرف الفعلي المسجل لهذا البند في الفترة أ
@@ -395,7 +395,7 @@ window.BudgetAuditEngine = (() => {
       const diffSign = isOver ? (comparisonMode === 'budget' ? '- ' : '+ ') : (comparisonMode === 'budget' ? '+ ' : '- ');
 
       return `
-        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.74rem;">
+        <tr class="budget-audit-row" tabindex="0" role="button" aria-label="عرض عمليات هذا البند" data-budget-item-index="${budgetIndex}" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.74rem;">
           <td style="padding: 8px 6px; text-align: right;">
             <div style="display: flex; align-items: center; gap: 6px;">
               <i class="fa-solid ${cat.icon}" style="color: ${cat.color || '#38bdf8'}; font-size: 0.8rem;"></i>
@@ -915,15 +915,138 @@ window.BudgetAuditEngine = (() => {
     }
   }
 
+  // Independent, read-only insights for the selected monthly plan.
+  // Avoid contaminating monthly actuals with another month or saved projections.
+  function renderMonthlyInsights(plan) {
+    if (!plan || !/^\d{4}-\d{2}$/.test(String(plan.month || ''))) return '';
+    const month = plan.month;
+    const [year, mm] = month.split('-').map(Number);
+    const days = new Date(year, mm, 0).getDate();
+    const now = new Date();
+    const todayMonth = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0')].join('-');
+    const isCurrent = month === todayMonth;
+    const isPast = month < todayMonth;
+    const elapsed = isPast ? days : (isCurrent ? Math.min(days, now.getDate()) : 0);
+    const monthlyPlan = (plan.items || []).reduce((a, it) => a + Math.max(0, Number(it.amount) || 0), 0);
+    const txs = (typeof state !== 'undefined' && Array.isArray(state.transactions) ? state.transactions : []);
+    const expenses = txs.filter(t => t.type === 'expense' && String(t.date || '').slice(0, 7) === month);
+    const actual = expenses.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const percent = monthlyPlan > 0 ? actual / monthlyPlan * 100 : null;
+    const daysRemaining = Math.max(0, days - elapsed);
+    const perDay = elapsed > 0 ? actual / elapsed : null;
+    const forecast = isCurrent && elapsed > 0 ? perDay * days : null;
+    const plannedPerDay = monthlyPlan > 0 ? monthlyPlan / days : null;
+    const permittedPerDay = isCurrent && daysRemaining > 0 && monthlyPlan > 0
+      ? Math.max(0, monthlyPlan - actual) / daysRemaining : null;
+    const prevDate = new Date(year, mm - 2, 1);
+    const prevMonth = [prevDate.getFullYear(), String(prevDate.getMonth() + 1).padStart(2, '0')].join('-');
+    const prevMonthDays = new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 0).getDate();
+    const prevExpenses = txs.filter(t => t.type === 'expense' &&
+      String(t.date || '').slice(0, 7) === prevMonth &&
+      (!isCurrent || Number(String(t.date || '').slice(8, 10)) <= Math.min(elapsed, prevMonthDays)));
+    const prevActual = prevExpenses.reduce((sum, t) => sum + (Number(t.amount) || 0), 0);
+    const prevChange = prevActual > 0 ? (actual - prevActual) / prevActual * 100 : null;
+    const cats = new Map();
+    for (const it of plan.items || []) {
+      const cat = it.category || 'other';
+      const item = cats.get(cat) || {name:cat, planned:0, actual:0};
+      item.planned += Math.max(0, Number(it.amount) || 0);
+      item.name = it.title || cat;
+      cats.set(cat, item);
+    }
+    for (const tx of expenses) {
+      const cat = tx.category || 'other';
+      const item = cats.get(cat) || {name:cat, planned:0, actual:0};
+      item.actual += Number(tx.amount) || 0;
+      cats.set(cat, item);
+    }
+    const over = Array.from(cats.entries()).map(([category, item]) => ({...item,category}))
+      .filter(x => x.actual > x.planned && x.actual > 0)
+      .sort((a, b) => (b.actual - b.planned) - (a.actual - a.planned)).slice(0, 4);
+    const fmt = v => Number.isFinite(v) ? v.toLocaleString('ar-EG', {maximumFractionDigits:0}) : '—';
+    const metric = (name, value, hint, scope = 'actual', details = '') =>
+      '<button type="button" class="monthly-insight-card" data-budget-drill-scope="' + scope + '" ' + details + '><small>' + name + '</small><strong>' + value +
+      '</strong><span>' + hint + ' · اضغط للتفاصيل</span></button>';
+    const pct = value => value === null ? '—' : (value >= 0 ? '+' : '') + value.toFixed(1) + '%';
+    const variance = monthlyPlan - actual;
+    const completionLabel = isCurrent ? ('حتى يوم ' + elapsed + ' من ' + days) : (isPast ? 'شهر مكتمل' : 'شهر لم يبدأ');
+    const weekly = [0,0,0,0,0];
+    for (const tx of expenses) {
+      const day = Number(String(tx.date || '').slice(8,10));
+      if (day >= 1 && day <= days) weekly[Math.min(4, Math.floor((day - 1) / 7))] += Number(tx.amount) || 0;
+    }
+    const largest = Math.max(1, ...weekly);
+    const activeDays = new Set(expenses.map(t => t.date).filter(Boolean)).size;
+    const avgTransaction = expenses.length ? actual / expenses.length : 0;
+    const dailyTotals = new Map();
+    for (const tx of expenses) dailyTotals.set(tx.date, (dailyTotals.get(tx.date) || 0) + (Number(tx.amount) || 0));
+    const highestDay = [...dailyTotals.entries()].sort((a,b) => b[1] - a[1])[0] || ['',0];
+    const largestTx = [...expenses].sort((a,b) => (Number(b.amount)||0) - (Number(a.amount)||0))[0] || null;
+    const catsBySpend = [...cats.entries()].filter(([,item]) => item.actual>0)
+      .sort((a,b) => b[1].actual - a[1].actual);
+    const topCategory = catsBySpend[0] || ['',{name:'—',actual:0}];
+    const topThreeShare = actual>0
+      ? catsBySpend.slice(0,3).reduce((sum,[,item])=>sum+item.actual,0)/actual*100 : 0;
+    const budgetCategoryIds = new Set((plan.items || []).map(it=>it.category || 'other'));
+    const unplannedAmount = expenses.filter(t=>!budgetCategoryIds.has(t.category || 'other'))
+      .reduce((sum,t)=>sum+(Number(t.amount)||0),0);
+    const spentShare = monthlyPlan>0 ? actual/monthlyPlan*100 : null;
+    const elapsedShare = elapsed>0 ? elapsed/days*100 : null;
+    const paceDelta = (spentShare!==null && elapsedShare!==null)
+      ? spentShare-elapsedShare : null;
+    const daysWithoutSpend = Math.max(0, elapsed-activeDays);
+    const realOverrunCategories = [...cats.values()].filter(x=>x.planned>0&&x.actual>x.planned).length;
+    const safeAttr = v=>escapeHtml(String(v==null?'':v));
+    return '<section class="monthly-insights" aria-label="تحليلات موازنة الشهر">' +
+      '<h3>تحليل الموازنة والتوقعات • ' + month + '</h3>' +
+      '<p>جميع الأرقام محسوبة من عمليات الشهر المختار؛ التوقع تقديري وليس عملية مسجلة. ' + completionLabel + '</p>' +
+      '<div class="monthly-insight-grid">' +
+        metric('المنصرف من الموازنة', percent === null ? 'غير متاح' : percent.toFixed(1) + '%', 'المخطط ' + fmt(monthlyPlan) + ' / الفعلي ' + fmt(actual)) +
+        metric('وفر أو تجاوز الموازنة', (variance >= 0 ? '+' : '−') + fmt(Math.abs(variance)), variance >= 0 ? 'المتبقي من المخصص' : 'تجاوز المخطط') +
+        metric('متوسط الإنفاق اليومي', perDay === null ? '—' : fmt(perDay), 'المخطط يوميًا ' + fmt(plannedPerDay)) +
+        metric('التغير عن الشهر السابق', pct(prevChange), isCurrent ? 'لنفس عدد الأيام المنقضية' : 'مقارنة بالشهر السابق') +
+        metric('توقع نهاية الشهر', forecast === null ? '—' : fmt(forecast), !isCurrent ? 'يظهر للشهر الجاري فقط' : (forecast > monthlyPlan && monthlyPlan > 0 ? 'تحذير: أعلى من المخطط' : 'بافتراض استمرار المعدل الحالي')) +
+        metric('الحد اليومي المتاح', permittedPerDay === null ? '—' : fmt(permittedPerDay), 'للأيام المتبقية دون تجاوز الموازنة') +
+        metric('عدد عمليات المصروفات', fmt(expenses.length), 'العمليات الفعلية في الشهر المحدد') +
+        metric('متوسط قيمة العملية', fmt(avgTransaction), 'المنصرف ÷ عدد العمليات') +
+        metric('أيام حدث فيها إنفاق', fmt(activeDays), 'من ' + elapsed + ' يومًا منقضيًا') +
+        metric('أيام بدون مصروف', isPast || isCurrent ? fmt(daysWithoutSpend) : '—', 'أيام بدون عمليات حتى تاريخ التقرير') +
+        metric('أعلى يوم إنفاق', fmt(highestDay[1]), highestDay[0] || 'لا توجد عمليات', 'highest-day',
+          'data-budget-date="'+safeAttr(highestDay[0])+'"') +
+        metric('أكبر عملية منفردة', largestTx ? fmt(Number(largestTx.amount)||0) : '—',
+          largestTx ? (escapeHtml(largestTx.label || largestTx.date || '')) : 'لا توجد عمليات', 'largest-transaction',
+          'data-budget-tx-id="'+safeAttr(largestTx?.id)+'"') +
+        metric('أعلى تصنيف إنفاقًا', safeAttr(topCategory[1].name),
+          fmt(topCategory[1].actual) + ' من المنصرف', 'top-category',
+          'data-budget-category="'+safeAttr(topCategory[0])+'"') +
+        metric('حصة أعلى 3 تصنيفات', topThreeShare.toFixed(1)+'%', 'مؤشر تركز الإنفاق') +
+        metric('مصروفات خارج بنود الموازنة', fmt(unplannedAmount), 'فئات لم تدخل بالخطة', 'unplanned') +
+        metric('فرق الإيقاع عن الوقت', paceDelta===null ? '—' :
+          ((paceDelta>0?'+':'')+paceDelta.toFixed(1)+' نقطة'), 'المستهلك من الموازنة مقارنة بنسبة أيام الشهر') +
+        metric('عدد التصنيفات المتجاوزة', fmt(realOverrunCategories), 'فئات تخطت سقفها التقديري') +
+      '</div>' +
+      '<div class="monthly-insight-details"><div><h4>توزيع المصروفات حسب أسابيع الشهر</h4><div class="monthly-week-bars">' +
+        weekly.map((v, i) => '<div class="monthly-week-line" tabindex="0" role="button" data-budget-week="'+i+'"><span>أسبوع ' + (i + 1) + '</span><div class="monthly-week-track"><i style="width:' + (Math.max(0, v) / largest * 100).toFixed(1) + '%"></i></div><b>' + fmt(v) + '</b></div>').join('') +
+      '</div></div><div><h4>أكبر تجاوزات البنود</h4>' +
+        (over.length ? '<div class="monthly-overrun-list">' + over.map(x =>
+          '<div tabindex="0" role="button" data-budget-cat="'+safeAttr(x.category)+'"><span>' + String(x.name).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) +
+          '</span><b>+' + fmt(x.actual - x.planned) + '</b></div>').join('') + '</div>' :
+          '<p>لا توجد تجاوزات على البنود المسجلة لهذا الشهر.</p>') +
+      '</div></div></section>';
+  }
+
   // ---------------------------------------------------------------------------
   // 6. التحديث الشامل والمتناغم لمنظومة الموازنات (Master Synchronizer)
   // ---------------------------------------------------------------------------
   function refreshActiveBudgetAudit() {
-    let plan = window.currentBudgetMonthData;
-    if (!plan && state.monthlyBudgets && state.monthlyBudgets.length > 0) {
-      plan = state.monthlyBudgets[0];
-      window.currentBudgetMonthData = plan;
-    }
+    // Never use an old global plan after the user changes the selected budget.
+    const plans = (typeof state !== 'undefined' && Array.isArray(state.monthlyBudgets))
+      ? state.monthlyBudgets : [];
+    const selected = plans.find(b => b && b.id === state.activeBudgetId);
+    let plan = selected || (window.currentBudgetMonthData &&
+      plans.find(b => b && b.id === window.currentBudgetMonthData.id)) ||
+      plans[0] || null;
+    if (plan) window.currentBudgetMonthData = plan;
     if (plan && typeof ensureBudgetItems === 'function') {
       ensureBudgetItems(plan);
     }
@@ -955,6 +1078,20 @@ window.BudgetAuditEngine = (() => {
     const bottomAnalytics = document.getElementById('budgetBottomAnalyticsSection');
     if (bottomAnalytics) {
       bottomAnalytics.innerHTML = renderBottomAnalyticsAndCharts(plan, txsA, activeTimePeriod);
+      bottomAnalytics.insertAdjacentHTML('beforeend', renderMonthlyInsights(plan));
+    } else {
+      // The current unified monthly-budget panel uses its own DOM structure.
+      // Create a dedicated analytics slot instead of silently skipping insights.
+      const panel = document.getElementById('panelMonthlyBudget');
+      if (panel) {
+        let insightSlot = document.getElementById('budgetMonthlyInsights');
+        if (!insightSlot) {
+          insightSlot = document.createElement('div');
+          insightSlot.id = 'budgetMonthlyInsights';
+          panel.appendChild(insightSlot);
+        }
+        insightSlot.innerHTML = renderMonthlyInsights(plan);
+      }
     }
 
     // 5. رسم الشارتات
@@ -989,8 +1126,8 @@ window.BudgetAuditEngine = (() => {
 
     const progBar = document.getElementById('budgetProgressOverall');
     if (progBar && totalProratedEst > 0) {
-      const pct = Math.min(100, Math.round((periodExpense / totalProratedEst) * 100));
-      progBar.style.width = pct + '%';
+      const pct = Math.round((periodExpense / totalProratedEst) * 100);
+      progBar.style.width = Math.max(0, Math.min(100, pct)) + '%';
       progBar.style.backgroundColor = (pct > 100) ? '#ef4444' : (pct >= 85 ? '#f59e0b' : '#10b981');
     }
   }
@@ -1172,19 +1309,30 @@ window.BudgetAuditEngine = (() => {
   }
 
   function renderExecutiveComparisonsAudit() {
-    // تبويب المقارنات والرقابة يتكامل مع نفس محرك المقارنات الشامل
+    // The dedicated comparison tab has one authoritative renderer, which
+    // provides multi-month filters and the eight documented visualizations.
     const container = document.getElementById('panelBudgetComparisons');
     if (!container) return;
-
-    comparisonMode = 'period';
-    container.innerHTML = `
-      <div id="sectionComparisons" style="display: block; padding: 0 4px 10px;">
-        <div id="budgetComparisonsDedicatedContainer"></div>
-      </div>
-    `;
-
-    // توجيه العرض لمحرك الرقابة المقارن
-    refreshActiveBudgetAudit();
+    const draw = () => {
+      if (!container.isConnected || !window.FamilyBudgetComparison) return;
+      window.FamilyBudgetComparison.render(container, state);
+    };
+    if (window.FamilyBudgetComparison) { draw(); return; }
+    container.textContent = 'يتم تحميل لوحة مقارنة الفعلي والتقديري...';
+    if (!window.__familyBudgetComparisonScriptLoading) {
+      window.__familyBudgetComparisonScriptLoading = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = './family-budget-comparison.js?v=20261117-v2';
+        script.defer = true;
+        script.onload = () => window.FamilyBudgetComparison ? resolve() :
+          reject(new Error('Comparison module unavailable'));
+        script.onerror = () => reject(new Error('Comparison module could not be loaded'));
+        document.head.appendChild(script);
+      });
+    }
+    window.__familyBudgetComparisonScriptLoading.then(draw).catch(() => {
+      container.textContent = 'تعذّر تحميل لوحة المقارنة. يُرجى تحديث التطبيق.';
+    });
   }
 
   function renderBudgetHistoryAdvanced() {
@@ -1238,6 +1386,7 @@ window.BudgetAuditEngine = (() => {
     switchArchiveTab,
     cloneBudget,
     exportBudgetToExcel,
+    getNavigationContext: () => ({period:activeTimePeriod,month:(state.monthlyBudgets||[]).find(b=>b.id===state.activeBudgetId)?.month || targetMonthStr,benchmarkMonth:benchmarkMonthStr,comparisonMode,customStart:customStartDate,customEnd:customEndDate}),
     refreshActiveBudgetAudit,
     renderProjectBudgetsAdvanced,
     renderExecutiveComparisonsAudit,
@@ -1253,10 +1402,11 @@ window.BudgetAuditEngine = (() => {
 
 const BudgetCompareEngine = (() => {
   let _actualPeriod = 'thisMonth';
-  let _estimPeriod = 'thisMonth';
-  let _actualFrom = null, _actualTo = null;
-  let _estimFrom = null, _estimTo = null;
-  let _chartDough = null, _chartBar = null, _chartLine = null;
+  let periodChartMode = 'table';
+  const sampleMonthlyAmounts = {
+    food: 3000, bills: 2100, education: 1800, transport: 1200,
+    house: 1000, daily: 950, health: 850, clothes: 650, other: 450
+  };
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -1289,8 +1439,7 @@ const BudgetCompareEngine = (() => {
       const dayOfWeek = now.getDay(); // 0 is Sun, 6 is Sat. Saturday is week start in SA/Arab
       const diffToSat = (dayOfWeek + 1) % 7; 
       const start = new Date(y, m, day - diffToSat);
-      const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الأسبوع الحالى' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'الأسبوع الحالى' };
     }
     if (period === 'lastWeek') {
       const dayOfWeek = now.getDay();
@@ -1301,8 +1450,7 @@ const BudgetCompareEngine = (() => {
     }
     if (period === 'thisMonth') {
       const start = new Date(y, m, 1);
-      const end = new Date(y, m + 1, 0);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر الحالى' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'الشهر الحالى' };
     }
     if (period === 'lastMonth') {
       const start = new Date(y, m - 1, 1);
@@ -1311,8 +1459,7 @@ const BudgetCompareEngine = (() => {
     }
     if (period === 'thisYear') {
       const start = new Date(y, 0, 1);
-      const end = new Date(y, 11, 31);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'السنة الحالية' };
+      return { from: formatDateStr(start), to: formatDateStr(now), label: 'السنة الحالية' };
     }
     if (period === 'lastYear') {
       const start = new Date(y - 1, 0, 1);
@@ -1327,520 +1474,925 @@ const BudgetCompareEngine = (() => {
     return { from: formatDateStr(new Date(y, m, 1)), to: formatDateStr(now), label: 'الشهر الحالى' };
   }
 
-  function getActiveEstimBudgetTotal() {
-    if (typeof state === 'undefined') return 12000;
-    const now = new Date();
-    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
-    const plans = state.monthlyBudgets || [];
-    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
-    if (activePlan && Array.isArray(activePlan.items) && activePlan.items.length > 0) {
-      return activePlan.items.reduce((s, it) => s + (parseFloat(it.amount) || 0), 0);
-    }
-    return 12000;
+  const sampleLedgerKey = 'family_monefy_budget_trial_operations_v1';
+  const sampleProfiles = {
+    'sample-low': { factor: -1, label: 'موازنة تجريبية اقتصادية' },
+    sample: { factor: 0, label: 'موازنة تجريبية أساسية' },
+    'sample-high': { factor: 1, label: 'موازنة تجريبية مرنة' },
+    'sample-spend': { label: 'مصروفات المثال التجريبي' }
+  };
+  const sampleSpendProfiles = [
+    { food: 2800, bills: 2100, education: 2000, transport: 1200, house: 1100, daily: 900, health: 700, clothes: 500, other: 300, 'trial-gifts': 450, 'trial-leisure': 0 },
+    { food: 3400, bills: 2100, education: 1600, transport: 1450, house: 900, daily: 850, health: 1200, clothes: 450, other: 300, 'trial-gifts': 0, 'trial-leisure': 650 }
+  ];
+  const trialCategoryNames = { 'trial-gifts': 'هدايا تجريبية', 'trial-leisure': 'ترفيه تجريبي' };
+  const number = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 2});
+  const percent = new Intl.NumberFormat('ar-EG', {maximumFractionDigits: 1});
+  const money = cents => number.format(cents / 100);
+  const signedMoney = cents => (cents > 0 ? '+' : '') + money(cents);
+  const byId = id => document.getElementById(id);
+  let demoMode = false;
+  let previousControls = null;
+  let sampleView = {limit: 60};
+  let sampleReturn = null;
+
+  function getNavigationRange() {
+    return periodToRange(_actualPeriod, byId('cmpActualFrom')?.value, byId('cmpActualTo')?.value);
   }
 
-  function getActivePlanCategoryEstimMap() {
-    if (typeof state === 'undefined') return {};
-    const now = new Date();
-    const curMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
-    const plans = state.monthlyBudgets || [];
-    const activePlan = plans.find(p => p.month === curMonth) || plans[0];
-    const map = {};
-    if (activePlan && Array.isArray(activePlan.items)) {
-      activePlan.items.forEach(it => {
-        if (it.category) map[it.category] = (map[it.category] || 0) + (parseFloat(it.amount) || 0);
+  function categoryName(category) {
+    return trialCategoryNames[category] || (category === 'other' ? 'أخرى' : getCategoryObj(category, 'expense')?.name) || category;
+  }
+
+  function datePair(prefix) {
+    return {from: byId(prefix + 'From').value, to: byId(prefix + 'To').value};
+  }
+
+  function validRange(range) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(range.from) && /^\d{4}-\d{2}-\d{2}$/.test(range.to) && range.from <= range.to;
+  }
+
+  function previousRange(range, period = _actualPeriod) {
+    const start = new Date(range.from + 'T00:00:00Z');
+    const year = start.getUTCFullYear();
+    const month = start.getUTCMonth();
+    const date = value => value.toISOString().slice(0, 10);
+    if (period === 'thisMonth' || period === 'lastMonth') {
+      const last = new Date(Date.UTC(year, month, 0));
+      if (period === 'thisMonth') last.setUTCDate(Math.min(last.getUTCDate(), dateDiffDays(range.from, range.to)));
+      return {from: date(new Date(Date.UTC(year, month - 1, 1))), to: date(last)};
+    }
+    if (period === 'thisYear') {
+      const end = new Date(range.to + 'T00:00:00Z');
+      const endMonth = end.getUTCMonth();
+      const lastDay = new Date(Date.UTC(year - 1, endMonth + 1, 0)).getUTCDate();
+      return {from: date(new Date(Date.UTC(year - 1, 0, 1))), to: date(new Date(Date.UTC(year - 1, endMonth, Math.min(lastDay, end.getUTCDate()))))};
+    }
+    const step = period === 'thisWeek' ? 7 : dateDiffDays(range.from, range.to);
+    const day = 86400000;
+    return {from: date(new Date(+start - step * day)), to: date(new Date(Date.parse(range.to) - step * day))};
+  }
+
+  function* monthSlices(range) {
+    const month = new Date(range.from.slice(0,7) + '-01');
+    const end = new Date(range.to);
+    for (;month <= end;month.setUTCMonth(month.getUTCMonth()+1)) {
+      const key = month.toISOString().slice(0,7);
+      const endOfMonth = new Date(month);
+      endOfMonth.setUTCMonth(month.getUTCMonth()+1,0);
+      const days = endOfMonth.getUTCDate();
+      yield {key, days, first: key === range.from.slice(0,7) ? +range.from.slice(8) : 1,
+        last: key === range.to.slice(0,7) ? end.getUTCDate() : days};
+    }
+  }
+
+  function prorate(cents, days, first, last) {
+    return Math.round(cents * last / days) - Math.round(cents * (first - 1) / days);
+  }
+
+  function sampleAmounts(profile) {
+    const factor = sampleProfiles[profile].factor;
+    const flexible = {food: 500, education: 300, transport: 200, house: 250, daily: 200, clothes: 300, other: 250};
+    return Object.entries(sampleMonthlyAmounts).map(([category, amount]) => [category, (amount + factor * (flexible[category] || 0)) * 100]);
+  }
+
+  function sampleCategories(profile) {
+    return Object.keys(profile === 'sample-spend' ? sampleSpendProfiles[0] : sampleMonthlyAmounts);
+  }
+
+  function readSampleOperations() {
+    const stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
+    if (!stored || Array.isArray(stored) || typeof stored !== 'object') throw new Error('Invalid sample ledger');
+    return stored;
+  }
+
+  function addSampleDays(dates, range, monthly) {
+    let added = 0;
+    for (const {key, days, first, last} of monthSlices(range)) {
+      for (let day = first; day <= last; day++) {
+        const date = key + '-' + pad(day);
+        if (Object.hasOwn(dates, date)) continue;
+        dates[date] = monthly.map(([, cents]) => prorate(cents, days, day, day));
+        added += dates[date].filter(Boolean).length;
+      }
+    }
+    return added;
+  }
+
+  function withSampleLock(write) {
+    return navigator.locks ? navigator.locks.request(sampleLedgerKey, write) : Promise.resolve().then(write);
+  }
+
+  async function seedDemo() {
+    const newer = periodToRange('lastMonth');
+    const older = previousRange(newer, 'lastMonth');
+    await withSampleLock(() => {
+      const ledger = readSampleOperations();
+      if (ledger.demoMonth === newer.from && ledger['sample-spend']) return;
+      const dates = {};
+      for (const [i, range] of [older, newer].entries()) {
+        addSampleDays(dates, range, Object.entries(sampleSpendProfiles[i]).map(([key, value]) => [key, value * 100]));
+      }
+      ledger['sample-spend'] = dates;
+      ledger.demoMonth = newer.from;
+      localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
+    });
+  }
+
+  async function toggleDemo() {
+    const button = byId('cmpDataMode');
+    const period = byId('cmpActualPeriod');
+    const reference = byId('cmpPeriodReference');
+    const note = byId('cmpDemoNote');
+    if (demoMode) {
+      demoMode = false;
+      period.value = _actualPeriod = previousControls.period;
+      reference.value = previousControls.reference;
+      previousControls = null;
+      note.hidden = true;
+      render();
+      return;
+    }
+    button.disabled = true;
+    try {
+      await seedDemo();
+      previousControls = {period: _actualPeriod, reference: reference.value};
+      demoMode = true;
+      period.value = _actualPeriod = 'lastMonth';
+      reference.value = 'previous';
+      note.textContent = 'مثال تجريبي مسجّل لآخر شهرين مكتملين. اضغط على مبلغ لعرض عملياته.';
+      note.hidden = false;
+      render();
+    } catch {
+      note.hidden = false;
+      note.textContent = 'تعذّر حفظ عمليات المثال على هذا الجهاز.';
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function onActualPeriodChange(value) {
+    _actualPeriod = value;
+    byId('cmpActualPeriod').value = value;
+    render();
+  }
+
+  function isSampleBudget(profile) {
+    return profile !== 'sample-spend' && Object.hasOwn(sampleProfiles, profile);
+  }
+
+  async function recordSampleOperations() {
+    const profile = byId('cmpPeriodReference').value;
+    const range = getNavigationRange();
+    if (!isSampleBudget(profile) || !validRange(range)) return false;
+    const status = byId('cmpSampleStatus');
+    try {
+      const added = await withSampleLock(() => {
+        const ledger = readSampleOperations();
+        const count = addSampleDays(ledger[profile] ||= {}, range, sampleAmounts(profile));
+        if (count) localStorage.setItem(sampleLedgerKey, JSON.stringify(ledger));
+        return count;
+      });
+      if (status.dataset.scope === [profile, range.from, range.to].join(':')) {
+        status.textContent = added ? 'سُجّلت ' + number.format(added) + ' عملية تجريبية.' : 'هذه الفترة مسجّلة بالفعل.';
+      }
+      return true;
+    } catch {
+      status.textContent = 'تعذّر حفظ العمليات التجريبية.';
+      return false;
+    }
+  }
+
+  function selectReference() {
+    render();
+    return recordSampleOperations();
+  }
+
+  function sampleEntries(ledger, profile, range, category) {
+    const categories = sampleCategories(profile);
+    const result = [];
+    for (const [date, values] of Object.entries(ledger[profile] || {})) {
+      if ((range.from && date < range.from) || (range.to && date > range.to) || !Array.isArray(values)) continue;
+      values.forEach((cents, i) => {
+        const id = categories[i];
+        if (id && Number.isFinite(cents) && cents !== 0 && (!category || id === category)) result.push({date, id, cents, profile});
       });
     }
-    return map;
+    return result;
   }
 
-  function getActualsForRange(fromDate, toDate) {
-    if (typeof state === 'undefined' || !Array.isArray(state.transactions)) return { items: [], total: 0, byMember: {}, byDate: {} };
+  function openSampleLedger(profile, range, button) {
+    const category = button.dataset.periodCategory;
+    sampleReturn = {id: button.id, series: button.dataset.periodSeries, category, top: window.scrollY};
+    sampleView = {profile, ...range, category, limit: 60};
+    switchAppPage('operations');
+    switchOperationsSubTab('sample');
+  }
 
-    const catMap = {};
-    const byMember = {};
-    const byDate = {};
-    let total = 0;
+  async function openSampleOperations(button) {
+    const profile = byId('cmpPeriodReference').value;
+    const range = getNavigationRange();
+    if (!await recordSampleOperations()) return;
+    const current = getNavigationRange();
+    if (byId('cmpPeriodReference').value === profile && current.from === range.from && current.to === range.to) openSampleLedger(profile, range, button);
+  }
 
-    state.transactions.forEach(tx => {
-      if (tx.type !== 'expense') return;
-      const d = (tx.date || '').slice(0, 10);
-      if (!d || d < fromDate || d > toDate) return;
-
-      const amt = parseFloat(tx.amount) || 0;
-      total += amt;
-      const cat = tx.category || 'other';
-      const mem = tx.member || 'البيت';
-
-      if (!catMap[cat]) catMap[cat] = { category: cat, total: 0, count: 0, members: {} };
-      catMap[cat].total += amt;
-      catMap[cat].count++;
-      catMap[cat].members[mem] = (catMap[cat].members[mem] || 0) + amt;
-
-      byMember[mem] = (byMember[mem] || 0) + amt;
-      byDate[d] = (byDate[d] || 0) + amt;
+  function returnFromSampleOperations() {
+    if (!sampleReturn) return;
+    const previous = sampleReturn;
+    sampleReturn = null;
+    sampleView = {limit: 60};
+    switchAppPage('budgets');
+    switchBudgetSubTab('monthly');
+    switchBudgetMonthView('compare');
+    requestAnimationFrame(() => {
+      window.scrollTo(0, previous.top);
+      const target = previous.id ? byId(previous.id) : document.querySelector(periodButtonSelector(previous.series, previous.category));
+      target?.scrollIntoView({block: 'nearest'});
+      target?.focus({preventScroll: true});
     });
-
-    const items = Object.values(catMap).sort((a, b) => b.total - a.total);
-    return { items, total, byMember, byDate };
   }
 
-  function buildEstimPeriodOptions(actPeriod) {
-    const sel = document.getElementById('cmpEstimPeriod');
-    if (!sel) return;
-
-    let options = [];
-    if (actPeriod === 'today' || actPeriod === 'yesterday') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'today' ? 'اليوم (متزامن مع الفعلية)' : 'أمس (متزامن مع الفعلية)') },
-        { val: actPeriod === 'today' ? 'yesterday' : 'today', label: actPeriod === 'today' ? 'أمس' : 'اليوم' },
-        { val: 'custom', label: 'منتقى بيوم محدد' }
-      ];
-    } else if (actPeriod === 'thisWeek' || actPeriod === 'lastWeek') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'thisWeek' ? 'الأسبوع الحالى (متزامن)' : 'الأسبوع السابق (متزامن)') },
-        { val: actPeriod === 'thisWeek' ? 'lastWeek' : 'thisWeek', label: actPeriod === 'thisWeek' ? 'الأسبوع السابق' : 'الأسبوع الحالى' },
-        { val: 'custom', label: 'منتقى بأسبوع' }
-      ];
-    } else if (actPeriod === 'thisMonth' || actPeriod === 'lastMonth') {
-      options = [
-        { val: actPeriod, label: (actPeriod === 'thisMonth' ? 'الشهر الحالى (متزامن)' : 'الشهر السابق (متزامن)') },
-        { val: actPeriod === 'thisMonth' ? 'lastMonth' : 'thisMonth', label: actPeriod === 'thisMonth' ? 'الشهر السابق' : 'الشهر الحالى' },
-        { val: 'custom', label: 'منتقى بشهر' }
-      ];
-    } else if (actPeriod === 'thisYear') {
-      options = [
-        { val: 'thisYear', label: 'السنة الحالية (متزامن)' },
-        { val: 'lastYear', label: 'السنة السابقة' },
-        { val: 'custom', label: 'منتقى بسنة' }
-      ];
-    } else {
-      options = [
-        { val: 'custom', label: 'منتقى التواريخ (مخصص)' }
-      ];
+  function renderSampleOperations() {
+    const container = byId('sampleOperationsList');
+    if (!container) return;
+    byId('sampleOperationsBack').hidden = !sampleReturn;
+    byId('sampleOperationsShowAll').hidden = !sampleView.profile;
+    byId('sampleOperationsMore').hidden = true;
+    let records;
+    try {
+      const ledger = readSampleOperations();
+      records = Object.keys(sampleProfiles).filter(profile => !sampleView.profile || sampleView.profile === profile)
+        .flatMap(profile => sampleEntries(ledger, profile, sampleView, sampleView.category));
+    } catch {
+      container.textContent = 'تعذرت قراءة سجل العمليات التجريبية.';
+      return;
     }
-
-    sel.innerHTML = options.map(o => `<option value="${o.val}" ${o.val === _estimPeriod ? 'selected' : ''}>${o.label}</option>`).join('');
+    records.sort((a,b) => b.date.localeCompare(a.date));
+    if (!records.length) {
+      container.textContent = 'لا توجد عمليات تجريبية لهذا الاختيار.';
+      return;
+    }
+    const total = records.reduce((sum, record) => sum + record.cents, 0);
+    const rows = records.slice(0,sampleView.limit).map(({date,id,cents,profile}) =>
+      '<tr><td><bdi>' + escapeHtml(date) + '</bdi></td><td>' + escapeHtml(categoryName(id)) +
+      '</td><td>' + sampleProfiles[profile].label + '</td><td><bdi>' + money(cents) + '</bdi></td></tr>').join('');
+    container.innerHTML = '<p class="sample-operations-summary">' + number.format(records.length) + ' عملية تجريبية · ' +
+      money(total) + ' ج.م</p><div class="cmp-period-table"><table aria-label="العمليات التجريبية المسجلة">' +
+      '<thead><tr><th>التاريخ</th><th>البند</th><th>المصدر</th><th>ج.م</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+    byId('sampleOperationsMore').hidden = records.length <= sampleView.limit;
   }
 
-  function onActualPeriodChange(val) {
-    _actualPeriod = val;
-    const customDiv = document.getElementById('cmpActualCustomRange');
-    if (customDiv) customDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+  function showMoreSampleOperations() {
+    sampleView.limit += 60;
+    renderSampleOperations();
+  }
 
-    // Auto-sync estimated period
-    _estimPeriod = val;
-    buildEstimPeriodOptions(val);
+  function showAllSampleOperations() {
+    sampleView = {limit: 60};
+    renderSampleOperations();
+  }
 
-    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
-    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+  function aggregate(entries) {
+    const values = new Map();
+    for (const {id, cents} of entries) values.set(id, (values.get(id) || 0) + cents);
+    return values;
+  }
 
+  function expensesForRange(range) {
+    if (demoMode) return sampleEntries(readSampleOperations(), 'sample-spend', range);
+    return (state.transactions || []).filter(tx => tx.type === 'expense' && String(tx.date || '').slice(0,10) >= range.from &&
+      String(tx.date || '').slice(0,10) <= range.to).map(tx => ({id: tx.category || 'other', cents: Math.round((Number(tx.amount) || 0) * 100)}));
+  }
+
+  function estimatesForRange(range) {
+    const values = new Map();
+    const missing = [];
+    const plans = state.monthlyBudgets || [];
+    for (const {key, days, first, last} of monthSlices(range)) {
+      const matches = plans.filter(plan => plan.month === key && plan.items?.length);
+      const plan = matches.find(item => item.id === state.activeBudgetId) || matches[0];
+      if (!plan) {
+        missing.push(key);
+        continue;
+      }
+      const entries = aggregate(plan.items.map(item => ({id: item.category || 'other', cents: Math.round((Number(item.amount) || 0) * 100)})));
+      for (const [category, cents] of entries) {
+        values.set(category, (values.get(category) || 0) + prorate(cents, days, first, last));
+      }
+    }
+    return {values, missing};
+  }
+
+  function periodButtonSelector(series, category) {
+    return '#cmpPeriodChart button[data-period-series="' + series + '"][data-period-category="' + CSS.escape(category || '') + '"]';
+  }
+
+  function rangeLabel(range) {
+    return '<bdi dir="ltr">' + escapeHtml(range.from) + ' — ' + escapeHtml(range.to) + '</bdi>';
+  }
+
+  function differencePercent(difference, baseline) {
+    if (baseline === null || baseline <= 0) return '—';
+    return (difference > 0 ? '+' : '') + percent.format(difference / baseline * 100) + '٪';
+  }
+
+  function changeMarkup(actual, baseline, budgetReference) {
+    if (baseline === null) return '<span class="cmp-delta-caption">المرجع غير متاح</span>';
+    const difference = actual - baseline;
+    if (!difference) return '<span class="cmp-delta-caption">لا فرق</span>';
+    const type = difference > 0 ? 'cmp-rise' : 'cmp-fall';
+    const caption = budgetReference
+      ? (difference > 0 ? 'أعلى من التقديري' : 'أقل من التقديري')
+      : (difference > 0 ? 'أعلى من المرجع' : 'أقل من المرجع');
+    const info = baseline === 0 && actual > 0 ? (budgetReference ? 'صرف بلا تقدير' : 'بند جديد') :
+      baseline > 0 && actual === 0 ? (budgetReference ? 'لم يُسجَّل صرف' : 'توقف الصرف') : '';
+    return '<span class="cmp-delta-caption ' + type + '">' + caption + '</span><span class="cmp-delta-value"><bdi dir="ltr" class="cmp-delta-amount ' +
+      type + '">' + signedMoney(difference) + '</bdi><span class="cmp-change-unit">ج.م</span></span>' +
+      (baseline > 0 ? '<small dir="ltr">' + differencePercent(difference, baseline) + '</small>' : '') +
+      (info ? '<small>' + info + '</small>' : '');
+  }
+
+  function renderRangePreview(id, range, caption, fallback = 'اختر التواريخ') {
+    byId(id).innerHTML = validRange(range) ? '<small>' + caption + '</small>' + rangeLabel(range) : fallback;
+  }
+
+  function usePrimaryDates() {
+    byId('cmpEstimFrom').value = '';
+    byId('cmpEstimTo').value = '';
     render();
   }
 
-  function onEstimPeriodChange(val) {
-    _estimPeriod = val;
-    const estimCustomDiv = document.getElementById('cmpEstimCustomRange');
-    if (estimCustomDiv) estimCustomDiv.style.display = (val === 'custom') ? 'flex' : 'none';
-    render();
+  function valueMarkup(key, id, cents, clickable) {
+    if (cents === null) return '<span>—</span>';
+    if (!clickable || !cents) return '<bdi dir="ltr" class="cmp-plain-value">' + money(cents) + '</bdi>';
+    const label = key === 'actual' ? 'الفترة الأساسية' : 'المرجع';
+    return '<button type="button" class="cmp-period-value" data-period-series="' + key + '" data-period-category="' +
+      escapeHtml(id) + '" aria-label="' + escapeHtml((id ? categoryName(id) : 'الإجمالي') + '، ' + label + '، ' + money(cents)) +
+      '"><bdi dir="ltr">' + money(cents) + '</bdi></button>';
   }
+
+  function renderInsights(rows, entryCount, total, range, comparable) {
+    const rise = rows.filter(row => row.diff > 0);
+    const fall = rows.filter(row => row.diff < 0);
+    const most = (list, sort) => [...list].sort(sort)[0]?.name || '—';
+    const stats = [
+      ['عدد العمليات', number.format(entryCount)],
+      ['متوسط الصرف اليومي', money(Math.round(total / dateDiffDays(range.from,range.to))) + ' ج.م'],
+      ['عدد البنود', number.format(rows.length)],
+      ['بنود زاد فيها الصرف', comparable ? number.format(rise.length) : '—'],
+      ['بنود قل فيها الصرف', comparable ? number.format(fall.length) : '—'],
+      ['بنود بلا تغير', comparable ? number.format(rows.length - rise.length - fall.length) : '—'],
+      ['أكبر زيادة', most(rise, (a,b) => b.diff - a.diff)],
+      ['أكبر انخفاض', most(fall, (a,b) => a.diff - b.diff)],
+      ['أعلى بند صرفًا', most(rows.filter(row => row.a > 0), (a,b) => b.a - a.a)]
+    ];
+    byId('cmpExtraInsightGrid').innerHTML = '<dl class="cmp-metrics">' + stats.map(([name,value]) =>
+      '<div><dt>' + escapeHtml(name) + '</dt><dd>' + escapeHtml(value) + '</dd></div>').join('') + '</dl>';
+  }
+
+
+  // Reference-spec comparison, 17 Nov 2026: visible only for a registered budget.
+  // Monetary values in this engine are cents. No samples or fabricated categories.
+  function renderBudgetReferenceSpecification(content,rows,totals,range,opts={}) {
+    const expanded=Boolean(content.querySelector('#cmpUnifiedAdvancedCharts')?.open);
+    const referenceLabel=opts.referenceLabel||'الموازنة التقديرية';
+    const actualLabel=opts.actualLabel||'الصرف الفعلي';
+    const budgetMode=opts.reference==='plan'||!opts.reference;
+    const sorted=[...rows];
+    const est=totals.b||0, actual=totals.a||0, variance=actual-est;
+    const palette={estimated:'#2563EB',actual:'#0D9488',over:'#DC2626',save:'#16A34A'};
+    const num=value=>Math.round(Number(value)||0);
+    const money=value=>new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(value/100);
+    const fmt=value=>'<bdi dir="ltr">'+money(num(value))+'</bdi>';
+    const signed=value=>'<bdi dir="ltr">'+(value>0?'+':value<0?'−':'')+money(Math.abs(num(value)))+'</bdi>';
+    const percentValue=(difference,base)=>base>0?(difference/base*100):null;
+    const pct=value=>value===null?'—':'<bdi dir="ltr">'+(value>0?'+':value<0?'−':'')+Math.abs(value).toFixed(1)+'%</bdi>';
+    const tone=value=>value>0?'bs-over':value<0?'bs-save':'bs-neutral';
+    const safe=escapeHtml;
+    const actualLink=row=>'<button type="button" class="bs-open-operations" data-period-series="actual" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات '+safe(row.name)+'">'+fmt(row.a)+'</button>';
+    const referenceLink=row=>opts.reference==='plan'||!row.b?fmt(row.b):
+      '<button type="button" class="bs-open-operations" data-period-series="reference" data-period-category="'+safe(row.id)+'" aria-label="عرض عمليات المرجع: '+safe(row.name)+'">'+fmt(row.b)+'</button>';
+    const condition=row=>(row.b||0)===0?'غير مخطط':(row.diff/(row.b||1)*100>5?(budgetMode?'تجاوز':'ارتفاع'):row.diff/(row.b||1)*100< -5?(budgetMode?'توفير':'انخفاض'):'ضمن الحد');
+    const totalPct=percentValue(variance,est);
+    if(est+sorted.reduce((sum,row)=>sum+row.diff,0)!==actual){
+      content.innerHTML='<p class="bs-error" role="alert">تعذر عرض المقارنة: إجمالي التقديري ومجموع الفروق لا يتطابقان مع إجمالي الفعلي.</p>';
+      return;
+    }
+    if(!byId('budgetSpecStyle')){
+      const style=document.createElement('style');style.id='budgetSpecStyle';
+      style.textContent=[
+        '.budget-spec{--bs-est:#2563EB;--bs-act:#0D9488;--bs-over:#DC2626;--bs-save:#16A34A;color:var(--text-primary,inherit);direction:rtl;font:500 13px/1.65 Tahoma,Arial,sans-serif;max-width:100%;min-width:0}',
+        '.budget-spec *, .budget-spec *::before,.budget-spec *::after{box-sizing:border-box}',
+        '.budget-spec h3,.budget-spec h4{margin:0 0 9px;font-size:15px;line-height:1.4;color:inherit}',
+        '.budget-spec small{font-size:12px;color:var(--text-secondary,inherit)}',
+        '.budget-spec .bs-intro{margin:0 0 12px;color:inherit}',
+        '.budget-spec .bs-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}',
+        '.budget-spec .bs-panel{min-width:0;max-width:100%;overflow:hidden;border:1px solid var(--border-color,#cbd5e1);background:var(--card-bg,transparent);border-radius:12px;padding:12px}',
+        '.budget-spec .bs-note{font-size:12px;margin:9px 0 0}',
+        '.budget-spec .bs-over{color:var(--bs-over)}.budget-spec .bs-save{color:var(--bs-save)}.budget-spec .bs-neutral{color:inherit}',
+        '.budget-spec .bs-open-operations{border:0;border-bottom:1px dashed currentColor;background:transparent;font:inherit;color:var(--bs-act);padding:2px;cursor:pointer;min-height:30px}',
+        '.budget-spec .bs-statline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:9px 0 12px}',
+        '.budget-spec .bs-statline>div{padding:9px;border:1px solid var(--border-color,#cbd5e1);border-radius:8px;min-width:0}',
+        '.budget-spec .bs-statline strong{display:block;font-size:15px;overflow-wrap:anywhere}',
+        '.budget-spec .bs-statline small{display:block}',
+        '.budget-spec .bs-table-wrap{max-width:100%;width:100%;overflow-x:auto}',
+        '.budget-spec .bs-table{width:100%;border-collapse:collapse;min-width:720px;text-align:right;font-variant-numeric:tabular-nums}',
+        '.budget-spec .bs-table th,.budget-spec .bs-table td{padding:7px 6px;border-bottom:1px solid var(--border-color,#cbd5e1);white-space:nowrap;font-size:12px}',
+        '.budget-spec .bs-table th{font-weight:900}.budget-spec .bs-table tfoot{font-weight:900}',
+        '.budget-spec .bs-mobile-rows{display:none}',
+        '.budget-spec .bs-row-card{border:1px solid var(--border-color,#cbd5e1);border-radius:9px;padding:10px;margin:7px 0}',
+        '.budget-spec .bs-row-head{display:flex;align-items:center;justify-content:space-between;gap:6px}',
+        '.budget-spec .bs-row-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 9px;margin-top:6px}',
+        '.budget-spec .bs-row-values>div{display:flex;gap:4px;min-width:0;flex-wrap:wrap;justify-content:space-between}',
+        '.budget-spec .bs-viz{width:100%;height:auto;display:block;overflow:visible}',
+        '.budget-spec .bs-viz text{fill:currentColor;font:12px Tahoma,Arial,sans-serif}',
+        '.budget-spec .bs-viz .bs-grid-line{stroke:var(--border-color,#cbd5e1);stroke-width:1;stroke-dasharray:3 4}',
+        '.budget-spec .bs-variance-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,2fr);gap:7px;align-items:center;margin:8px 0}',
+        '.budget-spec .bs-variance-label{font-size:12px;text-align:right;overflow-wrap:anywhere}',
+        '.budget-spec .bs-track{height:19px;position:relative;display:flex;align-items:center;background:color-mix(in srgb,var(--bs-est) 9%,transparent);border-radius:3px}',
+        '.budget-spec .bs-track::after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px solid currentColor;opacity:.45}',
+        '.budget-spec .bs-track>i{position:absolute;top:3px;bottom:3px;max-width:50%;display:block}',
+        '.budget-spec .bs-variance-value{font-size:12px;text-align:left;white-space:nowrap}',
+        '.budget-spec .bs-legend{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px}',
+        '.budget-spec .bs-legend i{display:inline-block;width:12px;height:12px;vertical-align:middle;margin-inline-end:4px}',
+        '.budget-spec [dir="ltr"],.budget-spec bdi{unicode-bidi:isolate;font-variant-numeric:tabular-nums}',
+        '@media(min-width:880px){.budget-spec .bs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.budget-spec .bs-grid>.bs-full{grid-column:1/-1}}',
+        '@media(max-width:600px){.budget-spec .bs-table-wrap{display:none}.budget-spec .bs-mobile-rows{display:block}.budget-spec .bs-panel{padding:9px}.budget-spec .bs-statline strong{font-size:13px}.budget-spec .bs-viz text{font-size:12px}}'
+      ].join('\n');document.head.append(style);
+    }
+    const tableRows=sorted.map((row,index)=>{
+      const ratio=percentValue(row.diff,row.b||0), status=condition(row);
+      const estShare=est?row.b/est*100:0,actShare=actual?row.a/actual*100:0;
+      const type=row.id==='bills'?'ثابت':'متغير';
+      const cause=row.b===0&&row.a>0?'بند غير مخطط':'غير محدد';
+      const values=[[referenceLabel,referenceLink(row)],[actualLabel,actualLink(row)],
+        ['الفرق','<span class="'+tone(row.diff)+'">'+signed(row.diff)+'</span>'],
+        ['الانحراف',pct(ratio)],['الحالة',safe(status)],
+        ['الحصة التقديرية',pct(estShare)],['الحصة الفعلية',pct(actShare)]];
+      const mobile='<article class="bs-row-card" data-budget-category="'+safe(row.id)+'"><div class="bs-row-head"><strong>'+String(index+1)+'. '+safe(row.name)+'</strong><span class="'+tone(row.diff)+'">'+safe(status)+'</span></div><div class="bs-row-values">'+values.map(kv=>'<div><small>'+kv[0]+'</small><strong>'+kv[1]+'</strong></div>').join('')+'</div><small>النوع: '+type+' · السبب: '+cause+'</small></article>';
+      const desktop='<tr data-budget-category="'+safe(row.id)+'"><th scope="row">'+number.format(index+1)+'. '+safe(row.name)+'</th><td>'+referenceLink(row)+'</td><td>'+actualLink(row)+'</td><td class="'+tone(row.diff)+'">'+signed(row.diff)+'</td><td>'+pct(ratio)+'</td><td>'+status+'</td><td>'+pct(estShare)+'</td><td>'+pct(actShare)+'</td><td>'+type+'</td><td>'+cause+'</td></tr>';
+      return {mobile,desktop};
+    });
+    const totalRow='<tr><th scope="row">الإجمالي</th><td>'+fmt(est)+'</td><td><button class="bs-open-operations" type="button" data-period-series="actual" data-period-category="">'+fmt(actual)+'</button></td><td class="'+tone(variance)+'">'+signed(variance)+'</td><td>'+pct(totalPct)+'</td><td>'+ (est===0?'غير مخطط':totalPct>5?'تجاوز':totalPct< -5?'توفير':'ضمن الحد')+'</td><td>100%</td><td>100%</td><td>—</td><td>—</td></tr>';
+    const table='<section class="bs-panel bs-full" id="cmpUnifiedTable" aria-label="جدول فروقات المقارنة"><h3>جدول الفروقات لكل بند</h3>'+
+      '<div class="bs-table-wrap"><table class="bs-table"><thead><tr><th>البند</th><th>'+safe(referenceLabel)+'</th><th>'+safe(actualLabel)+'</th><th>الفرق</th><th>الانحراف</th><th>الحالة</th><th>حصة التقديري</th><th>حصة الفعلي</th><th>النوع</th><th>سبب الانحراف</th></tr></thead><tbody>'+tableRows.map(r=>r.desktop).join('')+'</tbody><tfoot>'+totalRow+'</tfoot></table></div>'+
+      '<div class="bs-mobile-rows">'+tableRows.map(r=>r.mobile).join('')+'</div><p class="bs-note">اضغط على المبلغ الفعلي لعرض العمليات المفلترة. النسبة (—) تعني عدم وجود تقدير لهذا البند. سبب الانحراف غير محدد ما لم يُسجّل في البيانات.</p></section>';
+    const max=Math.max(1,...sorted.map(row=>Math.max(row.a,row.b||0)));
+    const plotW=Math.max(540,sorted.length*76+100),plotH=260,top=37,baseY=198;
+    const columnWidth=18,slot=(plotW-85)/Math.max(sorted.length,1);
+    let columnSvg='<svg class="bs-viz" role="img" aria-label="أعمدة التقديري والفعلي لكل بند" viewBox="0 0 '+plotW+' '+plotH+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<title>مقارنة الأعمدة المتجاورة</title><desc>الرمادي يمثل التقديري والأزرق يمثل الفعلي، والفرق موضح أعلى كل بند.</desc>'+
+      '<path class="bs-grid-line" d="M 46 '+baseY+' H '+(plotW-16)+' M 46 '+(baseY-70)+' H '+(plotW-16)+' M 46 '+(baseY-140)+' H '+(plotW-16)+'"/>';
+    sorted.forEach((row,i)=>{
+      const center=50+slot*(i+.5),eh=(row.b||0)/max*140,ah=row.a/max*140;
+      columnSvg+='<rect x="'+(center-20)+'" y="'+(baseY-eh)+'" width="'+columnWidth+'" height="'+eh+'" fill="'+palette.estimated+'"/>'+
+        '<rect x="'+(center+2)+'" y="'+(baseY-ah)+'" width="'+columnWidth+'" height="'+ah+'" fill="'+palette.actual+'"/>'+
+        '<text x="'+center+'" y="22" text-anchor="middle">'+(row.diff>0?'+':row.diff<0?'−':'')+money(Math.abs(row.diff))+'</text>'+
+        '<text x="'+center+'" y="218" text-anchor="middle">'+safe(row.name.length>12?row.name.slice(0,11)+'…':row.name)+'</text>';
+    });
+    columnSvg+='</svg>';
+    // Waterfall uses a truncated axis to make small month-end differences legible.
+    const steps=[{name:'التقديري',value:est,total:true}], nonZero=sorted.filter(r=>r.diff!==0);
+    nonZero.forEach(r=>steps.push({name:r.name,value:r.diff,total:false}));
+    steps.push({name:'الفعلي',value:actual,total:true});
+    let cumulative=est;
+    const levels=[est];
+    nonZero.forEach(r=>{cumulative+=r.diff;levels.push(cumulative)});
+    const low=Math.min(...levels,actual),high=Math.max(...levels,actual);
+    const margin=Math.max(1,(high-low)*.12),floor=Math.floor((low-margin)/10000)*10000;
+    const ceil=Math.max(high+margin,floor+10000),vertical=value=>205-(value-floor)/(ceil-floor)*150;
+    const stepW=Math.max(560,steps.length*76+50),pace=(stepW-90)/Math.max(steps.length,1);
+    let waterfall='<svg class="bs-viz" role="img" aria-label="شلال الفروقات من التقديري إلى الفعلي" viewBox="0 0 '+stepW+' 258" xmlns="http://www.w3.org/2000/svg"><title>شلال فروقات الميزانية</title><desc>أعمدة تجاوز باللون الأحمر وتوفير باللون الأخضر، من إجمالي التقديري إلى الفعلي.</desc>';
+    let running=est;
+    steps.forEach((step,i)=>{
+      const x=50+i*pace+pace*.25,w=Math.min(24,pace*.52),start=step.total?floor:running,end=step.total?step.value:running+step.value;
+      const y=Math.min(vertical(start),vertical(end)),height=Math.max(1,Math.abs(vertical(start)-vertical(end)));
+      const color=step.total?(i===0?palette.estimated:palette.actual):(step.value>0?palette.over:palette.save);
+      waterfall+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+height+'" fill="'+color+'"/>'+
+        '<text x="'+(x+w/2)+'" y="20" text-anchor="middle">'+(step.total?'':step.value>0?'+':'−')+money(Math.abs(step.value))+'</text>'+
+        '<text x="'+(x+w/2)+'" y="236" text-anchor="middle">'+safe(step.name.length>11?step.name.slice(0,10)+'…':step.name)+'</text>';
+      if(!step.total)running+=step.value;
+      const next=i<steps.length-1?x+pace:w;
+      if(i<steps.length-1)waterfall+='<line x1="'+(x+w)+'" x2="'+(x+pace)+'" y1="'+vertical(i===0?est:running)+'" y2="'+vertical(i===0?est:running)+'" stroke="currentColor" stroke-dasharray="3 4" opacity=".3"/>';
+    });
+    waterfall+='</svg>';
+    const maxDelta=Math.max(1,...sorted.map(row=>Math.abs(row.diff)));
+    const variances=[...sorted].sort((a,b)=>b.diff-a.diff);
+    const variancesHtml=variances.map(row=>{
+      const frac=Math.abs(row.diff)/maxDelta*50;
+      const layout=row.diff>=0?'left:50%;width:'+frac+'%;background:'+palette.over:'right:50%;width:'+frac+'%;background:'+palette.save;
+      return '<div class="bs-variance-row"><div class="bs-variance-label">'+safe(row.name)+'<div class="bs-variance-value '+tone(row.diff)+'">'+signed(row.diff)+' ('+pct(percentValue(row.diff,row.b||0))+')</div></div>'+
+        '<div class="bs-track" dir="ltr"><i style="'+layout+'"></i></div></div>';
+    }).join('');
+    const stats='<div class="bs-statline"><div><small>إجمالي التقديري</small><strong>'+fmt(est)+'</strong></div><div><small>إجمالي الفعلي</small><strong>'+fmt(actual)+'</strong></div>'+
+      '<div><small>الفرق الكلي</small><strong class="'+tone(variance)+'">'+signed(variance)+'</strong></div><div><small>نسبة الانحراف</small><strong class="'+tone(variance)+'">'+pct(totalPct)+'</strong></div></div>';
+    content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
+      '<div class="bs-grid">'+table+
+      '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div>'+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p></section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div>'+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
+      '<details class="bs-more" id="cmpUnifiedAdvancedCharts" '+(expanded?'open':'')+'><summary>عرض الرسوم الخمسة الإضافية (4–8)</summary><div class="bs-more-grid"></div></details></div></div>';
+    renderBudgetReferenceAdvancedCharts(content,sorted,totals,range,opts);
+  }
+
+  // Five additional views use the same registered budget and actual transactions.
+  function renderBudgetReferenceAdvancedCharts(content,rows,totals,range,opts={}) {
+    const grid=content.querySelector('.bs-more-grid')||content.querySelector('.bs-grid');
+    if(!grid)return;
+    const numberFmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
+    const cash=value=>numberFmt.format(Math.round(value/100));
+    const text=value=>escapeHtml(String(value));
+    const signed=value=>(value>0?'+':value<0?'−':'')+cash(Math.abs(value));
+    const pct=(actual,estimated)=>estimated>0
+      ?(actual-estimated>0?'+':actual-estimated<0?'−':'')+Math.abs(Math.round((actual-estimated)/estimated*100))+'%'
+      :'—';
+    const sorted=[...rows];
+    const colorById={food:'#2a78d6',education:'#eb6834',transport:'#1baf7a',
+      leisure:'#eda100',bills:'#e87ba4',health:'#008300',daily:'#8b5cf6',
+      house:'#0d9488',clothes:'#c2410c',other:'#64748b'};
+    const color=id=>colorById[id]||('#'+(0x666666+String(id).split('').reduce((sum,c)=>sum+c.charCodeAt(0)*173,0)%0x777777).toString(16).padStart(6,'0'));
+    if(!byId('budgetSpecAdvancedStyle')){
+      const style=document.createElement('style');style.id='budgetSpecAdvancedStyle';
+      style.textContent=[
+        '.budget-spec .bs-bullet-row{display:grid;grid-template-columns:minmax(80px,1fr) minmax(0,2fr) auto;align-items:center;gap:8px;margin:12px 0;font-size:12px}',
+        '.budget-spec .bs-bullet-track{height:18px;position:relative;border-radius:3px;overflow:visible;background:linear-gradient(to right,#2563EB2e 0 50%,#DC26262a 50% 100%)}',
+        '.budget-spec .bs-bullet-track::after{content:"";position:absolute;left:var(--target);top:-3px;bottom:-3px;border-left:2px solid currentColor}',
+        '.budget-spec .bs-bullet-track>i{position:absolute;top:4px;bottom:4px;left:0;background:#0D9488;max-width:100%;display:block}',
+        '.budget-spec .bs-heat-row{display:grid;grid-template-columns:minmax(85px,1.2fr) repeat(var(--months),minmax(0,1fr));align-items:center;gap:3px;margin:3px 0}',
+        '.budget-spec .bs-heat-row>span{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+        '.budget-spec .bs-heat-cell{display:grid;place-items:center;min-height:34px;border-radius:4px;text-align:center;font-size:12px;font-weight:800;color:inherit}',
+        '.budget-spec .bs-heat-mobile{display:none}.budget-spec .bs-heat-month{margin:8px 0 12px;border-bottom:1px solid var(--border-color,#cbd5e1);padding-bottom:6px}',
+        '.budget-spec .bs-heat-month-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}',
+        '.budget-spec .bs-heat-month-item{padding:5px;border-radius:6px;font-size:12px;min-width:0;overflow-wrap:anywhere}',
+        '.budget-spec .bs-stacked-bars{display:grid;gap:12px}',
+        '.budget-spec .bs-stack{display:flex;direction:ltr;width:100%;height:36px;overflow:hidden;border-radius:5px;border:1px solid var(--border-color,#cbd5e1)}',
+        '.budget-spec .bs-stack>div{height:100%;min-width:0;position:relative;opacity:.95}',
+        '.budget-spec .bs-stack-label{display:flex;gap:6px;justify-content:space-between;font-size:12px}',
+        '.budget-spec .bs-stack-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-top:12px}',
+        '.budget-spec .bs-stack-key>span{font-size:12px}',
+        '.budget-spec .bs-stack-key i{display:inline-block;width:12px;height:12px;vertical-align:middle}',
+        '.budget-spec .bs-cumulative-legend{display:flex;gap:12px;justify-content:center;font-size:12px;flex-wrap:wrap}',
+        '.budget-spec .bs-slope-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:8px;align-items:center;margin:8px 0;padding-bottom:6px;border-bottom:1px dashed var(--border-color,#cbd5e1)}',
+        '.budget-spec .bs-slope-visual{position:relative;height:30px;background:linear-gradient(to right,transparent 0 2%,#2563EB26 2% 3%,transparent 3% 96%,#2563EB26 96% 97%,transparent 97%);min-width:0}',
+        '.budget-spec .bs-slope-visual svg{width:100%;height:30px;display:block}',
+        '.budget-spec .bs-slope-amounts{font-size:12px;display:flex;justify-content:space-between;direction:ltr;gap:5px}',
+        '@media(max-width:600px){.budget-spec .bs-heat-desktop{display:none}.budget-spec .bs-heat-mobile{display:block}.budget-spec .bs-bullet-row{grid-template-columns:minmax(70px,1fr) minmax(0,1.6fr) auto;gap:4px}.budget-spec .bs-stack-key{gap:4px}.budget-spec .bs-slope-row{grid-template-columns:minmax(90px,1fr) minmax(0,1.35fr)}}'
+      ].join('\n');document.head.append(style);
+    }
+    // 4. Bullet chart: common ratio scale, with the exact 100% target.
+    const topRatio=Math.max(0,...sorted.map(r=>r.b>0?r.a/r.b*100:0));
+    const axisMax=Math.max(200,Math.ceil(topRatio/50)*50);
+    const bullet=sorted.map(row=>{
+      const ratio=row.b>0?Math.min(axisMax,row.a/row.b*100):0;
+      return '<div class="bs-bullet-row"><span>'+text(row.name)+'</span>'+
+        '<div class="bs-bullet-track" dir="ltr" style="--target:'+(100/axisMax*100)+'%"><i style="width:'+(ratio/axisMax*100)+'%"></i></div>'+
+        '<strong dir="ltr">'+(row.b?pct(row.a,row.b):'—')+'</strong></div>';
+    }).join('');
+    const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو المرجع المحدد، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+'</section>');
+    // Six aligned relative slices from the ACTUAL selected period and reference.
+    const baseRange=opts.baseline||range;
+    const n=Math.min(6,dateDiffDays(range.from,range.to),dateDiffDays(baseRange.from,baseRange.to));
+    const divide=(period,count)=>{
+      const start=Date.parse(period.from+'T00:00:00Z');
+      const days=dateDiffDays(period.from,period.to);
+      return Array.from({length:count},(_,i)=>{
+        const first=Math.floor(days*i/count),last=Math.floor(days*(i+1)/count)-1;
+        const day=k=>new Date(start+k*86400000).toISOString().slice(0,10);
+        return {from:day(first),to:day(last)};
+      });
+    };
+    const referenceAmounts=period=>{
+      if(opts.reference==='plan')return estimatesForRange(period).values;
+      if(isSampleBudget(opts.reference)){
+        const totals=new Map();
+        for(const {days,first,last} of monthSlices(period)){
+          for(const [id,cents] of sampleAmounts(opts.reference))
+            totals.set(id,(totals.get(id)||0)+prorate(cents,days,first,last));
+        }
+        return totals;
+      }
+      return aggregate(expensesForRange(period));
+    };
+    const primarySlices=divide(range,n),referenceSlices=divide(baseRange,n);
+    const monthly=primarySlices.map((period,i)=>{
+      const a=aggregate(expensesForRange(period));
+      const b=referenceAmounts(referenceSlices[i]);
+      const sum=map=>[...map.values()].reduce((acc,x)=>acc+x,0);
+      const label=period.from===period.to?period.from.slice(5):(period.from.slice(5)+'–'+period.to.slice(5));
+      return {key:label,actual:a,estimated:b,sumA:sum(a),sumB:sum(b)};
+    });
+    // Correct only sub-cent proration drift in summary totals.
+    if(monthly.length){
+      const last=monthly[monthly.length-1];
+      last.sumA+=(totals.a||0)-monthly.reduce((v,m)=>v+m.sumA,0);
+      last.sumB+=(totals.b||0)-monthly.reduce((v,m)=>v+m.sumB,0);
+    }
+    // 5. Cumulative: one vertical scale beginning at zero; gaps use red/green fills.
+    const cumA=[],cumB=[];let runningA=0,runningB=0;
+    monthly.forEach(m=>{runningA+=m.sumA;runningB+=m.sumB;cumA.push(runningA);cumB.push(runningB)});
+    const top=Math.max(1,...cumA,...cumB),width=620,height=245;
+    const x=i=>monthly.length===1?width/2:55+i*(width-100)/(monthly.length-1);
+    const y=value=>190-value/top*150;
+    const points=series=>series.map((v,i)=>x(i)+','+y(v)).join(' ');
+    let cum='<svg class="bs-viz" role="img" aria-label="الخطان التراكميان: التقديري والفعلي" viewBox="0 0 '+width+' '+height+'" xmlns="http://www.w3.org/2000/svg">'+
+      '<title>التراكم عبر الفترتين المختارتين</title><desc>خط رمادي متقطع للتقديري وخط أزرق متصل للفعلي؛ الأحمر لتجاوز التقديري والأخضر للتوفير.</desc>'+
+      '<path class="bs-grid-line" d="M55 190 H565 M55 115 H565 M55 40 H565"/>';
+    for(let i=1;i<monthly.length;i++){
+      const fill=cumA[i]>=cumB[i]?'#DC2626':'#16A34A';
+      cum+='<polygon points="'+x(i-1)+','+y(cumA[i-1])+' '+x(i)+','+y(cumA[i])+' '+x(i)+','+y(cumB[i])+' '+x(i-1)+','+y(cumB[i-1])+'" fill="'+fill+'" opacity=".16"/>';
+    }
+    cum+='<polyline points="'+points(cumB)+'" fill="none" stroke="#2563EB" stroke-width="2" stroke-dasharray="5 4"/>'+
+      '<polyline points="'+points(cumA)+'" fill="none" stroke="#0D9488" stroke-width="2"/>';
+    monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(i+1)+'</text>';});
+    cum+='</svg><div class="bs-cumulative-legend"><span>المرجع: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+'</section>');
+    // 6. Diverging heatmap; color and numeric sign together.
+    const heat=(row,month)=>{
+      const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
+      const v=b?(a-b)/b*100:null,abs=Math.abs(v||0);
+      const opacity=v===null?.18:abs===0?.15:abs<5?.2:abs<15?.4:abs<30?.62:.85;
+      const shade=v===null?'#2563EB':v>0?'#DC2626':v<0?'#16A34A':'#2563EB';
+      const label=v===null?'—':(v>0?'+':v<0?'−':'')+Math.round(abs)+'%';
+      return {style:'background:color-mix(in srgb,'+shade+' '+Math.round(opacity*100)+'%, transparent)',label};
+    };
+    let heatGrid='<div class="bs-heat-desktop"><div class="bs-heat-row" style="--months:'+monthly.length+'"><span>البند / الشهر</span>'+monthly.map(m=>'<span dir="ltr">'+text(m.key)+'</span>').join('')+'</div>';
+    sorted.forEach(row=>{
+      heatGrid+='<div class="bs-heat-row" style="--months:'+monthly.length+'"><span>'+text(row.name)+'</span>'+
+        monthly.map(m=>{const h=heat(row,m);return '<div class="bs-heat-cell" style="'+h.style+'" dir="ltr">'+h.label+'</div>'}).join('')+'</div>';
+    });
+    heatGrid+='</div><div class="bs-heat-mobile">'+monthly.map(m=>'<div class="bs-heat-month"><strong dir="ltr">'+text(m.key)+'</strong><div class="bs-heat-month-list">'+
+      sorted.map(row=>{const h=heat(row,m);return '<div class="bs-heat-month-item" style="'+h.style+'">'+text(row.name)+' <bdi dir="ltr">'+h.label+'</bdi></div>'}).join('')+
+      '</div></div>').join('')+'</div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للفترتين</h3>'+heatGrid+
+      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p></section>');
+    // 7. Largest-remainder integer allocation guarantees both stacks sum to 100.
+    function apportion(values){
+      const total=values.reduce((s,v)=>s+v,0);if(!total)return values.map(()=>0);
+      const shares=values.map(v=>v/total*100),whole=shares.map(Math.floor);
+      const ranked=shares.map((v,i)=>({i,frac:v-whole[i]})).sort((a,b)=>b.frac-a.frac||a.i-b.i);
+      let remainder=100-whole.reduce((s,v)=>s+v,0);
+      for(let i=0;i<remainder;i++)whole[ranked[i].i]++;
+      return whole;
+    }
+    const partsEst=apportion(sorted.map(r=>r.b||0)),partsAct=apportion(sorted.map(r=>r.a||0));
+    const bar=(values,label)=>'<div><div class="bs-stack-label"><strong>'+label+'</strong><span dir="ltr">'+values.join(' / ')+'%</span></div><div class="bs-stack" role="img" aria-label="'+label+' وحصص البنود" dir="ltr">'+
+      values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
+      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+
+      '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p></section>');
+    // 8. Slope: both sides share one numeric scale, one segment per category.
+    const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
+    const slope=sorted.map(row=>{
+      const y1=25-(row.b||0)/slopeMax*18,y2=25-row.a/slopeMax*18,stroke=row.diff>0?'#DC2626':row.diff<0?'#16A34A':'#2563EB';
+      return '<div class="bs-slope-row"><strong>'+text(row.name)+'</strong><div>'+
+      '<div class="bs-slope-amounts"><bdi dir="ltr">'+cash(row.b||0)+'</bdi><bdi dir="ltr">'+cash(row.a)+'</bdi></div>'+
+      '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
+    }).join('');
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. مخطط الميل</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
+      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p></section>');
+  }
+
 
   function render() {
-    const actInpFrom = document.getElementById('cmpActualFrom');
-    const actInpTo = document.getElementById('cmpActualTo');
-    const customActFrom = actInpFrom ? actInpFrom.value : null;
-    const customActTo = actInpTo ? actInpTo.value : null;
-
-    const actRange = periodToRange(_actualPeriod, customActFrom, customActTo);
-
-    const estInpFrom = document.getElementById('cmpEstimFrom');
-    const estInpTo = document.getElementById('cmpEstimTo');
-    const customEstFrom = estInpFrom ? estInpFrom.value : null;
-    const customEstTo = estInpTo ? estInpTo.value : null;
-
-    const estRange = periodToRange(_estimPeriod, customEstFrom || actRange.from, customEstTo || actRange.to);
-
-    const actData = getActualsForRange(actRange.from, actRange.to);
-    const daysCount = dateDiffDays(estRange.from, estRange.to);
-    const monthlyTotal = getActiveEstimBudgetTotal();
-    const estimTotalScaled = Math.round((monthlyTotal / 30) * daysCount);
-
-    const catEstimMap = getActivePlanCategoryEstimMap();
-
-    // 1. Build Table Body
-    const tbody = document.getElementById('cmpTableBody');
-    const tfoot = document.getElementById('cmpTableFoot');
-
-    // Merge categories from both actuals and plan items
-    const allCatKeys = new Set(actData.items.map(it => it.category));
-    Object.keys(catEstimMap).forEach(k => allCatKeys.add(k));
-
-    const rowsData = [];
-    allCatKeys.forEach(catKey => {
-      const actItem = actData.items.find(i => i.category === catKey);
-      const actualAmt = actItem ? actItem.total : 0;
-
-      let estAmt = 0;
-      if (catEstimMap[catKey]) {
-        estAmt = Math.round((catEstimMap[catKey] / 30) * daysCount);
-      } else {
-        // distribute remaining
-        const knownEstimSum = Object.values(catEstimMap).reduce((s, v) => s + v, 0);
-        const remMonthly = Math.max(0, monthlyTotal - knownEstimSum);
-        estAmt = Math.round((remMonthly / (allCatKeys.size || 1) / 30) * daysCount);
+    const root = byId('cmpPeriodChart');
+    if (!root) return;
+    const reference = byId('cmpPeriodReference').value;
+    const isPlan = reference === 'plan';
+    const isSample = isSampleBudget(reference);
+    const budgetReference = isPlan || isSample;
+    const range = getNavigationRange();
+    const refDates = datePair('cmpPeriod');
+    const estimDates = datePair('cmpEstim');
+    const baseDates = datePair('cmpActual');
+    const renderLabel = (id, pair, fallback) => {
+      byId(id).textContent = validRange(pair) ? pair.from + ' إلى ' + pair.to : fallback;
+    };
+    renderLabel('cmpActualCustomRangeLabel', baseDates, 'نطاق التواريخ');
+    renderLabel('cmpPeriodCustomRangeLabel', refDates, 'نطاق المرجع');
+    renderLabel('cmpEstimCustomRangeLabel', estimDates, 'تاريخ الموازنة');
+    byId('cmpActualCustomRange').hidden = _actualPeriod !== 'custom';
+    byId('cmpPeriodCustom').hidden = reference !== 'custom';
+    byId('cmpEstimCustomRange').hidden = !isPlan;
+    byId('cmpSampleActions').hidden = !isSample;
+    byId('cmpDataMode').textContent = demoMode ? 'عرض مصرفاتي الفعلية' : 'عرض مثال تجريبي';
+    byId('cmpDataMode').setAttribute('aria-pressed', String(demoMode));
+    const status = byId('cmpSampleStatus');
+    const scope = [reference,range.from,range.to].join(':');
+    if (status.dataset.scope !== scope) {
+      status.textContent = '';
+      status.dataset.scope = scope;
+    }
+    const primaryReady = validRange(range) && (_actualPeriod !== 'custom' || validRange(baseDates));
+    const planOverride = isPlan && Boolean(estimDates.from || estimDates.to);
+    const baseline = reference === 'custom' ? refDates : planOverride ? estimDates :
+      reference === 'previous' && primaryReady ? previousRange(range) : range;
+    const rule = reference === 'custom' ? 'نطاق مستقل' : planOverride ? 'نطاق موازنة مستقل' : budgetReference ? 'نفس تواريخ الأساسية' :
+      _actualPeriod === 'thisMonth' ? 'الجزء المقابل من الشهر السابق' :
+      _actualPeriod === 'lastMonth' ? 'الشهر الذي يسبقه كاملًا' :
+      _actualPeriod === 'thisWeek' ? 'نفس أيام الأسبوع السابق' :
+      _actualPeriod === 'lastWeek' ? 'الأسبوع الذي يسبقه كاملًا' :
+      _actualPeriod === 'thisYear' ? 'الجزء المقابل من السنة السابقة' :
+      _actualPeriod === 'today' || _actualPeriod === 'yesterday' ? 'اليوم الذي يسبقه' : 'نطاق سابق بنفس عدد الأيام';
+    const notSet = {from:'',to:''};
+    renderRangePreview('cmpPrimaryDates',primaryReady ? range : notSet,'التواريخ المختارة');
+    renderRangePreview('cmpReferenceDates',primaryReady || reference === 'custom' || planOverride ? baseline : notSet,rule,
+      reference === 'custom' || planOverride ? 'اختر تواريخ المرجع' : 'يتحدد بعد اختيار الأساسية');
+    byId('cmpRestoreDateLink').hidden = !planOverride;
+    const content = byId('cmpPeriodChartContent');
+    const summary = byId('cmpSummary');
+    const details = byId('cmpInsightDetails');
+    const viewTools = root.querySelector('.cmp-view-tools');
+    const ready = primaryReady && validRange(baseline);
+    viewTools.hidden = details.hidden = !ready;
+    root.onclick = event => {
+      const mode = event.target.closest('button[data-mode]');
+      if (mode) {
+        periodChartMode = mode.dataset.mode;
+        render();
+        return;
       }
-
-      // Difference: Estimated - Actual (Positive = saving, Negative = overrun)
-      const diff = estAmt - actualAmt;
-      rowsData.push({
-        catKey,
-        actualAmt,
-        estAmt,
-        diff,
-        count: actItem ? actItem.count : 0
-      });
+      const button = event.target.closest('button[data-period-series]');
+      if (!button || !ready) return;
+      const {periodSeries, periodCategory} = button.dataset;
+      const fromReference = periodSeries === 'reference';
+      const selected = fromReference ? baseline : range;
+      if (fromReference && isSample) {
+        openSampleOperations(button);
+      } else if (demoMode) {
+        openSampleLedger('sample-spend', selected, button);
+      } else {
+        window.BudgetDrilldownHub?.open({
+          source:'compare', originNode:button, ...selected, category:periodCategory,
+          label:periodCategory ? categoryName(periodCategory) : 'إجمالي المصروفات',
+          originSelector:periodButtonSelector(periodSeries,periodCategory)
+        });
+      }
+    };
+    root.querySelectorAll('button[data-mode]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.mode === periodChartMode)));
+    if (!ready) {
+      summary.textContent = 'اختر تاريخ البداية والنهاية للفترة المطلوبة.';
+      content.replaceChildren();
+      return;
+    }
+    const actualEntries = expensesForRange(range);
+    const actual = aggregate(actualEntries);
+    let referenceAmounts;
+    let comparable = true;
+    if (isPlan) {
+      const result = estimatesForRange(baseline);
+      referenceAmounts = result.values;
+      comparable = result.missing.length === 0;
+    } else if (isSample) {
+      referenceAmounts = new Map();
+      for (const {days,first,last} of monthSlices(baseline)) {
+        for (const [category,cents] of sampleAmounts(reference)) {
+          referenceAmounts.set(category,(referenceAmounts.get(category) || 0) + prorate(cents,days,first,last));
+        }
+      }
+    } else {
+      referenceAmounts = aggregate(expensesForRange(baseline));
+    }
+    const baseLabel = demoMode ? 'صرف تجريبي' : 'صرف فعلي';
+    const refLabel = isSample ? sampleProfiles[reference].label : isPlan ? 'الموازنة المسجلة' :
+      reference === 'previous' ? 'الفترة السابقة' : 'الفترة المخصصة';
+    const categories = new Set([...EXPENSE_CATEGORIES.map(category => category.id),
+      ...actual.keys(), ...(comparable ? referenceAmounts.keys() : [])]);
+    const rows = [...categories].map(id => {
+      const a = actual.get(id) || 0;
+      const b = comparable ? (referenceAmounts.get(id) || 0) : null;
+      return {id, name:categoryName(id), a, b, diff:comparable ? a-b : 0};
     });
-
-    // Sort descending by actualAmt
-    rowsData.sort((a, b) => b.actualAmt - a.actualAmt);
-
-    const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
-
-    if (tbody) {
-      if (rowsData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد مصروفات مسجلة لهذه الفترة</td></tr>`;
-      } else {
-        tbody.innerHTML = rowsData.map(r => {
-          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey, color: '#38bdf8', icon: 'fa-tag' };
-          const isSave = r.diff >= 0;
-          const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
-          const diffColor = isSave ? '#34d399' : '#f87171';
-          const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
-
-          // Percentage evaluated relative to estimated budget
-          let pctStr = '';
-          if (r.estAmt > 0) {
-            const pctOfEst = Math.round((r.actualAmt / r.estAmt) * 100);
-            if (isSave) {
-              const savePct = Math.round((r.diff / r.estAmt) * 100);
-              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#34d399;margin-top:2px;">وفر ${savePct}% (${pctOfEst}% مستهلك)</div>`;
-            } else {
-              const overPct = Math.round((Math.abs(r.diff) / r.estAmt) * 100);
-              pctStr = `<div style="font-size:0.65rem;font-weight:800;color:#f87171;margin-top:2px;">تجاوز +${overPct}% (${pctOfEst}% من التقديري)</div>`;
-            }
-          } else {
-            pctStr = r.actualAmt > 0 ? `<div style="font-size:0.64rem;color:#f87171;margin-top:2px;">بدون موازنة تقديرية</div>` : '';
-          }
-
-          return `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: background 0.15s;"
-                onclick="BudgetCompareEngine.drillDownToCategory('${r.catKey}')"
-                title="اضغط لعرض كافة حركات ${catObj.name} المفلترة"
-                onmouseover="this.style.background='rgba(56,189,248,0.08)'"
-                onmouseout="this.style.background='transparent'">
-              <td style="padding: 8px 10px; text-align: right; display: flex; align-items: center; gap: 7px;">
-                <span style="display:inline-flex;width:24px;height:24px;border-radius:6px;background:${catObj.color || '#38bdf8'}26;color:${catObj.color || '#38bdf8'};align-items:center;justify-content:center;font-size:0.75rem;"><i class="fa-solid ${catObj.icon || 'fa-tag'}"></i></span>
-                <div>
-                  <div style="font-weight: 850; color: #f8fafc;">${catObj.name}</div>
-                  ${r.count > 0 ? `<div style="font-size: 0.64rem; color: #94a3b8;">${r.count} حركة (اضغط للتفاصيل)</div>` : ''}
-                </div>
-              </td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #34d399; font-variant-numeric: tabular-nums; direction: ltr;">
-                ${formatVal(r.actualAmt)}
-              </td>
-              <td style="padding: 8px 10px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
-                ${formatVal(r.estAmt)}
-              </td>
-              <td style="padding: 8px 10px; text-align: center;">
-                <span style="display:inline-block;padding:3px 8px;border-radius:6px;font-size:0.78rem;font-weight:900;background:${diffBg};color:${diffColor};direction:ltr;font-variant-numeric: tabular-nums;">
-                  ${diffSign}${formatVal(Math.abs(r.diff))}
-                </span>
-                ${pctStr}
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
+    const sort = byId('cmpSort').value;
+    const byName = (a,b) => a.name.localeCompare(b.name,'ar');
+    rows.sort((a,b) => sort === 'name' ? byName(a,b) :
+      (sort === 'spend' ? b.a-a.a : Math.abs(b.diff)-Math.abs(a.diff)) || b.a-a.a || byName(a,b));
+    const total = rows.reduce((sum,row) => ({a:sum.a+row.a,b:sum.b+(row.b || 0)}), {a:0,b:0});
+    const bTotal = comparable ? total.b : null;
+    const showValue = (row,key) => valueMarkup(key === 'a' ? 'actual':'reference',row.id,row[key],key === 'a' || !isPlan);
+    const days = dateDiffDays(range.from,range.to);
+    const referenceDays = dateDiffDays(baseline.from,baseline.to);
+    const timing = days === referenceDays ? '' : ' · الأساسية ' + number.format(days) + ' يوم، والمرجع ' + number.format(referenceDays) + ' يوم';
+    // Four shared summary cards stay in sync with the selected comparison periods.
+    const diff=bTotal===null?null:total.a-bTotal;
+    const changePct=bTotal>0?(diff/bTotal*100):null;
+    const deltaTone=diff===null?'slate':diff>0?'red':diff<0?'green':'slate';
+    const percentLabel=changePct===null?'—':(changePct>0?'+':changePct<0?'−':'')+Math.abs(changePct).toFixed(1)+'%';
+    summary.innerHTML='<div class="cmp-unified-summary">'+
+      '<div class="cmp-unified-kpi" data-tone="blue"><small>'+escapeHtml(baseLabel)+'</small><strong>'+
+        valueMarkup('actual','',total.a,true)+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="slate"><small>'+escapeHtml(refLabel)+'</small><strong>'+
+        valueMarkup('reference','',bTotal,!isPlan)+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="'+deltaTone+'"><small>الفرق (الفعلي − المرجع)</small><strong>'+
+        (diff===null?'—':'<bdi dir="ltr">'+signedMoney(diff)+'</bdi>')+'</strong></div>'+
+      '<div class="cmp-unified-kpi" data-tone="'+deltaTone+'"><small>نسبة التغير</small><strong><bdi dir="ltr">'+percentLabel+'</bdi></strong></div>'+
+      '</div><p class="cmp-difference-hint">'+
+      (comparable?'المبالغ بالجنيه المصري'+timing:
+        'لا توجد موازنة مسجلة لكل أشهر نطاق المرجع. اختر فترة تغطيها الموازنة.')+'</p>';
+    renderInsights(rows,actualEntries.length,total.a,range,comparable);
+    if (!rows.length) {
+      content.textContent = 'لا توجد مصروفات أو بنود للمقارنة في النطاق المحدد.';
+      return;
     }
-
-    // Foot (Totals)
-    const totActual = actData.total;
-    const totEstim = rowsData.reduce((s, r) => s + r.estAmt, 0) || estimTotalScaled;
-    const totDiff = totEstim - totActual;
-    const totIsSave = totDiff >= 0;
-
-    if (tfoot) {
-      tfoot.innerHTML = `
-        <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
-          <td style="padding: 10px; text-align: right; color: #f8fafc;">الإجمالي الكلي</td>
-          <td style="padding: 10px; text-align: center; color: #34d399; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totActual)}</td>
-          <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(totEstim)}</td>
-          <td style="padding: 10px; text-align: center; direction: ltr;">
-            <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${totIsSave ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${totIsSave ? '#34d399' : '#f87171'};">
-              ${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}
-            </span>
-          </td>
-        </tr>
-      `;
+    const referenceLabel = isPlan || isSample ? 'التقديري' : refLabel;
+    const actualLabel = demoMode ? 'الصرف التجريبي' : 'الصرف الفعلي';
+    const rankedName = (row, index) => '<span class="cmp-rank">' + number.format(index + 1) + '</span> ' + escapeHtml(row.name);
+    if (comparable && periodChartMode === 'table') {
+      renderBudgetReferenceSpecification(content,rows,total,range,{
+        reference,baseline,referenceLabel:refLabel,actualLabel:baseLabel
+      });
+      return;
     }
-
-    // Update 3 KPI Cards
-    const kpiAct = document.getElementById('cmpKpiTotalActual');
-    const kpiEst = document.getElementById('cmpKpiTotalEstim');
-    const kpiDiff = document.getElementById('cmpKpiTotalDiff');
-
-    if (kpiAct) kpiAct.textContent = formatVal(totActual);
-    if (kpiEst) kpiEst.textContent = formatVal(totEstim);
-    if (kpiDiff) {
-      kpiDiff.textContent = `${totDiff > 0 ? '+' : (totDiff < 0 ? '-' : '')}${formatVal(Math.abs(totDiff))}`;
-      kpiDiff.style.color = totIsSave ? '#34d399' : '#f87171';
-      const label = document.getElementById('cmpKpiDiffLabel');
-      if (label) label.textContent = totIsSave ? 'وفر كلي في الموازنة 🎉' : 'عجز / تجاوز كلي ⚠️';
+    if (periodChartMode === 'table') {
+      const tableRows = rows.map((row,index) => {
+        const tone = row.diff > 0 ? 'cmp-rise' : row.diff < 0 ? 'cmp-fall' : '';
+        return '<tr data-budget-category="' + escapeHtml(row.id) + '"><th scope="row">' + rankedName(row,index) +
+          '</th><td class="cmp-series-actual">' + showValue(row,'a') +
+          '</td><td class="cmp-series-reference">' + showValue(row,'b') +
+          '</td><td class="cmp-difference ' + tone + '"><bdi dir="ltr">' + (comparable ? signedMoney(row.diff) : '—') +
+          '</bdi></td><td class="' + tone + '"><bdi dir="ltr">' + differencePercent(row.diff,row.b) + '</bdi></td></tr>';
+      }).join('');
+      content.innerHTML = '<div class="cmp-period-table cmp-ranked-table"><table aria-label="مقارنة البنود بالجنيه المصري"><thead><tr>' +
+        '<th scope="col">البند</th><th scope="col" class="cmp-key-actual">' + actualLabel +
+        '</th><th scope="col" class="cmp-key-reference">' + referenceLabel +
+        '</th><th scope="col">الفرق</th><th scope="col">التغيّر ٪</th></tr></thead><tbody id="cmpTableBody">' + tableRows + '</tbody></table></div>';
+      return;
     }
-
-    // Update Executive Analytics Cockpit
-    const burnPctEl = document.getElementById('cmpBurnRatePct');
-    const burnBarEl = document.getElementById('cmpBurnRateBar');
-    const burnDescEl = document.getElementById('cmpBurnRateDesc');
-    if (burnPctEl && burnBarEl) {
-      const burnPct = totEstim > 0 ? Math.round((totActual / totEstim) * 100) : (totActual > 0 ? 100 : 0);
-      burnPctEl.textContent = `${burnPct}%`;
-      burnBarEl.style.width = `${Math.min(100, burnPct)}%`;
-      if (burnPct > 100) {
-        burnBarEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
-        burnPctEl.style.color = '#f87171';
-        if (burnDescEl) burnDescEl.textContent = 'تجاوز السقف التقديري للموازنة!';
-      } else if (burnPct >= 80) {
-        burnBarEl.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
-        burnPctEl.style.color = '#fbbf24';
-        if (burnDescEl) burnDescEl.textContent = 'اقتراب من سقف الموازنة المحددة';
-      } else {
-        burnBarEl.style.background = 'linear-gradient(90deg, #10b981, #0ea5e9)';
-        burnPctEl.style.color = '#34d399';
-        if (burnDescEl) burnDescEl.textContent = 'إنفاق صحي ضمن الحدود التقديرية';
-      }
+    if (periodChartMode === 'paired') {
+      const max = rows.reduce((limit,row) => Math.max(limit,row.a,row.b ?? 0),0);
+      const min = rows.reduce((limit,row) => Math.min(limit,row.a,row.b ?? 0),0);
+      const span = Math.max(1,max-min);
+      const zero = -min / span * 100;
+      const chartRows = rows.map((row,index) => {
+        const bar = (key,series) => '<div class="cmp-column-' + series + '">' +
+          (row[key] ? '<i style="--start:' + (Math.min(0,row[key])-min) / span * 100 +
+            '%;--height:' + Math.abs(row[key]) / span * 100 + '%"></i>' : '') + '</div>';
+        return '<li data-budget-category="' + escapeHtml(row.id) + '"><div class="cmp-period-track cmp-column-plot" aria-hidden="true">' +
+          bar('a','actual') + bar('b','reference') + '</div><div class="cmp-column-values"><span class="cmp-series-actual" title="' +
+          actualLabel + '">' + showValue(row,'a') + '</span><span class="cmp-series-reference" title="' +
+          referenceLabel + '">' + showValue(row,'b') + '</span></div><strong>' + rankedName(row,index) + '</strong></li>';
+      }).join('');
+      content.innerHTML = '<div class="cmp-scale-key"><span class="cmp-key-actual">' + actualLabel +
+        '</span><span class="cmp-key-reference">' + referenceLabel +
+        '</span></div><ul class="cmp-column-chart" style="--zero:' + zero + '%">' + chartRows + '</ul>';
+      return;
     }
-
-    // Top Overrun and Top Saved categories
-    const overruns = rowsData.filter(r => r.diff < 0).sort((a, b) => a.diff - b.diff); // most negative first
-    const savings = rowsData.filter(r => r.diff > 0).sort((a, b) => b.diff - a.diff); // most positive first
-
-    const topOverCatEl = document.getElementById('cmpTopOverrunCat');
-    const topOverValEl = document.getElementById('cmpTopOverrunVal');
-    if (topOverCatEl && topOverValEl) {
-      if (overruns.length > 0) {
-        const topO = overruns[0];
-        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topO.catKey, 'expense') : { name: topO.catKey };
-        topOverCatEl.textContent = catObj.name;
-        topOverValEl.textContent = `-${formatVal(Math.abs(topO.diff))}`;
-      } else {
-        topOverCatEl.textContent = 'لا يوجد تجاوز 🌟';
-        topOverValEl.textContent = '0.00 ج.م';
-      }
-    }
-
-    const topSaveCatEl = document.getElementById('cmpTopSavedCat');
-    const topSaveValEl = document.getElementById('cmpTopSavedVal');
-    if (topSaveCatEl && topSaveValEl) {
-      if (savings.length > 0) {
-        const topS = savings[0];
-        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(topS.catKey, 'expense') : { name: topS.catKey };
-        topSaveCatEl.textContent = catObj.name;
-        topSaveValEl.textContent = `+${formatVal(topS.diff)}`;
-      } else {
-        topSaveCatEl.textContent = 'لا يوجد وفر حالياً';
-        topSaveValEl.textContent = '0.00 ج.م';
-      }
-    }
-
-    // Daily safe spending allowance
-    const dailyAllowValEl = document.getElementById('cmpDailyAllowanceVal');
-    const dailyAllowDaysEl = document.getElementById('cmpDailyAllowanceDays');
-    if (dailyAllowValEl && dailyAllowDaysEl) {
-      const now = new Date();
-      const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-      const remainingDays = Math.max(1, lastDayOfMonth - now.getDate() + 1);
-      const remainingBudget = Math.max(0, totDiff);
-      const dailySafe = Math.round(remainingBudget / remainingDays);
-      dailyAllowValEl.textContent = formatVal(dailySafe);
-      dailyAllowDaysEl.textContent = `متاح لـ ${remainingDays} يوم متبقية`;
-    }
-
-
-    // Render 3 Charts
-    renderCharts(rowsData, actData, totEstim, actRange.from, actRange.to);
+    const maxDelta = rows.reduce((max,row) => Math.max(max,Math.abs(row.diff)),1);
+    const markup = rows.map((row,index) => {
+      const delta = !comparable ? '' : '<div class="cmp-period-delta" aria-hidden="true"><i class="' +
+        (row.diff < 0 ? 'negative':'positive') + '" style="width:' + Math.abs(row.diff) / maxDelta * 50 + '%"></i></div>';
+      const values = '<div class="cmp-change-values"><span class="cmp-series-actual">' + actualLabel + ' ' + showValue(row,'a') +
+        '</span><span class="cmp-series-reference">' + referenceLabel + ' ' + showValue(row,'b') + '</span></div>';
+      return '<li data-budget-category="' + escapeHtml(row.id) + '"><div class="cmp-period-row-heading"><strong>' + rankedName(row,index) +
+        '</strong></div><div class="cmp-difference">' + changeMarkup(row.a,row.b,budgetReference) + '</div>' + delta + values + '</li>';
+    }).join('');
+    const directionKey = !comparable ? '' :
+      '<div class="cmp-direction-key" dir="ltr"><span class="cmp-fall">أقل من المرجع</span><span>صفر</span><span class="cmp-rise">أعلى من المرجع</span></div>';
+    content.innerHTML = directionKey + '<ul class="cmp-period-bars">' + markup + '</ul>';
   }
 
-  function renderCharts(rowsData, actData, totEstim, fromDate, toDate) {
-    if (typeof Chart === 'undefined') return;
-
-    // 1. Doughnut Chart (Distribution of actuals by category)
-    const ctxDough = document.getElementById('cmpChartDoughnut');
-    if (ctxDough) {
-      if (_chartDough) { _chartDough.destroy(); _chartDough = null; }
-
-      const filteredRows = rowsData.filter(r => r.actualAmt > 0);
-      const labels = filteredRows.map(r => {
-        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { name: r.catKey };
-        return obj.name;
-      });
-      const data = filteredRows.map(r => r.actualAmt);
-      const colors = filteredRows.map(r => {
-        const obj = (typeof getCategoryObj === 'function') ? getCategoryObj(r.catKey, 'expense') : { color: '#38bdf8' };
-        return obj.color || '#38bdf8';
-      });
-
-      _chartDough = new Chart(ctxDough, {
-        type: 'doughnut',
-        data: {
-          labels: labels.length ? labels : ['لا توجد بيانات'],
-          datasets: [{
-            data: data.length ? data : [1],
-            backgroundColor: colors.length ? colors : ['rgba(255,255,255,0.1)'],
-            borderWidth: 1.5,
-            borderColor: '#0f172a'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { color: '#cbd5e1', font: { family: 'inherit', size: 11 } } }
-          }
-        }
-      });
-    }
-
-    // 2. Horizontal Bar Chart (By Person / Member)
-    const ctxBar = document.getElementById('cmpChartBar');
-    if (ctxBar) {
-      if (_chartBar) { _chartBar.destroy(); _chartBar = null; }
-
-      const membersList = (typeof state !== 'undefined' && Array.isArray(state.members)) ? state.members.map(m => m.name || m) : Object.keys(actData.byMember);
-      const memberNames = Array.from(new Set([...membersList, ...Object.keys(actData.byMember)]));
-      const memberValues = memberNames.map(m => actData.byMember[m] || 0);
-
-      _chartBar = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-          labels: memberNames,
-          datasets: [{
-            label: 'المصروف الفعلي',
-            data: memberValues,
-            backgroundColor: 'rgba(56, 189, 248, 0.75)',
-            borderColor: '#38bdf8',
-            borderWidth: 1.2,
-            borderRadius: 6
-          }]
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } },
-            y: { ticks: { color: '#f8fafc', font: { weight: 'bold' } }, grid: { display: false } }
-          }
-        }
-      });
-    }
-
-    // 3. Line Chart (Cumulative Daily Actual vs Cumulative Daily Budget)
-    const ctxLine = document.getElementById('cmpChartLine');
-    if (ctxLine) {
-      if (_chartLine) { _chartLine.destroy(); _chartLine = null; }
-
-      const start = new Date(fromDate);
-      const end = new Date(toDate);
-      const dayList = [];
-      const cur = new Date(start);
-      while (cur <= end) {
-        dayList.push(formatDateStr(cur));
-        cur.setDate(cur.getDate() + 1);
-      }
-
-      let cumAct = 0;
-      const actPoints = [];
-      const estimPoints = [];
-      const dailyBudgetCap = (dayList.length > 0) ? (totEstim / dayList.length) : 0;
-      let cumEst = 0;
-
-      dayList.forEach(d => {
-        cumAct += (actData.byDate[d] || 0);
-        cumEst += dailyBudgetCap;
-        actPoints.push(cumAct);
-        estimPoints.push(Math.round(cumEst));
-      });
-
-      _chartLine = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-          labels: dayList.map(d => d.slice(5)), // MM-DD
-          datasets: [
-            {
-              label: 'الفعلي التراكمي',
-              data: actPoints,
-              borderColor: '#f43f5e',
-              backgroundColor: 'rgba(244, 63, 94, 0.15)',
-              fill: true,
-              tension: 0.25,
-              borderWidth: 2.2,
-              pointRadius: 2.5
-            },
-            {
-              label: 'سقف التقديري التراكمي',
-              data: estimPoints,
-              borderColor: '#fbbf24',
-              borderDash: [5, 5],
-              fill: false,
-              tension: 0,
-              borderWidth: 2,
-              pointRadius: 0
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'top', labels: { color: '#cbd5e1', font: { size: 11 } } }
-          },
-          scales: {
-            x: { ticks: { color: '#94a3b8', maxTicksLimit: 12 }, grid: { color: 'rgba(255,255,255,0.06)' } },
-            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }
-          }
-        }
-      });
+  function showAllCharts() {
+    periodChartMode='table';
+    render();
+    const details=byId('cmpUnifiedAdvancedCharts');
+    if(details){
+      details.open=true;
+      details.scrollIntoView({block:'nearest',behavior:'smooth'});
     }
   }
 
-  function drillDownToCategory(catKey) {
-    if (typeof switchAppPage === 'function') {
-      switchAppPage('operations');
-      setTimeout(() => {
-        const catFilter = document.getElementById('filterCategory') || document.getElementById('txCategoryFilter');
-        if (catFilter) {
-          catFilter.value = catKey;
-          catFilter.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        if (typeof renderTransactionsTable === 'function') renderTransactionsTable();
-        if (typeof showToast === 'function') {
-          const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(catKey, 'expense') : { name: catKey };
-          showToast(`تمت فلترة الحركات على بند: ${catObj.name}`);
-        }
-      }, 100);
+  function renderReferenceInto(container,month) {
+    if(!container||!/^\d{4}-\d{2}$/.test(String(month||'')))return false;
+    const [year,mon]=month.split('-').map(Number);
+    const range={from:month+'-01',to:month+'-'+pad(new Date(year,mon,0).getDate())};
+    const entries=(state.transactions||[]).filter(tx=>tx.type==='expense'&&
+      String(tx.date||'').slice(0,10)>=range.from&&String(tx.date||'').slice(0,10)<=range.to)
+      .map(tx=>({id:tx.category||'other',cents:Math.round((Number(tx.amount)||0)*100)}));
+    const actualAmounts=aggregate(entries);
+    const planAmounts=estimatesForRange(range);
+    if(planAmounts.missing.length){
+      container.innerHTML='<p class="bs-error" role="status">لا توجد بيانات تقديرية مسجلة لهذا الشهر.</p>';
+      return false;
     }
+    const allIds=new Set([...EXPENSE_CATEGORIES.map(c=>c.id),...actualAmounts.keys(),...planAmounts.values.keys()]);
+    const rows=[...allIds].map(id=>{
+      const a=actualAmounts.get(id)||0,b=planAmounts.values.get(id)||0;
+      return {id,name:categoryName(id),a,b,diff:a-b};
+    });
+    const totals=rows.reduce((sum,row)=>({a:sum.a+row.a,b:sum.b+row.b}),{a:0,b:0});
+    const wasDemo=demoMode;
+    try{
+      demoMode=false;
+      renderBudgetReferenceSpecification(container,rows,totals,range);
+    }finally{demoMode=wasDemo;}
+    return true;
   }
 
   return {
-    render,
-    onActualPeriodChange,
-    onEstimPeriodChange,
-    buildEstimPeriodOptions,
-    drillDownToCategory
+    render, showAllCharts, renderReferenceInto, onActualPeriodChange, getNavigationRange, selectReference, recordSampleOperations, usePrimaryDates,
+    toggleDemo, openSampleOperations, renderSampleOperations, returnFromSampleOperations,
+    showAllSampleOperations, showMoreSampleOperations
   };
 })();
 window.BudgetCompareEngine = BudgetCompareEngine;
