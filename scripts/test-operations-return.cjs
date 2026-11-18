@@ -85,6 +85,45 @@ const BASE=process.env.APP_URL||'http://127.0.0.1:8765/';
    assert.equal(budget.sort,'name','Budget row ordering changed after back');
    assert.equal(budget.scroll,budget.initialTop,'Budget scroll did not restore');
 
+   const comparison=await page.evaluate(async()=>{
+     switchAppPage('budgets',false);
+     switchBudgetSubTab('comparisons');
+     window.FamilyComparisonAudit.render();
+     const month=document.getElementById('cmpAuditMonth');
+     month.value='2026-04';
+     month.dispatchEvent(new Event('change',{bubbles:true}));
+     const span=document.getElementById('cmpAuditSpan');
+     span.value='3';
+     span.dispatchEvent(new Event('change',{bubbles:true}));
+     const wrapper=document.createElement('div');
+     wrapper.id='qaComparisonScroll';
+     wrapper.style.cssText='height:120px;max-height:120px;overflow-y:auto';
+     const tall=document.createElement('div');tall.style.height='900px';
+     wrapper.append(tall);document.getElementById('viewBudgets').append(wrapper);
+     wrapper.scrollTop=310;
+     const previous=wrapper.scrollTop;
+     if(previous<100)throw Error('QA comparison scroller did not move');
+     OperationsReturnHub.stageOrigin();
+     openOperationsFiltered({category:'food',type:'expense',
+       dateFrom:'2026-02-01',dateTo:'2026-04-30',resetFilters:true});
+     const origin=OperationsReturnHub.getState()?.page;
+     const buttonShown=document.body.classList.contains('ops-return-context');
+     OperationsReturnHub.returnToSource();
+     await new Promise(resolve=>setTimeout(resolve,260));
+     return {origin,buttonShown,active:state.activePage,
+       tab:document.getElementById('btnBudgetSubComparisons').classList.contains('active'),
+       month:document.getElementById('cmpAuditMonth')?.value,
+       span:document.getElementById('cmpAuditSpan')?.value,
+       scroll:wrapper.scrollTop,previous};
+   });
+   assert.equal(comparison.origin,'budgets','Comparison origin lost');
+   assert.ok(comparison.buttonShown,'Comparison filtered drilldown return missing');
+   assert.equal(comparison.active,'budgets','Return did not restore budget page');
+   assert.ok(comparison.tab,'Return did not restore comparison subtab');
+   assert.equal(comparison.month,'2026-04','Comparison month filter was reset');
+   assert.equal(comparison.span,'3','Comparison date-range filter was reset');
+   assert.equal(comparison.scroll,comparison.previous,'Comparison scroll position was reset');
+
    const requests=await page.evaluate(async()=>{
      switchAppPage('requests',false);
      const reason=document.getElementById('inpReqReason');
