@@ -65,6 +65,29 @@
     voice: 8, clothes: 9
   };
 
+  const VISUAL_POSITIONS_L3 = {
+    daily: 0, food: 1,
+    bills: 2, house: 3,
+    education: 4, transport: 5,
+    health: 6, clothes: 7,
+    voice: 8, other: 9
+  };
+
+  const VISUAL_POSITIONS_L4 = {
+    daily: 0, food: 1,
+    house: 2, bills: 3,
+    health: 4, transport: 5,
+    other: 6, education: 7,
+    clothes: 8, voice: 9
+  };
+
+  const VISUAL_POSITIONS_L5 = {
+    bills: 0, food: 1, daily: 2,
+    transport: 3, education: 4, house: 5,
+    voice: 6, other: 7, health: 8,
+    clothes: 9
+  };
+
   let currentLayout = 0;
   let cachedFiltered = null;
 
@@ -135,6 +158,8 @@
       container.addEventListener('click', handleContainerClick);
     }
 
+
+
     const goldBtn = document.getElementById('btnOpenGold');
     if (goldBtn && !document.getElementById('btnHomeDesign')) {
       const btn = document.createElement('button');
@@ -143,7 +168,8 @@
       btn.className = 'tool-pill-action design-pill';
       btn.title = 'تغيير شكل الشاشة الرئيسية للمصروفات';
       btn.setAttribute('aria-label', 'اختيار تصميم شاشة المصروفات');
-      btn.innerHTML = '<i class="fa-solid fa-table-cells-large"></i><span>الأشكال</span>';
+      btn.innerHTML = getDialSvg(currentLayout);
+      btn.title = 'تبديل شكل الشاشة الرئيسية (اضغط للتبديل أو مطولاً للقائمة)';
       btn.onclick = cycleLayout;
 
       let pressTimer = null;
@@ -171,13 +197,23 @@
     const gold = document.getElementById('btnOpenGold');
     if (!gold || !gold.parentElement) return;
     const parent = gold.parentElement;
-    const desired = ['btnHomeDesign', 'btnOpenGold', 'walletSelectCluster', 'btnToggleCurrency', 'btnOpenSummaryQuick'];
+    // Right to Left visual sequence:
+    // 0: btnHomeDesign (Far Right)
+    // 1: btnOpenGold
+    // 2: walletSelectCluster
+    // 3: btnOpenSummaryQuick
+    // 4: btnToggleCurrency (Far Left of the screen)
+    const desired = ['btnHomeDesign', 'btnOpenGold', 'walletSelectCluster', 'btnOpenSummaryQuick', 'btnToggleCurrency'];
     desired.forEach((id, index) => {
       const el = document.getElementById(id);
       if (el && el.parentElement === parent) {
         el.style.setProperty('order', String(index), 'important');
       }
     });
+    const currBtn = document.getElementById('btnToggleCurrency');
+    if (currBtn) {
+      currBtn.style.setProperty('margin-inline-start', 'auto', 'important');
+    }
   }
 
   function updateTypographyStyles(container, design) {
@@ -195,6 +231,40 @@
     container.style.setProperty('--dynamic-home-font-scale', String(scale));
     container.style.setProperty('--dynamic-home-content-min', min + 'px');
     container.dataset.dynamicHomeMeasured = 'true';
+  }
+
+  function getDialSvg(activeLayout) {
+    const cx = 13, cy = 13, r = 8.2;
+    let paths = '';
+    for (let i = 0; i < 6; i++) {
+      const midAngle = -90 + i * 60;
+      const startAngle = midAngle - 21;
+      const endAngle = midAngle + 21;
+      const radS = (startAngle * Math.PI) / 180;
+      const radE = (endAngle * Math.PI) / 180;
+      const x1 = (cx + r * Math.cos(radS)).toFixed(2);
+      const y1 = (cy + r * Math.sin(radS)).toFixed(2);
+      const x2 = (cx + r * Math.cos(radE)).toFixed(2);
+      const y2 = (cy + r * Math.sin(radE)).toFixed(2);
+      const d = `M ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2}`;
+
+      const isActive = (i === activeLayout);
+      const color = isActive ? 'var(--theme-primary, #0284c7)' : 'currentColor';
+      const opacity = isActive ? '1' : '0.22';
+      const sw = isActive ? '3.2' : '2.2';
+      paths += `<path d="${d}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" opacity="${opacity}" class="hl-segment hl-segment-${i} ${isActive ? 'is-active' : ''}" data-layout="${i}"/>`;
+    }
+    const centerEl = `<circle cx="13" cy="13" r="2.2" fill="var(--theme-primary, #0284c7)" opacity="0.9" class="hl-dial-center"/>`;
+    return `<svg class="home-dial-icon" viewBox="0 0 26 26" width="22" height="22" style="display:inline-block;vertical-align:middle;flex-shrink:0;">${paths}${centerEl}</svg>`;
+  }
+
+  function updateDesignButtonDial() {
+    const btn = document.getElementById('btnHomeDesign');
+    if (!btn) return;
+    btn.innerHTML = getDialSvg(currentLayout);
+    const layoutNames = ['الأصلي', 'الشكل 1', 'الشكل 2', 'الشكل 3', 'الشكل 4', 'الشكل 5'];
+    btn.title = `تبديل شكل الشاشة الرئيسية (${layoutNames[currentLayout]} من 6) - اضغط للتبديل أو مطولاً للقائمة`;
+    btn.setAttribute('aria-label', `تصميم الشاشة الرئيسية الحالي: ${layoutNames[currentLayout]}`);
   }
 
   function updateUiForActiveLayout() {
@@ -228,13 +298,7 @@
     document.body.classList.toggle('has-alt-home-layout', !isOriginal);
 
     if (switcher) {
-      const meta = LAYOUT_META[currentLayout];
-      switcher.title = `${meta.name} — اضغط للتبديل`;
-      switcher.setAttribute('aria-label', `تغيير شكل الشاشة، ${meta.name}`);
-      const icon = switcher.querySelector('i');
-      if (icon) {
-        icon.className = `fa-solid ${meta.icon}`;
-      }
+      updateDesignButtonDial();
     }
   }
 
@@ -554,9 +618,10 @@
     const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'other', 'clothes', 'voice'];
 
     const cardsHtml = order.map(id => {
+      const pos = VISUAL_POSITIONS_L3[id] !== undefined ? VISUAL_POSITIONS_L3[id] : 0;
       if (id === 'voice') {
         return `
-          <article class="home-design-card hl-card-l1 hl-card-l1-voice" data-ref-category="voice">
+          <article class="home-design-card hl-card-l1 hl-card-l1-voice" data-ref-category="voice" style="order: ${pos} !important;">
             <button type="button" data-voice style="border:none;background:none;width:100%;cursor:pointer;padding:0;color:inherit;font:inherit;">
               <div class="home-design-icon hl-card-l1-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; margin: 0 auto;">
                 <i class="fa-solid fa-microphone"></i>
@@ -572,7 +637,7 @@
       const sign = s.hasSpent ? '−' : '';
 
       return `
-        <article class="home-design-card hl-card-l1" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb};">
+        <article class="home-design-card hl-card-l1" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; order: ${pos} !important;">
           <button type="button" class="home-design-head hl-card-l1-top" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;font:inherit;color:inherit;text-align:right;">
             <div class="home-design-icon hl-card-l1-icon" style="background: linear-gradient(135deg, ${s.cat.color}25, ${s.cat.color}10); color: ${s.cat.color};">
               <span>${s.cat.emoji}</span>
@@ -609,9 +674,10 @@
     const order = ['daily', 'food', 'bills', 'house', 'transport', 'health', 'education', 'other', 'clothes', 'voice'];
 
     const cardsHtml = order.map(id => {
+      const pos = VISUAL_POSITIONS_L4[id] !== undefined ? VISUAL_POSITIONS_L4[id] : 0;
       if (id === 'voice') {
         return `
-          <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice">
+          <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice" style="order: ${pos} !important;">
             <button type="button" data-voice style="border:none;background:none;width:100%;cursor:pointer;padding:0;color:inherit;font:inherit;">
               <div class="home-design-icon hl-card-l4-art" style="background: linear-gradient(135deg, #a855f7, #6b21a8); color: #fff; margin: 0 auto;">
                 <i class="fa-solid fa-microphone"></i>
@@ -627,7 +693,7 @@
       const sign = s.hasSpent ? '−' : '';
 
       return `
-        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb};">
+        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; order: ${pos} !important;">
           <button type="button" class="home-design-head hl-card-l4-top" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;font:inherit;color:inherit;text-align:right;">
             <div class="home-design-icon hl-card-l4-art" style="background: linear-gradient(145deg, ${s.cat.color}35, ${s.cat.color}15); color: ${s.cat.color};">
               <span>${s.cat.emoji}</span>
@@ -659,24 +725,23 @@
   // ==========================================================================
   function renderLayout5(totals, budgets, currSymbol, isGold) {
     const order = [
-      'daily', 'food', 'bills',
-      'house', 'education', 'transport',
-      'health', 'other', 'clothes', 'voice'
+      'bills', 'food', 'daily',
+      'transport', 'education', 'house',
+      'voice', 'other', 'health',
+      'clothes'
     ];
 
     const cardsHtml = order.map(id => {
+      const pos = VISUAL_POSITIONS_L5[id] !== undefined ? VISUAL_POSITIONS_L5[id] : 0;
       if (id === 'voice') {
         return `
-          <article class="home-design-card hl-card-l5-voice-full" data-ref-category="voice" style="grid-column: 1 / -1;">
-            <button type="button" data-voice style="border:none;background:none;width:100%;cursor:pointer;padding:0;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <div class="home-design-icon" style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#a855f7,#7c3aed); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem;">
-                  <i class="fa-solid fa-microphone"></i>
-                </div>
-                <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
+          <article class="home-design-card hl-card-l5 hl-card-l5-voice" data-ref-category="voice" style="order: ${pos} !important; border-color: rgba(168, 85, 247, 0.45); background: linear-gradient(145deg, rgba(168, 85, 247, 0.16), rgba(124, 58, 237, 0.08));">
+            <button type="button" data-voice class="hl-card-l5-top" style="border:none;background:none;width:100%;cursor:pointer;padding:0;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+              <div class="home-design-icon hl-card-l5-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff;">
+                <i class="fa-solid fa-microphone"></i>
               </div>
-              <div style="flex:1; max-width:180px; padding:0 8px;">${getWaveHtml(18)}</div>
-              <i class="fa-solid fa-chevron-left" style="color:#a855f7; font-size:0.85rem;"></i>
+              <strong class="hl-card-l5-name" style="color: #a855f7; text-align: center; margin-top: 4px; line-height: 1.2;">إضافة صوتية<br>للمصروفات</strong>
+              <div style="width: 100%; max-width: 80px; margin-top: 6px;">${getWaveHtml(12)}</div>
             </button>
           </article>
         `;
@@ -686,7 +751,7 @@
       const sign = s.hasSpent ? '−' : '';
 
       return `
-        <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb};">
+        <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; order: ${pos} !important;">
           <button type="button" class="home-design-head hl-card-l5-top" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;font:inherit;color:inherit;">
             <div class="home-design-icon hl-card-l5-icon" style="background: linear-gradient(135deg, ${s.cat.color}25, ${s.cat.color}10); color: ${s.cat.color};">
               <span>${s.cat.emoji}</span>
