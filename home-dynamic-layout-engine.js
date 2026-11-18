@@ -89,6 +89,7 @@
       const profile = PROFILES[design];
       if (!profile || !view.classList.contains('active')) {
         host.style.removeProperty('--dynamic-home-available-height');
+        host.style.removeProperty('--dynamic-home-render-scale');
         host.style.removeProperty('--dynamic-home-card-height');
         host.style.removeProperty('--dynamic-home-gap');
         host.style.removeProperty('--dynamic-home-columns');
@@ -111,15 +112,28 @@
       // Respect the actual scroll viewport and the fixed footer.
       const visibleBottom = Math.min(viewportBottom, navTop, scrollRect ? scrollRect.bottom : viewportBottom);
       // Keep geometry stable if a viewport resize happens mid-scroll.
-      const hostAtRest = hostRect.top + (scroll ? scroll.scrollTop : 0);
+      // getBoundingClientRect() reports the painted (scaled) coordinates,
+      // while CSS custom-property pixel values are *layout* coordinates.
+      // When the whole app is scaled within a wider browser, feeding painted
+      // pixel measurements directly into CSS causes compressed cards and a
+      // giant unused area underneath. Convert back to layout pixels.
+      const paintedScale = host.offsetWidth > 0
+        ? hostRect.width / host.offsetWidth : 1;
+      const renderScale = clamp(paintedScale || 1, .2, 5);
+      const hostAtRest = hostRect.top + (scroll ? scroll.scrollTop * renderScale : 0);
       const footerClearance = 10;
-      const available = Math.max(0, visibleBottom - hostAtRest - footerClearance);
-      const width = Math.max(0, hostRect.width);
+      const availablePainted = Math.max(0, visibleBottom - hostAtRest - footerClearance);
+      const available = availablePainted / renderScale;
+      const width = Math.max(0, host.clientWidth || hostRect.width / renderScale);
       const gap = clamp(width * profile.gapRatio, profile.minGap, profile.maxGap);
       const grid = host.querySelector('.reference-one-grid, .home-design-grid');
-      const gridTop = grid ? Math.max(0, grid.getBoundingClientRect().top - hostRect.top) : 0;
+      const gridTop = grid ? Math.max(0,
+        (grid.getBoundingClientRect().top - hostRect.top) / renderScale) : 0;
       const cardCount = grid ? Array.from(grid.children).filter(el => el.getClientRects().length).length : 0;
-      const rows = cardCount ? Math.ceil(cardCount / profile.columns) : profile.rows;
+      // Profile rows represent the actual 6-column mixed design tracks,
+      // not simply the number of cards divided by the nominal columns.
+      const rows = design===2 || design===3 ? 5 :
+        cardCount ? Math.ceil(cardCount / profile.columns) : profile.rows;
       const usable = Math.max(0, available - gridTop);
       const calculated = (usable - Math.max(0, rows - 1) * gap) / Math.max(rows, 1);
       // Font controls can change independently of the screen dimensions.
@@ -141,6 +155,7 @@
       const cardHeight = Math.max(contentMinimum, calculated);
       const properties = {
         '--dynamic-home-available-height': available.toFixed(2) + 'px',
+        '--dynamic-home-render-scale': renderScale.toFixed(3),
         '--dynamic-home-card-height': cardHeight.toFixed(2) + 'px',
         '--dynamic-home-content-min': contentMinimum + 'px',
         '--dynamic-home-font-family': fontFamily,
@@ -230,7 +245,8 @@
           root.visualViewport.removeEventListener('resize', schedule);
           root.visualViewport.removeEventListener('scroll', schedule);
         }
-        ['--dynamic-home-available-height','--dynamic-home-card-height','--dynamic-home-gap',
+        ['--dynamic-home-available-height','--dynamic-home-render-scale',
+          '--dynamic-home-card-height','--dynamic-home-gap',
           '--dynamic-home-columns','--dynamic-home-content-min','--dynamic-home-font-family',
           '--dynamic-home-font-scale','--dynamic-home-title-size','--dynamic-home-amount-size',
           '--dynamic-home-detail-size','--dynamic-home-alt-title-size',
