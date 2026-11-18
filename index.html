@@ -6343,8 +6343,9 @@
     }
 
     .variance-table-lux {
-      min-width: 440px !important;
       width: 100% !important;
+      min-width: 0 !important;
+      table-layout: fixed !important;
     }
 
     /* كروت العمليات */
@@ -14448,44 +14449,44 @@ body.light-theme .cat-budget-progress-track {
     }
 
     /* ألوان كروت شبكة المصروفات والعمليات المنسجمة تماماً مع سمات التطبيق (لا سواد بعد اليوم) */
-    html[data-app-theme="emerald"] body .ops-tx-card-lux,
-        [data-app-theme="emerald"] .ops-tx-card-lux {
+    html[data-app-theme="emerald"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="emerald"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(6, 78, 59, 0.90) 0%, rgba(2, 44, 34, 0.98) 100%) !important;
       border-color: rgba(16, 185, 129, 0.45) !important;
       box-shadow: 0 4px 18px rgba(2, 44, 34, 0.65), inset 0 1px 0 rgba(52, 211, 153, 0.15) !important;
     }
-    html[data-app-theme="ocean"] body .ops-tx-card-lux,
-        [data-app-theme="ocean"] .ops-tx-card-lux {
+    html[data-app-theme="ocean"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="ocean"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(14, 62, 92, 0.90) 0%, rgba(6, 28, 46, 0.98) 100%) !important;
       border-color: rgba(6, 182, 212, 0.45) !important;
       box-shadow: 0 4px 18px rgba(6, 28, 46, 0.65), inset 0 1px 0 rgba(34, 211, 238, 0.15) !important;
     }
-    html[data-app-theme="purple"] body .ops-tx-card-lux,
-        [data-app-theme="purple"] .ops-tx-card-lux {
+    html[data-app-theme="purple"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="purple"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(59, 7, 100, 0.90) 0%, rgba(30, 7, 52, 0.98) 100%) !important;
       border-color: rgba(168, 85, 247, 0.45) !important;
       box-shadow: 0 4px 18px rgba(30, 7, 52, 0.65), inset 0 1px 0 rgba(192, 132, 252, 0.15) !important;
     }
-    html[data-app-theme="rose"] body .ops-tx-card-lux,
-        [data-app-theme="rose"] .ops-tx-card-lux {
+    html[data-app-theme="rose"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="rose"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(76, 12, 30, 0.90) 0%, rgba(35, 6, 14, 0.98) 100%) !important;
       border-color: rgba(244, 63, 94, 0.45) !important;
       box-shadow: 0 4px 18px rgba(35, 6, 14, 0.65), inset 0 1px 0 rgba(251, 113, 133, 0.15) !important;
     }
-    html[data-app-theme="gold"] body .ops-tx-card-lux,
-        [data-app-theme="gold"] .ops-tx-card-lux {
+    html[data-app-theme="gold"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="gold"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(69, 36, 15, 0.90) 0%, rgba(33, 17, 7, 0.98) 100%) !important;
       border-color: rgba(245, 158, 11, 0.45) !important;
       box-shadow: 0 4px 18px rgba(33, 17, 7, 0.65), inset 0 1px 0 rgba(251, 191, 36, 0.15) !important;
     }
-    html[data-app-theme="slate"] body .ops-tx-card-lux,
-        [data-app-theme="slate"] .ops-tx-card-lux {
+    html[data-app-theme="slate"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="slate"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(51, 65, 85, 0.90) 0%, rgba(20, 27, 39, 0.98) 100%) !important;
       border-color: rgba(148, 163, 184, 0.45) !important;
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.65), inset 0 1px 0 rgba(203, 213, 225, 0.15) !important;
     }
-    html[data-app-theme="navy"] body .ops-tx-card-lux,
-        [data-app-theme="navy"] .ops-tx-card-lux {
+    html[data-app-theme="navy"] body:not(.light-theme) .ops-tx-card-lux,
+        [data-app-theme="navy"] body:not(.light-theme) .ops-tx-card-lux {
       background: linear-gradient(150deg, rgba(20, 52, 98, 0.90) 0%, rgba(10, 28, 54, 0.98) 100%) !important;
       border-color: rgba(56, 189, 248, 0.40) !important;
       box-shadow: 0 4px 18px rgba(7, 18, 36, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
@@ -14523,15 +14524,25 @@ body.light-theme .cat-budget-progress-track {
       margin: 10px 0 6px !important;
     }
 
-    body.light-theme .ops-tx-card-lux {
+    body.light-theme .ops-tx-card-lux,
+    html[data-app-theme] body.light-theme .ops-tx-card-lux,
+    #panelIncomeHistoryContainer .ops-tx-card-lux {
       background: #ffffff !important;
-      border: 1.5px solid #cbd5e1 !important;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08) !important;
+      border: 1.2px solid #e2e8f0 !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+      color: #0f172a !important;
     }
-    body.light-theme .ops-tx-label-text {
+    body.light-theme .ops-tx-label-text,
+    html[data-app-theme] body.light-theme .ops-tx-label-text,
+    #panelIncomeHistoryContainer .ops-tx-label-text {
       color: #0f172a !important;
       font-weight: 850 !important;
       text-shadow: none !important;
+    }
+    body.light-theme #panelIncomeHistoryContainer {
+      background: #ffffff !important;
+      border: 1.2px solid #e2e8f0 !important;
+      color: #0f172a !important;
     }
     body.light-theme .ops-date-title {
       color: #0f172a !important;
@@ -16216,14 +16227,14 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611181705"></script>
   <link rel="stylesheet" href="./gold-market.css?v=202611181705">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611181705">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611181835">
   <script src="./appearance-compact.js?v=202611181705" defer></script>
   <link rel="stylesheet" href="./ledger-task-layout.css?v=202611181705">
   <script src="./operation-filters.js?v=202611181705"></script>
   <script src="./family-alerts.js?v=202611181705"></script>
   <script src="./family-budget-comparison.js?v=202611181705"></script>
-  <script src="./budget-audit-engine.js?v=202611181705"></script>
-  <link rel="stylesheet" href="./comparison-unified.css?v=202611181705">
+  <script src="./budget-audit-engine.js?v=202611181835"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=202611181835">
   <link rel="stylesheet" href="./family-alerts.css?v=202611181705">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -18793,7 +18804,7 @@ body.light-theme .market-buy-price {
       <div class="page-view" id="viewBudgets" style="display: none;">
         <!-- الهيدر الاستراتيجي المستقل لصفحة الميزانيات -->
         <div class="expected-top-hero" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98)); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; flex-wrap: nowrap; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 7px;">
               <div style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #34d399; flex-shrink: 0;">
                 <i class="fa-solid fa-chart-pie"></i>
@@ -18804,8 +18815,8 @@ body.light-theme .market-buy-price {
             </div>
             <!-- أزرار الإجراءات السريعة المصغرة للميزانيات (توفير المساحة) -->
             <div style="display: flex; align-items: center; gap: 4px;">
-              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="height: 26px; font-size: 0.68rem; padding: 0 8px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);">
-                <i class="fa-solid fa-plus" style="font-size: 0.65rem;"></i> <span>خطة جديدة</span>
+              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="min-height: 28px; height: auto; font-size: 0.72rem; padding: 4px 10px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); white-space: nowrap !important; flex-shrink: 0; line-height: 1.2;">
+                <i class="fa-solid fa-plus" style="font-size: 0.65rem;"></i> <span style="white-space: nowrap !important;">خطة جديدة</span>
               </button>
               <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 26px; font-size: 0.68rem; padding: 0 7px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="تصدير الموازنة إلى إكسيل (RTL)">
                 <i class="fa-solid fa-file-excel" style="font-size: 0.68rem;"></i> <span>تصدير</span>
@@ -22481,14 +22492,14 @@ function toggleAnalyticsCustomRange() {
       const catTableContainer = document.getElementById('comparisonsCatTableContainer');
       if (catTableContainer) {
         let catHtml = `
-          <table class="variance-table-lux" style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
+          <table class="variance-table-lux" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; table-layout: fixed;">
             <thead>
-              <tr style="background: rgba(15, 23, 42, 0.9); color: #38bdf8; text-align: right; border-bottom: 2px solid rgba(56, 189, 248, 0.3);">
-                <th style="padding: 10px;">بند المصروف</th>
-                <th style="padding: 10px;">التقديري / المطلوب</th>
-                <th style="padding: 10px;">المنصرف الفعلي</th>
-                <th style="padding: 10px;">الانحراف المحاسبي</th>
-                <th style="padding: 10px;">حالة الميزانية</th>
+              <tr style="text-align: right; border-bottom: 2px solid rgba(56, 189, 248, 0.3);">
+                <th style="width: 23%; padding: 7px 4px;">بند المصروف</th>
+                <th style="width: 20%; padding: 7px 2px;">التقديري</th>
+                <th style="width: 20%; padding: 7px 2px;">الفعلي</th>
+                <th style="width: 20%; padding: 7px 2px;">الانحراف</th>
+                <th style="width: 17%; padding: 7px 2px;">الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -22500,27 +22511,27 @@ function toggleAnalyticsCustomRange() {
           const diff = est - act;
           let statusBadge = '';
           if (est === 0 && act === 0) {
-            statusBadge = '<span style="color: #64748b; font-size: 0.72rem;">لا حركات</span>';
+            statusBadge = '<span style="color: #64748b; font-size: 0.68rem; white-space: nowrap;">لا حركات</span>';
           } else if (diff > 0) {
-            statusBadge = '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem;"><i class="fa-solid fa-circle-check"></i> وفر بالميزانية</span>';
+            statusBadge = '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 5px; border-radius: 5px; font-weight: 800; font-size: 0.68rem; white-space: nowrap;"><i class="fa-solid fa-circle-check"></i> وفر</span>';
           } else if (diff < 0) {
-            statusBadge = '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem;"><i class="fa-solid fa-triangle-exclamation"></i> عجز وتجاوز</span>';
+            statusBadge = '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 2px 5px; border-radius: 5px; font-weight: 800; font-size: 0.68rem; white-space: nowrap;"><i class="fa-solid fa-triangle-exclamation"></i> عجز</span>';
           } else {
-            statusBadge = '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem;"><i class="fa-solid fa-scale-balanced"></i> مطابق تماماً</span>';
+            statusBadge = '<span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 5px; border-radius: 5px; font-weight: 800; font-size: 0.68rem; white-space: nowrap;"><i class="fa-solid fa-scale-balanced"></i> مطابق</span>';
           }
 
           catHtml += `
             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s;">
-              <td style="padding: 10px; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid ${c.icon}" style="color: ${c.color};"></i>
-                <span>${c.name}</span>
+              <td style="padding: 6px 3px; font-weight: 800; display: flex; align-items: center; gap: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <i class="fa-solid ${c.icon}" style="color: ${c.color}; font-size: 0.85rem; flex-shrink: 0;"></i>
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.name}</span>
               </td>
-              <td style="padding: 10px; color: #fbbf24; font-weight: 800;">${formatMoney(est)}</td>
-              <td style="padding: 10px; color: #f43f5e; font-weight: 800;">- ${formatMoney(act)}</td>
-              <td style="padding: 10px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl;">
+              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap;">${formatMoney(est)}</td>
+              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap;">- ${formatMoney(act)}</td>
+              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap;">
                 ${diff >= 0 ? '+ ' : '- '}${formatMoney(Math.abs(diff))}
               </td>
-              <td style="padding: 10px;">${statusBadge}</td>
+              <td style="padding: 6px 2px; white-space: nowrap;">${statusBadge}</td>
             </tr>
           `;
         });
@@ -22544,14 +22555,14 @@ function toggleAnalyticsCustomRange() {
         ];
 
         let memHtml = `
-          <table class="variance-table-lux" style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
+          <table class="variance-table-lux" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; table-layout: fixed;">
             <thead>
-              <tr style="background: rgba(15, 23, 42, 0.9); color: #ec4899; text-align: right; border-bottom: 2px solid rgba(236, 72, 153, 0.3);">
-                <th style="padding: 10px;">فرد العائلة</th>
-                <th style="padding: 10px;">المطلوب والمخصص</th>
-                <th style="padding: 10px;">المنصرف الفعلي</th>
-                <th style="padding: 10px;">الفارق (الانحراف)</th>
-                <th style="padding: 10px;">الامتثال للميزانية</th>
+              <tr style="text-align: right; border-bottom: 2px solid rgba(236, 72, 153, 0.3);">
+                <th style="width: 23%; padding: 7px 4px;">فرد العائلة</th>
+                <th style="width: 20%; padding: 7px 2px;">المطلوب</th>
+                <th style="width: 20%; padding: 7px 2px;">الفعلي</th>
+                <th style="width: 20%; padding: 7px 2px;">الفارق</th>
+                <th style="width: 17%; padding: 7px 2px;">الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -22563,25 +22574,25 @@ function toggleAnalyticsCustomRange() {
           const diff = est - act;
           let badge = '';
           if (est === 0 && act === 0) {
-            badge = '<span style="color: #64748b; font-size: 0.72rem;">لا حركات</span>';
+            badge = '<span style="color: #64748b; font-size: 0.68rem; white-space: nowrap;">لا حركات</span>';
           } else if (diff >= 0) {
-            badge = '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem;"><i class="fa-solid fa-circle-check"></i> ضمن المخصص</span>';
+            badge = '<span style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 5px; border-radius: 5px; font-weight: 800; font-size: 0.68rem; white-space: nowrap;"><i class="fa-solid fa-circle-check"></i> وفر</span>';
           } else {
-            badge = '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 3px 8px; border-radius: 6px; font-weight: 800; font-size: 0.72rem;"><i class="fa-solid fa-triangle-exclamation"></i> تجاوز المخصص</span>';
+            badge = '<span style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); padding: 2px 5px; border-radius: 5px; font-weight: 800; font-size: 0.68rem; white-space: nowrap;"><i class="fa-solid fa-triangle-exclamation"></i> تجاوز</span>';
           }
 
           memHtml += `
             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-              <td style="padding: 10px; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 8px;">
-                <img src="${m.avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(56, 189, 248, 0.4);">
-                <span>${m.name}</span>
+              <td style="padding: 6px 3px; font-weight: 800; display: flex; align-items: center; gap: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                <img src="${m.avatar}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(56, 189, 248, 0.4); flex-shrink: 0;">
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.name}</span>
               </td>
-              <td style="padding: 10px; color: #fbbf24; font-weight: 800;">${formatMoney(est)}</td>
-              <td style="padding: 10px; color: #f43f5e; font-weight: 800;">- ${formatMoney(act)}</td>
-              <td style="padding: 10px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl;">
+              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap;">${formatMoney(est)}</td>
+              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap;">- ${formatMoney(act)}</td>
+              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap;">
                 ${diff >= 0 ? '+ ' : '- '}${formatMoney(Math.abs(diff))}
               </td>
-              <td style="padding: 10px;">${badge}</td>
+              <td style="padding: 6px 2px; white-space: nowrap;">${badge}</td>
             </tr>
           `;
         });
@@ -37325,7 +37336,9 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
         if (secComp) secComp.style.display = 'block';
-        if (typeof renderComparisonsSection === 'function') {
+        if (typeof switchComparisonDimension === 'function') {
+          switchComparisonDimension('category');
+        } else if (typeof renderComparisonsSection === 'function') {
           renderComparisonsSection();
         }
       } else if (tab === 'history') {
@@ -43240,8 +43253,8 @@ body.light-theme #settingsModal .antigravity-confirm-btn {
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611181825">
-<script defer src="./home-layouts.js?v=202611181825"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181835">
+<script defer src="./home-layouts.js?v=202611181835"></script>
 <script src="./operations-return-hub.js?v=202611181730"></script>
 <script src="./comparison-deeplink.js?v=202611181730"></script>
 </body>

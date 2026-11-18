@@ -1776,7 +1776,31 @@ const BudgetCompareEngine = (() => {
   }
 
   function renderRangePreview(id, range, caption, fallback = 'اختر التواريخ') {
-    byId(id).innerHTML = validRange(range) ? '<small>' + caption + '</small>' + rangeLabel(range) : fallback;
+    const el = byId(id);
+    if (!el) return;
+    const isCustomRef = (id === 'cmpReferenceDates' && byId('cmpPeriodReference')?.value === 'custom') ||
+                        (id === 'cmpProjReferenceDates' && byId('cmpProjPeriodReference')?.value === 'custom');
+    const isCustomActual = (id === 'cmpPrimaryDates' && _actualPeriod === 'custom') ||
+                           (id === 'cmpProjPrimaryDates' && document.getElementById('cmpProjActualPeriod')?.value === 'custom');
+    const isClickable = isCustomRef || isCustomActual;
+
+    const datesText = validRange(range) ? rangeLabel(range) : fallback;
+    const icon = isClickable ? '<i class="fa-solid fa-calendar-days" style="margin-left: 5px; color: #0D9488;"></i>' : '';
+    
+    el.innerHTML = '<small>' + caption + '</small><div style="display:flex;align-items:center;gap:4px;">' + icon + datesText + '</div>';
+    el.style.cursor = isClickable ? 'pointer' : 'default';
+    el.title = isClickable ? 'اضغط لتعديل نطاق التواريخ من منتقي التاريخ' : '';
+    
+    if (isClickable) {
+      el.onclick = () => {
+        if (id === 'cmpPrimaryDates') openDateRangePickerForPair('cmpActualFrom', 'cmpActualTo');
+        else if (id === 'cmpReferenceDates') openDateRangePickerForPair('cmpPeriodFrom', 'cmpPeriodTo');
+        else if (id === 'cmpProjPrimaryDates') openDateRangePickerForPair('cmpProjActualFrom', 'cmpProjActualTo');
+        else if (id === 'cmpProjReferenceDates') openDateRangePickerForPair('cmpProjPeriodFrom', 'cmpProjPeriodTo');
+      };
+    } else {
+      el.onclick = null;
+    }
   }
 
   function usePrimaryDates() {
@@ -1816,6 +1840,12 @@ const BudgetCompareEngine = (() => {
 
   // Reference-spec comparison, 17 Nov 2026: visible only for a registered budget.
   // Monetary values in this engine are cents. No samples or fabricated categories.
+  
+  // المكون القابل للطي لشرح الرسوم البيانية وكيفية قراءتها
+  function chartExplanation(whatIsIt, howToRead) {
+    return '<details class="bs-chart-explanation"><summary><i class="fa-solid fa-circle-question"></i> <span>شرح</span> <i class="fa-solid fa-chevron-down"></i></summary><div class="bs-explanation-body"><div><strong>ما يعبر عنه الشارت:</strong> ' + whatIsIt + '</div><div style="margin-top:4px;"><strong>كيفية قراءته:</strong> ' + howToRead + '</div></div></details>';
+  }
+
   function renderBudgetReferenceSpecification(content,rows,totals,range,opts={}) {
     const expanded=Boolean(content.querySelector('#cmpUnifiedAdvancedCharts')?.open);
     const referenceLabel=opts.referenceLabel||'الموازنة التقديرية';
@@ -1879,7 +1909,7 @@ const BudgetCompareEngine = (() => {
         '.budget-spec .bs-legend{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:12px}',
         '.budget-spec .bs-legend i{display:inline-block;width:12px;height:12px;vertical-align:middle;margin-inline-end:4px}',
         '.budget-spec [dir="ltr"],.budget-spec bdi{unicode-bidi:isolate;font-variant-numeric:tabular-nums}',
-        '@media(min-width:880px){.budget-spec .bs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.budget-spec .bs-grid>.bs-full{grid-column:1/-1}}',
+        '@media(min-width:880px){.budget-spec .bs-grid{grid-template-columns:1fr !important;}.budget-spec .bs-grid>.bs-full{grid-column:1/-1}}',
         '@media(max-width:600px){.budget-spec .bs-table-wrap{display:none}.budget-spec .bs-mobile-rows{display:block}.budget-spec .bs-panel{padding:9px}.budget-spec .bs-statline strong{font-size:13px}.budget-spec .bs-viz text{font-size:12px}}'
       ].join('\n');document.head.append(style);
     }
@@ -1951,9 +1981,9 @@ const BudgetCompareEngine = (() => {
       '<div><small>الفرق الكلي</small><strong class="'+tone(variance)+'">'+signed(variance)+'</strong></div><div><small>نسبة الانحراف</small><strong class="'+tone(variance)+'">'+pct(totalPct)+'</strong></div></div>';
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
       '<div class="bs-grid">'+table+
-      '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div>'+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p></section>'+
-      '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div>'+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p></section>'+
-      '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+'</section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div>'+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p>'+ chartExplanation("مقارنة مباشرة بين مبالغ الصرف الفعلي والموازنة التقديرية (أو الفترة المرجعية) لكل بند جنبًا إلى جنب.", "العمود الأزرق الفاتح يمثل التقديري والعمود الأخضر المزرق يمثل الفعلي؛ الرقم أعلى كل زوج يوضح صافي الفرق (الموجب وفر والسالب تجاوز).") +'</section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div>'+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p>'+ chartExplanation("مسار تراكمي يوضح كيف تحولت الموازنة التقديرية إلى الصرف الفعلي الإجمالي عبر تأثير كل بند.", "يبدأ بعمود التقديري؛ الأعمدة الحمراء تمثل مبالغ التجاوز الخصمية والأعمدة الخضراء تمثل الوفورات حتى نصل لعمود الفعلي النهائي.") +'</section>'+
+      '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+ chartExplanation("تحديد دقيق لحجم واتجاه انحراف كل بند عن خط الميزانية المخطط مرتبًا تنازليًا.", "الخط الرأسي هو نقطة الصفر؛ الأشرطة الحمراء المتجهة لليمين تعني تجاوزًا والأشرطة الخضراء المتجهة لليسار تعني وفرًا وادخارًا.") +'</section>'+
       '<details class="bs-more" id="cmpUnifiedAdvancedCharts" '+(expanded?'open':'')+'><summary>عرض الرسوم الخمسة الإضافية (4–8)</summary><div class="bs-more-grid"></div></details></div></div>';
     renderBudgetReferenceAdvancedCharts(content,sorted,totals,range,opts);
   }
@@ -2012,7 +2042,7 @@ const BudgetCompareEngine = (() => {
         '<strong dir="ltr">'+(row.b?pct(row.a,row.b):'—')+'</strong></div>';
     }).join('');
     const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو المرجع المحدد، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+'</section>');
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+chartExplanation("مؤشر رقابي يقيس نسبة استهلاك سقف الميزانية لكل بند مقارنة بالحد الأقصى (100%).", "الخط الرأسي عند 100% يمثل السقف المحدد، والشريط الأزرق يعبر عن الفعلي؛ تخطي الشريط للخط يعني تجاوز المخصص المالي.")+'</section>');
     // Six aligned relative slices from the ACTUAL selected period and reference.
     const baseRange=opts.baseline||range;
     const n=Math.min(6,dateDiffDays(range.from,range.to),dateDiffDays(baseRange.from,baseRange.to));
@@ -2069,7 +2099,7 @@ const BudgetCompareEngine = (() => {
       '<polyline points="'+points(cumA)+'" fill="none" stroke="#0D9488" stroke-width="2"/>';
     monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(i+1)+'</text>';});
     cum+='</svg><div class="bs-cumulative-legend"><span>المرجع: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+'</section>');
+    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+chartExplanation("تتبع وتيرة الصرف التراكمي خطوة بخطوة ومقارنته بالمسار المستهدف طوال المدة.", "الخط المتقطع هو المرجع والخط المتصل هو الفعلي؛ المساحة الخضراء بينهما وفر والمساحة الحمراء تعني تسارع الإنفاق فوق المخطط.")+'</section>');
     // 6. Diverging heatmap; color and numeric sign together.
     const heat=(row,month)=>{
       const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
@@ -2088,7 +2118,7 @@ const BudgetCompareEngine = (() => {
       sorted.map(row=>{const h=heat(row,m);return '<div class="bs-heat-month-item" style="'+h.style+'">'+text(row.name)+' <bdi dir="ltr">'+h.label+'</bdi></div>'}).join('')+
       '</div></div>').join('')+'</div>';
     grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للفترتين</h3>'+heatGrid+
-      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p></section>');
+      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p>'+chartExplanation("مصفوفة بصرية لتقييم انحرافات كل بند عبر الفترات لاكتشاف البنود المتكررة في العجز أو الوفر.", "اللون الأحمر يعني تجاوزًا والأخضر وفرًا؛ ودرجة تركيز اللون تعبر عن شدة الانحراف بالنسبة المئوية.")+'</section>');
     // 7. Largest-remainder integer allocation guarantees both stacks sum to 100.
     function apportion(values){
       const total=values.reduce((s,v)=>s+v,0);if(!total)return values.map(()=>0);
@@ -2103,7 +2133,7 @@ const BudgetCompareEngine = (() => {
       values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
     grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
       bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+
-      '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p></section>');
+      '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p>'+chartExplanation("توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق (100%) لمقارنة الأولويات المخططة بالفعلية.", "الشريط الأول يمثل التقديري والثاني الفعلي؛ اتساع أو ضيق حصة البند بين الشريطين يوضح تغير نمط الصرف بطريقة أكبر باقي.")+'</section>');
     // 8. Slope: both sides share one numeric scale, one segment per category.
     const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
     const slope=sorted.map(row=>{
@@ -2113,7 +2143,7 @@ const BudgetCompareEngine = (() => {
       '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
     }).join('');
     grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. مخطط الميل</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
-      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p></section>');
+      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p>'+chartExplanation("مخطط اتجاهي يوضح سرعة وزاوية صعود أو هبوط تكلفة كل بند بين الفترتين بمقياس موحد.", "الخط الصاعد بالأحمر يعني زيادة في التكلفة والخط الهابط بالأخضر يعني انخفاضًا وترشيدًا بالجنيه المصري.")+'</section>');
   }
 
 
@@ -2843,18 +2873,27 @@ const ProjectCompareEngine = (() => {
     // Update range preview elements
     const primaryPreview = document.getElementById('cmpProjPrimaryDates');
     if (primaryPreview) {
+      const isCustomActual = document.getElementById('cmpProjActualPeriod')?.value === 'custom';
       const datesText = (range.from === '2020-01-01') ? 'إجمالي فترة المشروع' : `${range.from} إلى ${range.to}`;
-      primaryPreview.innerHTML = `<bdi dir="ltr">${datesText}</bdi><small>${range.label}</small>`;
+      const icon = isCustomActual ? '<i class="fa-solid fa-calendar-days" style="margin-left: 5px; color: #0D9488;"></i>' : '';
+      primaryPreview.innerHTML = `<small>${range.label}</small><div style="display:flex;align-items:center;gap:4px;">${icon}<bdi dir="ltr">${datesText}</bdi></div>`;
+      primaryPreview.style.cursor = isCustomActual ? 'pointer' : 'default';
+      primaryPreview.onclick = isCustomActual ? () => openDateRangePickerForPair('cmpProjActualFrom', 'cmpProjActualTo') : null;
     }
     const refPreview = document.getElementById('cmpProjReferenceDates');
     if (refPreview) {
+      const isCustomRef = _referencePeriod === 'custom';
+      const icon = isCustomRef ? '<i class="fa-solid fa-calendar-days" style="margin-left: 5px; color: #0D9488;"></i>' : '';
       if (_referencePeriod === 'plan') {
-        refPreview.innerHTML = `<bdi dir="ltr">الموازنة المعتمدة</bdi><small>سقف التكلفة المخطط للبنود</small>`;
+        refPreview.innerHTML = `<small>سقف التكلفة المخطط للبنود</small><div style="display:flex;align-items:center;gap:4px;"><bdi dir="ltr">الموازنة المعتمدة</bdi></div>`;
       } else if (_referencePeriod === 'previous') {
-        refPreview.innerHTML = `<bdi dir="ltr">الفترة السابقة تلقائيًا</bdi><small>مقارنة بنفس المدة المنصرمة</small>`;
+        refPreview.innerHTML = `<small>مقارنة بنفس المدة المنصرمة</small><div style="display:flex;align-items:center;gap:4px;"><bdi dir="ltr">الفترة السابقة تلقائيًا</bdi></div>`;
       } else {
-        refPreview.innerHTML = `<bdi dir="ltr">فترة مرجعية مخصصة</bdi><small>مقارنة بنطاق تواريخ مخصص</small>`;
+        const customText = (document.getElementById('cmpProjPeriodFrom')?.value && document.getElementById('cmpProjPeriodTo')?.value) ? `${document.getElementById('cmpProjPeriodFrom').value} إلى ${document.getElementById('cmpProjPeriodTo').value}` : 'اختر تواريخ المرجع';
+        refPreview.innerHTML = `<small>مقارنة بنطاق تواريخ مخصص</small><div style="display:flex;align-items:center;gap:4px;">${icon}<bdi dir="ltr">${customText}</bdi></div>`;
       }
+      refPreview.style.cursor = isCustomRef ? 'pointer' : 'default';
+      refPreview.onclick = isCustomRef ? () => openDateRangePickerForPair('cmpProjPeriodFrom', 'cmpProjPeriodTo') : null;
     }
 
     // Fetch Plan
@@ -3137,7 +3176,7 @@ const ProjectCompareEngine = (() => {
             </div>
 
             <!-- شبكة الرسوم التفاعلية المزدوجة (1 و 2) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 14px;">
               <!-- رسم 1: هيكل تكاليف المشروع WBS -->
               <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
                 <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
@@ -3145,6 +3184,7 @@ const ProjectCompareEngine = (() => {
                   <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
                 </div>
                 <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
+                ${chartExplanation("توزيع مصروفات المشروع الحقيقية على حزم العمل المعتمدة (WBS).", "كل شريحة ملونة تمثل بند عمل وحصته النسبية من إجمالي تكاليف المشروع المنصرفة.")}
               </div>
 
               <!-- رسم 2: مقارنة التقديري المعتمد بالفعلي -->
@@ -3154,6 +3194,7 @@ const ProjectCompareEngine = (() => {
                   <i class="fa-solid fa-chart-column"></i> <span>مقارنة المعتمد بالفعلي لكل بند (Grouped Bar)</span>
                 </div>
                 <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
+                ${chartExplanation("مقارنة مباشرة بين التكلفة المعتمدة في دراسة المشروع والمنصرف الفعلي لكل بند.", "العمود الذهبي هو المعتمد والعمود السماوي هو الفعلي؛ الفارق يكشف التجاوز أو الوفر في كل بند.")}
               </div>
             </div>
 
@@ -3181,6 +3222,7 @@ const ProjectCompareEngine = (() => {
                 </div>
               </div>
               <p style="font-size: 0.68rem; color: #94a3b8; margin: 6px 0 0;">يوضح الشلال الانتقال التدريجي من سقف المعتمد عبر فروقات البنود إلى المنصرف الفعلي.</p>
+              ${chartExplanation("شلال انتقال مالي من سقف ميزانية المشروع المعتمدة إلى صافي التكلفة الحالية.", "الأعمدة الحمراء تمثل البنود ذات التكاليف الإضافية والخضراء تمثل الوفورات المحققة في بنود أخرى.")}
             </div>
 
             <!-- رسم 4: أعمدة الانحراف الموقعة (Variance Plot) -->
@@ -3205,6 +3247,7 @@ const ProjectCompareEngine = (() => {
                   `;
                 }).join('')}
               </div>
+              ${chartExplanation("صافي الوفر أو العجز المحاسبي لكل بند من بنود المشروع على جانبي خط الصفر.", "الأشرطة الخضراء لليسار تدل على مبالغ تم توفيرها والأشرطة الحمراء لليمين تنبه لتجاوز مخصص البند.")}
             </div>
 
             <!-- رسم 5: مخطط الرصاصة (Bullet Chart) -->
@@ -3230,10 +3273,11 @@ const ProjectCompareEngine = (() => {
                 }).join('')}
               </div>
               <p style="font-size: 0.68rem; color: #94a3b8; margin: 6px 0 0;">الخط الذهبي عند 100% هو السقف المعتمد، والشريط الأزرق هو المنصرف الحقيقي.</p>
+              ${chartExplanation("شريط رقابي يوضح مدى استهلاك كل بند من سقفه المالي المعتمد في المشروع.", "الخط الذهبي عند 100% هو السقف الحرج؛ تجاوز الشريط السماوي له يعني استنزاف الميزانية المخصصة.")}
             </div>
 
-            <!-- شبكة الرسوم التفاعلية المزدوجة (6 و 7) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+            <!-- شبكة الرسوم التفاعلية (6 و 7) منفصلة بالكامل -->
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 14px;">
               <!-- رسم 6: مسار الصرف التراكمي S-Curve -->
               <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
                 <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
@@ -3241,6 +3285,7 @@ const ProjectCompareEngine = (() => {
                   <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
                 </div>
                 <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
+                ${chartExplanation("المنحنى التراكمي الزمني لتدفق مصروفات المشروع منذ الانطلاق وحتى اليوم.", "الميل الحاد يوضح فترات ذروة الإنفاق والتوريدات، واستواء المنحنى يوضح مراحل الهدوء واستقرار التكاليف.")}
               </div>
 
               <!-- رسم 7: مساهمات أفراد العائلة في المشروع -->
@@ -3250,6 +3295,7 @@ const ProjectCompareEngine = (() => {
                   <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع (Members)</span>
                 </div>
                 <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
+                ${chartExplanation("توزيع المبالغ المنصرفة في المشروع حسب الشخص أو الحساب الذي سدد التكلفة.", "الأشرطة الأفقية توضح حجم المساهمة المالية لكل فرد من أفراد العائلة في تمويل المشروع.")}
               </div>
             </div>
 
@@ -3273,6 +3319,7 @@ const ProjectCompareEngine = (() => {
                   return `<span><i style="display:inline-block;width:8px;height:8px;background:${colors[i % colors.length]};border-radius:2px;margin-left:4px;"></i>${r.name} (${share}%)</span>`;
                 }).join('')}
               </div>
+              ${chartExplanation("الوزن النسبي والمئوي لكل بند من إجمالي موازنة المشروع (مجموع الأشرطة = 100%).", "توضح الحصة المئوية لكل بند لمعرفة البنود ذات الثقل المالي الأكبر في المشروع.")}
             </div>
           </div>
         `;
