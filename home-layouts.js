@@ -349,6 +349,16 @@
     }
   }
 
+  function isThemeLight() {
+    const body = document.body;
+    const doc = document.documentElement;
+    if (!body) return true;
+    const isDark = body.classList.contains('dark-theme') || 
+                   body.classList.contains('theme-dark') || 
+                   (doc && (doc.getAttribute('data-theme') === 'dark' || doc.getAttribute('data-app-theme') === 'dark'));
+    return !isDark;
+  }
+
   /* -------------------------------------------------------------
      Legendary Chromatic Astrolabe Dial (v6.2.0)
      10 Distinctive Mythic Theme Color Schemes (One for each Layout)
@@ -392,7 +402,7 @@
     const safeSector = Math.max(0, Math.min(count - 1, parseInt(activeSector, 10) || 0));
     const theme = LAYOUT_DIAL_THEMES[safeSector] || LAYOUT_DIAL_THEMES[0];
     const palette = DIAMETER_PALETTES[safeSector] || DIAMETER_PALETTES[0];
-    const isLight = document.body && document.body.classList.contains('light-theme');
+    const isLight = isThemeLight();
 
     function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
       const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
@@ -695,6 +705,7 @@
                   <i class="${s.cat.iconClass}"></i>
                 </div>
               </button>
+              <div class="hl-row-icon-divider"></div>
               <div class="hl-row-name-amt">
                 <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="تسجيل سريع في ${catDisplayName}">
                   <strong class="hl-row-l1-name">${catDisplayName}</strong>
@@ -740,6 +751,7 @@
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
+            <div class="hl-row-icon-divider"></div>
             <div class="hl-row-name-amt">
               <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
               <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.65rem;font-weight:700;">اضغط للتحدث الذكي</small>
@@ -907,27 +919,33 @@
      Card 10 (Row 5, Right) = إضافة صوتية للمصروفات
      ========================================================================= */
   function renderLayout3Asymmetric(totals, budgets, currSymbol, isGold) {
-    // 10 Cards in 2 Columns matching Image 1:
-    // Row 1: Right = daily, Left = bills
-    // Row 2: Right = food, Left = house
-    // Row 3: Right = transport, Left = education
-    // Row 4: Right = other, Left = health
-    // Row 5: Right = voice (إضافة صوتية), Left = clothes
+    // 10 Cards in 2 Columns matching Image (Asymmetric with Outer Icons & Dividers):
+    // Row 1: Right = daily (مصروف يومي), Left = food (طعام ومشتريات)
+    // Row 2: Right = bills (فواتير والتزامات), Left = house (مستلزمات منزل)
+    // Row 3: Right = education (تعليم ودروس), Left = transport (مواصلات وبنزين)
+    // Row 4: Right = health (صحة وعلاج), Left = clothes (ملابس وأحذية)
+    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
     const pairs = [
-      ['daily', 'bills'],
-      ['food', 'house'],
-      ['transport', 'education'],
-      ['other', 'health'],
-      ['voice', 'clothes']
+      ['daily', 'food'],
+      ['bills', 'house'],
+      ['education', 'transport'],
+      ['health', 'clothes'],
+      ['voice', 'other']
     ];
 
     const cardsHtml = pairs.map(([rightId, leftId]) => {
-      function renderOneCard(id) {
+      function renderOneCard(id, side) {
         if (id === 'voice') {
           return `
-            <article class="home-design-card hl-card-l3 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
-              <div class="hl-card-l3-inner">
-                <div class="hl-card-l3-right">
+            <article class="home-design-card hl-card-l3 hl-voice-card hl-card-l3-right-col" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l3-inner hl-card-l3-inner-right">
+                <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
+                  <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+                    <i class="fa-solid fa-microphone"></i>
+                  </div>
+                </button>
+                <div class="hl-card-l3-divider"></div>
+                <div class="hl-card-l3-text">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
                     <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
                   </button>
@@ -935,11 +953,6 @@
                     ${getAudioWaveHtml('#8b5cf6')}
                   </button>
                 </div>
-                <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
-                  <div class="hl-card-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:12px;">
-                    <i class="fa-solid fa-microphone"></i>
-                  </div>
-                </button>
               </div>
             </article>
           `;
@@ -949,35 +962,50 @@
         const sign = s.hasSpent ? '- ' : '';
         const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
-        return `
-          <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-            <div class="hl-card-l3-inner">
-              <div class="hl-card-l3-right">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
-                  <strong class="hl-card-l3-name">${catDisplayName}</strong>
-                </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
-                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                    <span class="hl-amt-curr">${currSymbol}</span>
-                  </div>
-                  <div class="hl-progress-track">
-                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                  </div>
-                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-                </button>
+        const iconBtnHtml = `
+          <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+            <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+              <i class="${s.cat.iconClass}"></i>
+            </div>
+          </button>
+        `;
+
+        const dividerHtml = `<div class="hl-card-l3-divider"></div>`;
+
+        const textClusterHtml = `
+          <div class="hl-card-l3-text">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
+              <strong class="hl-card-l3-name">${catDisplayName}</strong>
+            </button>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
+              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                <span class="hl-amt-curr">${currSymbol}</span>
               </div>
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
-                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
-                  <i class="${s.cat.iconClass}"></i>
-                </div>
-              </button>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+              </div>
+              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+            </button>
+          </div>
+        `;
+
+        // Right side: Icon on right, divider, text on left (in RTL)
+        // Left side: Text on right, divider, Icon on left (in RTL)
+        const innerContent = side === 'right'
+          ? (iconBtnHtml + dividerHtml + textClusterHtml)
+          : (textClusterHtml + dividerHtml + iconBtnHtml);
+
+        return `
+          <article class="home-design-card hl-card-l3 hl-card-l3-${side}-col" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l3-inner hl-card-l3-inner-${side}">
+              ${innerContent}
             </div>
           </article>
         `;
       }
 
-      return renderOneCard(rightId) + renderOneCard(leftId);
+      return renderOneCard(rightId, 'right') + renderOneCard(leftId, 'left');
     }).join('');
 
     return `<div class="home-design-grid hl-grid-layout-3">${cardsHtml}</div>`;
@@ -1068,13 +1096,13 @@
     const centerY = Math.floor(arenaH / 2);
     const centerX = Math.floor(containerW / 2);
 
-    const satSize = 68; // تكبير قطر أيقونات البنود المدارية من 54px إلى 68px لتصبح مريحة وواضحة جداً
-    const satHalf = Math.floor(satSize / 2); // 34px
+    const satSize = 78; // تكبير قطر أيقونات البنود المدارية إلى 78px لتصبح مريحة وواضحة جداً
+    const satHalf = Math.floor(satSize / 2); // 39px
     const maxRadiusByW = Math.floor((containerW - satSize - 20) / 2);
     const maxRadiusByH = Math.floor((arenaH - satSize - 16) / 2);
-    const radius = Math.max(122, Math.min(148, maxRadiusByW, maxRadiusByH));
+    const radius = Math.max(130, Math.min(144, maxRadiusByW, maxRadiusByH));
 
-    const isLight = document.body.classList.contains('light-theme');
+    const isLight = isThemeLight();
 
     let totalSpentAll = 0;
     catKeys.forEach(k => { totalSpentAll += (totals[k] || 0); });
@@ -1090,22 +1118,23 @@
       const y = Math.round(centerY + radius * Math.sin(angleRad) - satHalf);
 
       const hasSpent = spent > 0;
-      const satBg = isLight ? (cat.pastelBg || '#ffffff') : '#0f172a';
-      const satBorder = hasSpent ? cat.color : (isLight ? '#cbd5e1' : '#334155');
+      const satBg = isLight ? (cat.pastelBg || '#ffffff') : `linear-gradient(135deg, rgba(15,23,42,0.96) 0%, ${cat.color}22 100%)`;
+      const satBorder = cat.color;
       const textColor = isLight ? '#0f172a' : '#ffffff';
       const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f87171') : (isLight ? '#64748b' : '#94a3b8');
       const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
-      const shadow = hasSpent
-        ? (isLight ? `0 3px 12px rgba(0,0,0,0.08), 0 0 10px ${cat.color}33` : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`)
-        : (isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 3px 10px rgba(0,0,0,0.3)');
+      const shadow = isLight
+        ? `0 3px 12px rgba(0,0,0,0.07), 0 0 10px ${cat.color}44`
+        : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`;
 
       return `
         <div class="cat-satellite hl-l5-satellite"
              style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
           <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-            <i class="${cat.iconClass}" style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
-            <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:60px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
+            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
+            <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:66px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
           </button>
+          <div class="hl-sat-divider" style="width:38px; height:1.2px; background:${hasSpent ? cat.color + '55' : (isLight ? '#cbd5e1' : '#334155')}; margin:2px 0; border-radius:1px;"></div>
           <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
             <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">${amtText}</span>
           </button>
@@ -1168,7 +1197,7 @@
      ========================================================================= */
   function renderLayout6Honeycomb(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
-    const isLight = document.body.classList.contains('light-theme');
+    const isLight = isThemeLight();
 
     const positions = [
       [14, 8], [138, 8], [262, 8],
@@ -1184,8 +1213,8 @@
       const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
       const [px, py] = positions[idx];
 
-      const polyFill = isLight ? (cat.pastelBg || '#ffffff') : 'rgba(15, 23, 42, 0.92)';
-      const polyStroke = hasSpent ? cat.color : (isLight ? '#cbd5e1' : '#334155');
+      const polyFill = isLight ? (cat.pastelBg || '#ffffff') : `rgba(15, 23, 42, 0.94)`;
+      const polyStroke = cat.color;
       const nameColor = isLight ? '#0f172a' : '#f1f5f9';
       const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f43f5e') : (isLight ? '#64748b' : '#94a3b8');
       const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
@@ -1194,11 +1223,11 @@
       return `
         <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px;">
           <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
-            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: ${hasSpent ? 'drop-shadow(0 2px 8px ' + cat.color + '55)' : 'none'};" />
+            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
           </svg>
           <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
             <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="تسجيل سريع في ${cat.name}">
-              <div style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+              <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
               <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
             </button>
             <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
@@ -1248,7 +1277,7 @@
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
 
     const tilesHtml = catKeys.map(catId => {
-      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
+      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes', rgb: '56,189,248', pastelBg: '#f0f9ff' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
       const hasSpent = spent > 0;
@@ -1259,7 +1288,7 @@
       const barFillWidth = (hasSpent && pct > 0) ? Math.min(pct, 100) : 0;
 
       return `
-        <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color};">
+        <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color}; --tile-color-pastel: ${cat.pastelBg || '#ffffff'}; --cat-rgb: ${cat.rgb || '56,189,248'};">
           <!-- 1. شريط الحساس العلوي: لمبة LED + النسبة المئوية -->
           <div class="sensor-tile-top" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض حركات ${cat.name} (${pct}%)">
             <span class="sensor-pct" style="color:${hasSpent ? '#94a3b8' : '#64748b'};">${pct}%</span>
@@ -1276,6 +1305,7 @@
           <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
           <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
             <span class="sensor-title">${cat.name}</span>
+            <div class="sensor-divider"></div>
             <span class="sensor-val" style="color:${amtColor}; direction:ltr;">${amtText}</span>
             <div class="sensor-bar">
               <div class="sensor-bar-fill" style="width: ${barFillWidth}%; background: ${cat.color}; box-shadow: ${barFillWidth > 0 ? '0 0 6px ' + cat.color + 'aa' : 'none'};"></div>
@@ -1316,45 +1346,41 @@
      الشكل 8: الكريستال الماسي البلوري (The Diamond Facet Crystal Grid)
      ========================================================================= */
   function renderLayout8Diamonds(totals, budgets, currSymbol, isGold) {
-    const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
-    const isLight = document.body.classList.contains('light-theme');
+    const catKeys = ['bills', 'daily', 'food', 'health', 'house', 'transport', 'other', 'education', 'clothes'];
+    const isLight = isThemeLight();
 
-    const positions = [
-      [14, 12], [138, 12], [262, 12],
-      [14, 118], [138, 118], [262, 118],
-      [14, 224], [138, 224], [262, 224]
-    ];
-
-    const diamondsHtml = catKeys.map((catId, idx) => {
+    const diamondsHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#ec4899', iconClass: 'fa-solid fa-gem', pastelBg: '#fdf2f8' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
       const hasSpent = spent > 0;
       const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
-      const [px, py] = positions[idx];
 
-      const diaBg = isLight ? `linear-gradient(135deg, ${cat.pastelBg || '#ffffff'} 0%, #ffffff 100%)` : 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)';
-      const diaBorder = hasSpent ? (isLight ? `2px solid ${cat.color}` : `1.8px solid ${cat.color}`) : (isLight ? '1.5px solid #cbd5e1' : '1.5px solid rgba(255,255,255,0.1)');
+      const diaBg = isLight
+        ? `linear-gradient(135deg, ${cat.pastelBg || '#ffffff'} 0%, #ffffff 100%)`
+        : `linear-gradient(135deg, rgba(30, 41, 59, 0.90) 0%, ${cat.color}22 100%)`;
+      const diaBorder = isLight ? `2px solid ${cat.color}` : `1.8px solid ${cat.color}`;
       const nameColor = isLight ? '#0f172a' : '#f1f5f9';
       const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f43f5e') : (isLight ? '#64748b' : '#94a3b8');
       const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
       const badgeBg = hasSpent ? (isLight ? (cat.pastelBg || '#f1f5f9') : `${cat.color}25`) : (isLight ? '#f1f5f9' : 'rgba(255,255,255,0.06)');
       const badgeColor = hasSpent ? cat.color : (isLight ? '#94a3b8' : '#64748b');
-      const shadow = hasSpent
-        ? (isLight ? `0 4px 12px rgba(0,0,0,0.08), 0 0 8px ${cat.color}33` : `0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55`)
-        : (isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 4px 12px rgba(0,0,0,0.3)');
+      const shadow = isLight
+        ? `0 4px 14px rgba(0,0,0,0.08), 0 0 10px ${cat.color}44`
+        : `0 6px 20px rgba(0,0,0,0.5), 0 0 14px ${cat.color}55`;
 
       return `
-        <div class="diamond-wrapper hl-l8-item" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; display:flex; align-items:center; justify-content:center;">
-          <div style="width:76px; height:76px; background:${diaBg}; border:${diaBorder}; border-radius:18px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
-            <div style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:95px; gap:1px;">
+        <div class="diamond-wrapper hl-l8-item">
+          <div class="hl-dia-card" style="width:86px; height:86px; background:${diaBg}; border:${diaBorder}; border-radius:20px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
+            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:104px; gap:1px;">
               <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
-                <div style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
-                <span style="font-size:0.64rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+                <div style="color:${cat.color}; font-size:1.20rem;"><i class="${cat.iconClass}"></i></div>
+                <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:92px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
               </button>
+              <div class="hl-dia-divider" style="width:52px; height:1.2px; background:${cat.color}66; margin:2px 0; border-radius:1px;"></div>
               <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="عرض حركات ${cat.name}">
-                <span style="font-size:0.68rem; font-weight:900; color:${amtColor}; direction:ltr;">${amtText}</span>
-                <span style="font-size:0.55rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 4px;">${pct}%</span>
+                <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">${amtText}</span>
+                <span style="font-size:0.56rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 4px;">${pct}%</span>
               </button>
             </div>
           </div>
@@ -1383,8 +1409,8 @@
 
     return `
       <div class="hl-layout-8-wrapper" style="display:flex; flex-direction:column; width:100%;">
-        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 360px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
-          <div style="position:relative; width:390px; height:330px; margin:0 auto;">${diamondsHtml}</div>
+        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 380px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+          <div class="hl-l8-grid">${diamondsHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1396,7 +1422,7 @@
      ========================================================================= */
   function renderLayout9Equalizer(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
-    const isLight = document.body.classList.contains('light-theme');
+    const isLight = isThemeLight();
 
     // حساب إجمالي مصروفات الأفراد والنسب للشارت العلوي
     const memberTotals = computeMemberTotals(totals._rawFiltered || cachedFiltered);

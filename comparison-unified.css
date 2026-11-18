@@ -62,12 +62,25 @@
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-intro {display:none}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-statline {display:none}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid,
-#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid{
- display:grid;grid-template-columns:repeat(1,minmax(0,1fr));gap:10px;min-width:0;}
-#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel{
- border-radius:12px;min-width:0;max-width:100%;padding:12px !important;
- background:color-mix(in srgb,var(--bg-card,#fff) 96%,transparent);
- border:1px solid var(--uc-border) !important;box-shadow:none !important;overflow:hidden;}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  width: 100% !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel {
+  border-radius: 12px;
+  min-width: 0;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px !important;
+  background: color-mix(in srgb, var(--bg-card, #fff) 96%, transparent);
+  border: 1px solid var(--uc-border) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel h3 {font-size:14px;font-weight:900;
  color:inherit;line-height:1.5;margin:0 0 7px;}
 #viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel :where(p,small){font-size:12px;line-height:1.5;}
@@ -114,7 +127,13 @@
  #viewBudgets #cmpPeriodChart #cmpPeriodsFilterBox {gap:12px !important}
  #viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
  #viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid,
- #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+#viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  width: 100% !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
  #viewBudgets #cmpPeriodChartContent .budget-spec .bs-grid > .bs-full,
  #viewBudgets #cmpPeriodChartContent .budget-spec .bs-more-grid > .bs-full{grid-column:1/-1}
 }
@@ -208,7 +227,7 @@
 #viewBudgets #cmpAuditApp .cmp-audit-section-head>div{min-width:0;flex:1}
 #viewBudgets #cmpAuditApp .cmp-audit-section-head>small{white-space:nowrap;border:1px solid var(--audit-border);
   color:var(--audit-muted);border-radius:999px;padding:4px 7px;font-size:11px}
-#viewBudgets #cmpAuditApp .cmp-audit-rows{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}
+#viewBudgets #cmpAuditApp .cmp-audit-rows{display:grid;grid-template-columns:1fr !important;width:100% !important;gap:10px}
 #viewBudgets #cmpAuditApp .cmp-audit-row{min-width:0;border:1px solid var(--audit-border);
   border-radius:12px;background:var(--audit-surface);padding:10px}
 #viewBudgets #cmpAuditApp .cmp-audit-row-title{display:flex;align-items:flex-start;
@@ -253,7 +272,7 @@
 #viewBudgets #cmpAuditApp .cmp-audit-help p{margin-top:8px}
 @media(min-width:740px){
   #viewBudgets #cmpAuditApp .cmp-audit-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
-  #viewBudgets #cmpAuditApp .cmp-audit-rows{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #viewBudgets #cmpAuditApp .cmp-audit-rows{grid-template-columns:1fr !important; width:100% !important;}
 }
 @media(max-width:340px){
   #viewBudgets #cmpAuditApp .cmp-audit-filter{grid-template-columns:auto minmax(0,1fr)}
@@ -299,8 +318,7 @@
  #viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range input {
    flex:1 1 0;width:0;min-width:0;font-size:11px;padding:5px 2px;
  }
- #viewBudgets #cmpPeriodsFilterBox > div:has(.cmp-month-custom-range:not([hidden]))
- .cmp-range-preview {display:none!important}
+ /* cmp-range-preview is always shown */
 }
 
 /* 2026-11-17 phone comparison density and legible paired columns */
@@ -312,7 +330,18 @@
  #viewBudgets #cmpPeriodsFilterBox select{min-height:34px!important;padding:4px 5px!important;font-size:12px!important}
  #viewBudgets #cmpSummary .cmp-unified-kpi{min-height:0!important;padding:7px 8px!important;gap:2px!important}
  #viewBudgets #cmpSummary .cmp-unified-kpi strong{font-size:clamp(15px,4.2vw,19px)!important;line-height:1.25!important}
- #viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel{padding:8px!important}
+ #viewBudgets #cmpPeriodChartContent .budget-spec .bs-panel {
+  border-radius: 12px;
+  min-width: 0;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 12px !important;
+  background: color-mix(in srgb, var(--bg-card, #fff) 96%, transparent);
+  border: 1px solid var(--uc-border) !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
  #viewBudgets #cmpAuditApp{padding-bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
  #viewBudgets #cmpAuditApp .cmp-audit-summary{gap:6px;margin-bottom:7px}
  #viewBudgets #cmpAuditApp .cmp-audit-kpi{min-height:0;padding:7px 9px;gap:1px}
@@ -411,4 +440,131 @@
 }
 #viewBudgets #cmpProjPeriodChart #cmpProjSort {
   max-width: 152px; min-height: 36px; border-radius: 9px; background: var(--bg-card, #fff); color: inherit; font-size: 12px; padding: 4px 8px;
+}
+
+/* Prevent numbers from vertical breaking in audit cards */
+#viewBudgets #cmpAuditApp .cmp-audit-values b,
+#viewBudgets #cmpAuditApp .cmp-audit-variance b,
+#viewBudgets #cmpAuditApp .cmp-audit-variance em,
+#viewBudgets #cmpAuditApp .cmp-audit-values > div,
+#viewBudgets #cmpAuditApp .cmp-audit-row-body {
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+/* Harmonized Side-by-Side Range Previews */
+#viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range,
+#viewBudgets #cmpProjPeriodsFilterBox .cmp-month-custom-range {
+  display: none !important;
+}
+#viewBudgets #cmpPeriodsFilterBox .cmp-range-preview,
+#viewBudgets #cmpProjPeriodsFilterBox .cmp-range-preview {
+  min-height: 48px !important;
+  height: 48px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 2px !important;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+#viewBudgets #cmpPeriodsFilterBox .cmp-range-preview:hover,
+#viewBudgets #cmpProjPeriodsFilterBox .cmp-range-preview:hover {
+  background: color-mix(in srgb, var(--bg-card, #fff) 85%, transparent);
+  border-color: #0D9488;
+}
+
+/* ==========================================================
+   Collapsible Chart Explanation Component
+   ========================================================== */
+.bs-chart-explanation {
+  margin-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  padding-top: 8px;
+  direction: rtl;
+}
+body.light-theme .bs-chart-explanation {
+  border-top-color: rgba(0, 0, 0, 0.12);
+}
+.bs-chart-explanation summary {
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 850;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  list-style: none;
+  padding: 3px 0;
+}
+.bs-chart-explanation summary::-webkit-details-marker {
+  display: none;
+}
+.bs-chart-explanation summary .fa-chevron-down {
+  margin-inline-start: auto;
+  font-size: 0.65rem;
+  transition: transform 0.2s ease;
+}
+.bs-chart-explanation[open] summary .fa-chevron-down {
+  transform: rotate(180deg);
+}
+.bs-explanation-body {
+  font-size: 0.74rem;
+  line-height: 1.6;
+  color: var(--uc-muted, #94a3b8);
+  margin-top: 7px;
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 9px;
+  border-inline-start: 3.5px solid #0284c7;
+}
+body.light-theme .bs-explanation-body {
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-inline-start: 3.5px solid #0284c7;
+}
+
+/* ==========================================================
+   Responsive Zero-Scroll Variance Table
+   ========================================================== */
+.variance-table-lux {
+  table-layout: fixed !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+.variance-table-lux th,
+.variance-table-lux td {
+  padding: 7px 4px !important;
+  font-size: 0.72rem !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-sizing: border-box !important;
+}
+.variance-table-lux th:first-child,
+.variance-table-lux td:first-child {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+body.light-theme .variance-table-lux th {
+  background: #f1f5f9 !important;
+  color: #0284c7 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+body.light-theme .variance-table-lux td {
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.light-theme .variance-table-lux tr:hover td {
+  background: rgba(2, 132, 199, 0.05) !important;
 }
