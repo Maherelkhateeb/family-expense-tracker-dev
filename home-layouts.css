@@ -335,8 +335,8 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 }
 
 /* -------------------------------------------------------------
-   Layout 5: 3-Column Compact Grid (Image 5)
-   Strictly Light Pastel matching Image 5 (Zero Dark Mode Overrides)
+   Layout 5: 3-Column Compact Grid with Full-Width Voice Banner
+   9 Expense categories in a pristine 3x3 grid + Full-width Voice Card at the bottom
 ------------------------------------------------------------- */
 .hl-grid-layout-5 {
   display: grid !important;
@@ -344,14 +344,10 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   gap: var(--dynamic-home-gap, 6px) !important;
 }
 
-/* Center clothes in row 4 */
-.hl-grid-layout-5 [data-ref-category="clothes"] {
-  grid-column: 2 / 3 !important;
-}
-
+/* 3x3 Category Cards */
 .hl-card-l5 {
   border-radius: 15px !important;
-  min-height: var(--dynamic-home-card-height, 105px) !important;
+  min-height: var(--dynamic-home-card-height, 95px) !important;
   box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
@@ -380,13 +376,24 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   color: #b91c1c !important;
 }
 
-.hl-card-l5-voice {
+/* Full-Width Voice Card at the Bottom (spanning all 3 columns) */
+.hl-card-l5-voice-wide {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  min-height: var(--dynamic-home-voice-height, 52px) !important;
+  border-radius: 16px !important;
   background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
   border: 1.5px solid #c084fc !important;
+  box-shadow: 0 3px 10px rgba(168, 85, 247, 0.12) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: transform 0.15s ease !important;
+  color: #7c3aed !important;
 }
 
-.hl-card-l5-voice .hl-voice-lbl {
-  color: #7c3aed !important;
+.hl-card-l5-voice-wide:active {
+  transform: scale(0.985);
 }
 
 /* -------------------------------------------------------------
