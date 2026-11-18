@@ -1,65 +1,17 @@
 /* ==========================================================================
    Home Screen Layouts Engine - Production CSS (v5.5.0)
-   Pixel-perfect matching for all 5 screens in authentic light pastel styling,
-   edge-to-edge 6-segment dial with 3 internal diameters, far-left currency switcher,
-   dynamic layout and font scaling.
+   Pixel-perfect matching for all 5 screens, edge-to-edge 6-segment dial with internal diameters,
+   far-left currency switcher, dynamic layout and font scaling.
    ========================================================================== */
 
 /* -------------------------------------------------------------
-   Background Styling for Alternative Layouts (Always Authentic Light Pastel)
+   Background Styling for Alternative Layouts
 ------------------------------------------------------------- */
 body.has-alt-home-layout,
 body.has-alt-home-layout #appFrame,
 body.has-alt-home-layout #appScrollBody,
 body.has-alt-home-layout #viewExpenses {
   background: linear-gradient(180deg, #d8f5fc 0%, #edfafd 45%, #e6f7fc 100%) !important;
-}
-
-/* Light Balance Card on Alternative Layouts */
-body.has-alt-home-layout .executive-balance-card,
-body.has-alt-home-layout .home-main-balance-card,
-body.has-alt-home-layout .balance-unified-card {
-  background: #ffffff !important;
-  border: 1.5px solid #e0f2fe !important;
-  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.08) !important;
-}
-
-body.has-alt-home-layout .balance-net-amount,
-body.has-alt-home-layout .balance-curr {
-  color: #0284c7 !important;
-}
-
-body.has-alt-home-layout .balance-title {
-  color: #0f172a !important;
-}
-
-/* Tools strip buttons on Alternative Layouts */
-body.has-alt-home-layout #walletSelectCluster {
-  background: #ffffff !important;
-  border: 1.5px solid #bae6fd !important;
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12) !important;
-}
-
-body.has-alt-home-layout #activeWalletSelect {
-  color: #0284c7 !important;
-}
-
-body.has-alt-home-layout #btnOpenSummaryQuick {
-  background: #ffffff !important;
-  border: 1.2px solid #bae6fd !important;
-  color: #0284c7 !important;
-}
-
-body.has-alt-home-layout #btnOpenGold {
-  background: #ffffff !important;
-  border: 1.2px solid #fde68a !important;
-  color: #d97706 !important;
-}
-
-body.has-alt-home-layout #btnToggleCurrency {
-  background: #ffffff !important;
-  border: 1.2px solid #bae6fd !important;
-  color: #0284c7 !important;
 }
 
 /* Base Container */
@@ -78,10 +30,24 @@ body.has-alt-home-layout #btnToggleCurrency {
 }
 
 /* -------------------------------------------------------------
-   Hide Floating Screen Flaps & Assistant FAB on Alternative Layouts
+   Side Screen Flaps (مقابض فتح الذهب والملخص)
+   MUST ALWAYS BE VISIBLE AND INTERACTIVE ON ALL LAYOUTS!
 ------------------------------------------------------------- */
-body.has-alt-home-layout .side-screen-edge-handle,
-body:has(#homeInterfaces:not([hidden])) .side-screen-edge-handle,
+.side-screen-edge-handle,
+#leftScreenEdgeHandle,
+#rightScreenEdgeHandle {
+  display: flex !important;
+  z-index: 9999 !important;
+  opacity: 0.88 !important;
+  pointer-events: auto !important;
+}
+
+.side-screen-edge-handle:hover,
+.side-screen-edge-handle:active {
+  opacity: 1 !important;
+}
+
+/* Only hide assistant FAB on alternative layouts since each layout has its own voice card */
 body.has-alt-home-layout #btnVoiceAssistantFab,
 body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   display: none !important;
@@ -105,10 +71,22 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   border: none !important;
   background: transparent !important;
   flex-shrink: 0 !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25) !important;
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
   box-sizing: border-box !important;
   overflow: visible !important;
+}
+
+html[data-color-mode="light"] #btnHomeDesign,
+body.light-theme #btnHomeDesign {
+  color: #7c3aed !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2) !important;
+}
+
+html[data-color-mode="dark"] #btnHomeDesign,
+body.dark-theme #btnHomeDesign {
+  color: #c084fc !important;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3) !important;
 }
 
 #btnHomeDesign:active {
@@ -124,7 +102,11 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 
 .home-dial-icon .hl-dial-track {
   stroke: #7c3aed !important;
-  fill: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .home-dial-icon .hl-dial-track,
+body.dark-theme .home-dial-icon .hl-dial-track {
+  stroke: #a855f7 !important;
 }
 
 .home-dial-icon .hl-dial-slice {
@@ -132,24 +114,40 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 }
 
 .home-dial-icon .hl-dial-slice.is-active {
-  fill: #8b5cf6 !important;
+  fill: #a855f7 !important;
   fill-opacity: 0.96 !important;
+  filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.85));
+}
+
+html[data-color-mode="light"] .home-dial-icon .hl-dial-slice.is-active,
+body.light-theme .home-dial-icon .hl-dial-slice.is-active {
+  fill: #7c3aed !important;
+  fill-opacity: 0.96 !important;
+  filter: drop-shadow(0 0 2.5px rgba(124, 58, 237, 0.6));
 }
 
 .home-dial-icon .hl-dial-diameter {
+  stroke: #c084fc !important;
+}
+
+html[data-color-mode="light"] .home-dial-icon .hl-dial-diameter,
+body.light-theme .home-dial-icon .hl-dial-diameter {
   stroke: #7c3aed !important;
 }
 
 .home-dial-icon .hl-dial-center {
+  fill: #a855f7 !important;
+}
+
+html[data-color-mode="light"] .home-dial-icon .hl-dial-center,
+body.light-theme .home-dial-icon .hl-dial-center {
   fill: #7c3aed !important;
 }
 
-/* Currency Switcher at the Far Left of the Screen (أقصى يسار الشاشة) */
-#btnToggleCurrency {
-  order: 99 !important;
+/* Moving Currency Switcher to Far Left */
+.executive-quick-tools-strip #btnToggleCurrency {
+  order: 4 !important;
   margin-inline-start: auto !important;
-  margin-left: 0 !important;
-  margin-right: auto !important;
 }
 
 /* -------------------------------------------------------------
@@ -165,9 +163,14 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 
 .hl-wave-bar {
   width: 2.2px;
-  background: #7c3aed;
+  background: #a855f7;
   border-radius: 2px;
   animation: hlWaveAnim 1.2s ease-in-out infinite alternate;
+}
+
+html[data-color-mode="light"] .hl-wave-bar,
+body.light-theme .hl-wave-bar {
+  background: #7c3aed;
 }
 
 @keyframes hlWaveAnim {
@@ -176,8 +179,7 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 }
 
 /* -------------------------------------------------------------
-   Layout 1: 2-Column Balanced Cards (Image 1)
-   Always Light Pastel with Colored Borders
+   Layout 1: 2-Column Parallel Cards (Image 1)
 ------------------------------------------------------------- */
 .hl-grid-layout-1 {
   display: grid !important;
@@ -189,42 +191,69 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   border-radius: 16px !important;
   min-height: var(--dynamic-home-card-height, 82px) !important;
   box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  transition: transform 0.15s ease !important;
-  background: #ffffff !important;
-  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
-  color: #0f172a !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
 }
 
 .hl-card-l1:active {
   transform: scale(0.97);
 }
 
-.hl-card-l1 .hl-card-l1-name {
+/* Light Mode Pastel Colors for Layout 1 */
+html[data-color-mode="light"] .hl-card-l1,
+body.light-theme .hl-card-l1 {
+  background: var(--cat-pastel-bg, #ffffff) !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
 }
 
-.hl-card-l1 .amt-num {
+html[data-color-mode="light"] .hl-card-l1 .hl-card-l1-name,
+body.light-theme .hl-card-l1 .hl-card-l1-name {
   color: #0f172a !important;
 }
 
-.hl-card-l1 .spent .amt-num,
-.hl-card-l1 .spent-minus {
-  color: #dc2626 !important;
+html[data-color-mode="light"] .hl-card-l1 .amt-num,
+body.light-theme .hl-card-l1 .amt-num {
+  color: #0f172a !important;
 }
 
-.hl-card-l1-voice {
-  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
-  border: 1.5px solid #d8b4fe !important;
+html[data-color-mode="light"] .hl-card-l1 .spent .amt-num,
+html[data-color-mode="light"] .hl-card-l1 .spent-minus,
+body.light-theme .hl-card-l1 .spent .amt-num,
+body.light-theme .hl-card-l1 .spent-minus {
+  color: #b91c1c !important;
+}
+
+/* Dark Mode Luminous Tints for Layout 1 */
+html[data-color-mode="dark"] .hl-card-l1,
+body.dark-theme .hl-card-l1 {
+  background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
+  border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(var(--cat-rgb, 148, 163, 184), 0.12) !important;
+  color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .hl-card-l1 .hl-card-l1-name,
+body.dark-theme .hl-card-l1 .hl-card-l1-name {
+  color: #ffffff !important;
+}
+
+html[data-color-mode="dark"] .hl-card-l1 .amt-num,
+body.dark-theme .hl-card-l1 .amt-num {
+  color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .hl-card-l1 .spent .amt-num,
+html[data-color-mode="dark"] .hl-card-l1 .spent-minus,
+body.dark-theme .hl-card-l1 .spent .amt-num,
+body.dark-theme .hl-card-l1 .spent-minus {
+  color: #ff4d6d !important;
 }
 
 /* -------------------------------------------------------------
-   Layout 2: Single Column Horizontal Rows (Image 3)
+   Layout 2: Single-Column List (Image 2)
 ------------------------------------------------------------- */
-.hl-list-layout-2 {
+.hl-grid-layout-2 {
   display: flex !important;
   flex-direction: column !important;
   gap: var(--dynamic-home-gap, 5px) !important;
@@ -234,40 +263,44 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   border-radius: 14px !important;
   min-height: var(--dynamic-home-card-height, 50px) !important;
   box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 6px 10px !important;
   transition: transform 0.15s ease !important;
-  background: #ffffff !important;
-  border: 1.2px solid var(--cat-pastel-border, #e2e8f0) !important;
+}
+
+.hl-row-l2:active {
+  transform: scale(0.98);
+}
+
+/* Light Mode for Layout 2 */
+html[data-color-mode="light"] .hl-row-l2,
+body.light-theme .hl-row-l2 {
+  background: var(--cat-pastel-bg, #ffffff) !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
 }
 
-.hl-row-l2:active {
-  transform: scale(0.985);
-}
-
-.hl-row-l2 .hl-row-l2-name {
+html[data-color-mode="light"] .hl-row-l2 .hl-row-l2-name,
+body.light-theme .hl-row-l2 .hl-row-l2-name {
   color: #0f172a !important;
 }
 
-.hl-row-l2-voice {
-  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
-  border: 1.2px solid #d8b4fe !important;
+/* Dark Mode for Layout 2 */
+html[data-color-mode="dark"] .hl-row-l2,
+body.dark-theme .hl-row-l2 {
+  background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
+  border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35) !important;
+  color: #f8fafc !important;
+}
+
+html[data-color-mode="dark"] .hl-row-l2 .hl-row-l2-name,
+body.dark-theme .hl-row-l2 .hl-row-l2-name {
+  color: #ffffff !important;
 }
 
 /* -------------------------------------------------------------
-   Layout 3: Hero Analytics + 2-Column Cards (Image 2)
+   Layout 3: Analytics Top Section + 2-Column Cards (Image 3)
 ------------------------------------------------------------- */
-.hl-hero-analytics {
-  background: #ffffff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05) !important;
-  color: #0f172a !important;
-}
-
 .hl-grid-layout-3 {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
@@ -278,32 +311,39 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   border-radius: 16px !important;
   min-height: var(--dynamic-home-card-height, 80px) !important;
   box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  transition: transform 0.15s ease !important;
+}
+
+html[data-color-mode="light"] .hl-hero-analytics,
+body.light-theme .hl-hero-analytics {
   background: #ffffff !important;
-  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05) !important;
+  border: 1.5px solid #e2e8f0 !important;
   color: #0f172a !important;
 }
 
-.hl-card-l3:active {
-  transform: scale(0.97);
+html[data-color-mode="dark"] .hl-hero-analytics,
+body.dark-theme .hl-hero-analytics {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98)) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
 }
 
-.hl-card-l3 .spent .amt-num,
-.hl-card-l3 .spent-minus {
-  color: #dc2626 !important;
+html[data-color-mode="light"] .hl-card-l3,
+body.light-theme .hl-card-l3 {
+  background: var(--cat-pastel-bg, #ffffff) !important;
+  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
 }
 
-.hl-card-l3-voice {
-  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
-  border: 1.5px solid #d8b4fe !important;
+html[data-color-mode="dark"] .hl-card-l3,
+body.dark-theme .hl-card-l3 {
+  background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
+  border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
+  color: #f8fafc !important;
 }
 
 /* -------------------------------------------------------------
-   Layout 4: 3D Realistic Cards (Image 4)
+   Layout 4: Asymmetric Modern Cards (Image 4)
 ------------------------------------------------------------- */
 .hl-grid-layout-4 {
   display: grid !important;
@@ -315,48 +355,50 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
   border-radius: 16px !important;
   min-height: var(--dynamic-home-card-height, 84px) !important;
   box-sizing: border-box !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  transition: transform 0.15s ease !important;
-  background: #ffffff !important;
+}
+
+html[data-color-mode="light"] .hl-card-l4,
+body.light-theme .hl-card-l4 {
+  background: var(--cat-pastel-bg, #ffffff) !important;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
 }
 
-.hl-card-l4:active {
-  transform: scale(0.97);
-}
-
-.hl-card-l4-voice {
-  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
-  border: 1.5px solid #d8b4fe !important;
+html[data-color-mode="dark"] .hl-card-l4,
+body.dark-theme .hl-card-l4 {
+  background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
+  border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
+  color: #f8fafc !important;
 }
 
 /* -------------------------------------------------------------
    Layout 5: 3-Column Compact Grid with Full-Width Voice Banner
-   9 Expense categories in a pristine 3x3 grid + Full-width Voice Card at the bottom
+   Harmonious, proportionate cards with zero awkward empty space
 ------------------------------------------------------------- */
 .hl-grid-layout-5 {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: var(--dynamic-home-gap, 6px) !important;
+  align-items: stretch !important;
 }
 
 /* 3x3 Category Cards */
 .hl-card-l5 {
   border-radius: 15px !important;
-  min-height: var(--dynamic-home-card-height, 95px) !important;
+  min-height: var(--dynamic-home-card-height, 96px) !important;
+  max-height: 108px !important;
   box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  align-items: center !important;
+  justify-content: center !important;
   transition: transform 0.15s ease !important;
   background: var(--cat-pastel-bg, #ffffff) !important;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
+  overflow: hidden !important;
 }
 
 .hl-card-l5:active {
@@ -380,7 +422,8 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 .hl-card-l5-voice-wide {
   grid-column: 1 / -1 !important;
   width: 100% !important;
-  min-height: var(--dynamic-home-voice-height, 52px) !important;
+  min-height: var(--dynamic-home-voice-height, 50px) !important;
+  max-height: 56px !important;
   border-radius: 16px !important;
   background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
   border: 1.5px solid #c084fc !important;
@@ -397,60 +440,57 @@ body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
 }
 
 /* -------------------------------------------------------------
-   Layout Picker Modal
+   Layout Picker Modal Drawer
 ------------------------------------------------------------- */
-.hl-picker-modal {
+.hl-picker-overlay {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100090;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   opacity: 0;
-  pointer-events: none;
   transition: opacity 0.25s ease;
   direction: rtl;
 }
 
-.hl-picker-modal.is-open {
+.hl-picker-overlay.is-open {
   opacity: 1;
-  pointer-events: auto;
 }
 
 .hl-picker-sheet {
-  width: 100%;
-  max-width: 520px;
   background: #ffffff;
+  color: #0f172a;
+  width: 100%;
+  max-width: 480px;
   border-radius: 24px 24px 0 0;
-  padding: 16px 18px 24px;
+  padding: 16px 18px 28px;
   box-sizing: border-box;
   transform: translateY(100%);
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.15);
-  color: #0f172a;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.hl-picker-overlay.is-open .hl-picker-sheet {
+  transform: translateY(0);
 }
 
 html[data-color-mode="dark"] .hl-picker-sheet,
 body.dark-theme .hl-picker-sheet {
   background: #0f172a;
   color: #f8fafc;
-  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
-}
-
-.hl-picker-modal.is-open .hl-picker-sheet {
-  transform: translateY(0);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hl-picker-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 8px;
 }
 
 html[data-color-mode="dark"] .hl-picker-header,
@@ -458,22 +498,18 @@ body.dark-theme .hl-picker-header {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-.hl-picker-title {
+.hl-picker-header h3 {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 900;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .hl-picker-close {
   background: none;
   border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
+  font-size: 1.5rem;
   color: inherit;
-  opacity: 0.6;
+  cursor: pointer;
   line-height: 1;
   padding: 0 4px;
 }

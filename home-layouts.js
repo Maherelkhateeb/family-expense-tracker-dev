@@ -3,14 +3,15 @@
  * Home Screen Alternative Layouts Engine (v5.5.0)
  *
  * Implements 5 alternative layouts + original Monefy layout:
- * - Layout 1: 2-column cards with left icon badge, right name, amount & progress
- * - Layout 2: Single-column horizontal list cards with progress & % pill
- * - Layout 3: Top Donut chart + Top 3 spenders + 2-column cards below
- * - Layout 4: Asymmetric Hero cards (Daily & Food) + 2-column cards
- * - Layout 5: 3-column compact grid (3x3 + centered clothes) with exact pastel styling
+ * - Layout 1: 2-column cards (Text on Right, Icon on Left, matching Image 1)
+ * - Layout 2: Single-column horizontal list cards (matching Image 2)
+ * - Layout 3: Top Donut chart + Top 3 spenders + 2-column cards (matching Image 3)
+ * - Layout 4: Modern cards with hero daily/food row (matching Image 4)
+ * - Layout 5: 3-column compact grid (3x3 + centered clothes) with exact pastel styling (matching Image 5)
  *
  * Features:
- * - 6-Segment dial switcher icon with 3 internal diameters (أقطار داخلية)
+ * - Edge-to-edge 6-Segment dial switcher icon with 3 internal diameters (أقطار داخلية)
+ * - Dial button matches the circle itself (no wasted frame margins)
  * - Currency switcher moved to far left
  * - Dynamic layout engine measuring screen height and adjusting card heights
  * - Dynamic font scaler reacting to Settings data-font-size
@@ -185,7 +186,6 @@
      Dynamic Layout & Font Scaling Engine
   ------------------------------------------------------------- */
   function measureAndApplyDynamicLayout() {
-    const appBody = document.getElementById('appScrollBody');
     const header = document.querySelector('.app-header');
     const tools = document.querySelector('.executive-quick-tools-strip');
     const bottomNav = document.querySelector('.app-bottom-nav') || document.querySelector('.bottom-dock-nav');
@@ -224,10 +224,10 @@
         break;
       case 5:
         gap = 6;
-        const voiceBannerH = 52;
+        const voiceBannerH = 50;
         const gridCategoryH = availableH - voiceBannerH - (3 * gap);
         cardH = Math.floor(gridCategoryH / 3);
-        cardH = Math.max(82, Math.min(115, cardH));
+        cardH = Math.max(94, Math.min(106, cardH));
         container.style.setProperty('--dynamic-home-voice-height', `${voiceBannerH}px`);
         break;
       default:
@@ -259,53 +259,34 @@
 
   /* -------------------------------------------------------------
      SVG 6-Segment Dial Icon with 3 Internal Diameters (أقطار داخلية)
+     Edge-to-Edge: The circle matches the full button frame
   ------------------------------------------------------------- */
-      function getDialSvgMarkup(activeSector) {
-    const cx = 19;
-    const cy = 19;
-    const r = 17.5;
-    const count = 6;
-    const stepDeg = 360 / count; // 60 deg each
-    const startOffsetDeg = -90; // Start at top 12 o'clock
+  function getDialSvgMarkup(activeSector) {
+    const cx = 19, cy = 19, R = 17.5;
+    const sectors = [
+      'M 19 19 L 19.00 1.50 A 17.5 17.5 0 0 1 34.16 10.25 Z',
+      'M 19 19 L 34.16 10.25 A 17.5 17.5 0 0 1 34.16 27.75 Z',
+      'M 19 19 L 34.16 27.75 A 17.5 17.5 0 0 1 19.00 36.50 Z',
+      'M 19 19 L 19.00 36.50 A 17.5 17.5 0 0 1 3.84 27.75 Z',
+      'M 19 19 L 3.84 27.75 A 17.5 17.5 0 0 1 3.84 10.25 Z',
+      'M 19 19 L 3.84 10.25 A 17.5 17.5 0 0 1 19.00 1.50 Z'
+    ];
 
-    function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-      const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
-      return {
-        x: centerX + (radius * Math.cos(angleInRadians)),
-        y: centerY + (radius * Math.sin(angleInRadians))
-      };
-    }
-
-    // 6 Sector Paths
-    const paths = Array.from({ length: count }, (_, i) => {
-      const startAngle = startOffsetDeg + (i * stepDeg);
-      const endAngle = startAngle + stepDeg;
-      const p1 = polarToCartesian(cx, cy, r, startAngle);
-      const p2 = polarToCartesian(cx, cy, r, endAngle);
-
-      const d = [
-        'M', cx, cy,
-        'L', p1.x.toFixed(2), p1.y.toFixed(2),
-        'A', r, r, 0, 0, 1, p2.x.toFixed(2), p2.y.toFixed(2),
-        'Z'
-      ].join(' ');
-
-      const isActive = (i === activeSector);
-      // Active sector is vivid purple; inactive sectors are soft translucent
-      const fill = isActive ? '#8b5cf6' : 'rgba(124, 58, 237, 0.12)';
-      const opacity = isActive ? '0.96' : '0.45';
-      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="#7c3aed" stroke-width="0.8" />`;
+    const paths = sectors.map((d, i) => {
+      const isActive = i === activeSector;
+      const opacity = isActive ? '0.96' : '0.12';
+      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="currentColor" fill-opacity="${opacity}" stroke="currentColor" stroke-width="0.8" />`;
     }).join("");
 
     // 3 full internal diameters passing through center (19, 19) from rim to rim (أقطار داخلية)
     return `
       <svg class="home-dial-icon" viewBox="0 0 38 38" width="38" height="38" aria-hidden="true" style="overflow:visible; display:block; width:100%; height:100%;">
-        <circle cx="19" cy="19" r="17.5" fill="#f8fafc" stroke="#7c3aed" stroke-width="1.8" class="hl-dial-track" />
+        <circle cx="19" cy="19" r="17.5" fill="none" stroke="currentColor" stroke-width="1.6" class="hl-dial-track" />
         ${paths}
-        <line class="hl-dial-diameter" x1="19.00" y1="1.50" x2="19.00" y2="36.50" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" />
-        <line class="hl-dial-diameter" x1="34.16" y1="10.25" x2="3.84" y2="27.75" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" />
-        <line class="hl-dial-diameter" x1="34.16" y1="27.75" x2="3.84" y2="10.25" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round" />
-        <circle cx="19" cy="19" r="2.8" class="hl-dial-center" fill="#7c3aed" />
+        <line class="hl-dial-diameter" x1="19.00" y1="1.50" x2="19.00" y2="36.50" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+        <line class="hl-dial-diameter" x1="34.16" y1="10.25" x2="3.84" y2="27.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+        <line class="hl-dial-diameter" x1="34.16" y1="27.75" x2="3.84" y2="10.25" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+        <circle cx="19" cy="19" r="2.8" class="hl-dial-center" fill="currentColor" />
       </svg>
     `.trim();
   }
@@ -433,7 +414,7 @@
   }
 
   /* -------------------------------------------------------------
-     Render Layout 1 (2-column cards matching Image 1)
+     Render Layout 1 (2-column cards matching Image 1: Text Right, Icon Left)
   ------------------------------------------------------------- */
   function renderLayout1(totals, budgets, currSymbol, isGold) {
     const order = ['daily', 'bills', 'food', 'house', 'transport', 'education', 'other', 'health', 'voice', 'clothes'];
@@ -444,12 +425,12 @@
       if (id === 'voice') {
         return `
           <article class="reference-one-card hl-card-l1 hl-card-l1-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice class="hl-card-l1-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;">
+            <button type="button" data-voice class="hl-card-l1-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
               <div class="hl-card-l1-right" style="flex:1;min-width:0;text-align:right;">
                 <strong class="hl-voice-title" style="display:block;color:#7c3aed;font-weight:900;line-height:1.2;font-size:calc(0.84rem * var(--dynamic-home-font-scale, 1.0));">إضافة صوتية للمصروفات</strong>
                 <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(16)}</div>
               </div>
-              <div class="hl-card-l1-icon" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 3px 8px rgba(124,58,237,0.3);">
+              <div class="hl-card-l1-icon" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:0 3px 8px rgba(124,58,237,0.3);margin-inline-start:8px;">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -462,14 +443,14 @@
 
       return `
         <article class="reference-one-card hl-card-l1" data-ref-category="${id}" data-spent="${s.hasSpent}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div class="hl-card-l1-inner" style="display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
+          <div class="hl-card-l1-inner" style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
             <div class="hl-card-l1-right" style="flex:1;min-width:0;text-align:right;">
               <button type="button" class="hl-cat-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
                 <strong class="hl-card-l1-name" style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
               </button>
               <button type="button" class="hl-cat-amt-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
                 <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  ${sign ? `<span class="spent-minus">${sign}</span>` : ''}<bdi class="amt-num">${s.spentStr}</bdi> <span class="curr-lbl">${currSymbol}</span>
+                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
                 </span>
                 <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
                   <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
@@ -530,7 +511,7 @@
               <div style="min-width:0;">
                 <strong class="hl-row-l2-name" style="display:block;font-weight:800;font-size:calc(0.85rem * var(--dynamic-home-font-scale, 1.0));white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
                 <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));">
-                  ${sign ? `<span class="spent-minus">${sign}</span>` : ''}<bdi class="amt-num">${s.spentStr}</bdi> <span class="curr-lbl">${currSymbol}</span>
+                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
                 </span>
               </div>
             </div>
@@ -602,12 +583,12 @@
       if (id === 'voice') {
         return `
           <article class="reference-one-card hl-card-l3 hl-card-l3-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;">
+            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
               <div style="flex:1;text-align:right;">
                 <strong style="display:block;color:#7c3aed;font-weight:900;font-size:calc(0.84rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;">إضافة صوتية للمصروفات</strong>
                 <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(14)}</div>
               </div>
-              <div style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
+              <div style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;margin-inline-start:8px;">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -620,14 +601,14 @@
 
       return `
         <article class="reference-one-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div style="display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
             <div style="flex:1;min-width:0;text-align:right;">
               <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
                 <strong style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
               </button>
               <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
                 <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  ${sign ? `<span class="spent-minus">${sign}</span>` : ''}<bdi class="amt-num">${s.spentStr}</bdi> <span class="curr-lbl">${currSymbol}</span>
+                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
                 </span>
                 <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
                   <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
@@ -683,7 +664,7 @@
   }
 
   /* -------------------------------------------------------------
-     Render Layout 4 (Asymmetric Hero Cards + 2-col cards)
+     Render Layout 4 (Asymmetric Modern Cards matching Image 4)
   ------------------------------------------------------------- */
   function renderLayout4(totals, budgets, currSymbol, isGold) {
     const order = ['daily', 'food', 'bills', 'house', 'transport', 'health', 'education', 'other', 'clothes', 'voice'];
@@ -694,12 +675,12 @@
       if (id === 'voice') {
         return `
           <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice" style="order: ${pos} !important; background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important; border: 1.5px solid #c084fc !important; color: #ffffff !important; box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;">
-            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:10px;color:inherit;font:inherit;display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;">
+            <button type="button" data-voice style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:10px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
               <div style="flex:1;text-align:right;">
                 <strong style="display:block;color:#ffffff;font-weight:900;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;">إضافة صوتية<br>للمصروفات</strong>
                 <div style="margin-top:6px;width:100%;max-width:110px;">${getWaveHtml(16)}</div>
               </div>
-              <div style="background:rgba(255,255,255,0.25);color:#fff;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 0 10px rgba(255,255,255,0.4);">
+              <div style="background:rgba(255,255,255,0.25);color:#fff;border-radius:50%;width:42px;height:42px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;box-shadow:0 0 10px rgba(255,255,255,0.4);margin-inline-start:8px;">
                 <i class="fa-solid fa-microphone"></i>
               </div>
             </button>
@@ -712,14 +693,14 @@
 
       return `
         <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div style="display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;padding:8px 10px;box-sizing:border-box;">
             <div style="flex:1;min-width:0;text-align:right;">
               <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;">
                 <strong style="display:block;font-weight:800;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.cat.name}</strong>
               </button>
               <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%;text-align:right;margin-top:2px;">
                 <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-weight:800;font-size:calc(0.88rem * var(--dynamic-home-font-scale, 1.0));">
-                  ${sign ? `<span class="spent-minus">${sign}</span>` : ''}<bdi class="amt-num">${s.spentStr}</bdi> <span class="curr-lbl">${currSymbol}</span>
+                  <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
                 </span>
                 <div class="hl-progress-track" style="height:3px;background:rgba(0,0,0,0.06);border-radius:2px;margin:3px 0;width:100%;">
                   <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
@@ -743,7 +724,7 @@
   /* -------------------------------------------------------------
      Render Layout 5 (3-column compact grid matching Image 5)
   ------------------------------------------------------------- */
-    function renderLayout5(totals, budgets, currSymbol, isGold) {
+  function renderLayout5(totals, budgets, currSymbol, isGold) {
     const order = [
       'bills', 'food', 'daily',
       'transport', 'education', 'house',
@@ -757,9 +738,9 @@
       if (id === 'voice') {
         return `
           <article class="home-design-card hl-card-l5-voice-wide" data-ref-category="voice" style="order: ${pos} !important; grid-column: 1 / -1 !important;">
-            <button type="button" data-voice class="hl-voice-wide-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 12px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
+            <button type="button" data-voice class="hl-voice-wide-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 14px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
               <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                <div class="hl-voice-icon-box" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(124, 58, 237, 0.25);flex-shrink:0;">
+                <div class="hl-voice-icon-box" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(124, 58, 237, 0.25);flex-shrink:0;">
                   <i class="fa-solid fa-microphone"></i>
                 </div>
                 <div style="text-align:right;min-width:0;">
@@ -781,23 +762,24 @@
 
       return `
         <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
-          <button type="button" class="hl-card-l5-top" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;font:inherit;color:inherit;text-align:center;padding:6px 4px 2px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;">
-            <div class="hl-card-l5-icon" style="background: ${s.cat.iconBg}; color: ${s.cat.iconColor}; border-radius: ${s.cat.iconShape === 'circle' ? '50%' : '12px'}; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);">
-              <i class="${s.cat.iconClass}"></i>
-            </div>
-            <strong class="hl-card-l5-name" style="font-weight: 800; font-size: calc(0.78rem * var(--dynamic-home-font-scale, 1.0)); margin-top: 3px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%;">${catDisplayName}</strong>
-          </button>
-          <button type="button" class="hl-card-l5-bottom" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;font:inherit;color:inherit;text-align:center;padding:2px 4px 6px;box-sizing:border-box;border-top:1px solid rgba(0,0,0,0.08);">
-            <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="font-size: calc(0.84rem * var(--dynamic-home-font-scale, 1.0)); font-weight: 800;">
-              ${sign ? `<span class="spent-minus">${sign}</span>` : ''}
-              <bdi class="amt-num">${s.spentStr}</bdi>
-              <span class="curr-lbl">${currSymbol}</span>
-            </span>
-            <div class="hl-progress-track" style="height: 2.5px; background: rgba(0,0,0,0.06); border-radius: 2px; margin: 3px 0 2px; width: 100%;">
-              <div class="hl-progress-fill" style="width: ${Math.min(s.pct, 100)}%; background: ${s.statusColor}; height: 100%; border-radius: 2px;"></div>
-            </div>
-            <small class="hl-budget-info" style="color: ${s.statusColor}; font-size: calc(0.62rem * var(--dynamic-home-font-scale, 1.0)); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;">${s.budgetText}</small>
-          </button>
+          <div class="hl-card-l5-body" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px;box-sizing:border-box;">
+            <button type="button" class="hl-card-l5-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;padding:0;margin:0;font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div class="hl-card-l5-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:0 2px 6px rgba(0,0,0,0.08);margin-bottom:3px;">
+                <i class="${s.cat.iconClass}"></i>
+              </div>
+              <strong class="hl-card-l5-name" style="display:block;font-weight:800;font-size:calc(0.76rem * var(--dynamic-home-font-scale, 1.0));line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;text-align:center;margin-bottom:3px;">${catDisplayName}</strong>
+            </button>
+
+            <button type="button" class="hl-card-l5-foot-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}" style="border:none;background:none;cursor:pointer;width:100%;padding:0;margin:0;font:inherit;color:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <span class="hl-amount ${s.hasSpent ? 'spent' : 'zero'}" style="display:block;font-size:calc(0.82rem * var(--dynamic-home-font-scale, 1.0));font-weight:900;line-height:1.2;margin-bottom:3px;text-align:center;">
+                <span style="direction:ltr;unicode-bidi:isolate;display:inline-block;">${sign}${s.spentStr} ${currSymbol}</span>
+              </span>
+              <div class="hl-progress-track" style="height:2.5px;background:rgba(0,0,0,0.06);border-radius:2px;width:86%;margin:0 auto 3px;">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};height:100%;border-radius:2px;"></div>
+              </div>
+              <small class="hl-budget-info" style="color:${s.statusColor};font-size:calc(0.60rem * var(--dynamic-home-font-scale, 1.0));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:center;">${s.budgetText}</small>
+            </button>
+          </div>
         </article>
       `;
     }).join('');
@@ -809,9 +791,32 @@
      Master UI Sync & Render
   ------------------------------------------------------------- */
   function updateUiForActiveLayout() {
-    const originalGrid = document.getElementById('catGrid');
-    const container = document.getElementById('homeInterfaces');
+    let originalGrid = document.getElementById('catGrid');
+    let container = document.getElementById('homeInterfaces');
     const expensePage = document.getElementById('viewExpenses');
+
+    // Self-healing: if container does not exist yet, inject it right after catGrid
+    if (!container && originalGrid && originalGrid.parentNode) {
+      container = document.createElement('div');
+      container.id = 'homeInterfaces';
+      container.hidden = true;
+      originalGrid.parentNode.insertBefore(container, originalGrid.nextSibling);
+    }
+
+    // Self-healing: if btnHomeDesign does not exist yet, inject it in tools strip
+    let btn = document.getElementById('btnHomeDesign');
+    if (!btn) {
+      const tools = document.querySelector('.executive-quick-tools-strip');
+      if (tools) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tool-pill-action';
+        btn.id = 'btnHomeDesign';
+        btn.title = 'تبديل شكل الشاشة';
+        btn.innerHTML = `<span class="home-dial-wrapper" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"></span>`;
+        tools.insertBefore(btn, tools.firstChild);
+      }
+    }
 
     const isOriginal = currentLayout === 0;
 
