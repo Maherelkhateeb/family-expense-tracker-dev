@@ -79,6 +79,58 @@ const base=process.env.APP_URL||'http://127.0.0.1:8765/';
      });
      await page.waitForTimeout(100);
    }
+   // User-facing font size control is part of the dynamic engine, not a
+   // sixth main toolbar action. It must persist across designs/reloads.
+   const sizeControl=page.locator('#dynamicHomeFontSizeSelect');
+   assert.ok(await sizeControl.isVisible(),'Font size choice missing '+width);
+   assert.equal(await sizeControl.inputValue(),'100');
+   const beforeChoice=await page.evaluate(()=>{
+     const root=document.getElementById('homeInterfaces');
+     return {scale:parseFloat(root.style.getPropertyValue('--dynamic-home-font-scale')),
+       height:root.querySelector('.home-design-card')?.getBoundingClientRect().height};
+   });
+   await sizeControl.selectOption('140');
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')
+     ?.style.getPropertyValue('--dynamic-home-user-font-scale')==='1.40');
+   await page.waitForTimeout(120);
+   const bigger=await page.evaluate(()=>{
+     const root=document.getElementById('homeInterfaces');
+     return {scale:parseFloat(root.style.getPropertyValue('--dynamic-home-font-scale')),
+       height:root.querySelector('.home-design-card')?.getBoundingClientRect().height,
+       count:root.querySelectorAll('.home-design-card').length,
+       saved:localStorage.getItem(HomeDynamicLayoutEngine.fontStorageKey)};
+   });
+   assert.ok(bigger.scale>beforeChoice.scale+0.25,'User font choice did not reach engine '+width);
+   assert.ok(bigger.height>=beforeChoice.height,'Larger choice compressed cards '+width);
+   assert.equal(bigger.count,10);
+   assert.equal(bigger.saved,'140','Font size choice not saved '+width);
+   await page.locator('#btnHomeDesign').click(); // original
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')?.dataset.design==='0');
+   assert.ok(!(await sizeControl.isVisible()),'Original home must be unchanged');
+   await page.locator('#btnHomeDesign').click(); // first reference
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')?.dataset.design==='1');
+   await page.waitForTimeout(120);
+   assert.equal(await sizeControl.inputValue(),'140','Font choice lost on design switch');
+   const firstLayout=await page.evaluate(()=>({
+     fontScale:parseFloat(document.getElementById('homeInterfaces').style
+       .getPropertyValue('--dynamic-home-user-font-scale')),
+     cardCount:document.querySelectorAll('#homeInterfaces .reference-one-card').length,
+     navVisible:getComputedStyle(document.getElementById('appBottomNav')).display!=='none'
+   }));
+   assert.equal(firstLayout.fontScale,1.4);
+   assert.equal(firstLayout.cardCount,10);
+   assert.ok(firstLayout.navVisible);
+   await page.reload({waitUntil:'domcontentloaded'});
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')
+     ?.style.getPropertyValue('--dynamic-home-user-font-scale')==='1.40');
+   assert.equal(await sizeControl.inputValue(),'140','Saved font size missing after reload');
+   await sizeControl.selectOption('80');
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')
+     ?.style.getPropertyValue('--dynamic-home-user-font-scale')==='0.80');
+   await sizeControl.selectOption('100');
+   await page.waitForFunction(()=>document.querySelector('#homeInterfaces')
+     ?.style.getPropertyValue('--dynamic-home-user-font-scale')==='1.00');
+   console.log('HOME_FONT_SELECTOR_QA '+JSON.stringify({width,beforeChoice,bigger,firstLayout}));
    assert.deepEqual(errors,[],'Page JS exception '+width);
    await context.close();
   }
