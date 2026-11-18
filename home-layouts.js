@@ -971,7 +971,7 @@
 
       const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '- ' : '';
-      const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
+      const catDisplayName = s.cat.name; // 'أخرى ونثريات' مطابقة للمرجع 100%
       const isCenteredClothes = (id === 'clothes');
 
       return `
