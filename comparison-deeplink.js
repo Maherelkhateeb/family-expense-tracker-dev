@@ -144,9 +144,9 @@
     let root=document.getElementById('cmpAuditApp');
     if(!root){root=document.createElement('section');root.id='cmpAuditApp';root.className='cmp-audit-app';root.dir='rtl';panel.appendChild(root);}
     const c=currency(),current=settings.month===currentMonth();
-    const note=report.planMonths===0?'مفيش موازنة تقديرية محفوظة للفترة دي. الفعلي ظاهر، لكن مفيش أساس صحيح لحساب نسبة الفرق.':
+    const note=report.planMonths===0?'لا توجد موازنة تقديرية محفوظة للفترة المحددة. تظهر المصروفات الفعلية، لكن لا يمكن حساب نسبة فرق دقيقة دون ميزانية مقدرة.':
       report.planMonths<months.length?'الموازنة غير مكتملة: في شهور من الفترة من غير تقدير محفوظ. الأرقام المجمعة للتوضيح فقط، ونسبة الفرق غير متاحة لحد اكتمال موازنات الشهور.':
-      current?'المقدر للشهر بالكامل، والفعلي حسب العمليات المسجلة لحد دلوقتي.':'البيانات من الموازنات والعمليات المسجلة للفترة المحددة.';
+      current?'الموازنة التقديرية تخص الشهر كاملًا، بينما المصروف الفعلي يشمل العمليات المسجلة حتى الآن.':'المقارنة مبنية على الموازنات التقديرية والعمليات المسجلة خلال الفترة المحددة.';
     const headline=report.planMonths<months.length?'موازنة غير مكتملة':report.estimated<=0?'بدون تقدير':report.difference>0?'زيادة عن المقدر':report.difference<0?'أقل من المقدر':'مطابق للمقدر';
     const summary=[
       ['الموازنة المقدرة',money(report.estimated), 'neutral'],
@@ -161,7 +161,7 @@
       '<p class="cmp-audit-period">'+safe(monthLabel(months[0]))+(months.length>1?' — '+safe(monthLabel(months[months.length-1])):'')+'</p>'+
       '<div class="cmp-audit-summary">'+summary.map(e=>'<div class="cmp-audit-kpi" data-tone="'+e[2]+'"><span>'+e[0]+'</span><strong dir="ltr">'+safe(e[1])+'</strong><small>'+((e[0]==='نسبة الفرق')?'':c)+'</small></div>').join('')+'</div>'+
       '<div class="cmp-audit-verdict" data-tone="'+(report.estimated<=0?'neutral':report.difference>0?'over':report.difference<0?'under':'neutral')+'"><strong>'+headline+'</strong><span>'+safe(note)+'</span></div>'+
-      '<div class="cmp-audit-section-head"><div><h3>الفروق حسب بنود المصروفات</h3><p>الأزرق للموازنة التقديرية والفيروزي للمصروف الفعلي. العمود الأطول يعني مبلغًا أكبر داخل البند نفسه. الفرق الموجب زيادة، والسالب أقل من المقدر. كل البنود ظاهرة حتى لو صفر.</p></div><small>'+report.actualCount+' عملية صرف</small></div>'+
+      '<div class="cmp-audit-section-head"><div><h3>الفروق حسب بنود المصروفات</h3><p>الأزرق للموازنة التقديرية والفيروزي للمصروف الفعلي. العمود الأطول يعني مبلغًا أكبر داخل البند نفسه. الفرق الموجب تجاوز للموازنة، والسالب توفير مقارنة بالمقدر. كل البنود ظاهرة حتى لو صفر.</p></div><small>'+report.actualCount+' عملية صرف</small></div>'+
       '<div class="cmp-audit-rows">'+report.rows.map((r,i)=>{
         const state=tone(r),max=Math.max(1,r.estimated,r.actual);
         return '<article class="cmp-audit-row" data-tone="'+state+'">'+
