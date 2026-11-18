@@ -80,7 +80,7 @@ function installUI(){
  if(!el('opsUniversalReturnBar')&&el('viewOperations')){
   const bar=document.createElement('div');bar.id='opsUniversalReturnBar';
   bar.setAttribute('role','navigation');bar.setAttribute('aria-label','الرجوع من تفاصيل العمليات');
-  bar.innerHTML='<span id="opsUniversalReturnText"></span><button type="button" id="btnOpsReturnToSource">رجوع إلى الصفحة السابقة <i class="fa-solid fa-arrow-right"></i></button>';
+  bar.innerHTML='<span id="opsUniversalReturnText"></span><button type="button" id="btnOpsReturnToSource">رجوع <i class="fa-solid fa-arrow-left"></i></button>';
   el('viewOperations').prepend(bar);bar.querySelector('button').addEventListener('click',returnToSource);
  }
  if(!el('opsUniversalReturnFloat')){
@@ -91,8 +91,8 @@ function installUI(){
   const style=document.createElement('style');style.id='opsUniversalReturnStyles';
   style.textContent=[
    '#opsUniversalReturnBar{display:none;direction:rtl;align-items:center;justify-content:space-between;gap:8px;padding:8px 11px;margin:4px 6px 10px;border:1px solid #50b9fc;border-radius:12px;background:linear-gradient(110deg,#edfaff,#d9f1ff);color:#0b4d83;font:850 12px Tahoma,Arial,sans-serif}',
-   '#opsUniversalReturnBar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
-   '#btnOpsReturnToSource{border:0;border-radius:8px;padding:7px 12px;background:#077ec7;color:white;font:900 12px Tahoma,Arial,sans-serif;white-space:nowrap;cursor:pointer}',
+   '#opsUniversalReturnBar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:850}',
+   '#btnOpsReturnToSource{border:0;border-radius:8px;padding:6px 12px;background:#077ec7;color:white;font:900 12px Tahoma,Arial,sans-serif;white-space:nowrap;cursor:pointer;display:inline-flex;align-items:center;gap:5px;flex-shrink:0}',
    '#opsUniversalReturnFloat{display:none;position:fixed;left:12px;bottom:90px;z-index:1009;background:linear-gradient(#098bdc,#065b9d);color:white;border:1px solid #9be3ff;border-radius:100px;padding:10px 15px;box-shadow:0 4px 14px #064b8759;font:850 12px Tahoma,Arial,sans-serif;cursor:pointer}',
    'body.ops-return-context #opsUniversalReturnBar{display:flex}',
    'body.ops-return-context #opsUniversalReturnFloat{display:block}',
@@ -107,8 +107,8 @@ function sync(){
  document.body.classList.toggle('ops-return-context',on);
  if(on){
   const destination=context.summary?'الملخص':LABEL[context.page]||'الصفحة السابقة';
-  el('opsUniversalReturnText').textContent='الرجوع إلى '+destination+' بنفس الموضع والترتيب';
-  el('opsUniversalReturnFloat').textContent='رجوع إلى '+destination;
+  el('opsUniversalReturnText').textContent='العودة إلى '+destination;
+  el('opsUniversalReturnFloat').textContent='العودة إلى '+destination;
  }
 }
 function stageOrigin(){

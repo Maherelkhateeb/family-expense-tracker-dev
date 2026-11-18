@@ -2709,8 +2709,9 @@ window.BudgetArchiveEngine = BudgetArchiveEngine;
 const ProjectCompareEngine = (() => {
   let _activeProject = '';
   let _actualPeriod = 'all'; // Default: total project lifetime
-  let _estimPeriod = 'all';
-  let _actualFrom = null, _actualTo = null;
+  let _referencePeriod = 'plan'; // Default: approved project plan
+  let _viewMode = 'table'; // 'table', 'paired', 'change', 'charts'
+  let _sortMode = 'spend'; // 'spend', 'delta', 'name'
   let _chartDough = null, _chartGrouped = null, _chartMembers = null, _chartSCurve = null;
 
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -2735,9 +2736,33 @@ const ProjectCompareEngine = (() => {
 
   function onActualPeriodChange(val) {
     _actualPeriod = val;
-    _estimPeriod = val;
     const customDiv = document.getElementById('cmpProjActualCustomRange');
-    if (customDiv) customDiv.style.display = (val === 'custom') ? 'flex' : 'none';
+    if (customDiv) customDiv.hidden = (val !== 'custom');
+    render();
+  }
+
+  function onReferenceChange(val) {
+    _referencePeriod = val;
+    const customDiv = document.getElementById('cmpProjPeriodCustom');
+    if (customDiv) customDiv.hidden = (val !== 'custom');
+    render();
+  }
+
+  function switchMode(mode) {
+    _viewMode = mode;
+    const strip = document.getElementById('cmpProjModes');
+    if (strip) {
+      strip.querySelectorAll('button[data-proj-mode]').forEach(btn => {
+        const active = (btn.dataset.projMode === mode);
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', String(active));
+      });
+    }
+    render();
+  }
+
+  function onSortChange(val) {
+    _sortMode = val;
     render();
   }
 
@@ -2762,7 +2787,7 @@ const ProjectCompareEngine = (() => {
     if (period === 'thisMonth') {
       const start = new Date(y, m, 1);
       const end = new Date(y, m + 1, 0);
-      return { from: formatDateStr(start), to: formatDateStr(end), label: 'هذا الشهر' };
+      return { from: formatDateStr(start), to: formatDateStr(end), label: 'الشهر الحالي' };
     }
     if (period === 'lastMonth') {
       const start = new Date(y, m - 1, 1);
@@ -2827,16 +2852,20 @@ const ProjectCompareEngine = (() => {
     }
 
     const container = document.getElementById('projectCompareMainContent');
-    if (!container) return;
+    const summaryContainer = document.getElementById('cmpProjSummary');
+    const insightContainer = document.getElementById('cmpProjExtraInsightGrid');
 
     if (!_activeProject) {
-      container.innerHTML = `
-        <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(56,189,248,0.3); border-radius: 14px; padding: 24px; text-align: center; color: #94a3b8;">
-          <i class="fa-solid fa-folder-open" style="font-size: 2.2rem; color: #38bdf8; margin-bottom: 8px; display: block;"></i>
-          <div style="font-size: 0.90rem; font-weight: 850; color: #f8fafc; margin-bottom: 6px;">لا يوجد مشروع نشط حالياً للمقارنة</div>
-          <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 14px; border-radius: 8px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border: none; color: #fff; font-size: 0.76rem; font-weight: 900; cursor: pointer;">＋ إنشاء موازنة مشروع جديد</button>
-        </div>
-      `;
+      if (summaryContainer) summaryContainer.innerHTML = '';
+      if (container) {
+        container.innerHTML = `
+          <div style="background: rgba(15,23,42,0.65); border: 1.2px dashed rgba(56,189,248,0.3); border-radius: 14px; padding: 24px; text-align: center; color: #94a3b8;">
+            <i class="fa-solid fa-folder-open" style="font-size: 2.2rem; color: #38bdf8; margin-bottom: 8px; display: block;"></i>
+            <div style="font-size: 0.90rem; font-weight: 850; color: #f8fafc; margin-bottom: 6px;">لا يوجد مشروع نشط حالياً للمقارنة</div>
+            <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 14px; border-radius: 8px; background: linear-gradient(135deg, #0ea5e9, #2563eb); border: none; color: #fff; font-size: 0.76rem; font-weight: 900; cursor: pointer;">＋ إنشاء موازنة مشروع جديد</button>
+          </div>
+        `;
+      }
       return;
     }
 
@@ -2848,6 +2877,23 @@ const ProjectCompareEngine = (() => {
     const range = getProjectDateRange(_actualPeriod, customFrom, customTo);
     const txs = getProjectTransactions(_activeProject, range.from, range.to);
     const allProjTxs = getProjectTransactions(_activeProject, '2020-01-01', '2099-12-31');
+
+    // Update range preview elements
+    const primaryPreview = document.getElementById('cmpProjPrimaryDates');
+    if (primaryPreview) {
+      const datesText = (range.from === '2020-01-01') ? 'إجمالي فترة المشروع' : `${range.from} إلى ${range.to}`;
+      primaryPreview.innerHTML = `<bdi dir="ltr">${datesText}</bdi><small>${range.label}</small>`;
+    }
+    const refPreview = document.getElementById('cmpProjReferenceDates');
+    if (refPreview) {
+      if (_referencePeriod === 'plan') {
+        refPreview.innerHTML = `<bdi dir="ltr">الموازنة المعتمدة</bdi><small>سقف التكلفة المخطط للبنود</small>`;
+      } else if (_referencePeriod === 'previous') {
+        refPreview.innerHTML = `<bdi dir="ltr">الفترة السابقة تلقائيًا</bdi><small>مقارنة بنفس المدة المنصرمة</small>`;
+      } else {
+        refPreview.innerHTML = `<bdi dir="ltr">فترة مرجعية مخصصة</bdi><small>مقارنة بنطاق تواريخ مخصص</small>`;
+      }
+    }
 
     // Fetch Plan
     const plan = getProjectPlan(_activeProject);
@@ -2874,7 +2920,7 @@ const ProjectCompareEngine = (() => {
 
     const totalActualLifetime = allProjTxs.reduce((s, t) => s + (parseFloat(t.amount) || 0), 0);
 
-    // 1. Combine WBS items from Plan and Transactions
+    // Combine WBS items from Plan and Transactions
     const allWbsNames = new Set(planItems.map(it => it.category || it.name || it.title));
     Object.keys(itemActuals).forEach(k => allWbsNames.add(k));
 
@@ -2893,16 +2939,22 @@ const ProjectCompareEngine = (() => {
       });
     });
 
-    // Sort descending by actual expense
-    wbsRows.sort((a, b) => b.actAmt - a.actAmt);
+    // Sorting
+    if (_sortMode === 'spend') {
+      wbsRows.sort((a, b) => b.actAmt - a.actAmt);
+    } else if (_sortMode === 'delta') {
+      wbsRows.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+    } else if (_sortMode === 'name') {
+      wbsRows.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+    }
 
     const formatVal = (typeof formatMoneyVal === 'function') ? formatMoneyVal : (v) => (typeof formatMoney === 'function' ? formatMoney(v) : (v || 0).toLocaleString() + ' ج.م');
 
-    // 2. Compute 6 KPIs
+    // Compute KPIs
     const approvedBudget = planApprovedBudget || (wbsRows.reduce((s, r) => s + r.estAmt, 0)) || totalActualLifetime;
-    const spentActual = totalActualLifetime;
+    const spentActual = (_actualPeriod === 'all') ? totalActualLifetime : totalActualInPeriod;
     const remainingBalance = approvedBudget - spentActual;
-    const consumptionPct = approvedBudget > 0 ? Math.round((spentActual / approvedBudget) * 100) : 0;
+    const consumptionPct = approvedBudget > 0 ? ((spentActual / approvedBudget) * 100) : 0;
 
     // CPI = Budget of executed items ÷ Actual spent
     const executedBudgetSum = wbsRows.filter(r => r.actAmt > 0).reduce((s, r) => s + r.estAmt, 0);
@@ -2916,7 +2968,7 @@ const ProjectCompareEngine = (() => {
       const t2 = new Date(dates[dates.length - 1]).getTime();
       daysDiff = Math.max(1, Math.round((t2 - t1) / (1000 * 60 * 60 * 24)));
     }
-    const weeklyBurnRate = (spentActual / daysDiff) * 7;
+    const weeklyBurnRate = (totalActualLifetime / daysDiff) * 7;
 
     // EAC = Approved Budget ÷ CPI
     const eac = (cpi > 0) ? (approvedBudget / cpi) : spentActual;
@@ -2926,64 +2978,235 @@ const ProjectCompareEngine = (() => {
     const overrunItems = wbsRows.filter(r => r.estAmt > 0 && r.diff < 0);
     const savingsItems = wbsRows.filter(r => r.estAmt > 0 && r.actAmt > 0 && r.diff > 0);
 
-    // Build HTML Output
-    container.innerHTML = `
-      <!-- 6 كروت المؤشرات التنفيذية والتحليلات الرقابية للمشروع -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-bottom: 12px;">
-        <!-- كارت 1: الميزانية المعتمدة -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(56, 189, 248, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #94a3b8; font-weight: 800; margin-bottom: 2px;">الميزانية المعتمدة</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(approvedBudget)}</div>
-          <div style="font-size: 0.58rem; color: #7dd3fc;">سقف التكلفة المخطط</div>
-        </div>
+    // 1. Render 4 Unified Summary Cards
+    const deltaTone = remainingBalance < 0 ? 'red' : remainingBalance > 0 ? 'green' : 'slate';
+    const pctTone = consumptionPct > 100 ? 'red' : consumptionPct >= 85 ? 'slate' : 'green';
 
-        <!-- كارت 2: المنصرف الفعلي الإجمالي -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#fecdd3' : 'rgba(239, 68, 68, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #fecdd3; font-weight: 800; margin-bottom: 2px;">المنصرف الفعلي الكلي</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: #f87171; font-family: var(--font-numbers); direction: ltr;">- ${formatVal(spentActual)}</div>
-          <div style="width: 100%; height: 5px; background: rgba(0,0,0,0.3); border-radius: 3px; overflow: hidden; margin-top: 4px;">
-            <div style="width: ${Math.min(100, consumptionPct)}%; height: 100%; background: ${consumptionPct > 100 ? '#ef4444' : '#f59e0b'};"></div>
+    if (summaryContainer) {
+      summaryContainer.innerHTML = `
+        <div class="cmp-unified-summary">
+          <div class="cmp-unified-kpi" data-tone="blue">
+            <small>المنصرف الفعلي</small>
+            <strong><bdi dir="ltr">- ${formatVal(spentActual)}</bdi></strong>
           </div>
-          <div style="font-size: 0.58rem; color: #94a3b8; margin-top: 2px;">استهلاك ${consumptionPct}% من السقف</div>
-        </div>
-
-        <!-- كارت 3: الرصيد المتبقي لإتمام المشروع -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${remainingBalance >= 0 ? (document.body.classList.contains('light-theme') ? '#a7f3d0' : 'rgba(16, 185, 129, 0.4)') : (document.body.classList.contains('light-theme') ? '#fecdd3' : 'rgba(239, 68, 68, 0.5)')} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #cbd5e1; font-weight: 800; margin-bottom: 2px;">الرصيد المتبقي لإتمام المشروع</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: ${remainingBalance >= 0 ? '#34d399' : '#f87171'}; font-family: var(--font-numbers); direction: ltr;">
-            ${remainingBalance >= 0 ? '+' : ''}${formatVal(remainingBalance)}
+          <div class="cmp-unified-kpi" data-tone="slate">
+            <small>الموازنة المعتمدة</small>
+            <strong><bdi dir="ltr">${formatVal(approvedBudget)}</bdi></strong>
           </div>
-          <div style="font-size: 0.58rem; color: ${remainingBalance >= 0 ? '#6ee7b7' : '#fca5a5'};">
-            ${remainingBalance >= 0 ? 'سيولة متاحة متبقية' : 'تجاوز عجز مالي ⚠️'}
+          <div class="cmp-unified-kpi" data-tone="${deltaTone}">
+            <small>${remainingBalance >= 0 ? 'الرصيد المتبقي (وفر)' : 'تجاوز الميزانية (عجز)'}</small>
+            <strong><bdi dir="ltr">${remainingBalance >= 0 ? '+' : ''}${formatVal(remainingBalance)}</bdi></strong>
+          </div>
+          <div class="cmp-unified-kpi" data-tone="${pctTone}">
+            <small>نسبة الاستهلاك</small>
+            <strong><bdi dir="ltr">${consumptionPct.toFixed(1)}%</bdi></strong>
           </div>
         </div>
+        <p class="cmp-difference-hint">المبالغ بالجنيه المصري · ${spentActual === 0 ? 'مخصص معتمد متاح بالكامل بنسبة 100% ولم تبدأ المصروفات بعد' : `تم استهلاك ${consumptionPct.toFixed(1)}% من السقف المعتمد للمشروع`}</p>
+      `;
+    }
 
-        <!-- كارت 4: مؤشر كفاءة التكلفة CPI -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e9d5ff' : 'rgba(168, 85, 247, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #e9d5ff; font-weight: 800; margin-bottom: 2px;">مؤشر كفاءة التكلفة (CPI)</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'}; font-family: var(--font-numbers); direction: ltr;">${cpi.toFixed(2)}</div>
-          <div style="font-size: 0.58rem; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'};">${cpi >= 1.0 ? 'كفاءة ممتازة (وفر)' : 'انحراف وتجاوز تكلفة'}</div>
-        </div>
+    // 2. Render Main Content based on _viewMode
+    if (container) {
+      if (_viewMode === 'table') {
+        container.innerHTML = `
+          <div style="overflow-x: auto; margin-bottom: 12px; border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.78rem; direction: rtl; text-align: right;">
+              <thead>
+                <tr style="background: rgba(15, 23, 42, 0.9);">
+                  <th style="padding: 10px; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">بيان بند المشروع (WBS)</th>
+                  <th style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الموازنة المعتمدة</th>
+                  <th style="padding: 10px; text-align: center; color: #38bdf8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">المنصرف الفعلي</th>
+                  <th style="padding: 10px; text-align: center; color: #f87171; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الفرق (المتبقي)</th>
+                  <th style="padding: 10px; text-align: center; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">نسبة الاستهلاك</th>
+                  <th style="padding: 10px; text-align: center; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${wbsRows.length === 0 ? `<tr><td colspan="6" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد بنود أو حركات مسجلة لهذا المشروع في هذه الفترة</td></tr>` : 
+                  wbsRows.map((r, idx) => {
+                    const isSave = r.diff >= 0;
+                    const diffColor = isSave ? '#34d399' : '#f87171';
+                    const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
+                    const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
+                    const rowPct = r.estAmt > 0 ? Math.round((r.actAmt / r.estAmt) * 100) : (r.actAmt > 0 ? 100 : 0);
+                    let statusLabel = 'ضمن الحد';
+                    let statusColor = '#94a3b8';
+                    if (r.estAmt === 0 && r.actAmt > 0) { statusLabel = 'غير مخطط'; statusColor = '#f59e0b'; }
+                    else if (r.diff < 0) { statusLabel = 'تجاوز سقف'; statusColor = '#ef4444'; }
+                    else if (r.actAmt > 0 && r.diff > 0) { statusLabel = 'وفـر'; statusColor = '#10b981'; }
+                    else if (r.actAmt === 0 && r.estAmt > 0) { statusLabel = 'متاح'; statusColor = '#38bdf8'; }
 
-        <!-- كارت 5: معدل الحرق المالي Burn Rate -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#fde68a' : 'rgba(245, 158, 11, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #fde68a; font-weight: 800; margin-bottom: 2px;">معدل الصرف الأسبوعي</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">${formatVal(weeklyBurnRate)}</div>
-          <div style="font-size: 0.58rem; color: #94a3b8;">متوسط أسبوعي</div>
-        </div>
+                    return `
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 9px 12px; font-weight: 850; color: #f8fafc;">
+                          <span style="color: #38bdf8; font-size: 0.70rem; margin-left: 4px;">#${idx+1}</span>
+                          <i class="fa-solid fa-cube" style="color: #38bdf8; font-size: 0.70rem; margin-left: 6px;"></i>
+                          <span>${r.name}</span>
+                        </td>
+                        <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
+                          ${formatVal(r.estAmt)}
+                        </td>
+                        <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #38bdf8; font-variant-numeric: tabular-nums; direction: ltr;">
+                          ${formatVal(r.actAmt)}
+                        </td>
+                        <td style="padding: 9px 12px; text-align: center; direction: ltr;">
+                          <span style="display: inline-block; padding: 2px 7px; border-radius: 6px; font-weight: 950; font-size: 0.74rem; background: ${diffBg}; color: ${diffColor}; font-variant-numeric: tabular-nums;">
+                            ${diffSign}${formatVal(Math.abs(r.diff))}
+                          </span>
+                        </td>
+                        <td style="padding: 9px 12px; text-align: center; font-weight: 850; color: ${rowPct > 100 ? '#ef4444' : '#cbd5e1'}; font-variant-numeric: tabular-nums; direction: ltr;">
+                          ${rowPct}%
+                        </td>
+                        <td style="padding: 9px 12px; text-align: center;">
+                          <span style="font-size: 0.70rem; font-weight: 850; color: ${statusColor};">${statusLabel}</span>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')
+                }
+              </tbody>
+              <tfoot>
+                <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
+                  <td style="padding: 10px; color: #f8fafc;">الإجمالي العام</td>
+                  <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(approvedBudget)}</td>
+                  <td style="padding: 10px; text-align: center; color: #38bdf8; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">- ${formatVal(spentActual)}</td>
+                  <td style="padding: 10px; text-align: center; direction: ltr;">
+                    <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${remainingBalance >= 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${remainingBalance >= 0 ? '#34d399' : '#f87171'};">
+                      ${remainingBalance >= 0 ? '+' : ''}${formatVal(remainingBalance)}
+                    </span>
+                  </td>
+                  <td style="padding: 10px; text-align: center; color: ${consumptionPct > 100 ? '#ef4444' : '#cbd5e1'}; font-variant-numeric: tabular-nums; direction: ltr;">${consumptionPct.toFixed(1)}%</td>
+                  <td style="padding: 10px; text-align: center; color: #34d399;">${remainingBalance >= 0 ? 'انضباط ممتاز' : 'تجاوز عجز'}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        `;
+      } else if (_viewMode === 'paired') {
+        const maxVal = Math.max(1, ...wbsRows.map(r => Math.max(r.actAmt, r.estAmt)));
+        container.innerHTML = `
+          <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.82rem; font-weight: 850; color: #38bdf8;"><i class="fa-solid fa-chart-column"></i> أعمدة المقارنة المزدوجة (المعتمد vs الفعلي)</span>
+              <div style="display: flex; gap: 12px; font-size: 0.72rem;">
+                <span style="display: flex; align-items: center; gap: 4px; color: #fbbf24;"><i style="display:inline-block;width:10px;height:10px;background:#fbbf24;border-radius:2px;"></i> المعتمد</span>
+                <span style="display: flex; align-items: center; gap: 4px; color: #38bdf8;"><i style="display:inline-block;width:10px;height:10px;background:#38bdf8;border-radius:2px;"></i> الفعلي</span>
+              </div>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+              ${wbsRows.map((r, idx) => {
+                const actPct = (r.actAmt / maxVal) * 100;
+                const estPct = (r.estAmt / maxVal) * 100;
+                return `
+                  <li style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 850; margin-bottom: 4px;">
+                      <span style="color: #f8fafc;"><span style="color: #38bdf8; margin-left: 4px;">#${idx+1}</span> ${r.name}</span>
+                      <div style="display: flex; gap: 10px; font-size: 0.72rem; direction: ltr;">
+                        <span style="color: #38bdf8; font-weight: 900;">فعلي: ${formatVal(r.actAmt)}</span>
+                        <span style="color: #fbbf24; font-weight: 900;">معتمد: ${formatVal(r.estAmt)}</span>
+                      </div>
+                    </div>
+                    <div style="height: 16px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 2px;">
+                      <div style="width: ${Math.min(100, estPct)}%; height: 5px; background: #fbbf24; border-radius: 2px;" title="المعتمد: ${formatVal(r.estAmt)}"></div>
+                      <div style="width: ${Math.min(100, actPct)}%; height: 5px; background: #38bdf8; border-radius: 2px;" title="الفعلي: ${formatVal(r.actAmt)}"></div>
+                    </div>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      } else if (_viewMode === 'change') {
+        const maxDelta = Math.max(1, ...wbsRows.map(r => Math.abs(r.diff)));
+        container.innerHTML = `
+          <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px; padding: 14px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.82rem; font-weight: 850; color: #38bdf8;"><i class="fa-solid fa-arrows-split-up-and-left"></i> انحراف وتغير البنود عن المعتمد</span>
+              <div style="display: flex; gap: 12px; font-size: 0.72rem;">
+                <span style="display: flex; align-items: center; gap: 4px; color: #10b981;"><i style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;"></i> وفر متبقي (+)</span>
+                <span style="display: flex; align-items: center; gap: 4px; color: #ef4444;"><i style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px;"></i> تجاوز سقف (-)</span>
+              </div>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+              ${wbsRows.map((r, idx) => {
+                const isOver = r.diff < 0;
+                const widthPct = (Math.abs(r.diff) / maxDelta) * 100;
+                const barColor = isOver ? '#ef4444' : '#10b981';
+                const bg = isOver ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)';
+                return `
+                  <li style="background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 8px 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                      <span style="font-size: 0.78rem; font-weight: 850; color: #f8fafc;"><span style="color: #38bdf8; margin-left: 4px;">#${idx+1}</span> ${r.name}</span>
+                      <span style="font-size: 0.74rem; font-weight: 950; color: ${barColor}; direction: ltr; padding: 2px 6px; border-radius: 5px; background: ${bg};">
+                        ${r.diff > 0 ? '+' : ''}${formatVal(r.diff)}
+                      </span>
+                    </div>
+                    <div style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                      <div style="width: ${Math.min(100, widthPct)}%; height: 100%; background: ${barColor}; border-radius: 4px;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #94a3b8; margin-top: 4px; direction: ltr;">
+                      <span>الفعلي: ${formatVal(r.actAmt)}</span>
+                      <span>المعتمد: ${formatVal(r.estAmt)}</span>
+                    </div>
+                  </li>
+                `;
+              }).join('')}
+            </ul>
+          </div>
+        `;
+      } else if (_viewMode === 'charts') {
+        container.innerHTML = `
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
+              </div>
+              <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
+            </div>
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-chart-column"></i> <span>مقارنة التقديري بالفعلي لكل بند</span>
+              </div>
+              <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
+            </div>
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع</span>
+              </div>
+              <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
+            </div>
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
+              </div>
+              <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
+            </div>
+          </div>
+        `;
+        renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget);
+      }
+    }
 
-        <!-- كارت 6: التكلفة المتوقعة عند الاكتمال EAC -->
-        <div class="project-kpi-card" style="background: ${document.body.classList.contains('light-theme') ? '#ffffff' : 'rgba(30, 41, 59, 0.7)'} !important; border: 1.2px solid ${document.body.classList.contains('light-theme') ? '#e2e8f0' : 'rgba(56, 189, 248, 0.35)'} !important; box-shadow: ${document.body.classList.contains('light-theme') ? '0 3px 10px rgba(0,0,0,0.05)' : 'none'}; border-radius: 12px; padding: 10px; text-align: center;">
-          <div style="font-size: 0.66rem; color: #bae6fd; font-weight: 800; margin-bottom: 2px;">المتوقع عند الاكتمال (EAC)</div>
-          <div style="font-size: 1.15rem; font-weight: 950; color: #38bdf8; font-family: var(--font-numbers); direction: ltr;">${formatVal(eac)}</div>
-          <div style="font-size: 0.58rem; color: #94a3b8;">تنبؤ بالوتيرة الحالية</div>
-        </div>
-      </div>
-
-      <!-- صندوق الاستنتاجات والتحليلات التلقائية الذكية -->
-      <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 12px; padding: 10px 14px; margin-bottom: 12px;">
-        <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> <span>استنتاجات رقابية وتحليلات ذكية للمشروع:</span>
+    // 3. Render Collapsible Insights Box
+    if (insightContainer) {
+      insightContainer.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-bottom: 10px;">
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 10px; padding: 8px; text-align: center;">
+            <div style="font-size: 0.64rem; color: #e9d5ff; font-weight: 800;">مؤشر كفاءة التكلفة (CPI)</div>
+            <div style="font-size: 1.1rem; font-weight: 950; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'}; direction: ltr;">${cpi.toFixed(2)}</div>
+            <div style="font-size: 0.58rem; color: ${cpi >= 1.0 ? '#34d399' : '#fbbf24'};">${cpi >= 1.0 ? 'وفر كفء' : 'انحراف تكلفة'}</div>
+          </div>
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px; padding: 8px; text-align: center;">
+            <div style="font-size: 0.64rem; color: #fde68a; font-weight: 800;">معدل الصرف الأسبوعي</div>
+            <div style="font-size: 1.1rem; font-weight: 950; color: #fbbf24; direction: ltr;">${formatVal(weeklyBurnRate)}</div>
+            <div style="font-size: 0.58rem; color: #94a3b8;">متوسط الحرق</div>
+          </div>
+          <div style="background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 8px; text-align: center;">
+            <div style="font-size: 0.64rem; color: #bae6fd; font-weight: 800;">المتوقع عند الاكتمال (EAC)</div>
+            <div style="font-size: 1.1rem; font-weight: 950; color: #38bdf8; direction: ltr;">${formatVal(eac)}</div>
+            <div style="font-size: 0.58rem; color: #94a3b8;">تنبؤ بالوتيرة الحالية</div>
+          </div>
         </div>
         <div style="font-size: 0.72rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5;">
           ${spentActual === 0 ? `<div>ℹ️ <strong>حالة الميزانية:</strong> مخصص معتمد متاح بالكامل بنسبة 100% (${formatVal(approvedBudget)}) ولم تبدأ المصروفات بعد.</div>` : `
@@ -2992,102 +3215,8 @@ const ProjectCompareEngine = (() => {
             ${savingsItems.length > 0 ? `<div>🎉 <strong>وفورات محققة:</strong> ${savingsItems.slice(0, 2).map(s => `<span style="color:#34d399;">بند ${s.name} حقق وفراً بقيمة ${formatVal(s.diff)}</span>`).join(' • ')}</div>` : ''}
           `}
         </div>
-      </div>
-
-      <!-- جدول مقارنة بنود المشروع الرباعي (4 أعمدة) -->
-      <div style="overflow-x: auto; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.76rem; direction: rtl;">
-          <thead>
-            <tr style="background: rgba(15, 23, 42, 0.9);">
-              <th style="padding: 10px; text-align: right; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">بيان بند المشروع (WBS)</th>
-              <th style="padding: 10px; text-align: center; color: #f87171; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">المصروف الفعلي</th>
-              <th style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الموازنة التقديرية</th>
-              <th style="padding: 10px; text-align: center; color: #38bdf8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الفرق والانحراف</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${wbsRows.length === 0 ? `<tr><td colspan="4" style="text-align:center;padding:16px;color:#94a3b8;">لا توجد بنود أو حركات مسجلة لهذا المشروع في هذه الفترة</td></tr>` : 
-              wbsRows.map(r => {
-                const isSave = r.diff >= 0;
-                const diffColor = isSave ? '#34d399' : '#f87171';
-                const diffBg = isSave ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)';
-                const diffSign = r.diff > 0 ? '+' : (r.diff < 0 ? '-' : '');
-
-                return `
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 9px 12px; font-weight: 850; color: #f8fafc; text-align: right;">
-                      <i class="fa-solid fa-cube" style="color: #38bdf8; font-size: 0.70rem; margin-left: 6px;"></i>
-                      <span>${r.name}</span>
-                    </td>
-                    <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #f87171; font-variant-numeric: tabular-nums; direction: ltr;">
-                      ${formatVal(r.actAmt)}
-                    </td>
-                    <td style="padding: 9px 12px; text-align: center; font-weight: 900; color: #fbbf24; font-variant-numeric: tabular-nums; direction: ltr;">
-                      ${formatVal(r.estAmt)}
-                    </td>
-                    <td style="padding: 9px 12px; text-align: center; direction: ltr;">
-                      <span style="display: inline-block; padding: 2px 7px; border-radius: 6px; font-weight: 950; font-size: 0.74rem; background: ${diffBg}; color: ${diffColor}; font-variant-numeric: tabular-nums;">
-                        ${diffSign}${formatVal(Math.abs(r.diff))}
-                      </span>
-                    </td>
-                  </tr>
-                `;
-              }).join('')
-            }
-          </tbody>
-          <tfoot>
-            <tr style="background: rgba(15,23,42,0.95); border-top: 2px solid rgba(56,189,248,0.3); font-weight: 950;">
-              <td style="padding: 10px; text-align: right; color: #f8fafc;">إجمالي المنصرف والمعتمد في الفترة</td>
-              <td style="padding: 10px; text-align: center; color: #f87171; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">- ${formatVal(totalActualInPeriod)}</td>
-              <td style="padding: 10px; text-align: center; color: #fbbf24; font-size: 0.86rem; font-variant-numeric: tabular-nums; direction: ltr;">${formatVal(wbsRows.reduce((s,r) => s + r.estAmt, 0))}</td>
-              <td style="padding: 10px; text-align: center; direction: ltr;">
-                <span style="display: inline-block; padding: 3px 8px; border-radius: 6px; font-weight: 950; font-size: 0.80rem; background: ${(wbsRows.reduce((s,r) => s + r.diff, 0)) >= 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}; color: ${(wbsRows.reduce((s,r) => s + r.diff, 0)) >= 0 ? '#34d399' : '#f87171'};">
-                  ${(wbsRows.reduce((s,r) => s + r.diff, 0)) > 0 ? '+' : ''}${formatVal(wbsRows.reduce((s,r) => s + r.diff, 0))}
-                </span>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <!-- 4 رسوم بيانية مرفقة شاملة للمشروع -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
-        <!-- رسم 1: هيكل تكاليف المشروع حسب البنود -->
-        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
-          </div>
-          <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
-        </div>
-
-        <!-- رسم 2: مقارنة التقديري بالفعلي لكل بند -->
-        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-chart-column"></i> <span>مقارنة التقديري بالفعلي لكل بند</span>
-          </div>
-          <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
-        </div>
-
-        <!-- رسم 3: توزيع مساهمات الأفراد في الإنفاق على المشروع -->
-        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع</span>
-          </div>
-          <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
-        </div>
-
-        <!-- رسم 4: منحنى التدفق المالي التراكمي (S-Curve) -->
-        <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-          <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
-          </div>
-          <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
-        </div>
-      </div>
-    `;
-
-    // Render Charts
-    renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget);
+      `;
+    }
   }
 
   function renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget) {
@@ -3245,9 +3374,13 @@ const ProjectCompareEngine = (() => {
     render,
     onProjectChange,
     onActualPeriodChange,
+    onReferenceChange,
+    switchMode,
+    onSortChange,
     closeAndArchiveProject
   };
 })();
+
 window.ProjectCompareEngine = ProjectCompareEngine;
 
 
