@@ -440,10 +440,27 @@ body.light-theme #secReqWallets, #walletPrintSheet {
 }
 #appFrame #viewOperations #opsViewModeToggleBar > button {
   height: auto !important;
-  min-height: 33px !important;
+  min-height: 34px !important;
+  padding: 3px 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  text-align: center !important;
+  line-height: 1.15 !important;
+  font-size: clamp(0.60rem, 1.6vw, 0.70rem) !important;
+  font-weight: 850 !important;
   white-space: normal !important;
 }
-#appFrame #viewOperations #opsViewModeToggleBar > button span { min-width: 0; }
+#appFrame #viewOperations #opsViewModeToggleBar > button i {
+  flex-shrink: 0;
+  font-size: clamp(0.66rem, 1.7vw, 0.76rem);
+}
+#appFrame #viewOperations #opsViewModeToggleBar > button span {
+  min-width: 0;
+  line-height: 1.15;
+  text-align: center;
+}
 #appFrame #viewOperations.has-expense-layout #opsTypeFilterPills { display: none !important; }
 .ops-timeline { position: relative; color: var(--ledger-text); }
 .ops-timeline h3 { font-size: .9rem; margin: 3px 0 7px; }
