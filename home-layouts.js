@@ -1,25 +1,27 @@
 /**
- * Cloud Firestore & Family Expense Tracker
- * Home Screen Alternative Layouts Engine (v6.0.0 - 10-Layout Suite)
+ * ============================================================================
+ * Family Expense Tracker - Home Layouts Engine (v6.1.0)
+ * ============================================================================
+ * Re-engineered from scratch to deliver 100% visual fidelity to approved designs:
+ * 
+ * 1. Layout 0: Basic Default Grid (catGrid)
+ * 2. Layout 1: Horizontal Detail List (10 rows, row 10 = Voice Assistant with waves)
+ * 3. Layout 2: Donut Hero Analytics + 10 Cards in 2 columns (Card 10 = Voice Assistant)
+ * 4. Layout 3: Elegant Modern Asymmetric (10 Cards in 2 columns, Card 10 = Voice Assistant)
+ * 5. Layout 4: Compact 3x3 Grid (Row 3 = Health, Other, Clothes + Full-Width Voice Banner)
+ * 6. Layout 5: Radial Orbit Cockpit Arena (Hub + 9 Satellites + Integrated Bottom Voice Bar)
+ * 7. Layout 6: Hexagonal Honeycomb Hive (9 Hexagon Cells + Integrated Bottom Voice Bar)
+ * 8. Layout 7: High-Density HUD Sensor Tiles (9 Telemetry Tiles + Integrated Bottom Voice Bar)
+ * 9. Layout 8: Diamond Facet Crystal Grid (9 Diamond Rhombuses + Integrated Bottom Voice Bar)
+ * 10. Layout 9: Financial Spectrum Equalizer (9 Spectral Columns + Integrated Bottom Voice Bar)
  *
- * Implements 10 distinct, responsive, and production-ready layouts:
- * - Layout 0: الشكل الأساسي (الأصلي) - Default catGrid in index.html
- * - Layout 1: الشكل 1: قائمة أفقية تفصيلية - Horizontal detail list with budget & spent bars
- * - Layout 2: الشكل 2: لوحة تحليلات وإحصاءات - Central donut chart + Top 3 + 2-column cards
- * - Layout 3: الشكل 3: بطاقات حديثة غير متماثلة - Modern cards with hero flow
- * - Layout 4: الشكل 4: شبكة مصغرة مدمجة (3x3) - Clean 3x3 pastel grid of 9 categories
- * - Layout 5: الشكل 5: قمرة القيادة المدارية - The Radial Orbit Cockpit
- * - Layout 6: الشكل 6: خلايا النحل السداسية - The Hexagonal Honeycomb Hive
- * - Layout 7: الشكل 7: حساسات القياس الرقمية - HUD Compact Sensor Tiles
- * - Layout 8: الشكل 8: الكريستال الماسي البلوري - The Diamond Facet Crystal Grid
- * - Layout 9: الشكل 9: مدرج التردد المالي والأعمدة الطيفية - The Financial Spectrum Equalizer
- *
- * Engine Architecture:
- * - 10-Segment SVG Dial switcher icon with 5 internal diameters
- * - Dynamic viewport measurement (availableH, visualViewport, zero-scroll guarantee)
- * - Single source of truth for expenses via openQuickCategoryExpense(catId)
- * - Permanent side flaps (Gold & Summary handles)
- * - Floating microphone FAB clearance at bottom-left (bottom: 74px; left: 14px)
+ * Distinctive Features:
+ * - 10-Segment SVG Dial switcher icon with 5 full internal diameters (fills button 100%).
+ * - Embedded Voice Assistant cards/banners in ALL layouts — zero displaced floating FAB!
+ * - Permanent side edge handles (#leftScreenEdgeHandle & #rightScreenEdgeHandle) protected.
+ * - Strict accounting rules: Red negative expenses (- 1,880.00 ج.م), neutral zero (0.00 ج.م).
+ * - Viewport-fitting responsive engine adapting cleanly to all mobile phone screens.
+ * ============================================================================
  */
 
 (function (root) {
@@ -27,36 +29,36 @@
 
   const STORAGE_KEY = 'family_expense_home_design_v2';
 
-  // 9 Core Categories with rich palette, pastel background & borders
+  // 9 Core Categories Definition (SSOT)
   const CATEGORIES = {
+    daily: {
+      name: 'مصروف يومي',
+      color: '#d97706',
+      rgb: '217, 119, 6',
+      pastelBg: '#fffbeb',
+      pastelBorder: '#fde68a',
+      iconBg: 'linear-gradient(135deg, #f59e0b, #d97706)',
+      iconColor: '#ffffff',
+      iconClass: 'fa-solid fa-mug-saucer',
+      iconShape: 'circle'
+    },
     food: {
       name: 'طعام ومشتريات',
       color: '#10b981',
       rgb: '16, 185, 129',
-      pastelBg: '#f0fdf4',
-      pastelBorder: '#86efac',
-      iconBg: 'linear-gradient(135deg, #22c55e, #16a34a)',
+      pastelBg: '#ecfdf5',
+      pastelBorder: '#a7f3d0',
+      iconBg: 'linear-gradient(135deg, #10b981, #059669)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-cart-shopping',
       iconShape: 'rounded'
-    },
-    daily: {
-      name: 'مصروف يومي',
-      color: '#f59e0b',
-      rgb: '245, 158, 11',
-      pastelBg: '#fffbeb',
-      pastelBorder: '#fde68a',
-      iconBg: 'linear-gradient(135deg, #d97706, #b45309)',
-      iconColor: '#ffffff',
-      iconClass: 'fa-solid fa-mug-saucer',
-      iconShape: 'circle'
     },
     bills: {
       name: 'فواتير والتزامات',
       color: '#f97316',
       rgb: '249, 115, 22',
       pastelBg: '#fff7ed',
-      pastelBorder: '#fdba74',
+      pastelBorder: '#fed7aa',
       iconBg: 'linear-gradient(135deg, #f97316, #ea580c)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-bolt',
@@ -64,11 +66,11 @@
     },
     house: {
       name: 'مستلزمات منزل',
-      color: '#a855f7',
-      rgb: '168, 85, 247',
-      pastelBg: '#faf5ff',
-      pastelBorder: '#d8b4fe',
-      iconBg: 'linear-gradient(135deg, #a855f7, #7c3aed)',
+      color: '#8b5cf6',
+      rgb: '139, 92, 246',
+      pastelBg: '#f5f3ff',
+      pastelBorder: '#ddd6fe',
+      iconBg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-couch',
       iconShape: 'rounded'
@@ -77,20 +79,20 @@
       name: 'مواصلات وبنزين',
       color: '#0284c7',
       rgb: '2, 132, 199',
-      pastelBg: '#f0f9ff',
-      pastelBorder: '#93c5fd',
-      iconBg: 'linear-gradient(135deg, #0284c7, #0369a1)',
+      pastelBg: '#eff6ff',
+      pastelBorder: '#bfdbfe',
+      iconBg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
       iconColor: '#ffffff',
-      iconClass: 'fa-solid fa-car',
+      iconClass: 'fa-solid fa-car-side',
       iconShape: 'rounded'
     },
     education: {
       name: 'تعليم ودروس',
-      color: '#06b6d4',
-      rgb: '6, 182, 212',
-      pastelBg: '#f0fdfa',
-      pastelBorder: '#67e8f9',
-      iconBg: 'linear-gradient(135deg, #06b6d4, #0891b2)',
+      color: '#0284c7',
+      rgb: '2, 132, 199',
+      pastelBg: '#f0f9ff',
+      pastelBorder: '#bae6fd',
+      iconBg: 'linear-gradient(135deg, #0284c7, #0369a1)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-book-open',
       iconShape: 'rounded'
@@ -99,8 +101,8 @@
       name: 'صحة وعلاج',
       color: '#ef4444',
       rgb: '239, 68, 68',
-      pastelBg: '#fff1f2',
-      pastelBorder: '#fca5a5',
+      pastelBg: '#fef2f2',
+      pastelBorder: '#fecaca',
       iconBg: 'linear-gradient(135deg, #ef4444, #dc2626)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-capsules',
@@ -123,7 +125,7 @@
       color: '#ec4899',
       rgb: '236, 72, 153',
       pastelBg: '#fdf2f8',
-      pastelBorder: '#f472b6',
+      pastelBorder: '#fbcfe8',
       iconBg: 'linear-gradient(135deg, #ec4899, #db2777)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-shirt',
@@ -131,22 +133,33 @@
     }
   };
 
-  // Official Metadata for the 10 Layouts
+  // 10 Official Layouts Metadata
   const LAYOUT_META = [
     { id: 0, name: 'الشكل الأساسي (الأصلي)', desc: 'شبكة كروت المصروفات التسعة الكلاسيكية الافتراضية (catGrid)', icon: 'fa-table-cells-large' },
-    { id: 1, name: 'الشكل 1: قائمة أفقية تفصيلية', desc: 'شريط مالي ممتد لكل بند مع تفاصيل المتبقي والميزانية ونسبة الصرف', icon: 'fa-bars' },
-    { id: 2, name: 'الشكل 2: لوحة تحليلات وإحصاءات', desc: 'مخطط كعكي دائري مع أعلى 3 بنود صرفاً وبطاقات متوازية', icon: 'fa-chart-pie' },
-    { id: 3, name: 'الشكل 3: بطاقات حديثة غير متماثلة', desc: 'بطاقة رئيسية لمصروف اليوم والطعام مع تصميم عصري', icon: 'fa-layer-group' },
-    { id: 4, name: 'الشكل 4: شبكة مصغرة مدمجة (3x3)', desc: 'شبكة ثلاثية الأعمدة مدمجة بألوان باستيل هادئة', icon: 'fa-grip' },
-    { id: 5, name: 'الشكل 5: قمرة القيادة المدارية', desc: 'مدار كبسولات حلقي متزن حول إجمالي المصروفات ومتبقي الميزانية', icon: 'fa-compass' },
-    { id: 6, name: 'الشكل 6: خلايا النحل السداسية', desc: 'مصفوفة سداسية نيونية هندسية مترابطة مع أطر توهج ومؤشرات ميكرو', icon: 'fa-cube' },
-    { id: 7, name: 'الشكل 7: حساسات القياس الرقمية (HUD)', desc: 'لوحة عدادات عالية الكثافة بلمبات LED حية ومؤشرات سقف مالي', icon: 'fa-table-cells' },
-    { id: 8, name: 'الشكل 8: الكريستال الماسي البلوري', desc: 'معينات ماسية مائلة 45° بتصميم بلوري زجاجي مشع ومحتوى داخلي معتدل', icon: 'fa-gem' },
-    { id: 9, name: 'الشكل 9: مدرج التردد المالي والأعمدة الطيفية', desc: 'أعمدة طيفية رأسية نابضة ترتفع بنسب الصرف مع مبالغ نيونية طافية', icon: 'fa-chart-simple' }
+    { id: 1, name: 'الشكل 1: قائمة أفقية تفصيلية', desc: '10 صفوف كاملة تمتد بعرض الشاشة مع كارت المساعد الصوتي في الصف العاشر', icon: 'fa-bars' },
+    { id: 2, name: 'الشكل 2: لوحة تحليلات وإحصاءات', desc: 'مخطط كعكي دائري مع أعلى 3 بنود صرفاً و10 بطاقات في عمودين تشمل الصوت', icon: 'fa-chart-pie' },
+    { id: 3, name: 'الشكل 3: بطاقات حديثة أنيقة', desc: '10 بطاقات متباينة في عمودين مع كارت المساعد الصوتي ومؤشرات المتبقي', icon: 'fa-layer-group' },
+    { id: 4, name: 'الشكل 4: شبكة مصغرة مدمجة (3x3)', desc: 'شبكة 3×3 متناسقة وبنر المساعد الصوتي عريض أسفل الشاشة', icon: 'fa-grip' },
+    { id: 5, name: 'الشكل 5: قمرة القيادة المدارية', desc: 'مدار كبسولات حلقي متزن حول إجمالي المصروفات مع شريط صوتي سفلي', icon: 'fa-compass' },
+    { id: 6, name: 'الشكل 6: خلايا النحل السداسية', desc: 'مصفوفة سداسية هندسية مترابطة مع أطر توهج وشريط صوتي سفلي', icon: 'fa-cube' },
+    { id: 7, name: 'الشكل 7: حساسات القياس الرقمية (HUD)', desc: 'لوحة عدادات عالية الكثافة بلمبات LED وشريط قياس صوتي', icon: 'fa-table-cells' },
+    { id: 8, name: 'الشكل 8: الكريستال الماسي البلوري', desc: 'معينات ماسية مائلة 45° بتصميم بلوري زجاجي مع إدخال صوتي', icon: 'fa-gem' },
+    { id: 9, name: 'الشكل 9: مدرج التردد المالي والأعمدة الطيفية', desc: 'أعمدة طيفية رأسية نابضة ترتفع بنسب الصرف مع شريط تردد صوتي', icon: 'fa-chart-simple' }
   ];
 
   let currentLayout = 1;
   let cachedFiltered = null;
+
+  // Initialize stored layout preference
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved !== null) {
+      const parsed = parseInt(saved, 10);
+      if (!isNaN(parsed) && parsed >= 0 && parsed < LAYOUT_META.length) {
+        currentLayout = parsed;
+      }
+    }
+  } catch (e) {}
 
   function formatMoney(amt) {
     const n = Number(amt) || 0;
@@ -154,9 +167,45 @@
   }
 
   /* -------------------------------------------------------------
-     Dynamic Layout & Viewport Fitting Engine (v6.0.0)
+     Side Screen Edge Handles Protection (Zero Disappearance)
+  ------------------------------------------------------------- */
+  function ensureSideHandlesVisible() {
+    const lh = document.getElementById('leftScreenEdgeHandle');
+    const rh = document.getElementById('rightScreenEdgeHandle');
+    if (lh) {
+      lh.style.setProperty('display', 'flex', 'important');
+      lh.style.setProperty('visibility', 'visible', 'important');
+      lh.style.setProperty('opacity', '0.92', 'important');
+      lh.style.setProperty('z-index', '100035', 'important');
+      lh.style.setProperty('pointer-events', 'auto', 'important');
+      if (!lh.parentElement || lh.parentElement !== document.body) {
+        document.body.appendChild(lh);
+      }
+    }
+    if (rh) {
+      rh.style.setProperty('display', 'flex', 'important');
+      rh.style.setProperty('visibility', 'visible', 'important');
+      rh.style.setProperty('opacity', '0.92', 'important');
+      rh.style.setProperty('z-index', '100035', 'important');
+      rh.style.setProperty('pointer-events', 'auto', 'important');
+      if (!rh.parentElement || rh.parentElement !== document.body) {
+        document.body.appendChild(rh);
+      }
+    }
+
+    // Suppress floating mic FAB permanently - each layout embeds voice properly!
+    const vFab = document.getElementById('btnVoiceAssistantFab');
+    if (vFab) {
+      vFab.style.setProperty('display', 'none', 'important');
+    }
+  }
+
+  /* -------------------------------------------------------------
+     Dynamic Viewport Fitting Engine (Zero Overflow on Mobile)
   ------------------------------------------------------------- */
   function measureAndApplyDynamicLayout() {
+    ensureSideHandlesVisible();
+
     const container = document.getElementById('homeInterfaces');
     if (!container) return;
 
@@ -188,14 +237,14 @@
       const pH = period ? period.offsetHeight : 44;
       const bH = balance ? balance.offsetHeight : 84;
       const tH = tools ? tools.offsetHeight : 42;
-      containerTop = hH + pH + bH + tH + 12;
+      containerTop = hH + pH + bH + tH + 10;
     }
 
-    const availableH = Math.max(270, Math.floor(bottomLimit - containerTop - 10));
+    const availableH = Math.max(280, Math.floor(bottomLimit - containerTop - 8));
 
     let widthScale = 1.0;
     if (viewportW < 365) {
-      widthScale = 0.84;
+      widthScale = 0.85;
     } else if (viewportW < 385) {
       widthScale = 0.92;
     } else if (viewportW < 415) {
@@ -208,35 +257,46 @@
     iconSize = Math.max(28, Math.min(38, iconSize));
     container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
 
-    let cardH = 78;
+    let cardH = 72;
     let gap = 6;
 
+    if (viewportH < 720) {
+      gap = 3;
+    } else if (viewportH < 800) {
+      gap = 4;
+    } else {
+      gap = 6;
+    }
+
     switch (currentLayout) {
-      case 1: { // 1 column, 9 rows
-        gap = viewportH < 720 ? 3 : 4;
-        cardH = Math.floor((availableH - (8 * gap) - 10) / 9);
-        cardH = Math.max(40, Math.min(52, cardH));
+      case 1: { // 1 column, 10 rows (9 categories + voice)
+        gap = viewportH < 720 ? 2 : (viewportH < 800 ? 3 : 4);
+        cardH = Math.floor((availableH - (9 * gap) - 6) / 10);
+        cardH = Math.max(34, Math.min(48, cardH));
         break;
       }
-      case 2: { // Analytics Hero + 2 columns, 5 rows
-        gap = viewportH < 720 ? 4 : 5;
-        const heroH = Math.max(86, Math.min(104, Math.floor(availableH * 0.23)));
-        const remainingForGrid = availableH - heroH - 6 - 10;
-        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
-        cardH = Math.max(56, Math.min(74, cardH));
+      case 2: { // Hero analytics + 2 columns, 5 rows
+        gap = viewportH < 720 ? 3 : (viewportH < 800 ? 4 : 5);
+        const heroH = Math.max(78, Math.min(100, Math.floor(availableH * 0.22)));
+        const remainingForGrid = availableH - heroH - 6 - 8;
+        cardH = Math.floor((remainingForGrid - (4 * gap) - 4) / 5);
+        cardH = Math.max(48, Math.min(68, cardH));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
-      case 3: { // 2 columns, 5 rows
-        gap = viewportH < 720 ? 5 : 7;
-        cardH = Math.floor((availableH - (4 * gap) - 10) / 5);
-        cardH = Math.max(62, Math.min(86, cardH));
+      case 3: { // 2 columns, 5 rows (10 cards)
+        gap = viewportH < 720 ? 4 : (viewportH < 800 ? 5 : 6);
+        cardH = Math.floor((availableH - (4 * gap) - 6) / 5);
+        cardH = Math.max(56, Math.min(80, cardH));
         break;
       }
-      case 4: { // 3x3 grid of 9 categories
-        gap = viewportH < 720 ? 5 : 6;
-        cardH = Math.floor((availableH - (2 * gap) - 10) / 3);
-        cardH = Math.max(82, Math.min(108, cardH));
+      case 4: { // 3x3 grid (9 categories) + bottom wide voice banner
+        gap = viewportH < 720 ? 3 : (viewportH < 800 ? 4 : 5);
+        const voiceBannerH = viewportH < 720 ? 40 : 46;
+        const gridH = availableH - voiceBannerH - gap - 6;
+        cardH = Math.floor((gridH - (2 * gap)) / 3);
+        cardH = Math.max(68, Math.min(94, cardH));
+        container.style.setProperty('--dynamic-home-voice-banner-h', `${voiceBannerH}px`);
         break;
       }
       case 5: // Radial Cockpit
@@ -276,12 +336,13 @@
 
   /* -------------------------------------------------------------
      SVG 10-Segment Dial with 5 Internal Diameters (36° per sector)
+     Fills the design button 100% without clipped padding.
   ------------------------------------------------------------- */
   function getDialSvgMarkup(activeSector) {
     const cx = 19;
     const cy = 19;
     const r = 17.5;
-    const count = LAYOUT_META.length; // 10 قطاعات متساوية
+    const count = LAYOUT_META.length; // 10 قطاعات
     const stepDeg = 360 / count;      // 36 درجة
     const startOffsetDeg = -90;       // الساعة 12
 
@@ -308,21 +369,21 @@
 
       const isActive = (i === activeSector);
       const fill = isActive ? '#8b5cf6' : 'rgba(124, 58, 237, 0.12)';
-      const opacity = isActive ? '0.96' : '0.35';
-      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="#7c3aed" stroke-width="0.7" />`;
+      const opacity = isActive ? '0.98' : '0.35';
+      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="#7c3aed" stroke-width="0.75" />`;
     }).join('');
 
-    // 5 خطوط أقطار كاملة ممتدة من الحافة للحافة
+    // 5 خطوط أقطار كاملة تمتد عبر المركز من الحافة إلى الحافة
     const lines = Array.from({ length: 5 }, (_, i) => {
       const angle1 = startOffsetDeg + (i * stepDeg);
       const angle2 = angle1 + 180;
       const p1 = polarToCartesian(cx, cy, r, angle1);
       const p2 = polarToCartesian(cx, cy, r, angle2);
-      return `<line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#c084fc" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>`;
+      return `<line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#c084fc" stroke-width="1.1" stroke-linecap="round" opacity="0.8"/>`;
     }).join('');
 
     return `
-      <svg class="home-dial-icon" viewBox="0 0 38 38" width="38" height="38" aria-hidden="true" style="overflow:visible; display:block; width:100%; height:100%;">
+      <svg class="home-dial-icon" viewBox="0 0 38 38" width="100%" height="100%" aria-hidden="true" style="overflow:visible; display:block; width:100%; height:100%;">
         <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#7c3aed" stroke-width="1.6" class="hl-dial-track"/>
         ${paths}
         ${lines}
@@ -335,7 +396,7 @@
     const btn = document.getElementById('btnHomeDesign');
     if (!btn) return;
 
-    btn.title = `تبديل شكل الشاشة (الحالي: ${LAYOUT_META[currentLayout]?.name || ''})`;
+    btn.title = `تبديل شكل الشاشة (الشكل الحالي: ${LAYOUT_META[currentLayout]?.name || ''}) - نقر مطول لاختيار شكل محدد`;
     btn.setAttribute('aria-label', btn.title);
 
     let iconContainer = btn.querySelector('.home-dial-wrapper');
@@ -418,9 +479,9 @@
     const remainingPct = Math.max(0, Math.min(100, Math.abs(pct)));
     let budgetText = '';
     if (isExceeded) {
-      budgetText = `تجاوز: ${remainingPct}% • ${remValStr} ${currSymbol}`;
+      budgetText = `تجاوز: ${remainingPct}% - ${remValStr} ${currSymbol}`;
     } else {
-      budgetText = `متبقي: ${remainingPct}% • ${remValStr} ${currSymbol}`;
+      budgetText = `متبقي: ${remainingPct}% - ${remValStr} ${currSymbol}`;
     }
 
     return {
@@ -440,27 +501,49 @@
     };
   }
 
+  // Audio wave bars markup helper
+  function getAudioWaveHtml(color = '#8b5cf6') {
+    return `
+      <div class="hl-audio-waves" aria-hidden="true" style="--wave-color:${color};">
+        <span class="hl-wave-bar" style="height:35%;"></span>
+        <span class="hl-wave-bar" style="height:70%;"></span>
+        <span class="hl-wave-bar" style="height:100%;"></span>
+        <span class="hl-wave-bar" style="height:55%;"></span>
+        <span class="hl-wave-bar" style="height:85%;"></span>
+        <span class="hl-wave-bar" style="height:40%;"></span>
+        <span class="hl-wave-bar" style="height:90%;"></span>
+        <span class="hl-wave-bar" style="height:65%;"></span>
+        <span class="hl-wave-bar" style="height:35%;"></span>
+        <span class="hl-wave-bar" style="height:80%;"></span>
+        <span class="hl-wave-bar" style="height:50%;"></span>
+        <span class="hl-wave-bar" style="height:25%;"></span>
+      </div>
+    `;
+  }
+
   /* =========================================================================
-     الشكل 1: قائمة أفقية تفصيلية (Horizontal Detail List)
+     الشكل 1: قائمة أفقية تفصيلية (10 صفوف كاملة - مطابقة لصورة المرجع 3)
+     Row 10 = إضافة صوتية للمصروفات مع الأيقونة والاسم وموجات الصوت وسهم التنقل
      ========================================================================= */
   function renderLayout1List(totals, budgets, currSymbol, isGold) {
     const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'other', 'clothes'];
 
     const rowsHtml = order.map(id => {
       const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
-      const sign = s.hasSpent ? '− ' : '';
+      const sign = s.hasSpent ? '- ' : '';
+      const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
       return `
-        <article class="home-design-card hl-row-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-          <div class="hl-row-l2-content">
-            <div class="hl-row-l2-right">
+        <article class="home-design-card hl-row-l1" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+          <div class="hl-row-l1-content">
+            <div class="hl-row-l1-right">
               <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn">
-                <div class="hl-row-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+                <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                   <i class="${s.cat.iconClass}"></i>
                 </div>
               </button>
               <div class="hl-row-name-amt">
-                <strong class="hl-row-l2-name">${s.cat.name}</strong>
+                <strong class="hl-row-l1-name">${catDisplayName}</strong>
                 <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                   <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                   <span class="hl-amt-curr">${currSymbol}</span>
@@ -478,23 +561,53 @@
               </div>
             </button>
 
-            <div class="hl-row-l2-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};">
+            <div class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};">
               %${s.remainingPct}
             </div>
 
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-chevron-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="تسجيل سريع">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
           </div>
         </article>
       `;
-    }).join("");
+    }).join('');
 
-    return `<div class="home-design-list hl-grid-layout-2">${rowsHtml}</div>`;
+    // Row 10: إضافة صوتية للمصروفات (Official Voice Row)
+    const voiceRowHtml = `
+      <article class="home-design-card hl-row-l1 hl-voice-row" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+        <div class="hl-row-l1-content">
+          <div class="hl-row-l1-right">
+            <button type="button" data-action="voice-record" class="hl-row-icon-btn">
+              <div class="hl-row-l1-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+                <i class="fa-solid fa-microphone"></i>
+              </div>
+            </button>
+            <div class="hl-row-name-amt">
+              <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+              <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.65rem;font-weight:700;">اضغط للتحدث الذكي</small>
+            </div>
+          </div>
+
+          <div class="hl-row-divider"></div>
+
+          <button type="button" data-action="voice-record" class="hl-row-mid-btn hl-voice-waves-btn">
+            ${getAudioWaveHtml('#8b5cf6')}
+          </button>
+
+          <button type="button" data-action="voice-record" class="hl-row-chevron-btn" aria-label="بدء التسجيل الصوتي">
+            <i class="fa-solid fa-chevron-left" style="color:#7c3aed;"></i>
+          </button>
+        </div>
+      </article>
+    `;
+
+    return `<div class="home-design-list hl-grid-layout-1">${rowsHtml}${voiceRowHtml}</div>`;
   }
 
   /* =========================================================================
-     الشكل 2: لوحة تحليلات وإحصاءات (Donut Chart + Top 3 + 2-col cards)
+     الشكل 2: لوحة تحليلات وإحصاءات (Donut Hero + 10 بطاقات في عمودين - صورة المرجع 2)
+     Card 10 (Row 5, Right) = إضافة صوتية للمصروفات
      ========================================================================= */
   function renderLayout2Analytics(totals, budgets, currSymbol, isGold) {
     const spentCategories = Object.keys(CATEGORIES).map(id => ({
@@ -527,42 +640,81 @@
       `;
     }).join('') : '<div style="color:#94a3b8;font-size:0.72rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
 
-    const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'clothes', 'other'];
+    // 10 Cards in 2 Columns:
+    // Row 1: Right = daily, Left = food
+    // Row 2: Right = bills, Left = house
+    // Row 3: Right = education, Left = transport
+    // Row 4: Right = health, Left = clothes
+    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
+    const pairs = [
+      ['daily', 'food'],
+      ['bills', 'house'],
+      ['education', 'transport'],
+      ['health', 'clothes'],
+      ['voice', 'other']
+    ];
 
-    const cardsHtml = order.map(id => {
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
-      const sign = s.hasSpent ? '− ' : '';
+    const cardsHtml = pairs.map(([rightId, leftId]) => {
+      function renderOneCard(id) {
+        if (id === 'voice') {
+          return `
+            <article class="home-design-card hl-card-l2 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l2-inner">
+                <div class="hl-card-l2-right">
+                  <button type="button" data-action="voice-record" class="hl-cat-head-btn">
+                    <strong class="hl-card-l2-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+                  </button>
+                  <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
+                    ${getAudioWaveHtml('#8b5cf6')}
+                  </button>
+                </div>
+                <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
+                  <div class="hl-card-l2-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:12px;">
+                    <i class="fa-solid fa-microphone"></i>
+                  </div>
+                </button>
+              </div>
+            </article>
+          `;
+        }
 
-      return `
-        <article class="reference-one-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-          <div class="hl-card-l3-inner">
-            <div class="hl-card-l3-right">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
-                <strong class="hl-card-l3-name">${s.cat.name}</strong>
-              </button>
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
-                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                  <span class="hl-amt-curr">${currSymbol}</span>
+        const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
+        const sign = s.hasSpent ? '- ' : '';
+        const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
+
+        return `
+          <article class="home-design-card hl-card-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l2-inner">
+              <div class="hl-card-l2-right">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                  <strong class="hl-card-l2-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                  <div class="hl-progress-track">
+                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                  </div>
+                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+                </button>
+              </div>
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+                <div class="hl-card-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
+                  <i class="${s.cat.iconClass}"></i>
                 </div>
-                <div class="hl-progress-track">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                </div>
-                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
-              <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
-                <i class="${s.cat.iconClass}"></i>
-              </div>
-            </button>
-          </div>
-        </article>
-      `;
-    }).join("");
+          </article>
+        `;
+      }
+
+      return renderOneCard(rightId) + renderOneCard(leftId);
+    }).join('');
 
     return `
-      <div class="hl-layout-3-wrapper">
+      <div class="hl-layout-2-wrapper">
         <section class="hl-hero-analytics">
           <div class="hl-donut-box">
             <svg viewBox="0 0 36 36" class="hl-donut-svg">
@@ -588,78 +740,123 @@
           </div>
         </section>
 
-        <div class="reference-one-grid hl-grid-layout-3">${cardsHtml}</div>
+        <div class="home-design-grid hl-grid-layout-2">${cardsHtml}</div>
       </div>
     `;
   }
 
   /* =========================================================================
-     الشكل 3: بطاقات حديثة غير متماثلة (Modern Asymmetric Cards)
+     الشكل 3: بطاقات حديثة أنيقة (10 بطاقات في عمودين - صورة المرجع 1)
+     Card 10 (Row 5, Right) = إضافة صوتية للمصروفات
      ========================================================================= */
   function renderLayout3Asymmetric(totals, budgets, currSymbol, isGold) {
-    const order = ['daily', 'food', 'bills', 'house', 'transport', 'health', 'education', 'other', 'clothes'];
+    // 10 Cards in 2 Columns matching Image 1:
+    // Row 1: Right = daily, Left = bills
+    // Row 2: Right = food, Left = house
+    // Row 3: Right = transport, Left = education
+    // Row 4: Right = other, Left = health
+    // Row 5: Right = voice (إضافة صوتية), Left = clothes
+    const pairs = [
+      ['daily', 'bills'],
+      ['food', 'house'],
+      ['transport', 'education'],
+      ['other', 'health'],
+      ['voice', 'clothes']
+    ];
 
-    const cardsHtml = order.map(id => {
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
-      const sign = s.hasSpent ? '− ' : '';
+    const cardsHtml = pairs.map(([rightId, leftId]) => {
+      function renderOneCard(id) {
+        if (id === 'voice') {
+          return `
+            <article class="home-design-card hl-card-l3 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l3-inner">
+                <div class="hl-card-l3-right">
+                  <button type="button" data-action="voice-record" class="hl-cat-head-btn">
+                    <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+                  </button>
+                  <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
+                    ${getAudioWaveHtml('#8b5cf6')}
+                  </button>
+                </div>
+                <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
+                  <div class="hl-card-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:12px;">
+                    <i class="fa-solid fa-microphone"></i>
+                  </div>
+                </button>
+              </div>
+            </article>
+          `;
+        }
 
-      return `
-        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-          <div class="hl-card-l4-inner">
-            <div class="hl-card-l4-right">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
-                <strong class="hl-card-l4-name">${s.cat.name}</strong>
-              </button>
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
-                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                  <span class="hl-amt-curr">${currSymbol}</span>
+        const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
+        const sign = s.hasSpent ? '- ' : '';
+        const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
+
+        return `
+          <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l3-inner">
+              <div class="hl-card-l3-right">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                  <strong class="hl-card-l3-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                  <div class="hl-progress-track">
+                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                  </div>
+                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+                </button>
+              </div>
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
+                  <i class="${s.cat.iconClass}"></i>
                 </div>
-                <div class="hl-progress-track">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                </div>
-                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
-              <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
-                <i class="${s.cat.iconClass}"></i>
-              </div>
-            </button>
-          </div>
-        </article>
-      `;
-    }).join("");
+          </article>
+        `;
+      }
 
-    return `<div class="home-design-grid hl-grid-layout-4">${cardsHtml}</div>`;
+      return renderOneCard(rightId) + renderOneCard(leftId);
+    }).join('');
+
+    return `<div class="home-design-grid hl-grid-layout-3">${cardsHtml}</div>`;
   }
 
   /* =========================================================================
-     الشكل 4: شبكة مصغرة مدمجة 3×3 (Compact 3x3 Grid)
+     الشكل 4: شبكة مصغرة مدمجة 3×3 + بنر المساعد الصوتي عريض أسفل الشاشة
+     (صور المرجع 5 و6 والطلب الصريح: نقل ملابس وأحذية للصف الثالث + بنر صوتي عريض)
      ========================================================================= */
   function renderLayout4CompactGrid(totals, budgets, currSymbol, isGold) {
+    // 9 Categories arranged into 3 rows of 3 columns:
+    // Row 1: daily, food, bills
+    // Row 2: house, education, transport
+    // Row 3: health, other, clothes (clothes moved here as requested!)
     const order = [
-      'bills', 'food', 'daily',
-      'transport', 'education', 'house',
-      'clothes', 'other', 'health'
+      'daily', 'food', 'bills',
+      'house', 'education', 'transport',
+      'health', 'other', 'clothes'
     ];
 
     const cardsHtml = order.map(id => {
       const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
-      const sign = s.hasSpent ? '− ' : '';
+      const sign = s.hasSpent ? '- ' : '';
       const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
       return `
-        <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
-          <div class="hl-card-l5-body">
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l5-head-btn">
-              <div class="hl-card-l5-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};">
+        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
+          <div class="hl-card-l4-body">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-head-btn">
+              <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
-              <strong class="hl-card-l5-name">${catDisplayName}</strong>
+              <strong class="hl-card-l4-name">${catDisplayName}</strong>
             </button>
 
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l5-foot-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-foot-btn">
               <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                 <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                 <span class="hl-amt-curr">${currSymbol}</span>
@@ -674,21 +871,49 @@
       `;
     }).join('');
 
-    return `<div class="home-design-grid hl-grid-layout-5">${cardsHtml}</div>`;
+    // Row 4: Wide Voice Assistant Banner across full width of the screen!
+    const voiceBannerHtml = `
+      <div class="hl-layout4-voice-strip" data-action="voice-record">
+        <button type="button" data-action="voice-record" class="hl-voice-banner-btn" style="background:linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);border:1.5px solid #c084fc;">
+          <div class="hl-voice-banner-right">
+            <div class="hl-voice-banner-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#fff;">
+              <i class="fa-solid fa-microphone"></i>
+            </div>
+            <div class="hl-voice-banner-text">
+              <strong style="color:#6d28d9;font-size:0.80rem;">إضافة صوتية للمصروفات</strong>
+              <small style="color:#7c3aed;font-size:0.62rem;">اضغط للتحدث - تسجيل المصروف صوتياً فوراً</small>
+            </div>
+          </div>
+          <div class="hl-voice-banner-waves">
+            ${getAudioWaveHtml('#8b5cf6')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="color:#7c3aed;font-size:0.80rem;"></i>
+        </button>
+      </div>
+    `;
+
+    return `
+      <div class="hl-layout-4-wrapper">
+        <div class="home-design-grid hl-grid-layout-4">${cardsHtml}</div>
+        ${voiceBannerHtml}
+      </div>
+    `;
   }
 
   /* =========================================================================
      الشكل 5: قمرة القيادة المدارية (The Radial Orbit Cockpit)
+     Hub + 9 Satellite Capsules + Integrated Bottom Voice Bar
      ========================================================================= */
   function renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'bills', 'transport', 'clothes', 'health', 'education', 'daily', 'house', 'other'];
     const radius = 126;
     const centerX = 195;
-    const centerY = 168;
+    const centerY = 158;
 
     let totalSpentAll = 0;
     catKeys.forEach(k => { totalSpentAll += (totals[k] || 0); });
-    const remainingBudget = Math.max(0, 15400 - totalSpentAll);
+    const totalBudget = Object.values(budgets).reduce((sum, val) => sum + Number(val || 0), 0);
+    const remainingBudget = Math.max(0, totalBudget - totalSpentAll);
 
     const satellitesHtml = catKeys.map((catId, index) => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
@@ -708,18 +933,36 @@
       `;
     }).join('');
 
-    return `
-      <div class="radial-arena hl-l5-arena" style="flex:1; position:relative; width:100%; height:350px; margin:0 auto; overflow:hidden;">
-        <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
-        
-        <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 60}px; left:${centerX - 60}px; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle, rgba(15,23,42,0.98), rgba(30,58,138,0.55)); border:2.5px solid rgba(56, 189, 248, 0.7); box-shadow:0 0 28px rgba(56, 189, 248, 0.35); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
-          <span style="font-size:0.62rem; font-weight:800; color:#38bdf8; background:rgba(56, 189, 248, 0.15); padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
-          <span style="font-size:1.05rem; font-weight:900; color:#f87171; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
-          <span style="font-size:0.56rem; color:#94a3b8; font-weight:700;">المتبقي بالميزانية</span>
-          <span style="font-size:0.65rem; font-weight:900; color:#34d399; direction:ltr;">+${formatMoney(remainingBudget)}</span>
-        </div>
+    const voiceBarHtml = `
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:8px;padding:0 8px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:40px;border-radius:12px;background:linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(124,58,237,0.3) 100%);border:1.5px solid #8b5cf6;color:#c084fc;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:1rem;color:#a855f7;"></i>
+            <span style="font-size:0.75rem;font-weight:850;color:#e9d5ff;">إضافة صوتية للمصروفات</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#c084fc')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#a855f7;"></i>
+        </button>
+      </div>
+    `;
 
-        ${satellitesHtml}
+    return `
+      <div class="hl-layout-5-wrapper" style="display:flex;flex-direction:column;">
+        <div class="radial-arena hl-l5-arena" style="position:relative; width:100%; height:320px; margin:0 auto; overflow:hidden;">
+          <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
+          
+          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 55}px; left:${centerX - 55}px; width:110px; height:110px; border-radius:50%; background:radial-gradient(circle, rgba(15,23,42,0.98), rgba(30,58,138,0.55)); border:2.5px solid rgba(56, 189, 248, 0.7); box-shadow:0 0 28px rgba(56, 189, 248, 0.35); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
+            <span style="font-size:0.60rem; font-weight:800; color:#38bdf8; background:rgba(56, 189, 248, 0.15); padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
+            <span style="font-size:0.95rem; font-weight:900; color:#f87171; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
+            <span style="font-size:0.54rem; color:#94a3b8; font-weight:700;">المتبقي بالميزانية</span>
+            <span style="font-size:0.62rem; font-weight:900; color:#34d399; direction:ltr;">+${formatMoney(remainingBudget)}</span>
+          </div>
+
+          ${satellitesHtml}
+        </div>
+        ${voiceBarHtml}
       </div>
     `;
   }
@@ -730,9 +973,9 @@
   function renderLayout6Honeycomb(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
     const positions = [
-      [14, 10], [138, 10], [262, 10],
-      [14, 116], [138, 116], [262, 116],
-      [14, 222], [138, 222], [262, 222]
+      [14, 8], [138, 8], [262, 8],
+      [14, 110], [138, 110], [262, 110],
+      [14, 212], [138, 212], [262, 212]
     ];
 
     const cellsHtml = catKeys.map((catId, idx) => {
@@ -743,14 +986,14 @@
       const [px, py] = positions[idx];
 
       return `
-        <div class="hex-hive-card hl-l6-card" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:102px; cursor:pointer;">
+        <div class="hex-hive-card hl-l6-card" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; cursor:pointer;">
           <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%;">
             <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="rgba(15,23,42,0.92)" stroke="${cat.color}" stroke-width="1.8" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
           </svg>
           <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
-            <div style="color:${cat.color}; font-size:1.15rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
-            <span style="font-size:0.70rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-            <span style="font-size:0.74rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
+            <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+            <span style="font-size:0.68rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+            <span style="font-size:0.72rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
             <div style="width:32px; height:3px; background:rgba(255,255,255,0.15); border-radius:2px; overflow:hidden;">
               <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
             </div>
@@ -759,7 +1002,27 @@
       `;
     }).join('');
 
-    return `<div class="honeycomb-board hl-l6-board" style="flex:1; position:relative; width:100%; height:340px; margin:0 auto;">${cellsHtml}</div>`;
+    const voiceBarHtml = `
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:38px;border-radius:12px;background:linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.5px solid #10b981;color:#6ee7b7;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#10b981;"></i>
+            <span style="font-size:0.74rem;font-weight:850;color:#d1fae5;">إضافة صوتية للمصروفات</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#10b981')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#10b981;"></i>
+        </button>
+      </div>
+    `;
+
+    return `
+      <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;">
+        <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:320px; margin:0 auto;">${cellsHtml}</div>
+        ${voiceBarHtml}
+      </div>
+    `;
   }
 
   /* =========================================================================
@@ -776,16 +1039,16 @@
       const ledColor = pct > 75 ? '#ef4444' : (pct > 40 ? '#f59e0b' : '#10b981');
 
       return `
-        <div class="sensor-tile hl-l7-tile" data-action="quick-add" data-cat-id="${catId}" style="background:linear-gradient(160deg, rgba(24, 34, 53, 0.85) 0%, rgba(13, 22, 38, 0.95) 100%); border:1.3px solid rgba(255, 255, 255, 0.12); border-radius:14px; padding:6px 6px 7px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; cursor:pointer; min-height:92px;">
+        <div class="sensor-tile hl-l7-tile" data-action="quick-add" data-cat-id="${catId}" style="background:linear-gradient(160deg, rgba(24, 34, 53, 0.85) 0%, rgba(13, 22, 38, 0.95) 100%); border:1.3px solid rgba(255, 255, 255, 0.12); border-radius:14px; padding:6px 6px 7px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; cursor:pointer; min-height:86px;">
           <div style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 2px 2px;">
             <span style="font-size:0.60rem; font-weight:900; color:#94a3b8;">${pct}%</span>
             <span style="width:6px; height:6px; border-radius:50%; background:${ledColor}; box-shadow:0 0 6px ${ledColor};"></span>
           </div>
-          <div style="width:30px; height:30px; border-radius:50%; border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.92rem; margin:1px 0 2px;">
+          <div style="width:28px; height:28px; border-radius:50%; border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.88rem; margin:1px 0 2px;">
             <i class="${cat.iconClass}"></i>
           </div>
-          <span style="font-size:0.68rem; font-weight:850; color:#f8fafc; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-          <span style="font-size:0.72rem; font-weight:900; color:#f43f5e; direction:ltr; margin-top:1px;">-${formatMoney(spent)}</span>
+          <span style="font-size:0.66rem; font-weight:850; color:#f8fafc; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+          <span style="font-size:0.70rem; font-weight:900; color:#f43f5e; direction:ltr; margin-top:1px;">-${formatMoney(spent)}</span>
           <div style="width:36px; height:3px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-top:3px;">
             <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
           </div>
@@ -793,9 +1056,25 @@
       `;
     }).join('');
 
+    const voiceBarHtml = `
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 6px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:38px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(139,92,246,0.18) 100%);border:1.4px solid #38bdf8;color:#7dd3fc;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
+            <span style="font-size:0.74rem;font-weight:850;color:#e0f2fe;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#38bdf8')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#38bdf8;"></i>
+        </button>
+      </div>
+    `;
+
     return `
-      <div class="sensor-arena hl-l7-arena" style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:4px 6px 8px;">
+      <div class="sensor-arena hl-l7-arena" style="display:flex; flex-direction:column; justify-content:center; padding:4px 6px 6px;">
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%;">${tilesHtml}</div>
+        ${voiceBarHtml}
       </div>
     `;
   }
@@ -806,9 +1085,9 @@
   function renderLayout8Diamonds(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
     const positions = [
-      [14, 15], [138, 15], [262, 15],
-      [14, 126], [138, 126], [262, 126],
-      [14, 237], [138, 237], [262, 237]
+      [14, 12], [138, 12], [262, 12],
+      [14, 118], [138, 118], [262, 118],
+      [14, 224], [138, 224], [262, 224]
     ];
 
     const diamondsHtml = catKeys.map((catId, idx) => {
@@ -819,20 +1098,40 @@
       const [px, py] = positions[idx];
 
       return `
-        <div class="diamond-wrapper hl-l8-item" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:102px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
-          <div style="width:78px; height:78px; background:linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%); border:1.8px solid ${cat.color}; border-radius:18px; transform:rotate(45deg); box-shadow:0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55; display:flex; align-items:center; justify-content:center;">
+        <div class="diamond-wrapper hl-l8-item" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+          <div style="width:76px; height:76px; background:linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%); border:1.8px solid ${cat.color}; border-radius:18px; transform:rotate(45deg); box-shadow:0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55; display:flex; align-items:center; justify-content:center;">
             <div style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:95px; gap:1px;">
-              <div style="color:${cat.color}; font-size:1.10rem;"><i class="${cat.iconClass}"></i></div>
-              <span style="font-size:0.66rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-              <span style="font-size:0.70rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
-              <span style="font-size:0.56rem; font-weight:900; color:${cat.color}; background:${cat.color}25; border-radius:8px; padding:0 4px;">${pct}%</span>
+              <div style="color:${cat.color}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
+              <span style="font-size:0.64rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+              <span style="font-size:0.68rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
+              <span style="font-size:0.55rem; font-weight:900; color:${cat.color}; background:${cat.color}25; border-radius:8px; padding:0 4px;">${pct}%</span>
             </div>
           </div>
         </div>
       `;
     }).join('');
 
-    return `<div class="diamond-arena hl-l8-arena" style="flex:1; position:relative; width:100%; height:350px; margin:0 auto;">${diamondsHtml}</div>`;
+    const voiceBarHtml = `
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:38px;border-radius:12px;background:linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.5px solid #ec4899;color:#f472b6;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#ec4899;"></i>
+            <span style="font-size:0.74rem;font-weight:850;color:#fce7f3;">إضافة صوتية للمصروفات</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#ec4899')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#ec4899;"></i>
+        </button>
+      </div>
+    `;
+
+    return `
+      <div class="hl-layout-8-wrapper" style="display:flex;flex-direction:column;">
+        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:330px; margin:0 auto;">${diamondsHtml}</div>
+        ${voiceBarHtml}
+      </div>
+    `;
   }
 
   /* =========================================================================
@@ -846,34 +1145,50 @@
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
       const pct = Math.min(100, Math.round((spent / budget) * 100)) || 40;
-      const barHeight = Math.max(20, Math.min(115, Math.round(pct * 1.15)));
+      const barHeight = Math.max(18, Math.min(110, Math.round(pct * 1.10)));
 
       return `
-        <div class="eq-column hl-l9-col" data-action="quick-add" data-cat-id="${catId}" style="display:flex; flex-direction:column; align-items:center; gap:3px; width:38px; cursor:pointer;">
-          <span style="font-size:0.60rem; font-weight:900; color:#f43f5e; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
-          <div style="width:14px; height:120px; background:rgba(30, 41, 59, 0.6); border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
+        <div class="eq-column hl-l9-col" data-action="quick-add" data-cat-id="${catId}" style="display:flex; flex-direction:column; align-items:center; gap:2px; width:38px; cursor:pointer;">
+          <span style="font-size:0.58rem; font-weight:900; color:#f43f5e; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
+          <div style="width:14px; height:115px; background:rgba(30, 41, 59, 0.6); border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
             <div style="width:100%; height:${barHeight}px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}44 100%); box-shadow:0 0 10px ${cat.color}88; position:relative;">
               <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:8px 8px 0 0; background:#fff; box-shadow:0 0 6px #fff;"></div>
             </div>
           </div>
-          <div style="width:26px; height:26px; border-radius:8px; background:rgba(15, 23, 42, 0.9); border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.85rem;">
+          <div style="width:24px; height:24px; border-radius:8px; background:rgba(15, 23, 42, 0.9); border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
             <i class="${cat.iconClass}"></i>
           </div>
-          <span style="font-size:0.62rem; font-weight:800; color:#cbd5e1; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
-          <span style="font-size:0.58rem; font-weight:900; color:${cat.color};">${pct}%</span>
+          <span style="font-size:0.60rem; font-weight:800; color:#cbd5e1; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
+          <span style="font-size:0.56rem; font-weight:900; color:${cat.color};">${pct}%</span>
         </div>
       `;
     }).join('');
 
+    const voiceBarHtml = `
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:38px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(139,92,246,0.18) 100%);border:1.4px solid #38bdf8;color:#7dd3fc;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
+            <span style="font-size:0.74rem;font-weight:850;color:#e0f2fe;">إضافة صوتية للمصروفات (Spectrum Audio)</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#38bdf8')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#38bdf8;"></i>
+        </button>
+      </div>
+    `;
+
     return `
-      <div class="equalizer-arena hl-l9-arena" style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:4px 4px 10px; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(30, 41, 59, 0.5); border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; padding:5px 10px;">
-          <span style="font-size:0.75rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
-          <span style="font-size:0.68rem; color:#94a3b8;">انقر أي عمود للإدخال</span>
+      <div class="equalizer-arena hl-l9-arena" style="display:flex; flex-direction:column; justify-content:center; padding:4px 4px 6px; gap:4px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(30, 41, 59, 0.5); border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; padding:4px 10px;">
+          <span style="font-size:0.72rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
+          <span style="font-size:0.65rem; color:#94a3b8;">انقر أي عمود للإدخال السريع</span>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; height:225px; background:linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%); border:1px solid rgba(56, 189, 248, 0.15); border-radius:16px; padding:10px 4px 6px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; height:210px; background:linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%); border:1px solid rgba(56, 189, 248, 0.15); border-radius:16px; padding:8px 4px 6px;">
           ${columnsHtml}
         </div>
+        ${voiceBarHtml}
       </div>
     `;
   }
@@ -931,6 +1246,7 @@
     document.body.classList.toggle('has-alt-home-layout', !isOriginal);
 
     updateDesignButtonDial();
+    ensureSideHandlesVisible();
     measureAndApplyDynamicLayout();
   }
 
@@ -988,6 +1304,7 @@
     }
 
     container.innerHTML = html;
+    ensureSideHandlesVisible();
     measureAndApplyDynamicLayout();
   }
 
@@ -1044,19 +1361,24 @@
           ${active ? '<i class="fa-solid fa-circle-check hl-picker-check"></i>' : ''}
         </div>
       `;
-    }).join("");
+    }).join('');
 
     modal.innerHTML = `
       <div class="hl-picker-sheet">
         <div class="hl-picker-header">
-          <h3>اختيار شكل شاشة المصروفات (10 أشكال)</h3>
+          <div class="hl-picker-title">
+            <i class="fa-solid fa-shapes"></i>
+            <span>اختر نمط واجهة المصروفات (10 أشكال حصرية)</span>
+          </div>
           <button type="button" class="hl-picker-close" onclick="window.HomeLayouts.closePicker()">&times;</button>
         </div>
         <div class="hl-picker-list">${itemsHtml}</div>
       </div>
     `;
 
-    requestAnimationFrame(() => modal.classList.add('is-open'));
+    requestAnimationFrame(() => {
+      modal.classList.add('is-open');
+    });
   }
 
   function closePicker() {
@@ -1064,10 +1386,10 @@
     if (modal) {
       modal.classList.remove('is-open');
       setTimeout(() => {
-        if (modal && !modal.classList.contains('is-open')) {
-          modal.remove();
+        if (!modal.classList.contains('is-open') && modal.parentNode) {
+          modal.parentNode.removeChild(modal);
         }
-      }, 250);
+      }, 260);
     }
   }
 
@@ -1077,91 +1399,101 @@
   }
 
   /* -------------------------------------------------------------
-     Event Delegation: Clean category expense registration
+     Global Event Delegation Setup
   ------------------------------------------------------------- */
   function setupEventDelegation() {
-    const container = document.getElementById('homeInterfaces');
-    if (!container || container.dataset.eventsBound === 'true') return;
-    container.dataset.eventsBound = 'true';
-
-    container.addEventListener('click', function (e) {
-      const addBtn = e.target.closest('[data-action="quick-add"], [data-cat-id]');
-      if (addBtn) {
+    // 1. Delegated clicks inside #homeInterfaces
+    document.addEventListener('click', function (e) {
+      // Voice recording trigger
+      const voiceTrigger = e.target.closest('[data-action="voice-record"]');
+      if (voiceTrigger) {
         e.preventDefault();
         e.stopPropagation();
-        const catId = addBtn.dataset.catId || addBtn.dataset.add;
+        if (root.VoiceAssistantEngine && typeof root.VoiceAssistantEngine.toggleListening === 'function') {
+          root.VoiceAssistantEngine.toggleListening();
+        } else if (typeof root.toggleVoiceAssistant === 'function') {
+          root.toggleVoiceAssistant();
+        } else {
+          console.warn('Voice assistant engine not ready');
+        }
+        return;
+      }
+
+      // Quick category expense entry
+      const addTrigger = e.target.closest('[data-action="quick-add"]');
+      if (addTrigger) {
+        const catId = addTrigger.getAttribute('data-cat-id');
         if (catId && typeof root.openQuickCategoryExpense === 'function') {
+          e.preventDefault();
+          e.stopPropagation();
           root.openQuickCategoryExpense(catId);
         }
         return;
       }
-    });
-  }
 
-  /* -------------------------------------------------------------
-     Initialization & Dynamic Listeners
-  ------------------------------------------------------------- */
-  function init() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved !== null && saved !== undefined) {
-        currentLayout = Math.max(0, Math.min(LAYOUT_META.length - 1, parseInt(saved, 10) || 0));
-      }
-    } catch (e) {}
-
-    const btn = document.getElementById('btnHomeDesign');
-    if (btn && !btn.dataset.bound) {
-      btn.dataset.bound = 'true';
-      btn.addEventListener('click', (e) => {
+      // Switcher button clicks
+      const designBtn = e.target.closest('#btnHomeDesign');
+      if (designBtn) {
         e.preventDefault();
+        e.stopPropagation();
         cycleLayout();
-      });
-      btn.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        openPicker();
-      });
-    }
+      }
+    }, true);
 
-    setupEventDelegation();
-    updateDesignButtonDial();
-
-    window.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
-    }
-    window.addEventListener('orientationchange', () => {
-      setTimeout(measureAndApplyDynamicLayout, 150);
+    // 2. Long press on #btnHomeDesign opens Picker
+    let pressTimer = null;
+    document.addEventListener('pointerdown', function (e) {
+      const designBtn = e.target.closest('#btnHomeDesign');
+      if (designBtn) {
+        pressTimer = setTimeout(() => {
+          openPicker();
+          pressTimer = null;
+        }, 550);
+      }
     }, { passive: true });
 
-    const fontObserver = new MutationObserver(() => {
-      measureAndApplyDynamicLayout();
-    });
-    fontObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-font-size', 'data-font-family', 'data-color-mode', 'data-app-theme']
-    });
+    const clearPress = () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    };
+    document.addEventListener('pointerup', clearPress, { passive: true });
+    document.addEventListener('pointercancel', clearPress, { passive: true });
 
-    if (root.state && root.state.expenses) {
-      render(root.state.expenses);
+    // 3. Viewport and orientation change listeners
+    window.addEventListener('resize', () => {
+      measureAndApplyDynamicLayout();
+    }, { passive: true });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        measureAndApplyDynamicLayout();
+      }, { passive: true });
     }
   }
 
-  root.HomeLayouts = Object.freeze({
-    init,
+  // Setup delegation on load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupEventDelegation);
+  } else {
+    setupEventDelegation();
+  }
+
+  // Export HomeLayouts to root (window)
+  root.HomeLayouts = {
+    render,
     getLayout,
     setLayout,
     cycleLayout,
-    render,
     openPicker,
     closePicker,
     chooseFromPicker,
-    refreshDynamicEngine: measureAndApplyDynamicLayout,
-    meta: Object.freeze(LAYOUT_META)
-  });
+    measureAndApplyDynamicLayout,
+    ensureSideHandlesVisible,
+    getDialSvgMarkup,
+    CATEGORIES,
+    LAYOUT_META
+  };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
 })(typeof window !== 'undefined' ? window : this);
