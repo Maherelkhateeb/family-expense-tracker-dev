@@ -17408,7 +17408,12 @@ body.light-theme .market-buy-price {
         <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + زر العملة المطور -->
         <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; width: calc(100% - 12px); box-sizing: border-box;">
           
-          <!-- 1. أقصى اليمين (Far Right in RTL): زر فتح شاشة الذهب والعملات المباشرة -->
+          <!-- 0. أقصى اليمين في RTL: زر تبديل أشكال شاشة المصروفات (دائرة الـ 6 أشكال ذات الأقطار الداخلية) -->
+          <button type="button" class="tool-pill-action" id="btnHomeDesign" title="تبديل شكل الشاشة" style="width: 38px; height: 38px; min-width: 38px; max-width: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; border: none; background: transparent; flex-shrink: 0;">
+            <span class="home-dial-wrapper" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"></span>
+          </button>
+
+          <!-- 1. زر فتح شاشة الذهب والعملات المباشرة -->
           <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="toggleGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);">
             <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
             <span>الذهب</span>
@@ -17438,6 +17443,9 @@ body.light-theme .market-buy-price {
         <div class="categories-monefy-grid" id="catGrid" style="margin-top: 8px;">
           <!-- تتولد ديناميكياً لتشمل بنود المصاريف فقط -->
         </div>
+
+        <!-- حاوية الأشكال البديلة الخمسة لشاشة المصروفات -->
+        <div id="homeInterfaces" hidden></div>
 
       </div> <!-- إغلاق viewExpenses -->
 
@@ -43122,8 +43130,8 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611181115">
-<script defer src="./home-layouts.js?v=202611181115"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181245">
+<script defer src="./home-layouts.js?v=202611181245"></script>
 <script src="./operations-return-hub.js?v=202611171820"></script>
 <script src="./comparison-deeplink.js?v=20261117-unified-v2"></script>
 </body>
