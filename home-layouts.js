@@ -335,16 +335,49 @@
   }
 
   /* -------------------------------------------------------------
-     SVG 10-Segment Dial with 5 Internal Diameters (36° per sector)
-     Fills the design button 100% without clipped padding.
+     Legendary Chromatic Astrolabe Dial (v6.2.0)
+     10 Distinctive Mythic Theme Color Schemes (One for each Layout)
+     Dynamic Diameter Color Matrix: Each diameter changes color per layout!
   ------------------------------------------------------------- */
+  const LAYOUT_DIAL_THEMES = [
+    { name: 'solarGold',   primary: '#f59e0b', secondary: '#d97706', glow: '#fef08a', core: '#b45309' }, // الشكل 0
+    { name: 'emerald',     primary: '#10b981', secondary: '#059669', glow: '#6ee7b7', core: '#047857' }, // الشكل 1
+    { name: 'sapphire',    primary: '#0ea5e9', secondary: '#0284c7', glow: '#7dd3fc', core: '#0369a1' }, // الشكل 2
+    { name: 'amethyst',    primary: '#a855f7', secondary: '#7c3aed', glow: '#d8b4fe', core: '#6d28d9' }, // الشكل 3
+    { name: 'ruby',        primary: '#f43f5e', secondary: '#e11d48', glow: '#fda4af', core: '#be123c' }, // الشكل 4
+    { name: 'turquoise',   primary: '#14b8a6', secondary: '#0d9488', glow: '#5eead4', core: '#0f766e' }, // الشكل 5
+    { name: 'topaz',       primary: '#eab308', secondary: '#ca8a04', glow: '#fef08a', core: '#a16207' }, // الشكل 6
+    { name: 'hyperion',    primary: '#84cc16', secondary: '#65a30d', glow: '#bef264', core: '#4d7c0f' }, // الشكل 7
+    { name: 'tourmaline',  primary: '#ec4899', secondary: '#db2777', glow: '#fbcfe8', core: '#be185d' }, // الشكل 8
+    { name: 'aurora',      primary: '#6366f1', secondary: '#4f46e5', glow: '#a5b4fc', core: '#4338ca' }  // الشكل 9
+  ];
+
+  // Dynamic Diameter Color Matrix (5 internal full diameters for each of the 10 shapes)
+  // Each single diameter line shifts its chromatic color upon layout change!
+  const DIAMETER_PALETTES = [
+    ['#ffd700', '#10b981', '#38bdf8', '#c084fc', '#f43f5e'], // الشكل 0: ذهب شمسي
+    ['#38bdf8', '#34d399', '#facc15', '#f472b6', '#a78bfa'], // الشكل 1: زمرد ملكي
+    ['#ec4899', '#f59e0b', '#38bdf8', '#10b981', '#c084fc'], // الشكل 2: ياقوت أزرق
+    ['#10b981', '#f43f5e', '#ffd700', '#c084fc', '#38bdf8'], // الشكل 3: جمشت بنفسجي
+    ['#38bdf8', '#c084fc', '#10b981', '#ffd700', '#fb7185'], // الشكل 4: ياقوت أحمر
+    ['#2dd4bf', '#ffd700', '#f472b6', '#818cf8', '#34d399'], // الشكل 5: فيروز أسطوري
+    ['#f43f5e', '#fde047', '#38bdf8', '#c084fc', '#10b981'], // الشكل 6: توباز شمسي
+    ['#c084fc', '#38bdf8', '#a3e635', '#ffd700', '#f43f5e'], // الشكل 7: نيون زمرّدي
+    ['#34d399', '#ffd700', '#38bdf8', '#f472b6', '#c084fc'], // الشكل 8: تورمالين وردي
+    ['#ffd700', '#f43f5e', '#10b981', '#38bdf8', '#818cf8']  // الشكل 9: أورورا كونية
+  ];
+
   function getDialSvgMarkup(activeSector) {
-    const cx = 19;
-    const cy = 19;
-    const r = 17.5;
-    const count = LAYOUT_META.length; // 10 قطاعات
-    const stepDeg = 360 / count;      // 36 درجة
-    const startOffsetDeg = -90;       // الساعة 12
+    const cx = 20;
+    const cy = 20;
+    const r = 18.2;
+    const count = 10;
+    const stepDeg = 36.0;
+    const startOffsetDeg = -90.0;
+    const safeSector = Math.max(0, Math.min(count - 1, parseInt(activeSector, 10) || 0));
+    const theme = LAYOUT_DIAL_THEMES[safeSector] || LAYOUT_DIAL_THEMES[0];
+    const palette = DIAMETER_PALETTES[safeSector] || DIAMETER_PALETTES[0];
+    const activeDiameter = safeSector % 5;
 
     function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
       const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
@@ -354,6 +387,7 @@
       };
     }
 
+    // 10 قطاعات جوهرية متناسقة
     const paths = Array.from({ length: count }, (_, i) => {
       const startAngle = startOffsetDeg + (i * stepDeg);
       const endAngle = startAngle + stepDeg;
@@ -367,27 +401,92 @@
         'Z'
       ].join(' ');
 
-      const isActive = (i === activeSector);
-      const fill = isActive ? '#8b5cf6' : 'rgba(124, 58, 237, 0.12)';
-      const opacity = isActive ? '0.98' : '0.35';
-      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="#7c3aed" stroke-width="0.75" />`;
+      const isActive = (i === safeSector);
+      const fill = isActive ? `url(#activeSectorGrad_${safeSector})` : (LAYOUT_DIAL_THEMES[i]?.primary || '#8b5cf6');
+      const opacity = isActive ? '0.96' : '0.14';
+      const stroke = isActive ? theme.primary : 'rgba(217, 119, 6, 0.22)';
+      const strokeW = isActive ? '1.0' : '0.5';
+
+      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
     }).join('');
 
-    // 5 خطوط أقطار كاملة تمتد عبر المركز من الحافة إلى الحافة
-    const lines = Array.from({ length: 5 }, (_, i) => {
-      const angle1 = startOffsetDeg + (i * stepDeg);
-      const angle2 = angle1 + 180;
+    // 5 خطوط أقطار كاملة تتغير ألوانها ديناميكياً مع تغير كل شكل!
+    const lines = [];
+    const nodes = [];
+    for (let dIdx = 0; dIdx < 5; dIdx++) {
+      const angle1 = startOffsetDeg + (dIdx * stepDeg);
+      const angle2 = angle1 + 180.0;
       const p1 = polarToCartesian(cx, cy, r, angle1);
       const p2 = polarToCartesian(cx, cy, r, angle2);
-      return `<line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#c084fc" stroke-width="1.1" stroke-linecap="round" opacity="0.8"/>`;
+      const color = palette[dIdx] || '#ffd700';
+      const isActiveD = (dIdx === activeDiameter);
+      const w = isActiveD ? '2.0' : '1.15';
+      const op = isActiveD ? '1.0' : '0.85';
+      const filt = isActiveD ? 'filter="url(#dialEpicGlow)"' : '';
+
+      lines.push(`<line class="hl-dial-diameter ${isActiveD ? 'is-active-diameter' : ''}" data-diameter="${dIdx}" x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="${color}" stroke-width="${w}" stroke-linecap="round" opacity="${op}" ${filt}/>`);
+
+      if (isActiveD) {
+        // خط ساطع داخلي أبيض في قلب القطر النشط
+        lines.push(`<line class="hl-dial-diameter-core" x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" opacity="0.95"/>`);
+        // فصوص ألماسية متوهجة عند طرفي القطر النشط
+        nodes.push(`<circle cx="${p1.x.toFixed(2)}" cy="${p1.y.toFixed(2)}" r="1.6" fill="#ffffff" stroke="${color}" stroke-width="0.9" filter="url(#dialEpicGlow)"/>`);
+        nodes.push(`<circle cx="${p2.x.toFixed(2)}" cy="${p2.y.toFixed(2)}" r="1.6" fill="#ffffff" stroke="${color}" stroke-width="0.9" filter="url(#dialEpicGlow)"/>`);
+      }
+    }
+
+    // 10 علامات فلكية ذهبية على الإطار الخارجي
+    const ticks = Array.from({ length: count }, (_, i) => {
+      const deg = startOffsetDeg + (i * stepDeg);
+      const tp = polarToCartesian(cx, cy, r + 0.1, deg);
+      if (i === safeSector) {
+        return `<circle cx="${tp.x.toFixed(2)}" cy="${tp.y.toFixed(2)}" r="1.7" fill="#ffffff" stroke="#ffd700" stroke-width="1.0" filter="url(#dialEpicGlow)"/>`;
+      }
+      return `<circle cx="${tp.x.toFixed(2)}" cy="${tp.y.toFixed(2)}" r="0.75" fill="#f59e0b" opacity="0.75"/>`;
     }).join('');
 
     return `
-      <svg class="home-dial-icon" viewBox="0 0 38 38" width="100%" height="100%" aria-hidden="true" style="overflow:visible; display:block; width:100%; height:100%;">
-        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#7c3aed" stroke-width="1.6" class="hl-dial-track"/>
+      <svg class="home-dial-icon" viewBox="0 0 40 40" width="100%" height="100%" aria-hidden="true" style="overflow:visible; display:block;">
+        <defs>
+          <linearGradient id="dialGoldBezel" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#fef08a"/>
+            <stop offset="25%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#b45309"/>
+            <stop offset="75%" stop-color="#f59e0b"/>
+            <stop offset="100%" stop-color="#78350f"/>
+          </linearGradient>
+          <radialGradient id="activeSectorGrad_${safeSector}" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="${theme.glow}" stop-opacity="0.95"/>
+            <stop offset="60%" stop-color="${theme.primary}" stop-opacity="0.90"/>
+            <stop offset="100%" stop-color="${theme.secondary}" stop-opacity="0.98"/>
+          </radialGradient>
+          <filter id="dialEpicGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="1.2" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <!-- قرص الأوبسيديان الخلفي الفخم -->
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="#090d16"/>
+        <!-- القطاعات العشرة الجوهرية -->
         ${paths}
-        ${lines}
-        <circle cx="${cx}" cy="${cy}" r="3.2" fill="#8b5cf6" stroke="#0f172a" stroke-width="1.2" class="hl-dial-center"/>
+        <!-- مدار الأسطرلاب الداخلي المنقط -->
+        <circle cx="${cx}" cy="${cy}" r="${(r - 3.8).toFixed(2)}" fill="none" stroke="#d97706" stroke-width="0.6" stroke-dasharray="1.2 2" opacity="0.55"/>
+        <!-- الأقطار الخمسة اللونية المتغيرة بالكامل -->
+        ${lines.join('')}
+        <!-- الفصوص الألماسية لطرفي القطر النشط -->
+        ${nodes.join('')}
+        <!-- إطار الذهب المصقول الملكي -->
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="url(#dialGoldBezel)" stroke-width="1.7"/>
+        <!-- العلامات الفلكية الذهبية العشر -->
+        ${ticks}
+        <!-- قلب الدائرة الأسطوري المرصع -->
+        <circle cx="${cx}" cy="${cy}" r="4.6" fill="url(#dialGoldBezel)" stroke="#78350f" stroke-width="0.6"/>
+        <circle cx="${cx}" cy="${cy}" r="3.5" fill="${theme.glow}" opacity="0.85" filter="url(#dialEpicGlow)"/>
+        <circle cx="${cx}" cy="${cy}" r="2.5" fill="${theme.core}" stroke="#0f172a" stroke-width="0.7"/>
+        <circle cx="${(cx - 0.7).toFixed(2)}" cy="${(cy - 0.7).toFixed(2)}" r="0.8" fill="#ffffff" opacity="0.95"/>
       </svg>
     `.trim();
   }
@@ -395,6 +494,10 @@
   function updateDesignButtonDial() {
     const btn = document.getElementById('btnHomeDesign');
     if (!btn) return;
+
+    const theme = LAYOUT_DIAL_THEMES[currentLayout] || LAYOUT_DIAL_THEMES[0];
+    btn.style.setProperty('--dial-active-glow', theme.glow);
+    btn.style.setProperty('--dial-active-primary', theme.primary);
 
     btn.title = `تبديل شكل الشاشة (الشكل الحالي: ${LAYOUT_META[currentLayout]?.name || ''}) - نقر مطول لاختيار شكل محدد`;
     btn.setAttribute('aria-label', btn.title);
