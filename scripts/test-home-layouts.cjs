@@ -83,6 +83,22 @@ const WIDTHS=[320,360,390,391,430,768];
        for(let i=0;i<6;i+=2) if(Math.abs(rects[i].top-rects[i+1].top)>3)errors.push('row-height-misaligned:'+i);
        if(Math.abs(rects[6].top-rects[7].top)>3||Math.abs(rects[7].top-rects[8].top)>3)errors.push('three-mini-row-misaligned');
      }
+     // A voice-expense card replaces the global floating microphone.
+     // The three-column design reserves a full-width final action row.
+     const voiceCard=cards.find(c=>c.dataset.refCategory==='voice'||c.querySelector('[data-voice]'));
+     const voiceDisplay=getComputedStyle(document.getElementById('btnVoiceAssistantFab')).display;
+     if(design>0){
+       if(!voiceCard)errors.push('voice-card-missing');
+       if(voiceDisplay!=='none')errors.push('duplicate-floating-microphone');
+     }
+     if(design===5&&voiceCard){
+       const vr=readRect(voiceCard),gr=readRect(grid);
+       const lastCategoryBottom=Math.max(...cards.filter(c=>c!==voiceCard).map(c=>c.getBoundingClientRect().bottom));
+       if(Math.abs(vr.width-gr.width)>3||Math.abs(vr.left-gr.left)>3||Math.abs(vr.right-gr.right)>3)
+         errors.push('voice-card-not-full-grid-width:'+JSON.stringify({voice:vr,grid:gr}));
+       if(vr.top<lastCategoryBottom-2)
+         errors.push('voice-card-not-after-nine-expense-categories');
+     }
      const toolRects=tools.map(readRect);
      tools.forEach((tool,i)=>{
        const r=toolRects[i];if(r.width<20||r.left< -2||r.right>viewportWidth+2)errors.push('tool-outside:'+tool.id+':'+JSON.stringify(r));
