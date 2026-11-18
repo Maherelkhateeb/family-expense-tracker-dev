@@ -79,7 +79,7 @@ body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) 
   min-width: 0 !important;
   max-width: 100% !important;
   min-height: max(68px, var(--dynamic-home-content-min, 68px)) !important;
-  height: max(68px, min(80px, var(--dynamic-home-card-height, 72px)), var(--dynamic-home-content-min, 68px)) !important;
+  height: max(68px, var(--dynamic-home-card-height, 72px), var(--dynamic-home-content-min, 68px)) !important;
   overflow: hidden !important;
 }
 
