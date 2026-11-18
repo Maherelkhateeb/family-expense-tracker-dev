@@ -568,3 +568,43 @@ body.light-theme .variance-table-lux td {
 body.light-theme .variance-table-lux tr:hover td {
   background: rgba(2, 132, 199, 0.05) !important;
 }
+
+/* ==========================================================
+   Responsive Zero-Scroll Variance Table
+   ========================================================== */
+.variance-table-lux {
+  table-layout: fixed !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+.variance-table-lux th,
+.variance-table-lux td {
+  padding: 7px 4px !important;
+  font-size: 0.72rem !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-sizing: border-box !important;
+}
+.variance-table-lux th:first-child,
+.variance-table-lux td:first-child {
+  text-align: right !important;
+  padding-right: 6px !important;
+}
+body.light-theme .variance-table-lux th {
+  background: #f1f5f9 !important;
+  color: #0284c7 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+body.light-theme .variance-table-lux td {
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+body.light-theme .variance-table-lux tr:hover td {
+  background: rgba(2, 132, 199, 0.05) !important;
+}
