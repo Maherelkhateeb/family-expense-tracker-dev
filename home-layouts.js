@@ -649,23 +649,27 @@
         <article class="home-design-card hl-row-l1" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-row-l1-content">
             <div class="hl-row-l1-right">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
                 <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                   <i class="${s.cat.iconClass}"></i>
                 </div>
               </button>
               <div class="hl-row-name-amt">
-                <strong class="hl-row-l1-name">${catDisplayName}</strong>
-                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                  <span class="hl-amt-curr">${currSymbol}</span>
-                </div>
+                <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="تسجيل سريع في ${catDisplayName}">
+                  <strong class="hl-row-l1-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="view-operations" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="عرض حركات ${catDisplayName}">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                </button>
               </div>
             </div>
 
             <div class="hl-row-divider"></div>
 
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-mid-btn">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn" title="عرض حركات ${catDisplayName}">
               <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
               <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
               <div class="hl-progress-track">
@@ -673,11 +677,11 @@
               </div>
             </button>
 
-            <div class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border:none;cursor:pointer;" title="نسبة المتبقي - انقر لعرض العمليات">
               %${s.remainingPct}
-            </div>
+            </button>
 
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="تسجيل سريع">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
           </div>
@@ -737,7 +741,7 @@
     const top3Html = top3.length > 0 ? top3.map(item => {
       const pct = totalExpense > 0 ? Math.round((item.spent / totalExpense) * 100) : 0;
       return `
-        <div class="hl-top3-item">
+        <div class="hl-top3-item" data-action="view-operations" data-cat-id="${item.id}" style="cursor:pointer;" title="عرض حركات ${item.cat.name}">
           <div class="hl-top3-cat">
             <i class="${item.cat.iconClass}" style="color:${item.cat.color};"></i>
             <span>${item.cat.name}</span>
@@ -798,10 +802,10 @@
           <article class="home-design-card hl-card-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
             <div class="hl-card-l2-inner">
               <div class="hl-card-l2-right">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
                   <strong class="hl-card-l2-name">${catDisplayName}</strong>
                 </button>
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
                   <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                     <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                     <span class="hl-amt-curr">${currSymbol}</span>
@@ -908,10 +912,10 @@
           <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
             <div class="hl-card-l3-inner">
               <div class="hl-card-l3-right">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
                   <strong class="hl-card-l3-name">${catDisplayName}</strong>
                 </button>
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
                   <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                     <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                     <span class="hl-amt-curr">${currSymbol}</span>
@@ -961,14 +965,14 @@
       return `
         <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
           <div class="hl-card-l4-body">
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-head-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-head-btn" title="تسجيل سريع في ${catDisplayName}">
               <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
               <strong class="hl-card-l4-name">${catDisplayName}</strong>
             </button>
 
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-foot-btn">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-card-l4-foot-btn" title="عرض حركات ${catDisplayName}">
               <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                 <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                 <span class="hl-amt-curr">${currSymbol}</span>
@@ -1051,11 +1055,15 @@
       const shadow = isLight ? `0 3px 12px rgba(0,0,0,0.08), 0 0 10px ${cat.color}33` : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`;
 
       return `
-        <div class="cat-satellite hl-l5-satellite" data-action="quick-add" data-cat-id="${catId}"
-             style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
-          <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
-          <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:60px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
-          <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">-${formatMoney(spent)}</span>
+        <div class="cat-satellite hl-l5-satellite"
+             style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
+          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
+            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
+            <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:60px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
+          </button>
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">-${formatMoney(spent)}</span>
+          </button>
         </div>
       `;
     }).join('');
@@ -1096,7 +1104,9 @@
           
           <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 58}px; left:${centerX - 58}px; width:116px; height:116px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
             <span style="font-size:0.62rem; font-weight:800; color:${hubTitleColor}; background:${hubTitleBg}; padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
-            <span style="font-size:0.98rem; font-weight:900; color:${hubSpentColor}; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
+            <button type="button" data-action="view-operations" data-cat-id="all" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض جميع العمليات">
+              <span style="font-size:0.98rem; font-weight:900; color:${hubSpentColor}; direction:ltr; display:block;">-${formatMoney(totalSpentAll)}</span>
+            </button>
             <span style="font-size:0.56rem; color:${hubSubColor}; font-weight:700;">المتبقي بالميزانية</span>
             <span style="font-size:0.64rem; font-weight:900; color:${hubRemainColor}; direction:ltr;">+${formatMoney(remainingBudget)}</span>
           </div>
@@ -1135,17 +1145,21 @@
       const trackBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)';
 
       return `
-        <div class="hex-hive-card hl-l6-card" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; cursor:pointer;">
-          <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%;">
+        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px;">
+          <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
             <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
           </svg>
           <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
-            <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
-            <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-            <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
-            <div style="width:34px; height:3px; background:${trackBg}; border-radius:2px; overflow:hidden;">
-              <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
-            </div>
+            <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="تسجيل سريع في ${cat.name}">
+              <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+              <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+            </button>
+            <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
+              <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
+              <div style="width:34px; height:3px; background:${trackBg}; border-radius:2px; overflow:hidden;">
+                <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
+              </div>
+            </button>
           </div>
         </div>
       `;
@@ -1185,7 +1199,6 @@
      ========================================================================= */
   function renderLayout7SensorTiles(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
-    const isLight = document.body.classList.contains('light-theme');
 
     const tilesHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes', pastelBg: '#f0fdf4' };
@@ -1194,38 +1207,43 @@
       const pct = Math.min(100, Math.round((spent / budget) * 100)) || 30;
       const ledColor = pct > 75 ? '#ef4444' : (pct > 40 ? '#f59e0b' : '#10b981');
 
-      const tileBg = isLight ? `linear-gradient(145deg, ${cat.pastelBg || '#f8fafc'} 0%, #ffffff 100%)` : 'linear-gradient(160deg, rgba(24, 34, 53, 0.85) 0%, rgba(13, 22, 38, 0.95) 100%)';
-      const tileBorder = isLight ? `1.8px solid ${cat.color}` : `1.3px solid ${cat.color}`;
-      const nameColor = isLight ? '#0f172a' : '#f8fafc';
-      const amtColor = isLight ? '#b91c1c' : '#f43f5e';
-      const iconWrap = isLight
-        ? `<div style="width:28px; height:28px; border-radius:50%; background:${cat.iconBg || cat.color}; color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:0.88rem; margin:1px 0 2px; box-shadow:0 2px 6px ${cat.color}44;"><i class="${cat.iconClass}"></i></div>`
-        : `<div style="width:28px; height:28px; border-radius:50%; border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.88rem; margin:1px 0 2px;"><i class="${cat.iconClass}"></i></div>`;
-      const trackBg = isLight ? '#e2e8f0' : 'rgba(255,255,255,0.12)';
+      const tileBg = 'linear-gradient(160deg, rgba(24, 34, 53, 0.90) 0%, rgba(13, 22, 38, 0.96) 100%)';
+      const tileBorder = '1.3px solid rgba(255, 255, 255, 0.12)';
+      const tileShadow = '0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)';
+      const nameColor = '#f8fafc';
+      const amtColor = '#f43f5e';
 
       return `
-        <div class="sensor-tile hl-l7-tile" data-action="quick-add" data-cat-id="${catId}" style="background:${tileBg}; border:${tileBorder}; border-radius:14px; padding:6px 6px 7px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; text-align:center; position:relative; cursor:pointer; height:100%; box-sizing:border-box;">
-          <div style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 2px 2px;">
-            <span style="font-size:0.60rem; font-weight:900; color:${isLight ? '#475569' : '#94a3b8'};">${pct}%</span>
-            <span style="width:6px; height:6px; border-radius:50%; background:${ledColor}; box-shadow:0 0 6px ${ledColor};"></span>
-          </div>
-          ${iconWrap}
-          <span style="font-size:0.66rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-          <span style="font-size:0.70rem; font-weight:900; color:${amtColor}; direction:ltr; margin-top:1px;">-${formatMoney(spent)}</span>
-          <div style="width:36px; height:3px; background:${trackBg}; border-radius:2px; overflow:hidden; margin-top:3px;">
-            <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
-          </div>
+        <div class="sensor-tile hl-l7-tile" style="background:${tileBg}; border:${tileBorder}; box-shadow:${tileShadow}; border-radius:14px; padding:6px 6px 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; position:relative; min-height:96px; max-height:108px; height:104px; box-sizing:border-box;">
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 4px; background:none; border:none; cursor:pointer;" title="عرض حركات ${cat.name} (${pct}%)">
+            <span style="font-size:0.64rem; font-weight:900; color:#94a3b8;">${pct}%</span>
+            <span style="width:6px; height:6px; border-radius:50%; background:${ledColor}; box-shadow:0 0 7px ${ledColor};"></span>
+          </button>
+          
+          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="تسجيل سريع في ${cat.name}">
+            <div style="width:34px; height:34px; border-radius:50%; background:${cat.color}22; border:1.5px solid ${cat.color}55; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:1.05rem; box-shadow:0 0 10px ${cat.color}44;">
+              <i class="${cat.iconClass}"></i>
+            </div>
+          </button>
+          
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none; border:none; padding:0; cursor:pointer; display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+            <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
+            <div style="width:85%; height:3.5px; background:rgba(255,255,255,0.12); border-radius:3px; overflow:hidden; margin-top:2px;">
+              <div style="width:${pct}%; height:100%; background:${cat.color}; box-shadow:0 0 6px ${cat.color}; border-radius:3px;"></div>
+            </div>
+          </button>
         </div>
       `;
     }).join('');
 
-    const voiceBtnBg = isLight ? 'linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(139,92,246,0.18) 100%)' : 'linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(139,92,246,0.18) 100%)';
+    const voiceBtnBg = 'linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.22) 100%)';
     const voiceBorder = '#38bdf8';
-    const voiceText = isLight ? '#0369a1' : '#e0f2fe';
+    const voiceText = '#e0f2fe';
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (HUD Telemetry)</span>
@@ -1240,8 +1258,8 @@
 
     return `
       <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%;">
-        <div class="sensor-arena hl-l7-arena" style="height:var(--dynamic-home-arena-h, 360px); padding:4px 6px; box-sizing:border-box; width:100%;">
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:repeat(3, 1fr); gap:6px; width:100%; height:100%;">${tilesHtml}</div>
+        <div class="sensor-arena hl-l7-arena" style="padding:4px 6px; box-sizing:border-box; width:100%;">
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%;">${tilesHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1276,13 +1294,17 @@
       const shadow = isLight ? `0 4px 12px rgba(0,0,0,0.08), 0 0 8px ${cat.color}33` : `0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55`;
 
       return `
-        <div class="diamond-wrapper hl-l8-item" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+        <div class="diamond-wrapper hl-l8-item" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; display:flex; align-items:center; justify-content:center;">
           <div style="width:76px; height:76px; background:${diaBg}; border:${diaBorder}; border-radius:18px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
             <div style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:95px; gap:1px;">
-              <div style="color:${cat.color}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
-              <span style="font-size:0.64rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-              <span style="font-size:0.68rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
-              <span style="font-size:0.55rem; font-weight:900; color:${cat.color}; background:${badgeBg}; border:1px solid ${cat.color}55; border-radius:8px; padding:0 4px;">${pct}%</span>
+              <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
+                <div style="color:${cat.color}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
+                <span style="font-size:0.64rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+              </button>
+              <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="عرض حركات ${cat.name}">
+                <span style="font-size:0.68rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
+                <span style="font-size:0.55rem; font-weight:900; color:${cat.color}; background:${badgeBg}; border:1px solid ${cat.color}55; border-radius:8px; padding:0 4px;">${pct}%</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1330,7 +1352,6 @@
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
       const pct = Math.min(100, Math.round((spent / budget) * 100)) || 40;
-      const barHeight = Math.max(22, Math.min(130, Math.round(pct * 1.30)));
 
       const amtColor = isLight ? '#b91c1c' : '#f43f5e';
       const trackBg = isLight ? '#e2e8f0' : 'rgba(30, 41, 59, 0.6)';
@@ -1341,18 +1362,22 @@
       const nameColor = isLight ? '#0f172a' : '#cbd5e1';
 
       return `
-        <div class="eq-column hl-l9-col" data-action="quick-add" data-cat-id="${catId}" style="display:flex; flex-direction:column; align-items:center; gap:2px; width:38px; cursor:pointer;">
-          <span style="font-size:0.58rem; font-weight:900; color:${amtColor}; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
-          <div style="width:14px; height:135px; background:${trackBg}; border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; overflow:hidden; border:${trackBorder};">
-            <div style="width:100%; height:${barHeight}px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}44 100%); box-shadow:0 0 10px ${cat.color}88; position:relative;">
+        <div class="eq-column hl-l9-col">
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.60rem; font-weight:900; color:${amtColor}; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
+          </button>
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" class="hl-l9-track-btn" style="background:${trackBg}; border:${trackBorder};" title="عرض حركات ${cat.name} (${pct}%)">
+            <div style="width:100%; height:${Math.max(14, Math.min(100, pct))}%; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}55 100%); box-shadow:0 0 10px ${cat.color}88; position:relative; transition:height 0.3s ease;">
               <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:8px 8px 0 0; background:#fff; box-shadow:0 0 6px #fff;"></div>
             </div>
-          </div>
-          <div style="width:24px; height:24px; border-radius:8px; ${badgeStyle} display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
-            <i class="${cat.iconClass}"></i>
-          </div>
-          <span style="font-size:0.60rem; font-weight:850; color:${nameColor}; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
-          <span style="font-size:0.56rem; font-weight:900; color:${cat.color};">${pct}%</span>
+          </button>
+          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="تسجيل سريع في ${cat.name}">
+            <div style="width:26px; height:26px; border-radius:8px; ${badgeStyle} display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
+              <i class="${cat.iconClass}"></i>
+            </div>
+            <span style="font-size:0.62rem; font-weight:850; color:${nameColor}; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
+            <span style="font-size:0.56rem; font-weight:900; color:${cat.color};">${pct}%</span>
+          </button>
         </div>
       `;
     }).join('');
@@ -1387,12 +1412,12 @@
 
     return `
       <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%;">
-        <div class="equalizer-arena hl-l9-arena" style="display:flex; flex-direction:column; justify-content:space-between; height:var(--dynamic-home-arena-h, 360px); background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px; box-sizing:border-box;">
+        <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
           <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:4px 10px;">
             <span style="font-size:0.72rem; font-weight:800; color:${headerColor}; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
-            <span style="font-size:0.65rem; color:${subColor};">انقر أي عمود للإدخال السريع</span>
+            <span style="font-size:0.65rem; color:${subColor};">انقر الأيقونة للإدخال، والعمود لعرض الحركات</span>
           </div>
-          <div style="display:flex; justify-content:space-between; align-items:flex-end; flex:1; min-height:180px; background:${barsWrapBg}; border:${barsWrapBorder}; border-radius:16px; padding:8px 4px 6px; margin:4px 0;">
+          <div class="hl-l9-bars-wrap" style="background:${barsWrapBg}; border:${barsWrapBorder};">
             ${columnsHtml}
           </div>
         </div>
@@ -1632,6 +1657,41 @@
       const addTrigger = e.target.closest('[data-action="quick-add"]');
       if (addTrigger) {
         const catId = addTrigger.getAttribute('data-cat-id');
+        if (catId && typeof root.openQuickCategoryExpense === 'function') {
+          e.preventDefault();
+          e.stopPropagation();
+          root.openQuickCategoryExpense(catId);
+        }
+        return;
+      }
+
+      // View category operations in operations log (Dual-Action Architecture)
+      const viewOpsTrigger = e.target.closest('[data-action="view-operations"]');
+      if (viewOpsTrigger) {
+        const catId = viewOpsTrigger.getAttribute('data-cat-id');
+        if (catId) {
+          e.preventDefault();
+          e.stopPropagation();
+          const catMeta = CATEGORIES[catId] || {};
+          const catName = catMeta.name || catId;
+          if (typeof root.openOperationsFiltered === 'function') {
+            root.openOperationsFiltered({
+              category: (catId === 'all' ? null : catId),
+              categoryName: (catId === 'all' ? null : catName),
+              type: 'expense'
+            });
+          } else if (typeof root.switchTab === 'function') {
+            if (root.state && catId !== 'all') root.state.activeCategoryFilter = catId;
+            root.switchTab('operations');
+          }
+        }
+        return;
+      }
+
+      // Fallback for card background click
+      const cardRef = e.target.closest('[data-ref-category]');
+      if (cardRef && !e.target.closest('button')) {
+        const catId = cardRef.getAttribute('data-ref-category');
         if (catId && typeof root.openQuickCategoryExpense === 'function') {
           e.preventDefault();
           e.stopPropagation();
