@@ -516,7 +516,7 @@
       iconContainer = btn.querySelector('.home-dial-wrapper');
     }
 
-    iconContainer.innerHTML = getDialSvgMarkup(currentLayout);
+    iconContainer.innerHTML = `<i class="fa-solid fa-shapes hl-shapes-icon" style="font-size:1.24rem; color:${theme.primary}; filter:drop-shadow(0 2px 6px ${theme.glow}88); transition:transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;"></i>`;
   }
 
   /* -------------------------------------------------------------
@@ -1016,11 +1016,17 @@
   function renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'bills', 'transport', 'clothes', 'health', 'education', 'daily', 'house', 'other'];
     const container = document.getElementById('homeInterfaces');
+    const containerW = container ? (container.clientWidth || 390) : 390;
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const arenaH = Math.max(340, Math.min(500, availableH - 52));
+    const arenaH = Math.max(380, Math.min(520, availableH - 52));
     const centerY = Math.floor(arenaH / 2);
-    const centerX = 195;
-    const radius = Math.min(136, Math.floor(centerY - 32));
+    const centerX = Math.floor(containerW / 2);
+
+    const satSize = 68; // تكبير قطر أيقونات البنود المدارية من 54px إلى 68px لتصبح مريحة وواضحة جداً
+    const satHalf = Math.floor(satSize / 2); // 34px
+    const maxRadiusByW = Math.floor((containerW - satSize - 20) / 2);
+    const maxRadiusByH = Math.floor((arenaH - satSize - 16) / 2);
+    const radius = Math.max(122, Math.min(148, maxRadiusByW, maxRadiusByH));
 
     const isLight = document.body.classList.contains('light-theme');
 
@@ -1034,21 +1040,21 @@
       const spent = totals[catId] || 0;
       const angleDeg = -90 + (index * (360 / catKeys.length));
       const angleRad = (angleDeg * Math.PI) / 180.0;
-      const x = Math.round(centerX + radius * Math.cos(angleRad) - 27);
-      const y = Math.round(centerY + radius * Math.sin(angleRad) - 27);
+      const x = Math.round(centerX + radius * Math.cos(angleRad) - satHalf);
+      const y = Math.round(centerY + radius * Math.sin(angleRad) - satHalf);
 
       const satBg = isLight ? (cat.pastelBg || '#ffffff') : '#0f172a';
       const satBorder = cat.color;
       const textColor = isLight ? '#0f172a' : '#ffffff';
       const amtColor = isLight ? '#b91c1c' : '#f87171';
-      const shadow = isLight ? `0 3px 10px rgba(0,0,0,0.08), 0 0 8px ${cat.color}33` : `0 4px 14px rgba(0,0,0,0.5), 0 0 10px ${cat.color}66`;
+      const shadow = isLight ? `0 3px 12px rgba(0,0,0,0.08), 0 0 10px ${cat.color}33` : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`;
 
       return `
         <div class="cat-satellite hl-l5-satellite" data-action="quick-add" data-cat-id="${catId}"
-             style="position:absolute; width:54px; height:54px; border-radius:50%; background:${satBg}; border:2.2px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5;">
-          <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.05rem;"></i>
-          <span style="font-size:0.58rem; font-weight:850; color:${textColor}; line-height:1.1;">${cat.name.split(' ')[0]}</span>
-          <span style="font-size:0.58rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
+             style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
+          <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
+          <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:60px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
+          <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">-${formatMoney(spent)}</span>
         </div>
       `;
     }).join('');
@@ -1087,11 +1093,11 @@
         <div class="radial-arena hl-l5-arena" style="position:relative; width:100%; height:${arenaH}px; margin:0 auto; overflow:hidden;">
           <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
           
-          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 55}px; left:${centerX - 55}px; width:110px; height:110px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
-            <span style="font-size:0.60rem; font-weight:800; color:${hubTitleColor}; background:${hubTitleBg}; padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
-            <span style="font-size:0.95rem; font-weight:900; color:${hubSpentColor}; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
-            <span style="font-size:0.54rem; color:${hubSubColor}; font-weight:700;">المتبقي بالميزانية</span>
-            <span style="font-size:0.62rem; font-weight:900; color:${hubRemainColor}; direction:ltr;">+${formatMoney(remainingBudget)}</span>
+          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 58}px; left:${centerX - 58}px; width:116px; height:116px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
+            <span style="font-size:0.62rem; font-weight:800; color:${hubTitleColor}; background:${hubTitleBg}; padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
+            <span style="font-size:0.98rem; font-weight:900; color:${hubSpentColor}; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
+            <span style="font-size:0.56rem; color:${hubSubColor}; font-weight:700;">المتبقي بالميزانية</span>
+            <span style="font-size:0.64rem; font-weight:900; color:${hubRemainColor}; direction:ltr;">+${formatMoney(remainingBudget)}</span>
           </div>
 
           ${satellitesHtml}
