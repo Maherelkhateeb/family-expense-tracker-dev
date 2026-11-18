@@ -1309,30 +1309,16 @@ window.BudgetAuditEngine = (() => {
   }
 
   function renderExecutiveComparisonsAudit() {
-    // The dedicated comparison tab has one authoritative renderer, which
-    // provides multi-month filters and the eight documented visualizations.
+    // Dedicated comparison tab links directly to authoritative 3-axis liquidity comparisons
+    if (typeof renderComparisonsSection === 'function') {
+      renderComparisonsSection();
+      return;
+    }
     const container = document.getElementById('panelBudgetComparisons');
     if (!container) return;
-    const draw = () => {
-      if (!container.isConnected || !window.FamilyBudgetComparison) return;
+    if (window.FamilyBudgetComparison) {
       window.FamilyBudgetComparison.render(container, state);
-    };
-    if (window.FamilyBudgetComparison) { draw(); return; }
-    container.textContent = 'يتم تحميل لوحة مقارنة الفعلي والتقديري...';
-    if (!window.__familyBudgetComparisonScriptLoading) {
-      window.__familyBudgetComparisonScriptLoading = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = './family-budget-comparison.js?v=20261117-v2';
-        script.defer = true;
-        script.onload = () => window.FamilyBudgetComparison ? resolve() :
-          reject(new Error('Comparison module unavailable'));
-        script.onerror = () => reject(new Error('Comparison module could not be loaded'));
-        document.head.appendChild(script);
-      });
     }
-    window.__familyBudgetComparisonScriptLoading.then(draw).catch(() => {
-      container.textContent = 'تعذّر تحميل لوحة المقارنة. يُرجى تحديث التطبيق.';
-    });
   }
 
   function renderBudgetHistoryAdvanced() {
@@ -1491,7 +1477,7 @@ const BudgetCompareEngine = (() => {
   const money = cents => number.format(cents / 100);
   const signedMoney = cents => (cents > 0 ? '+' : '') + money(cents);
   const byId = id => document.getElementById(id);
-  let demoMode = false;
+  let demoMode = false; // Strictly disabled - real transactions only
   let previousControls = null;
   let sampleView = {limit: 60};
   let sampleReturn = null;
@@ -1600,35 +1586,11 @@ const BudgetCompareEngine = (() => {
   }
 
   async function toggleDemo() {
-    const button = byId('cmpDataMode');
-    const period = byId('cmpActualPeriod');
-    const reference = byId('cmpPeriodReference');
+    // Demo mode permanently removed - application relies strictly on real state.transactions
     const note = byId('cmpDemoNote');
-    if (demoMode) {
-      demoMode = false;
-      period.value = _actualPeriod = previousControls.period;
-      reference.value = previousControls.reference;
-      previousControls = null;
-      note.hidden = true;
-      render();
-      return;
-    }
-    button.disabled = true;
-    try {
-      await seedDemo();
-      previousControls = {period: _actualPeriod, reference: reference.value};
-      demoMode = true;
-      period.value = _actualPeriod = 'lastMonth';
-      reference.value = 'previous';
-      note.textContent = 'مثال تجريبي مسجّل لآخر شهرين مكتملين. اضغط على مبلغ لعرض عملياته.';
-      note.hidden = false;
-      render();
-    } catch {
-      note.hidden = false;
-      note.textContent = 'تعذّر حفظ عمليات المثال على هذا الجهاز.';
-    } finally {
-      button.disabled = false;
-    }
+    if (note) note.hidden = true;
+    const button = byId('cmpDataMode');
+    if (button) button.hidden = true;
   }
 
   function onActualPeriodChange(value) {
@@ -1760,7 +1722,7 @@ const BudgetCompareEngine = (() => {
   }
 
   function expensesForRange(range) {
-    if (demoMode) return sampleEntries(readSampleOperations(), 'sample-spend', range);
+    // Real transactions only - demoMode eliminated
     return (state.transactions || []).filter(tx => tx.type === 'expense' && String(tx.date || '').slice(0,10) >= range.from &&
       String(tx.date || '').slice(0,10) <= range.to).map(tx => ({id: tx.category || 'other', cents: Math.round((Number(tx.amount) || 0) * 100)}));
   }
