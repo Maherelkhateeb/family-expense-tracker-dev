@@ -141,11 +141,25 @@
     const mutations = new MutationObserver(records => {
       // A design switch must reconcile inline quick-tool orders before the
       // next browser measurement, not one animation frame later.
-      if (records.some(record => record.attributeName === 'data-design')) measure();
-      else schedule();
+      if (records.some(record => record.target === host && record.attributeName === 'data-design')) {
+        // The legacy home renderer can update toolbar inline styles after
+        // changing data-design; perform both immediate and post-paint checks.
+        measure();
+      }
+      schedule();
     });
     mutations.observe(host, { attributes: true, attributeFilter: ['data-design', 'class'] });
     mutations.observe(view, { attributes: true, attributeFilter: ['class'] });
+    // Watch only the five quick-action style attributes. Legacy responsive
+    // re-renders can reset their inline !important order after our first pass.
+    // Self-generated changes settle because measure() writes only if different.
+    for (const id of ['btnHomeDesign','btnOpenGold','walletSelectCluster',
+      'btnOpenSummaryQuick','btnToggleCurrency']) {
+      const control=document.getElementById(id);
+      if (control && view.contains(control)) {
+        mutations.observe(control, { attributes:true, attributeFilter:['style'] });
+      }
+    }
     schedule();
     return {
       refresh: schedule,
