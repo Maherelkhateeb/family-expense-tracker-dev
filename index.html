@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.5.2';
-    var APP_BUILD_ID = 202611181530;
+    var APP_VERSION = 'v5.5.3';
+    var APP_BUILD_ID = 202611181535;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -1680,14 +1680,18 @@
       background: var(--bg-card-sub);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 0.68rem;
-      font-weight: 800;
+      padding: 5px 10px;
+      min-height: 28px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 850;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 5px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
     }
 
     .btn-export-tool.excel-btn { color: #34d399; }
@@ -13466,11 +13470,13 @@ body.light-theme .cat-budget-progress-track {
       background: transparent !important;
       border: none !important;
       color: #64748b !important;
-      font-size: 0.72rem !important;
+      font-size: 0.85rem !important;
       cursor: pointer !important;
-      padding: 2px 4px !important;
+      padding: 4px 6px !important;
+      min-width: 28px !important;
+      min-height: 28px !important;
       margin-right: 2px !important;
-      border-radius: 5px !important;
+      border-radius: 6px !important;
       transition: all 0.2s ease !important;
       display: inline-flex !important;
       align-items: center !important;
@@ -16208,17 +16214,17 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
 
 </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
-  <script src="./market-data.js?v=202611181530"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=202611181530">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611181530">
-  <script src="./appearance-compact.js?v=202611181530" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611181530">
-  <script src="./operation-filters.js?v=202611181530"></script>
-  <script src="./family-alerts.js?v=202611181530"></script>
-  <script src="./family-budget-comparison.js?v=202611181530"></script>
-  <script src="./budget-audit-engine.js?v=202611181530"></script>
-  <link rel="stylesheet" href="./comparison-unified.css?v=202611181530">
-  <link rel="stylesheet" href="./family-alerts.css?v=202611181530">
+  <script src="./market-data.js?v=202611181535"></script>
+  <link rel="stylesheet" href="./gold-market.css?v=202611181535">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611181535">
+  <script src="./appearance-compact.js?v=202611181535" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611181535">
+  <script src="./operation-filters.js?v=202611181535"></script>
+  <script src="./family-alerts.js?v=202611181535"></script>
+  <script src="./family-budget-comparison.js?v=202611181535"></script>
+  <script src="./budget-audit-engine.js?v=202611181535"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=202611181535">
+  <link rel="stylesheet" href="./family-alerts.css?v=202611181535">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -16898,7 +16904,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611181530">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611181535">
 <style>
 /* =========================================================================
    V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
@@ -18029,12 +18035,12 @@ body.light-theme .market-buy-price {
                 <span>25,000</span>
               </div>
               <!-- كبسولات الزيادة السريعة بمضاعفات 100 جنيه -->
-              <div style="display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; justify-content: center;">
-                <button type="button" onclick="adjustReqAmount(100)" class="btn-wallet-action-pill" style="height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+100</button>
-                <button type="button" onclick="adjustReqAmount(200)" class="btn-wallet-action-pill" style="height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+200</button>
-                <button type="button" onclick="adjustReqAmount(500)" class="btn-wallet-action-pill" style="height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+500</button>
-                <button type="button" onclick="adjustReqAmount(1000)" class="btn-wallet-action-pill" style="height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+1000</button>
-                <button type="button" onclick="adjustReqAmount(-100)" class="btn-wallet-action-pill" style="height: 24px; padding: 0 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #f43f5e; cursor: pointer;">-100</button>
+              <div style="display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; justify-content: center;">
+                <button type="button" onclick="adjustReqAmount(100)" class="btn-wallet-action-pill" style="height: 28px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+100</button>
+                <button type="button" onclick="adjustReqAmount(200)" class="btn-wallet-action-pill" style="height: 28px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+200</button>
+                <button type="button" onclick="adjustReqAmount(500)" class="btn-wallet-action-pill" style="height: 28px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+500</button>
+                <button type="button" onclick="adjustReqAmount(1000)" class="btn-wallet-action-pill" style="height: 28px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(236, 72, 153, 0.15); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6; cursor: pointer;">+1000</button>
+                <button type="button" onclick="adjustReqAmount(-100)" class="btn-wallet-action-pill" style="height: 28px; padding: 0 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #f43f5e; cursor: pointer;">-100</button>
               </div>
             </div>
 
@@ -18680,8 +18686,8 @@ body.light-theme .market-buy-price {
                 <div id="kpiNetValueCommitments" style="font-size: 0.92rem; font-weight: 950; font-family: var(--font-numbers); direction: ltr; color: #ff4d6d; white-space: nowrap;">
                   - 0.00 ج.م
                 </div>
-                <button type="button" id="btnClearCommitmentFilter" onclick="setCommitmentsSubFilter('all')" title="مسح التصفية لعرض كل الالتزامات" style="padding: 3px 9px; border-radius: 7px; font-size: 0.70rem; font-weight: 850; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap;">
-                  <i class="fa-solid fa-rotate-left" style="font-size: 0.62rem;"></i>
+                <button type="button" id="btnClearCommitmentFilter" onclick="setCommitmentsSubFilter('all')" title="مسح التصفية لعرض كل الالتزامات" style="height: 30px; min-height: 30px; padding: 0 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 850; background: rgba(56, 189, 248, 0.15); border: 1.2px solid rgba(56, 189, 248, 0.4); color: #38bdf8; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; white-space: nowrap;">
+                  <i class="fa-solid fa-rotate-left" style="font-size: 0.70rem;"></i>
                   <span id="clearCommitmentFilterLabel">عرض الكل</span>
                 </button>
               </div>
@@ -19634,7 +19640,7 @@ body.light-theme .market-buy-price {
               <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 5px;">
                 <i class="fa-solid fa-chart-line"></i> مؤشر الذهب المباشر (TradingView)
               </span>
-              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="padding: 2px 7px; border-radius: 5px; font-size: 0.62rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer;">إظهار الشارت 📈</button>
+              <button type="button" onclick="toggleTvChartVisibility()" id="btnToggleTvChart" style="min-height: 28px; padding: 4px 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 850; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #cbd5e1; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">إظهار الشارت 📈</button>
             </div>
             <div id="tvChartContainer" style="display: none; width: 100%; height: 210px; border-radius: 9px; overflow: hidden; background: #000;">
               <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_gold&symbol=TVC%3AGOLD&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=0&toolbarbg=f1f3f6&studies=%5B%5D&theme=dark&style=1&timezone=Africa%2FCairo&studies_overrides=%7B%7D&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=ar_AE&utm_source=&utm_medium=widget&utm_campaign=chart&utm_term=TVC%3AGOLD" style="width: 100%; height: 100%; border: none;"></iframe>
@@ -42810,8 +42816,8 @@ window.filterArchiveType = filterArchiveType;
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
-          <button type="button" id="alertSoundButton" onclick="familyAlerts.toggleSound()" aria-label="تشغيل الصوت">🔇</button>
-          <button type="button" onclick="markAllNotificationsRead()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.65rem; font-weight: 800; border-radius: 6px; padding: 3px 8px; cursor: pointer;" aria-label="تحديد الكل كمقروء" title="تحديد الكل كمقروء">✓✓</button>
+          <button type="button" id="alertSoundButton" onclick="familyAlerts.toggleSound()" aria-label="تشغيل الصوت" style="min-width: 30px; min-height: 30px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem;">🔇</button>
+          <button type="button" onclick="markAllNotificationsRead()" style="min-height: 30px; padding: 0 10px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" aria-label="تحديد الكل كمقروء" title="تحديد الكل كمقروء">✓✓</button>
           <button type="button" aria-label="إغلاق التنبيهات" class="btn-modal-close" onclick="closeModal('notificationsModal')">&times;</button>
         </div>
       </div>
@@ -43192,7 +43198,7 @@ body.light-theme #settingsModal .antigravity-confirm-btn {
 </style>
 
 
-  <script src="./voice-assistant-engine.js?v=202611181530" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611181535" defer></script>
 
   <!-- Voice Assistant Suite v5.3.89 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
@@ -43234,9 +43240,9 @@ body.light-theme #settingsModal .antigravity-confirm-btn {
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611181545">
-<script defer src="./home-layouts.js?v=202611181545"></script>
-<script src="./operations-return-hub.js?v=202611181530"></script>
-<script src="./comparison-deeplink.js?v=202611181530"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181535">
+<script defer src="./home-layouts.js?v=202611181535"></script>
+<script src="./operations-return-hub.js?v=202611181535"></script>
+<script src="./comparison-deeplink.js?v=202611181535"></script>
 </body>
 </html>

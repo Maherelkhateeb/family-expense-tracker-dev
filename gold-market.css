@@ -135,14 +135,15 @@ body.light-theme #goldDrawerPanel .drawer-main-title span:first-child {
   background: none;
   border: 1px solid var(--market-line);
   color: var(--market-muted);
-  font-size: 0.62rem;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 750;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 7px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
 }
 
 #goldDrawerPanel .gold-info-trigger-btn:hover {

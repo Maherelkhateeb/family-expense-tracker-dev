@@ -1830,9 +1830,10 @@ body.light-theme #settingsModal #settingsSec_appearance .card-style-option[aria-
 .commitments-calendar-toggle {
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
   min-width:0;
-  padding:0;
+  min-height:36px;
+  padding:4px 6px;
   text-align:start;
   font:inherit;
 }

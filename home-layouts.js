@@ -958,7 +958,7 @@
                 <div class="hl-card-l4-icon hl-voice-l4-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
                   <i class="fa-solid fa-microphone"></i>
                 </div>
-                <strong class="hl-card-l4-name hl-voice-l4-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+                <strong class="hl-card-l4-name hl-voice-l4-name" style="color:#6d28d9;">إضافة صوتية</strong>
               </button>
 
               <button type="button" data-action="voice-record" class="hl-card-l4-foot-btn hl-voice-l4-waves-wrap">
