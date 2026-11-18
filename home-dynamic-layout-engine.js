@@ -84,6 +84,10 @@
         host.style.removeProperty('--dynamic-home-card-height');
         host.style.removeProperty('--dynamic-home-gap');
         host.style.removeProperty('--dynamic-home-columns');
+        ['--dynamic-home-content-min','--dynamic-home-font-family','--dynamic-home-font-scale',
+          '--dynamic-home-title-size','--dynamic-home-amount-size','--dynamic-home-detail-size',
+          '--dynamic-home-alt-title-size','--dynamic-home-alt-amount-size',
+          '--dynamic-home-alt-detail-size'].forEach(key=>host.style.removeProperty(key));
         delete host.dataset.dynamicHomeMeasured;
         delete host.dataset.dynamicHomeFit;
         return;
@@ -110,13 +114,35 @@
       const rows = cardCount ? Math.ceil(cardCount / profile.columns) : profile.rows;
       const usable = Math.max(0, available - gridTop);
       const calculated = (usable - Math.max(0, rows - 1) * gap) / Math.max(rows, 1);
-      // Do not claim that ten touch targets fit by shrinking them below
-      // their accessible content minimum. On short viewports, scroll instead.
+      // Font controls can change independently of the screen dimensions.
+      // Read effective values, not stored settings, so theme/class changes,
+      // Arabic typeface switching and accessibility font scaling all work.
+      const typography = root.getComputedStyle(view);
+      const bodyTypography = root.getComputedStyle(document.body);
+      const viewFontSize = parseFloat(typography.fontSize) || 16;
+      const bodyFontSize = parseFloat(bodyTypography.fontSize) || viewFontSize;
+      const fontScale = clamp(Math.max(viewFontSize,bodyFontSize) / 16, .85, 2.5);
+      const fontFamily = typography.fontFamily || bodyTypography.fontFamily || 'sans-serif';
+      const sizePx = (base, min, max) => clamp(base * fontScale,min,max).toFixed(2) + 'px';
+      // Increase content minimum before truncating text; on short devices
+      // keep the normal scroll fallback instead of overlapping amount
+      // information with the add-expense button or hiding the last row.
       const minimum = design === 1 ? 68 : 76;
-      const cardHeight = Math.max(minimum, calculated);
+      const contentMinimum = Math.ceil(minimum + Math.max(0,fontScale - 1) *
+        (design === 1 ? 63 : 60));
+      const cardHeight = Math.max(contentMinimum, calculated);
       const properties = {
         '--dynamic-home-available-height': available.toFixed(2) + 'px',
         '--dynamic-home-card-height': cardHeight.toFixed(2) + 'px',
+        '--dynamic-home-content-min': contentMinimum + 'px',
+        '--dynamic-home-font-family': fontFamily,
+        '--dynamic-home-font-scale': fontScale.toFixed(3),
+        '--dynamic-home-title-size': sizePx(clamp(width * .0295,10,20),9,42),
+        '--dynamic-home-amount-size': sizePx(clamp(width * .0285,10,19),9,40),
+        '--dynamic-home-detail-size': sizePx(clamp(width * .022,8,15),8,31),
+        '--dynamic-home-alt-title-size': sizePx(14,10,35),
+        '--dynamic-home-alt-amount-size': sizePx(13,10,34),
+        '--dynamic-home-alt-detail-size': sizePx(10,8,27),
         '--dynamic-home-gap': gap.toFixed(2) + 'px',
         '--dynamic-home-columns': String(profile.columns)
       };
@@ -149,7 +175,15 @@
       schedule();
     });
     mutations.observe(host, { attributes: true, attributeFilter: ['data-design', 'class'] });
-    mutations.observe(view, { attributes: true, attributeFilter: ['class'] });
+    mutations.observe(view, { attributes: true, attributeFilter: ['class','style'] });
+    // App appearance controls change font family/size through style or
+    // theme classes without resizing the viewport. Listen to those roots.
+    for (const node of [document.documentElement, document.body,
+      document.getElementById('appFrame')]) {
+      if (node) mutations.observe(node, {
+        attributes:true, attributeFilter:['class','style']
+      });
+    }
     // Watch only the five quick-action style attributes. Legacy responsive
     // re-renders can reset their inline !important order after our first pass.
     // Self-generated changes settle because measure() writes only if different.
@@ -160,6 +194,12 @@
         mutations.observe(control, { attributes:true, attributeFilter:['style'] });
       }
     }
+    const fonts = document.fonts;
+    if(fonts && typeof fonts.addEventListener === 'function'){
+      fonts.addEventListener('loadingdone',schedule);
+      fonts.addEventListener('loadingerror',schedule);
+      fonts.ready.then(schedule).catch(()=>{});
+    }
     schedule();
     return {
       refresh: schedule,
@@ -169,12 +209,21 @@
         if (frame) root.cancelAnimationFrame(frame);
         if (observer) observer.disconnect();
         mutations.disconnect();
+        if(fonts && typeof fonts.removeEventListener === 'function'){
+          fonts.removeEventListener('loadingdone',schedule);
+          fonts.removeEventListener('loadingerror',schedule);
+        }
         root.removeEventListener('resize', schedule);
         if (root.visualViewport) {
           root.visualViewport.removeEventListener('resize', schedule);
           root.visualViewport.removeEventListener('scroll', schedule);
         }
-        ['--dynamic-home-available-height','--dynamic-home-card-height','--dynamic-home-gap','--dynamic-home-columns'].forEach(key => host.style.removeProperty(key));
+        ['--dynamic-home-available-height','--dynamic-home-card-height','--dynamic-home-gap',
+          '--dynamic-home-columns','--dynamic-home-content-min','--dynamic-home-font-family',
+          '--dynamic-home-font-scale','--dynamic-home-title-size','--dynamic-home-amount-size',
+          '--dynamic-home-detail-size','--dynamic-home-alt-title-size',
+          '--dynamic-home-alt-amount-size','--dynamic-home-alt-detail-size']
+          .forEach(key => host.style.removeProperty(key));
         delete host.dataset.dynamicHomeMeasured;
         delete host.dataset.dynamicHomeFit;
       }
