@@ -165,8 +165,8 @@
   const VISUAL_POSITIONS_L5 = {
     bills: 0, food: 1, daily: 2,
     transport: 3, education: 4, house: 5,
-    voice: 6, other: 7, health: 8,
-    clothes: 9
+    clothes: 6, other: 7, health: 8,
+    voice: 9
   };
 
   const LAYOUT_META = [
@@ -224,8 +224,11 @@
         break;
       case 5:
         gap = 6;
-        cardH = Math.floor((availableH - (2 * gap)) / 3.4);
-        cardH = Math.max(90, Math.min(125, cardH));
+        const voiceBannerH = 52;
+        const gridCategoryH = availableH - voiceBannerH - (3 * gap);
+        cardH = Math.floor(gridCategoryH / 3);
+        cardH = Math.max(82, Math.min(115, cardH));
+        container.style.setProperty('--dynamic-home-voice-height', `${voiceBannerH}px`);
         break;
       default:
         cardH = 84;
@@ -740,12 +743,12 @@
   /* -------------------------------------------------------------
      Render Layout 5 (3-column compact grid matching Image 5)
   ------------------------------------------------------------- */
-  function renderLayout5(totals, budgets, currSymbol, isGold) {
+    function renderLayout5(totals, budgets, currSymbol, isGold) {
     const order = [
       'bills', 'food', 'daily',
       'transport', 'education', 'house',
-      'voice', 'other', 'health',
-      'clothes'
+      'clothes', 'other', 'health',
+      'voice'
     ];
 
     const cardsHtml = order.map(id => {
@@ -753,13 +756,20 @@
 
       if (id === 'voice') {
         return `
-          <article class="home-design-card hl-card-l5 hl-card-l5-voice" data-ref-category="voice" style="order: ${pos} !important; border-color: #c084fc !important; background: #faf5ff !important;">
-            <button type="button" data-voice class="hl-card-l5-top" style="border:none;background:none;width:100%;cursor:pointer;padding:6px 4px;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;box-sizing:border-box;">
-              <div class="hl-card-l5-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed); color: #fff; border-radius: 12px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; box-shadow: 0 3px 8px rgba(124, 58, 237, 0.25);">
-                <i class="fa-solid fa-microphone"></i>
+          <article class="home-design-card hl-card-l5-voice-wide" data-ref-category="voice" style="order: ${pos} !important; grid-column: 1 / -1 !important;">
+            <button type="button" data-voice class="hl-voice-wide-btn" style="border:none;background:none;width:100%;height:100%;cursor:pointer;padding:8px 12px;color:inherit;font:inherit;display:flex;align-items:center;justify-content:space-between;box-sizing:border-box;">
+              <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                <div class="hl-voice-icon-box" style="background:linear-gradient(135deg, #a855f7, #7c3aed);color:#fff;border-radius:12px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;box-shadow:0 3px 8px rgba(124, 58, 237, 0.25);flex-shrink:0;">
+                  <i class="fa-solid fa-microphone"></i>
+                </div>
+                <div style="text-align:right;min-width:0;">
+                  <strong class="hl-voice-title" style="display:block;font-weight:900;font-size:calc(0.86rem * var(--dynamic-home-font-scale, 1.0));color:#7c3aed;line-height:1.2;white-space:nowrap;">إضافة صوتية للمصروفات</strong>
+                  <small class="hl-voice-subtitle" style="display:block;font-size:calc(0.68rem * var(--dynamic-home-font-scale, 1.0));color:#9333ea;font-weight:700;margin-top:2px;white-space:nowrap;">اضغط وتحدث لتسجيل المصروف بالذكاء الاصطناعي</small>
+                </div>
               </div>
-              <strong class="hl-card-l5-name" style="color: #7c3aed; text-align: center; margin-top: 4px; font-weight: 900; font-size: calc(0.78rem * var(--dynamic-home-font-scale, 1.0)); line-height: 1.2;">إضافة صوتية<br>للمصروفات</strong>
-              <div style="width: 100%; max-width: 80px; margin-top: 5px;">${getWaveHtml(12)}</div>
+              <div style="flex-shrink:0;margin-inline-start:8px;">
+                ${getWaveHtml(18)}
+              </div>
             </button>
           </article>
         `;
@@ -790,7 +800,7 @@
           </button>
         </article>
       `;
-    }).join("");
+    }).join('');
 
     return `<div class="home-design-grid hl-grid-layout-5">${cardsHtml}</div>`;
   }
