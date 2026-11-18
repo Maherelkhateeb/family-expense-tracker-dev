@@ -12,6 +12,14 @@
     5: { columns: 3, gapRatio: .014, minGap: 4, maxGap: 11, rows: 4 }
   });
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const FONT_KEY = 'family_expenses_home_font_scale_v1';
+  const FONT_SIZES = Object.freeze([80,90,100,110,125,140,160]);
+  function savedFontSize() {
+    try {
+      const size = Number(root.localStorage.getItem(FONT_KEY));
+      return FONT_SIZES.includes(size) ? size : 100;
+    } catch (error) { return 100; }
+  }
   function create(options) {
     const opts = options || {};
     const view = opts.view || document.getElementById('viewExpenses');
@@ -20,6 +28,48 @@
     const footer = opts.footer || document.getElementById('appBottomNav');
     if (!view || !host) return null;
     let stopped = false, frame = 0, observer = null;
+    let chosenFontSize = savedFontSize();
+    // The additional selector sits ABOVE the cards, not in the fixed header,
+    // five quick actions or bottom navigation.
+    let fontControls = document.getElementById('dynamicHomeFontControls');
+    if (!fontControls) {
+      fontControls = document.createElement('div');
+      fontControls.id = 'dynamicHomeFontControls';
+      fontControls.setAttribute('role','group');
+      fontControls.setAttribute('aria-label','إعداد حجم خط بطاقات المصروفات');
+      fontControls.setAttribute('dir','rtl');
+      const label = document.createElement('label');
+      label.htmlFor = 'dynamicHomeFontSizeSelect';
+      label.textContent = 'حجم خط البطاقات';
+      const select = document.createElement('select');
+      select.id = 'dynamicHomeFontSizeSelect';
+      select.setAttribute('aria-label','حجم خط بطاقات المصروفات');
+      FONT_SIZES.forEach(size => {
+        const opt = document.createElement('option');
+        opt.value = String(size);
+        opt.textContent = size === 100 ? '100% (افتراضي)' : size + '%';
+        select.append(opt);
+      });
+      fontControls.append(label,select);
+      host.before(fontControls);
+    }
+    const fontSelect=fontControls.querySelector('#dynamicHomeFontSizeSelect');
+    if (fontSelect) fontSelect.value=String(chosenFontSize);
+    const onFontSelect=()=>{
+      const value=Number(fontSelect?.value);
+      if (!FONT_SIZES.includes(value)) return;
+      chosenFontSize=value;
+      try { root.localStorage.setItem(FONT_KEY,String(value)); } catch (error) {}
+      schedule();
+    };
+    const onStoredFontChange=event=>{
+      if (event.key !== FONT_KEY) return;
+      chosenFontSize=savedFontSize();
+      if (fontSelect) fontSelect.value=String(chosenFontSize);
+      schedule();
+    };
+    if (fontSelect) fontSelect.addEventListener('change',onFontSelect);
+    root.addEventListener('storage',onStoredFontChange);
     // Preserve existing inline display rules so non-reference screens are untouched.
     const floatingControls = new Map();
     function reconcileFloatingControls(hideEdgeHandles,hideFloatingMic) {
@@ -87,9 +137,12 @@
         }
       }
       const profile = PROFILES[design];
+      // Original home retains its established appearance.
+      if (fontControls) fontControls.hidden = !(profile && homeIsActive);
       if (!profile || !view.classList.contains('active')) {
         host.style.removeProperty('--dynamic-home-available-height');
         host.style.removeProperty('--dynamic-home-render-scale');
+        host.style.removeProperty('--dynamic-home-user-font-scale');
         host.style.removeProperty('--dynamic-home-card-height');
         host.style.removeProperty('--dynamic-home-gap');
         host.style.removeProperty('--dynamic-home-columns');
@@ -143,7 +196,8 @@
       const bodyTypography = root.getComputedStyle(document.body);
       const viewFontSize = parseFloat(typography.fontSize) || 16;
       const bodyFontSize = parseFloat(bodyTypography.fontSize) || viewFontSize;
-      const fontScale = clamp(Math.max(viewFontSize,bodyFontSize) / 16, .85, 2.5);
+      const fontScale = clamp((Math.max(viewFontSize,bodyFontSize) / 16) *
+        (chosenFontSize / 100), .75, 2.5);
       const fontFamily = typography.fontFamily || bodyTypography.fontFamily || 'sans-serif';
       const sizePx = (base, min, max) => clamp(base * fontScale,min,max).toFixed(2) + 'px';
       // Increase content minimum before truncating text; on short devices
@@ -160,6 +214,7 @@
         '--dynamic-home-content-min': contentMinimum + 'px',
         '--dynamic-home-font-family': fontFamily,
         '--dynamic-home-font-scale': fontScale.toFixed(3),
+        '--dynamic-home-user-font-scale': (chosenFontSize/100).toFixed(2),
         '--dynamic-home-title-size': sizePx(clamp(width * .0295,10,20),9,42),
         '--dynamic-home-amount-size': sizePx(clamp(width * .0285,10,19),9,40),
         '--dynamic-home-detail-size': sizePx(clamp(width * .022,8,15),8,31),
@@ -172,7 +227,7 @@
       for (const [key, value] of Object.entries(properties)) {
         if (host.style.getPropertyValue(key) !== value) host.style.setProperty(key, value);
       }
-      host.dataset.dynamicHomeFit = calculated >= minimum ? 'fit' : 'scroll';
+      host.dataset.dynamicHomeFit = calculated >= contentMinimum ? 'fit' : 'scroll';
       host.dataset.dynamicHomeMeasured = 'true';
     }
     function schedule() {
@@ -232,6 +287,9 @@
       refresh: schedule,
       destroy() {
         reconcileFloatingControls(false,false);
+        if (fontSelect) fontSelect.removeEventListener('change',onFontSelect);
+        root.removeEventListener('storage',onStoredFontChange);
+        if (fontControls && fontControls.id==='dynamicHomeFontControls') fontControls.remove();
         stopped = true;
         if (frame) root.cancelAnimationFrame(frame);
         if (observer) observer.disconnect();
@@ -248,6 +306,7 @@
         ['--dynamic-home-available-height','--dynamic-home-render-scale',
           '--dynamic-home-card-height','--dynamic-home-gap',
           '--dynamic-home-columns','--dynamic-home-content-min','--dynamic-home-font-family',
+          '--dynamic-home-user-font-scale',
           '--dynamic-home-font-scale','--dynamic-home-title-size','--dynamic-home-amount-size',
           '--dynamic-home-detail-size','--dynamic-home-alt-title-size',
           '--dynamic-home-alt-amount-size','--dynamic-home-alt-detail-size']
@@ -257,5 +316,7 @@
       }
     };
   }
-  root.HomeDynamicLayoutEngine = Object.freeze({ create, profiles: PROFILES });
+  root.HomeDynamicLayoutEngine = Object.freeze({
+    create, profiles: PROFILES, fontSizes: FONT_SIZES, fontStorageKey: FONT_KEY
+  });
 })(window);
