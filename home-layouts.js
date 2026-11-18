@@ -135,11 +135,11 @@
 
   // 10 Official Layouts Metadata
   const LAYOUT_META = [
-    { id: 0, name: 'الشكل الأساسي (الأصلي)', desc: 'شبكة كروت المصروفات التسعة الكلاسيكية الافتراضية (catGrid)', icon: 'fa-table-cells-large' },
+    { id: 0, name: 'الشكل الأساسي (الأصلي)', desc: 'شبكة كروت المصروفات التسعة الكلاسيكية الافتراضية (catGrid) مع زر الميكروفون العائم', icon: 'fa-table-cells-large' },
     { id: 1, name: 'الشكل 1: قائمة أفقية تفصيلية', desc: '10 صفوف كاملة تمتد بعرض الشاشة مع كارت المساعد الصوتي في الصف العاشر', icon: 'fa-bars' },
     { id: 2, name: 'الشكل 2: لوحة تحليلات وإحصاءات', desc: 'مخطط كعكي دائري مع أعلى 3 بنود صرفاً و10 بطاقات في عمودين تشمل الصوت', icon: 'fa-chart-pie' },
     { id: 3, name: 'الشكل 3: بطاقات حديثة أنيقة', desc: '10 بطاقات متباينة في عمودين مع كارت المساعد الصوتي ومؤشرات المتبقي', icon: 'fa-layer-group' },
-    { id: 4, name: 'الشكل 4: شبكة مصغرة مدمجة (3x3)', desc: 'شبكة 3×3 متناسقة وبنر المساعد الصوتي عريض أسفل الشاشة', icon: 'fa-grip' },
+    { id: 4, name: 'الشكل 4: شبكة 3 أعمدة (المعتمد 100%)', desc: '10 كروت في 3 أعمدة مع كارت الصوت بالصف الثالث يمين وكارت ملابس بالمنتصف', icon: 'fa-grip' },
     { id: 5, name: 'الشكل 5: قمرة القيادة المدارية', desc: 'مدار كبسولات حلقي متزن حول إجمالي المصروفات مع شريط صوتي سفلي', icon: 'fa-compass' },
     { id: 6, name: 'الشكل 6: خلايا النحل السداسية', desc: 'مصفوفة سداسية هندسية مترابطة مع أطر توهج وشريط صوتي سفلي', icon: 'fa-cube' },
     { id: 7, name: 'الشكل 7: حساسات القياس الرقمية (HUD)', desc: 'لوحة عدادات عالية الكثافة بلمبات LED وشريط قياس صوتي', icon: 'fa-table-cells' },
@@ -193,10 +193,19 @@
       }
     }
 
-    // Suppress floating mic FAB permanently - each layout embeds voice properly!
+    // الزر العائم للميكروفون: يظهر حصرياً فقط في الشاشة الأصلية (Layout 0) ويختفي تماماً في الأشكال التسعة الأخرى
     const vFab = document.getElementById('btnVoiceAssistantFab');
     if (vFab) {
-      vFab.style.setProperty('display', 'none', 'important');
+      if (currentLayout === 0) {
+        vFab.style.removeProperty('display');
+        vFab.style.setProperty('display', 'flex', 'important');
+        vFab.style.setProperty('visibility', 'visible', 'important');
+        vFab.style.setProperty('pointer-events', 'auto', 'important');
+      } else {
+        vFab.style.setProperty('display', 'none', 'important');
+        vFab.style.setProperty('visibility', 'hidden', 'important');
+        vFab.style.setProperty('pointer-events', 'none', 'important');
+      }
     }
   }
 
@@ -224,79 +233,73 @@
     const navRect = bottomNav ? bottomNav.getBoundingClientRect() : null;
     const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 64);
 
-    const viewExpenses = document.getElementById('viewExpenses');
-    const scrollY = (viewExpenses ? viewExpenses.scrollTop : 0) || window.scrollY || 0;
-
     let containerTop = 0;
     if (container && container.offsetParent !== null) {
-      containerTop = container.getBoundingClientRect().top + scrollY;
+      containerTop = container.getBoundingClientRect().top;
     }
 
-    if (containerTop <= 40) {
+    if (containerTop <= 40 || containerTop > 320) {
       const hH = header ? header.offsetHeight : 52;
       const pH = period ? period.offsetHeight : 44;
       const bH = balance ? balance.offsetHeight : 84;
       const tH = tools ? tools.offsetHeight : 42;
-      containerTop = hH + pH + bH + tH + 10;
+      containerTop = hH + pH + bH + tH + 6;
     }
 
-    const availableH = Math.max(280, Math.floor(bottomLimit - containerTop - 8));
+    const availableH = Math.max(340, Math.floor(bottomLimit - containerTop - 6));
 
     let widthScale = 1.0;
     if (viewportW < 365) {
-      widthScale = 0.85;
+      widthScale = 0.88;
     } else if (viewportW < 385) {
-      widthScale = 0.92;
+      widthScale = 0.94;
     } else if (viewportW < 415) {
-      widthScale = 0.97;
+      widthScale = 0.98;
     } else {
       widthScale = 1.00;
     }
 
     let iconSize = Math.round(36 * widthScale);
-    iconSize = Math.max(28, Math.min(38, iconSize));
+    iconSize = Math.max(30, Math.min(38, iconSize));
     container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
 
     let cardH = 72;
     let gap = 6;
 
     if (viewportH < 720) {
-      gap = 3;
-    } else if (viewportH < 800) {
       gap = 4;
+    } else if (viewportH < 800) {
+      gap = 5;
     } else {
       gap = 6;
     }
 
     switch (currentLayout) {
       case 1: { // 1 column, 10 rows (9 categories + voice)
-        gap = viewportH < 720 ? 2 : (viewportH < 800 ? 3 : 4);
+        gap = viewportH < 720 ? 3 : 4;
         cardH = Math.floor((availableH - (9 * gap) - 6) / 10);
-        cardH = Math.max(34, Math.min(48, cardH));
+        cardH = Math.max(44, Math.min(54, cardH));
         break;
       }
       case 2: { // Hero analytics + 2 columns, 5 rows
-        gap = viewportH < 720 ? 3 : (viewportH < 800 ? 4 : 5);
-        const heroH = Math.max(78, Math.min(100, Math.floor(availableH * 0.22)));
-        const remainingForGrid = availableH - heroH - 6 - 8;
-        cardH = Math.floor((remainingForGrid - (4 * gap) - 4) / 5);
-        cardH = Math.max(48, Math.min(68, cardH));
+        gap = viewportH < 720 ? 4 : 5;
+        const heroH = Math.max(80, Math.min(98, Math.floor(availableH * 0.22)));
+        const remainingForGrid = availableH - heroH - 6 - gap;
+        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
+        cardH = Math.max(58, Math.min(74, cardH));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
       case 3: { // 2 columns, 5 rows (10 cards)
-        gap = viewportH < 720 ? 4 : (viewportH < 800 ? 5 : 6);
+        gap = viewportH < 720 ? 4 : 6;
         cardH = Math.floor((availableH - (4 * gap) - 6) / 5);
-        cardH = Math.max(56, Math.min(80, cardH));
+        cardH = Math.max(64, Math.min(82, cardH));
         break;
       }
-      case 4: { // 3x3 grid (9 categories) + bottom wide voice banner
-        gap = viewportH < 720 ? 3 : (viewportH < 800 ? 4 : 5);
-        const voiceBannerH = viewportH < 720 ? 40 : 46;
-        const gridH = availableH - voiceBannerH - gap - 6;
-        cardH = Math.floor((gridH - (2 * gap)) / 3);
-        cardH = Math.max(68, Math.min(94, cardH));
-        container.style.setProperty('--dynamic-home-voice-banner-h', `${voiceBannerH}px`);
+      case 4: { // 3 columns, 4 rows (10 cards: 9 categories + voice card, row 4 centered) - 100% مطابقة للمرجع
+        gap = viewportH < 720 ? 4 : (viewportH < 800 ? 5 : 6);
+        cardH = Math.floor((availableH - (3 * gap) - 10) / 4);
+        cardH = Math.max(98, Math.min(124, cardH));
         break;
       }
       case 5: // Radial Cockpit
@@ -930,30 +933,52 @@
   }
 
   /* =========================================================================
-     الشكل 4: شبكة مصغرة مدمجة 3×3 + بنر المساعد الصوتي عريض أسفل الشاشة
-     (صور المرجع 5 و6 والطلب الصريح: نقل ملابس وأحذية للصف الثالث + بنر صوتي عريض)
+     الشكل 4: شبكة 3 أعمدة (مطابقة 100% لصور المرجع المعتمدة Dark & Light)
+     10 كروت موزعة على 3 أعمدة:
+     الصف 1: فواتير والتزامات (يمين) | طعام ومشتريات (وسط) | مصروف يومي (يسار)
+     الصف 2: مواصلات وبنزين (يمين) | تعليم ودروس (وسط) | مستلزمات منزل (يسار)
+     الصف 3: إضافة صوتية للمصروفات (يمين) | أخرى ونثريات (وسط) | صحة وعلاج (يسار)
+     الصف 4: ملابس وأحذية (بالمنتصف - grid-column: 2)
      ========================================================================= */
   function renderLayout4CompactGrid(totals, budgets, currSymbol, isGold) {
-    // 9 Categories arranged into 3 rows of 3 columns:
-    // Row 1: daily, food, bills
-    // Row 2: house, education, transport
-    // Row 3: health, other, clothes (clothes moved here as requested!)
-    const order = [
-      'daily', 'food', 'bills',
-      'house', 'education', 'transport',
-      'health', 'other', 'clothes'
+    const layoutItems = [
+      'bills',     'food',      'daily',
+      'transport', 'education', 'house',
+      'voice',     'other',     'health',
+      'clothes'
     ];
 
-    const cardsHtml = order.map(id => {
+    const cardsHtml = layoutItems.map(id => {
+      if (id === 'voice') {
+        // كارت المساعد الصوتي المتوهج في الصف الثالث يمين (مطابق 100% للمرجع)
+        return `
+          <article class="home-design-card hl-card-l4 hl-voice-card-l4" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#ffffff; --cat-pastel-border:#c084fc;">
+            <div class="hl-card-l4-body">
+              <button type="button" data-action="voice-record" class="hl-card-l4-head-btn">
+                <div class="hl-card-l4-icon hl-voice-l4-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+                  <i class="fa-solid fa-microphone"></i>
+                </div>
+                <strong class="hl-card-l4-name hl-voice-l4-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+              </button>
+
+              <button type="button" data-action="voice-record" class="hl-card-l4-foot-btn hl-voice-l4-waves-wrap">
+                ${getAudioWaveHtml('#8b5cf6')}
+              </button>
+            </div>
+          </article>
+        `;
+      }
+
       const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '- ' : '';
       const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
+      const isCenteredClothes = (id === 'clothes');
 
       return `
-        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
+        <article class="home-design-card hl-card-l4 ${isCenteredClothes ? 'hl-card-l4-centered' : ''}" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
           <div class="hl-card-l4-body">
             <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l4-head-btn">
-              <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};">
+              <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
               <strong class="hl-card-l4-name">${catDisplayName}</strong>
@@ -974,31 +999,9 @@
       `;
     }).join('');
 
-    // Row 4: Wide Voice Assistant Banner across full width of the screen!
-    const voiceBannerHtml = `
-      <div class="hl-layout4-voice-strip" data-action="voice-record">
-        <button type="button" data-action="voice-record" class="hl-voice-banner-btn" style="background:linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);border:1.5px solid #c084fc;">
-          <div class="hl-voice-banner-right">
-            <div class="hl-voice-banner-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#fff;">
-              <i class="fa-solid fa-microphone"></i>
-            </div>
-            <div class="hl-voice-banner-text">
-              <strong style="color:#6d28d9;font-size:0.80rem;">إضافة صوتية للمصروفات</strong>
-              <small style="color:#7c3aed;font-size:0.62rem;">اضغط للتحدث - تسجيل المصروف صوتياً فوراً</small>
-            </div>
-          </div>
-          <div class="hl-voice-banner-waves">
-            ${getAudioWaveHtml('#8b5cf6')}
-          </div>
-          <i class="fa-solid fa-chevron-left" style="color:#7c3aed;font-size:0.80rem;"></i>
-        </button>
-      </div>
-    `;
-
     return `
       <div class="hl-layout-4-wrapper">
         <div class="home-design-grid hl-grid-layout-4">${cardsHtml}</div>
-        ${voiceBannerHtml}
       </div>
     `;
   }
