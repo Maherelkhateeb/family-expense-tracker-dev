@@ -1,23 +1,25 @@
 /**
  * Cloud Firestore & Family Expense Tracker
- * Home Screen Alternative Layouts Engine (v5.6.0)
+ * Home Screen Alternative Layouts Engine (v6.0.0 - 10-Layout Suite)
  *
- * Implements 5 alternative layouts + original Monefy layout:
- * - Layout 1: 2-column cards (Text on Right, Icon on Left, matching Image 1)
- * - Layout 2: Single-column horizontal list cards (matching Image 2)
- * - Layout 3: Top Donut chart + Top 3 spenders + 2-column cards (matching Image 3)
- * - Layout 4: Modern cards with hero daily/food row (matching Image 4)
- * - Layout 5: 3-column compact grid (3x3 + wide bottom voice) with exact pastel styling (matching Image 5)
+ * Implements 10 distinct, responsive, and production-ready layouts:
+ * - Layout 0: الشكل الأساسي (الأصلي) - Default catGrid in index.html
+ * - Layout 1: الشكل 1: قائمة أفقية تفصيلية - Horizontal detail list with budget & spent bars
+ * - Layout 2: الشكل 2: لوحة تحليلات وإحصاءات - Central donut chart + Top 3 + 2-column cards
+ * - Layout 3: الشكل 3: بطاقات حديثة غير متماثلة - Modern cards with hero flow
+ * - Layout 4: الشكل 4: شبكة مصغرة مدمجة (3x3) - Clean 3x3 pastel grid of 9 categories
+ * - Layout 5: الشكل 5: قمرة القيادة المدارية - The Radial Orbit Cockpit
+ * - Layout 6: الشكل 6: خلايا النحل السداسية - The Hexagonal Honeycomb Hive
+ * - Layout 7: الشكل 7: حساسات القياس الرقمية - HUD Compact Sensor Tiles
+ * - Layout 8: الشكل 8: الكريستال الماسي البلوري - The Diamond Facet Crystal Grid
+ * - Layout 9: الشكل 9: مدرج التردد المالي والأعمدة الطيفية - The Financial Spectrum Equalizer
  *
- * Enhanced Dynamic Engine Features:
- * - True DOM Bounding Box & visualViewport measurement (zero cut-off / no hidden bottom cards)
- * - Dynamic width-responsive scaler (<365px, 375px-400px, >400px)
- * - Proportional font and icon scaling synchronized with Settings font size
- * - Harmonious text, amounts, progress bars, and badge placements
- * - Edge-to-edge 6-Segment dial switcher icon with 3 internal diameters
- * - Currency switcher moved to far left
+ * Engine Architecture:
+ * - 10-Segment SVG Dial switcher icon with 5 internal diameters
+ * - Dynamic viewport measurement (availableH, visualViewport, zero-scroll guarantee)
+ * - Single source of truth for expenses via openQuickCategoryExpense(catId)
  * - Permanent side flaps (Gold & Summary handles)
- * - Zero impact on expense recording (openQuickCategoryExpense)
+ * - Floating microphone FAB clearance at bottom-left (bottom: 74px; left: 14px)
  */
 
 (function (root) {
@@ -25,8 +27,19 @@
 
   const STORAGE_KEY = 'family_expense_home_design_v2';
 
-  // 10 Core categories with rich color palettes & pastel styling
+  // 9 Core Categories with rich palette, pastel background & borders
   const CATEGORIES = {
+    food: {
+      name: 'طعام ومشتريات',
+      color: '#10b981',
+      rgb: '16, 185, 129',
+      pastelBg: '#f0fdf4',
+      pastelBorder: '#86efac',
+      iconBg: 'linear-gradient(135deg, #22c55e, #16a34a)',
+      iconColor: '#ffffff',
+      iconClass: 'fa-solid fa-cart-shopping',
+      iconShape: 'rounded'
+    },
     daily: {
       name: 'مصروف يومي',
       color: '#f59e0b',
@@ -47,17 +60,6 @@
       iconBg: 'linear-gradient(135deg, #f97316, #ea580c)',
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-bolt',
-      iconShape: 'rounded'
-    },
-    food: {
-      name: 'طعام ومشتريات',
-      color: '#10b981',
-      rgb: '16, 185, 129',
-      pastelBg: '#f0fdf4',
-      pastelBorder: '#86efac',
-      iconBg: 'linear-gradient(135deg, #22c55e, #16a34a)',
-      iconColor: '#ffffff',
-      iconClass: 'fa-solid fa-cart-shopping',
       iconShape: 'rounded'
     },
     house: {
@@ -105,8 +107,8 @@
       iconShape: 'rounded'
     },
     other: {
-      name: 'أخرى ومشتريات',
-      altName5: 'أخرى ونثريات',
+      name: 'أخرى ونثريات',
+      altName: 'أخرى ومشتريات',
       color: '#10b981',
       rgb: '16, 185, 129',
       pastelBg: '#f0fdf4',
@@ -126,67 +128,33 @@
       iconColor: '#ffffff',
       iconClass: 'fa-solid fa-shirt',
       iconShape: 'rounded'
-    },
-    voice: {
-      name: 'إضافة صوتية للمصروفات',
-      color: '#7c3aed',
-      rgb: '124, 58, 237',
-      pastelBg: '#faf5ff',
-      pastelBorder: '#c084fc',
-      iconBg: 'linear-gradient(135deg, #a855f7, #7c3aed)',
-      iconColor: '#ffffff',
-      iconClass: 'fa-solid fa-microphone',
-      iconShape: 'rounded'
     }
   };
 
-  // Exact positions matching reference screenshots in RTL
-  const VISUAL_POSITIONS_L1 = {
-    daily: 0, bills: 1,
-    food: 2, house: 3,
-    transport: 4, education: 5,
-    other: 6, health: 7,
-    voice: 8, clothes: 9
-  };
-
-  const VISUAL_POSITIONS_L3 = {
-    daily: 0, food: 1,
-    bills: 2, house: 3,
-    education: 4, transport: 5,
-    health: 6, clothes: 7,
-    voice: 8, other: 9
-  };
-
-  const VISUAL_POSITIONS_L4 = {
-    daily: 0, food: 1,
-    bills: 2, house: 3,
-    transport: 4, health: 5,
-    education: 6, other: 7,
-    clothes: 8, voice: 9
-  };
-
-  const VISUAL_POSITIONS_L5 = {
-    bills: 0, food: 1, daily: 2,
-    transport: 3, education: 4, house: 5,
-    clothes: 6, other: 7, health: 8,
-    voice: 9
-  };
-
+  // Official Metadata for the 10 Layouts
   const LAYOUT_META = [
-    { id: 0, name: 'الشكل الأصلي (الدائري)', desc: 'شاشة المصروفات الدائرية الافتراضية مع المخطط المركزي', icon: 'fa-circle-dot' },
-    { id: 1, name: 'الشكل 1: بطاقات مدمجة متوازية', desc: 'بطاقات أفقية أنيقة مع أيقونة جانبية ومؤشرات تقدم', icon: 'fa-table-columns' },
-    { id: 2, name: 'الشكل 2: قائمة أفقية تفصيلية', desc: 'شريط مالي ممتد لكل بند مع تفاصيل المتبقي والميزانية ونسبة الصرف', icon: 'fa-bars' },
-    { id: 3, name: 'الشكل 3: لوحة تحليلات وإحصاءات', desc: 'مخطط كعكي دائري مع أعلى 3 بنود صرفاً وبطاقات متوازية', icon: 'fa-chart-pie' },
-    { id: 4, name: 'الشكل 4: بطاقات حديثة غير متماثلة', desc: 'بطاقة رئيسية لمصروف اليوم والطعام مع تصميم عصري وبطاقات مميزة', icon: 'fa-layer-group' },
-    { id: 5, name: 'الشكل 5: شبكة مصغرة مدمجة (3x3)', desc: 'شبكة ثلاثية الأعمدة مدمجة بألوان باستيل هادئة تتسع لجميع البنود', icon: 'fa-grip' }
+    { id: 0, name: 'الشكل الأساسي (الأصلي)', desc: 'شبكة كروت المصروفات التسعة الكلاسيكية الافتراضية (catGrid)', icon: 'fa-table-cells-large' },
+    { id: 1, name: 'الشكل 1: قائمة أفقية تفصيلية', desc: 'شريط مالي ممتد لكل بند مع تفاصيل المتبقي والميزانية ونسبة الصرف', icon: 'fa-bars' },
+    { id: 2, name: 'الشكل 2: لوحة تحليلات وإحصاءات', desc: 'مخطط كعكي دائري مع أعلى 3 بنود صرفاً وبطاقات متوازية', icon: 'fa-chart-pie' },
+    { id: 3, name: 'الشكل 3: بطاقات حديثة غير متماثلة', desc: 'بطاقة رئيسية لمصروف اليوم والطعام مع تصميم عصري', icon: 'fa-layer-group' },
+    { id: 4, name: 'الشكل 4: شبكة مصغرة مدمجة (3x3)', desc: 'شبكة ثلاثية الأعمدة مدمجة بألوان باستيل هادئة', icon: 'fa-grip' },
+    { id: 5, name: 'الشكل 5: قمرة القيادة المدارية', desc: 'مدار كبسولات حلقي متزن حول إجمالي المصروفات ومتبقي الميزانية', icon: 'fa-compass' },
+    { id: 6, name: 'الشكل 6: خلايا النحل السداسية', desc: 'مصفوفة سداسية نيونية هندسية مترابطة مع أطر توهج ومؤشرات ميكرو', icon: 'fa-cube' },
+    { id: 7, name: 'الشكل 7: حساسات القياس الرقمية (HUD)', desc: 'لوحة عدادات عالية الكثافة بلمبات LED حية ومؤشرات سقف مالي', icon: 'fa-table-cells' },
+    { id: 8, name: 'الشكل 8: الكريستال الماسي البلوري', desc: 'معينات ماسية مائلة 45° بتصميم بلوري زجاجي مشع ومحتوى داخلي معتدل', icon: 'fa-gem' },
+    { id: 9, name: 'الشكل 9: مدرج التردد المالي والأعمدة الطيفية', desc: 'أعمدة طيفية رأسية نابضة ترتفع بنسب الصرف مع مبالغ نيونية طافية', icon: 'fa-chart-simple' }
   ];
 
   let currentLayout = 1;
   let cachedFiltered = null;
 
+  function formatMoney(amt) {
+    const n = Number(amt) || 0;
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   /* -------------------------------------------------------------
-     Dynamic Layout & Font Scaling Engine (v5.6.0)
-     Accurately measures screen geometry and adapts cards & typography
+     Dynamic Layout & Viewport Fitting Engine (v6.0.0)
   ------------------------------------------------------------- */
   function measureAndApplyDynamicLayout() {
     const container = document.getElementById('homeInterfaces');
@@ -200,16 +168,13 @@
     const period = document.querySelector('.period-selector-top-strip') || document.querySelector('.period-filter-container');
     const balance = document.getElementById('topKpiThreeStrip') || document.getElementById('mainBalanceCard');
 
-    // 1. Precise Viewport Measurements (visualViewport handles mobile URL bar / keyboard)
     const vv = window.visualViewport;
     const viewportW = (vv ? vv.width : window.innerWidth) || document.documentElement.clientWidth || 390;
     const viewportH = (vv ? vv.height : window.innerHeight) || document.documentElement.clientHeight || 800;
 
-    // 2. Measure Bottom Boundary (top edge of bottom dock nav)
     const navRect = bottomNav ? bottomNav.getBoundingClientRect() : null;
     const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 64);
 
-    // 3. Measure Top Boundary (where homeInterfaces begins without scrolling)
     const viewExpenses = document.getElementById('viewExpenses');
     const scrollY = (viewExpenses ? viewExpenses.scrollTop : 0) || window.scrollY || 0;
 
@@ -218,7 +183,6 @@
       containerTop = container.getBoundingClientRect().top + scrollY;
     }
 
-    // Fallback calculation if container is not yet rendered in layout tree
     if (containerTop <= 40) {
       const hH = header ? header.offsetHeight : 52;
       const pH = period ? period.offsetHeight : 44;
@@ -227,11 +191,8 @@
       containerTop = hH + pH + bH + tH + 12;
     }
 
-    // 4. Calculate True Available Height for the Home Layouts Grid
-    // Subtract safe container padding and bottom margin (10px)
     const availableH = Math.max(270, Math.floor(bottomLimit - containerTop - 10));
 
-    // 5. Width-Responsive Scale Factor for Mobile Screens (<365, 375-400, >400)
     let widthScale = 1.0;
     if (viewportW < 365) {
       widthScale = 0.84;
@@ -243,33 +204,21 @@
       widthScale = 1.00;
     }
 
-    // Dynamic icon size adaptation
     let iconSize = Math.round(36 * widthScale);
     iconSize = Math.max(28, Math.min(38, iconSize));
     container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
 
-    // 6. Layout-Specific Exact Sizing & Spacing
     let cardH = 78;
     let gap = 6;
 
     switch (currentLayout) {
-      case 1: { // 2 Columns, 5 Rows
-        gap = viewportH < 720 ? 5 : 7;
-        const totalGaps = 4 * gap;
-        const paddingY = 10;
-        cardH = Math.floor((availableH - totalGaps - paddingY) / 5);
-        cardH = Math.max(62, Math.min(86, cardH));
-        break;
-      }
-      case 2: { // Single Column List, 10 Rows
+      case 1: { // 1 column, 9 rows
         gap = viewportH < 720 ? 3 : 4;
-        const totalGaps = 9 * gap;
-        const paddingY = 10;
-        cardH = Math.floor((availableH - totalGaps - paddingY) / 10);
-        cardH = Math.max(40, Math.min(50, cardH));
+        cardH = Math.floor((availableH - (8 * gap) - 10) / 9);
+        cardH = Math.max(40, Math.min(52, cardH));
         break;
       }
-      case 3: { // Analytics Hero + 2 Columns, 5 Rows
+      case 2: { // Analytics Hero + 2 columns, 5 rows
         gap = viewportH < 720 ? 4 : 5;
         const heroH = Math.max(86, Math.min(104, Math.floor(availableH * 0.23)));
         const remainingForGrid = availableH - heroH - 6 - 10;
@@ -278,33 +227,33 @@
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
-      case 4: { // Asymmetric Modern Cards, 2 Columns, 5 Rows
+      case 3: { // 2 columns, 5 rows
         gap = viewportH < 720 ? 5 : 7;
-        const totalGaps = 4 * gap;
-        const paddingY = 10;
-        cardH = Math.floor((availableH - totalGaps - paddingY) / 5);
+        cardH = Math.floor((availableH - (4 * gap) - 10) / 5);
         cardH = Math.max(62, Math.min(86, cardH));
         break;
       }
-      case 5: { // 3x3 Grid + Full-Width Voice Banner
+      case 4: { // 3x3 grid of 9 categories
         gap = viewportH < 720 ? 5 : 6;
-        const voiceH = Math.max(42, Math.min(48, Math.floor(availableH * 0.11)));
-        const remainingForGrid = availableH - voiceH - (3 * gap) - 10;
-        cardH = Math.floor(remainingForGrid / 3);
-        cardH = Math.max(80, Math.min(100, cardH));
-        container.style.setProperty('--dynamic-home-voice-height', `${voiceH}px`);
+        cardH = Math.floor((availableH - (2 * gap) - 10) / 3);
+        cardH = Math.max(82, Math.min(108, cardH));
         break;
       }
+      case 5: // Radial Cockpit
+      case 6: // Honeycomb Hive
+      case 7: // HUD Sensor Tiles
+      case 8: // Diamond Crystals
+      case 9: // Spectrum Equalizer
       default: {
-        cardH = 78;
+        cardH = Math.floor(availableH);
         break;
       }
     }
 
     container.style.setProperty('--dynamic-home-card-height', `${cardH}px`);
     container.style.setProperty('--dynamic-home-gap', `${gap}px`);
+    container.style.setProperty('--dynamic-home-available-h', `${availableH}px`);
 
-    // 7. Combined Font Scaling (Settings Font Mode * Width Adaptation)
     const docEl = document.documentElement;
     const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
     const fontScales = {
@@ -326,35 +275,58 @@
   }
 
   /* -------------------------------------------------------------
-     SVG 6-Segment Dial Icon with 3 Internal Diameters (أقطار داخلية)
-     Edge-to-Edge: The circle matches the full button frame
+     SVG 10-Segment Dial with 5 Internal Diameters (36° per sector)
   ------------------------------------------------------------- */
   function getDialSvgMarkup(activeSector) {
-    const cx = 19, cy = 19, R = 17.5;
-    const sectors = [
-      'M 19 19 L 19.00 1.50 A 17.5 17.5 0 0 1 34.16 10.25 Z',
-      'M 19 19 L 34.16 10.25 A 17.5 17.5 0 0 1 34.16 27.75 Z',
-      'M 19 19 L 34.16 27.75 A 17.5 17.5 0 0 1 19.00 36.50 Z',
-      'M 19 19 L 19.00 36.50 A 17.5 17.5 0 0 1 3.84 27.75 Z',
-      'M 19 19 L 3.84 27.75 A 17.5 17.5 0 0 1 3.84 10.25 Z',
-      'M 19 19 L 3.84 10.25 A 17.5 17.5 0 0 1 19.00 1.50 Z'
-    ];
+    const cx = 19;
+    const cy = 19;
+    const r = 17.5;
+    const count = LAYOUT_META.length; // 10 قطاعات متساوية
+    const stepDeg = 360 / count;      // 36 درجة
+    const startOffsetDeg = -90;       // الساعة 12
 
-    const paths = sectors.map((d, i) => {
-      const isActive = i === activeSector;
-      const opacity = isActive ? '0.96' : '0.12';
-      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="currentColor" fill-opacity="${opacity}" stroke="currentColor" stroke-width="0.8" />`;
-    }).join("");
+    function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
+      const angleInRadians = (angleInDegrees * Math.PI) / 180.0;
+      return {
+        x: centerX + (radius * Math.cos(angleInRadians)),
+        y: centerY + (radius * Math.sin(angleInRadians))
+      };
+    }
 
-    // 3 full internal diameters passing through center (19, 19) from rim to rim (أقطار داخلية)
+    const paths = Array.from({ length: count }, (_, i) => {
+      const startAngle = startOffsetDeg + (i * stepDeg);
+      const endAngle = startAngle + stepDeg;
+      const p1 = polarToCartesian(cx, cy, r, startAngle);
+      const p2 = polarToCartesian(cx, cy, r, endAngle);
+
+      const d = [
+        'M', cx, cy,
+        'L', p1.x.toFixed(2), p1.y.toFixed(2),
+        'A', r, r, 0, 0, 1, p2.x.toFixed(2), p2.y.toFixed(2),
+        'Z'
+      ].join(' ');
+
+      const isActive = (i === activeSector);
+      const fill = isActive ? '#8b5cf6' : 'rgba(124, 58, 237, 0.12)';
+      const opacity = isActive ? '0.96' : '0.35';
+      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="#7c3aed" stroke-width="0.7" />`;
+    }).join('');
+
+    // 5 خطوط أقطار كاملة ممتدة من الحافة للحافة
+    const lines = Array.from({ length: 5 }, (_, i) => {
+      const angle1 = startOffsetDeg + (i * stepDeg);
+      const angle2 = angle1 + 180;
+      const p1 = polarToCartesian(cx, cy, r, angle1);
+      const p2 = polarToCartesian(cx, cy, r, angle2);
+      return `<line x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="#c084fc" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>`;
+    }).join('');
+
     return `
       <svg class="home-dial-icon" viewBox="0 0 38 38" width="38" height="38" aria-hidden="true" style="overflow:visible; display:block; width:100%; height:100%;">
-        <circle cx="19" cy="19" r="17.5" fill="none" stroke="currentColor" stroke-width="1.6" class="hl-dial-track" />
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#7c3aed" stroke-width="1.6" class="hl-dial-track"/>
         ${paths}
-        <line class="hl-dial-diameter" x1="19.00" y1="1.50" x2="19.00" y2="36.50" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-        <line class="hl-dial-diameter" x1="34.16" y1="10.25" x2="3.84" y2="27.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-        <line class="hl-dial-diameter" x1="34.16" y1="27.75" x2="3.84" y2="10.25" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
-        <circle cx="19" cy="19" r="2.8" class="hl-dial-center" fill="currentColor" />
+        ${lines}
+        <circle cx="${cx}" cy="${cy}" r="3.2" fill="#8b5cf6" stroke="#0f172a" stroke-width="1.2" class="hl-dial-center"/>
       </svg>
     `.trim();
   }
@@ -376,20 +348,7 @@
   }
 
   /* -------------------------------------------------------------
-     Sound Wave Audio Animation HTML Helper
-  ------------------------------------------------------------- */
-  function getWaveHtml(count = 14) {
-    const bars = [];
-    for (let i = 0; i < count; i++) {
-      const delay = (i * 0.08).toFixed(2);
-      const h = 4 + (Math.sin(i * 0.7) * 9 + 9);
-      bars.push(`<span class="hl-wave-bar" style="height: ${h.toFixed(1)}px; animation-delay: -${delay}s;"></span>`);
-    }
-    return `<div class="hl-wave-container">${bars.join('')}</div>`;
-  }
-
-  /* -------------------------------------------------------------
-     Data Aggregation & Ceiling Calculation
+     Data Aggregation & Budgets
   ------------------------------------------------------------- */
   function computeTotals(filtered) {
     const totals = {};
@@ -428,7 +387,7 @@
     return Object.assign({}, defaultBudgets, b);
   }
 
-  function getCategoryStats(catId, totals, budgets, currSymbol, isGold, layoutNum = 1) {
+  function getCategoryStats(catId, totals, budgets, currSymbol, isGold) {
     const cat = CATEGORIES[catId] || CATEGORIES.other;
     const spent = Number(totals[catId] || 0);
     const budget = Number(budgets[catId] || 0);
@@ -481,98 +440,21 @@
     };
   }
 
-  /* -------------------------------------------------------------
-     Render Layout 1 (2-column cards matching Image 1: Text Right, Icon Left)
-  ------------------------------------------------------------- */
-  function renderLayout1(totals, budgets, currSymbol, isGold) {
-    const order = ['daily', 'bills', 'food', 'house', 'transport', 'education', 'other', 'health', 'voice', 'clothes'];
-
-    const cardsHtml = order.map(id => {
-      const pos = VISUAL_POSITIONS_L1[id] !== undefined ? VISUAL_POSITIONS_L1[id] : 0;
-
-      if (id === 'voice') {
-        return `
-          <article class="reference-one-card hl-card-l1 hl-card-l1-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice class="hl-card-l1-btn">
-              <div class="hl-card-l1-right">
-                <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
-                <div class="hl-voice-wave-wrap">${getWaveHtml(16)}</div>
-              </div>
-              <div class="hl-card-l1-icon hl-voice-icon-box">
-                <i class="fa-solid fa-microphone"></i>
-              </div>
-            </button>
-          </article>
-        `;
-      }
-
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold, 1);
-      const sign = s.hasSpent ? '− ' : '';
-
-      return `
-        <article class="reference-one-card hl-card-l1" data-ref-category="${id}" data-spent="${s.hasSpent}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
-          <div class="hl-card-l1-inner">
-            <div class="hl-card-l1-right">
-              <button type="button" class="hl-cat-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
-                <strong class="hl-card-l1-name">${s.cat.name}</strong>
-              </button>
-              <button type="button" class="hl-cat-amt-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}">
-                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                  <span class="hl-amt-curr">${currSymbol}</span>
-                </div>
-                <div class="hl-progress-track">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                </div>
-                <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-              </button>
-            </div>
-            <button type="button" class="hl-cat-icon-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
-              <div class="hl-card-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
-                <i class="${s.cat.iconClass}"></i>
-              </div>
-            </button>
-          </div>
-        </article>
-      `;
-    }).join("");
-
-    return `<div class="reference-one-grid hl-grid-layout-1">${cardsHtml}</div>`;
-  }
-
-  /* -------------------------------------------------------------
-     Render Layout 2 (Single-column list matching Image 2)
-  ------------------------------------------------------------- */
-  function renderLayout2(totals, budgets, currSymbol, isGold) {
-    const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'other', 'clothes', 'voice'];
+  /* =========================================================================
+     الشكل 1: قائمة أفقية تفصيلية (Horizontal Detail List)
+     ========================================================================= */
+  function renderLayout1List(totals, budgets, currSymbol, isGold) {
+    const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'other', 'clothes'];
 
     const rowsHtml = order.map(id => {
-      if (id === 'voice') {
-        return `
-          <article class="home-design-card hl-row-l2 hl-row-l2-voice" data-ref-category="voice">
-            <button type="button" data-voice class="hl-row-l2-btn">
-              <div class="hl-row-l2-right">
-                <div class="hl-row-l2-icon hl-row-voice-icon">
-                  <i class="fa-solid fa-microphone"></i>
-                </div>
-                <strong class="hl-row-voice-title">إضافة صوتية للمصروفات</strong>
-              </div>
-              <div class="hl-row-divider"></div>
-              <div class="hl-row-l2-middle">${getWaveHtml(14)}</div>
-              <div class="hl-row-l2-chevron"><i class="fa-solid fa-chevron-left"></i></div>
-            </button>
-          </article>
-        `;
-      }
-
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold, 2);
+      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '− ' : '';
 
       return `
         <article class="home-design-card hl-row-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-row-l2-content">
             <div class="hl-row-l2-right">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn">
                 <div class="hl-row-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
                   <i class="${s.cat.iconClass}"></i>
                 </div>
@@ -588,7 +470,7 @@
 
             <div class="hl-row-divider"></div>
 
-            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-mid-btn">
               <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
               <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
               <div class="hl-progress-track">
@@ -600,7 +482,7 @@
               %${s.remainingPct}
             </div>
 
-            <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-chevron-btn">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
           </div>
@@ -611,10 +493,10 @@
     return `<div class="home-design-list hl-grid-layout-2">${rowsHtml}</div>`;
   }
 
-  /* -------------------------------------------------------------
-     Render Layout 3 (Top Donut Chart + Top 3 Spenders + 2-col cards)
-  ------------------------------------------------------------- */
-  function renderLayout3(totals, budgets, currSymbol, isGold) {
+  /* =========================================================================
+     الشكل 2: لوحة تحليلات وإحصاءات (Donut Chart + Top 3 + 2-col cards)
+     ========================================================================= */
+  function renderLayout2Analytics(totals, budgets, currSymbol, isGold) {
     const spentCategories = Object.keys(CATEGORIES).map(id => ({
       id,
       spent: totals[id] || 0,
@@ -645,38 +527,20 @@
       `;
     }).join('') : '<div style="color:#94a3b8;font-size:0.72rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
 
-    const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'clothes', 'voice', 'other'];
+    const order = ['daily', 'food', 'bills', 'house', 'education', 'transport', 'health', 'clothes', 'other'];
 
     const cardsHtml = order.map(id => {
-      const pos = VISUAL_POSITIONS_L3[id] !== undefined ? VISUAL_POSITIONS_L3[id] : 0;
-
-      if (id === 'voice') {
-        return `
-          <article class="reference-one-card hl-card-l3 hl-card-l3-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice class="hl-card-l3-btn">
-              <div class="hl-card-l3-right">
-                <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
-                <div class="hl-voice-wave-wrap">${getWaveHtml(14)}</div>
-              </div>
-              <div class="hl-card-l3-icon hl-voice-icon-box">
-                <i class="fa-solid fa-microphone"></i>
-              </div>
-            </button>
-          </article>
-        `;
-      }
-
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold, 3);
+      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '− ' : '';
 
       return `
-        <article class="reference-one-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
+        <article class="reference-one-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-card-l3-inner">
             <div class="hl-card-l3-right">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
                 <strong class="hl-card-l3-name">${s.cat.name}</strong>
               </button>
-              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
                 <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                   <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                   <span class="hl-amt-curr">${currSymbol}</span>
@@ -687,7 +551,7 @@
                 <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
               <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
@@ -700,7 +564,6 @@
     return `
       <div class="hl-layout-3-wrapper">
         <section class="hl-hero-analytics">
-          <!-- Left: Donut Chart -->
           <div class="hl-donut-box">
             <svg viewBox="0 0 36 36" class="hl-donut-svg">
               <circle cx="18" cy="18" r="14" fill="none" stroke="#e2e8f0" stroke-width="4"></circle>
@@ -712,7 +575,6 @@
             </div>
           </div>
 
-          <!-- Center: Monthly Budget Summary -->
           <div class="hl-budget-summary">
             <div class="hl-budget-summary-title"><i class="fa-solid fa-bullseye"></i>الميزانية الشهرية</div>
             <div>الموازنة : <strong>${totalBudget.toLocaleString()} ${currSymbol}</strong></div>
@@ -720,7 +582,6 @@
             <div style="color:#15803d;">المتبقي : <strong>${remainingBudget.toLocaleString()} ${currSymbol}</strong></div>
           </div>
 
-          <!-- Right: Top 3 Spenders -->
           <div class="hl-top3-box">
             <div class="hl-top3-title"><i class="fa-solid fa-chart-simple"></i>أعلى 3 بنود صرفاً</div>
             ${top3Html}
@@ -732,42 +593,24 @@
     `;
   }
 
-  /* -------------------------------------------------------------
-     Render Layout 4 (Asymmetric Modern Cards matching Image 4)
-  ------------------------------------------------------------- */
-  function renderLayout4(totals, budgets, currSymbol, isGold) {
-    const order = ['daily', 'food', 'bills', 'house', 'transport', 'health', 'education', 'other', 'clothes', 'voice'];
+  /* =========================================================================
+     الشكل 3: بطاقات حديثة غير متماثلة (Modern Asymmetric Cards)
+     ========================================================================= */
+  function renderLayout3Asymmetric(totals, budgets, currSymbol, isGold) {
+    const order = ['daily', 'food', 'bills', 'house', 'transport', 'health', 'education', 'other', 'clothes'];
 
     const cardsHtml = order.map(id => {
-      const pos = VISUAL_POSITIONS_L4[id] !== undefined ? VISUAL_POSITIONS_L4[id] : 0;
-
-      if (id === 'voice') {
-        return `
-          <article class="home-design-card hl-card-l4 hl-card-l4-voice" data-ref-category="voice" style="order: ${pos} !important;">
-            <button type="button" data-voice class="hl-card-l4-btn">
-              <div class="hl-card-l4-right">
-                <strong class="hl-voice-title" style="color:#ffffff;">إضافة صوتية<br>للمصروفات</strong>
-                <div class="hl-voice-wave-wrap" style="margin-top:4px;">${getWaveHtml(16)}</div>
-              </div>
-              <div class="hl-card-l4-icon hl-voice-icon-box" style="background:rgba(255,255,255,0.25);color:#fff;border-radius:50%;">
-                <i class="fa-solid fa-microphone"></i>
-              </div>
-            </button>
-          </article>
-        `;
-      }
-
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold, 4);
+      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '− ' : '';
 
       return `
-        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder}; order: ${pos} !important;">
+        <article class="home-design-card hl-card-l4" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-card-l4-inner">
             <div class="hl-card-l4-right">
-              <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn">
                 <strong class="hl-card-l4-name">${s.cat.name}</strong>
               </button>
-              <button type="button" data-details="${id}" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-amt-btn">
                 <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                   <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                   <span class="hl-amt-curr">${currSymbol}</span>
@@ -778,7 +621,7 @@
                 <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
               </button>
             </div>
-            <button type="button" data-add="${id}" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
               <div class="hl-card-l4-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '12px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
@@ -791,56 +634,32 @@
     return `<div class="home-design-grid hl-grid-layout-4">${cardsHtml}</div>`;
   }
 
-  /* -------------------------------------------------------------
-     Render Layout 5 (3-column compact grid matching Image 5)
-  ------------------------------------------------------------- */
-  function renderLayout5(totals, budgets, currSymbol, isGold) {
+  /* =========================================================================
+     الشكل 4: شبكة مصغرة مدمجة 3×3 (Compact 3x3 Grid)
+     ========================================================================= */
+  function renderLayout4CompactGrid(totals, budgets, currSymbol, isGold) {
     const order = [
       'bills', 'food', 'daily',
       'transport', 'education', 'house',
-      'clothes', 'other', 'health',
-      'voice'
+      'clothes', 'other', 'health'
     ];
 
     const cardsHtml = order.map(id => {
-      const pos = VISUAL_POSITIONS_L5[id] !== undefined ? VISUAL_POSITIONS_L5[id] : 0;
-
-      if (id === 'voice') {
-        return `
-          <article class="home-design-card hl-card-l5-voice-wide" data-ref-category="voice" style="order: ${pos} !important; grid-column: 1 / -1 !important;">
-            <button type="button" data-voice class="hl-voice-wide-btn">
-              <div class="hl-voice-wide-right">
-                <div class="hl-voice-icon-box">
-                  <i class="fa-solid fa-microphone"></i>
-                </div>
-                <div class="hl-voice-wide-titles">
-                  <strong class="hl-voice-title">إضافة صوتية للمصروفات</strong>
-                  <small class="hl-voice-subtitle">اضغط وتحدث لتسجيل المصروف بالذكاء الاصطناعي</small>
-                </div>
-              </div>
-              <div class="hl-voice-wide-wave">
-                ${getWaveHtml(18)}
-              </div>
-            </button>
-          </article>
-        `;
-      }
-
-      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold, 5);
+      const s = getCategoryStats(id, totals, budgets, currSymbol, isGold);
       const sign = s.hasSpent ? '− ' : '';
-      const catDisplayName = (id === 'other' && s.cat.altName5) ? s.cat.altName5 : s.cat.name;
+      const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
       return `
-        <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder}; order: ${pos} !important;">
+        <article class="home-design-card hl-card-l5" data-ref-category="${id}" style="--cat-color: ${s.cat.color}; --cat-rgb: ${s.cat.rgb}; --cat-pastel-bg: ${s.cat.pastelBg}; --cat-pastel-border: ${s.cat.pastelBorder};">
           <div class="hl-card-l5-body">
-            <button type="button" class="hl-card-l5-head-btn" data-add="${id}" data-action="quick-add" data-cat-id="${id}">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l5-head-btn">
               <div class="hl-card-l5-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '11px'};">
                 <i class="${s.cat.iconClass}"></i>
               </div>
               <strong class="hl-card-l5-name">${catDisplayName}</strong>
             </button>
 
-            <button type="button" class="hl-card-l5-foot-btn" data-details="${id}" data-action="view-operations" data-cat-id="${id}">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-card-l5-foot-btn">
               <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                 <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                 <span class="hl-amt-curr">${currSymbol}</span>
@@ -858,6 +677,207 @@
     return `<div class="home-design-grid hl-grid-layout-5">${cardsHtml}</div>`;
   }
 
+  /* =========================================================================
+     الشكل 5: قمرة القيادة المدارية (The Radial Orbit Cockpit)
+     ========================================================================= */
+  function renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold) {
+    const catKeys = ['food', 'bills', 'transport', 'clothes', 'health', 'education', 'daily', 'house', 'other'];
+    const radius = 126;
+    const centerX = 195;
+    const centerY = 168;
+
+    let totalSpentAll = 0;
+    catKeys.forEach(k => { totalSpentAll += (totals[k] || 0); });
+    const remainingBudget = Math.max(0, 15400 - totalSpentAll);
+
+    const satellitesHtml = catKeys.map((catId, index) => {
+      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
+      const spent = totals[catId] || 0;
+      const angleDeg = -90 + (index * (360 / catKeys.length));
+      const angleRad = (angleDeg * Math.PI) / 180.0;
+      const x = Math.round(centerX + radius * Math.cos(angleRad) - 27);
+      const y = Math.round(centerY + radius * Math.sin(angleRad) - 27);
+
+      return `
+        <div class="cat-satellite hl-l5-satellite" data-action="quick-add" data-cat-id="${catId}"
+             style="position:absolute; width:54px; height:54px; border-radius:50%; background:#0f172a; border:2px solid ${cat.color}; left:${x}px; top:${y}px; box-shadow:0 4px 14px rgba(0,0,0,0.5), 0 0 10px ${cat.color}66; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5;">
+          <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.05rem;"></i>
+          <span style="font-size:0.58rem; font-weight:800; color:#fff; line-height:1.1;">${cat.name.split(' ')[0]}</span>
+          <span style="font-size:0.58rem; font-weight:900; color:#f87171; direction:ltr;">-${formatMoney(spent)}</span>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="radial-arena hl-l5-arena" style="flex:1; position:relative; width:100%; height:350px; margin:0 auto; overflow:hidden;">
+        <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
+        
+        <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 60}px; left:${centerX - 60}px; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle, rgba(15,23,42,0.98), rgba(30,58,138,0.55)); border:2.5px solid rgba(56, 189, 248, 0.7); box-shadow:0 0 28px rgba(56, 189, 248, 0.35); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
+          <span style="font-size:0.62rem; font-weight:800; color:#38bdf8; background:rgba(56, 189, 248, 0.15); padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
+          <span style="font-size:1.05rem; font-weight:900; color:#f87171; direction:ltr;">-${formatMoney(totalSpentAll)}</span>
+          <span style="font-size:0.56rem; color:#94a3b8; font-weight:700;">المتبقي بالميزانية</span>
+          <span style="font-size:0.65rem; font-weight:900; color:#34d399; direction:ltr;">+${formatMoney(remainingBudget)}</span>
+        </div>
+
+        ${satellitesHtml}
+      </div>
+    `;
+  }
+
+  /* =========================================================================
+     الشكل 6: خلايا النحل السداسية (The Hexagonal Honeycomb Hive)
+     ========================================================================= */
+  function renderLayout6Honeycomb(totals, budgets, currSymbol, isGold) {
+    const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
+    const positions = [
+      [14, 10], [138, 10], [262, 10],
+      [14, 116], [138, 116], [262, 116],
+      [14, 222], [138, 222], [262, 222]
+    ];
+
+    const cellsHtml = catKeys.map((catId, idx) => {
+      const cat = CATEGORIES[catId] || { name: catId, color: '#10b981', iconClass: 'fa-solid fa-cube' };
+      const spent = totals[catId] || 0;
+      const budget = budgets[catId] || 1500;
+      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 25;
+      const [px, py] = positions[idx];
+
+      return `
+        <div class="hex-hive-card hl-l6-card" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:102px; cursor:pointer;">
+          <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%;">
+            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="rgba(15,23,42,0.92)" stroke="${cat.color}" stroke-width="1.8" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
+          </svg>
+          <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
+            <div style="color:${cat.color}; font-size:1.15rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+            <span style="font-size:0.70rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+            <span style="font-size:0.74rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
+            <div style="width:32px; height:3px; background:rgba(255,255,255,0.15); border-radius:2px; overflow:hidden;">
+              <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `<div class="honeycomb-board hl-l6-board" style="flex:1; position:relative; width:100%; height:340px; margin:0 auto;">${cellsHtml}</div>`;
+  }
+
+  /* =========================================================================
+     الشكل 7: حساسات القياس الرقمية (HUD Compact Sensor Tiles)
+     ========================================================================= */
+  function renderLayout7SensorTiles(totals, budgets, currSymbol, isGold) {
+    const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
+
+    const tilesHtml = catKeys.map(catId => {
+      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
+      const spent = totals[catId] || 0;
+      const budget = budgets[catId] || 1500;
+      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 30;
+      const ledColor = pct > 75 ? '#ef4444' : (pct > 40 ? '#f59e0b' : '#10b981');
+
+      return `
+        <div class="sensor-tile hl-l7-tile" data-action="quick-add" data-cat-id="${catId}" style="background:linear-gradient(160deg, rgba(24, 34, 53, 0.85) 0%, rgba(13, 22, 38, 0.95) 100%); border:1.3px solid rgba(255, 255, 255, 0.12); border-radius:14px; padding:6px 6px 7px; display:flex; flex-direction:column; align-items:center; text-align:center; position:relative; cursor:pointer; min-height:92px;">
+          <div style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 2px 2px;">
+            <span style="font-size:0.60rem; font-weight:900; color:#94a3b8;">${pct}%</span>
+            <span style="width:6px; height:6px; border-radius:50%; background:${ledColor}; box-shadow:0 0 6px ${ledColor};"></span>
+          </div>
+          <div style="width:30px; height:30px; border-radius:50%; border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.92rem; margin:1px 0 2px;">
+            <i class="${cat.iconClass}"></i>
+          </div>
+          <span style="font-size:0.68rem; font-weight:850; color:#f8fafc; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+          <span style="font-size:0.72rem; font-weight:900; color:#f43f5e; direction:ltr; margin-top:1px;">-${formatMoney(spent)}</span>
+          <div style="width:36px; height:3px; background:rgba(255,255,255,0.12); border-radius:2px; overflow:hidden; margin-top:3px;">
+            <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="sensor-arena hl-l7-arena" style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:4px 6px 8px;">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%;">${tilesHtml}</div>
+      </div>
+    `;
+  }
+
+  /* =========================================================================
+     الشكل 8: الكريستال الماسي البلوري (The Diamond Facet Crystal Grid)
+     ========================================================================= */
+  function renderLayout8Diamonds(totals, budgets, currSymbol, isGold) {
+    const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
+    const positions = [
+      [14, 15], [138, 15], [262, 15],
+      [14, 126], [138, 126], [262, 126],
+      [14, 237], [138, 237], [262, 237]
+    ];
+
+    const diamondsHtml = catKeys.map((catId, idx) => {
+      const cat = CATEGORIES[catId] || { name: catId, color: '#ec4899', iconClass: 'fa-solid fa-gem' };
+      const spent = totals[catId] || 0;
+      const budget = budgets[catId] || 1500;
+      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 35;
+      const [px, py] = positions[idx];
+
+      return `
+        <div class="diamond-wrapper hl-l8-item" data-action="quick-add" data-cat-id="${catId}" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:102px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+          <div style="width:78px; height:78px; background:linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%); border:1.8px solid ${cat.color}; border-radius:18px; transform:rotate(45deg); box-shadow:0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55; display:flex; align-items:center; justify-content:center;">
+            <div style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:95px; gap:1px;">
+              <div style="color:${cat.color}; font-size:1.10rem;"><i class="${cat.iconClass}"></i></div>
+              <span style="font-size:0.66rem; font-weight:800; color:#f1f5f9; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+              <span style="font-size:0.70rem; font-weight:900; color:#f43f5e; direction:ltr;">-${formatMoney(spent)}</span>
+              <span style="font-size:0.56rem; font-weight:900; color:${cat.color}; background:${cat.color}25; border-radius:8px; padding:0 4px;">${pct}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `<div class="diamond-arena hl-l8-arena" style="flex:1; position:relative; width:100%; height:350px; margin:0 auto;">${diamondsHtml}</div>`;
+  }
+
+  /* =========================================================================
+     الشكل 9: مدرج التردد المالي والأعمدة الطيفية (The Financial Spectrum Equalizer)
+     ========================================================================= */
+  function renderLayout9Equalizer(totals, budgets, currSymbol, isGold) {
+    const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
+
+    const columnsHtml = catKeys.map(catId => {
+      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-chart-simple' };
+      const spent = totals[catId] || 0;
+      const budget = budgets[catId] || 1500;
+      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 40;
+      const barHeight = Math.max(20, Math.min(115, Math.round(pct * 1.15)));
+
+      return `
+        <div class="eq-column hl-l9-col" data-action="quick-add" data-cat-id="${catId}" style="display:flex; flex-direction:column; align-items:center; gap:3px; width:38px; cursor:pointer;">
+          <span style="font-size:0.60rem; font-weight:900; color:#f43f5e; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
+          <div style="width:14px; height:120px; background:rgba(30, 41, 59, 0.6); border-radius:8px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; overflow:hidden; border:1px solid rgba(255,255,255,0.05);">
+            <div style="width:100%; height:${barHeight}px; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}44 100%); box-shadow:0 0 10px ${cat.color}88; position:relative;">
+              <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:8px 8px 0 0; background:#fff; box-shadow:0 0 6px #fff;"></div>
+            </div>
+          </div>
+          <div style="width:26px; height:26px; border-radius:8px; background:rgba(15, 23, 42, 0.9); border:1.2px solid ${cat.color}; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:0.85rem;">
+            <i class="${cat.iconClass}"></i>
+          </div>
+          <span style="font-size:0.62rem; font-weight:800; color:#cbd5e1; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
+          <span style="font-size:0.58rem; font-weight:900; color:${cat.color};">${pct}%</span>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="equalizer-arena hl-l9-arena" style="flex:1; display:flex; flex-direction:column; justify-content:center; padding:4px 4px 10px; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(30, 41, 59, 0.5); border:1px solid rgba(255, 255, 255, 0.08); border-radius:12px; padding:5px 10px;">
+          <span style="font-size:0.75rem; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
+          <span style="font-size:0.68rem; color:#94a3b8;">انقر أي عمود للإدخال</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; height:225px; background:linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%); border:1px solid rgba(56, 189, 248, 0.15); border-radius:16px; padding:10px 4px 6px;">
+          ${columnsHtml}
+        </div>
+      </div>
+    `;
+  }
+
   /* -------------------------------------------------------------
      Master UI Sync & Render
   ------------------------------------------------------------- */
@@ -866,7 +886,6 @@
     let container = document.getElementById('homeInterfaces');
     const expensePage = document.getElementById('viewExpenses');
 
-    // Self-healing: if container does not exist yet, inject it right after catGrid
     if (!container && originalGrid && originalGrid.parentNode) {
       container = document.createElement('div');
       container.id = 'homeInterfaces';
@@ -874,7 +893,6 @@
       originalGrid.parentNode.insertBefore(container, originalGrid.nextSibling);
     }
 
-    // Self-healing: if btnHomeDesign does not exist yet, inject it in tools strip
     let btn = document.getElementById('btnHomeDesign');
     if (!btn) {
       const tools = document.querySelector('.executive-quick-tools-strip');
@@ -906,7 +924,6 @@
     }
 
     if (expensePage) {
-      expensePage.classList.toggle('home-reference-one', currentLayout === 1);
       expensePage.classList.toggle('home-alternative-design', currentLayout > 0);
       expensePage.dataset.activeDesign = String(currentLayout);
     }
@@ -919,17 +936,17 @@
 
   function render(filtered) {
     cachedFiltered = filtered;
+    updateUiForActiveLayout();
+
     const container = document.getElementById('homeInterfaces');
     if (!container) return;
 
     if (currentLayout === 0) {
       container.hidden = true;
-      updateUiForActiveLayout();
       return;
     }
 
     container.hidden = false;
-    updateUiForActiveLayout();
 
     const totals = computeTotals(filtered);
     const budgets = getBudgets();
@@ -939,22 +956,34 @@
     let html = '';
     switch (currentLayout) {
       case 1:
-        html = renderLayout1(totals, budgets, currSymbol, isGold);
+        html = renderLayout1List(totals, budgets, currSymbol, isGold);
         break;
       case 2:
-        html = renderLayout2(totals, budgets, currSymbol, isGold);
+        html = renderLayout2Analytics(totals, budgets, currSymbol, isGold);
         break;
       case 3:
-        html = renderLayout3(totals, budgets, currSymbol, isGold);
+        html = renderLayout3Asymmetric(totals, budgets, currSymbol, isGold);
         break;
       case 4:
-        html = renderLayout4(totals, budgets, currSymbol, isGold);
+        html = renderLayout4CompactGrid(totals, budgets, currSymbol, isGold);
         break;
       case 5:
-        html = renderLayout5(totals, budgets, currSymbol, isGold);
+        html = renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold);
+        break;
+      case 6:
+        html = renderLayout6Honeycomb(totals, budgets, currSymbol, isGold);
+        break;
+      case 7:
+        html = renderLayout7SensorTiles(totals, budgets, currSymbol, isGold);
+        break;
+      case 8:
+        html = renderLayout8Diamonds(totals, budgets, currSymbol, isGold);
+        break;
+      case 9:
+        html = renderLayout9Equalizer(totals, budgets, currSymbol, isGold);
         break;
       default:
-        html = renderLayout1(totals, budgets, currSymbol, isGold);
+        html = renderLayout1List(totals, budgets, currSymbol, isGold);
         break;
     }
 
@@ -967,7 +996,8 @@
   }
 
   function setLayout(layoutId) {
-    const next = Math.max(0, Math.min(5, parseInt(layoutId, 10) || 0));
+    const maxId = LAYOUT_META.length - 1; // 9
+    const next = Math.max(0, Math.min(maxId, parseInt(layoutId, 10) || 0));
     currentLayout = next;
     try {
       localStorage.setItem(STORAGE_KEY, String(next));
@@ -983,12 +1013,12 @@
   }
 
   function cycleLayout() {
-    const next = (currentLayout + 1) % 6;
+    const next = (currentLayout + 1) % LAYOUT_META.length; // 0 to 9
     setLayout(next);
   }
 
   /* -------------------------------------------------------------
-     Layout Picker Modal Drawer
+     Layout Picker Modal Drawer (All 10 Layouts)
   ------------------------------------------------------------- */
   function openPicker() {
     let modal = document.getElementById('homeLayoutPickerModal');
@@ -1019,7 +1049,7 @@
     modal.innerHTML = `
       <div class="hl-picker-sheet">
         <div class="hl-picker-header">
-          <h3>اختيار شكل شاشة المصروفات</h3>
+          <h3>اختيار شكل شاشة المصروفات (10 أشكال)</h3>
           <button type="button" class="hl-picker-close" onclick="window.HomeLayouts.closePicker()">&times;</button>
         </div>
         <div class="hl-picker-list">${itemsHtml}</div>
@@ -1047,7 +1077,7 @@
   }
 
   /* -------------------------------------------------------------
-     Event Delegation for Safe Expense Handling
+     Event Delegation: Clean category expense registration
   ------------------------------------------------------------- */
   function setupEventDelegation() {
     const container = document.getElementById('homeInterfaces');
@@ -1055,43 +1085,13 @@
     container.dataset.eventsBound = 'true';
 
     container.addEventListener('click', function (e) {
-      const voiceBtn = e.target.closest('[data-voice]');
-      if (voiceBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (root.VoiceAssistantEngine && typeof root.VoiceAssistantEngine.toggleListening === 'function') {
-          root.VoiceAssistantEngine.toggleListening();
-        } else {
-          const fab = document.getElementById('btnVoiceAssistantFab');
-          if (fab) {
-            fab.click();
-          } else if (typeof root.toggleVoiceAssistantModal === 'function') {
-            root.toggleVoiceAssistantModal(true);
-          } else if (typeof root.toggleVoiceAssistantDrawer === 'function') {
-            root.toggleVoiceAssistantDrawer(true);
-          }
-        }
-        return;
-      }
-
-      const addBtn = e.target.closest('[data-action="quick-add"], [data-add]');
+      const addBtn = e.target.closest('[data-action="quick-add"], [data-cat-id]');
       if (addBtn) {
         e.preventDefault();
         e.stopPropagation();
         const catId = addBtn.dataset.catId || addBtn.dataset.add;
         if (catId && typeof root.openQuickCategoryExpense === 'function') {
           root.openQuickCategoryExpense(catId);
-        }
-        return;
-      }
-
-      const detBtn = e.target.closest('[data-action="view-operations"], [data-details]');
-      if (detBtn) {
-        e.preventDefault();
-        e.stopPropagation();
-        const catId = detBtn.dataset.catId || detBtn.dataset.details;
-        if (catId && typeof root.openCategoryDetailsModal === 'function') {
-          root.openCategoryDetailsModal(catId);
         }
         return;
       }
@@ -1105,7 +1105,7 @@
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved !== null && saved !== undefined) {
-        currentLayout = Math.max(0, Math.min(5, parseInt(saved, 10) || 0));
+        currentLayout = Math.max(0, Math.min(LAYOUT_META.length - 1, parseInt(saved, 10) || 0));
       }
     } catch (e) {}
 
@@ -1125,7 +1125,6 @@
     setupEventDelegation();
     updateDesignButtonDial();
 
-    // Responsive and dynamic layout listeners
     window.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', measureAndApplyDynamicLayout, { passive: true });
@@ -1157,13 +1156,7 @@
     closePicker,
     chooseFromPicker,
     refreshDynamicEngine: measureAndApplyDynamicLayout,
-    profiles: Object.freeze({
-      1: { columns: 2, rows: 5 },
-      2: { columns: 1, rows: 10 },
-      3: { columns: 2, rows: 5 },
-      4: { columns: 2, rows: 5 },
-      5: { columns: 3, rows: 4 }
-    })
+    meta: Object.freeze(LAYOUT_META)
   });
 
   if (document.readyState === 'loading') {

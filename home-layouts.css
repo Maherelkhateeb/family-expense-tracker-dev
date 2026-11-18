@@ -1,7 +1,7 @@
 /* ==========================================================================
-   Home Screen Layouts Engine - Production CSS (v5.6.0)
-   Pixel-perfect matching for all 5 screens, edge-to-edge 6-segment dial with internal diameters,
-   far-left currency switcher, dynamic viewport engine, harmonious card proportions & text alignment.
+   Home Screen Layouts Engine - Production CSS (v6.0.0 - 10-Layout Suite)
+   Full support for all 10 layouts (0 to 9), 10-segment dial with 5 diameters,
+   permanent floating mic FAB, permanent side flaps, and zero-scroll mobile geometry.
    ========================================================================== */
 
 /* -------------------------------------------------------------
@@ -32,8 +32,7 @@ body.has-alt-home-layout #viewExpenses {
 }
 
 /* -------------------------------------------------------------
-   Side Screen Flaps (مقابض فتح الذهب والملخص)
-   MUST ALWAYS BE VISIBLE AND INTERACTIVE ON ALL LAYOUTS!
+   Permanent Side Flaps (مقابض فتح الذهب والملخص)
 ------------------------------------------------------------- */
 .side-screen-edge-handle,
 #leftScreenEdgeHandle,
@@ -49,16 +48,26 @@ body.has-alt-home-layout #viewExpenses {
   opacity: 1 !important;
 }
 
-/* Only hide assistant FAB on alternative layouts since each layout has its own voice card */
-body.has-alt-home-layout #btnVoiceAssistantFab,
-body:has(#homeInterfaces:not([hidden])) #btnVoiceAssistantFab {
-  display: none !important;
+/* -------------------------------------------------------------
+   Floating Voice Assistant FAB (Microphone at bottom-left)
+   MUST ALWAYS BE VISIBLE AND ACCESSIBLE ON ALL LAYOUTS
+------------------------------------------------------------- */
+#btnVoiceAssistantFab {
+  display: flex !important;
+  position: fixed !important;
+  bottom: 74px !important;
+  left: 14px !important;
+  z-index: 9998 !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4) !important;
+  pointer-events: auto !important;
 }
 
 /* -------------------------------------------------------------
-   Quick Tools Bar & Controls
+   Quick Tools Bar & Dial Switcher
 ------------------------------------------------------------- */
-/* Edge-to-Edge 6-Segment Dial Button (The circle is the button frame) */
 #btnHomeDesign {
   width: 38px !important;
   height: 38px !important;
@@ -95,7 +104,6 @@ body.dark-theme #btnHomeDesign {
   transform: scale(0.92);
 }
 
-/* Edge-to-Edge Dial SVG with 3 Internal Diameters (أقطار داخلية) */
 .home-dial-icon {
   display: block;
   width: 38px;
@@ -116,9 +124,9 @@ body.dark-theme .home-dial-icon .hl-dial-track {
 }
 
 .home-dial-icon .hl-dial-slice.is-active {
-  fill: #a855f7 !important;
+  fill: #8b5cf6 !important;
   fill-opacity: 0.96 !important;
-  filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.85));
+  filter: drop-shadow(0 0 3px rgba(139, 92, 246, 0.85));
 }
 
 html[data-color-mode="light"] .home-dial-icon .hl-dial-slice.is-active,
@@ -128,60 +136,13 @@ body.light-theme .home-dial-icon .hl-dial-slice.is-active {
   filter: drop-shadow(0 0 2.5px rgba(124, 58, 237, 0.6));
 }
 
-.home-dial-icon .hl-dial-diameter {
-  stroke: #c084fc !important;
-}
-
-html[data-color-mode="light"] .home-dial-icon .hl-dial-diameter,
-body.light-theme .home-dial-icon .hl-dial-diameter {
-  stroke: #7c3aed !important;
-}
-
-.home-dial-icon .hl-dial-center {
-  fill: #a855f7 !important;
-}
-
-html[data-color-mode="light"] .home-dial-icon .hl-dial-center,
-body.light-theme .home-dial-icon .hl-dial-center {
-  fill: #7c3aed !important;
-}
-
-/* Moving Currency Switcher to Far Left */
 .executive-quick-tools-strip #btnToggleCurrency {
   order: 4 !important;
   margin-inline-start: auto !important;
 }
 
 /* -------------------------------------------------------------
-   Sound Wave Animation for Voice Cards
-------------------------------------------------------------- */
-.hl-wave-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  height: 18px;
-}
-
-.hl-wave-bar {
-  width: 2.2px;
-  background: #a855f7;
-  border-radius: 2px;
-  animation: hlWaveAnim 1.2s ease-in-out infinite alternate;
-}
-
-html[data-color-mode="light"] .hl-wave-bar,
-body.light-theme .hl-wave-bar {
-  background: #7c3aed;
-}
-
-@keyframes hlWaveAnim {
-  0% { transform: scaleY(0.3); opacity: 0.5; }
-  100% { transform: scaleY(1.0); opacity: 1; }
-}
-
-/* -------------------------------------------------------------
-   Universal Card Component Styles & Typography
+   Universal Amount Cluster Typography & Colors
 ------------------------------------------------------------- */
 .hl-amount-cluster {
   display: inline-flex;
@@ -206,7 +167,6 @@ body.light-theme .hl-wave-bar {
   color: #64748b;
 }
 
-/* Light Mode Card Amount Colors */
 html[data-color-mode="light"] .hl-amount-cluster.spent .hl-amt-num,
 body.light-theme .hl-amount-cluster.spent .hl-amt-num {
   color: #b91c1c !important;
@@ -217,7 +177,6 @@ body.light-theme .hl-amount-cluster.zero .hl-amt-num {
   color: #0f172a !important;
 }
 
-/* Dark Mode Card Amount Colors */
 html[data-color-mode="dark"] .hl-amount-cluster.spent .hl-amt-num,
 body.dark-theme .hl-amount-cluster.spent .hl-amt-num {
   color: #ff4d6d !important;
@@ -258,7 +217,6 @@ body.dark-theme .hl-progress-track {
   line-height: 1.15;
 }
 
-/* Card Button Reset */
 .hl-cat-head-btn,
 .hl-cat-amt-btn,
 .hl-cat-icon-btn {
@@ -281,133 +239,7 @@ body.dark-theme .hl-progress-track {
 }
 
 /* -------------------------------------------------------------
-   Layout 1: 2-Column Parallel Cards (Image 1)
-------------------------------------------------------------- */
-.hl-grid-layout-1 {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: var(--dynamic-home-gap, 6px) !important;
-}
-
-.hl-card-l1 {
-  border-radius: 16px !important;
-  height: var(--dynamic-home-card-height, 78px) !important;
-  min-height: var(--dynamic-home-card-height, 78px) !important;
-  max-height: var(--dynamic-home-card-height, 78px) !important;
-  box-sizing: border-box !important;
-  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
-  overflow: hidden !important;
-}
-
-.hl-card-l1:active {
-  transform: scale(0.97);
-}
-
-.hl-card-l1-inner {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  width: 100% !important;
-  height: 100% !important;
-  padding: 6px 10px !important;
-  box-sizing: border-box !important;
-  gap: 6px !important;
-}
-
-.hl-card-l1-right {
-  flex: 1 !important;
-  min-width: 0 !important;
-  text-align: right !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-}
-
-.hl-card-l1-name {
-  display: block !important;
-  font-weight: 800 !important;
-  font-size: calc(0.82rem * var(--dynamic-home-font-scale, 1.0)) !important;
-  line-height: 1.15 !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.hl-card-l1-icon {
-  width: var(--dynamic-home-icon-size, 34px) !important;
-  height: var(--dynamic-home-icon-size, 34px) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: calc(var(--dynamic-home-icon-size, 34px) * 0.44) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
-  flex-shrink: 0 !important;
-}
-
-/* Voice Card in Layout 1 */
-.hl-card-l1-voice .hl-card-l1-btn {
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  padding: 6px 10px;
-  color: inherit;
-  font: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.hl-voice-title {
-  display: block;
-  color: #7c3aed;
-  font-weight: 900;
-  line-height: 1.15;
-  font-size: calc(0.82rem * var(--dynamic-home-font-scale, 1.0));
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.hl-voice-icon-box {
-  background: linear-gradient(135deg, #a855f7, #7c3aed) !important;
-  color: #ffffff !important;
-  border-radius: 12px !important;
-  box-shadow: 0 3px 8px rgba(124, 58, 237, 0.3) !important;
-}
-
-/* Light Mode Pastel Colors for Layout 1 */
-html[data-color-mode="light"] .hl-card-l1,
-body.light-theme .hl-card-l1 {
-  background: var(--cat-pastel-bg, #ffffff) !important;
-  border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
-  color: #0f172a !important;
-}
-
-html[data-color-mode="light"] .hl-card-l1 .hl-card-l1-name,
-body.light-theme .hl-card-l1 .hl-card-l1-name {
-  color: #0f172a !important;
-}
-
-/* Dark Mode Luminous Tints for Layout 1 */
-html[data-color-mode="dark"] .hl-card-l1,
-body.dark-theme .hl-card-l1 {
-  background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
-  border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(var(--cat-rgb, 148, 163, 184), 0.12) !important;
-  color: #f8fafc !important;
-}
-
-html[data-color-mode="dark"] .hl-card-l1 .hl-card-l1-name,
-body.dark-theme .hl-card-l1 .hl-card-l1-name {
-  color: #ffffff !important;
-}
-
-/* -------------------------------------------------------------
-   Layout 2: Single-Column List (Image 2)
+   Layout 1: Single-Column Detailed List
 ------------------------------------------------------------- */
 .hl-grid-layout-2 {
   display: flex !important;
@@ -542,29 +374,6 @@ body.dark-theme .hl-row-divider {
   flex-shrink: 0 !important;
 }
 
-/* Voice Row in Layout 2 */
-.hl-row-l2-voice .hl-row-l2-btn {
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  padding: 4px 8px;
-  color: inherit;
-  font: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.hl-row-voice-title {
-  font-weight: 900;
-  color: #7c3aed;
-  font-size: calc(0.82rem * var(--dynamic-home-font-scale, 1.0));
-  white-space: nowrap;
-}
-
-/* Light Mode for Layout 2 */
 html[data-color-mode="light"] .hl-row-l2,
 body.light-theme .hl-row-l2 {
   background: var(--cat-pastel-bg, #ffffff) !important;
@@ -573,12 +382,6 @@ body.light-theme .hl-row-l2 {
   color: #0f172a !important;
 }
 
-html[data-color-mode="light"] .hl-row-l2 .hl-row-l2-name,
-body.light-theme .hl-row-l2 .hl-row-l2-name {
-  color: #0f172a !important;
-}
-
-/* Dark Mode for Layout 2 */
 html[data-color-mode="dark"] .hl-row-l2,
 body.dark-theme .hl-row-l2 {
   background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
@@ -587,13 +390,8 @@ body.dark-theme .hl-row-l2 {
   color: #f8fafc !important;
 }
 
-html[data-color-mode="dark"] .hl-row-l2 .hl-row-l2-name,
-body.dark-theme .hl-row-l2 .hl-row-l2-name {
-  color: #ffffff !important;
-}
-
 /* -------------------------------------------------------------
-   Layout 3: Analytics Top Section + 2-Column Cards (Image 3)
+   Layout 2: Analytics Hero + 2-Column Cards
 ------------------------------------------------------------- */
 .hl-hero-analytics {
   background: #ffffff !important;
@@ -783,7 +581,6 @@ body.dark-theme .hl-row-l2 .hl-row-l2-name {
   flex-shrink: 0 !important;
 }
 
-/* Light & Dark Modes for Layout 3 */
 html[data-color-mode="light"] .hl-card-l3,
 body.light-theme .hl-card-l3 {
   background: var(--cat-pastel-bg, #ffffff) !important;
@@ -807,7 +604,7 @@ body.dark-theme .hl-card-l3 {
 }
 
 /* -------------------------------------------------------------
-   Layout 4: Asymmetric Modern Cards (Image 4)
+   Layout 3: Asymmetric Modern Cards
 ------------------------------------------------------------- */
 .hl-grid-layout-4 {
   display: grid !important;
@@ -865,48 +662,23 @@ body.dark-theme .hl-card-l3 {
   flex-shrink: 0 !important;
 }
 
-/* Voice Card in Layout 4 */
-.hl-card-l4-voice {
-  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
-  border: 1.5px solid #c084fc !important;
-  color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3) !important;
-}
-
-.hl-card-l4-voice .hl-card-l4-btn {
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  padding: 8px 10px;
-  color: inherit;
-  font: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-/* Light & Dark Modes for Layout 4 */
-html[data-color-mode="light"] .hl-card-l4:not(.hl-card-l4-voice),
-body.light-theme .hl-card-l4:not(.hl-card-l4-voice) {
+html[data-color-mode="light"] .hl-card-l4,
+body.light-theme .hl-card-l4 {
   background: var(--cat-pastel-bg, #ffffff) !important;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
 }
 
-html[data-color-mode="dark"] .hl-card-l4:not(.hl-card-l4-voice),
-body.dark-theme .hl-card-l4:not(.hl-card-l4-voice) {
+html[data-color-mode="dark"] .hl-card-l4,
+body.dark-theme .hl-card-l4 {
   background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
   border: 1.5px solid rgba(var(--cat-rgb, 148, 163, 184), 0.55) !important;
   color: #f8fafc !important;
 }
 
 /* -------------------------------------------------------------
-   Layout 5: 3-Column Compact Grid with Full-Width Voice Banner
-   Harmonious, proportionate cards with zero awkward empty space
+   Layout 4: Compact 3x3 Grid
 ------------------------------------------------------------- */
 .hl-grid-layout-5 {
   display: grid !important;
@@ -915,7 +687,6 @@ body.dark-theme .hl-card-l4:not(.hl-card-l4-voice) {
   align-items: stretch !important;
 }
 
-/* 3x3 Category Cards */
 .hl-card-l5 {
   border-radius: 14px !important;
   height: var(--dynamic-home-card-height, 88px) !important;
@@ -1010,71 +781,6 @@ body.dark-theme .hl-card-l4:not(.hl-card-l4-voice) {
   text-align: center !important;
 }
 
-/* Full-Width Voice Card at the Bottom (spanning all 3 columns) */
-.hl-card-l5-voice-wide {
-  grid-column: 1 / -1 !important;
-  width: 100% !important;
-  height: var(--dynamic-home-voice-height, 46px) !important;
-  min-height: var(--dynamic-home-voice-height, 46px) !important;
-  max-height: var(--dynamic-home-voice-height, 46px) !important;
-  border-radius: 14px !important;
-  background: linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%) !important;
-  border: 1.5px solid #c084fc !important;
-  box-shadow: 0 3px 10px rgba(168, 85, 247, 0.12) !important;
-  box-sizing: border-box !important;
-  display: flex !important;
-  align-items: center !important;
-  transition: transform 0.15s ease !important;
-  color: #7c3aed !important;
-  overflow: hidden !important;
-}
-
-.hl-card-l5-voice-wide:active {
-  transform: scale(0.985);
-}
-
-.hl-voice-wide-btn {
-  border: none;
-  background: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  padding: 6px 12px;
-  color: inherit;
-  font: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
-
-.hl-voice-wide-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.hl-voice-wide-titles {
-  text-align: right;
-  min-width: 0;
-}
-
-.hl-voice-subtitle {
-  display: block;
-  font-size: calc(0.64rem * var(--dynamic-home-font-scale, 1.0));
-  color: #9333ea;
-  font-weight: 700;
-  margin-top: 1px;
-  white-space: nowrap;
-}
-
-.hl-voice-wide-wave {
-  flex-shrink: 0;
-  margin-inline-start: 8px;
-}
-
-/* Dark Mode for Layout 5 */
 html[data-color-mode="dark"] .hl-card-l5,
 body.dark-theme .hl-card-l5 {
   background: linear-gradient(145deg, rgba(var(--cat-rgb, 148, 163, 184), 0.22), rgba(15, 23, 42, 0.95)) !important;
@@ -1088,16 +794,18 @@ body.dark-theme .hl-card-l5 .hl-card-l5-name {
   color: #ffffff !important;
 }
 
-html[data-color-mode="dark"] .hl-card-l5-voice-wide,
-body.dark-theme .hl-card-l5-voice-wide {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(124, 58, 237, 0.45)) !important;
-  border-color: #a855f7 !important;
-  color: #f3e8ff !important;
-}
-
-html[data-color-mode="dark"] .hl-voice-subtitle,
-body.dark-theme .hl-voice-subtitle {
-  color: #d8b4fe !important;
+/* -------------------------------------------------------------
+   Layout 5 to 9 Arenas & Dynamic Fitting
+------------------------------------------------------------- */
+.radial-arena,
+.honeycomb-board,
+.sensor-arena,
+.diamond-arena,
+.equalizer-arena {
+  width: 100% !important;
+  max-width: 440px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
 }
 
 /* -------------------------------------------------------------
