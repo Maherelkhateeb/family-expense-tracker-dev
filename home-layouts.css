@@ -94,36 +94,37 @@ body:not(.has-alt-home-layout) #btnVoiceAssistantFab {
 }
 
 /* -------------------------------------------------------------
-   4. Legendary Astrolabe Dial Switcher Button (أسطرلاب الأشكال الأسطوري)
+   4. Legendary Crystal Layout Dial Switcher Button (قرص تبديل الأشكال البلوري الأسطوري)
 ------------------------------------------------------------- */
 #btnHomeDesign {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  max-width: 38px !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
   border-radius: 50% !important;
   padding: 0 !important;
   margin: 0 !important;
   border: 1.8px solid #d97706 !important;
   background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fef3c7 65%, #fde68a 100%) !important;
-  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.45), 0 0 14px rgba(245, 158, 11, 0.4), 0 3px 10px rgba(0, 0, 0, 0.18), inset 0 1px 2px #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.45), 0 0 16px rgba(245, 158, 11, 0.4), 0 3px 10px rgba(0, 0, 0, 0.18), inset 0 1px 2px #ffffff !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
   position: relative !important;
+  flex-shrink: 0 !important;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 
 body.dark-theme #btnHomeDesign {
   background: radial-gradient(circle at 35% 35%, #1e1b4b 0%, #0f172a 65%, #020617 100%) !important;
   border-color: #ffd700 !important;
-  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.55), 0 0 18px rgba(245, 158, 11, 0.5), 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 3px rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 0 1.2px rgba(255, 215, 0, 0.55), 0 0 18px var(--dial-active-glow, rgba(245, 158, 11, 0.5)), 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 3px rgba(255, 255, 255, 0.25) !important;
 }
 
 #btnHomeDesign:hover {
-  transform: scale(1.10) rotate(18deg);
+  transform: scale(1.08) rotate(12deg);
   border-color: #ffd700 !important;
   box-shadow: 0 0 0 1.5px #ffd700, 0 0 24px var(--dial-active-glow, rgba(251, 191, 36, 0.85)), 0 6px 18px rgba(0, 0, 0, 0.35) !important;
 }
@@ -149,21 +150,22 @@ body.dark-theme #btnHomeDesign {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.home-dial-icon .hl-dial-slice {
+.home-dial-icon .hl-dial-facet {
   cursor: pointer;
-  transition: fill 0.25s ease, fill-opacity 0.25s ease, stroke 0.25s ease;
+  transition: fill 0.25s ease, opacity 0.25s ease;
 }
 
-.home-dial-icon .hl-dial-slice.is-active {
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.7));
-}
-
-.home-dial-icon .hl-dial-diameter {
-  transition: stroke 0.3s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease, opacity 0.25s ease;
-}
-
-.home-dial-icon .hl-dial-diameter.is-active-diameter {
+.home-dial-icon .hl-dial-facet.is-active {
   filter: drop-shadow(0 0 4px var(--dial-active-glow, #fef08a));
+}
+
+.home-dial-icon .hl-dial-needle {
+  transition: stroke 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  filter: drop-shadow(0 0 4px var(--dial-active-glow, #fef08a));
+}
+
+.home-dial-icon .hl-hero-tile {
+  transition: fill 0.3s ease;
 }
 
 /* -------------------------------------------------------------
