@@ -78,8 +78,8 @@ body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) 
   box-sizing: border-box !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  min-height: 68px !important;
-  height: clamp(68px, var(--dynamic-home-card-height, 72px), 80px) !important;
+  min-height: max(68px, var(--dynamic-home-content-min, 68px)) !important;
+  height: max(68px, min(80px, var(--dynamic-home-card-height, 72px)), var(--dynamic-home-content-min, 68px)) !important;
   overflow: hidden !important;
 }
 
@@ -96,8 +96,8 @@ body:has(#viewExpenses:is(.home-reference-one,.home-alternative-design).active) 
   box-sizing: border-box !important;
   min-width: 0 !important;
   max-width: 100% !important;
-  min-height: 76px !important;
-  height: max(76px, var(--dynamic-home-card-height, 90px)) !important;
+  min-height: max(76px, var(--dynamic-home-content-min, 76px)) !important;
+  height: max(76px, var(--dynamic-home-card-height, 90px), var(--dynamic-home-content-min, 76px)) !important;
   overflow: hidden !important;
 }
 #viewExpenses.home-reference-one #homeInterfaces .reference-one-card button,
@@ -197,4 +197,62 @@ body:has(#viewExpenses.home-reference-one.active) #topDriveSyncStatusText {
    short unused space above the persistent white bottom navigation. */
 body:has(#viewExpenses.home-reference-one.active) #appScrollBody {
   background: linear-gradient(180deg,#dff8fd 0%,#eafbff 100%) !important;
+}
+
+
+/* Font-reactive home cards: only the five alternative displays.
+   Inherit the actual app-selected Arabic typeface; never force Tahoma/Arial
+   after the user changes fonts. The engine supplies measured size variables. */
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces {
+  font-family: var(--dynamic-home-font-family, inherit) !important;
+}
+#viewExpenses:is(.home-reference-one,.home-alternative-design).active #homeInterfaces
+:is(.reference-one-card,.home-design-card,button,strong,small,bdi,span,p,em,label) {
+  font-family: var(--dynamic-home-font-family, inherit) !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add strong {
+  font-size: var(--dynamic-home-title-size, 12px) !important;
+  line-height: 1.14 !important;
+  overflow-wrap: anywhere !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-amount,
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-amount bdi {
+  font-size: var(--dynamic-home-amount-size, 12px) !important;
+  line-height: 1.13 !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-details small {
+  font-size: var(--dynamic-home-detail-size, 9px) !important;
+  line-height: 1.18 !important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card
+:is(.home-design-head strong,[data-add] strong) {
+  font-size: var(--dynamic-home-alt-title-size, 14px) !important;
+  line-height: 1.18 !important;
+  overflow-wrap: anywhere !important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card
+:is(.home-design-value,.home-design-value bdi) {
+  font-size: var(--dynamic-home-alt-amount-size, 13px) !important;
+  line-height: 1.16 !important;
+}
+#viewExpenses.home-alternative-design.active #homeInterfaces .home-design-card small {
+  font-size: var(--dynamic-home-alt-detail-size, 10px) !important;
+  line-height: 1.18 !important;
+}
+
+/* Numerals and action targets have separate stacking zones, even with a
+   larger custom font. Prevent currency/percentage lines from being clickable
+   through the add-expense button. */
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card {
+  isolation: isolate !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card button.reference-one-add {
+  min-height: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+#viewExpenses.home-reference-one.active #homeInterfaces .reference-one-card .reference-one-details {
+  position: relative !important;
+  z-index: 0 !important;
+  min-height: 0 !important;
 }
