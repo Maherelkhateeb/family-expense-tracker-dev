@@ -1089,21 +1089,25 @@
       const x = Math.round(centerX + radius * Math.cos(angleRad) - satHalf);
       const y = Math.round(centerY + radius * Math.sin(angleRad) - satHalf);
 
+      const hasSpent = spent > 0;
       const satBg = isLight ? (cat.pastelBg || '#ffffff') : '#0f172a';
-      const satBorder = cat.color;
+      const satBorder = hasSpent ? cat.color : (isLight ? '#cbd5e1' : '#334155');
       const textColor = isLight ? '#0f172a' : '#ffffff';
-      const amtColor = isLight ? '#b91c1c' : '#f87171';
-      const shadow = isLight ? `0 3px 12px rgba(0,0,0,0.08), 0 0 10px ${cat.color}33` : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`;
+      const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f87171') : (isLight ? '#64748b' : '#94a3b8');
+      const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
+      const shadow = hasSpent
+        ? (isLight ? `0 3px 12px rgba(0,0,0,0.08), 0 0 10px ${cat.color}33` : `0 4px 16px rgba(0,0,0,0.5), 0 0 12px ${cat.color}66`)
+        : (isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 3px 10px rgba(0,0,0,0.3)');
 
       return `
         <div class="cat-satellite hl-l5-satellite"
              style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
           <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
+            <i class="${cat.iconClass}" style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.45rem; line-height:1; margin-bottom:2px;"></i>
             <span style="font-size:0.68rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:60px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
           </button>
           <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">-${formatMoney(spent)}</span>
+            <span style="font-size:0.66rem; font-weight:900; color:${amtColor}; direction:ltr; letter-spacing:-0.2px;">${amtText}</span>
           </button>
         </div>
       `;
@@ -1176,29 +1180,31 @@
       const cat = CATEGORIES[catId] || { name: catId, color: '#10b981', iconClass: 'fa-solid fa-cube', pastelBg: '#ecfdf5' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
-      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 25;
+      const hasSpent = spent > 0;
+      const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
       const [px, py] = positions[idx];
 
       const polyFill = isLight ? (cat.pastelBg || '#ffffff') : 'rgba(15, 23, 42, 0.92)';
-      const polyStroke = cat.color;
+      const polyStroke = hasSpent ? cat.color : (isLight ? '#cbd5e1' : '#334155');
       const nameColor = isLight ? '#0f172a' : '#f1f5f9';
-      const amtColor = isLight ? '#b91c1c' : '#f43f5e';
+      const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f43f5e') : (isLight ? '#64748b' : '#94a3b8');
+      const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
       const trackBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)';
 
       return `
         <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px;">
           <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
-            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
+            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: ${hasSpent ? 'drop-shadow(0 2px 8px ' + cat.color + '55)' : 'none'};" />
           </svg>
           <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
             <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="تسجيل سريع في ${cat.name}">
-              <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+              <div style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
               <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
             </button>
             <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
-              <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
+              <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">${amtText}</span>
               <div style="width:34px; height:3px; background:${trackBg}; border-radius:2px; overflow:hidden;">
-                <div style="width:${pct}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
+                <div style="width:${hasSpent ? pct : 0}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
               </div>
             </button>
           </div>
@@ -1245,17 +1251,19 @@
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
-      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 0;
-      const ledColor = pct > 90 ? '#ef4444' : (pct > 65 ? '#f59e0b' : '#10b981');
-      const amtColor = spent > 0 ? '#fca5a5' : '#94a3b8';
-      const signStr = spent > 0 ? '-' : '';
+      const hasSpent = spent > 0;
+      const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
+      const ledColor = hasSpent ? (pct > 90 ? '#ef4444' : (pct > 65 ? '#f59e0b' : '#10b981')) : '#334155';
+      const amtColor = hasSpent ? '#fca5a5' : '#64748b';
+      const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
+      const barFillWidth = (hasSpent && pct > 0) ? Math.min(pct, 100) : 0;
 
       return `
         <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color};">
           <!-- 1. شريط الحساس العلوي: لمبة LED + النسبة المئوية -->
           <div class="sensor-tile-top" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض حركات ${cat.name} (${pct}%)">
-            <span class="sensor-pct">${pct}%</span>
-            <span class="sensor-dot" style="background: ${ledColor}; box-shadow: 0 0 7px ${ledColor};"></span>
+            <span class="sensor-pct" style="color:${hasSpent ? '#94a3b8' : '#64748b'};">${pct}%</span>
+            <span class="sensor-dot" style="background: ${ledColor}; box-shadow: ${hasSpent ? '0 0 7px ' + ledColor : 'none'};"></span>
           </div>
 
           <!-- 2. موضع تسجيل المصروف: الأيقونة الدائرية المتوهجة -->
@@ -1268,9 +1276,9 @@
           <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
           <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
             <span class="sensor-title">${cat.name}</span>
-            <span class="sensor-val">${signStr}${formatMoney(spent)}</span>
+            <span class="sensor-val" style="color:${amtColor}; direction:ltr;">${amtText}</span>
             <div class="sensor-bar">
-              <div class="sensor-bar-fill" style="width: ${Math.min(pct, 100)}%; background: ${cat.color}; box-shadow: 0 0 6px ${cat.color}aa;"></div>
+              <div class="sensor-bar-fill" style="width: ${barFillWidth}%; background: ${cat.color}; box-shadow: ${barFillWidth > 0 ? '0 0 6px ' + cat.color + 'aa' : 'none'};"></div>
             </div>
           </div>
         </div>
@@ -1321,27 +1329,32 @@
       const cat = CATEGORIES[catId] || { name: catId, color: '#ec4899', iconClass: 'fa-solid fa-gem', pastelBg: '#fdf2f8' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
-      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 35;
+      const hasSpent = spent > 0;
+      const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
       const [px, py] = positions[idx];
 
       const diaBg = isLight ? `linear-gradient(135deg, ${cat.pastelBg || '#ffffff'} 0%, #ffffff 100%)` : 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)';
-      const diaBorder = isLight ? `2px solid ${cat.color}` : `1.8px solid ${cat.color}`;
+      const diaBorder = hasSpent ? (isLight ? `2px solid ${cat.color}` : `1.8px solid ${cat.color}`) : (isLight ? '1.5px solid #cbd5e1' : '1.5px solid rgba(255,255,255,0.1)');
       const nameColor = isLight ? '#0f172a' : '#f1f5f9';
-      const amtColor = isLight ? '#b91c1c' : '#f43f5e';
-      const badgeBg = isLight ? (cat.pastelBg || '#f1f5f9') : `${cat.color}25`;
-      const shadow = isLight ? `0 4px 12px rgba(0,0,0,0.08), 0 0 8px ${cat.color}33` : `0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55`;
+      const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f43f5e') : (isLight ? '#64748b' : '#94a3b8');
+      const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
+      const badgeBg = hasSpent ? (isLight ? (cat.pastelBg || '#f1f5f9') : `${cat.color}25`) : (isLight ? '#f1f5f9' : 'rgba(255,255,255,0.06)');
+      const badgeColor = hasSpent ? cat.color : (isLight ? '#94a3b8' : '#64748b');
+      const shadow = hasSpent
+        ? (isLight ? `0 4px 12px rgba(0,0,0,0.08), 0 0 8px ${cat.color}33` : `0 6px 18px rgba(0,0,0,0.45), 0 0 12px ${cat.color}55`)
+        : (isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 4px 12px rgba(0,0,0,0.3)');
 
       return `
         <div class="diamond-wrapper hl-l8-item" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px; display:flex; align-items:center; justify-content:center;">
           <div style="width:76px; height:76px; background:${diaBg}; border:${diaBorder}; border-radius:18px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
             <div style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:95px; gap:1px;">
               <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
-                <div style="color:${cat.color}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
+                <div style="color:${hasSpent ? cat.color : (isLight ? '#64748b' : '#94a3b8')}; font-size:1.05rem;"><i class="${cat.iconClass}"></i></div>
                 <span style="font-size:0.64rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:88px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
               </button>
               <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="عرض حركات ${cat.name}">
-                <span style="font-size:0.68rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
-                <span style="font-size:0.55rem; font-weight:900; color:${cat.color}; background:${badgeBg}; border:1px solid ${cat.color}55; border-radius:8px; padding:0 4px;">${pct}%</span>
+                <span style="font-size:0.68rem; font-weight:900; color:${amtColor}; direction:ltr;">${amtText}</span>
+                <span style="font-size:0.55rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 4px;">${pct}%</span>
               </button>
             </div>
           </div>
@@ -1444,32 +1457,40 @@
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-chart-simple' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
-      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 40;
+      const hasSpent = spent > 0;
+      const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
 
-      const amtColor = isLight ? '#b91c1c' : '#f43f5e';
+      const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f43f5e') : (isLight ? '#94a3b8' : '#64748b');
+      const amtText = hasSpent ? `-${Math.round(spent)}` : '0';
       const trackBg = isLight ? '#e2e8f0' : 'rgba(30, 41, 59, 0.6)';
       const trackBorder = isLight ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.05)';
       const badgeStyle = isLight
-        ? `background:${cat.color}; color:#ffffff; border:none;`
-        : `background:rgba(15, 23, 42, 0.9); border:1.2px solid ${cat.color}; color:${cat.color};`;
+        ? `background:${hasSpent ? cat.color : '#cbd5e1'}; color:#ffffff; border:none;`
+        : `background:rgba(15, 23, 42, 0.9); border:1.2px solid ${hasSpent ? cat.color : '#475569'}; color:${hasSpent ? cat.color : '#94a3b8'};`;
       const nameColor = isLight ? '#0f172a' : '#cbd5e1';
+
+      const barFillHtml = (hasSpent && pct > 0) ? `
+        <div style="width:100%; height:${Math.min(100, pct)}%; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}55 100%); box-shadow:0 0 10px ${cat.color}88; position:relative; transition:height 0.3s ease;">
+          <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:8px 8px 0 0; background:#fff; box-shadow:0 0 6px #fff;"></div>
+        </div>
+      ` : `
+        <div style="width:100%; height:0%; transition:height 0.3s ease;"></div>
+      `;
 
       return `
         <div class="eq-column hl-l9-col">
           <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.60rem; font-weight:900; color:${amtColor}; direction:ltr; white-space:nowrap;">-${Math.round(spent)}</span>
+            <span style="font-size:0.60rem; font-weight:900; color:${amtColor}; direction:ltr; white-space:nowrap;">${amtText}</span>
           </button>
           <button type="button" data-action="view-operations" data-cat-id="${catId}" class="hl-l9-track-btn" style="background:${trackBg}; border:${trackBorder};" title="عرض حركات ${cat.name} (${pct}%)">
-            <div style="width:100%; height:${Math.max(14, Math.min(100, pct))}%; border-radius:8px 8px 0 0; background:linear-gradient(180deg, ${cat.color} 0%, ${cat.color}55 100%); box-shadow:0 0 10px ${cat.color}88; position:relative; transition:height 0.3s ease;">
-              <div style="position:absolute; top:0; left:0; right:0; height:3px; border-radius:8px 8px 0 0; background:#fff; box-shadow:0 0 6px #fff;"></div>
-            </div>
+            ${barFillHtml}
           </button>
           <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="تسجيل سريع في ${cat.name}">
             <div style="width:26px; height:26px; border-radius:8px; ${badgeStyle} display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
               <i class="${cat.iconClass}"></i>
             </div>
             <span style="font-size:0.62rem; font-weight:850; color:${nameColor}; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
-            <span style="font-size:0.56rem; font-weight:900; color:${cat.color};">${pct}%</span>
+            <span style="font-size:0.56rem; font-weight:900; color:${hasSpent ? cat.color : (isLight ? '#94a3b8' : '#64748b')};">${pct}%</span>
           </button>
         </div>
       `;
