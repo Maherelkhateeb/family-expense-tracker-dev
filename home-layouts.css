@@ -1,3 +1,10 @@
+
+/* الزر العائم للميكروفون يظهر حصرياً فقط في الشاشة الأصلية (Layout 0) */
+body:not([data-home-layout="0"]) #btnVoiceAssistantFab {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 /* ==========================================================================
    Family Expense Tracker - Home Screen Layouts Production CSS (v6.1.0)
    100% Visual Fidelity to Approved Reference Designs
@@ -94,36 +101,37 @@ body:not(.has-alt-home-layout) #btnVoiceAssistantFab {
 }
 
 /* -------------------------------------------------------------
-   4. Legendary Astrolabe Dial Switcher Button (أسطرلاب الأشكال الأسطوري)
+   4. Legendary Crystal Layout Dial Switcher Button (قرص تبديل الأشكال البلوري الأسطوري)
 ------------------------------------------------------------- */
 #btnHomeDesign {
-  width: 38px !important;
-  height: 38px !important;
-  min-width: 38px !important;
-  max-width: 38px !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  max-width: 42px !important;
   border-radius: 50% !important;
   padding: 0 !important;
   margin: 0 !important;
   border: 1.8px solid #d97706 !important;
   background: radial-gradient(circle at 35% 35%, #ffffff 0%, #fef3c7 65%, #fde68a 100%) !important;
-  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.45), 0 0 14px rgba(245, 158, 11, 0.4), 0 3px 10px rgba(0, 0, 0, 0.18), inset 0 1px 2px #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.45), 0 0 16px rgba(245, 158, 11, 0.4), 0 3px 10px rgba(0, 0, 0, 0.18), inset 0 1px 2px #ffffff !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important;
   position: relative !important;
+  flex-shrink: 0 !important;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 
 body.dark-theme #btnHomeDesign {
   background: radial-gradient(circle at 35% 35%, #1e1b4b 0%, #0f172a 65%, #020617 100%) !important;
   border-color: #ffd700 !important;
-  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.55), 0 0 18px rgba(245, 158, 11, 0.5), 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 3px rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 0 0 1.2px rgba(255, 215, 0, 0.55), 0 0 18px var(--dial-active-glow, rgba(245, 158, 11, 0.5)), 0 4px 14px rgba(0, 0, 0, 0.65), inset 0 1px 3px rgba(255, 255, 255, 0.25) !important;
 }
 
 #btnHomeDesign:hover {
-  transform: scale(1.10) rotate(18deg);
+  transform: scale(1.08) rotate(12deg);
   border-color: #ffd700 !important;
   box-shadow: 0 0 0 1.5px #ffd700, 0 0 24px var(--dial-active-glow, rgba(251, 191, 36, 0.85)), 0 6px 18px rgba(0, 0, 0, 0.35) !important;
 }
@@ -149,21 +157,22 @@ body.dark-theme #btnHomeDesign {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.home-dial-icon .hl-dial-slice {
+.home-dial-icon .hl-dial-facet {
   cursor: pointer;
-  transition: fill 0.25s ease, fill-opacity 0.25s ease, stroke 0.25s ease;
+  transition: fill 0.25s ease, opacity 0.25s ease;
 }
 
-.home-dial-icon .hl-dial-slice.is-active {
-  filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.7));
-}
-
-.home-dial-icon .hl-dial-diameter {
-  transition: stroke 0.3s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease, opacity 0.25s ease;
-}
-
-.home-dial-icon .hl-dial-diameter.is-active-diameter {
+.home-dial-icon .hl-dial-facet.is-active {
   filter: drop-shadow(0 0 4px var(--dial-active-glow, #fef08a));
+}
+
+.home-dial-icon .hl-dial-needle {
+  transition: stroke 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  filter: drop-shadow(0 0 4px var(--dial-active-glow, #fef08a));
+}
+
+.home-dial-icon .hl-hero-tile {
+  transition: fill 0.3s ease;
 }
 
 /* -------------------------------------------------------------
@@ -735,6 +744,13 @@ body.dark-theme .hl-voice-card {
   width: 100%;
 }
 
+.hl-layout-4-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dynamic-home-gap, 6px);
+  width: 100%;
+}
+
 .hl-grid-layout-4 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -743,14 +759,13 @@ body.dark-theme .hl-voice-card {
 }
 
 .hl-card-l4 {
-  background: #ffffff;
-  border: 1.5px solid var(--cat-pastel-border, #e2e8f0);
+  background: var(--cat-pastel-bg, #ffffff);
+  border: 1.8px solid var(--cat-pastel-border, #e2e8f0);
   border-radius: 16px;
   padding: 6px 4px 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  height: var(--dynamic-home-card-height, 108px);
-  min-height: 96px;
+  height: var(--dynamic-home-card-height, 120px);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -760,36 +775,13 @@ body.dark-theme .hl-voice-card {
 }
 
 body.dark-theme .hl-card-l4 {
-  background: rgba(18, 29, 51, 0.78);
-  border-color: var(--cat-color, rgba(56, 189, 248, 0.3));
+  background: rgba(18, 29, 51, 0.82);
+  border-color: var(--cat-color, rgba(56, 189, 248, 0.4));
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
 }
 
 .hl-card-l4:active {
   transform: scale(0.97);
-}
-
-/* كارت ملابس وأحذية في الصف الرابع بالمنتصف تماماً */
-.hl-card-l4.hl-card-l4-centered {
-  grid-column: 2;
-}
-
-/* كارت المساعد الصوتي المتوهج في الشكل 4 (الصف الثالث يمين) */
-.hl-voice-card-l4 {
-  background: #ffffff !important;
-  border: 1.8px solid #c084fc !important;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.18) !important;
-  cursor: pointer;
-}
-
-body.dark-theme .hl-voice-card-l4 {
-  background: #ffffff !important;
-  border: 2px solid #ffffff !important;
-  box-shadow: 0 0 18px rgba(168, 85, 247, 0.5), 0 4px 14px rgba(0, 0, 0, 0.5) !important;
-}
-
-body.dark-theme .hl-voice-card-l4 .hl-card-l4-name {
-  color: #6d28d9 !important;
 }
 
 .hl-card-l4-body {
@@ -818,7 +810,7 @@ body.dark-theme .hl-voice-card-l4 .hl-card-l4-name {
   width: 36px;
   height: 36px;
   min-width: 36px;
-  border-radius: 50% !important; /* أيقونة دائرية كاملة مطابقة للمرجع */
+  border-radius: 50% !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -860,13 +852,105 @@ body.dark-theme .hl-card-l4-name {
   font-size: calc(0.60rem * var(--dynamic-home-font-scale, 1));
 }
 
-.hl-voice-l4-waves-wrap {
-  margin-top: 4px;
-  padding: 0 6px;
+/* شريط الإضافة الصوتية للمصروفات بعرض الشاشة من أسفل في الشكل 4 */
+.hl-layout4-voice-strip {
   width: 100%;
+  margin-top: 2px;
+}
+
+.hl-l4-voice-btn {
+  width: 100%;
+  height: 44px;
+  min-height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(124, 58, 237, 0.22) 100%);
+  border: 1.6px solid #8b5cf6;
+  color: #6d28d9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.dark-theme .hl-l4-voice-btn {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(109, 40, 217, 0.35) 100%);
+  border-color: #a855f7;
+  color: #e9d5ff;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+}
+
+.hl-l4-voice-btn:active {
+  transform: scale(0.98);
+}
+
+.hl-l4-voice-content-start {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hl-l4-voice-icon-pill {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 0.90rem;
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+}
+
+.hl-l4-voice-text-cluster {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.hl-l4-voice-title {
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.hl-l4-voice-sub {
+  font-size: 0.62rem;
+  color: #7c3aed;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+body.dark-theme .hl-l4-voice-sub {
+  color: #c4b5fd;
+}
+
+.hl-l4-voice-wave-wrap {
+  width: 90px;
+  display: flex;
+  align-items: center;
+}
+
+/* =========================================================================
+   ملاءمة حلبات الأشكال 5 إلى 9 لمنع الفراغات الميتة
+   ========================================================================= */
+.radial-arena,
+.honeycomb-board,
+.sensor-arena,
+.diamond-arena,
+.equalizer-arena {
+  height: var(--dynamic-home-arena-h, 380px) !important;
+  min-height: 320px;
+  max-height: 520px;
+  box-sizing: border-box;
+}
+
+.sensor-arena .sensor-tile {
+  height: 100% !important;
 }
 
 /* -------------------------------------------------------------
