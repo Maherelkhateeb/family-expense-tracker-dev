@@ -3156,31 +3156,161 @@ const ProjectCompareEngine = (() => {
           </div>
         `;
       } else if (_viewMode === 'charts') {
+        // Full suite of 8 charts matching Monthly Budget!
+        const maxDelta = Math.max(1, ...wbsRows.map(r => Math.abs(r.diff)));
+        const topRatio = Math.max(0, ...wbsRows.map(r => r.estAmt > 0 ? (r.actAmt / r.estAmt * 100) : 0));
+        const axisMax = Math.max(200, Math.ceil(topRatio / 50) * 50);
+
+        // Waterfall steps
+        const wfSteps = [{ name: 'المعتمد', value: approvedBudget, total: true }];
+        wbsRows.filter(r => r.diff !== 0).forEach(r => wfSteps.push({ name: r.name, value: r.diff, total: false }));
+        wfSteps.push({ name: 'الفعلي', value: spentActual, total: true });
+
         container.innerHTML = `
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 14px;">
-            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
-              </div>
-              <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
+          <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px;">
+            <!-- شريط توضيحي للرسوم الثمانية للمشروع -->
+            <div style="background: rgba(14, 165, 233, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 8px 12px; font-size: 0.78rem; font-weight: 850; color: #38bdf8; display: flex; align-items: center; justify-content: space-between;">
+              <span><i class="fa-solid fa-chart-pie"></i> لوحة الرسوم البيانية الشاملة للمشروع (الرسوم 1–8)</span>
+              <span style="font-size: 0.70rem; color: #94a3b8;">8 رسوم تفاعلية</span>
             </div>
-            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-column"></i> <span>مقارنة التقديري بالفعلي لكل بند</span>
+
+            <!-- شبكة الرسوم التفاعلية المزدوجة (1 و 2) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+              <!-- رسم 1: هيكل تكاليف المشروع WBS -->
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">1</span>
+                  <i class="fa-solid fa-chart-pie"></i> <span>هيكل تكاليف المشروع حسب البنود (WBS)</span>
+                </div>
+                <div style="height: 220px; position: relative;"><canvas id="projChartDoughnut"></canvas></div>
               </div>
-              <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
+
+              <!-- رسم 2: مقارنة التقديري المعتمد بالفعلي -->
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">2</span>
+                  <i class="fa-solid fa-chart-column"></i> <span>مقارنة المعتمد بالفعلي لكل بند (Grouped Bar)</span>
+                </div>
+                <div style="height: 220px; position: relative;"><canvas id="projChartBarGrouped"></canvas></div>
+              </div>
             </div>
+
+            <!-- رسم 3: شلال الفروقات وتدرج التكاليف (Waterfall) -->
             <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
               <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع</span>
+                <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">3</span>
+                <i class="fa-solid fa-water"></i> <span>شلال الفروقات وتدرج التكاليف (Waterfall Chart)</span>
               </div>
-              <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
+              <div style="overflow-x: auto; padding-bottom: 6px;">
+                <div style="display: flex; gap: 8px; min-width: 380px; align-items: flex-end; height: 140px; padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  ${wfSteps.map(step => {
+                    const isTotal = step.total;
+                    const isOver = step.value < 0;
+                    const barH = Math.max(15, Math.min(100, Math.round((Math.abs(step.value) / approvedBudget) * 100)));
+                    const bg = isTotal ? '#2563eb' : (isOver ? '#ef4444' : '#10b981');
+                    return `
+                      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                        <span style="font-size: 0.62rem; color: #94a3b8; font-variant-numeric: tabular-nums;">${formatVal(Math.abs(step.value))}</span>
+                        <div style="width: 100%; height: ${barH}px; background: ${bg}; border-radius: 4px;"></div>
+                        <span style="font-size: 0.65rem; font-weight: 800; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60px;">${step.name}</span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+              <p style="font-size: 0.68rem; color: #94a3b8; margin: 6px 0 0;">يوضح الشلال الانتقال التدريجي من سقف المعتمد عبر فروقات البنود إلى المنصرف الفعلي.</p>
             </div>
+
+            <!-- رسم 4: أعمدة الانحراف الموقعة (Variance Plot) -->
             <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
               <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
+                <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">4</span>
+                <i class="fa-solid fa-arrows-left-right-to-line"></i> <span>أعمدة الانحراف والوفورات الموقعة لكل بند</span>
               </div>
-              <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                ${wbsRows.slice(0, 6).map(r => {
+                  const frac = (Math.abs(r.diff) / maxDelta) * 50;
+                  const isSave = r.diff >= 0;
+                  return `
+                    <div style="display: grid; grid-template-columns: 80px 1fr 70px; gap: 8px; align-items: center; font-size: 0.72rem;">
+                      <span style="color: #cbd5e1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.name}</span>
+                      <div style="height: 14px; background: rgba(0,0,0,0.3); border-radius: 3px; position: relative;">
+                        <div style="position: absolute; ${isSave ? 'left: 50%;' : 'right: 50%;'} width: ${Math.min(50, frac)}%; height: 100%; background: ${isSave ? '#10b981' : '#ef4444'}; border-radius: 2px;"></div>
+                        <div style="position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,0.3);"></div>
+                      </div>
+                      <span style="direction: ltr; font-weight: 850; color: ${isSave ? '#34d399' : '#f87171'}; font-size: 0.68rem;">${r.diff > 0 ? '+' : ''}${formatVal(r.diff)}</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- رسم 5: مخطط الرصاصة (Bullet Chart) -->
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">5</span>
+                <i class="fa-solid fa-bullseye"></i> <span>مخطط الرصاصة الرقابي لاستهلاك سقف الميزانية (Bullet Chart)</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                ${wbsRows.slice(0, 5).map(r => {
+                  const ratio = r.estAmt > 0 ? Math.min(axisMax, (r.actAmt / r.estAmt) * 100) : 0;
+                  const targetPos = (100 / axisMax) * 100;
+                  return `
+                    <div style="display: grid; grid-template-columns: 80px 1fr 45px; gap: 8px; align-items: center; font-size: 0.72rem;">
+                      <span style="color: #cbd5e1;">${r.name}</span>
+                      <div style="height: 16px; background: rgba(0,0,0,0.3); border-radius: 3px; position: relative; overflow: visible;">
+                        <div style="width: ${(ratio / axisMax) * 100}%; height: 100%; background: #0ea5e9; border-radius: 3px;"></div>
+                        <div style="position: absolute; left: ${targetPos}%; top: -2px; bottom: -2px; width: 2px; background: #fbbf24; z-index: 2;" title="سقف 100%"></div>
+                      </div>
+                      <span style="direction: ltr; font-weight: 850; color: #f8fafc; font-size: 0.68rem;">${Math.round(ratio)}%</span>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+              <p style="font-size: 0.68rem; color: #94a3b8; margin: 6px 0 0;">الخط الذهبي عند 100% هو السقف المعتمد، والشريط الأزرق هو المنصرف الحقيقي.</p>
+            </div>
+
+            <!-- شبكة الرسوم التفاعلية المزدوجة (6 و 7) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px;">
+              <!-- رسم 6: مسار الصرف التراكمي S-Curve -->
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">6</span>
+                  <i class="fa-solid fa-chart-line"></i> <span>مسار الصرف التراكمي للمشروع (S-Curve)</span>
+                </div>
+                <div style="height: 220px; position: relative;"><canvas id="projChartLineSCurve"></canvas></div>
+              </div>
+
+              <!-- رسم 7: مساهمات أفراد العائلة في المشروع -->
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+                <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">7</span>
+                  <i class="fa-solid fa-users"></i> <span>مساهمات أفراد العائلة في المشروع (Members)</span>
+                </div>
+                <div style="height: 220px; position: relative;"><canvas id="projChartBarMembers"></canvas></div>
+              </div>
+            </div>
+
+            <!-- رسم 8: خريطة التوزيع النسبي والحصص التراكمية (100% Stacked Bar) -->
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
+              <div style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                <span style="background: rgba(56,189,248,0.2); padding: 1px 6px; border-radius: 4px;">8</span>
+                <i class="fa-solid fa-layer-group"></i> <span>التوزيع النسبي لحصص بنود المشروع التراكمية (100% Stacked)</span>
+              </div>
+              <div style="height: 28px; background: rgba(0,0,0,0.3); border-radius: 6px; overflow: hidden; display: flex; direction: ltr; margin: 8px 0;">
+                ${wbsRows.map((r, i) => {
+                  const colors = ['#38bdf8', '#a855f7', '#fbbf24', '#34d399', '#f43f5e', '#ec4899', '#6366f1', '#14b8a6'];
+                  const share = approvedBudget > 0 ? (r.estAmt / approvedBudget) * 100 : (100 / Math.max(1, wbsRows.length));
+                  return `<div style="width: ${share}%; height: 100%; background: ${colors[i % colors.length]};" title="${r.name}: ${Math.round(share)}%"></div>`;
+                }).join('')}
+              </div>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; font-size: 0.68rem; color: #cbd5e1; margin-top: 6px;">
+                ${wbsRows.slice(0, 5).map((r, i) => {
+                  const colors = ['#38bdf8', '#a855f7', '#fbbf24', '#34d399', '#f43f5e', '#ec4899', '#6366f1', '#14b8a6'];
+                  const share = approvedBudget > 0 ? Math.round((r.estAmt / approvedBudget) * 100) : 0;
+                  return `<span><i style="display:inline-block;width:8px;height:8px;background:${colors[i % colors.length]};border-radius:2px;margin-left:4px;"></i>${r.name} (${share}%)</span>`;
+                }).join('')}
+              </div>
             </div>
           </div>
         `;
