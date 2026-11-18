@@ -39,10 +39,10 @@ jobs:
           APP_URL: http://127.0.0.1:8765/
         run: |
           mkdir -p screenshots
+          node scripts/test-home-font-responsiveness.cjs
           node scripts/test-home-short-viewport.cjs
           node scripts/test-home-reference-one.cjs
           node scripts/test-home-layouts.cjs
-          node scripts/test-home-font-responsiveness.cjs
       - name: Store reference screen shots
         if: always()
         uses: actions/upload-artifact@v4
