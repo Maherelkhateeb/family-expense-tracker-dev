@@ -19080,72 +19080,123 @@ body.light-theme .market-buy-price {
              2. لوحة موازنات المشاريع المستقلة (panelProjectBudgets)
              ========================================================== -->
         <div id="panelProjectBudgets" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
-          <!-- شريط التبديل الداخلي للمشاريع: [مقارنة ومتابعة المشروع] و [أرشيف المشاريع] -->
+          <!-- شريط التبديل الداخلي للمشاريع: [المقارنات] و [أرشيف المشاريع] -->
           <div id="projectInnerTabStrip" style="display:flex;gap:6px;background:rgba(15,23,42,0.75);
-            padding:5px;border-radius:11px;border:1px solid rgba(56,189,248,0.2);margin-bottom:12px;">
+            padding:5px;border-radius:11px;border:1px solid rgba(56,189,248,0.25);margin-bottom:12px;">
             <button type="button" id="btnProjectInnerCompare"
               onclick="switchProjectView('compare')"
-              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.76rem;font-weight:900;
+              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.78rem;font-weight:900;
                 background:linear-gradient(135deg,#0ea5e9,#2563eb);color:#fff;border:none;cursor:pointer;
-                display:flex;align-items:center;justify-content:center;gap:5px;
+                display:flex;align-items:center;justify-content:center;gap:6px;
                 box-shadow:0 2px 8px rgba(14,165,233,0.4);">
-              <i class="fa-solid fa-scale-balanced"></i> <span>المقارنات بين مصروفات الفعلية والتقديرية للمشاريع</span>
+              <i class="fa-solid fa-scale-balanced"></i> <span>المقارنات</span>
             </button>
             <button type="button" id="btnProjectInnerArchive"
               onclick="switchProjectView('archive')"
-              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.76rem;font-weight:900;
+              style="flex:1;padding:9px 6px;border-radius:8px;font-size:0.78rem;font-weight:900;
                 background:transparent;color:#94a3b8;border:none;cursor:pointer;
-                display:flex;align-items:center;justify-content:center;gap:5px;">
+                display:flex;align-items:center;justify-content:center;gap:6px;">
               <i class="fa-solid fa-box-archive" style="color:#a855f7;"></i> <span>أرشيف المشاريع</span>
             </button>
           </div>
 
           <!-- حاوية مقارنة ومتابعة المشروع -->
           <div id="panelProjectCompareView" style="display:block;">
-            <!-- ترويسة اختيار المشروع والفترة الزمنية -->
-            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
-                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 220px;">
-                  <span style="font-size: 0.76rem; font-weight: 850; color: #38bdf8; white-space: nowrap;"><i class="fa-solid fa-folder-tree"></i> المشروع النشط:</span>
-                  <select id="cmpProjSelect" onchange="ProjectCompareEngine.onProjectChange(this.value)" style="flex: 1; height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); color: #f8fafc; font-size: 0.82rem; font-weight: 850; padding: 0 8px; outline: none;"></select>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                  <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-plus"></i> موازنة مشروع جديد
-                  </button>
-                  <button type="button" onclick="closeAndArchiveCurrentProject()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="إغلاق هذا المشروع ونقله للأرشيف">
-                    <i class="fa-solid fa-box-archive"></i> إغلاق وأرشفة
-                  </button>
-                </div>
+            <!-- ترويسة اختيار المشروع والإجراءات السريعة -->
+            <div style="background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px;">
+                <span style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; white-space: nowrap;"><i class="fa-solid fa-folder-tree"></i> المشروع النشط:</span>
+                <select id="cmpProjSelect" onchange="ProjectCompareEngine.onProjectChange(this.value)" style="flex: 1; height: 36px; border-radius: 8px; background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); color: #f8fafc; font-size: 0.82rem; font-weight: 850; padding: 0 8px; outline: none;"></select>
               </div>
-
-              <!-- فلتر الفترة الزمنية للمشروع -->
-              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                <span style="font-size: 0.72rem; font-weight: 800; color: #a78bfa;"><i class="fa-solid fa-clock"></i> فترة المتابعة:</span>
-                <select id="cmpProjActualPeriod" onchange="ProjectCompareEngine.onActualPeriodChange(this.value)" style="height: 32px; border-radius: 7px; background: rgba(30, 41, 59, 0.8); border: 1px solid rgba(168, 85, 247, 0.4); color: #c084fc; font-size: 0.78rem; font-weight: 850; padding: 0 8px;">
-                  <option value="all" selected>إجمالي عمر المشروع (الافتراضي)</option>
-                  <option value="today">اليوم</option>
-                  <option value="thisWeek">هذا الأسبوع</option>
-                  <option value="thisMonth">هذا الشهر</option>
-                  <option value="lastMonth">الشهر السابق</option>
-                  <option value="thisYear">السنة الحالية</option>
-                  <option value="custom">منتقى التواريخ (مخصص)</option>
-                </select>
-                <div id="cmpProjActualCustomRange" style="display: none; align-items:center; gap: 6px; margin-top:6px;">
-                  <button type="button" onclick="openDateRangePickerForPair('cmpProjActualFrom','cmpProjActualTo')"
-                    style="flex:1;height:32px;font-size:0.75rem;font-weight:850;border-radius:7px;
-                      border:1px solid rgba(168,85,247,0.5);background:rgba(168,85,247,0.15);color:#c084fc;
-                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpProjActualCustomRangeLabel">اختر نطاق تواريخ المشروع من التقويم</span>
-                  </button>
-                  <input type="date" id="cmpProjActualFrom" style="display:none;" onchange="ProjectCompareEngine.render()">
-                  <input type="date" id="cmpProjActualTo" style="display:none;" onchange="ProjectCompareEngine.render()">
-                </div>
+              <div style="display: flex; gap: 6px;">
+                <button type="button" onclick="openNewBudgetPlanModal()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-plus"></i> موازنة مشروع جديد
+                </button>
+                <button type="button" onclick="closeAndArchiveCurrentProject()" style="height: 32px; padding: 0 10px; border-radius: 8px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 0.72rem; font-weight: 850; cursor: pointer; display: flex; align-items: center; gap: 4px;" title="إغلاق هذا المشروع ونقله للأرشيف">
+                  <i class="fa-solid fa-box-archive"></i> إغلاق وأرشفة
+                </button>
               </div>
             </div>
 
-            <!-- المحتوى التفاعلي للمشروع (المؤشرات والجدول والرسوم البيانية) -->
-            <div id="projectCompareMainContent"></div>
+            <!-- بيئة عمل مقارنة المشروع (المطابقة لترتيب وهيكل موازنة الشهر) -->
+            <section id="panelProjBudgetCompare" aria-labelledby="cmpProjPeriodChartTitle">
+              <div id="cmpProjPeriodChart" class="cmp-workspace">
+                <header class="cmp-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <h3 id="cmpProjPeriodChartTitle" style="margin: 0; font-size: 0.92rem; font-weight: 850; color: #f8fafc;">مقارنة مصروفات المشروع حسب البند</h3>
+                </header>
+
+                <!-- صندوق الفلاتر الثنائي: الفترة الأساسية / المقارنة مع -->
+                <div id="cmpProjPeriodsFilterBox" class="cmp-period-filters">
+                  <div>
+                    <label for="cmpProjActualPeriod">الفترة الأساسية</label>
+                    <select id="cmpProjActualPeriod" aria-describedby="cmpProjPrimaryDates" onchange="ProjectCompareEngine.onActualPeriodChange(this.value)">
+                      <option value="all" selected>إجمالي عمر المشروع (الافتراضي)</option>
+                      <option value="thisMonth">الشهر الحالي حتى اليوم</option>
+                      <option value="lastMonth">الشهر السابق كاملًا</option>
+                      <option value="thisWeek">الأسبوع الحالي حتى اليوم</option>
+                      <option value="today">اليوم</option>
+                      <option value="thisYear">السنة الحالية حتى اليوم</option>
+                      <option value="custom">نطاق مخصص</option>
+                    </select>
+                    <p id="cmpProjPrimaryDates" class="cmp-range-preview cmp-preview-actual" aria-live="polite"></p>
+                    <div id="cmpProjActualCustomRange" class="cmp-month-custom-range" hidden>
+                      <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpProjActualFrom','cmpProjActualTo')">
+                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpProjActualCustomRangeLabel">نطاق التواريخ</span>
+                      </button>
+                      <input type="date" id="cmpProjActualFrom" hidden onchange="ProjectCompareEngine.render()">
+                      <input type="date" id="cmpProjActualTo" hidden onchange="ProjectCompareEngine.render()">
+                    </div>
+                  </div>
+                  <div>
+                    <label for="cmpProjPeriodReference">المقارنة مع</label>
+                    <select id="cmpProjPeriodReference" aria-describedby="cmpProjReferenceDates" onchange="ProjectCompareEngine.onReferenceChange(this.value)">
+                      <option value="plan" selected>الموازنة المعتمدة للمشروع</option>
+                      <option value="previous">الفترة السابقة تلقائيًا</option>
+                      <option value="custom">فترة مرجعية مخصصة</option>
+                    </select>
+                    <p id="cmpProjReferenceDates" class="cmp-range-preview cmp-preview-reference" aria-live="polite"></p>
+                    <div id="cmpProjPeriodCustom" class="cmp-month-custom-range" hidden>
+                      <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpProjPeriodFrom','cmpProjPeriodTo')">
+                        <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpProjPeriodCustomRangeLabel">نطاق المرجع</span>
+                      </button>
+                      <input type="date" id="cmpProjPeriodFrom" hidden onchange="ProjectCompareEngine.render()">
+                      <input type="date" id="cmpProjPeriodTo" hidden onchange="ProjectCompareEngine.render()">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 كروت موحدة للملخص المالي -->
+                <div id="cmpProjSummary" aria-live="polite"></div>
+
+                <!-- شريط طرق العرض والأدوات والترتيب -->
+                <div class="cmp-view-tools" id="cmpProjViewTools">
+                  <div class="cmp-period-modes" id="cmpProjModes" role="group" aria-label="شكل عرض مقارنة المشروع">
+                    <button type="button" data-proj-mode="table" class="active" aria-pressed="true" onclick="ProjectCompareEngine.switchMode('table')">جدول البنود</button>
+                    <button type="button" data-proj-mode="paired" aria-pressed="false" onclick="ProjectCompareEngine.switchMode('paired')">الأعمدة</button>
+                    <button type="button" data-proj-mode="change" aria-pressed="false" onclick="ProjectCompareEngine.switchMode('change')">التغيّر</button>
+                    <button type="button" data-proj-mode="charts" aria-pressed="false" onclick="ProjectCompareEngine.switchMode('charts')">الرسوم (4)</button>
+                  </div>
+                  <label><span>ترتيب</span>
+                    <select id="cmpProjSort" aria-label="ترتيب بنود المشروع" onchange="ProjectCompareEngine.onSortChange(this.value)">
+                      <option value="spend" selected>أكبر مصروف</option>
+                      <option value="delta">أكبر فرق</option>
+                      <option value="name">اسم البند</option>
+                    </select>
+                  </label>
+                </div>
+
+                <!-- المحتوى التفاعلي للمشروع (الجدول / الأعمدة / التغير / الرسوم) -->
+                <div id="projectCompareMainContent"></div>
+
+                <!-- صندوق الاستنتاجات والمؤشرات الرقابية للمشروع (قابل للطي) -->
+                <details id="cmpProjInsightDetails" style="margin: 0; border: 1px solid var(--uc-border, rgba(255,255,255,0.1)); padding: 9px; border-radius: 10px;" open>
+                  <summary style="cursor: pointer; font-weight: 850; font-size: 0.82rem; color: #38bdf8; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span>مؤشرات واستنتاجات المشروع الرقابية (EVM & Insights)</span>
+                  </summary>
+                  <div id="cmpProjExtraInsightGrid" style="padding-top: 8px;"></div>
+                </details>
+              </div>
+            </section>
           </div>
 
           <!-- حاوية أرشيف المشاريع -->
@@ -43183,8 +43234,8 @@ body.light-theme #settingsModal .antigravity-confirm-btn {
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611181530">
-<script defer src="./home-layouts.js?v=202611181530"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181545">
+<script defer src="./home-layouts.js?v=202611181545"></script>
 <script src="./operations-return-hub.js?v=202611181530"></script>
 <script src="./comparison-deeplink.js?v=202611181530"></script>
 </body>
