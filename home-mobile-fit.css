@@ -328,7 +328,10 @@ body:has(#viewExpenses.home-alternative-design.active #homeInterfaces .home-desi
   border-radius: 8px !important;
   background: #fff !important;
   color: #0b4f7a !important;
-  font: 700 12px/1.2 inherit !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
   direction: rtl !important;
   cursor: pointer !important;
 }
