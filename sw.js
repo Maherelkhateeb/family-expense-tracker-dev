@@ -1,19 +1,29 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-tracker-v5.3.89';
+const CACHE_NAME = 'family-expense-tracker-v5.4.17-dial-left';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './home-layouts.css?v=202611181100',
+  './home-layouts.js?v=202611181100',
+  './operations-return-hub.js?v=202611171820',
+  './comparison-deeplink.js?v=20261117-audit-mobile-v1',
   './manifest.json',
   './version.json',
   './family-alerts.js?v=202611161015',
-  './budget-audit-engine.js?v=202611161015',
+  './budget-audit-engine.js?v=20261117-compare-unified-v3',
+  './family-budget-comparison.js?v=20261117-v5',
+  './comparison-unified.css?v=20261117-audit-mobile-v1',
   './family-alerts.css?v=202611161015',
-  './ledger-task-layout.css?v=202611161015',
+  './ledger-task-layout.css?v=202611171450',
   './operation-filters.js?v=202611161015',
   './market-data.js?v=202611161015',
   './gold-market.css?v=202611161015',
-  './appearance-compact.css?v=202611161015',
-  './appearance-compact.js?v=202611161015',
+  './appearance-compact.css?v=202611171450',
+  './appearance-compact.js?v=202611171450',
+  './voice-assistant-engine.js?v=202611170915',
+  './voice-assistant-engine.css?v=202611170915',
+  './assets/home-reference-one.webp',
+  './assets/home-reference-one-controls.webp',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/favicon.png',
@@ -69,6 +79,21 @@ self.addEventListener('fetch', (e) => {
         if (res && res.status === 200) {
           const copy = res.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(e.request, copy));
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // 3. Always revalidate app JS/CSS to avoid silently retaining old appearance
+  // and voice logic under an unchanged URL. Cached assets remain available offline.
+  if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css')) {
+    e.respondWith(
+      fetch(e.request, { cache: 'no-store' }).then(res => {
+        if (res && res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, copy)).catch(() => {});
         }
         return res;
       }).catch(() => caches.match(e.request))

@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v5.3.89';
-    var APP_BUILD_ID = 202611161615;
+    var APP_VERSION = 'v5.4.17';
+    var APP_BUILD_ID = 202611181100;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -11837,9 +11837,7 @@ body.light-theme .cat-budget-progress-track {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('./sw.js').then(function(reg) {
           console.log('[SW] PWA ServiceWorker active with scope:', reg.scope);
-          try {
-            reg.update();
-          } catch(e) {}
+          reg.update().catch(err => console.warn('[SW] Update check failed:', err));
         }).catch(function(err) {
           console.warn('[SW] Registration failed:', err);
         });
@@ -16212,12 +16210,14 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
     <!-- Accessible compact settings UI, independent of financial data scripts -->
   <script src="./market-data.js?v=202611151830"></script>
   <link rel="stylesheet" href="./gold-market.css?v=20261114-calc-polish3">
-  <link rel="stylesheet" href="./appearance-compact.css?v=20261114-antigravity-9matrix">
-  <script src="./appearance-compact.js?v=20261114-antigravity-9matrix" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=20261114-task-compact">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611171450">
+  <script src="./appearance-compact.js?v=202611171450" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611171450">
   <script src="./operation-filters.js?v=20261114"></script>
   <script src="./family-alerts.js?v=20261114-checkbox-box"></script>
-  <script src="./budget-audit-engine.js?v=202611161600"></script>
+  <script src="./family-budget-comparison.js?v=20261117-v5"></script>
+  <script src="./budget-audit-engine.js?v=20261117-compare-unified-v3"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=20261117-unified-v3">
   <link rel="stylesheet" href="./family-alerts.css?v=20261114-checkbox-box">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
@@ -16760,20 +16760,6 @@ body.light-theme .analytics-date-range-trigger {
       color: #334155 !important;
     }
 
-    /* ضبط أزرار العرض المجمع في شريط العمليات لمنع أي تداخل نهائياً */
-    #appFrame #viewOperations .ops-view-mode-bar {
-      display: grid !important;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-      gap: 6px !important;
-      margin: 4px 0 8px !important;
-      width: 100% !important;
-    }
-    #appFrame #viewOperations .ops-search-row {
-      display: flex !important;
-      flex-wrap: nowrap !important;
-      align-items: center !important;
-      gap: 4px !important;
-    }
 </style>
 <style id="summaryHierarchicalStyles">
 
@@ -16912,7 +16898,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611161600">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611170915">
 <style>
 /* =========================================================================
    V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
@@ -17020,57 +17006,6 @@ body.light-theme[data-app-theme="slate"], html[data-app-theme="slate"] body.ligh
    V5.3.84: Unified Layout Compact Optimization & Light Theme Contrast Fixes
    ========================================================================= */
 
-/* 1. Eliminate Black/Dark Chart Cards in Light Theme */
-body.light-theme .cmp-chart-card,
-body.light-theme [id^="cmpChart"].cmp-chart-card,
-html[data-color-mode="light"] body .cmp-chart-card,
-html[data-app-theme="facebook"] body.light-theme .cmp-chart-card,
-html[data-card-style="facebook"] body .cmp-chart-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
-}
-
-body.light-theme .cmp-chart-card .cmp-chart-card-title,
-html[data-color-mode="light"] body .cmp-chart-card .cmp-chart-card-title {
-  color: #0f172a !important;
-}
-
-/* 2. Light Theme for Periods Filter Box & Selects */
-body.light-theme #cmpPeriodsFilterBox,
-html[data-color-mode="light"] body #cmpPeriodsFilterBox {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-}
-
-body.light-theme #cmpActualPeriod,
-html[data-color-mode="light"] body #cmpActualPeriod {
-  background: #f0fdf4 !important;
-  border-color: #86efac !important;
-  color: #15803d !important;
-}
-
-body.light-theme #cmpEstimPeriod,
-html[data-color-mode="light"] body #cmpEstimPeriod {
-  background: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #b45309 !important;
-}
-
-/* 3. Light Theme for 3 Summary KPI Cards */
-body.light-theme #cmpKpiCardsRow > div,
-html[data-color-mode="light"] body #cmpKpiCardsRow > div {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
-}
-
-body.light-theme #cmpKpiDiffLabel,
-html[data-color-mode="light"] body #cmpKpiDiffLabel {
-  color: #475569 !important;
-}
-
 /* 4. Indicators Chart Switcher Strip Light Mode */
 body.light-theme .chart-format-switcher-strip,
 html[data-color-mode="light"] body .chart-format-switcher-strip {
@@ -17165,25 +17100,6 @@ body.light-theme .market-buy-price {
 /* =========================================================================
    V5.3.87: Compact Cockpit Strip at the Bottom & Ultra-Crisp Mobile Formatting
    ========================================================================= */
-#cmpAdvancedAnalyticsCockpit {
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: 6px !important;
-  margin-top: 14px !important;
-  margin-bottom: 8px !important;
-  padding: 4px 0 !important;
-}
-
-#cmpAdvancedAnalyticsCockpit .budget-lux-card {
-  padding: 6px 5px !important;
-  border-radius: 9px !important;
-  min-height: 60px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  text-align: center !important;
-}
-
 .cockpit-card-head {
   font-size: 0.65rem !important;
   font-weight: 850 !important;
@@ -17504,17 +17420,17 @@ body.light-theme .market-buy-price {
             <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.92rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
-          <!-- زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0;">
-            <i class="fa-solid fa-right-left"></i>
-            <span id="activeCurrencyText">EGP</span>
-          </div>
-
-          <!-- 3. أقصى اليسار (Far Left in RTL): زر الملخص الشامل السريع -->
+          <!-- 3. زر الملخص الشامل السريع -->
           <button type="button" class="tool-pill-action summary-pill" id="btnOpenSummaryQuick" onclick="toggleSummaryDrawer()" title="عرض ملخص العمليات الشامل" style="height: 38px; padding: 0 11px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.12)); color: #38bdf8; flex-shrink: 0; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
             <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i>
             <span>الملخص</span>
           </button>
+
+          <!-- 4. أقصى يسار الشاشة (Far Left in RTL): زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
+          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0; margin-inline-start: auto;">
+            <i class="fa-solid fa-right-left"></i>
+            <span id="activeCurrencyText">EGP</span>
+          </div>
 
         </div> <!-- إغلاق executive-quick-tools-strip -->
 
@@ -17530,15 +17446,18 @@ body.light-theme .market-buy-price {
            الصفحة 2: العمليات والأرشيف (Page 2: Operations & Audit Archive)
            ================================================================ -->
       <div class="page-view" id="viewOperations" style="display: none;">
-        <div class="segmented-tabs-bar ops-section-tabs" style="display: flex; gap: 4px; margin: 4px 6px 10px; background: rgba(15, 23, 42, 0.7); padding: 4px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
-          <button class="segmented-tab-btn active" id="btnOpsSubRegistered" onclick="switchOperationsSubTab('registered')" style="flex: 1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-receipt"></i> <span>العمليات المسجلة</span>
+        <div id="opsSectionTabs" class="segmented-tabs-bar ops-section-tabs" role="group" aria-label="أقسام العمليات">
+          <button type="button" class="segmented-tab-btn active" id="btnOpsSubRegistered" onclick="switchOperationsSubTab('registered')" title="العمليات المسجلة">
+            <i class="fa-solid fa-receipt" aria-hidden="true"></i><span>المسجلة</span>
           </button>
-          <button class="segmented-tab-btn" id="btnOpsSubAnalytics" onclick="switchOperationsSubTab('analytics')" style="flex: 1.1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i> <span>تحليل المصروفات الفعلية</span>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubAnalytics" onclick="switchOperationsSubTab('analytics')" title="تحليل المصروفات الفعلية">
+            <i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>التحليل</span>
           </button>
-          <button class="segmented-tab-btn" id="btnOpsSubArchive" onclick="switchOperationsSubTab('archive')" style="flex: 1; padding: 8px 6px; font-size: 0.76rem; font-weight: 850; border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-clock-rotate-left"></i> <span>الأرشيف وسجل النشاط</span>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubArchive" onclick="switchOperationsSubTab('archive')" title="الأرشيف وسجل النشاط">
+            <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i><span>الأرشيف</span>
+          </button>
+          <button type="button" class="segmented-tab-btn" id="btnOpsSubSample" onclick="switchOperationsSubTab('sample')" title="العمليات التجريبية">
+            <i class="fa-solid fa-flask" aria-hidden="true"></i><span>تجريبية</span>
           </button>
         </div>
         <div id="opsSubViewRegistered">
@@ -17553,20 +17472,20 @@ body.light-theme .market-buy-price {
               <i class="fa-solid fa-arrow-turn-up" style="transform: rotate(-90deg);"></i> رجوع للمؤشرات
             </button>
           </div>
-          <div class="ops-search-row" style="display: flex !important; align-items: center; gap: 4px; padding: 2px 0; margin-bottom: 6px;">
-              <button type="button" class="btn-export-tool clear-btn" id="btnOpsClearFilters" onclick="resetOperationsFilters()" title="مسح الفلاتر" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;">
-                <i class="fa-solid fa-filter-circle-xmark"></i> مسح
+            <div class="ops-search-row">
+              <label class="ops-search-field">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()">
+              </label>
+              <span id="opsResultCount" role="status">— عملية</span>
+              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" aria-controls="opsFiltersCollapsibleBody" aria-expanded="false">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i><span id="lblToggleOpsFilters">الفلاتر</span><i id="iconToggleOpsFilters" class="fa-solid fa-chevron-down" aria-hidden="true"></i>
               </button>
-              <span id="opsResultCount" role="status" style="white-space: nowrap; font-size: 0.70rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 4px 6px; height: 32px; display: inline-flex; align-items: center; justify-content: center;">
-                -- عملية
-              </span>
-              <!-- زر طي / إظهار الفلاتر الإضافية لتوفير مساحة الشاشة (مطوي افتراضياً) -->
-              <button type="button" class="btn-export-tool" id="btnToggleOpsFilters" onclick="toggleOpsFiltersCollapse()" title="طي أو إظهار خيارات الفلترة المتقدمة" style="white-space: nowrap; font-size: 0.72rem; padding: 0 8px; height: 32px; color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.15); background: rgba(255, 255, 255, 0.06); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-weight: 800;">
-                <i class="fa-solid fa-sliders"></i> <span id="lblToggleOpsFilters">خيارات الفلترة</span> <i id="iconToggleOpsFilters" class="fa-solid fa-chevron-down" style="font-size: 0.65rem; transition: transform 0.25s ease;"></i>
+              <button type="button" class="btn-export-tool clear-btn" id="btnOpsClearFilters" onclick="resetOperationsFilters()" title="مسح الفلاتر" aria-label="مسح الفلاتر">
+                <i class="fa-solid fa-filter-circle-xmark" aria-hidden="true"></i><span>مسح</span>
               </button>
-              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> PDF</button>
-              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i> إكسيل</button>
-              <label style="flex: 1; min-width: 0; margin: 0; position: relative;"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input type="search" id="opsSearchInput" aria-label="بحث في العمليات" placeholder="ابحث في العمليات…" oninput="filterOperationsList()"></label>
+              <button type="button" class="btn-export-tool pdf-btn" id="btnOpsExportPdf" onclick="exportPdf()" title="طباعة PDF"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i><span>PDF</span></button>
+              <button type="button" class="btn-export-tool excel-btn" id="btnOpsExportExcel" onclick="exportExcel()" title="تصدير إكسيل"><i class="fa-solid fa-file-excel" aria-hidden="true"></i><span>إكسيل</span></button>
             </div>
             <!-- بداية الحاوية القابلة للطي لصفوف الفلترة المتقدمة (مطوية في الوضع الافتراضي) -->
             <div id="opsFiltersCollapsibleBody" style="display: none; transition: all 0.25s ease;">
@@ -17660,26 +17579,41 @@ body.light-theme .market-buy-price {
                 <i class="fa-solid fa-calendar-check"></i> مخصص
               </button>
             </div>
-        <div class="ops-view-mode-bar" id="opsViewModeToggleBar">
-            <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" onclick="setOperationsViewMode('daily')">
-              <i class="fa-solid fa-calendar-day"></i>
-              <span>حسب اليوم</span>
-            </button>
-            <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" onclick="setOperationsViewMode('flat')">
-              <i class="fa-solid fa-layer-group"></i>
-              <span>مجمع</span>
-            </button>
-            <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" onclick="setOperationsViewMode('project')">
-              <i class="fa-solid fa-folder-tree"></i>
-              <span>حسب المشروع</span>
-            </button>
-          </div>
             </div> <!-- نهاية opsFiltersCollapsibleBody القابل للطي -->
+            <div class="ops-view-mode-bar" id="opsViewModeToggleBar" role="group" aria-label="طريقة عرض العمليات">
+              <button type="button" class="ops-view-mode-btn active" id="btnOpsModeDaily" data-view-mode="daily" aria-pressed="true" onclick="setOperationsViewMode('daily')">
+                <i class="fa-solid fa-calendar-day" aria-hidden="true"></i><span>حسب اليوم</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeFlat" data-view-mode="flat" aria-pressed="false" onclick="setOperationsViewMode('flat')">
+                <i class="fa-solid fa-layer-group" aria-hidden="true"></i><span>مجمع</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeProject" data-view-mode="project" aria-pressed="false" onclick="setOperationsViewMode('project')">
+                <i class="fa-solid fa-folder-tree" aria-hidden="true"></i><span>حسب المشروع</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeTimeline" data-view-mode="timeline" aria-pressed="false" onclick="setOperationsViewMode('timeline')">
+                <i class="fa-solid fa-list-ol" aria-hidden="true"></i><span>تسلسل يومي للمصروفات</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeCalendar" data-view-mode="calendar" aria-pressed="false" onclick="setOperationsViewMode('calendar')">
+                <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span>تقويم المصروفات</span>
+              </button>
+              <button type="button" class="ops-view-mode-btn" id="btnOpsModeMonthTrend" data-view-mode="month-trend" aria-pressed="false" onclick="setOperationsViewMode('month-trend')">
+                <i class="fa-solid fa-chart-line" aria-hidden="true"></i><span>المسار الشهرى</span>
+              </button>
+            </div>
           </div>
           <div id="txOperationsList" class="ops-feed-container"></div>
         </div>
 
         <!-- الجزء الثاني: تحليل المصروفات والشارتات الفعلية (منقول من المؤشرات) -->
+        <section id="opsSubViewSample" hidden aria-labelledby="sampleOperationsTitle">
+          <div class="sample-operations-header">
+            <h3 id="sampleOperationsTitle">العمليات التجريبية للموازنات</h3>
+            <button type="button" id="sampleOperationsBack" onclick="BudgetCompareEngine.returnFromSampleOperations()" hidden>العودة إلى المقارنة</button>
+          </div>
+          <button type="button" id="sampleOperationsShowAll" onclick="BudgetCompareEngine.showAllSampleOperations()" hidden>عرض جميع العمليات التجريبية</button>
+          <div id="sampleOperationsList" aria-live="polite"></div>
+          <button type="button" id="sampleOperationsMore" onclick="BudgetCompareEngine.showMoreSampleOperations()" hidden>عرض عمليات أكثر</button>
+        </section>
         <div id="opsSubViewAnalytics" style="display: none;">
           <!-- 2. لوحة التحكم بالفترة الزمنية للمؤشرات: واضحة وثابتة لكافة الأقسام -->
         <div class="analytics-control-panel" style="position: sticky; top: 0px; z-index: 60; margin: 0 8px 10px; border-radius: 14px; padding: 8px 10px;">
@@ -17953,7 +17887,6 @@ body.light-theme .market-buy-price {
             <button class="btn-export-tool" onclick="filterArchiveType('transfer', this)">تحويلات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool" onclick="filterArchiveType('delete', this)">حذف</button>
-            <button class="btn-export-tool" onclick="filterArchiveType('notes', this)"><i class="fa-solid fa-comment-dots"></i> ملاحظات</button>
             <button class="btn-export-tool excel-btn" onclick="exportActivityLogExcel()" style="margin-right: auto;">
               <i class="fa-solid fa-file-excel"></i> تصدير الأرشيف
             </button>
@@ -18212,7 +18145,7 @@ body.light-theme .market-buy-price {
               <span id="reqSummaryCount" style="font-size: 0.70rem; padding: 2px 7px; border-radius: 7px; background: rgba(236, 72, 153, 0.2); border: 1px solid rgba(236, 72, 153, 0.4); color: #f472b6;">0 طلب</span>
             </div>
 
-            <div id="requestsListContainer" style="max-height: 65vh; overflow-y: auto;"></div>
+            <div id="requestsListContainer" class="request-cards"></div>
           </div>
 
         </div>
@@ -18680,33 +18613,24 @@ body.light-theme .market-buy-price {
                (Interactive Collapsible Commitments & Due Dates Calendar)
                ======================================================== -->
           <div id="commitmentsCalendarSection" class="commitments-calendar-box" style="background: var(--bg-card, rgba(15, 23, 42, 0.90)); border: 1.2px solid var(--border, rgba(56, 189, 248, 0.25)); border-radius: 14px; padding: 10px 12px; margin-bottom: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12);">
-            <!-- شريط هيدر التقويم: العنوان وزر الطي/البسط وأدوات التنقل -->
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-              <div style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleCommitmentsCalendarCollapse()">
-                <div style="width: 30px; height: 30px; border-radius: 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; display: flex; align-items: center; justify-content: center; font-size: 0.88rem;">
-                  <i class="fa-solid fa-calendar-days"></i>
-                </div>
-                <div>
-                  <div style="font-size: 0.82rem; font-weight: 900; color: var(--text-main, #f8fafc); display: flex; align-items: center; gap: 6px;">
-                    <span>تقويم الاستحقاقات الشهرية</span>
-                    <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" style="font-size: 0.68rem; color: #38bdf8; transition: transform 0.2s;"></i>
-                  </div>
-                  <div style="font-size: 0.64rem; color: #94a3b8;" id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق (انقر للتوسيع)</div>
-                </div>
-              </div>
-
-              <!-- أدوات تصفح الشهر وزر تصفية الكل -->
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display: none; height: 26px; padding: 0 8px; border-radius: 6px; font-size: 0.66rem; font-weight: 850; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; cursor: pointer; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
-                </button>
-                <div style="display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                  <button type="button" onclick="navigateCommitmentsCalendar(-1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-right"></i></button>
-                  <span id="commitmentsCalendarMonthTitle" style="font-size: 0.74rem; font-weight: 900; color: var(--text-main, #f8fafc); min-width: 82px; text-align: center;">نوفمبر 2026</span>
-                  <button type="button" onclick="navigateCommitmentsCalendar(1)" style="background: transparent; border: none; color: #cbd5e1; cursor: pointer; font-size: 0.72rem; padding: 2px 4px;"><i class="fa-solid fa-chevron-left"></i></button>
-                </div>
+            <div class="commitments-calendar-header">
+              <button type="button" id="btnCommitmentsCalendarToggle" class="commitments-calendar-toggle"
+                aria-controls="commitmentsCalendarCollapseBody" aria-expanded="false" onclick="toggleCommitmentsCalendarCollapse()">
+                <i class="fa-solid fa-calendar-days commitments-calendar-icon" aria-hidden="true"></i>
+                <span>
+                  <strong>تقويم الاستحقاقات الشهرية <i id="iconCommitmentsCalendarToggle" class="fa-solid fa-chevron-down" aria-hidden="true"></i></strong>
+                  <small id="txtCommitmentsCalendarSub">عرض الفواتير والديون بحسب موعد الاستحقاق</small>
+                </span>
+              </button>
+              <div class="commitments-calendar-month" role="group" aria-label="التنقّل بين الشهور">
+                <button type="button" onclick="navigateCommitmentsCalendar(-1)" aria-label="الشهر السابق"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></button>
+                <span id="commitmentsCalendarMonthTitle" aria-live="polite"></span>
+                <button type="button" onclick="navigateCommitmentsCalendar(1)" aria-label="الشهر التالي"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></button>
               </div>
             </div>
+            <button type="button" id="btnCommitmentsClearDateFilter" onclick="clearCommitmentDateFilter()" style="display:none;height:26px;padding:0 8px;border-radius:6px;font-size:.66rem;font-weight:850;background:rgba(244,63,94,.15);border:1px solid rgba(244,63,94,.35);color:#f43f5e;cursor:pointer;align-items:center;gap:4px">
+              <i class="fa-solid fa-xmark"></i> <span>عرض كافة التواريخ</span>
+            </button>
 
             <!-- محتوى التقويم القابل للطي (مطوي في الوضع الافتراضي) -->
             <div id="commitmentsCalendarCollapseBody" style="display: none; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
@@ -18888,7 +18812,7 @@ body.light-theme .market-buy-price {
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
           <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات والرقابة</span>
+            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات الجديدة</span>
           </button>
         </div>
 
@@ -18904,175 +18828,93 @@ body.light-theme .market-buy-price {
             </button>
           </div>
 
-          <!-- حاوية عرض المقارنة (panelBudgetCompare) -->
-          <div id="panelBudgetCompare" style="display:block;">
-            <!-- فلاتر الفترات متجاورة جنباً إلى جنب في صف واحد لتوفير المساحة -->
-            <div id="cmpPeriodsFilterBox" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px 10px;">
-              <!-- فلتر الفترة الفعلية -->
-              <div>
-                <label style="font-size:0.70rem;font-weight:850;color:#34d399;display:block;margin-bottom:3px;white-space:nowrap;">
-                  <i class="fa-solid fa-clock"></i> فترة الفعلية:
+          <section id="panelBudgetCompare" aria-labelledby="cmpPeriodChartTitle">
+            <div id="cmpPeriodChart" class="cmp-workspace">
+              <header class="cmp-heading">
+                <h3 id="cmpPeriodChartTitle">مقارنة المصروفات حسب البند</h3>
+                <button type="button" id="cmpDataMode" onclick="BudgetCompareEngine.toggleDemo()" aria-pressed="false">عرض مثال تجريبي</button>
+              </header>
+              <div id="cmpDemoNote" role="status" hidden></div>
+              <div id="cmpPeriodsFilterBox" class="cmp-period-filters">
+                <div>
+                  <label for="cmpActualPeriod">الفترة الأساسية</label>
+                  <select id="cmpActualPeriod" aria-describedby="cmpPrimaryDates" onchange="BudgetCompareEngine.onActualPeriodChange(this.value); if (this.value === 'custom') openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
+                    <option value="thisMonth" selected>الشهر الحالي حتى اليوم</option>
+                    <option value="lastMonth">الشهر السابق كاملًا</option>
+                    <option value="thisWeek">الأسبوع الحالي حتى اليوم</option>
+                    <option value="lastWeek">الأسبوع السابق كاملًا</option>
+                    <option value="today">اليوم</option>
+                    <option value="yesterday">أمس</option>
+                    <option value="thisYear">السنة الحالية حتى اليوم</option>
+                    <option value="custom">نطاق مخصص</option>
+                  </select>
+                  <p id="cmpPrimaryDates" class="cmp-range-preview cmp-preview-actual" aria-live="polite"></p>
+                  <div id="cmpActualCustomRange" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
+                    </button>
+                    <input type="date" id="cmpActualFrom" hidden>
+                    <input type="date" id="cmpActualTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
+                </div>
+                <div>
+                  <label for="cmpPeriodReference">المقارنة مع</label>
+                  <select id="cmpPeriodReference" aria-describedby="cmpReferenceDates" onchange="BudgetCompareEngine.selectReference(); if (this.value === 'custom') openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
+                    <option value="previous">الفترة السابقة تلقائيًا</option>
+                    <option value="custom">فترة مرجعية مخصصة</option>
+                    <option value="plan">الموازنة المسجلة</option>
+                    <optgroup label="موازنات تجريبية">
+                      <option value="sample-low">اقتصادية · ١٠٬٠٠٠ ج.م</option>
+                      <option value="sample">أساسية · ١٢٬٠٠٠ ج.م</option>
+                      <option value="sample-high">مرنة · ١٤٬٠٠٠ ج.م</option>
+                    </optgroup>
+                  </select>
+                  <p id="cmpReferenceDates" class="cmp-range-preview cmp-preview-reference" aria-live="polite"></p>
+                  <div id="cmpPeriodCustom" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpPeriodFrom','cmpPeriodTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpPeriodCustomRangeLabel">نطاق المرجع</span>
+                    </button>
+                    <input type="date" id="cmpPeriodFrom" hidden>
+                    <input type="date" id="cmpPeriodTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
+                  <div id="cmpEstimCustomRange" class="cmp-month-custom-range" hidden>
+                    <button type="button" class="cmp-month-range-button" onclick="openDateRangePickerForPair('cmpEstimFrom','cmpEstimTo')">
+                      <i class="fa-solid fa-calendar-days" aria-hidden="true"></i><span id="cmpEstimCustomRangeLabel">تاريخ الموازنة</span>
+                    </button>
+                    <button type="button" id="cmpRestoreDateLink" class="cmp-restore-link" onclick="BudgetCompareEngine.usePrimaryDates()" hidden>مطابقة الفترة الأساسية</button>
+                    <input type="date" id="cmpEstimFrom" hidden>
+                    <input type="date" id="cmpEstimTo" hidden onchange="BudgetCompareEngine.render()">
+                  </div>
+                </div>
+              </div>
+              <div id="cmpSampleActions" class="cmp-sample-actions" hidden>
+                <button type="button" onclick="BudgetCompareEngine.recordSampleOperations()">تسجيل هذه الفترة</button>
+                <button type="button" id="cmpSampleView" onclick="BudgetCompareEngine.openSampleOperations(this)">عرض العمليات التجريبية</button>
+                <span id="cmpSampleStatus" role="status"></span>
+              </div>
+              <div id="cmpSummary" aria-live="polite"></div>
+              <div class="cmp-view-tools">
+                <div class="cmp-period-modes" role="group" aria-label="شكل عرض المقارنة">
+                  <button type="button" data-mode="table" aria-pressed="true">جدول البنود</button>
+                  <button type="button" data-mode="paired" aria-pressed="false">الأعمدة</button>
+                  <button type="button" data-mode="change" aria-pressed="false">التغيّر</button>
+                  <button type="button" id="cmpUnifiedShowAll" onclick="BudgetCompareEngine.showAllCharts()" title="فتح جميع الرسوم الثمانية">الرسوم 1–8</button>
+                </div>
+                <label><span>ترتيب</span>
+                  <select id="cmpSort" aria-label="ترتيب بنود المقارنة" onchange="BudgetCompareEngine.render()">
+                    <option value="delta">أكبر فرق</option>
+                    <option value="spend">أكبر مصروف</option>
+                    <option value="name">اسم البند</option>
+                  </select>
                 </label>
-                <select id="cmpActualPeriod" onchange="BudgetCompareEngine.onActualPeriodChange(this.value)"
-                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
-                    background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.4);
-                    color:#34d399;border-radius:8px;padding:0 6px;outline:none;">
-                  <option value="today">اليوم</option>
-                  <option value="yesterday">أمس</option>
-                  <option value="thisWeek">الأسبوع الحالى</option>
-                  <option value="lastWeek">الأسبوع السابق</option>
-                  <option value="thisMonth" selected>الشهر الحالى</option>
-                  <option value="lastMonth">الشهر السابق</option>
-                  <option value="thisYear">السنة الحالية</option>
-                  <option value="custom">منتقى التواريخ (مخصص)</option>
-                </select>
-                <div id="cmpActualCustomRange" style="display:none;align-items:center;gap:4px;margin-top:4px;">
-                  <button type="button" onclick="openDateRangePickerForPair('cmpActualFrom','cmpActualTo')"
-                    style="flex:1;height:30px;font-size:0.70rem;font-weight:850;border-radius:7px;
-                      border:1px solid rgba(16,185,129,0.5);background:rgba(16,185,129,0.15);color:#34d399;
-                      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;">
-                    <i class="fa-solid fa-calendar-days"></i> <span id="cmpActualCustomRangeLabel">نطاق التواريخ</span>
-                  </button>
-                  <input type="date" id="cmpActualFrom" style="display:none;" onchange="BudgetCompareEngine.render()">
-                  <input type="date" id="cmpActualTo" style="display:none;" onchange="BudgetCompareEngine.render()">
-                </div>
               </div>
-
-              <!-- فلتر الفترة التقديرية (الذكي) -->
-              <div>
-                <label style="font-size:0.70rem;font-weight:850;color:#fbbf24;display:block;margin-bottom:3px;white-space:nowrap;">
-                  <i class="fa-solid fa-layer-group"></i> فترة التقديرية:
-                </label>
-                <select id="cmpEstimPeriod" onchange="BudgetCompareEngine.onEstimPeriodChange(this.value)"
-                  style="width:100%;height:32px;font-weight:850;font-size:0.75rem;
-                    background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);
-                    color:#fbbf24;border-radius:8px;padding:0 6px;outline:none;">
-                  <option value="thisMonth" selected>الشهر الحالى (متزامن)</option>
-                  <option value="lastMonth">الشهر السابق</option>
-                  <option value="custom">منتقى بشهر محدد</option>
-                </select>
-                <div id="cmpEstimCustomRange" style="display:none;gap:4px;margin-top:4px;">
-                  <input type="date" id="cmpEstimFrom" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
-                  <input type="date" id="cmpEstimTo" onchange="BudgetCompareEngine.render()"
-                    style="flex:1;height:30px;font-size:0.72rem;border-radius:7px;
-                      border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.15);color:#f8fafc;padding:0 4px;">
-                </div>
-              </div>
+              <div id="cmpPeriodChartContent"></div>
+              <details id="cmpInsightDetails">
+                <summary>مؤشرات المقارنة</summary>
+                <div id="cmpExtraInsightGrid"></div>
+              </details>
             </div>
-
-            <!-- جدول المقارنة الرئيسي (4 أعمدة) -->
-                        <div id="cmpTableWrapper" style="overflow-x:auto;margin-bottom:14px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;">
-              <table style="width:100%;border-collapse:collapse;font-size:0.76rem;direction:rtl;">
-                <thead>
-                  <tr style="background:rgba(15,23,42,0.9);">
-                    <th style="padding:10px;text-align:right;color:#94a3b8;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">بيان</th>
-                    <th style="padding:10px;text-align:center;color:#34d399;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">الفعلية</th>
-                    <th style="padding:10px;text-align:center;color:#fbbf24;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">التقديرية</th>
-                    <th style="padding:10px;text-align:center;color:#38bdf8;font-weight:850;border-bottom:1px solid rgba(255,255,255,0.1);">الفرق</th>
-                  </tr>
-                </thead>
-                <tbody id="cmpTableBody">
-                  <!-- يُملأ ديناميكياً بواسطة BudgetCompareEngine.render() -->
-                </tbody>
-                <tfoot id="cmpTableFoot">
-                  <!-- صف الإجمالي -->
-                </tfoot>
-              </table>
-            </div>
-
-            <!-- بطاقات KPI الثلاثية في صف واحد مدمج وأنيق لتوفير المساحة -->
-            <div id="cmpKpiCardsRow" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px;">
-              <div style="background: rgba(16,185,129,0.12); border: 1.2px solid rgba(16,185,129,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.65rem; color: #34d399; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي المصروف الفعلي</div>
-                <div id="cmpKpiTotalActual" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-              <div style="background: rgba(245,158,11,0.12); border: 1.2px solid rgba(245,158,11,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div style="font-size: 0.65rem; color: #fbbf24; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">إجمالي السقف التقديري</div>
-                <div id="cmpKpiTotalEstim" style="font-size: 0.92rem; font-weight: 950; color: #fbbf24; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-              <div style="background: rgba(15,23,42,0.85); border: 1.2px solid rgba(56,189,248,0.35); border-radius: 11px; padding: 6px 4px; text-align: center;">
-                <div id="cmpKpiDiffLabel" style="font-size: 0.65rem; color: #94a3b8; font-weight: 850; margin-bottom: 2px; white-space: nowrap;">الفارق الكلي بالموازنة</div>
-                <div id="cmpKpiTotalDiff" style="font-size: 0.92rem; font-weight: 950; color: #34d399; font-family: var(--font-numbers); direction: ltr;">0.00 ج.م</div>
-              </div>
-            </div>
-
-            <!-- لوحة القيادة التحليلية الذكية المتقدمة لموازنة الشهر منسقة ومدمجة بأسفل الصفحة -->
-            <div id="cmpAdvancedAnalyticsCockpit">
-              <!-- 1. مؤشر معدل الحرق المالي -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(255,255,255,0.08);">
-                <div class="cockpit-card-head" style="color: #94a3b8;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-gauge-high" style="color: #38bdf8;"></i> معدل الصرف</span>
-                  <span id="cmpBurnRatePct" style="color: #38bdf8; font-weight: 950; font-size: 0.72rem;">0%</span>
-                </div>
-                <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin: 3px 0; overflow: hidden;">
-                  <div id="cmpBurnRateBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #0ea5e9); border-radius: 2px; transition: width 0.4s ease;"></div>
-                </div>
-                <div id="cmpBurnRateDesc" class="cockpit-card-sub" style="color: #64748b;">استهلاك الموازنة</div>
-              </div>
-
-              <!-- 2. أعلى بند تجاوز في المصروفات -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(244,63,94,0.25);">
-                <div class="cockpit-card-head" style="color: #f43f5e;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-triangle-exclamation"></i> أعلى تجاوز</span>
-                </div>
-                <div id="cmpTopOverrunCat" style="font-size: 0.74rem; font-weight: 900; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;">لا يوجد تجاوز</div>
-                <div id="cmpTopOverrunVal" class="cockpit-card-val" style="color: #f87171;">0.00 ج.م</div>
-              </div>
-
-              <!-- 3. أعلى بند تحقيق وفر -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(16,185,129,0.25);">
-                <div class="cockpit-card-head" style="color: #34d399;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-piggy-bank"></i> أعلى وفر</span>
-                </div>
-                <div id="cmpTopSavedCat" style="font-size: 0.74rem; font-weight: 900; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px;">قيد الحساب...</div>
-                <div id="cmpTopSavedVal" class="cockpit-card-val" style="color: #34d399;">0.00 ج.م</div>
-              </div>
-
-              <!-- 4. متوسط الصرف اليومي المتاح -->
-              <div class="budget-lux-card" style="background: rgba(15,23,42,0.65); border: 1px solid rgba(251,191,36,0.25);">
-                <div class="cockpit-card-head" style="color: #fbbf24;">
-                  <span class="cockpit-card-title"><i class="fa-solid fa-calendar-day"></i> متاح يومياً</span>
-                </div>
-                <div id="cmpDailyAllowanceVal" class="cockpit-card-val" style="color: #fbbf24;">0.00 ج.م</div>
-                <div id="cmpDailyAllowanceDays" class="cockpit-card-sub" style="color: #94a3b8;">للأيام المتبقية</div>
-              </div>
-            </div>
-
-            <!-- مؤشرات ورسوم بيانية (Chart.js) متوافقة 100% مع الوضع الفاتح وبدون أي شاشات داكنة -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 10px; margin-bottom: 12px;">
-              <!-- رسم دائري: توزيع الفعلية بالبند -->
-              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-chart-pie"></i> <span>توزيع المصروفات الفعلية بالبند</span>
-                </div>
-                <div style="height: 220px; position: relative;">
-                  <canvas id="cmpChartDoughnut"></canvas>
-                </div>
-              </div>
-
-              <!-- رسم شريطي أفقي: مقارنة المصروفات بالشخص -->
-              <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px;">
-                <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                  <i class="fa-solid fa-chart-bar"></i> <span>مقارنة المصروفات بالشخص</span>
-                </div>
-                <div style="height: 220px; position: relative;">
-                  <canvas id="cmpChartBar"></canvas>
-                </div>
-              </div>
-            </div>
-
-            <!-- رسم خطي: المقارنة الزمنية التراكمية -->
-            <div class="cmp-chart-card chart-glass-panel" style="background: rgba(15,23,42,0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-              <div class="cmp-chart-card-title" style="font-size: 0.78rem; font-weight: 850; color: #38bdf8; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-line"></i> <span>المقارنة الزمنية التراكمية (الفعلي vs سقف الموازنة)</span>
-              </div>
-              <div style="height: 230px; position: relative;">
-                <canvas id="cmpChartLine"></canvas>
-              </div>
-            </div>
-          </div>
+          </section>
 
           <!-- حاوية عرض الأرشيف (panelBudgetArchiveMonthly) -->
           <div id="panelBudgetArchiveMonthly" style="display:none;">
@@ -21233,7 +21075,7 @@ body.light-theme .market-buy-price {
             </div>
             <div class="antigravity-head-copy">
               <h3 class="modal-title-custom" id="settingsModalTitle">إعدادات التطبيق</h3>
-              <span class="version-badge" id="settingsVersionBadge">v5.3.89</span>
+              <span class="version-badge" id="settingsVersionBadge">v5.4.13</span>
             </div>
           </div>
           <button type="button" class="btn-modal-close antigravity-modal-close" onclick="closeModal('settingsModal')" aria-label="إغلاق">
@@ -21396,16 +21238,16 @@ body.light-theme .market-buy-price {
                   </div>
                   <span id="activeDesignStyleBadge" class="appearance-active-badge">زجاجي (افتراضي)</span>
                 </div>
-                <div class="settings-segmented-grid antigravity-style-grid" role="group" aria-label="أنماط الكروت" style="display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 4px !important; width: 100% !important;">
-                  <button type="button" class="analytics-sec-btn active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>تأثير ضبابي</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleMinimal" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>هادئ</strong><small>خلفية موحدة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeumorphic" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>نيومورفيك</strong><small>ظلال مجسمة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>توهج حاد</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>شفاف</strong><small>بدون حواف</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleFlat" data-card-style="flat" onclick="setAppDesignStyle('flat')" aria-pressed="false"><strong>مسطّح</strong><small>تعبئة صامتة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
-                  <button type="button" class="analytics-sec-btn" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
+                <div class="antigravity-style-grid" role="group" aria-label="أنماط الكروت">
+                  <button type="button" class="card-style-option active" id="designStyleGlass" data-card-style="glass" onclick="setAppDesignStyle('glass')" aria-pressed="true"><strong>زجاجي</strong><small>تأثير ضبابي</small></button>
+                  <button type="button" class="card-style-option" id="designStyleMinimal" data-card-style="minimal" onclick="setAppDesignStyle('minimal')" aria-pressed="false"><strong>هادئ</strong><small>خلفية موحدة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleNeumorphic" data-card-style="neumorphic" onclick="setAppDesignStyle('neumorphic')" aria-pressed="false"><strong>نيومورفيك</strong><small>ظلال مجسمة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleNeon" data-card-style="neon" onclick="setAppDesignStyle('neon')" aria-pressed="false"><strong>نيون</strong><small>توهج حاد</small></button>
+                  <button type="button" class="card-style-option" id="designStyleClear" data-card-style="clear" onclick="setAppDesignStyle('clear')" aria-pressed="false"><strong>شفاف</strong><small>بدون حواف</small></button>
+                  <button type="button" class="card-style-option" id="designStyleFlat" data-card-style="flat" onclick="setAppDesignStyle('flat')" aria-pressed="false"><strong>مسطّح</strong><small>تعبئة صامتة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleElevated" data-card-style="elevated" onclick="setAppDesignStyle('elevated')" aria-pressed="false"><strong>مرتفع</strong><small>ظل عميق</small></button>
+                  <button type="button" class="card-style-option" id="designStyleOutlined" data-card-style="outlined" onclick="setAppDesignStyle('outlined')" aria-pressed="false"><strong>محدّد</strong><small>حدود متقطعة</small></button>
+                  <button type="button" class="card-style-option" id="designStyleGradient" data-card-style="gradient" onclick="setAppDesignStyle('gradient')" aria-pressed="false"><strong>متدرّج</strong><small>لمسة لونية</small></button>
                 </div>
               </div>
             </div>
@@ -23511,7 +23353,7 @@ function toggleAnalyticsCustomRange() {
         : colors;
 
       const canvas = document.getElementById('anaCategoryCanvas') || document.getElementById('executiveCategoryCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execCatChart) execCatChart.destroy();
         const ctx = canvas.getContext('2d');
         execCatChart = new Chart(ctx, {
@@ -24117,7 +23959,7 @@ function toggleAnalyticsCustomRange() {
       }
 
       const canvas = document.getElementById('dailyTimelineCanvas') || document.getElementById('anaTimelineCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execTimeChart) execTimeChart.destroy();
         const ctx = canvas.getContext('2d');
         execTimeChart = new Chart(ctx, {
@@ -24225,7 +24067,7 @@ function toggleAnalyticsCustomRange() {
       const expVals = compareCats.map(c => expByCat[c.id] || 0);
 
       const canvas = document.getElementById('anaRequestsCompareCanvas');
-      if (canvas) {
+      if (canvas && typeof Chart !== 'undefined') {
         if (execReqCompareChart) execReqCompareChart.destroy();
         const ctx = canvas.getContext('2d');
         execReqCompareChart = new Chart(ctx, {
@@ -24725,6 +24567,12 @@ function toggleAnalyticsCustomRange() {
     }
 
     function switchAppPage(pageId, pushHistory = true) {
+      // Route all ledger/detail entries through the reversible navigation context.
+      if (pageId === 'operations') {
+        window.OperationsReturnHub?.beforeNavigate({kind:'page'});
+      } else {
+        window.OperationsReturnHub?.onLeavePage(pageId);
+      }
       state.activePage = pageId;
       document.querySelectorAll('.page-view').forEach(p => {
         p.classList.remove('active');
@@ -24780,14 +24628,6 @@ function toggleAnalyticsCustomRange() {
         }
       }
       if (pageId === 'operations') {
-        const curMode = state.opsViewMode || 'daily';
-        const btnDaily = document.getElementById('btnOpsModeDaily');
-        const btnFlat = document.getElementById('btnOpsModeFlat');
-        const btnProject = document.getElementById('btnOpsModeProject');
-        if (btnDaily) btnDaily.classList.toggle('active', curMode === 'daily');
-        if (btnFlat) btnFlat.classList.toggle('active', curMode === 'flat');
-        if (btnProject) btnProject.classList.toggle('active', curMode === 'project');
-
         if (typeof switchOperationsSubTab === 'function') {
           switchOperationsSubTab(state.activeOpsSubTab || 'registered');
         }
@@ -24804,41 +24644,18 @@ function toggleAnalyticsCustomRange() {
       }
 
       renderUI();
+      window.OperationsReturnHub?.sync();
     }
 
     // تبديل التابين داخل صفحة العمليات (العمليات المسجلة / الأرشيف)
     
     function toggleOpsFiltersCollapse(forceOpen = null) {
       const body = document.getElementById('opsFiltersCollapsibleBody');
-      const icon = document.getElementById('iconToggleOpsFilters');
-      const lbl = document.getElementById('lblToggleOpsFilters');
-      const btn = document.getElementById('btnToggleOpsFilters');
       if (!body) return;
-
-      const isCurrentlyCollapsed = (body.style.display === 'none');
-      const shouldCollapse = forceOpen !== null ? !forceOpen : !isCurrentlyCollapsed;
-
-      if (shouldCollapse) {
-        body.style.display = 'none';
-        if (icon) icon.style.transform = 'rotate(180deg)';
-        if (lbl) lbl.textContent = 'خيارات الفلترة';
-        if (btn) {
-          btn.style.background = 'rgba(255, 255, 255, 0.06)';
-          btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-          btn.style.color = '#94a3b8';
-        }
-        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'true'); } catch(e) {}
-      } else {
-        body.style.display = 'block';
-        if (icon) icon.style.transform = 'rotate(0deg)';
-        if (lbl) lbl.textContent = 'طي الفلاتر';
-        if (btn) {
-          btn.style.background = 'rgba(56, 189, 248, 0.14)';
-          btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-          btn.style.color = '#38bdf8';
-        }
-        try { localStorage.setItem('family_monefy_ops_filters_collapsed', 'false'); } catch(e) {}
-      }
+      const open = forceOpen ?? (body.style.display === 'none');
+      body.style.display = open ? 'block' : 'none';
+      document.getElementById('btnToggleOpsFilters')?.setAttribute('aria-expanded', String(open));
+      try { localStorage.setItem('family_monefy_ops_filters_collapsed', String(!open)); } catch(e) {}
     }
     window.toggleOpsFiltersCollapse = toggleOpsFiltersCollapse;
 
@@ -24853,6 +24670,10 @@ function toggleAnalyticsCustomRange() {
       const viewReg = document.getElementById('opsSubViewRegistered');
       const viewAna = document.getElementById('opsSubViewAnalytics');
       const viewArc = document.getElementById('opsSubViewArchive');
+      const btnSample = document.getElementById('btnOpsSubSample');
+      const viewSample = document.getElementById('opsSubViewSample');
+      btnSample?.classList.toggle('active', tab === 'sample');
+      if (viewSample) viewSample.hidden = tab !== 'sample';
 
       if (btnReg) btnReg.classList.remove('active');
       if (btnAna) btnAna.classList.remove('active');
@@ -24861,7 +24682,9 @@ function toggleAnalyticsCustomRange() {
       if (viewAna) viewAna.style.display = 'none';
       if (viewArc) viewArc.style.display = 'none';
 
-      if (tab === 'analytics') {
+      if (tab === 'sample') {
+        window.BudgetCompareEngine?.renderSampleOperations();
+      } else if (tab === 'analytics') {
         if (btnAna) btnAna.classList.add('active');
         if (viewAna) viewAna.style.display = 'block';
         if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
@@ -25286,11 +25109,6 @@ function toggleAnalyticsCustomRange() {
         dispatchCustomDatePickerChange(context.fromInput);
         dispatchCustomDatePickerChange(context.toInput);
 
-        if (context.fromInput.id === 'cmpActualFrom') {
-          const lbl = document.getElementById('cmpActualCustomRangeLabel');
-          if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
-          if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
-        }
         if (context.fromInput.id === 'cmpProjActualFrom') {
           const lbl = document.getElementById('cmpProjActualCustomRangeLabel');
           if (lbl) lbl.textContent = `${startVal} إلى ${endVal}`;
@@ -26562,6 +26380,11 @@ function renderCategoriesGrid(filtered) {
 
       const pal = THEME_CARD_PALETTES[activeTheme] || THEME_CARD_PALETTES.navy;
       const activeIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
+      const iconPalette = APPEARANCE_ICON_THEMES[activeIconTheme] || APPEARANCE_ICON_THEMES.vibrant;
+      const iconColor = isLight ? iconPalette.light : iconPalette.dark;
+      const cardIconBg = `linear-gradient(145deg, ${iconColor}bd 0%, ${iconColor}69 100%)`;
+      const activeCardStyle = document.body.getAttribute('data-card-style') || 'glass';
+      const colorMode = isLight ? 'light' : 'dark';
       const getCardTopBackground = (accent) => isLight
         ? `linear-gradient(145deg, ${accent}38 0%, ${accent}1f 56%, ${accent}12 100%)`
         : `linear-gradient(145deg, ${accent}60 0%, ${accent}3c 56%, ${accent}25 100%)`;
@@ -26573,6 +26396,8 @@ function renderCategoriesGrid(filtered) {
       const needRebuild = (existingCards.length !== EXPENSE_CATEGORIES.length) || 
                           (grid.dataset.theme !== activeTheme) ||
                           (grid.dataset.iconTheme !== activeIconTheme) ||
+                          (grid.dataset.cardStyle !== activeCardStyle) ||
+                          (grid.dataset.colorMode !== colorMode) ||
                           (grid.dataset.fontSize !== curFontSize) ||
                           (grid.dataset.fontFamily !== curFontFamily) ||
                           (grid.dataset.activeBudgetId !== activePlanId);
@@ -26581,6 +26406,8 @@ function renderCategoriesGrid(filtered) {
         grid.innerHTML = '';
         grid.dataset.theme = activeTheme;
         grid.dataset.iconTheme = activeIconTheme;
+        grid.dataset.cardStyle = activeCardStyle;
+        grid.dataset.colorMode = colorMode;
         grid.dataset.fontSize = curFontSize;
         grid.dataset.fontFamily = curFontFamily;
         grid.dataset.activeBudgetId = activePlanId;
@@ -26594,11 +26421,15 @@ function renderCategoriesGrid(filtered) {
             gradient: `linear-gradient(135deg, ${cat.color}, #334155)`
           };
 
-          const cardAccent = theme.accent;
-          const cardBg = pal.bgGrad(theme.accent);
-          const cardBorder = `2px solid ${pal.border(theme.accent)}`;
-          const cardShadow = pal.shadow(theme.accent);
-          const cardTopBg = getCardTopBackground(theme.accent);
+          const isFlatCard = activeCardStyle === 'flat';
+          const cardBg = isFlatCard ? (isLight ? '#ffffff' : '#17243a') : pal.bgGrad(theme.accent);
+          const cardBorder = isFlatCard
+            ? `1px solid ${isLight ? '#cbd5e1' : '#475569'}`
+            : `2px solid ${pal.border(theme.accent)}`;
+          const cardShadow = isFlatCard ? 'none' : pal.shadow(theme.accent);
+          const cardTopBg = isFlatCard
+            ? (isLight ? 'rgba(241,245,249,.85)' : 'rgba(255,255,255,.04)')
+            : getCardTopBackground(theme.accent);
 
           const converted = convertAmount(spent);
           let numStr = '0.00';
@@ -26673,7 +26504,7 @@ function renderCategoriesGrid(filtered) {
           card.style.cssText = `
             background: ${cardBg} !important;
             border: ${cardBorder} !important;
-            border-radius: 16px !important;
+            border-radius: ${activeCardStyle === 'flat' ? '9px' : '16px'} !important;
             padding: 0 !important;
             display: flex !important;
             flex-direction: column !important;
@@ -26698,7 +26529,7 @@ function renderCategoriesGrid(filtered) {
                  style="flex: 1.25 1 65%; min-height: 0; width: 100%; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 3px 2px 1px; background: ${cardTopBg}; border-radius: 14px 14px 0 0; cursor: pointer; transition: background 0.15s ease; box-sizing: border-box; overflow: hidden; touch-action: manipulation;">
               
               <div class="cat-icon-bubble" 
-                   style="background: ${theme.gradient}; width: clamp(34px, 9vw, 40px) !important; height: clamp(34px, 9vw, 40px) !important; min-width: 34px !important; min-height: 34px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${theme.accent}66, inset 0 0 6px rgba(255, 255, 255, 0.40); border: 2px solid rgba(255, 255, 255, 0.85); outline: 1.8px solid ${theme.accent}; flex-shrink: 0;">
+                   style="background: ${cardIconBg}; width: clamp(34px, 9vw, 40px) !important; height: clamp(34px, 9vw, 40px) !important; min-width: 34px !important; min-height: 34px !important; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px ${iconColor}66, inset 0 0 6px rgba(255, 255, 255, 0.24); border: 2px solid rgba(255, 255, 255, 0.75); outline: 1.8px solid ${iconColor}; flex-shrink: 0;">
                 <span style="font-size: clamp(1.4rem, 3.6vw, 1.7rem) !important; line-height: 1; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));">${theme.emoji}</span>
               </div>
 
@@ -26751,9 +26582,9 @@ function renderCategoriesGrid(filtered) {
             amtLetterSpacing = '-0.3px';
           }
 
-          card.style.setProperty('background', pal.bgGrad(theme.accent), 'important');
-          card.style.setProperty('border-color', pal.border(theme.accent), 'important');
-          card.style.setProperty('box-shadow', pal.shadow(theme.accent), 'important');
+          card.style.setProperty('background', activeCardStyle === 'flat' ? (isLight ? '#ffffff' : '#17243a') : pal.bgGrad(theme.accent), 'important');
+          card.style.setProperty('border-color', activeCardStyle === 'flat' ? (isLight ? '#cbd5e1' : '#475569') : pal.border(theme.accent), 'important');
+          card.style.setProperty('box-shadow', activeCardStyle === 'flat' ? 'none' : pal.shadow(theme.accent), 'important');
 
           const lowerHalf = card.querySelector('.cat-card-bottom-half');
           const amtEl = card.querySelector('.cat-amount-val');
@@ -26827,6 +26658,9 @@ function renderCategoriesGrid(filtered) {
             }
           }
         });
+      }
+      if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
+        window.HomeLayouts.render(filtered);
       }
     }
 
@@ -26944,6 +26778,8 @@ function renderCategoriesGrid(filtered) {
     }
 
     function openOperationsFiltered({ category = null, categoryName = null, member = null, type = 'all', date = null, month = null, dateFrom = null, dateTo = null, walletId = null, project = null, resetFilters = false, returnToIndicators = false, returnTitle = '' } = {}) {
+      // Capture the original filters, view position and unfinished input BEFORE drilldown changes them.
+      window.OperationsReturnHub?.beforeNavigate({kind:'detail', label:returnTitle || categoryName || category});
       if (returnToIndicators) {
         saveIndicatorsReturnState(returnTitle || categoryName || (category ? category : 'المؤشرات'));
       }
@@ -27094,7 +26930,8 @@ function renderCategoriesGrid(filtered) {
       // 10. التمرير السلس إلى قائمة العمليات المفلترة
       const targetScroll = document.getElementById('opsSubViewRegistered') || document.getElementById('txOperationsList');
       if (targetScroll) {
-        targetScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Avoid a pending smooth-scroll animation overwriting exact position on Back.
+        targetScroll.scrollIntoView({ behavior: 'instant', block: 'start' });
       }
 
       // 11. إشعار فوري توضيحي لطيف
@@ -27149,22 +26986,16 @@ function renderCategoriesGrid(filtered) {
       return Number(converted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // التبديل بين عرض العمليات يومياً أو مجمعاً أو مجمعاً حسب المشروع
+    const monthlyExpenseViewModes = ['calendar', 'month-trend'];
+    const operationsViewModes = ['daily', 'flat', 'project', 'timeline', ...monthlyExpenseViewModes];
     function setOperationsViewMode(mode, persist = true) {
-      if (!['flat', 'project'].includes(mode)) mode = 'daily';
+      if (!operationsViewModes.includes(mode)) mode = 'daily';
       state.opsViewMode = mode;
       if (persist) {
         try {
           localStorage.setItem('family_monefy_ops_view_mode', mode);
         } catch(e) {}
       }
-      const btnDaily = document.getElementById('btnOpsModeDaily');
-      const btnFlat = document.getElementById('btnOpsModeFlat');
-      const btnProject = document.getElementById('btnOpsModeProject');
-      if (btnDaily) btnDaily.classList.toggle('active', mode === 'daily');
-      if (btnFlat) btnFlat.classList.toggle('active', mode === 'flat');
-      if (btnProject) btnProject.classList.toggle('active', mode === 'project');
-
       // إذا كان المستخدم في تبويب الأرشيف، تحويله تلقائياً لقائمة العمليات
       if (state.activeOpsSubTab === 'archive' && typeof switchOperationsSubTab === 'function') {
         switchOperationsSubTab('registered');
@@ -27229,7 +27060,14 @@ function renderCategoriesGrid(filtered) {
       const now = new Date();
       const todayStr = getLocalDateStr(now);
 
-      if (p === 'day' || p === 'today') {
+      if (monthlyExpenseViewModes.includes(state.opsViewMode)) {
+        if (!expenseCalendar.month) {
+          const customStart = p === 'custom' ? state.customDateRange?.from : '';
+          expenseCalendar.month = /^\d{4}-(0[1-9]|1[0-2])-\d{2}$/.test(customStart || '') ?
+            customStart.slice(0, 7) : todayStr.slice(0, 7);
+        }
+        list = list.filter(t => operationDate(t).slice(0, 7) === expenseCalendar.month);
+      } else if (p === 'day' || p === 'today') {
         list = list.filter(t => operationDate(t) === todayStr);
       } else if (p === 'week') {
         const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
@@ -27253,9 +27091,10 @@ function renderCategoriesGrid(filtered) {
       }
 
       // 3. تطبيق تصفية النوع على العمليات (المصروفات / الدخل / الكل)
-      if (opsTypeFilterState === 'expense') {
+      const operationType = ['timeline', ...monthlyExpenseViewModes].includes(state.opsViewMode) ? 'expense' : opsTypeFilterState;
+      if (operationType === 'expense') {
         list = list.filter(t => t.type === 'expense');
-      } else if (opsTypeFilterState === 'income') {
+      } else if (operationType === 'income') {
         list = list.filter(t => t.type === 'income');
       }
 
@@ -27311,15 +27150,267 @@ function renderCategoriesGrid(filtered) {
       return list;
     }
 
+    function renderExpenseOperationRow({tx, minutes}, transactions) {
+      const index = transactions.push(tx) - 1;
+      const category = getCategoryObj(tx.category, 'expense');
+      const icon = /^fa-[a-z0-9-]+$/i.test(category.icon) ? category.icon : 'fa-receipt';
+      const time = minutes < 0 ? '' : (Math.floor(minutes / 60) % 12 || 12) + ':' +
+        String(minutes % 60).padStart(2, '0') + (minutes >= 720 ? ' م' : ' ص');
+      const memo = tx.label || tx.description || tx.note;
+      const hasReceipt = tx.receipt || tx.receipts?.length;
+      return `<details class="ops-timeline-item">
+        <summary>
+          <span class="ops-timeline-category"><i class="fa-solid ${icon}" aria-hidden="true"></i> <span>${escapeHtml(category.name)}</span></span>
+          <span class="ops-timeline-time"><i class="fa-regular fa-clock" aria-hidden="true"></i> <bdi>${time || '—'}</bdi></span>
+          <span class="ops-timeline-wallet"><i class="fa-solid fa-wallet" aria-hidden="true"></i> <span>${escapeHtml(getWalletName(tx.walletId))}</span></span>
+          <bdi class="ops-timeline-money">${escapeHtml(formatMoney(tx.amount))}</bdi>
+          <i class="fa-solid fa-chevron-left ops-timeline-chevron" aria-hidden="true"></i>
+        </summary>
+        <div class="ops-timeline-details">
+          ${memo ? `<strong>${escapeHtml(memo)}</strong>` : ''}
+          ${tx.member ? `<span>${escapeHtml(tx.member)}</span>` : ''}
+          <div class="ops-timeline-actions">
+            <button type="button" data-timeline-index="${index}" data-timeline-action="edit">تعديل</button>
+            ${hasReceipt ? `<button type="button" data-timeline-index="${index}" data-timeline-action="receipt">المرفق</button>` : ''}
+            <button type="button" data-timeline-index="${index}" data-timeline-action="delete">حذف</button>
+          </div>
+        </div>
+      </details>`;
+    }
+
+    function timelineOperationMinutes(transaction) {
+      const time = String(transaction.time || '').replace(/[٠-٩۰-۹]/g, digit => String(digit.charCodeAt(0) % 16));
+      const match = time.match(/(\d{1,2}):([0-5]\d)(?::[0-5]\d)?/);
+      if (match && Number(match[1]) < 24) {
+        let hour = Number(match[1]);
+        if (hour <= 12 && /(?:ص|م|am|pm)/i.test(time)) {
+          hour = hour % 12 + (/(?:م|pm)/i.test(time) ? 12 : 0);
+        }
+        return hour * 60 + Number(match[2]);
+      }
+      const recorded = transaction.createdAt || (String(transaction.date || '').includes('T') ? transaction.date : '');
+      const date = new Date(recorded);
+      return Number.isFinite(date.getTime()) ? date.getHours() * 60 + date.getMinutes() : -1;
+    }
+
+    function renderDailyExpenseTimeline(list, limit) {
+      const days = new Map();
+      for (const transaction of list) {
+        const raw = operationDate(transaction);
+        const date = /^\d{4}-\d{2}-\d{2}$/.test(raw) && Number.isFinite(Date.parse(raw)) ? raw : '';
+        if (!days.has(date)) days.set(date, {rows: [], sum: 0});
+        const day = days.get(date);
+        day.rows.push(transaction);
+        day.sum += Number(transaction.amount) || 0;
+      }
+      const today = new Date();
+      const todayKey = getLocalDateStr(today);
+      today.setDate(today.getDate() - 1);
+      const yesterdayKey = getLocalDateStr(today);
+      const opts = {timeZone: 'UTC'};
+      const fullDate = new Intl.DateTimeFormat('ar-EG', {...opts, dateStyle: 'full'});
+      const weekDay = new Intl.DateTimeFormat('ar-EG', {...opts, weekday: 'long'});
+      const month = new Intl.DateTimeFormat('ar-EG', {...opts, month: 'long'});
+      let remaining = limit;
+      let tone = 0;
+      const groups = [];
+      const renderedTransactions = [];
+      for (const [date, day] of [...days].sort(([a], [b]) => b.localeCompare(a))) {
+        if (remaining <= 0) break;
+        const dayDate = new Date(date + 'T12:00:00Z');
+        const marker = date === todayKey ? 'اليوم' : date === yesterdayKey ? 'أمس' : date ? weekDay.format(dayDate) : '—';
+        const rows = day.rows.map(tx => ({tx, minutes: timelineOperationMinutes(tx)}))
+          .sort((a,b) => b.minutes - a.minutes).slice(0,remaining);
+        remaining -= rows.length;
+        const lineItems = rows.map(row => renderExpenseOperationRow(row, renderedTransactions)).join('');
+        groups.push(`<section class="ops-timeline-day" data-tone="${tone++ % 5}" data-date="${date}">
+          <div class="ops-timeline-marker" aria-hidden="true"><small>${marker}</small><strong>${date ? Number(date.slice(-2)) : '—'}</strong><small>${date ? month.format(dayDate) : ''}</small></div>
+          <div class="ops-timeline-card">
+            <header><h4>${date ? fullDate.format(dayDate) : 'مصروفات بلا تاريخ'}</h4>
+              <span>إجمالي اليوم <bdi>${escapeHtml(formatMoney(day.sum))}</bdi></span></header>
+            ${lineItems}
+          </div>
+        </section>`);
+      }
+      return {html: '<div class="ops-timeline"><h3><i class="fa-regular fa-calendar" aria-hidden="true"></i> تسلسل يومي للمصروفات</h3>' +
+        groups.join('') + '</div>', transactions: renderedTransactions};
+    }
+
+    const expenseCalendar = {month: '', date: ''};
+    const expenseCalendarMonthLabel = new Intl.DateTimeFormat('ar-EG', {
+      month: 'long', year: 'numeric', timeZone: 'UTC'
+    });
+    const expenseCalendarDateLabel = new Intl.DateTimeFormat('ar-EG', {
+      dateStyle: 'full', timeZone: 'UTC'
+    });
+
+    function changeExpenseCalendarMonth(step) {
+      const month = new Date(expenseCalendar.month + '-01T12:00:00Z');
+      month.setUTCMonth(month.getUTCMonth() + step);
+      expenseCalendar.month = month.toISOString().slice(0, 7);
+      expenseCalendar.date = '';
+    }
+
+    function renderExpenseCalendarGrid(month, days, offset, byDate, selectedDate, now) {
+      const padding = '<span class="ops-calendar-blank" aria-hidden="true"></span>';
+      const cells = Array(offset).fill(padding);
+      for (let number = 1; number <= days; number++) {
+        const date = month + '-' + String(number).padStart(2, '0');
+        const day = byDate.get(date);
+        const amount = day ? formatMoney(day.sum) : '';
+        const label = expenseCalendarDateLabel.format(new Date(date + 'T12:00:00Z'));
+        cells.push(`<button type="button" class="ops-calendar-day${day ? ' has-expenses' : ''}"
+          data-calendar-date="${date}" aria-pressed="${date === selectedDate}"
+          ${date === now ? 'aria-current="date"' : ''}
+          aria-label="${escapeHtml(label + '، ' + (amount || 'لا توجد مصروفات'))}">
+            <span>${number}</span><bdi>${amount ? escapeHtml(amount) : '–'}</bdi>
+          </button>`);
+      }
+      while (cells.length % 7) cells.push(padding);
+      const week = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
+      return `<div class="ops-calendar-grid">
+        ${week.map(day => `<span class="ops-calendar-weekday">${day}</span>`).join('')}
+        ${cells.join('')}
+      </div>`;
+    }
+
+    function renderMonthlyExpenseTrend(month, days, byDate, selectedDate) {
+      const bounds = {left: 41, right: 351, top: 17, bottom: 116};
+      const dayWidth = (bounds.right - bounds.left) / days;
+      const points = Array.from({length: days}, (_, index) => {
+        const day = index + 1;
+        const date = month + '-' + String(day).padStart(2, '0');
+        return {day, date, amount: byDate.get(date)?.sum || 0, x: bounds.left + dayWidth * (index + 0.5)};
+      });
+      const totals = points.map(point => point.amount);
+      const peak = Math.max(0, ...totals);
+      const floor = Math.min(0, ...totals);
+      const target = Math.max(1, (peak - floor) / 4);
+      const magnitude = 10 ** Math.floor(Math.log10(target));
+      const interval = magnitude * [1,2,2.5,5,10].find(step => step * magnitude >= target);
+      const min = Math.floor(floor / interval) * interval;
+      const intervals = Math.max(4, Math.ceil((peak - min) / interval));
+      const compact = new Intl.NumberFormat('en', {notation: 'compact', maximumFractionDigits: 1});
+      const y = amount => (bounds.bottom - (amount - min) / (interval * intervals) * (bounds.bottom - bounds.top)).toFixed(2);
+      const coordinates = points.map(point => point.x.toFixed(2) + ',' + y(point.amount)).join(' ');
+      const last = points.at(-1);
+      const basePath = `M ${points[0].x.toFixed(2)},${y(0)} L ${coordinates} L ${last.x.toFixed(2)},${y(0)} Z`;
+      const grid = Array.from({length: intervals + 1}, (_, i) => {
+        const amount = min + i * interval;
+        const lineY = y(amount);
+        return `<line x1="${bounds.left}" x2="${bounds.right}" y1="${lineY}" y2="${lineY}"/>
+          <text x="${bounds.left - 6}" y="${lineY}" dominant-baseline="middle" text-anchor="end">${compact.format(amount)}</text>`;
+      }).join('');
+      const xLabels = points.filter(point => point.day === 1 || point.day === days ||
+        (point.day % 5 === 0 && days - point.day > 2))
+        .map(point => `<text x="${point.x.toFixed(2)}" y="136" text-anchor="middle">${point.day}</text>`).join('');
+      const controls = points.map(point => {
+        const active = point.date === selectedDate;
+        const label = expenseCalendarDateLabel.format(new Date(point.date + 'T12:00:00Z')) +
+          '، ' + formatMoney(point.amount);
+        return `<g class="ops-month-trend-point" role="button" tabindex="${active ? 0 : -1}"
+          aria-pressed="${active}" aria-label="${escapeHtml(label)}" data-calendar-date="${point.date}">
+          <rect x="${(point.x - dayWidth / 2).toFixed(2)}" y="${bounds.top - 8}" width="${dayWidth.toFixed(2)}" height="125"/>
+          <circle cx="${point.x.toFixed(2)}" cy="${y(point.amount)}" r="${active ? 4.1 : 2.3}"/>
+        </g>`;
+      }).join('');
+      const selected = points.find(point => point.date === selectedDate);
+      const amountLabel = formatMoney(selected.amount);
+      const labelWidth = Math.min(142, Math.max(50, amountLabel.length * 6.4 + 12));
+      const labelX = Math.max(bounds.left, Math.min(bounds.right - labelWidth, selected.x - labelWidth / 2));
+      const pointY = Number(y(selected.amount));
+      const labelY = pointY < 27 ? pointY + 8 : pointY - 24;
+      return `<svg class="ops-month-trend" viewBox="0 0 360 145" role="group"
+        aria-label="إجمالي المصروفات لكل يوم، استخدم السهمين للتنقل بين الأيام">
+        <defs><linearGradient id="opsMonthTrendFill" x2="0" y2="1">
+          <stop offset="0" stop-color="currentColor" stop-opacity=".34"/>
+          <stop offset="1" stop-color="currentColor" stop-opacity=".02"/>
+        </linearGradient></defs>
+        <g class="ops-month-trend-grid" aria-hidden="true">${grid}${xLabels}</g>
+        <path d="${basePath}" fill="url(#opsMonthTrendFill)" aria-hidden="true"/>
+        <polyline class="ops-month-trend-line" points="${coordinates}" aria-hidden="true"/>
+        ${controls}
+        <g class="ops-month-trend-label" aria-hidden="true">
+          <rect x="${labelX}" y="${labelY}" width="${labelWidth}" height="16" rx="5"/>
+          <text x="${labelX + labelWidth / 2}" y="${labelY + 8.3}" dominant-baseline="middle"
+            text-anchor="middle">${escapeHtml(amountLabel)}</text>
+        </g>
+      </svg>`;
+    }
+
+    function renderMonthlyExpenses(list, limit, showTrend) {
+      const now = getLocalDateStr(new Date());
+      const monthKey = expenseCalendar.month;
+      const first = new Date(monthKey + '-01T12:00:00Z');
+      const days = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).getUTCDate();
+      const byDate = new Map();
+      let monthTotal = 0;
+      for (const tx of list) {
+        const date = operationDate(tx);
+        const number = Number(date.slice(8));
+        if (!Number.isInteger(number) || number < 1 || number > days) continue;
+        if (!byDate.has(date)) byDate.set(date, {sum: 0, rows: []});
+        const day = byDate.get(date);
+        const amount = Number(tx.amount) || 0;
+        day.sum += amount;
+        monthTotal += amount;
+        day.rows.push(tx);
+      }
+      if (!expenseCalendar.date.startsWith(monthKey + '-')) {
+        expenseCalendar.date = now.startsWith(monthKey + '-') ? now :
+          [...byDate.keys()].sort().at(-1) || monthKey + '-01';
+      }
+      const selectedDate = expenseCalendar.date;
+      const selected = byDate.get(selectedDate);
+      const chart = showTrend ? renderMonthlyExpenseTrend(monthKey, days, byDate, selectedDate) :
+        renderExpenseCalendarGrid(monthKey, days, (first.getUTCDay() + 1) % 7, byDate, selectedDate, now);
+      const title = showTrend ? 'مسار المصروفات خلال الشهر' : 'تقويم المصروفات';
+      const icon = showTrend ? 'fa-solid fa-chart-line' : 'fa-regular fa-calendar';
+      const transactions = [];
+      const rows = selected ? selected.rows.map(tx => ({tx, minutes: timelineOperationMinutes(tx)}))
+        .sort((a,b) => b.minutes - a.minutes).slice(0, limit) : [];
+      const dayLabel = expenseCalendarDateLabel.format(new Date(selectedDate + 'T12:00:00Z'));
+      const html = `<section class="ops-calendar" aria-label="${title}">
+        <header class="ops-calendar-header">
+          <h3><i class="${icon}" aria-hidden="true"></i> ${title}</h3>
+          <div class="ops-calendar-navigation">
+            <button type="button" data-calendar-step="-1" aria-label="الشهر السابق"><span dir="ltr" aria-hidden="true">›</span></button>
+            <strong aria-live="polite">${expenseCalendarMonthLabel.format(first)}</strong>
+            <button type="button" data-calendar-step="1" aria-label="الشهر التالي"><span dir="ltr" aria-hidden="true">‹</span></button>
+          </div>
+        </header>
+        ${chart}
+        <p class="ops-calendar-month-total">إجمالي الشهر <bdi>${escapeHtml(formatMoney(monthTotal))}</bdi></p>
+        <section class="ops-calendar-selection" aria-label="مصروفات اليوم المختار">
+          <header${showTrend ? ' class="ops-month-trend-detail"' : ''}><h4>${dayLabel}</h4>${showTrend || selected ? `<span>إجمالي اليوم <bdi>${escapeHtml(formatMoney(selected?.sum || 0))}</bdi></span>` : ''}</header>
+          ${selected ? rows.map(row => renderExpenseOperationRow(row, transactions)).join('') :
+            '<p class="ops-calendar-empty">لا توجد مصروفات مطابقة في هذا اليوم.</p>'}
+        </section>
+      </section>`;
+      return {html, transactions, remaining: Math.max(0, (selected?.rows.length || 0) - limit)};
+    }
+
     function renderOperationsList(filtered, appendMore = false) {
       const container = document.getElementById('txOperationsList');
       if (!container) return;
+      if (!operationsViewModes.includes(state.opsViewMode)) state.opsViewMode = 'daily';
+      const curOpsMode = state.opsViewMode;
+      const monthlyExpenseLayout = monthlyExpenseViewModes.includes(curOpsMode);
+      const expenseLayout = curOpsMode === 'timeline' || monthlyExpenseLayout;
+      const opsView = document.getElementById('viewOperations');
+      opsView.classList.toggle('has-expense-layout', expenseLayout);
+      opsView.classList.toggle('is-monthly-expense-layout', monthlyExpenseLayout);
+      for (const button of document.querySelectorAll('#opsViewModeToggleBar [data-view-mode]')) {
+        const active = button.dataset.viewMode === curOpsMode;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      }
       refreshProjectSelectors();
       if (!appendMore) opsRenderLimit = 40;
       const list = getRegisteredOperations(filtered ?? undefined);
       document.getElementById('opsResultCount').textContent = list.length.toLocaleString('ar-EG') + ' عملية مطابقة';
 
-      if (list.length === 0) {
+      if (list.length === 0 && !monthlyExpenseLayout) {
         container.innerHTML = `
           <div class="empty-state" style="padding: 30px 10px; text-align: center;">
             <i class="fa-solid fa-receipt" style="color: #64748b; font-size: 2.2rem; margin-bottom: 10px;"></i>
@@ -27342,25 +27433,15 @@ function renderCategoriesGrid(filtered) {
         return db.localeCompare(da);
       });
 
-      // التحقق من نمط العرض المختار: 'flat' (مجمع) أو 'daily' (تجميع باليوم)
-      const savedOpsMode = state.opsViewMode || (function() {
-        try { return localStorage.getItem('family_monefy_ops_view_mode'); } catch(e) { return null; }
-      })() || 'daily';
-      const curOpsMode = ['flat', 'project'].includes(savedOpsMode) ? savedOpsMode : 'daily';
-      state.opsViewMode = curOpsMode;
-
-      // مزامنة حالة الأزرار العلوية
-      const btnDaily = document.getElementById('btnOpsModeDaily');
-      const btnFlat = document.getElementById('btnOpsModeFlat');
-      const btnProject = document.getElementById('btnOpsModeProject');
-      if (btnDaily) btnDaily.classList.toggle('active', curOpsMode === 'daily');
-      if (btnFlat) btnFlat.classList.toggle('active', curOpsMode === 'flat');
-      if (btnProject) btnProject.classList.toggle('active', curOpsMode === 'project');
-
       const itemsToRender = list.slice(0, opsRenderLimit);
       let cardsHtml = '';
+      let expenseView;
 
-      if (curOpsMode === 'flat') {
+      if (expenseLayout) {
+        expenseView = curOpsMode === 'timeline' ?
+          renderDailyExpenseTimeline(list, opsRenderLimit) : renderMonthlyExpenses(list, opsRenderLimit, curOpsMode === 'month-trend');
+        cardsHtml = expenseView.html;
+      } else if (curOpsMode === 'flat') {
         // =========================================================================
         // الوضع الجديد: "مجمع" (بدون تجميع لعمليات اليوم + التاريخ مدمج أسفل بيان العملية)
         // =========================================================================
@@ -27394,7 +27475,7 @@ function renderCategoriesGrid(filtered) {
                       <span class="ops-compact-title" style="font-size: 0.82rem; font-weight: 850; color: var(--text-main, #0f172a); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2;">${escapeHtml(rawLabel)}</span>
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
-                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                    <div class="ops-compact-chips">
                       <span style="color: ${harm.color}; border: 1px solid ${harm.badgeBorder}; background: ${harm.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
@@ -27512,7 +27593,7 @@ function renderCategoriesGrid(filtered) {
                       ${tx.isModified ? `<span style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 4px; padding: 0.5px 3px; font-size: 0.55rem; font-weight: 800; flex-shrink: 0;" title="تم التعديل بواسطة ${escapeHtml(tx.lastModifiedBy || '')} - السبب: ${escapeHtml(tx.lastModifiedReason || '')}">✏️</span>` : ''}
                     </div>
                     <!-- السطر الثاني: رقائق مدمجة وبجانب المحفظة رقم العملية مباشرة -->
-                    <div class="ops-compact-chips" style="display: flex; align-items: center; gap: 4px; overflow-x: auto; white-space: nowrap; font-size: 0.62rem; padding-top: 1px; scrollbar-width: none;">
+                    <div class="ops-compact-chips">
                       <span style="color: ${harmFlat.color}; border: 1px solid ${harmFlat.badgeBorder}; background: ${harmFlat.bg}; padding: 0.5px 5px; border-radius: 4px; font-weight: 800;">${escapeHtml(cat.name)}</span>
                       <span style="color: #64748b; background: rgba(100, 116, 139, 0.08); border: 1px solid rgba(100, 116, 139, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">👤 ${escapeHtml(memberName)}</span>
                       ${walletName ? `<span style="color: #0284c7; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); padding: 0.5px 5px; border-radius: 4px; font-weight: 750;">💳 ${escapeHtml(walletName)}</span>` : ''}
@@ -27557,17 +27638,54 @@ function renderCategoriesGrid(filtered) {
         }
       }
 
-      if (list.length > opsRenderLimit) {
+      const remaining = expenseView?.remaining ?? list.length - opsRenderLimit;
+      if (remaining > 0) {
         cardsHtml += `
           <div style="text-align: center; margin: 15px 0 10px 0;">
             <button type="button" onclick="loadMoreOperations()" style="height: 36px; padding: 0 20px; border-radius: 10px; background: rgba(56, 189, 248, 0.15); border: 1.2px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.78rem; font-weight: 850; cursor: pointer;">
-              عرض المزيد من العمليات (${list.length - opsRenderLimit} متبقية)
+              عرض المزيد من العمليات (${remaining} متبقية)
             </button>
           </div>
         `;
       }
 
       container.innerHTML = cardsHtml;
+      if (expenseView) {
+        const view = container.firstElementChild;
+        function showExpenseDay(date) {
+          expenseCalendar.date = date;
+          renderOperationsList(filtered);
+          container.querySelector(`[data-calendar-date="${date}"]`)?.focus({preventScroll: true});
+        }
+        view.addEventListener('click', event => {
+          const action = event.target.closest('button, [data-calendar-date]');
+          if (!action) return;
+          const {timelineAction, timelineIndex, calendarDate, calendarStep} = action.dataset;
+          if (timelineAction) {
+            const tx = expenseView.transactions[Number(timelineIndex)];
+            if (!tx) return;
+            if (timelineAction === 'edit') editTx(tx.id);
+            else if (timelineAction === 'receipt') openReceiptLightbox(tx.id);
+            else if (timelineAction === 'delete') deleteTx(tx.id);
+          } else if (calendarStep) {
+            changeExpenseCalendarMonth(Number(calendarStep));
+            renderOperationsList(filtered);
+            container.querySelector(`[data-calendar-step="${calendarStep}"]`)?.focus({preventScroll: true});
+          } else if (calendarDate) {
+            showExpenseDay(calendarDate);
+          }
+        });
+        if (curOpsMode === 'month-trend') {
+          view.addEventListener('keydown', event => {
+            const point = event.target.closest('.ops-month-trend-point');
+            if (!point || !['ArrowLeft','ArrowRight','Enter',' '].includes(event.key)) return;
+            event.preventDefault();
+            const target = event.key === 'ArrowLeft' ? point.previousElementSibling :
+              event.key === 'ArrowRight' ? point.nextElementSibling : point;
+            if (target?.dataset.calendarDate) showExpenseDay(target.dataset.calendarDate);
+          });
+        }
+      }
     }
 function loadMoreOperations() {
       opsRenderLimit = (opsRenderLimit || 40) + 40;
@@ -27617,12 +27735,17 @@ function loadMoreOperations() {
       state.projectFilter = 'all';
       if (typeof refreshProjectSelectors === 'function') refreshProjectSelectors();
 
-      // 5. مسح النطاق المخصص للتاريخ إن وجد والعودة للشهر الافتراضي
+      // 5. Clear all remaining dimensions; "clear filters" must show all history.
       state.customDateRange = null;
+      state.currentWalletId = 'all';
+      const walletSelector = document.getElementById('activeWalletSelect');
+      if (walletSelector) walletSelector.value = 'all';
+      state.currentMemberFilter = 'الكل';
+      state.selectedMember = 'الكل';
       if (typeof setAppPeriod === 'function') {
-        setAppPeriod('month', false);
+        setAppPeriod('all', false);
       } else {
-        state.period = 'month';
+        state.period = 'all';
       }
 
       // 6. تحديث قائمة العمليات المسجلة فوراً
@@ -29436,106 +29559,58 @@ function saveTx() {
         return;
       }
 
+      const attr = value => escapeHtml(value).replaceAll('"', '&quot;');
+      const statuses = {
+        pending: ['قيد الانتظار', 'fa-hourglass-half'],
+        approved: ['تم الصرف', 'fa-circle-check'],
+        rejected: ['مرفوض', 'fa-circle-xmark']
+      };
+      const actions = {approve: approveRequest, edit: promptEditMoneyRequest, reject: rejectRequest, delete: deleteRequest};
       container.innerHTML = '';
       list.forEach(req => {
-        const card = document.createElement('div');
-        card.className = 'req-card-lux';
-        card.style.cssText = 'background: rgba(15, 23, 42, 0.75); border: 1.2px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);';
-
-        let statusBadge = '';
-        if (req.status === 'pending') {
-          statusBadge = `<span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-hourglass-half"></i> قيد الانتظار</span>`;
-        } else if (req.status === 'approved') {
-          statusBadge = `<span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle-check"></i> تم الصرف</span>`;
-        } else {
-          statusBadge = `<span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 2px 8px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-circle-xmark"></i> مرفوض</span>`;
-        }
-
-        // شارات التوزيعات المتعددة
-        let allocChipsHtml = '';
-        if (req.allocations && Array.isArray(req.allocations) && req.allocations.length > 0) {
-          allocChipsHtml = req.allocations.map(a => {
-            const cObj = (typeof EXPENSE_CATEGORIES !== 'undefined' ? EXPENSE_CATEGORIES : []).find(c => c.id === a.category) || { name: 'مصروف', icon: 'fa-tag', color: '#38bdf8' };
-            return `
-              <span style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.28); padding: 2px 7px; border-radius: 6px; font-size: 0.70rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
-                <i class="fa-solid ${cObj.icon}"></i> ${cObj.name} (${a.member}): <strong>${formatMoney(a.amount)}</strong>
-              </span>
-            `;
-          }).join('');
-        }
-
+        const card = document.createElement('article');
+        card.className = 'req-card-lux request-card';
+        const status = Object.hasOwn(statuses, req.status) ? req.status : 'rejected';
+        const [statusLabel, statusIcon] = statuses[status];
+        const allocations = Array.isArray(req.allocations) ? req.allocations : [];
+        const allocationRows = allocations.map(allocation => {
+          const category = getCategoryObj(allocation.category, 'expense');
+          const member = allocation.member ? ` · ${escapeHtml(allocation.member)}` : '';
+          return `<li><span><i class="fa-solid ${escapeHtml(category?.icon || 'fa-tag')}" aria-hidden="true"></i> ${escapeHtml(category?.name || 'مصروف')}${member}</span><bdi>${escapeHtml(formatMoney(allocation.amount))}</bdi></li>`;
+        }).join('');
         card.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-              <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 850;">
-                <i class="fa-solid fa-user"></i> ${escapeHtml(req.member || 'العائلة')}
-              </span>
-              <span style="background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 2px 7px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; font-family: monospace;">
-                ${req.serialNo || req.auditSerial || '#REQ-2026'}
-              </span>
-              ${statusBadge}
-              ${req.isModified ? `<span style="background: rgba(14, 165, 233, 0.15); color: #0284c7; border: 1px solid rgba(14, 165, 233, 0.3); padding: 1px 6px; border-radius: 5px; font-size: 0.65rem; font-weight: 800;" title="تم التعديل: ${escapeHtml(req.lastModifiedReason || '')}">معدل ✏️</span>` : ''}
-            </div>
-            <div style="font-size: 1.05rem; font-weight: 900; color: #fbbf24; direction: ltr; unicode-bidi: isolate; display: inline-flex; align-items: center; gap: 3px;">
-              <span>${Number(req.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-              <span style="font-size: 0.78rem; color: #94a3b8;">${typeof getCurrencySymbol === 'function' ? getCurrencySymbol() : 'ج.م'}</span>
-            </div>
+          <header class="request-card-heading">
+            <h3>${escapeHtml(req.reason || 'طلب مصروف')}</h3>
+            <bdi class="request-card-total">${escapeHtml(formatMoney(req.amount))}</bdi>
+          </header>
+          <div class="request-card-meta">
+            <span><i class="fa-solid fa-user" aria-hidden="true"></i> ${escapeHtml(req.member || 'العائلة')}</span>
+            <span class="request-card-status" data-status="${status}"><i class="fa-solid ${statusIcon}" aria-hidden="true"></i> ${statusLabel}</span>
+            <bdi class="request-card-serial">${escapeHtml(req.serialNo || req.auditSerial || '#REQ-2026')}</bdi>
+            ${req.isModified ? `<span title="تم التعديل: ${attr(req.lastModifiedReason || '')}">معدّل</span>` : ''}
           </div>
-
-          <div style="font-size: 0.86rem; font-weight: 800; color: #f8fafc; margin-bottom: 6px; line-height: 1.4;">
-            ${escapeHtml(req.reason)}
+          ${allocationRows ? `<ul class="request-card-allocations" aria-label="توزيع مبلغ الطلب">${allocationRows}</ul>` : ''}
+          <div class="request-card-dates">
+            <span><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> تاريخ الحاجة <bdi>${escapeHtml(req.date || 'اليوم')}</bdi></span>
+            ${req.timestamp ? `<span><i class="fa-regular fa-clock" aria-hidden="true"></i> تم الطلب <bdi>${escapeHtml(req.timestamp)}</bdi></span>` : ''}
           </div>
-
-          <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px;">
-            ${allocChipsHtml}
-            <span style="background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); padding: 2px 6px; border-radius: 6px; font-size: 0.65rem; font-weight: 700;">
-              <i class="fa-regular fa-calendar-check"></i> تاريخ الحاجة: ${req.date || 'اليوم'}
-            </span>
-          </div>
-
-          ${req.photo ? `
-            <div style="margin: 4px 0 6px;">
-              <a href="${req.photo}" target="_blank" download="request-doc-${req.id}" style="display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 7px; background: rgba(56, 189, 248, 0.16); border: 1px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 0.72rem; font-weight: 800; text-decoration: none;">
-                <i class="fa-solid fa-paperclip"></i> عرض المستند / الفاتورة المرفقة
-              </a>
-            </div>
-          ` : ''}
-
-          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.66rem; color: #64748b; margin-top: 4px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
-            <span><i class="fa-regular fa-clock"></i> تم الطلب: ${req.timestamp || ''}</span>
-          </div>
-        `;
-
-        if (req.status === 'pending') {
-          const actions = document.createElement('div');
-          actions.className = 'item-entry-actions';
-          actions.style.cssText = 'display: flex; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.08);';
-          actions.innerHTML = `
-            <button class="btn-item-action btn-item-approve" onclick="approveRequest('${req.id}')" title="موافقة وصرف فوراً" style="flex: 2; height: 34px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 850; font-size: 0.76rem; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-              <i class="fa-solid fa-check"></i> موافقة وصرف فوراً
-            </button>
-            <button class="btn-item-action" onclick="promptEditMoneyRequest('${req.id}')" title="تعديل تفاصيل الطلب" style="flex: 1; height: 34px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; font-weight: 800; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <i class="fa-solid fa-pen-to-square"></i> تعديل
-            </button>
-            <button class="btn-item-action btn-item-reject" onclick="rejectRequest('${req.id}')" title="رفض الطلب" style="flex: 1; height: 34px; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 8px; font-weight: 800; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <i class="fa-solid fa-xmark"></i> رفض
-            </button>
-          `;
-          card.appendChild(actions);
-        } else {
-          const actions = document.createElement('div');
-          actions.className = 'item-entry-actions';
-          actions.style.cssText = 'display: flex; justify-content: flex-end; margin-top: 6px;';
-          actions.innerHTML = `
-            <button class="btn-item-action btn-item-delete" onclick="deleteRequest('${req.id}')" title="حذف من السجل" style="height: 30px; padding: 0 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; font-weight: 800; font-size: 0.72rem; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-              <i class="fa-solid fa-trash-can"></i> حذف
-            </button>
-          `;
-          card.appendChild(actions);
-        }
-
+          ${req.photo ? `<a class="request-card-attachment" href="${attr(req.photo)}" target="_blank" rel="noopener" download="request-doc-${attr(req.id)}">
+            <i class="fa-solid fa-paperclip" aria-hidden="true"></i> عرض المستند / الفاتورة المرفقة
+          </a>` : ''}
+          <div class="request-card-actions${status === 'pending' ? ' is-pending' : ''}">
+            ${status === 'pending' ? `
+            <button type="button" class="request-card-confirm" data-action="approve" title="موافقة وصرف فوراً"><i class="fa-solid fa-check" aria-hidden="true"></i><span>موافقة وصرف فوراً</span></button>
+            <button type="button" data-action="edit" title="تعديل تفاصيل الطلب"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i><span>تعديل</span></button>
+            <button type="button" class="request-card-danger" data-action="reject" title="رفض الطلب"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span>رفض</span></button>
+            ` : `<button type="button" class="request-card-danger" data-action="delete" title="حذف من السجل"><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>حذف</span></button>`}
+          </div>`;
+        card.querySelector('.request-card-actions').addEventListener('click', event => {
+          const button = event.target.closest('button[data-action]');
+          if (button) actions[button.dataset.action](req.id);
+        });
         container.appendChild(card);
       });
+
     }
 
     function approveRequest(reqId) {
@@ -30443,7 +30518,8 @@ function switchSettingsTab(tabName) {
       amber: { name: 'عنبر', dark: '#fdba74', light: '#9a3412' },
       teal: { name: 'تركوازي', dark: '#5eead4', light: '#0f766e' },
       indigo: { name: 'نيلي', dark: '#a5b4fc', light: '#3730a3' },
-      rose: { name: 'وردي', dark: '#f9a8d4', light: '#9d174d' }
+      rose: { name: 'وردي', dark: '#f9a8d4', light: '#9d174d' },
+      monochrome: { name: 'أحادي', dark: '#cbd5e1', light: '#475569' }
     };
 
     function appearanceContrastRatio(foreground, background) {
@@ -30528,7 +30604,7 @@ function switchSettingsTab(tabName) {
       document.body.setAttribute('data-theme', target);
 
       // تحديث فئات الـ body
-      const allThemeClasses = ['theme-navy', 'theme-emerald', 'theme-purple', 'theme-rose', 'theme-ocean', 'theme-gold', 'theme-slate', 'theme-midnight', 'theme-facebook'];
+      const allThemeClasses = Object.keys(APPEARANCE_PALETTES).map(key => 'theme-' + key);
       document.body.classList.remove(...allThemeClasses);
       document.body.classList.add('theme-' + target);
 
@@ -30842,11 +30918,11 @@ function switchSettingsTab(tabName) {
     }
 
     function setAppDesignStyle(style, notify = true, persist = true) {
-      const validStyles = ['facebook', 'glass', 'minimal', 'neumorphic', 'neon', 'clear', 'elevated', 'outlined', 'gradient'];
+      const validStyles = ['facebook', 'glass', 'minimal', 'neumorphic', 'neon', 'clear', 'flat', 'elevated', 'outlined', 'gradient'];
       const targetStyle = validStyles.includes(String(style || '')) ? String(style) : 'glass';
       document.documentElement.setAttribute('data-card-style', targetStyle);
       document.body.setAttribute('data-card-style', targetStyle);
-      document.querySelectorAll('#cardStyleButtonsContainer [data-card-style]').forEach(button => {
+      document.querySelectorAll('#settingsSec_appearance button[data-card-style]').forEach(button => {
         const selected = button.getAttribute('data-card-style') === targetStyle;
         button.classList.toggle('active', selected);
         button.setAttribute('aria-pressed', selected ? 'true' : 'false');
@@ -30855,7 +30931,12 @@ function switchSettingsTab(tabName) {
         try { localStorage.setItem('family_monefy_design_style', targetStyle); } catch (e) {}
       }
       updateAppearancePreview();
-      if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + targetStyle);
+      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+        renderCategoriesGrid(getFilteredTransactions());
+      }
+      const selectedName = document.querySelector('#settingsSec_appearance .card-style-option.active strong')?.textContent;
+      if (selectedName) document.getElementById('activeDesignStyleBadge').textContent = selectedName;
+      if (notify && typeof showToast === 'function') showToast('▣ تم تفعيل نمط الكروت: ' + (selectedName || 'فيسبوك'));
     }
 
 
@@ -31319,6 +31400,8 @@ function switchSettingsTab(tabName) {
     window.currentMemberAnalysisTab = 'person_breakdown'; // 'person_breakdown' | 'category_breakdown' | 'matrix'
 
     function saveSummaryReturnState(extra = {}) {
+      // Preserve the live summary screen before drill-down closes the drawer.
+      window.OperationsReturnHub?.stageOrigin();
       const drawer = document.getElementById('summaryLeftDrawer');
       const scrollTop = drawer ? drawer.scrollTop : 0;
       window.summaryReturnState = {
@@ -34127,7 +34210,8 @@ function switchSettingsTab(tabName) {
           const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
           const isNewer = remoteBuild && (
             (remoteBNum > currentBuildNum) ||
-            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
+            (remoteBNum === 0 && remoteBuild.version &&
+             String(remoteBuild.version).localeCompare(String(currentVerStr), undefined, { numeric: true, sensitivity: 'base' }) > 0)
           );
 
           if (isNewer || (options.isManual && options.force)) {
@@ -34198,7 +34282,8 @@ function switchSettingsTab(tabName) {
         const remoteBNum = Number(remoteBuild?.buildId || remoteBuild?.build || 0);
           const isNewer = remoteBuild && (
             (remoteBNum > currentBuildNum) ||
-            (remoteBuild.version && remoteBuild.version !== currentVerStr && !remoteBuild.version.includes(currentVerStr.replace('v','')))
+            (remoteBNum === 0 && remoteBuild.version &&
+             String(remoteBuild.version).localeCompare(String(currentVerStr), undefined, { numeric: true, sensitivity: 'base' }) > 0)
           );
 
         if (isNewer) {
@@ -34638,7 +34723,7 @@ function switchSettingsTab(tabName) {
     window.commitmentsCalendarYear = new Date().getFullYear();
     window.commitmentsCalendarMonth = new Date().getMonth(); // 0-based
     state.selectedCommitmentDate = null;
-    window.isCommitmentsCalendarCollapsed = false;
+    window.isCommitmentsCalendarCollapsed = true;
 
     function toggleCommitmentsCalendarCollapse() {
       window.isCommitmentsCalendarCollapsed = !window.isCommitmentsCalendarCollapsed;
@@ -34646,6 +34731,7 @@ function switchSettingsTab(tabName) {
       const icon = document.getElementById('iconCommitmentsCalendarToggle');
       if (body) body.style.display = window.isCommitmentsCalendarCollapsed ? 'none' : 'block';
       if (icon) icon.className = window.isCommitmentsCalendarCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+      document.getElementById('btnCommitmentsCalendarToggle')?.setAttribute('aria-expanded', String(!window.isCommitmentsCalendarCollapsed));
     }
 
     function navigateCommitmentsCalendar(dir) {
@@ -37083,6 +37169,8 @@ function switchCategoryChartFormat(format, btnEl) {
       const btnA = document.getElementById('btnBudgetInnerArchive');
       if (panelC) panelC.style.display = isCompare ? 'block' : 'none';
       if (panelA) panelA.style.display = isCompare ? 'none' : 'block';
+      btnC?.setAttribute('aria-pressed', String(isCompare));
+      btnA?.setAttribute('aria-pressed', String(!isCompare));
       if (btnC) {
         btnC.style.background = isCompare ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent';
         btnC.style.color = isCompare ? '#fff' : '#94a3b8';
@@ -37124,6 +37212,7 @@ function switchCategoryChartFormat(format, btnEl) {
 
     function switchBudgetSubTab(tab) {
       activeBudgetSubTab = tab;
+      window.activeBudgetSubTab = tab;
       const bCurr = document.getElementById('btnBudgetSubCurrent');
       const bProj = document.getElementById('btnBudgetSubProjects');
       const bComp = document.getElementById('btnBudgetSubComparisons');
@@ -37167,12 +37256,14 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.color = '#fff';
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
-        if (secComp) secComp.style.display = 'block';
-        if (window.BudgetAuditEngine && typeof BudgetAuditEngine.renderExecutiveComparisonsAudit === 'function') {
-          BudgetAuditEngine.renderExecutiveComparisonsAudit();
-        } else if (typeof renderComparisonsSection === 'function') {
-          renderComparisonsSection();
+        // Both comparison entry points now show ONE unified comparison workspace.
+        // The old stand-alone panel stays hidden to prevent contradictory data.
+        if (secCurr) secCurr.style.display = 'block';
+        if (secComp) secComp.style.display = 'none';
+        if (typeof switchBudgetMonthView === 'function') {
+          switchBudgetMonthView('compare');
         }
+        if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
       } else if (tab === 'history') {
         if (bHist) {
           bHist.classList.add('active');
@@ -37688,7 +37779,7 @@ function getTodoTasks() {
     const raw = localStorage.getItem('family_monefy_tasks');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed; // Respect a legitimately empty saved task list.
     }
   } catch (e) {
     console.warn('Error reading tasks:', e);
@@ -42989,7 +43080,7 @@ window.filterArchiveType = filterArchiveType;
 </style>
 
 
-  <script src="./voice-assistant-engine.js?v=202611161600" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611170915" defer></script>
 
   <!-- Voice Assistant Suite v5.3.89 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
@@ -43031,5 +43122,9 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
+<link rel="stylesheet" href="./home-layouts.css?v=202611181115">
+<script defer src="./home-layouts.js?v=202611181115"></script>
+<script src="./operations-return-hub.js?v=202611171820"></script>
+<script src="./comparison-deeplink.js?v=20261117-unified-v2"></script>
 </body>
 </html>

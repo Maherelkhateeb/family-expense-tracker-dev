@@ -1,7 +1,7 @@
 {
-  "version": "v5.3.89",
-  "build": "202611161615",
-  "buildId": 202611161615,
-  "updated": "2026-11-16T16:15:00+03:00",
-  "notes": "Complete overhaul of Theme & Color Engine, transparent frame backgrounds, instant live re-render, Facebook palette integration, and PWA cache upgrade"
+  "version": "v5.4.17",
+  "build": "202611181115",
+  "buildId": 202611181115,
+  "updated": "2026-11-18T11:15:00+03:00",
+  "notes": "أيقونة قرص دائرية من 6 أجزاء لتغيير الأشكال + نقل مغير العملة لأقصى يسار الشاشة + التزام تام بالأشكال المرسلة بدقة 100%."
 }
