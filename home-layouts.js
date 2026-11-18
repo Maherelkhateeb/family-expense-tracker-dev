@@ -378,14 +378,13 @@
   function getDialSvgMarkup(activeSector) {
     const cx = 22.0;
     const cy = 22.0;
-    const outerR = 19.8;
-    const orbitR = 15.6;
-    const medallionR = 10.2;
+    const r = 19.8;
     const count = 10;
     const stepDeg = 36.0;
     const startOffsetDeg = -90.0;
     const safeSector = Math.max(0, Math.min(count - 1, parseInt(activeSector, 10) || 0));
     const theme = LAYOUT_DIAL_THEMES[safeSector] || LAYOUT_DIAL_THEMES[0];
+    const palette = DIAMETER_PALETTES[safeSector] || DIAMETER_PALETTES[0];
     const isLight = document.body && document.body.classList.contains('light-theme');
 
     function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -396,105 +395,107 @@
       };
     }
 
-    // 10 فصوص بلورية مدارية تمثل الأنماط العشرة
-    const facets = Array.from({ length: count }, (_, i) => {
-      const deg = startOffsetDeg + (i * stepDeg);
-      const p = polarToCartesian(cx, cy, orbitR, deg);
+    // 10 قطاعات جوهرية متناسقة
+    const paths = Array.from({ length: count }, (_, i) => {
+      const startAngle = startOffsetDeg + (i * stepDeg);
+      const endAngle = startAngle + stepDeg;
+      const p1 = polarToCartesian(cx, cy, r, startAngle);
+      const p2 = polarToCartesian(cx, cy, r, endAngle);
+
+      const d = [
+        'M', cx, cy,
+        'L', p1.x.toFixed(2), p1.y.toFixed(2),
+        'A', r, r, 0, 0, 1, p2.x.toFixed(2), p2.y.toFixed(2),
+        'Z'
+      ].join(' ');
+
       const isActive = (i === safeSector);
-      const fTheme = LAYOUT_DIAL_THEMES[i] || LAYOUT_DIAL_THEMES[0];
+      const fill = isActive ? `url(#activeSectorGrad_${safeSector})` : (LAYOUT_DIAL_THEMES[i]?.primary || '#8b5cf6');
+      const opacity = isActive ? '0.96' : (isLight ? '0.20' : '0.16');
+      const stroke = isActive ? theme.primary : 'rgba(217, 119, 6, 0.25)';
+      const strokeW = isActive ? '1.1' : '0.55';
 
-      if (isActive) {
-        return `
-          <circle class="hl-dial-facet is-active" cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="3.6" fill="${theme.glow}" opacity="0.65" filter="url(#facetBloom_${safeSector})"/>
-          <circle cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="2.3" fill="url(#heroTileGrad_${safeSector})" stroke="#ffffff" stroke-width="0.8"/>
-          <circle cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="0.95" fill="#ffffff"/>
-        `;
-      }
-
-      const dotFill = isLight ? fTheme.secondary : fTheme.primary;
-      const dotOpacity = isLight ? '0.55' : '0.45';
-      return `<circle class="hl-dial-facet" cx="${p.x.toFixed(2)}" cy="${p.y.toFixed(2)}" r="1.2" fill="${dotFill}" opacity="${dotOpacity}"/>`;
+      return `<path class="hl-dial-slice ${isActive ? 'is-active' : ''}" data-sector="${i}" d="${d}" fill="${fill}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
     }).join('');
 
-    // مؤشر ليزري بلوري نشط ينبثق من قلب القرص إلى الفص المحدد
-    const activeDeg = startOffsetDeg + (safeSector * stepDeg);
-    const pStart = polarToCartesian(cx, cy, medallionR + 0.8, activeDeg);
-    const pEnd = polarToCartesian(cx, cy, orbitR - 2.8, activeDeg);
-    const needle = `
-      <line class="hl-dial-needle" x1="${pStart.x.toFixed(2)}" y1="${pStart.y.toFixed(2)}" x2="${pEnd.x.toFixed(2)}" y2="${pEnd.y.toFixed(2)}" stroke="${theme.glow}" stroke-width="1.6" stroke-linecap="round" opacity="0.9" filter="url(#facetBloom_${safeSector})"/>
-      <line x1="${pStart.x.toFixed(2)}" y1="${pStart.y.toFixed(2)}" x2="${pEnd.x.toFixed(2)}" y2="${pEnd.y.toFixed(2)}" stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" opacity="0.95"/>
+    // 5 خطوط أقطار كاملة تتغير ألوانها ديناميكياً مع كل شكل
+    const lines = [];
+    for (let dIdx = 0; dIdx < 5; dIdx++) {
+      const angle1 = startOffsetDeg + (dIdx * stepDeg);
+      const angle2 = angle1 + 180.0;
+      const p1 = polarToCartesian(cx, cy, r, angle1);
+      const p2 = polarToCartesian(cx, cy, r, angle2);
+      const color = palette[dIdx] || '#ffd700';
+
+      lines.push(`<line class="hl-dial-diameter" data-diameter="${dIdx}" x1="${p1.x.toFixed(2)}" y1="${p1.y.toFixed(2)}" x2="${p2.x.toFixed(2)}" y2="${p2.y.toFixed(2)}" stroke="${color}" stroke-width="1.15" stroke-linecap="round" opacity="0.85"/>`);
+    }
+
+    // سهم التغيير النشط الصريح ينطلق فقط من المركز نحو الطرف النشط (بدون أي ذيل أو فص بالجهة المقابلة!)
+    const activeAngle = startOffsetDeg + (safeSector * stepDeg);
+    const pActive = polarToCartesian(cx, cy, r, activeAngle);
+    const pInner = polarToCartesian(cx, cy, 4.6, activeAngle);
+    const pointerBeam = `
+      <line class="hl-dial-pointer-beam" x1="${pInner.x.toFixed(2)}" y1="${pInner.y.toFixed(2)}" x2="${pActive.x.toFixed(2)}" y2="${pActive.y.toFixed(2)}" stroke="${theme.glow}" stroke-width="2.2" stroke-linecap="round" opacity="0.95" filter="url(#dialEpicGlow)"/>
+      <line class="hl-dial-pointer-beam-core" x1="${pInner.x.toFixed(2)}" y1="${pInner.y.toFixed(2)}" x2="${pActive.x.toFixed(2)}" y2="${pActive.y.toFixed(2)}" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" opacity="0.98"/>
+      <!-- فص ماسي مشع حصرياً عند رأس سهم التغيير النشط فقط -->
+      <circle cx="${pActive.x.toFixed(2)}" cy="${pActive.y.toFixed(2)}" r="2.1" fill="#ffffff" stroke="${theme.primary}" stroke-width="1.0" filter="url(#dialEpicGlow)"/>
+      <circle cx="${pActive.x.toFixed(2)}" cy="${pActive.y.toFixed(2)}" r="1.1" fill="${theme.glow}"/>
     `;
 
-    const bgGradId = isLight ? 'dialBg_light' : 'dialBg_dark';
+    // 10 علامات فلكية ذهبية على الإطار الخارجي
+    const ticks = Array.from({ length: count }, (_, i) => {
+      const deg = startOffsetDeg + (i * stepDeg);
+      const tp = polarToCartesian(cx, cy, r + 0.2, deg);
+      if (i === safeSector) {
+        return `<circle cx="${tp.x.toFixed(2)}" cy="${tp.y.toFixed(2)}" r="1.9" fill="#ffffff" stroke="#ffd700" stroke-width="1.1" filter="url(#dialEpicGlow)"/>`;
+      }
+      return `<circle cx="${tp.x.toFixed(2)}" cy="${tp.y.toFixed(2)}" r="0.85" fill="#f59e0b" opacity="0.75"/>`;
+    }).join('');
+
+    const bgFill = isLight ? '#ffffff' : '#090d16';
 
     return `
       <svg class="home-dial-icon" viewBox="0 0 44 44" width="100%" height="100%" aria-hidden="true" style="overflow:visible; display:block;">
         <defs>
-          <radialGradient id="dialBg_dark" cx="38%" cy="32%" r="65%">
-            <stop offset="0%" stop-color="#1e293b"/>
-            <stop offset="60%" stop-color="#0f172a"/>
-            <stop offset="100%" stop-color="#020617"/>
-          </radialGradient>
-          <radialGradient id="dialBg_light" cx="38%" cy="32%" r="65%">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="65%" stop-color="#f8fafc"/>
-            <stop offset="100%" stop-color="#e2e8f0"/>
-          </radialGradient>
-          <linearGradient id="goldBezelGrad" x1="15%" y1="0%" x2="85%" y2="100%">
+          <linearGradient id="dialGoldBezel" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stop-color="#fef08a"/>
-            <stop offset="28%" stop-color="#ffd700"/>
-            <stop offset="60%" stop-color="#d97706"/>
-            <stop offset="85%" stop-color="#f59e0b"/>
-            <stop offset="100%" stop-color="#92400e"/>
+            <stop offset="25%" stop-color="#ffd700"/>
+            <stop offset="50%" stop-color="#b45309"/>
+            <stop offset="75%" stop-color="#f59e0b"/>
+            <stop offset="100%" stop-color="#78350f"/>
           </linearGradient>
-          <linearGradient id="innerRimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#ffd700" stop-opacity="0.85"/>
-            <stop offset="100%" stop-color="#b45309" stop-opacity="0.45"/>
-          </linearGradient>
-          <radialGradient id="heroTileGrad_${safeSector}" cx="35%" cy="30%" r="70%">
-            <stop offset="0%" stop-color="${theme.glow}"/>
-            <stop offset="50%" stop-color="${theme.primary}"/>
-            <stop offset="100%" stop-color="${theme.core}"/>
+          <radialGradient id="activeSectorGrad_${safeSector}" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="${theme.glow}" stop-opacity="0.95"/>
+            <stop offset="60%" stop-color="${theme.primary}" stop-opacity="0.90"/>
+            <stop offset="100%" stop-color="${theme.secondary}" stop-opacity="0.98"/>
           </radialGradient>
-          <filter id="facetBloom_${safeSector}" x="-40%" y="-40%" width="180%" height="180%">
-            <feGaussianBlur stdDeviation="1.0" result="blur"/>
+          <filter id="dialEpicGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="1.2" result="blur"/>
             <feMerge>
               <feMergeNode in="blur"/>
               <feMergeNode in="SourceGraphic"/>
             </feMerge>
           </filter>
-          <filter id="heroTileGlow_${safeSector}" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="0" stdDeviation="1.2" flood-color="${theme.glow}" flood-opacity="0.75"/>
-          </filter>
         </defs>
-
-        <!-- الخلفية البلورية المعتمة الفخمة -->
-        <circle cx="${cx}" cy="${cy}" r="${outerR}" fill="url(#${bgGradId})"/>
-
-        <!-- المدار الدائري المنقط الأنيق للأنماط -->
-        <circle cx="${cx}" cy="${cy}" r="${orbitR}" fill="none" stroke="${isLight ? 'rgba(217, 119, 6, 0.25)' : 'rgba(245, 158, 11, 0.22)'}" stroke-width="0.7" stroke-dasharray="1.2 2.2"/>
-
-        <!-- الفصوص البلورية المدارية العشرة -->
-        ${facets}
-
-        <!-- إبرة التحديد الليزرية الأنيقة -->
-        ${needle}
-
-        <!-- القرص المركزي العائم ثلاثي الأبعاد -->
-        <circle cx="${cx}" cy="${cy}" r="${medallionR}" fill="url(#${bgGradId})" stroke="url(#innerRimGrad)" stroke-width="1.1" filter="url(#facetBloom_${safeSector})"/>
-        <circle cx="${cx}" cy="${cy}" r="${(medallionR - 0.9).toFixed(2)}" fill="${isLight ? 'rgba(255, 255, 255, 0.7)' : 'rgba(15, 23, 42, 0.65)'}"/>
-
-        <!-- مصفوفة شبكة الأنماط الحديثة (2x2 Layout Grid) فائقة الوضوح والجمال -->
-        <!-- المربع الرئيسي المتوهج باللون المميز للشكل النشط -->
-        <rect class="hl-hero-tile" x="22.7" y="16.5" width="4.4" height="4.4" rx="1.1" fill="url(#heroTileGrad_${safeSector})" stroke="#ffffff" stroke-width="0.65" filter="url(#heroTileGlow_${safeSector})"/>
-        
-        <!-- المربعات المصاحبة الزجاجية الأنيقة -->
-        <rect x="16.9" y="16.5" width="4.4" height="4.4" rx="1.1" fill="${isLight ? 'rgba(15, 23, 42, 0.18)' : 'rgba(255, 255, 255, 0.22)'}" stroke="${isLight ? 'rgba(15, 23, 42, 0.28)' : 'rgba(255, 255, 255, 0.45)'}" stroke-width="0.6"/>
-        <rect x="16.9" y="22.3" width="4.4" height="4.4" rx="1.1" fill="${isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255, 255, 255, 0.16)'}" stroke="${isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.35)'}" stroke-width="0.6"/>
-        <rect x="22.7" y="22.3" width="4.4" height="4.4" rx="1.1" fill="${isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.28)'}" stroke="${isLight ? 'rgba(15, 23, 42, 0.32)' : 'rgba(255, 255, 255, 0.5)'}" stroke-width="0.6"/>
-
-        <!-- الإطار الخارجي الذهبي الملكي المصقول -->
-        <circle cx="${cx}" cy="${cy}" r="${outerR}" fill="none" stroke="url(#goldBezelGrad)" stroke-width="1.8"/>
+        <!-- قرص الأوبسيديان الخلفي الفخم -->
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="${bgFill}"/>
+        <!-- القطاعات العشرة الجوهرية -->
+        ${paths}
+        <!-- مدار الأسطرلاب الداخلي المنقط -->
+        <circle cx="${cx}" cy="${cy}" r="${(r - 4.2).toFixed(2)}" fill="none" stroke="#d97706" stroke-width="0.65" stroke-dasharray="1.3 2.2" opacity="0.6"/>
+        <!-- الأقطار الخمسة اللونية المتكاملة -->
+        ${lines.join('')}
+        <!-- سهم التغيير النشط الصريح بدون ذيل في الخلف -->
+        ${pointerBeam}
+        <!-- إطار الذهب المصقول الملكي -->
+        <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="url(#dialGoldBezel)" stroke-width="1.8"/>
+        <!-- العلامات الفلكية الذهبية العشر -->
+        ${ticks}
+        <!-- قلب الدائرة الأسطوري المرصع -->
+        <circle cx="${cx}" cy="${cy}" r="4.9" fill="url(#dialGoldBezel)" stroke="#78350f" stroke-width="0.7"/>
+        <circle cx="${cx}" cy="${cy}" r="3.7" fill="${theme.glow}" opacity="0.9" filter="url(#dialEpicGlow)"/>
+        <circle cx="${cx}" cy="${cy}" r="2.6" fill="${theme.core}" stroke="#0f172a" stroke-width="0.7"/>
+        <circle cx="${(cx - 0.7).toFixed(2)}" cy="${(cy - 0.7).toFixed(2)}" r="0.85" fill="#ffffff" opacity="0.95"/>
       </svg>
     `.trim();
   }
@@ -516,7 +517,7 @@
       iconContainer = btn.querySelector('.home-dial-wrapper');
     }
 
-    iconContainer.innerHTML = `<i class="fa-solid fa-shapes hl-shapes-icon" style="font-size:1.24rem; color:${theme.primary}; filter:drop-shadow(0 2px 6px ${theme.glow}88); transition:transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;"></i>`;
+    iconContainer.innerHTML = getDialSvgMarkup(currentLayout);
   }
 
   /* -------------------------------------------------------------
