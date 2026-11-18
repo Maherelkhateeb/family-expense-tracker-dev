@@ -107,16 +107,19 @@
       row.count++;
       actualCount++;
     }
+    // A multi-month window cannot have a meaningful percentage until every
+    // selected month has an approved budget. Show amounts, but mark % unknown.
+    const fullyBudgeted=planMonths===months.length;
     for(const row of list){
       row.difference=row.actual-row.estimated;
-      row.percent=row.estimated>0?100*row.difference/row.estimated:null;
-      row.usage=row.estimated>0?100*row.actual/row.estimated:null;
+      row.percent=fullyBudgeted&&row.estimated>0?100*row.difference/row.estimated:null;
+      row.usage=fullyBudgeted&&row.estimated>0?100*row.actual/row.estimated:null;
     }
     const estimated=list.reduce((sum,row)=>sum+row.estimated,0);
     const actual=list.reduce((sum,row)=>sum+row.actual,0);
     return {rows:list,estimated,actual,difference:actual-estimated,
-      percent:estimated>0?(actual-estimated)*100/estimated:null,
-      planMonths,actualCount,months:months.slice()};
+      percent:fullyBudgeted&&estimated>0?(actual-estimated)*100/estimated:null,
+      planMonths,fullyBudgeted,actualCount,months:months.slice()};
   }
   function relative(num){return num==null?'غير متاح':(num>0?'+':num<0?'−':'')+money(Math.abs(num))+'%';}
   function tone(row){return row.estimated<=0?(row.actual>0?'unplanned':'neutral'):(row.difference>0?'over':row.difference<0?'under':'neutral');}
@@ -125,6 +128,16 @@
   function render(){
     const panel=document.getElementById('cmpPeriodChart');
     if(!panel)return false;
+    // The fixed swipe handles and idle microphone formerly covered the
+    // comparison controls and financial cards on narrow Android screens.
+    // Scope this guard to the budget view; keep the voice button visible
+    // when an actual recognition session is active.
+    if(!document.getElementById('cmpAuditOverlayGuard')){
+      const style=document.createElement('style');
+      style.id='cmpAuditOverlayGuard';
+      style.textContent='body:has(#viewBudgets.active #cmpAuditApp) :is(#leftScreenEdgeHandle,#rightScreenEdgeHandle,#btnVoiceAssistantFab:not(.is-listening,.is-processing)){display:none!important}';
+      document.head.appendChild(style);
+    }
     if(!settings.month)settings.month=currentMonth();
     const months=Array.from({length:settings.span},(_,i)=>monthShift(settings.month,i-settings.span+1));
     const report=calculate(st(),months);
@@ -132,16 +145,15 @@
     if(!root){root=document.createElement('section');root.id='cmpAuditApp';root.className='cmp-audit-app';root.dir='rtl';panel.appendChild(root);}
     const c=currency(),current=settings.month===currentMonth();
     const note=report.planMonths===0?'مفيش موازنة تقديرية محفوظة للفترة دي. الفعلي ظاهر، لكن مفيش أساس صحيح لحساب نسبة الفرق.':
-      report.planMonths<months.length?'مفيش موازنة محفوظة لكل الشهور المختارة؛ الفرق محسوب مقابل الموازنات الموجودة بس.':
+      report.planMonths<months.length?'الموازنة غير مكتملة: في شهور من الفترة من غير تقدير محفوظ. الأرقام المجمعة للتوضيح فقط، ونسبة الفرق غير متاحة لحد اكتمال موازنات الشهور.':
       current?'المقدر للشهر بالكامل، والفعلي حسب العمليات المسجلة لحد دلوقتي.':'البيانات من الموازنات والعمليات المسجلة للفترة المحددة.';
-    const headline=report.estimated<=0?'بدون تقدير':report.difference>0?'زيادة عن المقدر':report.difference<0?'أقل من المقدر':'مطابق للمقدر';
+    const headline=report.planMonths<months.length?'موازنة غير مكتملة':report.estimated<=0?'بدون تقدير':report.difference>0?'زيادة عن المقدر':report.difference<0?'أقل من المقدر':'مطابق للمقدر';
     const summary=[
       ['الموازنة المقدرة',money(report.estimated), 'neutral'],
       ['المصروف الفعلي',money(report.actual),'blue'],
       ['الفرق (فعلي − مقدر)',signed(report.difference), report.estimated<=0?'neutral':report.difference>0?'over':report.difference<0?'under':'neutral'],
       ['نسبة الفرق',relative(report.percent),report.estimated<=0?'neutral':report.difference>0?'over':report.difference<0?'under':'neutral']
     ];
-    const biggest=Math.max(1,...report.rows.flatMap(r=>[r.estimated,r.actual]));
     root.innerHTML='<header class="cmp-audit-head"><div><h2>الرقابة على الميزانية</h2><p>مقارنة واضحة بين الميزانية التقديرية والمصروف الفعلي.</p></div></header>'+
       '<div class="cmp-audit-filter"><label for="cmpAuditMonth">الشهر</label><input id="cmpAuditMonth" type="month" value="'+safe(settings.month)+'" aria-label="الشهر المستهدف">'+
       '<label for="cmpAuditSpan">الفترة</label><select id="cmpAuditSpan" aria-label="عدد الشهور">'+
