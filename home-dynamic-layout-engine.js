@@ -22,13 +22,15 @@
     let stopped = false, frame = 0, observer = null;
     // Preserve existing inline display rules so non-reference screens are untouched.
     const floatingControls = new Map();
-    function reconcileFloatingControls(hide) {
+    function reconcileFloatingControls(hideEdgeHandles,hideFloatingMic) {
       for (const id of ['leftScreenEdgeHandle','rightScreenEdgeHandle','btnVoiceAssistantFab']) {
         const element = document.getElementById(id);
         if (!element) continue;
-        const listening = id === 'btnVoiceAssistantFab' &&
-          (element.classList.contains('is-listening') || element.classList.contains('is-processing'));
-        if (hide && !listening) {
+        // The in-card voice button is the only speech entry point whenever
+        // a selected home design supplies its own voice action. Do not show
+        // a second microphone over spending amounts, even while recording.
+        const hide = id === 'btnVoiceAssistantFab' ? hideFloatingMic : hideEdgeHandles;
+        if (hide) {
           if (!floatingControls.has(id)) floatingControls.set(id, {
             value: element.style.getPropertyValue('display'),
             priority: element.style.getPropertyPriority('display')
@@ -48,7 +50,13 @@
     function measure() {
       if (stopped || !view.isConnected || !host.isConnected) return;
       const design = Number(host.dataset.design);
-      reconcileFloatingControls(design === 1 && view.classList.contains('active'));
+      const homeIsActive = view.classList.contains('active');
+      const hasVoiceCard = homeIsActive && (
+        design === 1
+          ? !!host.querySelector('.reference-one-card[data-ref-category="voice"]')
+          : design > 1 && !!host.querySelector('.home-design-card [data-voice]')
+      );
+      reconcileFloatingControls(design === 1 && homeIsActive,hasVoiceCard);
       // The legacy renderer sets inline !important orders. CSS cannot beat
       // them, so reconcile only this home's five quick actions here.
       if (view.classList.contains('active')) {
@@ -174,7 +182,11 @@
       }
       schedule();
     });
-    mutations.observe(host, { attributes: true, attributeFilter: ['data-design', 'class'] });
+    // A design's voice tile can be mounted after its data-design attribute.
+    // Reconcile the floating mic as soon as the card is inserted.
+    mutations.observe(host, {
+      attributes:true,attributeFilter:['data-design','class'],childList:true,subtree:true
+    });
     mutations.observe(view, { attributes: true, attributeFilter: ['class','style'] });
     // App appearance controls change font family/size through style or
     // theme classes without resizing the viewport. Listen to those roots.
@@ -204,7 +216,7 @@
     return {
       refresh: schedule,
       destroy() {
-        reconcileFloatingControls(false);
+        reconcileFloatingControls(false,false);
         stopped = true;
         if (frame) root.cancelAnimationFrame(frame);
         if (observer) observer.disconnect();
