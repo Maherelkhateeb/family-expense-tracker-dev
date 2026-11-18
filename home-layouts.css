@@ -970,11 +970,17 @@ body.dark-theme .hl-l4-voice-sub {
 .radial-arena,
 .honeycomb-board,
 .sensor-arena,
-.diamond-arena,
-.equalizer-arena {
+.diamond-arena {
   height: var(--dynamic-home-arena-h, 380px) !important;
   min-height: 320px;
   max-height: 520px;
+  box-sizing: border-box;
+}
+
+.equalizer-arena {
+  height: var(--dynamic-home-arena-h, 240px) !important;
+  min-height: 180px;
+  max-height: 360px;
   box-sizing: border-box;
 }
 
@@ -1228,6 +1234,272 @@ body.dark-theme .hl-picker-text small {
 
 body.dark-theme .hl-integrated-voice-btn {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(109, 40, 217, 0.45) 100%) !important;
+  border-color: #a855f7 !important;
+  color: #f3e8ff !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35) !important;
+}
+
+/* -------------------------------------------------------------
+   6. Layout 7: Cyber Telemetry HUD Sensor Tiles (Reference Spec)
+------------------------------------------------------------- */
+.sensor-arena.hl-l7-arena {
+  width: 100% !important;
+  max-width: 412px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 4px 6px !important;
+  box-sizing: border-box !important;
+}
+
+.sensor-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-rows: repeat(3, minmax(96px, 108px)) !important;
+  gap: 7px !important;
+  width: 100% !important;
+}
+
+.sensor-tile.hl-l7-tile {
+  background: linear-gradient(160deg, rgba(24, 34, 53, 0.90) 0%, rgba(13, 22, 38, 0.96) 100%) !important;
+  border: 1.3px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  padding: 7px 6px 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  text-align: center !important;
+  position: relative !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4) !important;
+  box-sizing: border-box !important;
+  height: 100% !important;
+  max-height: 108px !important;
+  min-height: 96px !important;
+  transition: transform 0.18s ease, border-color 0.18s ease !important;
+}
+
+.sensor-tile.hl-l7-tile:active {
+  transform: scale(0.97) !important;
+  border-color: var(--tile-color, #38bdf8) !important;
+}
+
+.sensor-tile-top {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 2px !important;
+  cursor: pointer !important;
+}
+
+.sensor-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.sensor-pct {
+  font-size: 0.60rem !important;
+  font-weight: 900 !important;
+  color: #94a3b8 !important;
+}
+
+.sensor-icon-circle-btn {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.sensor-icon-circle {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.95rem !important;
+  margin: 1px 0 !important;
+}
+
+.sensor-tile-bottom-btn {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  cursor: pointer !important;
+  gap: 2px !important;
+}
+
+.sensor-title {
+  font-size: 0.68rem !important;
+  font-weight: 850 !important;
+  color: #f8fafc !important;
+  line-height: 1.1 !important;
+  max-width: 95% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.sensor-val {
+  font-size: 0.74rem !important;
+  font-weight: 900 !important;
+  color: #fca5a5 !important;
+  direction: ltr !important;
+  font-family: var(--font-numbers, -apple-system, sans-serif) !important;
+}
+
+.sensor-bar {
+  width: 85% !important;
+  height: 3.5px !important;
+  border-radius: 3px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  margin-top: 3px !important;
+  overflow: hidden !important;
+}
+
+.sensor-bar-fill {
+  height: 100% !important;
+  border-radius: 3px !important;
+  transition: width 0.3s ease !important;
+}
+
+/* -------------------------------------------------------------
+   7. Layout 9: Family Member Expense Distribution Chart
+------------------------------------------------------------- */
+.hl-l9-member-chart-box {
+  width: 100% !important;
+  background: linear-gradient(160deg, rgba(24, 34, 53, 0.85) 0%, rgba(13, 22, 38, 0.95) 100%) !important;
+  border: 1.3px solid rgba(56, 189, 248, 0.25) !important;
+  border-radius: 14px !important;
+  padding: 8px 10px 10px !important;
+  margin-bottom: 8px !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+.hl-l9-chart-title-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-bottom: 6px !important;
+  margin-bottom: 6px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.hl-l9-member-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.hl-l9-member-pill {
+  background: rgba(15, 23, 42, 0.75) !important;
+  border: 1.2px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 5px 6px 6px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, border-color 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+.hl-l9-member-pill:active {
+  transform: scale(0.96) !important;
+  border-color: #38bdf8 !important;
+}
+
+.hl-l9-mem-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  gap: 4px !important;
+}
+
+.hl-l9-mem-avatar {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.65rem !important;
+  flex-shrink: 0 !important;
+}
+
+.hl-l9-mem-name {
+  font-size: 0.65rem !important;
+  font-weight: 850 !important;
+  color: #f8fafc !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+  text-align: right !important;
+}
+
+.hl-l9-mem-pct {
+  font-size: 0.58rem !important;
+  font-weight: 900 !important;
+}
+
+.hl-l9-mem-val {
+  font-size: 0.68rem !important;
+  font-weight: 950 !important;
+  color: #fca5a5 !important;
+  direction: ltr !important;
+  font-family: var(--font-numbers, sans-serif) !important;
+  width: 100% !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+}
+
+.hl-l9-mem-val small {
+  font-size: 0.52rem !important;
+  color: #94a3b8 !important;
+}
+
+.hl-l9-mem-bar {
+  width: 100% !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  overflow: hidden !important;
+  margin-top: 2px !important;
+}
+
+.hl-l9-mem-bar-fill {
+  height: 100% !important;
+  border-radius: 2px !important;
+  transition: width 0.3s ease !important;
+}
+
+.hl-l9-members-empty {
+  padding: 14px !important;
+  text-align: center !important;
+  color: #94a3b8 !important;
+  font-size: 0.72rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border-radius: 12px !important;
+  margin-bottom: 8px !important;
+}
   border-color: #a855f7 !important;
   color: #f3e8ff !important;
   box-shadow: 0 0 16px rgba(168, 85, 247, 0.35) !important;

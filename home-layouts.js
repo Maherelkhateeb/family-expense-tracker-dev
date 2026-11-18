@@ -308,10 +308,17 @@
       case 6: // Honeycomb Hive
       case 7: // HUD Sensor Tiles
       case 8: // Diamond Crystals
-      case 9: // Spectrum Equalizer
       default: {
         const voiceBarH = 44;
         const arenaH = Math.max(340, Math.min(520, availableH - voiceBarH - gap));
+        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
+        cardH = Math.floor(availableH);
+        break;
+      }
+      case 9: { // Spectrum Equalizer with Member Chart
+        const voiceBarH = 44;
+        const memberChartH = 100;
+        const arenaH = Math.max(190, Math.min(300, availableH - memberChartH - voiceBarH - (gap * 2)));
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
@@ -523,6 +530,39 @@
   /* -------------------------------------------------------------
      Data Aggregation & Budgets
   ------------------------------------------------------------- */
+  const MEMBER_META = {
+    'البيت':  { color: '#0284c7', bg: 'rgba(2, 132, 199, 0.15)', icon: 'fa-house', label: 'البيت' },
+    'ماهر':   { color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.15)', icon: 'fa-user-tie', label: 'ماهر' },
+    'آية':    { color: '#ec4899', bg: 'rgba(236, 72, 153, 0.15)', icon: 'fa-user', label: 'آية' },
+    'محمد':   { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.15)', icon: 'fa-child', label: 'محمد' },
+    'مريم':   { color: '#a855f7', bg: 'rgba(168, 85, 247, 0.15)', icon: 'fa-child-dress', label: 'مريم' },
+    'الحاجة': { color: '#10b981', bg: 'rgba(16, 185, 129, 0.15)', icon: 'fa-hands-holding-child', label: 'الحاجة' },
+    'النونو': { color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.15)', icon: 'fa-baby', label: 'النونو' },
+    'أخرى':   { color: '#d97706', bg: 'rgba(217, 119, 6, 0.15)', icon: 'fa-asterisk', label: 'أخرى' }
+  };
+
+  function computeMemberTotals(filtered) {
+    const totals = {};
+    let list = Array.isArray(filtered) ? filtered : [];
+    if (!list.length && Array.isArray(root.state?.expenses)) {
+      list = root.state.expenses;
+    }
+    if (!list.length && Array.isArray(root.state?.transactions)) {
+      list = root.state.transactions;
+    }
+
+    list.forEach(t => {
+      if (!t) return;
+      const type = t.type || 'expense';
+      const cat = t.category || t.catId || t.cat;
+      if (type === 'expense' && cat !== 'transfer') {
+        const m = (t.member && String(t.member).trim()) || 'البيت';
+        totals[m] = (totals[m] || 0) + (Number(t.amount || t.cost) || 0);
+      }
+    });
+    return totals;
+  }
+
   function computeTotals(filtered) {
     const totals = {};
     Object.keys(CATEGORIES).forEach(k => { totals[k] = 0; });
@@ -541,6 +581,7 @@
       }
     });
 
+    totals._rawFiltered = list;
     return totals;
   }
 
@@ -1201,65 +1242,62 @@
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
 
     const tilesHtml = catKeys.map(catId => {
-      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes', pastelBg: '#f0fdf4' };
+      const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes' };
       const spent = totals[catId] || 0;
       const budget = budgets[catId] || 1500;
-      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 30;
-      const ledColor = pct > 75 ? '#ef4444' : (pct > 40 ? '#f59e0b' : '#10b981');
-
-      const tileBg = 'linear-gradient(160deg, rgba(24, 34, 53, 0.90) 0%, rgba(13, 22, 38, 0.96) 100%)';
-      const tileBorder = '1.3px solid rgba(255, 255, 255, 0.12)';
-      const tileShadow = '0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)';
-      const nameColor = '#f8fafc';
-      const amtColor = '#f43f5e';
+      const pct = Math.min(100, Math.round((spent / budget) * 100)) || 0;
+      const ledColor = pct > 90 ? '#ef4444' : (pct > 65 ? '#f59e0b' : '#10b981');
+      const amtColor = spent > 0 ? '#fca5a5' : '#94a3b8';
+      const signStr = spent > 0 ? '-' : '';
 
       return `
-        <div class="sensor-tile hl-l7-tile" style="background:${tileBg}; border:${tileBorder}; box-shadow:${tileShadow}; border-radius:14px; padding:6px 6px 8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; text-align:center; position:relative; min-height:96px; max-height:108px; height:104px; box-sizing:border-box;">
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0 4px; background:none; border:none; cursor:pointer;" title="عرض حركات ${cat.name} (${pct}%)">
-            <span style="font-size:0.64rem; font-weight:900; color:#94a3b8;">${pct}%</span>
-            <span style="width:6px; height:6px; border-radius:50%; background:${ledColor}; box-shadow:0 0 7px ${ledColor};"></span>
-          </button>
-          
-          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="تسجيل سريع في ${cat.name}">
-            <div style="width:34px; height:34px; border-radius:50%; background:${cat.color}22; border:1.5px solid ${cat.color}55; color:${cat.color}; display:flex; align-items:center; justify-content:center; font-size:1.05rem; box-shadow:0 0 10px ${cat.color}44;">
+        <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color};">
+          <!-- 1. شريط الحساس العلوي: لمبة LED + النسبة المئوية -->
+          <div class="sensor-tile-top" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض حركات ${cat.name} (${pct}%)">
+            <span class="sensor-pct">${pct}%</span>
+            <span class="sensor-dot" style="background: ${ledColor}; box-shadow: 0 0 7px ${ledColor};"></span>
+          </div>
+
+          <!-- 2. موضع تسجيل المصروف: الأيقونة الدائرية المتوهجة -->
+          <button type="button" class="sensor-icon-circle-btn" data-action="quick-add" data-cat-id="${catId}" title="تسجيل مصروف جديد في ${cat.name}">
+            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.2px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33;">
               <i class="${cat.iconClass}"></i>
             </div>
           </button>
-          
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none; border:none; padding:0; cursor:pointer; display:flex; flex-direction:column; align-items:center; width:100%; gap:2px;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:95%; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
-            <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">-${formatMoney(spent)}</span>
-            <div style="width:85%; height:3.5px; background:rgba(255,255,255,0.12); border-radius:3px; overflow:hidden; margin-top:2px;">
-              <div style="width:${pct}%; height:100%; background:${cat.color}; box-shadow:0 0 6px ${cat.color}; border-radius:3px;"></div>
+
+          <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
+          <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
+            <span class="sensor-title">${cat.name}</span>
+            <span class="sensor-val">${signStr}${formatMoney(spent)}</span>
+            <div class="sensor-bar">
+              <div class="sensor-bar-fill" style="width: ${Math.min(pct, 100)}%; background: ${cat.color}; box-shadow: 0 0 6px ${cat.color}aa;"></div>
             </div>
-          </button>
+          </div>
         </div>
       `;
     }).join('');
 
-    const voiceBtnBg = 'linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.22) 100%)';
-    const voiceBorder = '#38bdf8';
-    const voiceText = '#e0f2fe';
-
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
-            <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (HUD Telemetry)</span>
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
+            <span style="font-size:0.75rem;font-weight:850;color:#f8fafc;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
           </div>
           <div style="width:100px;display:flex;align-items:center;">
-            ${getAudioWaveHtml(voiceBorder)}
+            ${getAudioWaveHtml('#38bdf8')}
           </div>
-          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:${voiceBorder};"></i>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#38bdf8;"></i>
         </button>
       </div>
     `;
 
     return `
-      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%;">
-        <div class="sensor-arena hl-l7-arena" style="padding:4px 6px; box-sizing:border-box; width:100%;">
-          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%;">${tilesHtml}</div>
+      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%; align-items:center;">
+        <div class="sensor-arena hl-l7-arena">
+          <div class="sensor-grid">
+            ${tilesHtml}
+          </div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1347,6 +1385,61 @@
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
     const isLight = document.body.classList.contains('light-theme');
 
+    // حساب إجمالي مصروفات الأفراد والنسب للشارت العلوي
+    const memberTotals = computeMemberTotals(totals._rawFiltered || cachedFiltered);
+    const totalSpentMembers = Object.values(memberTotals).reduce((a, b) => a + b, 0);
+    const activeMembers = Object.keys(memberTotals)
+      .filter(m => memberTotals[m] > 0)
+      .sort((a, b) => memberTotals[b] - memberTotals[a]);
+
+    let memberChartHtml = '';
+
+    if (activeMembers.length === 0) {
+      memberChartHtml = `
+        <div class="hl-l9-members-empty" style="padding:10px; text-align:center; color:#94a3b8; font-size:0.72rem; display:flex; align-items:center; justify-content:center; gap:8px;">
+          <i class="fa-solid fa-users-viewfinder" style="font-size:1.1rem; color:#38bdf8; opacity:0.7;"></i>
+          <span>لا توجد مصروفات مسجلة لأفراد الأسرة في هذه الفترة</span>
+        </div>
+      `;
+    } else {
+      const memberPills = activeMembers.map(m => {
+        const amt = memberTotals[m];
+        const pct = totalSpentMembers > 0 ? Math.round((amt / totalSpentMembers) * 100) : 0;
+        const meta = MEMBER_META[m] || { color: '#38bdf8', bg: '#38bdf822', icon: 'fa-user' };
+
+        return `
+          <div class="hl-l9-member-pill" data-action="view-member-operations" data-member-name="${m}" title="انقر لعرض مصروفات ${m} (-${formatMoney(amt)} ${currSymbol})">
+            <div class="hl-l9-mem-top">
+              <div class="hl-l9-mem-avatar" style="background:${meta.bg}; color:${meta.color}; border:1.2px solid ${meta.color}55;">
+                <i class="fa-solid ${meta.icon}"></i>
+              </div>
+              <span class="hl-l9-mem-name">${m}</span>
+              <span class="hl-l9-mem-pct" style="color:${meta.color};">%${pct}</span>
+            </div>
+            <div class="hl-l9-mem-val">-${formatMoney(amt)} <small>${currSymbol}</small></div>
+            <div class="hl-l9-mem-bar">
+              <div class="hl-l9-mem-bar-fill" style="width:${Math.max(6, pct)}%; background:${meta.color}; box-shadow:0 0 6px ${meta.color}88;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      memberChartHtml = `
+        <div class="hl-l9-member-chart-box">
+          <div class="hl-l9-chart-title-strip">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-users-viewfinder" style="color:#38bdf8; font-size:0.85rem;"></i>
+              <span style="font-size:0.74rem; font-weight:850; color:#f8fafc;">توزيع المصروفات حسب أفراد الأسرة</span>
+            </div>
+            <span style="font-size:0.62rem; color:#38bdf8; font-weight:700;">انقر على أي فرد لعرض عملياته</span>
+          </div>
+          <div class="hl-l9-member-grid">
+            ${memberPills}
+          </div>
+        </div>
+      `;
+    }
+
     const columnsHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-chart-simple' };
       const spent = totals[catId] || 0;
@@ -1412,6 +1505,7 @@
 
     return `
       <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%;">
+        ${memberChartHtml}
         <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
           <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:4px 10px;">
             <span style="font-size:0.72rem; font-weight:800; color:${headerColor}; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
@@ -1684,6 +1778,21 @@
             if (root.state && catId !== 'all') root.state.activeCategoryFilter = catId;
             root.switchTab('operations');
           }
+        }
+        return;
+      }
+
+      // View member operations in operations log (Dual-Action Family Member Chart)
+      const memberTrigger = e.target.closest('[data-action="view-member-operations"]');
+      if (memberTrigger) {
+        const memberName = memberTrigger.getAttribute('data-member-name');
+        if (memberName && typeof root.openOperationsFiltered === 'function') {
+          e.preventDefault();
+          e.stopPropagation();
+          root.openOperationsFiltered({
+            member: memberName,
+            type: 'expense'
+          });
         }
         return;
       }
