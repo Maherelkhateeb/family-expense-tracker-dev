@@ -32,6 +32,7 @@
     const footer = opts.footer || document.getElementById('appBottomNav');
     if (!view || !host) return null;
     let stopped = false, frame = 0, observer = null;
+    let typographyHeightAnchor = null;
     // Preserve existing inline display rules so non-reference screens are untouched.
     const floatingControls = new Map();
     function reconcileFloatingControls(hideEdgeHandles,hideFloatingMic) {
@@ -177,7 +178,23 @@
       const minimum = design === 1 ? 68 : 76;
       const contentMinimum = Math.ceil(minimum + Math.max(0,fontScale - 1) *
         (design === 1 ? 63 : 60));
-      const cardHeight = Math.max(contentMinimum, calculated);
+      let cardHeight = Math.max(contentMinimum, calculated);
+      // Changing font size can also enlarge the header, reducing the space
+      // left for the cards. Never make a card smaller merely because the user
+      // increased font size. Preserve its previous legible height and allow
+      // natural scrolling where needed; reset when font shrinks or viewport
+      // dimensions / selected design change.
+      const viewportSize = viewportBottom - viewportTop;
+      if (typographyHeightAnchor &&
+          typographyHeightAnchor.design === design &&
+          Math.abs(typographyHeightAnchor.width - width) < 3 &&
+          Math.abs(typographyHeightAnchor.viewportSize - viewportSize) < 3 &&
+          fontScale >= typographyHeightAnchor.fontScale - .012) {
+        cardHeight=Math.max(cardHeight,typographyHeightAnchor.cardHeight);
+      }
+      typographyHeightAnchor = {
+        design, width, viewportSize, fontScale, cardHeight
+      };
       const properties = {
         '--dynamic-home-available-height': available.toFixed(2) + 'px',
         '--dynamic-home-render-scale': renderScale.toFixed(3),
