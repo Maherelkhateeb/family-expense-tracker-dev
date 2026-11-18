@@ -234,7 +234,8 @@
     for (const node of [document.documentElement, document.body,
       document.getElementById('appFrame')]) {
       if (node) mutations.observe(node, {
-        attributes:true, attributeFilter:['class','style']
+        attributes:true,
+        attributeFilter:['class','style','data-font-size','data-font-family']
       });
     }
     // Watch only the five quick-action style attributes. Legacy responsive
