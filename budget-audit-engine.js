@@ -2172,12 +2172,11 @@ const BudgetCompareEngine = (() => {
     renderLabel('cmpActualCustomRangeLabel', baseDates, 'نطاق التواريخ');
     renderLabel('cmpPeriodCustomRangeLabel', refDates, 'نطاق المرجع');
     renderLabel('cmpEstimCustomRangeLabel', estimDates, 'تاريخ الموازنة');
-    byId('cmpActualCustomRange').hidden = _actualPeriod !== 'custom';
-    byId('cmpPeriodCustom').hidden = reference !== 'custom';
-    byId('cmpEstimCustomRange').hidden = !isPlan;
-    byId('cmpSampleActions').hidden = !isSample;
-    byId('cmpDataMode').textContent = demoMode ? 'عرض مصرفاتي الفعلية' : 'عرض مثال تجريبي';
-    byId('cmpDataMode').setAttribute('aria-pressed', String(demoMode));
+    if (byId('cmpActualCustomRange')) byId('cmpActualCustomRange').hidden = _actualPeriod !== 'custom';
+    if (byId('cmpPeriodCustom')) byId('cmpPeriodCustom').hidden = reference !== 'custom';
+    if (byId('cmpEstimCustomRange')) byId('cmpEstimCustomRange').hidden = !isPlan;
+    if (byId('cmpSampleActions')) byId('cmpSampleActions').hidden = true;
+    if (byId('cmpDataMode')) byId('cmpDataMode').style.display = 'none';
     const status = byId('cmpSampleStatus');
     const scope = [reference,range.from,range.to].join(':');
     if (status.dataset.scope !== scope) {
@@ -2925,7 +2924,7 @@ const ProjectCompareEngine = (() => {
     // Build Insights Callout
     const topCostDrivers = wbsRows.slice(0, 3).filter(r => r.actAmt > 0);
     const overrunItems = wbsRows.filter(r => r.estAmt > 0 && r.diff < 0);
-    const savingsItems = wbsRows.filter(r => r.estAmt > 0 && r.diff > 0);
+    const savingsItems = wbsRows.filter(r => r.estAmt > 0 && r.actAmt > 0 && r.diff > 0);
 
     // Build HTML Output
     container.innerHTML = `
@@ -2987,9 +2986,11 @@ const ProjectCompareEngine = (() => {
           <i class="fa-solid fa-wand-magic-sparkles"></i> <span>استنتاجات رقابية وتحليلات ذكية للمشروع:</span>
         </div>
         <div style="font-size: 0.72rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 4px; line-height: 1.5;">
-          ${topCostDrivers.length > 0 ? `<div>📌 <strong>أعلى بنود تكلفة مستنزفة:</strong> ${topCostDrivers.map(d => `<span style="color:#f87171;">${d.name} (${formatVal(d.actAmt)})</span>`).join(' • ')}</div>` : ''}
-          ${overrunItems.length > 0 ? `<div>⚠️ <strong>تنبيه تجاوز السقف:</strong> ${overrunItems.map(o => `<span style="color:#ef4444;">بند ${o.name} تجاوز المعتمد بفارق ${formatVal(Math.abs(o.diff))}</span>`).join(' • ')}</div>` : '<div>✅ <strong>انضباط الميزانية:</strong> لا توجد بنود تجاوزت السقف المعتمد حتى الآن.</div>'}
-          ${savingsItems.length > 0 ? `<div>🎉 <strong>وفورات محققة:</strong> ${savingsItems.slice(0, 2).map(s => `<span style="color:#34d399;">بند ${s.name} حقق وفراً بقيمة ${formatVal(s.diff)}</span>`).join(' • ')}</div>` : ''}
+          ${spentActual === 0 ? `<div>ℹ️ <strong>حالة الميزانية:</strong> مخصص معتمد متاح بالكامل بنسبة 100% (${formatVal(approvedBudget)}) ولم تبدأ المصروفات بعد.</div>` : `
+            ${topCostDrivers.length > 0 ? `<div>📌 <strong>أعلى بنود تكلفة مستنزفة:</strong> ${topCostDrivers.map(d => `<span style="color:#f87171;">${d.name} (${formatVal(d.actAmt)})</span>`).join(' • ')}</div>` : ''}
+            ${overrunItems.length > 0 ? `<div>⚠️ <strong>تنبيه تجاوز السقف:</strong> ${overrunItems.map(o => `<span style="color:#ef4444;">بند ${o.name} تجاوز المعتمد بفارق ${formatVal(Math.abs(o.diff))}</span>`).join(' • ')}</div>` : '<div>✅ <strong>انضباط الميزانية:</strong> لا توجد بنود تجاوزت السقف المعتمد حتى الآن.</div>'}
+            ${savingsItems.length > 0 ? `<div>🎉 <strong>وفورات محققة:</strong> ${savingsItems.slice(0, 2).map(s => `<span style="color:#34d399;">بند ${s.name} حقق وفراً بقيمة ${formatVal(s.diff)}</span>`).join(' • ')}</div>` : ''}
+          `}
         </div>
       </div>
 

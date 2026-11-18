@@ -276,7 +276,7 @@
 
     var currentEditTxReceiptDataUri = null;
     var APP_VERSION = 'v5.5.1';
-    var APP_BUILD_ID = 202611181500;
+    var APP_BUILD_ID = 202611181520;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -16208,17 +16208,17 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
 
 </style>
     <!-- Accessible compact settings UI, independent of financial data scripts -->
-  <script src="./market-data.js?v=202611181500"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=202611181500">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611181500">
-  <script src="./appearance-compact.js?v=202611181500" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611181500">
-  <script src="./operation-filters.js?v=202611181500"></script>
-  <script src="./family-alerts.js?v=202611181500"></script>
-  <script src="./family-budget-comparison.js?v=202611181500"></script>
-  <script src="./budget-audit-engine.js?v=202611181500"></script>
-  <link rel="stylesheet" href="./comparison-unified.css?v=202611181500">
-  <link rel="stylesheet" href="./family-alerts.css?v=202611181500">
+  <script src="./market-data.js?v=202611181520"></script>
+  <link rel="stylesheet" href="./gold-market.css?v=202611181520">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611181520">
+  <script src="./appearance-compact.js?v=202611181520" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611181520">
+  <script src="./operation-filters.js?v=202611181520"></script>
+  <script src="./family-alerts.js?v=202611181520"></script>
+  <script src="./family-budget-comparison.js?v=202611181520"></script>
+  <script src="./budget-audit-engine.js?v=202611181520"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=202611181520">
+  <link rel="stylesheet" href="./family-alerts.css?v=202611181520">
 <style>
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
@@ -16898,7 +16898,7 @@ body.light-theme .summary-matrix-table tr.total-row td {
 
 
 
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611181500">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611181520">
 <style>
 /* =========================================================================
    V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
@@ -18793,7 +18793,7 @@ body.light-theme .market-buy-price {
                 <i class="fa-solid fa-chart-pie"></i>
               </div>
               <h2 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 4px;">
-                <span>الميزانيات والخطط الشهرية</span>
+                <span>مؤشرات الموازنات والرقابة المالية</span>
               </h2>
             </div>
             <!-- أزرار الإجراءات السريعة المصغرة للميزانيات (توفير المساحة) -->
@@ -18816,11 +18816,11 @@ body.light-theme .market-buy-price {
           <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
             <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
+          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>ميزان السيولة</span>
+          </button>
           <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
-          </button>
-          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
-            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>المقارنات الجديدة</span>
           </button>
         </div>
 
@@ -18838,11 +18838,9 @@ body.light-theme .market-buy-price {
 
           <section id="panelBudgetCompare" aria-labelledby="cmpPeriodChartTitle">
             <div id="cmpPeriodChart" class="cmp-workspace">
-              <header class="cmp-heading">
-                <h3 id="cmpPeriodChartTitle">مقارنة المصروفات حسب البند</h3>
-                <button type="button" id="cmpDataMode" onclick="BudgetCompareEngine.toggleDemo()" aria-pressed="false">عرض مثال تجريبي</button>
+              <header class="cmp-heading" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 id="cmpPeriodChartTitle" style="margin: 0; font-size: 0.92rem; font-weight: 850; color: #f8fafc;">مقارنة المصروفات حسب البند</h3>
               </header>
-              <div id="cmpDemoNote" role="status" hidden></div>
               <div id="cmpPeriodsFilterBox" class="cmp-period-filters">
                 <div>
                   <label for="cmpActualPeriod">الفترة الأساسية</label>
@@ -18871,11 +18869,6 @@ body.light-theme .market-buy-price {
                     <option value="previous">الفترة السابقة تلقائيًا</option>
                     <option value="custom">فترة مرجعية مخصصة</option>
                     <option value="plan">الموازنة المسجلة</option>
-                    <optgroup label="موازنات تجريبية">
-                      <option value="sample-low">اقتصادية · ١٠٬٠٠٠ ج.م</option>
-                      <option value="sample">أساسية · ١٢٬٠٠٠ ج.م</option>
-                      <option value="sample-high">مرنة · ١٤٬٠٠٠ ج.م</option>
-                    </optgroup>
                   </select>
                   <p id="cmpReferenceDates" class="cmp-range-preview cmp-preview-reference" aria-live="polite"></p>
                   <div id="cmpPeriodCustom" class="cmp-month-custom-range" hidden>
@@ -37264,14 +37257,10 @@ function switchCategoryChartFormat(format, btnEl) {
           bComp.style.color = '#fff';
           bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
         }
-        // Both comparison entry points now show ONE unified comparison workspace.
-        // The old stand-alone panel stays hidden to prevent contradictory data.
-        if (secCurr) secCurr.style.display = 'block';
-        if (secComp) secComp.style.display = 'none';
-        if (typeof switchBudgetMonthView === 'function') {
-          switchBudgetMonthView('compare');
+        if (secComp) secComp.style.display = 'block';
+        if (typeof renderComparisonsSection === 'function') {
+          renderComparisonsSection();
         }
-        if (window.BudgetCompareEngine) window.BudgetCompareEngine.render();
       } else if (tab === 'history') {
         if (bHist) {
           bHist.classList.add('active');
@@ -43088,7 +43077,7 @@ window.filterArchiveType = filterArchiveType;
 </style>
 
 
-  <script src="./voice-assistant-engine.js?v=202611181500" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611181520" defer></script>
 
   <!-- Voice Assistant Suite v5.3.89 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
@@ -43130,9 +43119,9 @@ window.filterArchiveType = filterArchiveType;
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611181500">
-<script defer src="./home-layouts.js?v=202611181500"></script>
-<script src="./operations-return-hub.js?v=202611181500"></script>
-<script src="./comparison-deeplink.js?v=202611181500"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611181520">
+<script defer src="./home-layouts.js?v=202611181520"></script>
+<script src="./operations-return-hub.js?v=202611181520"></script>
+<script src="./comparison-deeplink.js?v=202611181520"></script>
 </body>
 </html>
