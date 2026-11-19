@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -20,10 +20,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Almarai:wght@300;400;700;800&family=Readex+Pro:wght@300;400;500;600;700&family=Alexandria:wght@400;600;700;800;900&family=Changa:wght@400;600;700;800&family=Noto+Sans+Arabic:wght@400;600;700;800&family=Rubik:wght@400;600;700;800&display=swap" rel="stylesheet">
   <!-- Early CSS Customization Restorer to prevent FOUS -->
   <!-- Early CSS Customization & Visual Harmony Engine -->
-  <script src="./app-early.js?v=202611191530"></script>
+  <script src="./app-early.js?v=202611191600"></script>
   <!-- High-Capacity IndexedDB & Google Drive Cloud Sync Engines -->
-  <script src="./indexeddb-engine.js?v=202611191530"></script>
-  <script src="./drive-sync-engine.js?v=202611191530"></script>
+  <script src="./indexeddb-engine.js?v=202611191600"></script>
+  <script src="./drive-sync-engine.js?v=202611191600"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- المكتبات: SheetJS للإكسيل و Chart.js للشارتات التوضيحية -->
@@ -32,22 +32,22 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Unified Main Stylesheet -->
-  <link rel="stylesheet" href="./app-main.css?v=202611191530">
+  <link rel="stylesheet" href="./app-main.css?v=202611191600">
 
   <!-- External Module Scripts & Specific Styles -->
-  <script src="./market-data.js?v=202611191530"></script>
-  <link rel="stylesheet" href="./gold-market.css?v=202611191530">
-  <link rel="stylesheet" href="./appearance-compact.css?v=202611191530">
-  <script src="./appearance-compact.js?v=202611191530" defer></script>
-  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611191530">
-  <script src="./operation-filters.js?v=202611191530"></script>
-  <script src="./family-alerts.js?v=202611191530"></script>
-  <script src="./family-budget-comparison.js?v=202611191530"></script>
-  <script src="./budget-audit-engine.js?v=202611191530"></script>
-  <script src="./budget-audit-oversight.js?v=202611191530"></script>
-  <link rel="stylesheet" href="./comparison-unified.css?v=202611191530">
-  <link rel="stylesheet" href="./family-alerts.css?v=202611191530">
-  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611191530">
+  <script src="./market-data.js?v=202611191600"></script>
+  <link rel="stylesheet" href="./gold-market.css?v=202611191600">
+  <link rel="stylesheet" href="./appearance-compact.css?v=202611191600">
+  <script src="./appearance-compact.js?v=202611191600" defer></script>
+  <link rel="stylesheet" href="./ledger-task-layout.css?v=202611191600">
+  <script src="./operation-filters.js?v=202611191600"></script>
+  <script src="./family-alerts.js?v=202611191600"></script>
+  <script src="./family-budget-comparison.js?v=202611191600"></script>
+  <script src="./budget-audit-engine.js?v=202611191600"></script>
+  <script src="./budget-audit-oversight.js?v=202611191600"></script>
+  <link rel="stylesheet" href="./comparison-unified.css?v=202611191600">
+  <link rel="stylesheet" href="./family-alerts.css?v=202611191600">
+  <link rel="stylesheet" href="./voice-assistant-engine.css?v=202611191600">
 
   <style id="criticalStartupFoucPrevention">
     /* Anti-FOUC rules applied synchronously before first paint */
@@ -1755,15 +1755,13 @@
           <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); white-space: nowrap;">
             <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
-          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
-            <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>ميزان السيولة</span>
-          </button>
           <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
-          <button type="button" id="btnBudgetSubAudit" onclick="switchBudgetSubTab('audit')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;" title="الرقابة والتدقيق الجنائي">
-            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <span>الرقابة</span>
+          <button type="button" id="btnBudgetSubAudit" onclick="switchBudgetSubTab('audit')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;" title="الرقابة وميزان السيولة">
+            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <span>الرقابة والسيولة</span>
           </button>
+          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('audit')" style="display: none;"></button>
         </div>
 
         <!-- 1. لوحة موازنة الشهر الرسمية (panelMonthlyBudget) -->
@@ -2019,9 +2017,113 @@
 </div> <!-- إغلاق panelMonthlyBudget -->
 
         <!-- ==========================================================
-             لوحة الرقابة والتدقيق المالي الذكي (panelBudgetAudit)
+             لوحة الرقابة والتدقيق المالي وميزان السيولة (panelBudgetAudit)
              ========================================================== -->
         <div id="panelBudgetAudit" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
+          
+          <!-- ============================================================
+               القسم الأول: الرسم التوضيحي لميزان السيولة والمطابقة المالية (فى الأعلى)
+               ============================================================ -->
+          <div id="sectionComparisons" style="display: block; margin-bottom: 20px;">
+            <section id="projectBudgetAnalysis" class="project-budget-analysis" aria-label="المتوقع والفعلي للمشاريع"></section>
+            
+            <!-- ترويسة ميزان السيولة -->
+            <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <div style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                  <span>ميزان السيولة ومطابقة الدخل والمصروفات</span>
+                </div>
+                <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 2px;">مقارنة المحاور الثلاثة: المبالغ المستلمة مقابل التقديرية والفعلية</div>
+              </div>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn-export-tool excel-btn" onclick="exportComparisonsAuditExcel()" title="تصدير تقرير المقارنات لإكسيل" style="padding: 4px 8px; font-size: 0.74rem;">
+                  <i class="fa-solid fa-file-excel"></i> إكسيل
+                </button>
+                <button class="btn-export-tool pdf-btn" onclick="window.print()" title="طباعة كشف المقارنة" style="padding: 4px 8px; font-size: 0.74rem;">
+                  <i class="fa-solid fa-file-pdf"></i> PDF
+                </button>
+              </div>
+            </div>
+
+            <!-- بطاقات المقارنة التنفيذية -->
+            <div class="kpi-master-grid-lux-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+              <div class="kpi-lux-card" style="border: 1.2px solid rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08); border-radius: 12px; padding: 8px 10px;">
+                <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                  <span style="color: #34d399;">المبالغ المستلمة (الدخل)</span><i class="fa-solid fa-arrow-down-left" style="color: #10b981;"></i>
+                </div>
+                <div class="kpi-lux-value" id="kpiCompReceived" style="color: #10b981; font-size: 0.95rem; font-weight: 900; direction: rtl;">+ 0.00 ج.م</div>
+                <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">إجمالي الوارد والسيولة</div>
+              </div>
+
+              <div class="kpi-lux-card" style="border: 1.2px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 12px; padding: 8px 10px;">
+                <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                  <span style="color: #fbbf24;">المصروفات التقديرية</span><i class="fa-solid fa-hand-holding-dollar" style="color: #f59e0b;"></i>
+                </div>
+                <div class="kpi-lux-value" id="kpiCompEstimated" style="color: #fbbf24; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+                <div class="kpi-lux-sub" id="kpiCompEstimatedSub" style="font-size: 0.65rem; color: #64748b;">طلبات الصرف المعتمدة</div>
+              </div>
+
+              <div class="kpi-lux-card" style="border: 1.2px solid rgba(244, 63, 94, 0.35); background: rgba(244, 63, 94, 0.08); border-radius: 12px; padding: 8px 10px;">
+                <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                  <span style="color: #f87171;">المصروفات الفعلية</span><i class="fa-solid fa-arrow-up-right" style="color: #f43f5e;"></i>
+                </div>
+                <div class="kpi-lux-value" id="kpiCompActual" style="color: #f43f5e; font-size: 0.95rem; font-weight: 900; direction: rtl;">- 0.00 ج.م</div>
+                <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">المنصرف الحقيقي الموثق</div>
+              </div>
+
+              <div class="kpi-lux-card" style="border: 1.2px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.08); border-radius: 12px; padding: 8px 10px;">
+                <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
+                  <span style="color: #38bdf8;">فائض / عجز السيولة</span><i class="fa-solid fa-vault" style="color: #38bdf8;"></i>
+                </div>
+                <div class="kpi-lux-value" id="kpiCompCashMargin" style="color: #38bdf8; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
+                <div class="kpi-lux-sub" id="kpiCompCashMarginSub" style="font-size: 0.65rem; color: #64748b;">الفارق بين الدخل والمنصرف</div>
+              </div>
+            </div>
+
+            <!-- شارت المقارنة الثلاثي (الرسم التوضيحي لميزان السيولة) -->
+            <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border, rgba(255,255,255,0.1)); border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+              <div class="chart-glass-head" style="margin-bottom: 10px;">
+                <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
+                  <i class="fa-solid fa-chart-column"></i>
+                  <span id="comparisonChartTitle">مقارنة المحاور الثلاثة (مستلم مقابل تقديري مقابل فعلي)</span>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
+                <canvas id="anaThreePillarCompareCanvas"></canvas>
+              </div>
+              <div id="comparisonProjectHint" style="display: none; color: #94a3b8; font-size: 0.70rem; margin-top: 6px; text-align: center;">تعرض مقارنة المشاريع الإيداعات والمصروفات المسجلة على كل مشروع ضمن الفترة المحددة.</div>
+            </div>
+
+            <!-- أزرار أبعاد المقارنة التفصيلية -->
+            <div style="display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto;">
+              <button class="btn-export-tool active" id="btnCompDimCat" onclick="switchComparisonDimension('category')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+                <i class="fa-solid fa-tags"></i> حسب التصنيفات
+              </button>
+              <button class="btn-export-tool" id="btnCompDimMem" onclick="switchComparisonDimension('member')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+                <i class="fa-solid fa-users"></i> حسب الأشخاص والبيت
+              </button>
+              <button class="btn-export-tool" id="btnCompDimMo" onclick="switchComparisonDimension('month')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+                <i class="fa-solid fa-calendar-days"></i> مقارنة الشهور
+              </button>
+              <button class="btn-export-tool" id="btnCompDimProject" onclick="switchComparisonDimension('project')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
+                <i class="fa-solid fa-folder-tree"></i> مقارنة المشاريع
+              </button>
+            </div>
+
+            <!-- جداول المقارنة التفصيلية -->
+            <div id="comparisonsCatTableContainer" style="overflow-x: auto; margin-top: 8px;"></div>
+            <div id="comparisonsMemberTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
+            <div id="comparisonsMonthTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
+            <div id="comparisonsProjectTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
+          </div>
+
+          <!-- فاصل أنيق بين ميزان السيولة ومنظومة الرقابة -->
+          <div style="border-top: 1.5px dashed rgba(239, 68, 68, 0.35); margin: 24px 0 16px;"></div>
+
+          <!-- ============================================================
+               القسم الثاني: منظومة الرقابة المالية والتدقيق الجنائي
+               ============================================================ -->
           <!-- رأس لوحة الرقابة -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 8px;">
@@ -2200,107 +2302,9 @@
         </div>
 
         <!-- ==========================================================
-             3. لوحة ميزان المقارنات والرقابة المالية (panelBudgetComparisons)
+             3. لوحة ميزان المقارنات (مدمجة داخل panelBudgetAudit)
              ========================================================== -->
-        <div id="panelBudgetComparisons" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(56, 189, 248, 0.25); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px;">
-          <!-- ============================================================
-             القسم الثاني: المقارنات والرقابة المالية (Comparisons & Control)
-             ============================================================ -->
-        <div id="sectionComparisons" style="display: block; padding: 0 4px 20px;">
-          <section id="projectBudgetAnalysis" class="project-budget-analysis" aria-label="المتوقع والفعلي للمشاريع"></section>
-          
-          <!-- ترويسة الرقابة والمقارنات -->
-          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(236, 72, 153, 0.25); border-radius: 14px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-              <div style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-scale-balanced"></i>
-                <span>مقارنة المصروفات الفعلية والتقديرية والمبالغ المستلمة</span>
-              </div>
-
-            </div>
-            <div style="display: flex; gap: 6px;">
-              <button class="btn-export-tool excel-btn" onclick="exportComparisonsAuditExcel()" title="تصدير تقرير المقارنات لإكسيل" style="padding: 4px 8px; font-size: 0.74rem;">
-                <i class="fa-solid fa-file-excel"></i> إكسيل
-              </button>
-              <button class="btn-export-tool pdf-btn" onclick="window.print()" title="طباعة كشف المقارنة" style="padding: 4px 8px; font-size: 0.74rem;">
-                <i class="fa-solid fa-file-pdf"></i> PDF
-              </button>
-            </div>
-          </div>
-
-          <!-- بطاقات المقارنة التنفيذية -->
-          <div class="kpi-master-grid-lux-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
-            <div class="kpi-lux-card" style="border: 1.2px solid rgba(16, 185, 129, 0.35); background: rgba(16, 185, 129, 0.08); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
-                <span style="color: #34d399;">المبالغ المستلمة (الدخل)</span><i class="fa-solid fa-arrow-down-left" style="color: #10b981;"></i>
-              </div>
-              <div class="kpi-lux-value" id="kpiCompReceived" style="color: #10b981; font-size: 0.95rem; font-weight: 900; direction: rtl;">+ 0.00 ج.م</div>
-              <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">إجمالي الوارد والسيولة</div>
-            </div>
-
-            <div class="kpi-lux-card" style="border: 1.2px solid rgba(245, 158, 11, 0.35); background: rgba(245, 158, 11, 0.08); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
-                <span style="color: #fbbf24;">المصروفات التقديرية</span><i class="fa-solid fa-hand-holding-dollar" style="color: #f59e0b;"></i>
-              </div>
-              <div class="kpi-lux-value" id="kpiCompEstimated" style="color: #fbbf24; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
-              <div class="kpi-lux-sub" id="kpiCompEstimatedSub" style="font-size: 0.65rem; color: #64748b;">طلبات الصرف المعتمدة</div>
-            </div>
-
-            <div class="kpi-lux-card" style="border: 1.2px solid rgba(244, 63, 94, 0.35); background: rgba(244, 63, 94, 0.08); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
-                <span style="color: #f87171;">المصروفات الفعلية</span><i class="fa-solid fa-arrow-up-right" style="color: #f43f5e;"></i>
-              </div>
-              <div class="kpi-lux-value" id="kpiCompActual" style="color: #f43f5e; font-size: 0.95rem; font-weight: 900; direction: rtl;">- 0.00 ج.م</div>
-              <div class="kpi-lux-sub" style="font-size: 0.65rem; color: #64748b;">المنصرف الحقيقي الموثق</div>
-            </div>
-
-            <div class="kpi-lux-card" style="border: 1.2px solid rgba(56, 189, 248, 0.35); background: rgba(56, 189, 248, 0.08); border-radius: 12px; padding: 8px 10px;">
-              <div class="kpi-lux-head" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; margin-bottom: 2px;">
-                <span style="color: #38bdf8;">فائض / عجز السيولة</span><i class="fa-solid fa-vault" style="color: #38bdf8;"></i>
-              </div>
-              <div class="kpi-lux-value" id="kpiCompCashMargin" style="color: #38bdf8; font-size: 0.95rem; font-weight: 900; direction: rtl;">0.00 ج.م</div>
-              <div class="kpi-lux-sub" id="kpiCompCashMarginSub" style="font-size: 0.65rem; color: #64748b;">الفارق بين الدخل والمنصرف</div>
-            </div>
-          </div>
-
-          <!-- شارت المقارنة الثلاثي -->
-          <div class="chart-glass-panel" style="background: rgba(15, 23, 42, 0.85); border: 1.2px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px;">
-            <div class="chart-glass-head" style="margin-bottom: 10px;">
-              <div class="chart-glass-title" style="font-size: 0.88rem; font-weight: 800; color: #f472b6; display: flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-chart-column"></i>
-                <span id="comparisonChartTitle">مقارنة المحاور الثلاثة (مستلم مقابل تقديري مقابل فعلي)</span>
-              </div>
-            </div>
-            <div class="chart-canvas-wrap" style="height: 290px; position: relative;">
-              <canvas id="anaThreePillarCompareCanvas"></canvas>
-            </div>
-            <div id="comparisonProjectHint" style="display: none; color: #94a3b8; font-size: 0.70rem; margin-top: 6px; text-align: center;">تعرض مقارنة المشاريع الإيداعات والمصروفات المسجلة على كل مشروع ضمن الفترة المحددة.</div>
-          </div>
-
-          <!-- أزرار أبعاد المقارنة التفصيلية -->
-          <div style="display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto;">
-            <button class="btn-export-tool active" id="btnCompDimCat" onclick="switchComparisonDimension('category')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
-              <i class="fa-solid fa-tags"></i> حسب التصنيفات
-            </button>
-            <button class="btn-export-tool" id="btnCompDimMem" onclick="switchComparisonDimension('member')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
-              <i class="fa-solid fa-users"></i> حسب الأشخاص والبيت
-            </button>
-            <button class="btn-export-tool" id="btnCompDimMo" onclick="switchComparisonDimension('month')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
-              <i class="fa-solid fa-calendar-days"></i> مقارنة الشهور
-            </button>
-            <button class="btn-export-tool" id="btnCompDimProject" onclick="switchComparisonDimension('project')" style="font-size: 0.78rem; font-weight: 800; padding: 6px 12px; border-radius: 8px; flex: 1; white-space: nowrap;">
-              <i class="fa-solid fa-folder-tree"></i> مقارنة المشاريع
-            </button>
-          </div>
-
-          <!-- جداول المقارنة التفصيلية -->
-          <div id="comparisonsCatTableContainer" style="overflow-x: auto; margin-top: 8px;"></div>
-          <div id="comparisonsMemberTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
-          <div id="comparisonsMonthTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
-          <div id="comparisonsProjectTableContainer" style="overflow-x: auto; margin-top: 8px; display: none;"></div>
-
-        </div> <!-- إغلاق sectionComparisons -->
-        </div> <!-- إغلاق panelBudgetComparisons -->
+        <div id="panelBudgetComparisons" style="display: none;"></div>
 
       </div> <!-- إغلاق viewBudgets الرسمي -->
 
@@ -4334,7 +4338,7 @@
 
 
   <!-- Main Core Application Engine -->
-  <script src="./app-core.js?v=202611191530"></script>
+  <script src="./app-core.js?v=202611191600"></script>
 
   <!-- ورقة الطباعة وكشف الحساب المحاسبي المعتمد (PDF & Print Statement) -->
   <div id="printableStatementSheet">
@@ -4554,7 +4558,7 @@
 
 
   <!-- Features, Income, Tasks & Settings Engine -->
-  <script src="./app-features.js?v=202611191530"></script>
+  <script src="./app-features.js?v=202611191600"></script>
 
 
   <!-- ==============================================================
@@ -5801,7 +5805,7 @@
 
 
 
-  <script src="./voice-assistant-engine.js?v=202611191530" defer></script>
+  <script src="./voice-assistant-engine.js?v=202611191600" defer></script>
 
   <!-- Voice Assistant Suite v5.3.89 (Web Speech API) -->
   <button type="button" id="btnVoiceAssistantFab" onclick="VoiceAssistantEngine.toggleListening()" title="المساعد الصوتي الذكي - اضغط للتحدث">
@@ -5855,9 +5859,10 @@
     </div>
   </div>
 
-<link rel="stylesheet" href="./home-layouts.css?v=202611191530">
-<script defer src="./home-layouts.js?v=202611191530"></script>
-<script src="./operations-return-hub.js?v=202611191530"></script>
-<script src="./comparison-deeplink.js?v=202611191530"></script>
+<link rel="stylesheet" href="./home-layouts.css?v=202611191600">
+<script defer src="./home-layouts.js?v=202611191600"></script>
+<script src="./operations-return-hub.js?v=202611191600"></script>
+<script src="./comparison-deeplink.js?v=202611191600"></script>
 </body>
 </html>
+

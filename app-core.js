@@ -822,7 +822,7 @@ function toggleAnalyticsCustomRange() {
         if (btnActual) btnActual.classList.add('active');
         if (btnComp) btnComp.classList.remove('active');
         if (secActual) secActual.style.display = 'block';
-        if (secComp) secComp.style.display = 'none';
+        if (secComp && secComp.parentElement && secComp.parentElement.id !== 'panelBudgetAudit') secComp.style.display = 'none';
         updateAnalyticsChart();
       } else {
         if (btnActual) btnActual.classList.remove('active');
@@ -855,6 +855,7 @@ function toggleAnalyticsCustomRange() {
       });
       renderComparisonsSection();
     }
+    window.switchComparisonDimension = switchComparisonDimension;
 
     function renderComparisonsSection() {
       renderProjectBudgetAnalysis();
@@ -1248,6 +1249,7 @@ function toggleAnalyticsCustomRange() {
         }
       }
     }
+    window.renderComparisonsSection = renderComparisonsSection;
 
     function exportComparisonsAuditExcel() {
       if (typeof XLSX === 'undefined') {
@@ -4946,11 +4948,21 @@ function generateRichDemoTransactions() {
           return;
         }
 
+        if (document.documentElement) {
+          document.documentElement.classList.remove('has-alt-home-layout');
+          document.documentElement.setAttribute('data-home-layout', '0');
+        }
+        if (document.body) {
+          document.body.classList.remove('has-alt-home-layout');
+          document.body.dataset.homeLayout = '0';
+        }
+
         const grid = document.getElementById('catGrid');
         if (!grid) return;
         grid.hidden = false;
         grid.style.removeProperty('display');
         grid.style.setProperty('display', 'grid', 'important');
+        grid.style.removeProperty('visibility');
 
         const container = document.getElementById('homeInterfaces');
         if (container) {

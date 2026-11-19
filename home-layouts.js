@@ -295,17 +295,17 @@
       }
       case 2: { // Hero analytics + 2 columns, 5 rows
         gap = 4;
-        const heroH = Math.max(72, Math.min(86, Math.floor(availableH * 0.20)));
-        const remainingForGrid = availableH - heroH - gap - 6;
-        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
-        cardH = Math.max(52, Math.min(68, cardH));
+        const heroH = Math.max(62, Math.min(76, Math.floor(availableH * 0.17)));
+        const remainingForGrid = availableH - heroH - (4 * gap) - 6;
+        cardH = Math.floor(remainingForGrid / 5);
+        cardH = Math.max(70, Math.min(96, cardH));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
       case 3: { // 2 columns, 5 rows (10 cards)
         gap = 4;
-        cardH = Math.floor((availableH - (4 * gap) - 8) / 5);
-        cardH = Math.max(60, Math.min(84, cardH));
+        cardH = Math.floor((availableH - (4 * gap) - 4) / 5);
+        cardH = Math.max(74, Math.min(106, cardH));
         break;
       }
       case 4: { // 3 columns, 3 rows + 1 voice banner
@@ -1641,27 +1641,41 @@
 
     const isOriginal = currentLayout === 0;
 
+    if (document.documentElement) {
+      document.documentElement.classList.toggle('has-alt-home-layout', !isOriginal);
+      document.documentElement.setAttribute('data-home-layout', String(currentLayout));
+    }
+    if (document.body) {
+      document.body.classList.toggle('has-alt-home-layout', !isOriginal);
+      document.body.dataset.homeLayout = String(currentLayout);
+    }
+
     if (originalGrid) {
       originalGrid.hidden = !isOriginal;
       if (isOriginal) {
         originalGrid.style.removeProperty('display');
+        originalGrid.style.setProperty('display', 'grid', 'important');
+        originalGrid.style.removeProperty('visibility');
       } else {
         originalGrid.style.setProperty('display', 'none', 'important');
+        originalGrid.style.setProperty('visibility', 'hidden', 'important');
       }
     }
 
     if (container) {
       container.hidden = isOriginal;
+      if (isOriginal) {
+        container.style.setProperty('display', 'none', 'important');
+      } else {
+        container.style.removeProperty('display');
+      }
       container.dataset.design = String(currentLayout);
     }
 
     if (expensePage) {
-      expensePage.classList.toggle('home-alternative-design', currentLayout > 0);
+      expensePage.classList.toggle('home-alternative-design', !isOriginal);
       expensePage.dataset.activeDesign = String(currentLayout);
     }
-
-    document.body.classList.toggle('has-alt-home-layout', !isOriginal);
-    document.body.dataset.homeLayout = String(currentLayout);
 
     updateDesignButtonDial();
     ensureSideHandlesVisible();
@@ -1673,14 +1687,18 @@
     updateUiForActiveLayout();
 
     const container = document.getElementById('homeInterfaces');
-    if (!container) return;
+    const originalGrid = document.getElementById('catGrid');
 
     if (currentLayout === 0) {
-      container.hidden = true;
+      if (container) {
+        container.hidden = true;
+        container.style.setProperty('display', 'none', 'important');
+      }
       if (originalGrid) {
         originalGrid.hidden = false;
         originalGrid.style.removeProperty('display');
         originalGrid.style.setProperty('display', 'grid', 'important');
+        originalGrid.style.removeProperty('visibility');
       }
       if (typeof root.renderCategoriesGrid === 'function') {
         const txs = cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
@@ -1688,6 +1706,8 @@
       }
       return;
     }
+
+    if (!container) return;
 
     container.hidden = false;
 
