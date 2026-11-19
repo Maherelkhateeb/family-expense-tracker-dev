@@ -2,12 +2,12 @@
   "schemaVersion": 2,
   "fxUpdatedAt": null,
   "goldUpdatedAt": null,
-  "globalGoldUpdatedAt": "2026-11-19T09:24:32+00:00",
-  "updatedAt": "2026-11-19T09:24:47.985259+00:00",
-  "checkedAt": "2026-11-19T09:24:47.985259+00:00",
+  "globalGoldUpdatedAt": "2026-11-19T18:35:04+00:00",
+  "updatedAt": "2026-11-19T18:35:29.799975+00:00",
+  "checkedAt": "2026-11-19T18:35:29.799975+00:00",
   "sourceTimeNote": "وقت التحقق منفصل عن وقت السعر؛ الوقت غير المعلن من المصدر يظل غير معلن",
-  "lastUpdateHuman": "2026-11-19 11:24 AM بتوقيت القاهرة",
-  "lastCheckedHuman": "2026-11-19 11:24 AM بتوقيت القاهرة",
+  "lastUpdateHuman": "2026-11-19 08:35 PM بتوقيت القاهرة",
+  "lastCheckedHuman": "2026-11-19 08:35 PM بتوقيت القاهرة",
   "provider": "Ta3weem / بنك مصر / مركز المعلومات IDSC",
   "rateMode": "official",
   "fxProvider": "Ta3weem / بنك مصر",
@@ -16,41 +16,41 @@
     "USD": {
       "code": "USD",
       "name": "دولار أمريكي",
-      "buy": 53.7,
-      "sell": 53.8,
-      "chg": "0.130%",
+      "buy": 53.77,
+      "sell": 53.87,
+      "chg": "0%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "SAR": {
       "code": "SAR",
       "name": "ريال سعودي",
-      "buy": 14.23,
-      "sell": 14.33,
-      "chg": "0.124%",
+      "buy": 14.25,
+      "sell": 14.35,
+      "chg": "0.006%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "EUR": {
       "code": "EUR",
       "name": "يورو أوروبي",
-      "buy": 58.83,
-      "sell": 59.12,
-      "chg": "0.230%",
+      "buy": 58.91,
+      "sell": 59.31,
+      "chg": "0.100%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "AED": {
       "code": "AED",
       "name": "درهم إماراتي",
-      "buy": 14.61,
-      "sell": 14.65,
-      "chg": "0.127%",
+      "buy": 14.63,
+      "sell": 14.67,
+      "chg": "0.003%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "KWD": {
       "code": "KWD",
       "name": "دينار كويتي",
-      "buy": 170.48,
-      "sell": 174.31,
-      "chg": "0.130%",
+      "buy": 170.7,
+      "sell": 174.53,
+      "chg": "0%",
       "bank": "بنك مصر (مباشر تعويم)"
     }
   },
@@ -89,6 +89,6 @@
       "source": "مركز المعلومات IDSC / الصاغة",
       "sourceUpdatedAt": null
     },
-    "goldOunceUSD": 3734.72
+    "goldOunceUSD": 3685.0
   }
 }
