@@ -1062,10 +1062,11 @@ body.dark-theme .hl-l4-voice-sub {
 .honeycomb-board,
 .sensor-arena,
 .diamond-arena {
-  height: var(--dynamic-home-arena-h, 390px) !important;
-  min-height: 380px !important;
+  height: auto !important;
+  max-height: var(--dynamic-home-arena-h, 340px) !important;
+  min-height: 0 !important;
   box-sizing: border-box !important;
-  overflow: visible !important;
+  overflow: hidden !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;

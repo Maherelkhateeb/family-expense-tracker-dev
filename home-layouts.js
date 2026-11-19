@@ -1719,76 +1719,83 @@
     }
   }
 
+  let isInternalRendering = false;
   function render(filtered) {
-    cachedFiltered = filtered;
-    updateUiForActiveLayout();
+    if (isInternalRendering) return;
+    isInternalRendering = true;
+    try {
+      cachedFiltered = filtered;
+      updateUiForActiveLayout();
 
-    const container = document.getElementById('homeInterfaces');
-    if (!container) return;
+      const container = document.getElementById('homeInterfaces');
+      if (!container) return;
 
-    if (currentLayout === 0) {
-      container.hidden = true;
-      container.style.setProperty('display', 'none', 'important');
-      const originalGrid = document.getElementById('catGrid');
-      if (originalGrid) {
-        originalGrid.hidden = false;
-        originalGrid.style.removeProperty('display');
-        originalGrid.style.setProperty('display', 'grid', 'important');
+      if (currentLayout === 0) {
+        container.hidden = true;
+        container.style.setProperty('display', 'none', 'important');
+        const originalGrid = document.getElementById('catGrid');
+        if (originalGrid) {
+          originalGrid.hidden = false;
+          originalGrid.style.removeProperty('display');
+          originalGrid.style.setProperty('display', 'grid', 'important');
+        }
+        const dataToRender = filtered || cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
+        if (typeof root.renderCategoriesGrid === 'function') {
+          root.renderCategoriesGrid(dataToRender);
+        } else if (typeof root.renderUI === 'function') {
+          root.renderUI();
+        }
+        ensureLayout0VoiceStrip();
+        return;
       }
-      const dataToRender = filtered || cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
-      if (typeof root.renderCategoriesGrid === 'function') {
-        root.renderCategoriesGrid(dataToRender);
-      } else if (typeof root.renderUI === 'function') {
-        root.renderUI();
+
+      container.hidden = false;
+
+      const totals = computeTotals(filtered);
+      const budgets = getBudgets();
+      const currSymbol = (root.state && root.state.currentCurrency) ? root.state.currentCurrency : 'ج.م';
+      const isGold = (root.state && root.state.currentCurrency === 'عيار 21');
+
+      let html = '';
+      switch (currentLayout) {
+        case 1:
+          html = renderLayout1List(totals, budgets, currSymbol, isGold);
+          break;
+        case 2:
+          html = renderLayout2Analytics(totals, budgets, currSymbol, isGold);
+          break;
+        case 3:
+          html = renderLayout3Asymmetric(totals, budgets, currSymbol, isGold);
+          break;
+        case 4:
+          html = renderLayout4CompactGrid(totals, budgets, currSymbol, isGold);
+          break;
+        case 5:
+          html = renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold);
+          break;
+        case 6:
+          html = renderLayout6Honeycomb(totals, budgets, currSymbol, isGold);
+          break;
+        case 7:
+          html = renderLayout7SensorTiles(totals, budgets, currSymbol, isGold);
+          break;
+        case 8:
+          html = renderLayout8Diamonds(totals, budgets, currSymbol, isGold);
+          break;
+        case 9:
+          html = renderLayout9Equalizer(totals, budgets, currSymbol, isGold);
+          break;
+        default:
+          html = renderLayout1List(totals, budgets, currSymbol, isGold);
+          break;
       }
-      ensureLayout0VoiceStrip();
-      return;
+
+      container.innerHTML = html;
+      ensureSideHandlesVisible();
+      measureAndApplyDynamicLayout();
+    } finally {
+      isInternalRendering = false;
     }
-
-    container.hidden = false;
-
-    const totals = computeTotals(filtered);
-    const budgets = getBudgets();
-    const currSymbol = (root.state && root.state.currentCurrency) ? root.state.currentCurrency : 'ج.م';
-    const isGold = (root.state && root.state.currentCurrency === 'عيار 21');
-
-    let html = '';
-    switch (currentLayout) {
-      case 1:
-        html = renderLayout1List(totals, budgets, currSymbol, isGold);
-        break;
-      case 2:
-        html = renderLayout2Analytics(totals, budgets, currSymbol, isGold);
-        break;
-      case 3:
-        html = renderLayout3Asymmetric(totals, budgets, currSymbol, isGold);
-        break;
-      case 4:
-        html = renderLayout4CompactGrid(totals, budgets, currSymbol, isGold);
-        break;
-      case 5:
-        html = renderLayout5RadialCockpit(totals, budgets, currSymbol, isGold);
-        break;
-      case 6:
-        html = renderLayout6Honeycomb(totals, budgets, currSymbol, isGold);
-        break;
-      case 7:
-        html = renderLayout7SensorTiles(totals, budgets, currSymbol, isGold);
-        break;
-      case 8:
-        html = renderLayout8Diamonds(totals, budgets, currSymbol, isGold);
-        break;
-      case 9:
-        html = renderLayout9Equalizer(totals, budgets, currSymbol, isGold);
-        break;
-      default:
-        html = renderLayout1List(totals, budgets, currSymbol, isGold);
-        break;
-    }
-
-    container.innerHTML = html;
-    ensureSideHandlesVisible();
-    measureAndApplyDynamicLayout();
   }
 
   function getLayout() {
