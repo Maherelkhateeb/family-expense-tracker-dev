@@ -174,34 +174,6 @@
       '<p class="cmp-audit-period">'+safe(monthLabel(months[0]))+(months.length>1?' — '+safe(monthLabel(months[months.length-1])):'')+'</p>'+
       '<div class="cmp-audit-summary">'+summary.map(e=>'<div class="cmp-audit-kpi" data-tone="'+e[2]+'"><span>'+e[0]+'</span><strong dir="ltr">'+safe(e[1])+'</strong><small>'+((e[0]==='نسبة الفرق')?'':c)+'</small></div>').join('')+'</div>'+
       '<div class="cmp-audit-verdict" data-tone="'+(report.estimated<=0?'neutral':report.difference>0?'over':report.difference<0?'under':'neutral')+'"><strong>'+headline+'</strong><span>'+safe(note)+'</span></div>'+
-      '<div class="cmp-audit-section-head"><div><h3>الفروق حسب بنود المصروفات</h3><p>الأزرق للموازنة التقديرية والفيروزي للمصروف الفعلي. كروت مصغرة ومدمجة توضح الفروق وتفاصيل الصرف.</p></div>'+
-      '<div style="display:flex;align-items:center;gap:6px;">'+
-      '<small>'+report.actualCount+' عملية صرف</small>'+
-      '<button type="button" class="cmp-deck-collapse-btn" id="cmpAuditDiffCollapseBtn" onclick="window.FamilyComparisonAudit && window.FamilyComparisonAudit.toggleDifferences()" title="طي أو توسيع عرض الفروق"><i id="cmpAuditDiffToggleIcon" class="fa-solid '+(isDifferencesCollapsed?'fa-chevron-down':'fa-chevron-up')+'"></i> <span id="cmpAuditDiffToggleLabel">'+(isDifferencesCollapsed?'عرض الفروق':'طي الفروق')+'</span></button>'+
-      '</div></div>'+
-      '<div class="cmp-audit-rows '+(isDifferencesCollapsed?'is-collapsed':'')+'" id="cmpAuditRowsContainer">'+report.rows.map((r,i)=>{
-        const state=tone(r),max=Math.max(1,r.estimated,r.actual);
-        const estBarPct = barHeight(r.estimated, max);
-        const actBarPct = barHeight(r.actual, max);
-        return '<article class="cmp-audit-compact-card cmp-audit-row" data-tone="'+state+'">'+
-          '<div class="cmp-acc-head">'+
-          '<div class="cmp-acc-title"><span class="cmp-acc-rank">'+(i+1)+'.</span> <strong class="cmp-acc-name">'+safe(r.name)+'</strong></div>'+
-          '<span class="cmp-acc-badge '+state+'">'+status(r)+' <bdi dir="ltr">('+relative(r.percent)+')</bdi></span>'+
-          '</div>'+
-          '<div class="cmp-acc-body">'+
-          '<div class="cmp-acc-figures">'+
-          '<div class="cmp-acc-metric"><span class="cmp-acc-lbl">المقدر</span><strong class="cmp-acc-val est" dir="ltr">'+money(r.estimated)+'</strong></div>'+
-          '<div class="cmp-acc-metric"><span class="cmp-acc-lbl">الفعلي</span><strong class="cmp-acc-val act" dir="ltr">'+money(r.actual)+'</strong></div>'+
-          '<div class="cmp-acc-metric full"><span class="cmp-acc-lbl">'+ (r.estimated<=0?'الفرق':'التغيّر: '+(r.difference>0?'زيادة':r.difference<0?'انخفاض':'دون تغيّر')) +'</span><strong class="cmp-acc-val '+state+'" dir="ltr">'+signed(r.difference)+'</strong></div>'+
-          '</div>'+
-          '<div class="cmp-acc-bars" role="img" aria-label="أعمدة المقارنة">'+
-          '<div class="cmp-acc-bar-wrap" title="المقدر: '+money(r.estimated)+'"><i class="cmp-acc-bar-fill est" style="height:'+estBarPct+'%;"></i><small>مقدر</small></div>'+
-          '<div class="cmp-acc-bar-wrap" title="الفعلي: '+money(r.actual)+'"><i class="cmp-acc-bar-fill act" style="height:'+actBarPct+'%;"></i><small>فعلي</small></div>'+
-          '</div></div>'+
-          '<div class="cmp-acc-foot"><span>'+r.count+' عملية · '+c+'</span>'+
-          (r.count?'<button type="button" class="cmp-acc-btn" data-audit-category="'+safe(r.id)+'">عرض العمليات</button>':'')+
-          '</div></article>';
-      }).join('')+'</div>'+
       '<details class="cmp-audit-help"><summary>طريقة حساب الفرق والنِّسب</summary>'+
       '<p>الفرق = المصروف الفعلي − الميزانية التقديرية. نسبة الفرق = (الفرق ÷ الميزانية التقديرية) × 100. لو المقدر صفر، النسبة بتظهر «غير متاح» بدل نسبة مضللة. الأزرق للتقديري، والفيروزي للفعلي، والأحمر للتجاوز، والأخضر لأقل من المقدر. ارتفاع العمودين نسبي داخل كل بند.</p></details>';
     return true;
