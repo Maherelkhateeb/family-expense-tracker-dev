@@ -1,14 +1,12 @@
 
-/* Zero vertical scroll enforcer when an alternative home layout is active */
-/* Zero vertical scroll enforcer when an alternative home layout is active ONLY on expenses screen */
+/* Vertical scroll enforcer when an alternative home layout is active - allows smooth scrolling so cards are never cramped */
 body.has-alt-home-layout:has(#viewExpenses.active) #appScrollBody,
 body.has-alt-home-layout.view-expenses-active #appScrollBody,
 body.has-alt-home-layout #viewExpenses.active.home-alternative-design {
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-  padding-bottom: 0px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
+  padding-bottom: 76px !important;
 }
 
 body.has-alt-home-layout:has(#viewExpenses.active) #appScrollBody::-webkit-scrollbar,
@@ -54,21 +52,20 @@ body.dark-theme.has-alt-home-layout #viewExpenses {
   max-width: 500px !important;
   margin: 0 auto !important;
   box-sizing: border-box !important;
-  padding: 2px 14px 4px !important;
+  padding: 4px 14px 76px !important;
   direction: rtl !important;
   user-select: none !important;
   -webkit-user-select: none !important;
   font-family: var(--dynamic-home-font-family, inherit) !important;
-  overflow: hidden !important;
-  overflow-y: hidden !important;
+  overflow-y: auto !important;
   flex: 1 1 auto !important;
 }
 
 #viewExpenses.home-alternative-design {
-  overflow: hidden !important;
-  overflow-y: hidden !important;
-  overscroll-behavior-y: none !important;
-  padding-bottom: 0px !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
+  padding-bottom: 76px !important;
   margin-bottom: 0px !important;
   height: 100% !important;
   max-height: 100% !important;
@@ -1065,14 +1062,26 @@ body.dark-theme .hl-l4-voice-sub {
 .honeycomb-board,
 .sensor-arena,
 .diamond-arena {
-  height: var(--dynamic-home-arena-h, 300px) !important;
-  min-height: 0 !important;
-  max-height: none !important;
+  height: var(--dynamic-home-arena-h, 390px) !important;
+  min-height: 380px !important;
   box-sizing: border-box !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+}
+
+.hl-layout-5-wrapper,
+.hl-layout-6-wrapper,
+.hl-layout-7-wrapper,
+.hl-layout-8-wrapper,
+.hl-layout-9-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
 }
 
 .equalizer-arena {
@@ -1092,13 +1101,15 @@ body.dark-theme .hl-l4-voice-sub {
 .hl-l8-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
-  gap: var(--dynamic-home-gap, 4px) !important;
+  grid-template-rows: repeat(3, auto) !important;
+  gap: 6px !important;
   width: 100% !important;
-  height: 100% !important;
-  max-width: 440px !important;
+  height: auto !important;
+  max-width: 400px !important;
   margin: 0 auto !important;
   box-sizing: border-box !important;
+  align-content: center !important;
+  justify-content: center !important;
 }
 
 .hl-l8-item {
@@ -1106,13 +1117,12 @@ body.dark-theme .hl-l4-voice-sub {
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
 }
 
 .hl-dia-card {
-  width: 106px !important;
-  height: 106px !important;
-  border-radius: 24px !important;
+  border-radius: 20px !important;
   transform: rotate(45deg) !important;
   display: flex !important;
   align-items: center !important;
@@ -1388,9 +1398,12 @@ body.dark-theme .hl-picker-text small {
    5. Integrated Bottom Voice Bar Contrast Rules
 ------------------------------------------------------------- */
 .hl-integrated-bottom-voice {
-  width: 100%;
-  margin-top: 6px;
-  box-sizing: border-box;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 10 !important;
+  margin-top: 4px !important;
+  box-sizing: border-box !important;
 }
 
 .hl-integrated-voice-btn {
@@ -1447,7 +1460,7 @@ body.dark-theme .hl-integrated-voice-btn {
   background: linear-gradient(160deg, rgba(var(--cat-rgb, 56,189,248), 0.24) 0%, rgba(20, 30, 48, 0.92) 50%, rgba(10, 18, 30, 0.98) 100%) !important;
   border: 1.8px solid var(--tile-color, rgba(255, 255, 255, 0.15)) !important;
   border-radius: 16px !important;
-  padding: 4px 4px 6px !important;
+  padding: 8px 6px 10px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -1458,8 +1471,8 @@ body.dark-theme .hl-integrated-voice-btn {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(var(--cat-rgb, 56,189,248), 0.30) !important;
   box-sizing: border-box !important;
   height: 100% !important;
-  max-height: 154px !important;
-  min-height: 0 !important;
+  max-height: 160px !important;
+  min-height: 120px !important;
   transition: transform 0.18s ease, border-color 0.18s ease !important;
 }
 
@@ -1769,16 +1782,16 @@ body:not(.dark-theme) .sensor-divider {
   flex: 1 1 auto !important;
 }
 
-/* 2. Layout 1: Refined Horizontal Rows with Zero Collision */
+/* 2. Layout 1: Refined Horizontal Rows with Large Icons & Prominent Vertical Divider */
 .hl-row-l1 {
   background: #ffffff;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0);
   border-radius: 12px;
-  padding: 4px 8px !important;
+  padding: 6px 10px !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  min-height: 0 !important;
-  height: var(--dynamic-home-card-height, 48px) !important;
+  min-height: 52px !important;
+  height: auto !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
 }
@@ -1810,16 +1823,16 @@ body.dark-theme .hl-row-l1 {
 }
 
 .hl-row-l1-icon {
-  width: var(--dynamic-home-icon-size, 32px) !important;
-  height: var(--dynamic-home-icon-size, 32px) !important;
-  min-width: var(--dynamic-home-icon-size, 32px) !important;
-  max-width: var(--dynamic-home-icon-size, 32px) !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
   border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: calc(var(--dynamic-home-icon-size, 32px) * 0.48) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  font-size: 1.35rem !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
   flex-shrink: 0 !important;
 }
 
@@ -1976,10 +1989,11 @@ body.dark-theme .hl-row-rem-line {
   background: #ffffff;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0);
   border-radius: 12px;
-  padding: 4px 6px !important;
+  padding: 8px 10px !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  height: var(--dynamic-home-card-height, 68px) !important;
+  min-height: 72px !important;
+  height: auto !important;
   box-sizing: border-box !important;
   min-width: 0 !important;
   overflow: hidden !important;
@@ -1999,35 +2013,35 @@ body.dark-theme .hl-card-l3 {
   justify-content: flex-start !important;
   height: 100% !important;
   width: 100% !important;
-  gap: 5px !important;
+  gap: 6px !important;
   min-width: 0 !important;
   box-sizing: border-box !important;
 }
 
 .hl-card-l2-icon,
 .hl-card-l3-icon {
-  width: var(--dynamic-home-icon-size, 34px) !important;
-  height: var(--dynamic-home-icon-size, 34px) !important;
-  min-width: var(--dynamic-home-icon-size, 34px) !important;
-  max-width: var(--dynamic-home-icon-size, 34px) !important;
-  border-radius: calc(var(--dynamic-home-icon-size, 34px) * 0.28) !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
+  border-radius: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: calc(var(--dynamic-home-icon-size, 34px) * 0.48) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  font-size: 1.35rem !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
   flex-shrink: 0 !important;
 }
 
 .hl-card-l2-divider,
 .hl-card-l3-divider {
   width: 2.5px !important;
-  height: 44px !important;
+  height: 46px !important;
   background: var(--cat-color, #cbd5e1) !important;
   opacity: 0.95 !important;
   border-radius: 3px !important;
   flex-shrink: 0 !important;
-  margin: 0 8px !important;
+  margin: 0 10px !important;
   display: block !important;
 }
 

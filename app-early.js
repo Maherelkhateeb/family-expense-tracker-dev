@@ -256,8 +256,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v6.7.3';
-    var APP_BUILD_ID = 202611191035;
+    var APP_VERSION = 'v6.8.0';
+    var APP_BUILD_ID = 202611191230;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {

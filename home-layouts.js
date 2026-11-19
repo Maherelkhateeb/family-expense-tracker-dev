@@ -240,23 +240,20 @@
     const scrollBody = document.querySelector('.app-scroll-body');
     const viewExp = document.getElementById('viewExpenses');
 
-    // Strict zero-scroll lock on expenses view when alternative layout is active
+    // Expenses view configuration when alternative layout is active
     const isExpensesActive = viewExp && (viewExp.classList.contains('active') || viewExp.style.display !== 'none');
 
     if (currentLayout !== 0 && isExpensesActive) {
       document.body.classList.add('view-expenses-active');
       if (scrollBody) {
-        scrollBody.scrollTop = 0;
-        scrollBody.style.setProperty('overflow-y', 'hidden', 'important');
-        scrollBody.style.setProperty('padding-bottom', '0px', 'important');
+        scrollBody.style.setProperty('overflow-y', 'auto', 'important');
+        scrollBody.style.setProperty('padding-bottom', '76px', 'important');
       }
       if (viewExp) {
-        viewExp.scrollTop = 0;
-        viewExp.style.setProperty('overflow-y', 'hidden', 'important');
-        viewExp.style.setProperty('padding-bottom', '0px', 'important');
+        viewExp.style.setProperty('overflow-y', 'auto', 'important');
+        viewExp.style.setProperty('padding-bottom', '76px', 'important');
       }
-      container.scrollTop = 0;
-      container.style.setProperty('overflow-y', 'hidden', 'important');
+      container.style.setProperty('overflow-y', 'auto', 'important');
     } else {
       document.body.classList.remove('view-expenses-active');
       if (scrollBody) {
@@ -315,51 +312,45 @@
     }
 
     let cardH = 68;
-    let gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
-    let iconSize = Math.max(24, Math.min(36, Math.round(34 * Math.min(widthScale, heightScale))));
+    let gap = availableH < 380 ? 4 : 6;
+    let iconSize = 44;
 
     switch (currentLayout) {
-      case 1: { // 1 column, 10 rows (9 categories + voice)
-        gap = availableH < 380 ? 2 : (availableH < 450 ? 3 : 4);
-        cardH = Math.floor((availableH - (9 * gap) - 4) / 10);
-        cardH = Math.max(28, Math.min(50, cardH));
-        iconSize = Math.max(22, Math.min(32, cardH - 6));
+      case 1: { // 1 column, 10 rows (9 categories + voice) - Large icons & prominent divider
+        gap = 5;
+        cardH = 54;
+        iconSize = 44;
         break;
       }
-      case 2: { // Hero analytics + 2 columns, 5 rows
-        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
-        const heroH = Math.max(56, Math.min(84, Math.floor(availableH * 0.19)));
-        const remainingForGrid = availableH - heroH - 4 - gap;
-        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
-        cardH = Math.max(44, Math.min(70, cardH));
-        iconSize = Math.max(24, Math.min(34, cardH - 18));
+      case 2: { // Hero analytics + 2 columns, 5 rows - Large icons & prominent divider
+        gap = 6;
+        const heroH = Math.max(68, Math.min(88, Math.floor(availableH * 0.19)));
+        cardH = 74;
+        iconSize = 44;
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
-      case 3: { // 2 columns, 5 rows (10 cards)
-        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
-        cardH = Math.floor((availableH - (4 * gap) - 4) / 5);
-        cardH = Math.max(56, Math.min(92, cardH));
-        iconSize = Math.max(26, Math.min(36, Math.floor(cardH * 0.42)));
+      case 3: { // 2 columns, 5 rows (10 cards) - Large icons & prominent divider
+        gap = 6;
+        cardH = 74;
+        iconSize = 44;
         break;
       }
       case 4: { // 3 columns, 3 rows (9 category cards) + 1 bottom voice banner
-        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
-        const voiceStripH = Math.max(32, Math.min(40, Math.floor(availableH * 0.095)));
-        const remainingForCards = availableH - voiceStripH - gap - 4;
-        cardH = Math.floor((remainingForCards - (2 * gap)) / 3);
-        cardH = Math.max(76, Math.min(132, cardH));
-        iconSize = Math.max(26, Math.min(36, Math.floor(cardH * 0.32)));
+        gap = 6;
+        const voiceStripH = Math.max(34, Math.min(42, Math.floor(availableH * 0.095)));
+        cardH = Math.max(88, Math.min(136, Math.floor((availableH - voiceStripH - 16) / 3)));
+        iconSize = 42;
         container.style.setProperty('--dynamic-home-voice-h', `${voiceStripH}px`);
         break;
       }
-      case 5: { // Radial Cockpit
-        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
-        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
-        const satSize = Math.max(46, Math.min(68, Math.floor(arenaH * 0.165)));
-        const maxRadius = Math.floor((Math.min(viewportW, arenaH) - satSize - 14) / 2);
-        const radius = Math.max(86, Math.min(138, maxRadius));
-        const hubSize = Math.max(64, Math.min(94, Math.floor(arenaH * 0.23)));
+      case 5: { // Radial Cockpit - Large satellites & distinct divider
+        const voiceBarH = 38;
+        const arenaH = Math.max(380, availableH - voiceBarH - gap - 4);
+        const satSize = Math.max(76, Math.min(88, Math.floor(arenaH * 0.20)));
+        const maxRadius = Math.floor((Math.min(viewportW, arenaH) - satSize - 10) / 2);
+        const radius = Math.max(105, Math.min(145, maxRadius));
+        const hubSize = Math.max(90, Math.min(110, Math.floor(arenaH * 0.26)));
         container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         container.style.setProperty('--dynamic-home-sat-size', `${satSize}px`);
@@ -370,8 +361,8 @@
       }
       case 6: { // Honeycomb Hive
         const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
-        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
-        const hexH = Math.max(56, Math.min(88, Math.floor((arenaH - 8) / 3.05)));
+        const arenaH = Math.max(340, availableH - voiceBarH - gap - 4);
+        const hexH = Math.max(64, Math.min(92, Math.floor((arenaH - 8) / 3.05)));
         const hexW = Math.round(hexH * 1.08);
         container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
@@ -380,12 +371,13 @@
         cardH = Math.floor(availableH);
         break;
       }
-      case 7: { // HUD Sensor Tiles
-        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
-        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
+      case 7: { // HUD Sensor Tiles - Large tiles & prominent divider
+        const voiceBarH = 38;
+        const arenaH = Math.max(390, availableH - voiceBarH - gap - 4);
         container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor((arenaH - (2 * gap)) / 3);
+        iconSize = 44;
         break;
       }
       case 8: { // Diamond Crystals
@@ -1180,8 +1172,8 @@
     const voiceWaveColor = isLight ? '#8b5cf6' : '#c084fc';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 8px;flex-shrink:0;position:relative;z-index:10;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:1rem;color:${voiceBorder};"></i>
             <span style="font-size:0.75rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1195,7 +1187,7 @@
     `;
 
     return `
-      <div class="hl-layout-5-wrapper" style="display:flex;flex-direction:column;width:100%;">
+      <div class="hl-layout-5-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:space-between;box-sizing:border-box;">
         <div class="radial-arena hl-l5-arena" style="position:relative; width:100%; height:${arenaH}px; margin:0 auto; overflow:hidden;">
           <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
           
@@ -1225,29 +1217,31 @@
     const container = document.getElementById('homeInterfaces');
     const containerW = (container && container.clientWidth > 100) ? container.clientWidth : (window.innerWidth || 390);
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
-      : Math.max(240, availableH - 46);
-    const hexH = container && container.style.getPropertyValue('--dynamic-home-hex-h')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-hex-h'), 10)
-      : Math.max(56, Math.min(88, Math.floor((arenaH - 8) / 3.05)));
+    
+    // Voice bar parameters & board limits
+    const voiceBarH = 40;
+    const maxBoardH = Math.max(220, Math.min(320, availableH - voiceBarH - 12));
+    const hexH = Math.max(58, Math.min(76, Math.floor((maxBoardH - 16) / 2.85)));
     const hexW = Math.round(hexH * 1.08);
 
     const colW = Math.floor((containerW - 24) / 3);
-    const rowStep = Math.floor((arenaH - hexH) / 2);
+    // Tight natural row step - hexagons nest closely without void gaps!
+    const rowStep = Math.round(hexH * 0.88);
+    const clusterH = rowStep * 2 + hexH;
+    const topOffset = Math.max(2, Math.floor((maxBoardH - clusterH) / 2));
 
     const positions = [
-      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 0)],
-      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 0)],
-      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 0)],
+      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 0)],
+      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 0)],
+      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 0)],
 
-      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 1)],
-      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 1)],
-      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 1)],
+      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 1)],
+      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 1)],
+      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 1)],
 
-      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 2)],
-      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 2)],
-      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 2)]
+      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 2)],
+      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 2)],
+      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 2)]
     ];
 
     const cellsHtml = catKeys.map((catId, idx) => {
@@ -1291,8 +1285,8 @@
     const voiceText = isLight ? '#065f46' : '#d1fae5';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 8px;flex-shrink:0;position:relative;z-index:10;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 38px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1306,8 +1300,8 @@
     `;
 
     return `
-      <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;">
-        <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 360px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:space-between;box-sizing:border-box;">
+        <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:${clusterH + 8}px; min-height:${clusterH + 8}px; max-height:${maxBoardH}px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
           <div style="position:relative; width:100%; height:100%; max-width:${containerW}px;">${cellsHtml}</div>
         </div>
         ${voiceBarHtml}
@@ -1361,8 +1355,8 @@
     }).join('');
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 4px;flex-shrink:0;position:relative;z-index:10;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
             <span style="font-size:0.75rem;font-weight:850;color:#f8fafc;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
@@ -1376,7 +1370,7 @@
     `;
 
     return `
-      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%; align-items:center;">
+      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box; align-items:center;">
         <div class="sensor-arena hl-l7-arena">
           <div class="sensor-grid">
             ${tilesHtml}
@@ -1396,10 +1390,9 @@
 
     const container = document.getElementById('homeInterfaces');
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
-      : Math.max(230, availableH - 46);
-    const diaSize = Math.max(52, Math.min(78, Math.floor(arenaH / 4.45)));
+    const voiceBarH = 40;
+    const maxArenaH = Math.max(220, Math.min(320, availableH - voiceBarH - 12));
+    const diaSize = Math.max(52, Math.min(72, Math.floor((maxArenaH - 24) / 3.8)));
     const contentW = Math.round(diaSize * 1.18);
 
     const diamondsHtml = catKeys.map(catId => {
@@ -1446,8 +1439,8 @@
     const voiceText = isLight ? '#9d174d' : '#fbcfe8';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 6px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 6px;flex-shrink:0;position:relative;z-index:10;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 38px);border-radius:10px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Crystal Voice)</span>
@@ -1461,8 +1454,8 @@
     `;
 
     return `
-      <div class="hl-layout-8-wrapper" style="display:flex; flex-direction:column; width:100%;">
-        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 380px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div class="hl-layout-8-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box;">
+        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:auto; min-height:220px; max-height:${maxArenaH}px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
           <div class="hl-l8-grid">${diamondsHtml}</div>
         </div>
         ${voiceBarHtml}
@@ -1580,8 +1573,8 @@
     const voiceText = isLight ? '#0369a1' : '#e0f2fe';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 4px;flex-shrink:0;position:relative;z-index:10;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Spectrum Audio)</span>
@@ -1604,7 +1597,7 @@
     const barsWrapBorder = isLight ? '1px solid #e2e8f0' : '1px solid rgba(56, 189, 248, 0.15)';
 
     return `
-      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%;">
+      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box;">
         ${memberChartHtml}
         <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
           <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:4px 10px;">
@@ -1655,6 +1648,7 @@
       originalGrid.hidden = !isOriginal;
       if (isOriginal) {
         originalGrid.style.removeProperty('display');
+        originalGrid.style.setProperty('display', 'grid', 'important');
       } else {
         originalGrid.style.setProperty('display', 'none', 'important');
       }
@@ -1662,6 +1656,11 @@
 
     if (container) {
       container.hidden = isOriginal;
+      if (isOriginal) {
+        container.style.setProperty('display', 'none', 'important');
+      } else {
+        container.style.removeProperty('display');
+      }
       container.dataset.design = String(currentLayout);
     }
 
@@ -1673,9 +1672,51 @@
     document.body.classList.toggle('has-alt-home-layout', !isOriginal);
     document.body.dataset.homeLayout = String(currentLayout);
 
+    ensureLayout0VoiceStrip();
     updateDesignButtonDial();
     ensureSideHandlesVisible();
     measureAndApplyDynamicLayout();
+  }
+
+  function ensureLayout0VoiceStrip() {
+    let voiceStrip = document.getElementById('catGridVoiceStrip');
+    const isOriginal = (currentLayout === 0);
+    if (!voiceStrip && isOriginal) {
+      const grid = document.getElementById('catGrid');
+      if (!grid || !grid.parentNode) return;
+      voiceStrip = document.createElement('div');
+      voiceStrip.id = 'catGridVoiceStrip';
+      voiceStrip.className = 'hl-integrated-bottom-voice hl-layout0-voice-strip';
+      voiceStrip.setAttribute('data-action', 'voice-record');
+      voiceStrip.style.cssText = 'width:100%;margin-top:8px;padding:0 2px;box-sizing:border-box;flex-shrink:0;';
+      voiceStrip.innerHTML = `
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(124,58,237,0.22) 100%) !important;border:1.6px solid #8b5cf6 !important;color:#6d28d9 !important;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fa-solid fa-microphone" style="font-size:1rem;color:#8b5cf6;"></i>
+            <span style="font-size:0.76rem;font-weight:850;color:#6d28d9;">إضافة صوتية للمصروفات</span>
+          </div>
+          <div style="width:100px;display:flex;align-items:center;">
+            ${getAudioWaveHtml('#8b5cf6')}
+          </div>
+          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#8b5cf6;"></i>
+        </button>
+      `;
+      voiceStrip.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (root.VoiceAssistantEngine && typeof root.VoiceAssistantEngine.toggleListening === 'function') {
+          root.VoiceAssistantEngine.toggleListening();
+        } else {
+          const fab = document.getElementById('btnVoiceAssistantFab');
+          if (fab) fab.click();
+        }
+      };
+      grid.parentNode.insertBefore(voiceStrip, grid.nextSibling);
+    }
+    if (voiceStrip) {
+      voiceStrip.hidden = !isOriginal;
+      voiceStrip.style.display = isOriginal ? 'block' : 'none';
+    }
   }
 
   function render(filtered) {
@@ -1687,6 +1728,20 @@
 
     if (currentLayout === 0) {
       container.hidden = true;
+      container.style.setProperty('display', 'none', 'important');
+      const originalGrid = document.getElementById('catGrid');
+      if (originalGrid) {
+        originalGrid.hidden = false;
+        originalGrid.style.removeProperty('display');
+        originalGrid.style.setProperty('display', 'grid', 'important');
+      }
+      const dataToRender = filtered || cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
+      if (typeof root.renderCategoriesGrid === 'function') {
+        root.renderCategoriesGrid(dataToRender);
+      } else if (typeof root.renderUI === 'function') {
+        root.renderUI();
+      }
+      ensureLayout0VoiceStrip();
       return;
     }
 
@@ -1762,7 +1817,23 @@
     } catch (e) {}
 
     updateUiForActiveLayout();
-    render(cachedFiltered);
+    if (next === 0) {
+      const originalGrid = document.getElementById('catGrid');
+      if (originalGrid) {
+        originalGrid.hidden = false;
+        originalGrid.style.removeProperty('display');
+        originalGrid.style.setProperty('display', 'grid', 'important');
+      }
+      const dataToRender = cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
+      if (typeof root.renderCategoriesGrid === 'function') {
+        root.renderCategoriesGrid(dataToRender);
+      } else if (typeof root.renderUI === 'function') {
+        root.renderUI();
+      }
+      ensureLayout0VoiceStrip();
+    } else {
+      render(cachedFiltered);
+    }
 
     const meta = LAYOUT_META[next];
     if (typeof root.showToast === 'function') {
