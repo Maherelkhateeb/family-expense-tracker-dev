@@ -1101,9 +1101,6 @@
             <span style="font-size:0.75rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; display:inline-block;">${amtText}</span>
           </button>
         </div>
-      `;; color:${amtColor}; direction:ltr; unicode-bidi:isolate; letter-spacing:-0.2px;">${amtText}</span>
-          </button>
-        </div>
       `;
     }).join('');
 
