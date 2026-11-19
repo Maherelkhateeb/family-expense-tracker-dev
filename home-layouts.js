@@ -711,43 +711,44 @@
       return `
         <article class="home-design-card hl-row-l1" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-row-l1-content">
-            <div class="hl-row-l1-right">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-                <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
-                  <i class="${s.cat.iconClass}"></i>
+            <!-- 1. Right: Category Icon -->
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
+              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+                <i class="${s.cat.iconClass}"></i>
+              </div>
+            </button>
+            <div class="hl-row-icon-divider"></div>
+
+            <!-- 2. Center: Name on Top, Remaining/Budget on Bottom with Progress Bar -->
+            <div class="hl-row-main-info">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-title-btn" title="تسجيل سريع في ${catDisplayName}">
+                <strong class="hl-row-l1-name">${catDisplayName}</strong>
+              </button>
+              <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-subline-btn" title="عرض حركات ${catDisplayName}">
+                <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol} · الميزانية: ${s.budValStr}</div>
+                <div class="hl-progress-track">
+                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
                 </div>
               </button>
-              <div class="hl-row-icon-divider"></div>
-              <div class="hl-row-name-amt">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="تسجيل سريع في ${catDisplayName}">
-                  <strong class="hl-row-l1-name">${catDisplayName}</strong>
+            </div>
+
+            <!-- 3. Left: Spent Amount on Top, Percentage Badge + Chevron on Bottom -->
+            <div class="hl-row-left-cluster">
+              <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-amt-btn" title="عرض حركات ${catDisplayName}">
+                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                  <span class="hl-amt-curr">${currSymbol}</span>
+                </div>
+              </button>
+              <div class="hl-row-actions-cluster">
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};" title="نسبة المتبقي - انقر لعرض العمليات">
+                  %${s.remainingPct}
                 </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="عرض حركات ${catDisplayName}">
-                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                    <span class="hl-amt-curr">${currSymbol}</span>
-                  </div>
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
+                  <i class="fa-solid fa-chevron-left"></i>
                 </button>
               </div>
             </div>
-
-            <div class="hl-row-divider"></div>
-
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn" title="عرض حركات ${catDisplayName}">
-              <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
-              <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
-              <div class="hl-progress-track">
-                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-              </div>
-            </button>
-
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border:none;cursor:pointer;" title="نسبة المتبقي - انقر لعرض العمليات">
-              %${s.remainingPct}
-            </button>
-
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
           </div>
         </article>
       `;
@@ -757,28 +758,21 @@
     const voiceRowHtml = `
       <article class="home-design-card hl-row-l1 hl-voice-row" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
         <div class="hl-row-l1-content">
-          <div class="hl-row-l1-right">
-            <button type="button" data-action="voice-record" class="hl-row-icon-btn">
-              <div class="hl-row-l1-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
-                <i class="fa-solid fa-microphone"></i>
-              </div>
-            </button>
-            <div class="hl-row-icon-divider"></div>
-            <div class="hl-row-name-amt">
-              <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
-              <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.65rem;font-weight:700;">اضغط للتحدث الذكي</small>
+          <button type="button" data-action="voice-record" class="hl-row-icon-btn">
+            <div class="hl-row-l1-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+              <i class="fa-solid fa-microphone"></i>
             </div>
+          </button>
+          <div class="hl-row-icon-divider"></div>
+          <div class="hl-row-main-info">
+            <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+            <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.62rem;font-weight:700;">اضغط للتحدث الذكي مع المساعد المالي</small>
           </div>
-
-          <div class="hl-row-divider"></div>
-
-          <button type="button" data-action="voice-record" class="hl-row-mid-btn hl-voice-waves-btn">
-            ${getAudioWaveHtml('#8b5cf6')}
-          </button>
-
-          <button type="button" data-action="voice-record" class="hl-row-chevron-btn" aria-label="بدء التسجيل الصوتي">
-            <i class="fa-solid fa-chevron-left" style="color:#7c3aed;"></i>
-          </button>
+          <div class="hl-row-left-cluster">
+            <button type="button" data-action="voice-record" class="hl-voice-waves-btn" style="background:none;border:none;padding:0;cursor:pointer;">
+              ${getAudioWaveHtml('#8b5cf6')}
+            </button>
+          </div>
         </div>
       </article>
     `;
@@ -802,54 +796,29 @@
     const overallPct = totalBudget > 0 ? Math.round((totalExpense / totalBudget) * 100) : 0;
     const remainingBudget = Math.max(0, totalBudget - totalExpense);
 
-    const top3 = spentCategories.slice(0, 3);
-    const top3Html = top3.length > 0 ? top3.map(item => {
-      const pct = totalExpense > 0 ? Math.round((item.spent / totalExpense) * 100) : 0;
-      return `
-        <div class="hl-top3-item" data-action="view-operations" data-cat-id="${item.id}" style="cursor:pointer;" title="عرض حركات ${item.cat.name}">
-          <div class="hl-top3-cat">
-            <i class="${item.cat.iconClass}" style="color:${item.cat.color};"></i>
-            <span>${item.cat.name}</span>
-          </div>
-          <div class="hl-top3-bar-wrap">
-            <div class="hl-top3-bar-track">
-              <div class="hl-top3-bar-fill" style="width:${pct}%;background:${item.cat.color};"></div>
-            </div>
-            <strong style="color:${item.cat.color};">%${pct}</strong>
-          </div>
-        </div>
-      `;
-    }).join('') : '<div style="color:#94a3b8;font-size:0.72rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
-
-    // 10 Cards in 2 Columns matching Image (Asymmetric with Outer Icons & Dividers):
-    // Row 1: Right = daily (مصروف يومي), Left = food (طعام ومشتريات)
-    // Row 2: Right = bills (فواتير والتزامات), Left = house (مستلزمات منزل)
-    // Row 3: Right = education (تعليم ودروس), Left = transport (مواصلات وبنزين)
-    // Row 4: Right = health (صحة وعلاج), Left = clothes (ملابس وأحذية)
-    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
     const pairs = [
       ['daily', 'food'],
       ['bills', 'house'],
       ['education', 'transport'],
       ['health', 'clothes'],
-      ['voice', 'other']
+      ['other', 'voice']
     ];
 
     const cardsHtml = pairs.map(([rightId, leftId]) => {
-      function renderOneCard(id, side) {
+      function renderOneCard(id) {
         if (id === 'voice') {
           return `
-            <article class="home-design-card hl-card-l2 hl-voice-card hl-card-l2-${side}-col" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
-              <div class="hl-card-l2-inner hl-card-l2-inner-${side}">
+            <article class="home-design-card hl-card-l2 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l2-inner">
                 <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
-                  <div class="hl-card-l2-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:13px;">
+                  <div class="hl-card-l2-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:10px;">
                     <i class="fa-solid fa-microphone"></i>
                   </div>
                 </button>
                 <div class="hl-card-l2-divider"></div>
                 <div class="hl-card-l2-right">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
-                    <strong class="hl-card-l2-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+                    <strong class="hl-card-l2-name" style="color:#6d28d9;">إضافة صوتية</strong>
                   </button>
                   <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
                     ${getAudioWaveHtml('#8b5cf6')}
@@ -864,49 +833,36 @@
         const sign = s.hasSpent ? '- ' : '';
         const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
-        const iconBtnHtml = `
-          <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
-            <div class="hl-card-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '13px'};">
-              <i class="${s.cat.iconClass}"></i>
-            </div>
-          </button>
-        `;
-
-        const dividerHtml = `<div class="hl-card-l2-divider"></div>`;
-
-        const textClusterHtml = `
-          <div class="hl-card-l2-right">
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
-              <strong class="hl-card-l2-name">${catDisplayName}</strong>
-            </button>
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
-              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                <span class="hl-amt-curr">${currSymbol}</span>
-              </div>
-              <div class="hl-progress-track">
-                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-              </div>
-              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-            </button>
-          </div>
-        `;
-
-        // Side-aware layout: Outer icon, vertical divider, text towards center
-        const innerContent = side === 'right'
-          ? (iconBtnHtml + dividerHtml + textClusterHtml)
-          : (textClusterHtml + dividerHtml + iconBtnHtml);
-
         return `
-          <article class="home-design-card hl-card-l2 hl-card-l2-${side}-col" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-            <div class="hl-card-l2-inner hl-card-l2-inner-${side}">
-              ${innerContent}
+          <article class="home-design-card hl-card-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l2-inner">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn" title="تسجيل سريع في ${catDisplayName}">
+                <div class="hl-card-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '10px'};">
+                  <i class="${s.cat.iconClass}"></i>
+                </div>
+              </button>
+              <div class="hl-card-l2-divider"></div>
+              <div class="hl-card-l2-right">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
+                  <strong class="hl-card-l2-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                  <div class="hl-progress-track">
+                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                  </div>
+                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+                </button>
+              </div>
             </div>
           </article>
         `;
       }
 
-      return renderOneCard(rightId, 'right') + renderOneCard(leftId, 'left');
+      return renderOneCard(rightId) + renderOneCard(leftId);
     }).join('');
 
     return `
@@ -929,14 +885,11 @@
             <div style="color:#b91c1c;">المصروف : <strong>${totalExpense.toLocaleString()} ${currSymbol}</strong></div>
             <div style="color:#15803d;">المتبقي : <strong>${remainingBudget.toLocaleString()} ${currSymbol}</strong></div>
           </div>
-
-          <div class="hl-top3-box">
-            <div class="hl-top3-title"><i class="fa-solid fa-chart-simple"></i>أعلى 3 بنود صرفاً</div>
-            ${top3Html}
-          </div>
         </section>
 
-        <div class="home-design-grid hl-grid-layout-2">${cardsHtml}</div>
+        <div class="home-design-grid hl-grid-layout-2">
+          ${cardsHtml}
+        </div>
       </div>
     `;
   }
@@ -946,26 +899,20 @@
      Card 10 (Row 5, Right) = إضافة صوتية للمصروفات
      ========================================================================= */
   function renderLayout3Asymmetric(totals, budgets, currSymbol, isGold) {
-    // 10 Cards in 2 Columns matching Image (Asymmetric with Outer Icons & Dividers):
-    // Row 1: Right = daily (مصروف يومي), Left = food (طعام ومشتريات)
-    // Row 2: Right = bills (فواتير والتزامات), Left = house (مستلزمات منزل)
-    // Row 3: Right = education (تعليم ودروس), Left = transport (مواصلات وبنزين)
-    // Row 4: Right = health (صحة وعلاج), Left = clothes (ملابس وأحذية)
-    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
     const pairs = [
       ['daily', 'food'],
       ['bills', 'house'],
       ['education', 'transport'],
       ['health', 'clothes'],
-      ['voice', 'other']
+      ['other', 'voice']
     ];
 
     const cardsHtml = pairs.map(([rightId, leftId]) => {
-      function renderOneCard(id, side) {
+      function renderOneCard(id) {
         if (id === 'voice') {
           return `
-            <article class="home-design-card hl-card-l3 hl-voice-card hl-card-l3-right-col" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
-              <div class="hl-card-l3-inner hl-card-l3-inner-right">
+            <article class="home-design-card hl-card-l3 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l3-inner">
                 <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
                   <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
                     <i class="fa-solid fa-microphone"></i>
@@ -974,7 +921,7 @@
                 <div class="hl-card-l3-divider"></div>
                 <div class="hl-card-l3-text">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
-                    <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+                    <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية</strong>
                   </button>
                   <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
                     ${getAudioWaveHtml('#8b5cf6')}
@@ -989,50 +936,36 @@
         const sign = s.hasSpent ? '- ' : '';
         const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
-        const iconBtnHtml = `
-          <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
-            <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
-              <i class="${s.cat.iconClass}"></i>
-            </div>
-          </button>
-        `;
-
-        const dividerHtml = `<div class="hl-card-l3-divider"></div>`;
-
-        const textClusterHtml = `
-          <div class="hl-card-l3-text">
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
-              <strong class="hl-card-l3-name">${catDisplayName}</strong>
-            </button>
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
-              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                <span class="hl-amt-curr">${currSymbol}</span>
-              </div>
-              <div class="hl-progress-track">
-                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-              </div>
-              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-            </button>
-          </div>
-        `;
-
-        // Right side: Icon on right, divider, text on left (in RTL)
-        // Left side: Text on right, divider, Icon on left (in RTL)
-        const innerContent = side === 'right'
-          ? (iconBtnHtml + dividerHtml + textClusterHtml)
-          : (textClusterHtml + dividerHtml + iconBtnHtml);
-
         return `
-          <article class="home-design-card hl-card-l3 hl-card-l3-${side}-col" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-            <div class="hl-card-l3-inner hl-card-l3-inner-${side}">
-              ${innerContent}
+          <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l3-inner">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn" title="تسجيل سريع في ${catDisplayName}">
+                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+                  <i class="${s.cat.iconClass}"></i>
+                </div>
+              </button>
+              <div class="hl-card-l3-divider"></div>
+              <div class="hl-card-l3-text">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
+                  <strong class="hl-card-l3-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                  <div class="hl-progress-track">
+                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+                  </div>
+                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+                </button>
+              </div>
             </div>
           </article>
         `;
       }
 
-      return renderOneCard(rightId, 'right') + renderOneCard(leftId, 'left');
+      return renderOneCard(rightId) + renderOneCard(leftId);
     }).join('');
 
     return `<div class="home-design-grid hl-grid-layout-3">${cardsHtml}</div>`;
