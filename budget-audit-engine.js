@@ -3310,7 +3310,7 @@ const ProjectCompareEngine = (() => {
         <div style="overflow-x: auto; margin-bottom: 12px; border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px;">
           <table class="variance-table-lux" style="width: 100%; border-collapse: collapse; font-size: 0.78rem; direction: rtl; text-align: right;">
             <thead>
-              <tr style="background: rgba(15, 23, 42, 0.9);">
+              <tr style="background: ${document.body.classList.contains('light-theme') ? '#f1f5f9' : 'rgba(15, 23, 42, 0.9)'}; color: ${document.body.classList.contains('light-theme') ? '#0284c7' : '#38bdf8'};">
                 <th style="padding: 10px; color: #94a3b8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">بيان بند المشروع (WBS)</th>
                 <th style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">الموازنة المعتمدة</th>
                 <th style="padding: 10px; text-align: center; color: #38bdf8; font-weight: 850; border-bottom: 1px solid rgba(255,255,255,0.1);">المنصرف الفعلي</th>

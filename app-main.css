@@ -14192,24 +14192,52 @@ body.light-theme .cat-budget-progress-track {
     }
 
     body.light-theme .ops-tx-card-lux,
+    html.light-theme .ops-tx-card-lux,
+    [data-color-mode="light"] .ops-tx-card-lux,
     html[data-app-theme] body.light-theme .ops-tx-card-lux,
-    #panelIncomeHistoryContainer .ops-tx-card-lux {
+    #panelIncomeHistoryContainer .ops-tx-card-lux,
+    #directIncomeListRows .ops-tx-card-lux {
       background: #ffffff !important;
+      background-image: none !important;
+      background-color: #ffffff !important;
       border: 1.2px solid #e2e8f0 !important;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
       color: #0f172a !important;
     }
     body.light-theme .ops-tx-label-text,
+    html.light-theme .ops-tx-label-text,
+    [data-color-mode="light"] .ops-tx-label-text,
     html[data-app-theme] body.light-theme .ops-tx-label-text,
-    #panelIncomeHistoryContainer .ops-tx-label-text {
+    #panelIncomeHistoryContainer .ops-tx-label-text,
+    #directIncomeListRows .ops-tx-label-text {
       color: #0f172a !important;
       font-weight: 850 !important;
       text-shadow: none !important;
     }
-    body.light-theme #panelIncomeHistoryContainer {
+    body.light-theme #panelIncomeHistoryContainer,
+    html.light-theme #panelIncomeHistoryContainer,
+    [data-color-mode="light"] #panelIncomeHistoryContainer {
       background: #ffffff !important;
+      background-image: none !important;
+      background-color: #ffffff !important;
       border: 1.2px solid #e2e8f0 !important;
       color: #0f172a !important;
+    }
+    body.light-theme #directIncomeListRows .ops-tx-chip,
+    html.light-theme #directIncomeListRows .ops-tx-chip,
+    [data-color-mode="light"] #directIncomeListRows .ops-tx-chip {
+      background: #f8fafc !important;
+      border: 1px solid #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    .btn-budget-action-special,
+    body.light-theme .btn-budget-action-special,
+    html.light-theme .btn-budget-action-special,
+    [data-color-mode="light"] .btn-budget-action-special {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      background-color: #10b981 !important;
+      border: 1px solid rgba(52, 211, 153, 0.5) !important;
+      color: #ffffff !important;
     }
     body.light-theme .ops-date-title {
       color: #0f172a !important;

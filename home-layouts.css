@@ -377,9 +377,11 @@ body.dark-theme .hl-row-l1 {
 .hl-row-l1-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex: 1.1;
   min-width: 0;
+  max-width: 44%;
+  overflow: hidden;
 }
 
 .hl-row-icon-btn {
@@ -459,6 +461,8 @@ body.dark-theme .hl-row-divider {
   cursor: pointer;
   flex: 1.2;
   min-width: 0;
+  max-width: 40%;
+  overflow: hidden;
   text-align: right;
   display: flex;
   flex-direction: column;
