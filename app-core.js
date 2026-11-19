@@ -1083,18 +1083,18 @@ function toggleAnalyticsCustomRange() {
         });
       }
 
-      // 5. بناء جدول مقارنة بنود المصروف
+      // 5. بناء جدول مقارنة بنود المصروف (تصميم خالٍ من القص والتمرير الأفقي)
       const catTableContainer = document.getElementById('comparisonsCatTableContainer');
       if (catTableContainer) {
         let catHtml = `
           <table class="variance-table-lux" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; table-layout: fixed;">
             <thead>
               <tr style="text-align: right; border-bottom: 2px solid rgba(56, 189, 248, 0.3);">
-                <th style="width: 23%; padding: 7px 4px;">بند المصروف</th>
-                <th style="width: 20%; padding: 7px 2px;">التقديري</th>
-                <th style="width: 20%; padding: 7px 2px;">الفعلي</th>
-                <th style="width: 20%; padding: 7px 2px;">الانحراف</th>
-                <th style="width: 17%; padding: 7px 2px;">الحالة</th>
+                <th style="width: 32%; padding: 7px 4px; text-align: right;">بند المصروف</th>
+                <th style="width: 17%; padding: 7px 2px; text-align: center;">التقديري</th>
+                <th style="width: 17%; padding: 7px 2px; text-align: center;">الفعلي</th>
+                <th style="width: 18%; padding: 7px 2px; text-align: center;">الانحراف</th>
+                <th style="width: 16%; padding: 7px 2px; text-align: center;">الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -1117,16 +1117,18 @@ function toggleAnalyticsCustomRange() {
 
           catHtml += `
             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s;">
-              <td style="padding: 6px 3px; font-weight: 800; display: flex; align-items: center; gap: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <i class="fa-solid ${c.icon}" style="color: ${c.color}; font-size: 0.85rem; flex-shrink: 0;"></i>
-                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.name}</span>
+              <td style="padding: 6px 4px; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <div style="display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;">
+                  <i class="fa-solid ${c.icon}" style="color: ${c.color}; font-size: 0.80rem; flex-shrink: 0;"></i>
+                  <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 850; font-size: 0.72rem;">${c.name}</span>
+                </div>
               </td>
-              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap;">${formatMoney(est)}</td>
-              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap;">- ${formatMoney(act)}</td>
-              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap;">
+              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap; text-align: center; font-size: 0.70rem;">${formatMoney(est)}</td>
+              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap; text-align: center; font-size: 0.70rem;">- ${formatMoney(act)}</td>
+              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap; text-align: center; font-size: 0.70rem;">
                 ${diff >= 0 ? '+ ' : '- '}${formatMoney(Math.abs(diff))}
               </td>
-              <td style="padding: 6px 2px; white-space: nowrap;">${statusBadge}</td>
+              <td style="padding: 6px 2px; white-space: nowrap; text-align: center;">${statusBadge}</td>
             </tr>
           `;
         });
@@ -1135,7 +1137,7 @@ function toggleAnalyticsCustomRange() {
         catTableContainer.innerHTML = catHtml;
       }
 
-      // 6. بناء جدول مقارنة أفراد العائلة
+      // 6. بناء جدول مقارنة أفراد العائلة (تصميم خالٍ من القص والتمرير الأفقي)
       const memTableContainer = document.getElementById('comparisonsMemberTableContainer');
       if (memTableContainer) {
         const membersList = [
@@ -1153,11 +1155,11 @@ function toggleAnalyticsCustomRange() {
           <table class="variance-table-lux" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.74rem; table-layout: fixed;">
             <thead>
               <tr style="text-align: right; border-bottom: 2px solid rgba(236, 72, 153, 0.3);">
-                <th style="width: 23%; padding: 7px 4px;">فرد العائلة</th>
-                <th style="width: 20%; padding: 7px 2px;">المطلوب</th>
-                <th style="width: 20%; padding: 7px 2px;">الفعلي</th>
-                <th style="width: 20%; padding: 7px 2px;">الفارق</th>
-                <th style="width: 17%; padding: 7px 2px;">الحالة</th>
+                <th style="width: 32%; padding: 7px 4px; text-align: right;">فرد العائلة</th>
+                <th style="width: 17%; padding: 7px 2px; text-align: center;">المطلوب</th>
+                <th style="width: 17%; padding: 7px 2px; text-align: center;">الفعلي</th>
+                <th style="width: 18%; padding: 7px 2px; text-align: center;">الفارق</th>
+                <th style="width: 16%; padding: 7px 2px; text-align: center;">الحالة</th>
               </tr>
             </thead>
             <tbody>
@@ -1178,16 +1180,18 @@ function toggleAnalyticsCustomRange() {
 
           memHtml += `
             <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
-              <td style="padding: 6px 3px; font-weight: 800; display: flex; align-items: center; gap: 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                <img src="${m.avatar}" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(56, 189, 248, 0.4); flex-shrink: 0;">
-                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${m.name}</span>
+              <td style="padding: 6px 4px; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <div style="display: flex; align-items: center; gap: 4px; width: 100%; min-width: 0;">
+                  <img src="${m.avatar || ''}" style="width: 18px; height: 18px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(56, 189, 248, 0.4); flex-shrink: 0;" onerror="this.style.display='none'">
+                  <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 850; font-size: 0.72rem;">${m.name}</span>
+                </div>
               </td>
-              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap;">${formatMoney(est)}</td>
-              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap;">- ${formatMoney(act)}</td>
-              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap;">
+              <td style="padding: 6px 2px; color: #fbbf24; font-weight: 800; white-space: nowrap; text-align: center; font-size: 0.70rem;">${formatMoney(est)}</td>
+              <td style="padding: 6px 2px; color: #f43f5e; font-weight: 800; white-space: nowrap; text-align: center; font-size: 0.70rem;">- ${formatMoney(act)}</td>
+              <td style="padding: 6px 2px; font-weight: 900; color: ${diff >= 0 ? '#10b981' : '#ef4444'}; direction: rtl; white-space: nowrap; text-align: center; font-size: 0.70rem;">
                 ${diff >= 0 ? '+ ' : '- '}${formatMoney(Math.abs(diff))}
               </td>
-              <td style="padding: 6px 2px; white-space: nowrap;">${badge}</td>
+              <td style="padding: 6px 2px; white-space: nowrap; text-align: center;">${badge}</td>
             </tr>
           `;
         });

@@ -719,10 +719,10 @@
               </button>
               <div class="hl-row-icon-divider" style="width:2px; height:26px; background:var(--cat-color); opacity:0.9; margin:0 6px; border-radius:2px; flex-shrink:0; display:block !important;"></div>
               <div class="hl-row-name-amt">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="تسجيل سريع في ${catDisplayName}">
-                  <strong class="hl-row-l1-name">${catDisplayName}</strong>
+                <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;display:block;width:100%;max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="تسجيل سريع في ${catDisplayName}">
+                  <strong class="hl-row-l1-name" style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">${catDisplayName}</strong>
                 </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="عرض حركات ${catDisplayName}">
+                <button type="button" data-action="view-operations" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;display:block;width:100%;max-width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="عرض حركات ${catDisplayName}">
                   <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
                     <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
                     <span class="hl-amt-curr">${currSymbol}</span>
@@ -731,21 +731,21 @@
               </div>
             </div>
 
-            <div class="hl-row-divider"></div>
+            <div class="hl-row-divider" style="width:1.5px;min-width:1.5px;flex-shrink:0;height:24px;background:#cbd5e1;opacity:0.7;"></div>
 
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn" title="عرض حركات ${catDisplayName}">
-              <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
-              <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn" title="عرض حركات ${catDisplayName}" style="background:none;border:none;padding:0;cursor:pointer;flex:1.2;min-width:0;max-width:40%;overflow:hidden;text-align:right;display:flex;flex-direction:column;justify-content:center;gap:1px;">
+              <div class="hl-row-rem-line" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">المتبقي: ${s.remValStr} ${currSymbol}</div>
+              <div class="hl-row-bud-line" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">الميزانية: ${s.budValStr} ${currSymbol}</div>
               <div class="hl-progress-track">
                 <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
               </div>
             </button>
 
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border:none;cursor:pointer;" title="نسبة المتبقي - انقر لعرض العمليات">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border:none;cursor:pointer;flex-shrink:0;" title="نسبة المتبقي - انقر لعرض العمليات">
               %${s.remainingPct}
             </button>
 
-            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات" style="flex-shrink:0;">
               <i class="fa-solid fa-chevron-left"></i>
             </button>
           </div>
@@ -765,18 +765,18 @@
             </button>
             <div class="hl-row-icon-divider" style="width:2px; height:26px; background:var(--cat-color); opacity:0.9; margin:0 6px; border-radius:2px; flex-shrink:0; display:block !important;"></div>
             <div class="hl-row-name-amt">
-              <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
-              <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.65rem;font-weight:700;">اضغط للتحدث الذكي</small>
+              <strong class="hl-row-l1-name" style="color:#6d28d9;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-size:calc(0.68rem * var(--dynamic-home-font-scale, 1));">إضافة صوتية للمصروفات</strong>
+              <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.62rem;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;">اضغط للتحدث الذكي</small>
             </div>
           </div>
 
-          <div class="hl-row-divider"></div>
+          <div class="hl-row-divider" style="width:1.5px;min-width:1.5px;flex-shrink:0;height:24px;background:#cbd5e1;opacity:0.7;"></div>
 
-          <button type="button" data-action="voice-record" class="hl-row-mid-btn hl-voice-waves-btn">
+          <button type="button" data-action="voice-record" class="hl-row-mid-btn hl-voice-waves-btn" style="flex:1.2;min-width:0;max-width:40%;overflow:hidden;">
             ${getAudioWaveHtml('#8b5cf6')}
           </button>
 
-          <button type="button" data-action="voice-record" class="hl-row-chevron-btn" aria-label="بدء التسجيل الصوتي">
+          <button type="button" data-action="voice-record" class="hl-row-chevron-btn" aria-label="بدء التسجيل الصوتي" style="flex-shrink:0;">
             <i class="fa-solid fa-chevron-left" style="color:#7c3aed;"></i>
           </button>
         </div>

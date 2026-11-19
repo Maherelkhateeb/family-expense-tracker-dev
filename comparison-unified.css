@@ -1112,19 +1112,25 @@ body.light-theme .cmp-deck-tab {
 .variance-table-lux th:first-child,
 .variance-table-lux td:first-child {
   text-align: right !important;
-  padding-right: 8px !important;
+  padding-right: 6px !important;
   width: 32% !important;
-  min-width: 95px !important;
+  min-width: 80px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
-body.light-theme .variance-table-lux th {
+:is(body.light-theme, html.light-theme, [data-color-mode="light"], [data-theme="light"]) .variance-table-lux thead tr,
+:is(body.light-theme, html.light-theme, [data-color-mode="light"], [data-theme="light"]) .variance-table-lux th {
   background: #f1f5f9 !important;
+  background-image: none !important;
+  background-color: #f1f5f9 !important;
   color: #0284c7 !important;
+  font-weight: 900 !important;
   border-bottom: 2px solid #cbd5e1 !important;
 }
-body.light-theme .variance-table-lux td {
+:is(body.light-theme, html.light-theme, [data-color-mode="light"], [data-theme="light"]) .variance-table-lux td {
+  background: #ffffff !important;
+  background-image: none !important;
   color: #0f172a !important;
   border-bottom: 1px solid #e2e8f0 !important;
 }
