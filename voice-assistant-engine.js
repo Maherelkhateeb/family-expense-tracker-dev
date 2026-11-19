@@ -1,14 +1,20 @@
 /**
  * ============================================================================
- * Family Expense Tracker - Voice Assistant Engine (v6.2.0)
+ * Family Expense Tracker - Voice Assistant Engine (v6.3.0 Ultra Pro)
  * ============================================================================
- * Professional Arabic Voice NLP Speech-to-Transaction Suite
+ * World-Class Local Arabic Voice NLP Speech-to-Transaction Suite:
+ * - Real-time Web Audio API Microphone Visualizer (AnalyserNode decibel feedback)
+ * - Synthesized Audio Earcons & Haptic Audio Feedback (start, success, cancel chimes)
  * - Multi-dialect Arabic NLP (Egyptian, Saudi, Levantine & Modern Standard)
  * - Intelligent spoken colloquial numbers ("ألف ونص", "ميتين وعشرة", "تلات تلاف وميتين")
  * - 150+ spoken Arabic keywords across 9 core expense categories
- * - Automatic smart entity extraction: Amount, Category, Type, Wallet, Member, Project
- * - Smart silence detection with auto-finish after speaking completes
- * - Luxury interactive bottom drawer with quick-category chips and direct inline edit
+ * - Relative Date Parsing ("أمس", "امبارح", "أول أمس", "النهاردة")
+ * - Multi-Expense Split Sentence Recognition ("صرفت 50 قهوة و100 غدا")
+ * - Smart Silence Detection with auto-finish after speaking completes
+ * - Live Category Budget Impact Analysis (Safe / Warning / Exceeded preview)
+ * - Interactive Luxury Drawer: Quick Category, Wallet, Member & Date Chips
+ * - Optional Spoken Voice Feedback (SpeechSynthesis TTS in Arabic)
+ * - Manual Smart Text Fallback for offline or noisy environments
  * ============================================================================
  */
 const VoiceAssistantEngine = (() => {
@@ -20,34 +26,149 @@ const VoiceAssistantEngine = (() => {
   let _speechText = '';
   let _speechError = null;
   let _silenceTimer = null;
+  let _recordingTimer = null;
+  let _recordingSeconds = 0;
   let _currentParsed = null;
+  let _currentMulti = null;
+
+  // Web Audio Context & Analyser
+  let _audioCtx = null;
+  let _mediaStream = null;
+  let _analyser = null;
+  let _animFrameId = null;
+
+  // TTS Voice Feedback Preference
+  let _speechVoiceEnabled = false;
+  try {
+    _speechVoiceEnabled = localStorage.getItem('family_monefy_voice_tts') === 'true';
+  } catch (e) {}
 
   /* --------------------------------------------------------------------------
-     1. Arabic Text Normalization & Dialect Preprocessing
+     1. Web Audio API Earcons & Sound Feedback (100% Offline / Zero Assets)
+     -------------------------------------------------------------------------- */
+  function getAudioContext() {
+    if (!_audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) _audioCtx = new AudioContextClass();
+    }
+    if (_audioCtx && _audioCtx.state === 'suspended') {
+      _audioCtx.resume();
+    }
+    return _audioCtx;
+  }
+
+  function playEarcon(type) {
+    try {
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'start') {
+        // Melodic start chime (D5 -> A5)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.12, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (type === 'success') {
+        // Major chord victory chime (C5 -> E5 -> G5)
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.07);
+        osc.frequency.setValueAtTime(783.99, now + 0.14);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.15, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'cancel') {
+        // Soft low dismiss tone
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(293.66, now + 0.12);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      }
+    } catch (e) {}
+  }
+
+  /* --------------------------------------------------------------------------
+     2. Real-Time Web Audio Microphone Analyser (Live Dynamic Audio Wave)
+     -------------------------------------------------------------------------- */
+  async function startAudioVisualizer() {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      _mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const source = ctx.createMediaStreamSource(_mediaStream);
+      _analyser = ctx.createAnalyser();
+      _analyser.fftSize = 64;
+      source.connect(_analyser);
+
+      const bars = document.querySelectorAll('#voiceLiveOverlay .voice-wave-bar');
+      if (!bars.length) return;
+      const dataArray = new Uint8Array(_analyser.frequencyBinCount);
+
+      function updateBars() {
+        if (!_isListening || !_analyser) return;
+        _analyser.getByteFrequencyData(dataArray);
+        for (let i = 0; i < 5; i++) {
+          const val = dataArray[i * 2 + 1] || 0;
+          const h = Math.max(5, Math.min(26, Math.floor((val / 255) * 26)));
+          if (bars[i]) {
+            bars[i].style.height = h + 'px';
+            bars[i].style.background = val > 120 ? '#10b981' : (val > 60 ? '#38bdf8' : '#64748b');
+          }
+        }
+        _animFrameId = requestAnimationFrame(updateBars);
+      }
+      updateBars();
+    } catch (err) {}
+  }
+
+  function stopAudioVisualizer() {
+    if (_animFrameId) { cancelAnimationFrame(_animFrameId); _animFrameId = null; }
+    if (_mediaStream) {
+      _mediaStream.getTracks().forEach(t => t.stop());
+      _mediaStream = null;
+    }
+    _analyser = null;
+    const bars = document.querySelectorAll('#voiceLiveOverlay .voice-wave-bar');
+    bars.forEach(b => {
+      b.style.height = '6px';
+      b.style.background = '#38bdf8';
+    });
+  }
+
+  /* --------------------------------------------------------------------------
+     3. Arabic Normalization & Dialect Preprocessing
      -------------------------------------------------------------------------- */
   function normalizeArabic(text) {
     if (!text) return '';
     return String(text).normalize('NFKC')
-      // Remove diacritics / tashkeel and tatweel
       .replace(/[\u064b-\u065f\u0670\u0640]/g, '')
-      // Normalize alef variants to bare ا
       .replace(/[إأآٱ]/g, 'ا')
-      // Normalize teh marbuta to ه, yeh to ي
       .replace(/ة/g, 'ه').replace(/ى/g, 'ي')
-      // Eastern Arabic numerals (٠-٩) to standard (0-9)
       .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
-      // Persian numerals (۰-۹) to standard (0-9)
       .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
-      // Arabic decimal and grouping separators
       .replace(/٫/g, '.').replace(/٬/g, ',')
-      // Punctuation to clean whitespace
       .replace(/[،؛؟!]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
   /* --------------------------------------------------------------------------
-     2. Rich Colloquial & Standard Arabic Number Lexicon
+     4. Number Lexicon (Units, Tens, Hundreds, Scales, Fractions & Compounds)
      -------------------------------------------------------------------------- */
   const NUM_UNITS = {
     'صفر': 0, 'واحد': 1, 'واحده': 1, 'اثنين': 2, 'اثنان': 2, 'اتنين': 2,
@@ -59,11 +180,10 @@ const VoiceAssistantEngine = (() => {
     'تمانيه': 8, 'ثمانيه': 8, 'تمن': 8, 'ثماني': 8, 'ثمان': 8,
     'تسعه': 9, 'تسع': 9,
     'عشره': 10, 'عشر': 10,
-    // Teens (Egyptian & Standard)
     'حداشر': 11, 'احد عشر': 11, 'إحدى عشر': 11,
     'اتناشر': 12, 'اثنا عشر': 12, 'اثني عشر': 12,
-    'تلاتاشر': 13, 'ثلاثه عشر': 13, 'ثلاث عشر': 13,
-    'اربعتاشر': 14, 'اربعه عشر': 14, 'أربعه عشر': 14,
+    'تلاتاشر': 13, 'ثلاثه عشر': 13,
+    'اربعتاشر': 14, 'اربعه عشر': 14,
     'خمستاشر': 15, 'خمسه عشر': 15,
     'ستتاشر': 16, 'سته عشر': 16,
     'سبعتاشر': 17, 'سبعه عشر': 17,
@@ -74,7 +194,7 @@ const VoiceAssistantEngine = (() => {
   const NUM_TENS = {
     'عشرين': 20, 'عشرون': 20,
     'تلاتين': 30, 'ثلاثين': 30, 'ثلاثون': 30,
-    'اربعين': 40, 'أربعين': 40, 'اربعون': 40, 'أربعون': 40,
+    'اربعين': 40, 'أربعين': 40, 'اربعون': 40,
     'خمسين': 50, 'خمسون': 50,
     'ستين': 60, 'ستون': 60,
     'سبعين': 70, 'سبعون': 70,
@@ -86,7 +206,7 @@ const VoiceAssistantEngine = (() => {
     'ميه': 100, 'مائه': 100, 'مئة': 100, 'ميت': 100,
     'ميتين': 200, 'مائتين': 200, 'مئتان': 200,
     'تلتميه': 300, 'ثلاثمائه': 300, 'ثلاثميه': 300,
-    'اربعميه': 400, 'اربعمائه': 400, 'أربعمائه': 400,
+    'اربعميه': 400, 'اربعمائه': 400,
     'خمسميه': 500, 'خمسمائه': 500,
     'ستميه': 600, 'ستمائه': 600,
     'سبعميه': 700, 'سبعمائه': 700,
@@ -108,8 +228,8 @@ const VoiceAssistantEngine = (() => {
 
   const COLLOQUIAL_COMPOUNDS = {
     'الف ونص': 1500, 'ألف ونص': 1500, 'الف ونصف': 1500,
-    'الفين ونص': 2500, 'ألفين ونص': 2500, 'الفين ونصف': 2500,
-    'تلات تلاف': 3000, 'ثلاثه الاف': 3000, 'ثلاث الاف': 3000, 'تلات تلاف ونص': 3500,
+    'الفين ونص': 2500, 'ألفين ونص': 2500,
+    'تلات تلاف': 3000, 'ثلاثه الاف': 3000, 'تلات تلاف ونص': 3500,
     'اربع تلاف': 4000, 'اربعه الاف': 4000, 'اربع تلاف ونص': 4500,
     'خمس تلاف': 5000, 'خمسه الاف': 5000, 'خمس تلاف ونص': 5500,
     'ست تلاف': 6000, 'سته الاف': 6000,
@@ -121,26 +241,21 @@ const VoiceAssistantEngine = (() => {
     'ميتين ونص': 250, 'مائتين ونصف': 250
   };
 
-  /* --------------------------------------------------------------------------
-     3. Robust Spoken Arabic Amount Parsing Engine
-     -------------------------------------------------------------------------- */
   function parseArabicAmount(text) {
     const norm = normalizeArabic(text);
     if (!norm) return 0;
 
-    // Pattern A: Direct numerical digits (e.g., 500, 1500.50, 75)
-    // Priority when next to currency or spend verb
+    // Pattern A: Direct numerical digits
     const numMatch = norm.match(/(\d+(?:[.,]\d+)?)/);
     if (numMatch) {
       const val = parseFloat(numMatch[1].replace(/,/g, ''));
       if (Number.isFinite(val) && val > 0) return val;
     }
 
-    // Pattern B: Colloquial direct compound phrases
+    // Pattern B: Colloquial direct compounds
     for (const phrase in COLLOQUIAL_COMPOUNDS) {
       if (norm.includes(phrase)) {
         let baseVal = COLLOQUIAL_COMPOUNDS[phrase];
-        // Check if there is an additional hundred or ten appended (e.g. "تلات تلاف وميتين")
         const remainder = norm.replace(phrase, ' ').trim();
         const extraWords = remainder.split(/\s+/);
         for (const ew of extraWords) {
@@ -163,7 +278,6 @@ const VoiceAssistantEngine = (() => {
       let w = tokens[i].replace(/^[^\u0621-\u064a0-9]+|[^\u0621-\u064a0-9]+$/g, '');
       if (!w) continue;
 
-      // Strip leading prepositions/conjunctions (بـ / وـ)
       if ((w.startsWith('ب') || w.startsWith('و')) && w.length > 2) {
         const stripped = w.slice(1);
         if (NUM_UNITS[stripped] || NUM_TENS[stripped] || NUM_HUNDREDS[stripped] || NUM_SCALES[stripped] || NUM_FRACTIONS[stripped]) {
@@ -171,7 +285,6 @@ const VoiceAssistantEngine = (() => {
         }
       }
 
-      // Check two-word combo (e.g., "تلات تلاف" or "خمسة وعشرين")
       if (i + 1 < tokens.length) {
         let nextW = tokens[i + 1].replace(/^[^\u0621-\u064a0-9]+|[^\u0621-\u064a0-9]+$/g, '');
         if (nextW.startsWith('و') && nextW.length > 2) nextW = nextW.slice(1);
@@ -184,7 +297,6 @@ const VoiceAssistantEngine = (() => {
           continue;
         }
 
-        // Multiplier + Scale (e.g. "خمسة الاف" or "عشرين الف")
         if ((NUM_UNITS[w] !== undefined || NUM_TENS[w] !== undefined) && NUM_SCALES[nextW] !== undefined) {
           const unitVal = NUM_UNITS[w] !== undefined ? NUM_UNITS[w] : NUM_TENS[w];
           grandTotal += unitVal * NUM_SCALES[nextW];
@@ -224,7 +336,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     4. 150+ Spoken Keywords Dictionary for 9 Core Categories
+     5. Category Vocabulary (150+ spoken Arabic terms)
      -------------------------------------------------------------------------- */
   const CATEGORY_VOCABULARY = {
     food: [
@@ -232,14 +344,14 @@ const VoiceAssistantEngine = (() => {
       'لحمة', 'لحمه', 'لحوم', 'فراخ', 'دجاج', 'سمك', 'عيش', 'خبز', 'جبنة', 'جبنه',
       'البان', 'حليب', 'لبن', 'بيض', 'زيت', 'سكر', 'رز', 'ارز', 'مكرونة', 'مكرونه',
       'شيبسي', 'كشري', 'فول', 'فلافل', 'طعمية', 'طعميه', 'بيتزا', 'برجر', 'شاورما',
-      'وجبة', 'وجبه', 'غداء', 'عشاء', 'فطور', 'فطار', 'تموينات', 'كارفور', 'بنده',
-      'العثيم', 'لولو', 'ماركت', 'حلويات', 'شوكولاته', 'مشتروات طعام', 'سوبر ماركت'
+      'وجبة', 'وجبه', 'غداء', 'غدا', 'عشاء', 'عشا', 'فطور', 'فطار', 'تموينات', 'كارفور',
+      'بنده', 'العثيم', 'لولو', 'ماركت', 'حلويات', 'شوكولاته', 'مشتروات طعام'
     ],
     daily: [
       'قهوة', 'قهوه', 'شاي', 'كافيه', 'كافية', 'نسكافيه', 'لاتيه', 'اسبريسو',
       'كابتشينو', 'سجائر', 'دخان', 'معسل', 'شيشة', 'شيشه', 'مصروف', 'مصاريف',
       'كشك', 'مقهى', 'بوفية', 'بوفيه', 'تسالي', 'لبان', 'مياه', 'ميه', 'عصير',
-      'سناكس', 'مصروف شخصي', 'مشروبات', 'سناك', 'مشروب بارد', 'عصير قصب'
+      'سناكس', 'مصروف شخصي', 'مشروبات', 'سناك', 'مشروب بارد'
     ],
     bills: [
       'فاتورة', 'فاتوره', 'فواتير', 'كهرباء', 'مياه وغاز', 'غاز', 'نت', 'انترنت',
@@ -252,7 +364,7 @@ const VoiceAssistantEngine = (() => {
       'بنزين', 'بنزينة', 'بنزينه', 'سولار', 'اوبر', 'أوبر', 'كريم', 'تاكسي',
       'ميكروباص', 'مترو', 'تذكرة', 'تذكره', 'اتوبيس', 'باص', 'قطار', 'سكة حديد',
       'طيران', 'موقف', 'باركنج', 'جراج', 'كارته', 'كارتة', 'غسيل سيارة',
-      'زيت سيارة', 'كاوتش', 'بنشر', 'مواصلات', 'اجرة', 'سيارة', 'سياره', 'صيانة سيارة'
+      'زيت سيارة', 'كاوتش', 'بنشر', 'مواصلات', 'اجرة', 'سيارة', 'سياره'
     ],
     house: [
       'منزل', 'ادوات منزلية', 'أدوات منزلية', 'منظفات', 'صابون', 'كلور', 'تايد',
@@ -273,7 +385,7 @@ const VoiceAssistantEngine = (() => {
     clothes: [
       'ملابس', 'هدوم', 'قميص', 'بنطلون', 'تيشرت', 'فستان', 'عباية', 'عبايه',
       'جاكت', 'بدلة', 'بدله', 'حذاء', 'كوتشي', 'جزمة', 'جزمه', 'شنطة', 'حزام',
-      'طرحة', 'طرحه', 'ملابس اطفال', 'زارا', 'h&m', 'براند', 'تفصيل'
+      'طرحة', 'طرحه', 'ملابس اطفال', 'زارا', 'h&m', 'براند'
     ],
     other: [
       'هدية', 'هديه', 'هدايا', 'صدقة', 'صدقه', 'زكاة', 'زكاه', 'عيدية', 'عيديه',
@@ -310,40 +422,96 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     5. Intelligent Label Generator (Clean and Concise)
+     6. Relative Date Parser ("أمس", "امبارح", "أول أمس", "النهاردة")
+     -------------------------------------------------------------------------- */
+  function parseRelativeDate(text) {
+    const norm = normalizeArabic(text);
+    const now = new Date();
+
+    if (/اول امبارح|قبل امس|اول امس/.test(norm)) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2);
+      return {
+        iso: [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'),
+        label: 'أول أمس'
+      };
+    }
+    if (/امبارح|امس/.test(norm)) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+      return {
+        iso: [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'),
+        label: 'أمس'
+      };
+    }
+    return {
+      iso: [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-'),
+      label: 'اليوم'
+    };
+  }
+
+  /* --------------------------------------------------------------------------
+     7. Clean Concise Label Generator
      -------------------------------------------------------------------------- */
   function cleanSpokenLabel(raw, categoryId) {
     let s = String(raw || '').trim();
-    // Strip leading transaction verbs
     s = s.replace(/^(?:صرفت|دفعت|اشتريت|سددت|حاسبت|جبت|اشترينا|صرفنا|دفعنا|اودعت|قبضت|استلمت|حولت)\s*/i, '');
-    // Strip wallet phrases
     s = s.replace(/(?:من|عبر|بواسطة)\s*(?:محفظة|كاش|فودافون كاش|فيزا|البنك|الراجحي|الاهلي|انستاباي)[^\s]*/gi, '');
-    // Strip beneficiary phrases
     s = s.replace(/(?:لـ?|حق|بتاع)\s*(?:بنتي|ابني|زوجتي|احمد|محمد|سارة|البيت)[^\s]*/gi, '');
-    // Strip numerical amounts and currency words
     s = s.replace(/\b\d+(?:[.,]\d+)?\s*(?:جنيه|جنيهات|جنيها|ج\.م|ريال|ريالات|ريالا|رس|درهم|دولار)?\b/gi, '');
-    // Strip common number words
     for (const phrase in COLLOQUIAL_COMPOUNDS) {
       s = s.replace(new RegExp(phrase, 'g'), '');
     }
-    s = s.replace(/\b(?:جنيه|جنيهات|جنيها|ريال|ريالات|ريالا|درهم|دولار|بمبلغ|بقيمة|بقيمه)\b/g, '');
-    // Clean dangling prepositions at start or end
+    s = s.replace(/\b(?:جنيه|جنيهات|جنيها|ريال|ريالات|ريالا|درهم|دولار|بمبلغ|بقيمة|بقيمه|امبارح|امس|اول امبارح|النهارده|النهاردة|اليوم)\b/g, '');
     s = s.replace(/^[بفيمنعلي]+\s+/g, '').replace(/\s+[بفيمنعلي]+$/g, '');
     s = s.replace(/\s+/g, ' ').trim();
 
     if (s.length >= 3) return s;
-
-    // Fallback to category display name
     const appCat = (typeof getCategoryObj === 'function') ? getCategoryObj(categoryId, 'expense') : null;
     return appCat ? appCat.name : 'مصروف صوتي';
   }
 
   /* --------------------------------------------------------------------------
-     6. Master Spoken Parser
+     8. Live Category Budget Impact Analysis
      -------------------------------------------------------------------------- */
-  function parseSpokenText(raw) {
+  function getCategoryBudgetImpact(catId, newAmount) {
+    const appState = window.state || null;
+    if (!appState || !appState.budgets) return null;
+
+    const catBudget = Number(appState.budgets[catId] || 0);
+    if (catBudget <= 0) return null;
+
+    const now = new Date();
+    const curMonthPrefix = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0')].join('-');
+    let currentSpent = 0;
+    if (Array.isArray(appState.transactions)) {
+      for (const t of appState.transactions) {
+        if (t.type === 'expense' && t.category === catId && t.date && t.date.startsWith(curMonthPrefix)) {
+          currentSpent += Number(t.amount || 0);
+        }
+      }
+    }
+
+    const currentRemaining = catBudget - currentSpent;
+    const newRemaining = currentRemaining - Number(newAmount || 0);
+    const isExceeded = newRemaining < 0;
+    const remainingPct = Math.round((newRemaining / catBudget) * 100);
+
+    return {
+      catBudget,
+      currentSpent,
+      currentRemaining,
+      newRemaining,
+      isExceeded,
+      remainingPct
+    };
+  }
+
+  /* --------------------------------------------------------------------------
+     9. Master Spoken Parser (Single & Multi-Split Sentence Support)
+     -------------------------------------------------------------------------- */
+  function parseSinglePhrase(raw) {
     const norm = normalizeArabic(raw);
-    const appState = (typeof state !== 'undefined' && state) ? state : (window.state || null);
+    const appState = window.state || null;
+    const dateInfo = parseRelativeDate(raw);
 
     const result = {
       rawText: String(raw || '').trim(),
@@ -351,6 +519,8 @@ const VoiceAssistantEngine = (() => {
       amount: parseArabicAmount(raw),
       category: 'other',
       label: '',
+      date: dateInfo.iso,
+      dateLabel: dateInfo.label,
       walletId: (appState && appState.currentWalletId && appState.currentWalletId !== 'all')
         ? appState.currentWalletId
         : ((appState && appState.wallets && appState.wallets[0] && appState.wallets[0].id) || 'cash'),
@@ -362,7 +532,7 @@ const VoiceAssistantEngine = (() => {
       personName: null
     };
 
-    // Transaction Type Detection
+    // Type Detection
     if (/تسلفت|استلفت|دين علي|اقترضت من|علي ل/.test(norm)) {
       result.type = 'debt_on_us';
       const m = norm.match(/(?:تسلفت من|استلفت من|اقترضت من|علي ل)\s+([\u0621-\u064a]+)/);
@@ -386,12 +556,10 @@ const VoiceAssistantEngine = (() => {
       }
     }
 
-    // Category Detection
     if (result.type === 'expense' || result.type === 'project') {
       result.category = detectCategory(raw);
     }
 
-    // Wallet Detection
     if (appState && Array.isArray(appState.wallets)) {
       for (const w of appState.wallets) {
         if (w.name && norm.includes(normalizeArabic(w.name))) {
@@ -401,7 +569,6 @@ const VoiceAssistantEngine = (() => {
       }
     }
 
-    // Member Detection
     if (appState && Array.isArray(appState.familyMembers)) {
       for (const mem of appState.familyMembers) {
         if (mem && norm.includes(normalizeArabic(mem))) {
@@ -417,19 +584,37 @@ const VoiceAssistantEngine = (() => {
       result.member = 'زوجتي';
     }
 
-    // Clean Label
     result.label = cleanSpokenLabel(raw, result.category);
-
     return result;
   }
 
+  function parseSpokenText(raw) {
+    const text = String(raw || '').trim();
+    // Check if phrase contains multiple split expenses (e.g. "صرفت 50 جنيه قهوة و100 جنيه غدا")
+    const splitParts = text.split(/\s+و(?=\d|\b(?:ميه|ميتين|الف|خمسميه|خمسين|عشرين|تلاتين|اربعين|ستين|سبعين|تمانين|تسعين|نص|ربع)\b)/i);
+
+    if (splitParts.length > 1) {
+      const parsedItems = splitParts.map(p => parseSinglePhrase(p.trim())).filter(it => it.amount > 0);
+      if (parsedItems.length > 1) {
+        _currentMulti = parsedItems;
+        return parsedItems[0];
+      }
+    }
+
+    _currentMulti = null;
+    return parseSinglePhrase(text);
+  }
+
   /* --------------------------------------------------------------------------
-     7. SpeechRecognition Lifecycle with Silence Auto-Finish
+     10. SpeechRecognition Engine & Silence Timer
      -------------------------------------------------------------------------- */
   function resetListeningUi() {
     _isListening = false;
     _isStarting = false;
     if (_silenceTimer) { clearTimeout(_silenceTimer); _silenceTimer = null; }
+    if (_recordingTimer) { clearInterval(_recordingTimer); _recordingTimer = null; }
+    _recordingSeconds = 0;
+    stopAudioVisualizer();
 
     const fab = document.getElementById('btnVoiceAssistantFab');
     const overlay = document.getElementById('voiceLiveOverlay');
@@ -439,7 +624,6 @@ const VoiceAssistantEngine = (() => {
     }
     if (overlay) overlay.classList.remove('show');
 
-    // Remove pulsing styling from all layout voice buttons
     document.querySelectorAll('[data-action="voice-record"]').forEach(el => {
       el.classList.remove('is-listening');
     });
@@ -450,7 +634,6 @@ const VoiceAssistantEngine = (() => {
     if (!SpeechClass) return false;
 
     _recognition = new SpeechClass();
-    // Default to Egyptian or Saudi Arabic depending on app currency
     const appState = window.state || null;
     const curr = (appState && appState.currency) || 'EGP';
     _recognition.lang = (curr === 'SAR') ? 'ar-SA' : 'ar-EG';
@@ -461,6 +644,10 @@ const VoiceAssistantEngine = (() => {
     _recognition.onstart = () => {
       _isStarting = false;
       _isListening = true;
+      _recordingSeconds = 0;
+      playEarcon('start');
+      startAudioVisualizer();
+
       const fab = document.getElementById('btnVoiceAssistantFab');
       const overlay = document.getElementById('voiceLiveOverlay');
       if (fab) {
@@ -475,6 +662,16 @@ const VoiceAssistantEngine = (() => {
 
       const textEl = document.getElementById('voiceLiveText');
       if (textEl) textEl.textContent = 'تحدث الآن... (مثال: صرفت ميتين جنيه سوبرماركت)';
+
+      _recordingTimer = setInterval(() => {
+        _recordingSeconds++;
+        const timerBadge = document.getElementById('voiceTimerBadge');
+        if (timerBadge) {
+          const m = String(Math.floor(_recordingSeconds / 60)).padStart(2, '0');
+          const s = String(_recordingSeconds % 60).padStart(2, '0');
+          timerBadge.textContent = `${m}:${s}`;
+        }
+      }, 1000);
     };
 
     _recognition.onresult = (event) => {
@@ -490,7 +687,7 @@ const VoiceAssistantEngine = (() => {
       const liveEl = document.getElementById('voiceLiveText');
       if (liveEl && _speechText) liveEl.textContent = _speechText;
 
-      // Smart silence auto-stop: if user pauses for 2.2 seconds after speaking, auto-stop
+      // Smart silence auto-finish after speaking completes
       if (_silenceTimer) clearTimeout(_silenceTimer);
       if (_speechText.length > 3) {
         _silenceTimer = setTimeout(() => {
@@ -536,7 +733,8 @@ const VoiceAssistantEngine = (() => {
       return;
     }
     if (!_recognition && !initSpeech()) {
-      if (typeof showToast === 'function') showToast('التعرف الصوتي غير مدعوم في هذا المتصفح. جرّب Chrome أو Edge');
+      if (typeof showToast === 'function') showToast('التعرف الصوتي غير مدعوم في هذا المتصفح. يمكنك استخدام الإدخال الكتابي الذكي');
+      openManualDictationModal();
       return;
     }
     _speechText = '';
@@ -564,6 +762,7 @@ const VoiceAssistantEngine = (() => {
     const text = String(rawText || '').trim();
     if (!text) return;
 
+    playEarcon('success');
     const fab = document.getElementById('btnVoiceAssistantFab');
     if (fab) fab.classList.add('is-processing');
 
@@ -575,7 +774,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     8. Interactive Confirmation Drawer with Quick Category & Amount Tuning
+     11. Interactive Confirmation Drawer
      -------------------------------------------------------------------------- */
   function openConfirmDrawer(p) {
     const drawer = document.getElementById('voiceConfirmDrawer');
@@ -605,18 +804,10 @@ const VoiceAssistantEngine = (() => {
       badgeHtml = `<span style="background:rgba(2,132,199,0.18);color:#0284c7;border:1px solid rgba(2,132,199,0.35);border-radius:8px;padding:3px 10px;font-size:0.75rem;font-weight:900;"><i class="fa-solid fa-receipt"></i> مصروف عادي</span>`;
     }
 
-    const catObj = (typeof getCategoryObj === 'function')
-      ? getCategoryObj(p.category, 'expense')
-      : { name: p.category, icon: 'fa-tag', color: '#0284c7' };
-
     const appState = window.state || null;
-    const walletObj = (appState && Array.isArray(appState.wallets))
-      ? appState.wallets.find(w => w.id === p.walletId)
-      : null;
-    const walletName = walletObj ? walletObj.name : 'الرئيسية (كاش)';
     const currSymbol = (appState && appState.currency === 'SAR') ? 'ر.س' : 'ج.م';
 
-    // 9 Quick Category Switch Chips
+    // Quick Category Chips
     const quickCats = [
       { id: 'food', name: 'طعام', icon: 'fa-cart-shopping', color: '#10b981' },
       { id: 'daily', name: 'يومي', icon: 'fa-mug-saucer', color: '#d97706' },
@@ -629,21 +820,104 @@ const VoiceAssistantEngine = (() => {
       { id: 'other', name: 'أخرى', icon: 'fa-gift', color: '#10b981' }
     ];
 
-    const chipsHtml = quickCats.map(qc => `
+    const catChipsHtml = quickCats.map(qc => `
       <button type="button" onclick="VoiceAssistantEngine.changeDrawerCategory('${qc.id}')"
-        style="padding:4px 8px;border-radius:8px;font-size:0.70rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border:1px solid ${p.category === qc.id ? qc.color : 'rgba(255,255,255,0.12)'};background:${p.category === qc.id ? qc.color : 'rgba(255,255,255,0.05)'};color:${p.category === qc.id ? '#ffffff' : '#94a3b8'};">
+        class="voice-chip ${p.category === qc.id ? 'active' : ''}" style="--chip-active-bg:${qc.color};">
         <i class="fa-solid ${qc.icon}" style="font-size:0.65rem;"></i> ${qc.name}
       </button>
     `).join('');
 
+    // Quick Wallet Chips
+    const walletsList = (appState && Array.isArray(appState.wallets) && appState.wallets.length)
+      ? appState.wallets
+      : [{ id: 'cash', name: 'كاش' }];
+    const walletChipsHtml = walletsList.map(w => `
+      <button type="button" onclick="VoiceAssistantEngine.changeDrawerWallet('${w.id}')"
+        class="voice-chip ${p.walletId === w.id ? 'active' : ''}" style="--chip-active-bg:#0284c7;">
+        <i class="fa-solid fa-wallet" style="font-size:0.65rem;"></i> ${w.name}
+      </button>
+    `).join('');
+
+    // Quick Date Chips
+    const dateChipsHtml = [
+      { label: 'اليوم', days: 0 },
+      { label: 'أمس', days: 1 },
+      { label: 'أول أمس', days: 2 }
+    ].map(item => {
+      const now = new Date();
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - item.days);
+      const iso = [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-');
+      const isActive = (p.date === iso);
+      return `
+        <button type="button" onclick="VoiceAssistantEngine.changeDrawerDate('${iso}', '${item.label}')"
+          class="voice-chip ${isActive ? 'active' : ''}" style="--chip-active-bg:#8b5cf6;">
+          <i class="fa-solid fa-calendar-day" style="font-size:0.65rem;"></i> ${item.label}
+        </button>
+      `;
+    }).join('');
+
+    // Live Budget Impact Preview
+    const impact = getCategoryBudgetImpact(p.category, p.amount);
+    let impactHtml = '';
+    if (impact) {
+      const statusClass = impact.isExceeded ? 'danger' : (impact.remainingPct < 20 ? 'warning' : 'safe');
+      const icon = impact.isExceeded ? 'fa-triangle-exclamation' : 'fa-circle-check';
+      const statusText = impact.isExceeded
+        ? `<span style="color:#f87171;font-weight:900;">⚠️ يتجاوز ميزانية الشهر!</span>`
+        : `<span style="color:#34d399;font-weight:900;">آمن (%${impact.remainingPct} متبقي)</span>`;
+
+      impactHtml = `
+        <div class="voice-impact-box ${statusClass}">
+          <div>
+            <i class="fa-solid ${icon}" style="margin-left:4px;"></i>
+            <span>ميزانية الفئة: <strong>${impact.catBudget.toLocaleString()} ${currSymbol}</strong></span>
+          </div>
+          <div>
+            <span>المتبقي بعد الصرف: <strong>${Math.max(0, impact.newRemaining).toLocaleString()} ${currSymbol}</strong> (${statusText})</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Multi-Item Split Preview
+    let multiPreviewHtml = '';
+    if (_currentMulti && _currentMulti.length > 1) {
+      const itemsList = _currentMulti.map((m, idx) => `
+        <div class="voice-multi-item-card">
+          <div style="font-size:0.75rem;font-weight:800;color:#f8fafc;">
+            <span style="color:#38bdf8;margin-left:4px;">[${idx + 1}]</span> ${m.label} (${m.category})
+          </div>
+          <div style="font-size:0.85rem;font-weight:900;color:#ef4444;direction:ltr;">
+            - ${m.amount.toLocaleString()} ${currSymbol}
+          </div>
+        </div>
+      `).join('');
+
+      multiPreviewHtml = `
+        <div style="margin-bottom:10px;padding:8px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:12px;">
+          <div style="font-size:0.72rem;color:#38bdf8;font-weight:800;margin-bottom:6px;">
+            <i class="fa-solid fa-layer-group"></i> تم اكتشاف ${_currentMulti.length} عمليات مركبة في جملة واحدة:
+          </div>
+          ${itemsList}
+        </div>
+      `;
+    }
+
     const bodyEl = document.getElementById('voiceConfirmDrawerBody');
     if (bodyEl) {
       bodyEl.innerHTML = `
-        <!-- Top Bar: Badge & Amount -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;">
-          <div>
-            <div style="font-size:0.72rem;color:#94a3b8;font-weight:700;">المساعد الصوتي الذكي</div>
-            <div style="margin-top:2px;">${badgeHtml}</div>
+        <!-- Top Bar: Badge, TTS Toggle & Amount -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div>
+              <div style="font-size:0.70rem;color:#94a3b8;font-weight:700;">المساعد الصوتي الذكي</div>
+              <div style="margin-top:2px;">${badgeHtml}</div>
+            </div>
+            <button type="button" id="voiceTtsToggleBtn" onclick="VoiceAssistantEngine.toggleVoiceTts()"
+              style="background:none;border:none;cursor:pointer;font-size:1.05rem;color:${_speechVoiceEnabled ? '#10b981' : '#94a3b8'};padding:4px;"
+              title="${_speechVoiceEnabled ? 'التأكيد الصوتي مفعل' : 'التأكيد الصوتي معطل'}">
+              <i class="fa-solid ${_speechVoiceEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>
+            </button>
           </div>
           <div style="text-align:left;">
             <div style="font-size:0.68rem;color:#94a3b8;font-weight:700;">المبلغ المطلوب اعتماده</div>
@@ -657,8 +931,11 @@ const VoiceAssistantEngine = (() => {
           </div>
         </div>
 
+        ${multiPreviewHtml}
+        ${impactHtml}
+
         <!-- Details Card -->
-        <div class="voice-card-box" style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:6px;">
+        <div class="voice-card-box" style="background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px;">
           <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
             <span style="color:#94a3b8;"><i class="fa-solid fa-quote-right" style="color:#38bdf8;"></i> المنطوق:</span>
             <span style="color:#f8fafc;font-weight:800;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">"${p.rawText}"</span>
@@ -670,25 +947,21 @@ const VoiceAssistantEngine = (() => {
               style="width:68%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:#f8fafc;font-size:0.78rem;font-weight:800;padding:2px 8px;outline:none;text-align:right;" />
           </div>
           <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-            <span style="color:#94a3b8;"><i class="fa-solid fa-wallet" style="color:#38bdf8;"></i> المحفظة:</span>
-            <span style="color:#f8fafc;font-weight:800;">${walletName}</span>
+            <span style="color:#94a3b8;"><i class="fa-solid fa-calendar-day" style="color:#8b5cf6;"></i> التاريخ:</span>
+            <span style="color:#f8fafc;font-weight:800;">${p.date} (${p.dateLabel})</span>
           </div>
-          <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-            <span style="color:#94a3b8;"><i class="fa-solid fa-user" style="color:#a855f7;"></i> المستفيد:</span>
-            <span style="color:#f8fafc;font-weight:800;">${p.member || 'البيت'}</span>
-          </div>
-          ${p.projectName ? `
-            <div style="display:flex;justify-content:space-between;font-size:0.78rem;">
-              <span style="color:#94a3b8;"><i class="fa-solid fa-folder-tree" style="color:#8b5cf6;"></i> المشروع:</span>
-              <span style="color:#c084fc;font-weight:900;">${p.projectName}</span>
-            </div>
-          ` : ''}
         </div>
 
-        <!-- Quick Category Select Chips -->
-        <div style="margin-bottom:8px;">
-          <div style="font-size:0.68rem;color:#94a3b8;margin-bottom:6px;font-weight:700;">تبديل البند بنقرة واحدة:</div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px;">${chipsHtml}</div>
+        <!-- Quick Switch Rows: Categories, Wallets & Dates -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:6px;">
+          <div>
+            <div style="font-size:0.66rem;color:#94a3b8;margin-bottom:4px;font-weight:700;">تبديل الفئة:</div>
+            <div class="voice-chips-scroll">${catChipsHtml}</div>
+          </div>
+          <div>
+            <div style="font-size:0.66rem;color:#94a3b8;margin-bottom:4px;font-weight:700;">المحفظة والتاريخ:</div>
+            <div class="voice-chips-scroll">${walletChipsHtml}${dateChipsHtml}</div>
+          </div>
         </div>
       `;
     }
@@ -703,6 +976,19 @@ const VoiceAssistantEngine = (() => {
     openConfirmDrawer(_currentParsed);
   }
 
+  function changeDrawerWallet(walletId) {
+    if (!_currentParsed) return;
+    _currentParsed.walletId = walletId;
+    openConfirmDrawer(_currentParsed);
+  }
+
+  function changeDrawerDate(isoDate, dateLabel) {
+    if (!_currentParsed) return;
+    _currentParsed.date = isoDate;
+    _currentParsed.dateLabel = dateLabel;
+    openConfirmDrawer(_currentParsed);
+  }
+
   function changeDrawerAmount(val) {
     if (!_currentParsed) return;
     const n = parseFloat(val);
@@ -714,16 +1000,40 @@ const VoiceAssistantEngine = (() => {
     _currentParsed.label = String(val || '').trim();
   }
 
+  function toggleVoiceTts() {
+    _speechVoiceEnabled = !_speechVoiceEnabled;
+    try {
+      localStorage.setItem('family_monefy_voice_tts', String(_speechVoiceEnabled));
+    } catch (e) {}
+    if (_currentParsed) openConfirmDrawer(_currentParsed);
+    if (typeof showToast === 'function') {
+      showToast(_speechVoiceEnabled ? 'تم تفعيل الرد الصوتي ✓' : 'تم تعطيل الرد الصوتي');
+    }
+  }
+
+  function speakConfirmation(text) {
+    if (!_speechVoiceEnabled || !window.speechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ar-SA';
+      u.rate = 1.05;
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
   function closeConfirmDrawer() {
+    playEarcon('cancel');
     const drawer = document.getElementById('voiceConfirmDrawer');
     const backdrop = document.getElementById('voiceDrawerBackdrop');
     if (drawer) drawer.classList.remove('open');
     if (backdrop) backdrop.classList.remove('open');
     _currentParsed = null;
+    _currentMulti = null;
   }
 
   /* --------------------------------------------------------------------------
-     9. Commit Transaction directly to App State and Storage
+     12. Commit Transaction (Single or Batch Multi-Split)
      -------------------------------------------------------------------------- */
   function commitTransaction() {
     const p = _currentParsed;
@@ -736,59 +1046,72 @@ const VoiceAssistantEngine = (() => {
       return;
     }
 
-    const appState = (typeof state !== 'undefined' && state) ? state : (window.state || null);
+    const appState = window.state || null;
     if (!appState) {
       if (typeof showToast === 'function') showToast('تعذر الوصول إلى بيانات التطبيق');
       return;
     }
 
-    const date = new Date();
-    const today = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
-
     try {
-      if (p.type === 'debt_for_us' || p.type === 'debt_on_us' || p.type === 'bill') {
-        if (!Array.isArray(appState.expectedExpenses)) appState.expectedExpenses = [];
-        const item = {
-          id: 'exp-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-          type: p.type === 'bill' ? 'upcoming_bill' : p.type,
-          title: p.personName || p.label || 'التزام صوتي',
-          amount: p.amount,
-          dueDate: '',
-          priority: 'normal',
-          member: p.member || 'البيت',
-          status: 'upcoming',
-          photo: null,
-          createdAt: new Date().toISOString(),
-          notes: 'تسجيل صوتي: ' + p.rawText
-        };
-        appState.expectedExpenses.unshift(item);
-        localStorage.setItem('family_monefy_expected', JSON.stringify(appState.expectedExpenses));
-        if (typeof renderExpectedList === 'function') renderExpectedList();
-      } else {
-        const tx = {
-          id: 'tx-voice-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
-          date: today,
-          type: p.type === 'income' ? 'income' : 'expense',
-          category: p.category || (p.type === 'income' ? 'other_inc' : 'other'),
-          amount: p.amount,
-          label: p.label || 'عملية صوتية',
-          walletId: p.walletId,
-          member: p.member || 'البيت',
-          project: p.projectName || null,
-          projectItem: p.projectItem || null,
-          notes: 'تسجيل صوتي ذكي: ' + p.rawText,
-          createdAt: new Date().toISOString()
-        };
-        if (!Array.isArray(appState.transactions)) appState.transactions = [];
-        appState.transactions.unshift(tx);
+      // If multi-split detected, commit all items in sequence
+      const itemsToSave = (_currentMulti && _currentMulti.length > 1) ? _currentMulti : [p];
 
-        if (typeof saveTx === 'function') saveTx();
-        else localStorage.setItem('family_monefy_v2_tx', JSON.stringify(appState.transactions));
+      for (const item of itemsToSave) {
+        if (item.type === 'debt_for_us' || item.type === 'debt_on_us' || item.type === 'bill') {
+          if (!Array.isArray(appState.expectedExpenses)) appState.expectedExpenses = [];
+          const exp = {
+            id: 'exp-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+            type: item.type === 'bill' ? 'upcoming_bill' : item.type,
+            title: item.personName || item.label || 'التزام صوتي',
+            amount: item.amount,
+            dueDate: item.date || '',
+            priority: 'normal',
+            member: item.member || 'البيت',
+            status: 'upcoming',
+            photo: null,
+            createdAt: new Date().toISOString(),
+            notes: 'تسجيل صوتي ذكي: ' + item.rawText
+          };
+          appState.expectedExpenses.unshift(exp);
+          localStorage.setItem('family_monefy_expected', JSON.stringify(appState.expectedExpenses));
+          if (typeof renderExpectedList === 'function') renderExpectedList();
+        } else {
+          const tx = {
+            id: 'tx-voice-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+            date: item.date || (new Date().toISOString().split('T')[0]),
+            type: item.type === 'income' ? 'income' : 'expense',
+            category: item.category || (item.type === 'income' ? 'other_inc' : 'other'),
+            amount: item.amount,
+            label: item.label || 'عملية صوتية',
+            walletId: item.walletId,
+            member: item.member || 'البيت',
+            project: item.projectName || null,
+            projectItem: item.projectItem || null,
+            notes: 'تسجيل صوتي ذكي: ' + item.rawText,
+            createdAt: new Date().toISOString()
+          };
+          if (!Array.isArray(appState.transactions)) appState.transactions = [];
+          appState.transactions.unshift(tx);
+
+          if (typeof saveTx === 'function') saveTx();
+          else localStorage.setItem('family_monefy_v2_tx', JSON.stringify(appState.transactions));
+        }
       }
 
       if (typeof renderUI === 'function') renderUI();
+
+      // Audio and voice feedback
+      playEarcon('success');
+      const currSymbol = (appState.currency === 'SAR') ? 'ريال' : 'جنيه';
+      speakConfirmation(`تم تسجيل ${p.amount} ${currSymbol} في ${p.label}`);
+
       closeConfirmDrawer();
-      if (typeof showToast === 'function') showToast('تم تسجيل العملية الصوتية بنجاح ✓');
+      if (typeof showToast === 'function') {
+        const msg = itemsToSave.length > 1
+          ? `تم اعتماد ${itemsToSave.length} عمليات صوتية مركبة بنجاح ✓`
+          : `تم تسجيل العملية الصوتية بنجاح ✓`;
+        showToast(msg, 'success', 3500);
+      }
     } catch (err) {
       console.error('[Voice] Save error', err);
       if (typeof showToast === 'function') showToast('تعذر حفظ العملية الصوتية. يرجى مراجعة البيانات');
@@ -796,7 +1119,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     10. Fallback: Open in Full Native Modal for Detailed Editing
+     13. Open Native Full Modal for Deep Editing
      -------------------------------------------------------------------------- */
   function openInModalForEdit() {
     if (!_currentParsed) return;
@@ -809,7 +1132,8 @@ const VoiceAssistantEngine = (() => {
       const fields = {
         inpExpType: p.type === 'bill' ? 'upcoming_bill' : p.type,
         inpExpTitle: p.personName || p.label,
-        inpExpAmount: p.amount > 0 ? String(p.amount) : ''
+        inpExpAmount: p.amount > 0 ? String(p.amount) : '',
+        inpExpDueDate: p.date || ''
       };
       for (const id in fields) {
         const el = document.getElementById(id);
@@ -826,13 +1150,24 @@ const VoiceAssistantEngine = (() => {
       inpTxLabel: p.label,
       inpTxCategory: p.category,
       inpTxWallet: p.walletId,
-      inpTxMember: p.member
+      inpTxMember: p.member,
+      inpTxDate: p.date || ''
     };
     for (const id in fields) {
       const el = document.getElementById(id);
       if (el) el.value = fields[id];
     }
     document.getElementById('inpTxAmount')?.focus();
+  }
+
+  /* --------------------------------------------------------------------------
+     14. Smart Manual Dictation / Quick-Typing Fallback Modal
+     -------------------------------------------------------------------------- */
+  function openManualDictationModal() {
+    const text = prompt('اكتب ما تريد تسجيله وسيقوم الذكاء الاصطناعي باستخراج البند والمبلغ فوراً:\n(مثال: صرفت ميتين جنيه بنزين من فودافون كاش)');
+    if (text && text.trim()) {
+      handleSpokenResult(text.trim());
+    }
   }
 
   /* --------------------------------------------------------------------------
@@ -846,8 +1181,12 @@ const VoiceAssistantEngine = (() => {
     closeConfirmDrawer,
     parseSpokenText,
     changeDrawerCategory,
+    changeDrawerWallet,
+    changeDrawerDate,
     changeDrawerAmount,
-    changeDrawerLabel
+    changeDrawerLabel,
+    toggleVoiceTts,
+    openManualDictationModal
   };
 })();
 

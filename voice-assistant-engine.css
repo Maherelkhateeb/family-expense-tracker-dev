@@ -177,3 +177,119 @@ body.light-theme #voiceConfirmDrawer .voice-card-box {
   border-color: #e2e8f0 !important;
   color: #0f172a !important;
 }
+
+/* ==========================================================================
+   Voice Assistant Engine v6.3 Luxury UI Enhancements
+   ========================================================================== */
+.voice-timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  color: #f87171;
+  font-family: var(--font-numbers, monospace);
+}
+
+.voice-impact-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+}
+
+.voice-impact-box.safe {
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.voice-impact-box.warning {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.voice-impact-box.danger {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.voice-chips-scroll {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.voice-chips-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.voice-chip {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.70rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.voice-chip.active {
+  background: var(--chip-active-bg, #0284c7) !important;
+  color: #ffffff !important;
+  border-color: var(--chip-active-bg, #0284c7) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.voice-multi-item-card {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+body.light-theme .voice-impact-box {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light-theme .voice-impact-box.safe {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+
+body.light-theme .voice-impact-box.danger {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+body.light-theme .voice-chip {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #475569;
+}
+
+body.light-theme .voice-multi-item-card {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+

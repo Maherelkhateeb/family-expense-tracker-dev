@@ -2086,7 +2086,7 @@ const BudgetCompareEngine = (() => {
     `;
 
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
-      '<div class="bs-grid">'+table+chartDeckHtml+'</div></div>';
+      '<div class="bs-grid">'+chartDeckHtml+table+'</div></div>';
   }
 
   // Five additional views generated for the compact chart deck
@@ -2232,7 +2232,7 @@ const BudgetCompareEngine = (() => {
     const bar=(values,label)=>'<div><div class="bs-stack-label"><strong>'+label+'</strong><span dir="ltr">'+values.join(' / ')+'%</span></div><div class="bs-stack" role="img" aria-label="'+label+' وحصص البنود" dir="ltr">'+
       values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
     const chart7Html = '<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
-      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">${sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')}</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p>'+chartExplanation("توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق (100%) لمقارنة الأولويات المخططة بالفعلية.", "الشريط الأول يمثل التقديري والثاني الفعلي؛ اتساع أو ضيق حصة البند بين الشريطين يوضح تغير نمط الصرف بطريقة أكبر باقي.")+'</section>';
+      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+'</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p>'+chartExplanation("توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق (100%) لمقارنة الأولويات المخططة بالفعلية.", "الشريط الأول يمثل التقديري والثاني الفعلي؛ اتساع أو ضيق حصة البند بين الشريطين يوضح تغير نمط الصرف بطريقة أكبر باقي.")+'</section>';
 
     // 8. Slope
     const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
@@ -2446,12 +2446,20 @@ const BudgetCompareEngine = (() => {
   }
 
   function showAllCharts() {
-    periodChartMode='table';
+    periodChartMode = 'table';
+    isChartDeckCollapsed = false;
     render();
-    const details=byId('cmpUnifiedAdvancedCharts');
-    if(details){
-      details.open=true;
-      details.scrollIntoView({block:'nearest',behavior:'smooth'});
+    const deck = byId('cmpChartsDeck');
+    if (deck) {
+      const stage = byId('cmpDeckStage');
+      if (stage) stage.classList.remove('is-collapsed');
+      const btnIcon = document.getElementById('cmpDeckToggleIcon');
+      const btnLabel = document.getElementById('cmpDeckToggleLabel');
+      if (btnIcon && btnLabel) {
+        btnIcon.className = 'fa-solid fa-chevron-up';
+        btnLabel.textContent = 'طي الرسم';
+      }
+      deck.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }
 
