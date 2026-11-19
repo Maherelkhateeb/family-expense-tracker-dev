@@ -526,62 +526,68 @@
       pillar.questions.forEach((q, idx) => {
         const val = metrics[q.evalKey] || 0;
         const status = evaluateStatus(q.evalKey, val);
-        const formattedVal = (q.unit === 'ج.م' || q.unit === 'SAR')
-          ? `<strong style="color: ${pillar.themeColor}; font-size: 1.05rem;">-${Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${q.unit}</strong>`
+        const isExpenseType = (q.unit === 'ج.م' || q.unit === 'SAR');
+        const numVal = Number(val) || 0;
+        const formattedVal = isExpenseType
+          ? `<span style="direction: ltr; display: inline-block; font-variant-numeric: tabular-nums; font-weight: 950; font-size: 1.12rem; color: #f87171;">-${numVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small style="font-size: 0.72rem; color: #94a3b8;">${q.unit}</small></span>`
           : (q.unit === '%' || q.unit === 'x' || q.unit === 'أشهر')
-          ? `<strong style="color: #0284c7; font-size: 1.05rem;">${val} ${q.unit}</strong>`
-          : `<strong style="color: #10b981; font-size: 1.05rem;">${val} ${q.unit}</strong>`;
+          ? `<span style="direction: ltr; display: inline-block; font-variant-numeric: tabular-nums; font-weight: 950; font-size: 1.12rem; color: #38bdf8;">${val} <small style="font-size: 0.72rem; color: #94a3b8;">${q.unit}</small></span>`
+          : `<span style="direction: ltr; display: inline-block; font-variant-numeric: tabular-nums; font-weight: 950; font-size: 1.12rem; color: #34d399;">${val} <small style="font-size: 0.72rem; color: #94a3b8;">${q.unit}</small></span>`;
 
-        const cardBg = isLight ? '#f8fafc' : 'rgba(30, 41, 59, 0.7)';
-        const cardBorder = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+        const cardBg = isLight ? '#f8fafc' : 'linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.85))';
+        const cardBorder = isLight ? '#cbd5e1' : `${pillar.themeColor}33`;
         const qTitleColor = isLight ? '#0f172a' : '#f8fafc';
         const qDescColor = isLight ? '#475569' : '#94a3b8';
-        const formulaBarBg = isLight ? '#f1f5f9' : 'rgba(15, 23, 42, 0.8)';
-        const formulaBarBorder = isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.12)';
-        const formulaCodeBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+        const formulaBarBg = isLight ? '#f1f5f9' : 'rgba(15, 23, 42, 0.85)';
+        const formulaBarBorder = isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.10)';
+        const formulaCodeBg = isLight ? '#e2e8f0' : 'rgba(0, 0, 0, 0.45)';
         const formulaCodeColor = isLight ? '#0369a1' : '#38bdf8';
-        const formulaTextColor = isLight ? '#334155' : '#cbd5e1';
 
         html += `
-          <div class="audit-question-card" style="background: ${cardBg}; border: 1px solid ${cardBorder}; border-radius: 12px; padding: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+          <article class="audit-question-card" style="background: ${cardBg}; border: 1.2px solid ${cardBorder}; border-radius: 14px; padding: 14px; box-shadow: ${isLight ? '0 2px 8px rgba(0,0,0,0.04)' : '0 4px 16px rgba(0,0,0,0.25)'}; transition: transform 0.2s ease, box-shadow 0.2s ease;">
             
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                  <span style="font-size: 0.68rem; font-weight: 900; background: ${pillar.themeColor}; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
-                    ${q.qNum}
-                  </span>
-                  <h5 style="margin: 0; font-size: 0.85rem; font-weight: 850; color: ${qTitleColor}; line-height: 1.35;">
-                    ${q.title}
-                  </h5>
-                </div>
-                <div style="font-size: 0.66rem; color: ${qDescColor}; line-height: 1.4; padding-right: 26px;">
+            <!-- الرأس: رقم المعيار والعنوان والشرح -->
+            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+              <span style="font-size: 0.76rem; font-weight: 950; background: linear-gradient(135deg, ${pillar.themeColor}, #991b1b); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 8px ${pillar.themeColor}55;">
+                ${q.qNum}
+              </span>
+              <div style="flex: 1; min-width: 0;">
+                <h5 style="margin: 0; font-size: 0.88rem; font-weight: 900; color: ${qTitleColor}; line-height: 1.4;">
+                  ${q.title}
+                </h5>
+                <p style="margin: 4px 0 0; font-size: 0.72rem; color: ${qDescColor}; line-height: 1.45;">
                   ${q.desc}
-                </div>
+                </p>
               </div>
-              
-              <!-- القيمة المحسوبة وشارة الحالة -->
-              <div style="text-align: left; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+            </div>
+
+            <!-- شبكة القياس المالي والحالة الرقابية -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: ${formulaBarBg}; border: 1px solid ${formulaBarBorder}; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;">
+                <span style="font-size: 0.65rem; font-weight: 850; color: ${subColor};">النتيجة المحسوبة</span>
                 <div>${formattedVal}</div>
-                <span style="font-size: 0.64rem; font-weight: 850; padding: 2px 8px; border-radius: 6px; background: ${status.bg}; color: ${status.color}; border: 1px solid ${status.color}55;">
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 2px;">
+                <span style="font-size: 0.65rem; font-weight: 850; color: ${subColor};">التقييم الرقابي</span>
+                <span style="font-size: 0.70rem; font-weight: 900; padding: 3px 10px; border-radius: 999px; background: ${status.bg}; color: ${status.color}; border: 1px solid ${status.color}66; display: inline-flex; align-items: center; gap: 4px;">
                   ${status.label}
                 </span>
               </div>
             </div>
 
-            <!-- شريط المعادلة المحاسبية وعتبة الإنذار -->
-            <div class="audit-formula-box" style="background: ${formulaBarBg}; border: 1px dashed ${formulaBarBorder}; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: ${formulaTextColor}; flex-wrap: wrap; gap: 6px;">
-              <div style="display: flex; align-items: center; gap: 5px;">
-                <span style="color: #d97706; font-weight: 900;">📐 المعادلة:</span>
-                <code style="background: ${formulaCodeBg}; padding: 1px 6px; border-radius: 4px; font-family: monospace; color: ${formulaCodeColor}; font-size: 0.64rem;">${q.formula}</code>
+            <!-- شريط المعادلة المحاسبية وعتبة الأمان القياسية -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 0.68rem; padding: 4px 2px;">
+              <div style="display: flex; align-items: center; gap: 5px; max-width: 100%; overflow: hidden;">
+                <span style="color: #fbbf24; font-weight: 900; white-space: nowrap;"><i class="fa-solid fa-square-root-variable"></i> المعادلة:</span>
+                <code style="background: ${formulaCodeBg}; border: 1px solid ${formulaBarBorder}; padding: 2px 7px; border-radius: 6px; font-family: monospace; color: ${formulaCodeColor}; font-size: 0.66rem; direction: ltr; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px;">${q.formula}</code>
               </div>
-              <div style="display: flex; align-items: center; gap: 4px;">
-                <span style="color: ${subColor};">🎯 عتبة الأمان:</span>
-                <strong style="color: #10b981;">${q.threshold}</strong>
+              <div style="display: flex; align-items: center; gap: 5px; white-space: nowrap;">
+                <span style="color: ${subColor}; font-weight: 800;"><i class="fa-solid fa-bullseye" style="color: #10b981;"></i> عتبة الأمان:</span>
+                <strong style="color: #34d399; font-weight: 900; background: rgba(16, 185, 129, 0.14); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.3);">${q.threshold}</strong>
               </div>
             </div>
 
-          </div>
+          </article>
         `;
       });
 

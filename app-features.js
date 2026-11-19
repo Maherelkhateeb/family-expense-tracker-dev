@@ -3238,7 +3238,7 @@ window.addBudgetItem = addBudgetItemToCurrentPlan;
         if (s) s.style.display = 'none';
       });
 
-      if (tab === 'audit') {
+      if (tab === 'audit' || tab === 'comparisons') {
         if (bAudit) {
           bAudit.classList.add('active');
           bAudit.setAttribute('aria-pressed', 'true');
@@ -3247,6 +3247,9 @@ window.addBudgetItem = addBudgetItemToCurrentPlan;
           bAudit.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.35)';
         }
         if (secAudit) secAudit.style.display = 'block';
+        if (typeof renderComparisonsSection === 'function') {
+          renderComparisonsSection();
+        }
         if (window.BudgetAuditOversightEngine && typeof BudgetAuditOversightEngine.render === 'function') {
           BudgetAuditOversightEngine.render();
         }
@@ -3261,20 +3264,6 @@ window.addBudgetItem = addBudgetItemToCurrentPlan;
         if (secProj) secProj.style.display = 'block';
         if (typeof switchProjectView === 'function') {
           switchProjectView('compare');
-        }
-      } else if (tab === 'comparisons') {
-        if (bComp) {
-          bComp.classList.add('active');
-          bComp.setAttribute('aria-pressed', 'true');
-          bComp.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-          bComp.style.color = '#fff';
-          bComp.style.boxShadow = '0 2px 8px rgba(245, 158, 11, 0.35)';
-        }
-        if (secComp) secComp.style.display = 'block';
-        if (typeof switchComparisonDimension === 'function') {
-          switchComparisonDimension('category');
-        } else if (typeof renderComparisonsSection === 'function') {
-          renderComparisonsSection();
         }
       } else if (tab === 'history') {
         if (bHist) {
