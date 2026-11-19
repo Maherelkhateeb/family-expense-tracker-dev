@@ -608,9 +608,42 @@ body.light-theme .cmp-deck-header {
   display: flex !important;
   align-items: center !important;
   gap: 7px !important;
-  font-size: 0.82rem !important;
+  font-size: 0.88rem !important;
   font-weight: 900 !important;
   color: #38bdf8 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.cmp-deck-title i {
+  color: #38bdf8 !important;
+  font-size: 0.95rem !important;
+  flex-shrink: 0 !important;
+}
+
+.cmp-deck-main-name {
+  color: #f8fafc !important;
+  font-weight: 900 !important;
+  font-size: 0.88rem !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+body.light-theme .cmp-deck-main-name {
+  color: #0f172a !important;
+}
+
+.cmp-deck-sub-name {
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.light-theme .cmp-deck-sub-name {
+  color: #64748b !important;
 }
 
 body.light-theme .cmp-deck-title {
@@ -642,16 +675,19 @@ body.light-theme .cmp-deck-collapse-btn {
   background: rgba(56, 189, 248, 0.22) !important;
 }
 
-/* 3. شريط أزرار الاختيار المرقم (1–8) */
+/* 3. شريط أزرار الاختيار المرقم (1–9) مقسم إلى سطرين بدون تمرير أفقي */
 .cmp-deck-tabs-strip {
   display: flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  padding: 8px 10px !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  gap: 4px !important;
+  padding: 6px 8px !important;
   background: color-mix(in srgb, var(--bg-card, #0f172a) 80%, transparent) !important;
   border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.06)) !important;
-  overflow-x: auto !important;
+  overflow: visible !important;
   scrollbar-width: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
 }
 
 body.light-theme .cmp-deck-tabs-strip {
@@ -664,21 +700,32 @@ body.light-theme .cmp-deck-tabs-strip {
 }
 
 .cmp-deck-tab {
-  flex: 1 0 auto !important;
+  flex: 1 1 calc(20% - 4px) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
-  padding: 6px 11px !important;
-  border-radius: 9px !important;
+  gap: 3px !important;
+  padding: 5px 2px !important;
+  border-radius: 8px !important;
   background: rgba(30, 41, 59, 0.75) !important;
   border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
   color: #94a3b8 !important;
-  font-size: 0.73rem !important;
+  font-size: 0.68rem !important;
   font-weight: 850 !important;
   cursor: pointer !important;
   white-space: nowrap !important;
   transition: all 0.18s ease !important;
+  box-sizing: border-box !important;
+}
+
+/* في ميزان السيولة وقسم المشاريع: 9 رسوم بيانية مقسمة 5 في السطر الأول و4 في السطر الثاني */
+.cmp-deck-tabs-strip .cmp-deck-tab {
+  flex: 1 1 calc(20% - 4px) !important;
+}
+.cmp-deck-tabs-strip .cmp-deck-tab:nth-child(n+6) {
+  flex: 1 1 calc(25% - 4px) !important;
 }
 
 body.light-theme .cmp-deck-tab {
@@ -696,12 +743,20 @@ body.light-theme .cmp-deck-tab {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 18px !important;
-  height: 18px !important;
+  width: 15px !important;
+  height: 15px !important;
   border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  font-size: 0.65rem !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  font-size: 0.60rem !important;
   font-weight: 900 !important;
+  flex-shrink: 0 !important;
+}
+
+.cmp-tab-name {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 0.66rem !important;
 }
 
 .cmp-deck-tab.active {
@@ -831,9 +886,42 @@ body.light-theme .cmp-deck-header {
   display: flex !important;
   align-items: center !important;
   gap: 7px !important;
-  font-size: 0.82rem !important;
+  font-size: 0.88rem !important;
   font-weight: 900 !important;
   color: #38bdf8 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.cmp-deck-title i {
+  color: #38bdf8 !important;
+  font-size: 0.95rem !important;
+  flex-shrink: 0 !important;
+}
+
+.cmp-deck-main-name {
+  color: #f8fafc !important;
+  font-weight: 900 !important;
+  font-size: 0.88rem !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+body.light-theme .cmp-deck-main-name {
+  color: #0f172a !important;
+}
+
+.cmp-deck-sub-name {
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.light-theme .cmp-deck-sub-name {
+  color: #64748b !important;
 }
 
 body.light-theme .cmp-deck-title {
@@ -865,16 +953,19 @@ body.light-theme .cmp-deck-collapse-btn {
   background: rgba(56, 189, 248, 0.22) !important;
 }
 
-/* 3. شريط أزرار الاختيار المرقم (1–8) */
+/* 3. شريط أزرار الاختيار المرقم (1–9) مقسم إلى سطرين بدون تمرير أفقي */
 .cmp-deck-tabs-strip {
   display: flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  padding: 8px 10px !important;
+  flex-wrap: wrap !important;
+  align-items: stretch !important;
+  gap: 4px !important;
+  padding: 6px 8px !important;
   background: color-mix(in srgb, var(--bg-card, #0f172a) 80%, transparent) !important;
   border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.06)) !important;
-  overflow-x: auto !important;
+  overflow: visible !important;
   scrollbar-width: none !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
 }
 
 body.light-theme .cmp-deck-tabs-strip {
@@ -887,21 +978,32 @@ body.light-theme .cmp-deck-tabs-strip {
 }
 
 .cmp-deck-tab {
-  flex: 1 0 auto !important;
+  flex: 1 1 calc(20% - 4px) !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 5px !important;
-  padding: 6px 11px !important;
-  border-radius: 9px !important;
+  gap: 3px !important;
+  padding: 5px 2px !important;
+  border-radius: 8px !important;
   background: rgba(30, 41, 59, 0.75) !important;
   border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
   color: #94a3b8 !important;
-  font-size: 0.73rem !important;
+  font-size: 0.68rem !important;
   font-weight: 850 !important;
   cursor: pointer !important;
   white-space: nowrap !important;
   transition: all 0.18s ease !important;
+  box-sizing: border-box !important;
+}
+
+/* في ميزان السيولة وقسم المشاريع: 9 رسوم بيانية مقسمة 5 في السطر الأول و4 في السطر الثاني */
+.cmp-deck-tabs-strip .cmp-deck-tab {
+  flex: 1 1 calc(20% - 4px) !important;
+}
+.cmp-deck-tabs-strip .cmp-deck-tab:nth-child(n+6) {
+  flex: 1 1 calc(25% - 4px) !important;
 }
 
 body.light-theme .cmp-deck-tab {
@@ -919,12 +1021,20 @@ body.light-theme .cmp-deck-tab {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 18px !important;
-  height: 18px !important;
+  width: 15px !important;
+  height: 15px !important;
   border-radius: 50% !important;
-  background: rgba(255, 255, 255, 0.1) !important;
-  font-size: 0.65rem !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  font-size: 0.60rem !important;
   font-weight: 900 !important;
+  flex-shrink: 0 !important;
+}
+
+.cmp-tab-name {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: 0.66rem !important;
 }
 
 .cmp-deck-tab.active {

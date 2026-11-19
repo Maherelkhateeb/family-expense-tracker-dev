@@ -31,11 +31,15 @@ body.dark-theme.has-alt-home-layout #viewExpenses {
 /* Base Container */
 #homeInterfaces {
   width: 100%;
-  max-width: 500px;
+  max-width: 460px;
   margin: 0 auto;
   box-sizing: border-box;
-  padding: 4px 8px 76px !important;
+  padding: 2px 6px 12px !important;
   direction: rtl;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   user-select: none;
   -webkit-user-select: none;
   font-family: var(--dynamic-home-font-family, inherit);
@@ -45,7 +49,7 @@ body.dark-theme.has-alt-home-layout #viewExpenses {
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch !important;
   overscroll-behavior-y: contain !important;
-  padding-bottom: 76px !important;
+  padding-bottom: 68px !important;
 }
 
 #homeInterfaces[hidden] {
@@ -331,12 +335,13 @@ body.dark-theme .hl-progress-track {
   background: #ffffff;
   border: 1.5px solid var(--cat-pastel-border, #e2e8f0);
   border-radius: 12px;
-  padding: 3px 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 2px 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  min-height: 46px;
+  min-height: 42px;
   height: var(--dynamic-home-card-height, 46px);
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 body.dark-theme .hl-row-l1 {
@@ -376,26 +381,26 @@ body.dark-theme .hl-row-l1 {
 }
 
 .hl-row-l1-icon {
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
   border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 1.35rem !important;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+  font-size: 1.15rem !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
   flex-shrink: 0 !important;
 }
 
 .hl-row-icon-divider {
-  width: 2.5px !important;
-  height: 38px !important;
+  width: 2px !important;
+  height: 26px !important;
   background: var(--cat-color, #cbd5e1) !important;
-  opacity: 0.95 !important;
-  border-radius: 3px !important;
+  opacity: 0.9 !important;
+  border-radius: 2px !important;
   flex-shrink: 0 !important;
-  margin: 0 10px !important;
+  margin: 0 6px !important;
   display: block !important;
 }
 
@@ -411,12 +416,14 @@ body.dark-theme .hl-row-icon-divider {
 }
 
 .hl-row-l1-name {
-  font-size: calc(0.76rem * var(--dynamic-home-font-scale, 1));
+  font-size: calc(0.72rem * var(--dynamic-home-font-scale, 1));
   font-weight: 850;
   color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.15 !important;
+  margin: 0 !important;
 }
 
 body.dark-theme .hl-row-l1-name {
@@ -1036,16 +1043,20 @@ body.dark-theme .hl-l4-voice-sub {
 .honeycomb-board,
 .sensor-arena,
 .diamond-arena {
-  height: var(--dynamic-home-arena-h, 380px) !important;
-  min-height: 320px;
-  max-height: 520px;
+  height: var(--dynamic-home-arena-h, 340px) !important;
+  min-height: 240px;
+  max-height: 460px;
+  width: 100% !important;
+  margin: 0 auto !important;
   box-sizing: border-box;
 }
 
 .equalizer-arena {
-  height: var(--dynamic-home-arena-h, 240px) !important;
-  min-height: 180px;
-  max-height: 360px;
+  height: var(--dynamic-home-arena-h, 200px) !important;
+  min-height: 140px;
+  max-height: 260px;
+  width: 100% !important;
+  margin: 0 auto !important;
   box-sizing: border-box;
 }
 
@@ -1059,12 +1070,13 @@ body.dark-theme .hl-l4-voice-sub {
 .hl-l8-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  grid-template-rows: repeat(3, minmax(114px, 126px)) !important;
-  gap: 12px 8px !important;
+  grid-template-rows: repeat(3, 1fr) !important;
+  gap: 8px 6px !important;
   width: 100% !important;
-  max-width: 420px !important;
+  max-width: 380px !important;
   margin: 0 auto !important;
   box-sizing: border-box !important;
+  height: 100% !important;
 }
 
 .hl-l8-item {
@@ -1392,6 +1404,7 @@ body.dark-theme .hl-integrated-voice-btn {
 .sensor-arena.hl-l7-arena {
   width: 100% !important;
   max-width: 412px !important;
+  margin: 0 auto !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
@@ -1402,9 +1415,10 @@ body.dark-theme .hl-integrated-voice-btn {
 .sensor-grid {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  grid-template-rows: repeat(3, minmax(116px, 136px)) !important;
-  gap: 8px !important;
+  grid-template-rows: repeat(3, 1fr) !important;
+  gap: 6px !important;
   width: 100% !important;
+  height: 100% !important;
 }
 
 .sensor-tile.hl-l7-tile {
