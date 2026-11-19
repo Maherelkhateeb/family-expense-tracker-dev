@@ -1407,11 +1407,12 @@ const BudgetCompareEngine = (() => {
     { id: 5, name: 'التراكم', fullName: '5. التراكم عبر الفترات المختارة', icon: 'fa-chart-line', tip: 'تتبع وتيرة الصرف التراكمي ومقارنته بالمسار المستهدف' },
     { id: 6, name: 'الحرارية', fullName: '6. الخريطة الحرارية للفترتين', icon: 'fa-table-cells', tip: 'مصفوفة بصرية لتقييم انحرافات كل بند عبر الفترات' },
     { id: 7, name: 'المكدس', fullName: '7. المكدس النسبي 100%', icon: 'fa-bars-progress', tip: 'توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق 100%' },
-    { id: 8, name: 'الميل', fullName: '8. مخطط الميل والاتجاه', icon: 'fa-arrow-trend-up', tip: 'مخطط اتجاهي يوضح صعود أو هبوط تكلفة كل بند' }
+    { id: 8, name: 'الميل', fullName: '8. مخطط الميل والاتجاه', icon: 'fa-arrow-trend-up', tip: 'مخطط اتجاهي يوضح صعود أو هبوط تكلفة كل بند' },
+    { id: 9, name: 'فروق البنود', fullName: '9. الفروق حسب بنود المصروفات', icon: 'fa-scale-balanced', tip: 'مقارنة تفصيلية لفروق التقديري والفعلي لكل بند بالكروت المدمجة' }
   ];
 
   function selectChartTab(chartNum) {
-    activeChartTab = Math.max(1, Math.min(8, parseInt(chartNum, 10) || 1));
+    activeChartTab = Math.max(1, Math.min(9, parseInt(chartNum, 10) || 1));
     isChartDeckCollapsed = false;
     renderActiveChartOnly();
   }
@@ -2047,12 +2048,92 @@ const BudgetCompareEngine = (() => {
     const chart2Html = '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div><p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p>'+ chartExplanation("مسار تراكمي يوضح كيف تحولت الموازنة التقديرية إلى الصرف الفعلي الإجمالي عبر تأثير كل بند.", "يبدأ بعمود التقديري؛ الأعمدة الحمراء تمثل مبالغ التجاوز الخصمية والأعمدة الخضراء تمثل الوفورات حتى نصل لعمود الفعلي النهائي.") +'</section>';
     const chart3Html = '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+ chartExplanation("تحديد دقيق لحجم واتجاه انحراف كل بند عن خط الميزانية المخطط مرتبًا تنازليًا.", "الخط الرأسي هو نقطة الصفر؛ الأشرطة الحمراء المتجهة لليمين تعني تجاوزًا والأشرطة الخضراء المتجهة لليسار تعني وفرًا وادخارًا.") +'</section>';
 
+    // 9. الفروق حسب بنود المصروفات (Compact difference cards)
+    const currSym = (typeof getCurrencySymbol === 'function') ? getCurrencySymbol() : (window.state?.currency || 'ج.م');
+    const totalOpsCount = (Array.isArray(window.state?.transactions) ? window.state.transactions : []).filter(t => t && t.type === 'expense').length;
+
+    const compactCardsHtml = sorted.map((row, index) => {
+      const estVal = (row.b || 0) / 100;
+      const actVal = (row.a || 0) / 100;
+      const maxVal = Math.max(1, estVal, actVal);
+      const estBarPct = Math.max(5, Math.min(100, (estVal / maxVal) * 100));
+      const actBarPct = Math.max(5, Math.min(100, (actVal / maxVal) * 100));
+      const ratio = percentValue(row.diff, row.b || 0);
+      const statusText = condition(row);
+      const toneClass = row.diff > 0 ? 'over' : row.diff < 0 ? 'under' : 'neutral';
+      const opsCount = (Array.isArray(window.state?.transactions) ? window.state.transactions : []).filter(t => t && t.type === 'expense' && t.category === row.id).length;
+
+      return `
+        <article class="cmp-audit-compact-card cmp-audit-row" data-tone="${toneClass}">
+          <div class="cmp-acc-head">
+            <div class="cmp-acc-title">
+              <span class="cmp-acc-rank">${index + 1}.</span>
+              <strong class="cmp-acc-name">${safe(row.name)}</strong>
+            </div>
+            <span class="cmp-acc-badge ${toneClass}">
+              ${safe(statusText)} <bdi dir="ltr">(${pct(ratio)})</bdi>
+            </span>
+          </div>
+
+          <div class="cmp-acc-body">
+            <div class="cmp-acc-figures">
+              <div class="cmp-acc-metric">
+                <span class="cmp-acc-lbl">المقدر</span>
+                <strong class="cmp-acc-val est" dir="ltr">${money(row.b || 0)}</strong>
+              </div>
+              <div class="cmp-acc-metric">
+                <span class="cmp-acc-lbl">الفعلي</span>
+                <strong class="cmp-acc-val act" dir="ltr">${money(row.a || 0)}</strong>
+              </div>
+              <div class="cmp-acc-metric full">
+                <span class="cmp-acc-lbl">${(row.b || 0) === 0 ? 'الفرق' : 'التغير: ' + (row.diff > 0 ? 'زيادة' : row.diff < 0 ? 'انخفاض' : 'مطابق')}</span>
+                <strong class="cmp-acc-val ${toneClass}" dir="ltr">${signed(row.diff)}</strong>
+              </div>
+            </div>
+
+            <div class="cmp-acc-bars" role="img" aria-label="مقارنة الأعمدة داخل البند">
+              <div class="cmp-acc-bar-wrap" title="المقدر: ${money(row.b || 0)}">
+                <i class="cmp-acc-bar-fill est" style="height:${estBarPct}%;"></i>
+                <small>مقدر</small>
+              </div>
+              <div class="cmp-acc-bar-wrap" title="الفعلي: ${money(row.a || 0)}">
+                <i class="cmp-acc-bar-fill act" style="height:${actBarPct}%;"></i>
+                <small>فعلي</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="cmp-acc-foot">
+            <span class="cmp-acc-count">${opsCount} عملية · ${currSym}</span>
+            ${opsCount > 0 ? `<button type="button" class="cmp-acc-btn" data-audit-category="${safe(row.id)}" onclick="window.openOperationsFiltered && window.openOperationsFiltered({category:'${safe(row.id)}',type:'expense',resetFilters:true,returnTitle:'الرقابة على الميزانية'})">عرض العمليات</button>` : ''}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    const chart9Html = `
+      <section class="bs-panel bs-full cmp-deck-audit-panel">
+        <div class="cmp-deck-audit-head">
+          <div>
+            <h3>9. الفروق حسب بنود المصروفات</h3>
+            <p>الأزرق للموازنة التقديرية والفيروزي للمصروف الفعلي. كروت مدمجة ومصغرة توضح الفروق ونسب الانحراف قابلة للطي والفتح.</p>
+          </div>
+          <span class="cmp-deck-audit-ops-badge">${totalOpsCount} عملية صرف</span>
+        </div>
+        <div class="cmp-audit-compact-grid">
+          ${compactCardsHtml}
+        </div>
+        ${chartExplanation("عرض مدمج ومفصل للفروق المالية بين الموازنة التقديرية والمصروف الفعلي لكل بند من بنود المصروفات بكروت مصغرة.", "العمود الأزرق يمثل المقدر والأخضر المزرق يمثل الفعلي؛ التغير الموجب يعني زيادة عن الموازنة والسالب يعني وفراً للميزانية.")}
+      </section>
+    `;
+
     const advancedCharts = buildBudgetReferenceAdvancedCharts(sorted, totals, range, opts);
     _currentChartsMap = {
       1: chart1Html,
       2: chart2Html,
       3: chart3Html,
-      ...advancedCharts
+      ...advancedCharts,
+      9: chart9Html
     };
 
     const activeMeta = CHARTS_DECK_META[activeChartTab - 1] || CHARTS_DECK_META[0];

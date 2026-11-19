@@ -4916,8 +4916,11 @@ function generateRichDemoTransactions() {
       }
     }
     window.checkCategoryBudgetCeilingTrigger = checkCategoryBudgetCeilingTrigger;
+    window.renderCategoriesGrid = renderCategoriesGrid;
+    window.renderUI = renderUI;
+    window.getFilteredTransactions = getFilteredTransactions;
 
-function renderCategoriesGrid(filtered) {
+    function renderCategoriesGrid(filtered) {
       const activeHomeLayout = (window.HomeLayouts && typeof window.HomeLayouts.getLayout === 'function')
         ? window.HomeLayouts.getLayout()
         : (parseInt(localStorage.getItem('family_expense_home_design_v2'), 10) || 1);
@@ -4941,6 +4944,15 @@ function renderCategoriesGrid(filtered) {
 
       const grid = document.getElementById('catGrid');
       if (!grid) return;
+      grid.hidden = false;
+      grid.style.removeProperty('display');
+      grid.style.setProperty('display', 'grid', 'important');
+
+      const container = document.getElementById('homeInterfaces');
+      if (container) {
+        container.hidden = true;
+        container.style.setProperty('display', 'none', 'important');
+      }
 
       const catTotals = {};
       (filtered || []).forEach(t => {
