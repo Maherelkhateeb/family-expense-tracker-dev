@@ -713,11 +713,11 @@
           <div class="hl-row-l1-content">
             <!-- 1. Right: Category Icon -->
             <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:48px;height:48px;min-width:48px;border-radius:50%;font-size:1.45rem;">
                 <i class="${s.cat.iconClass}"></i>
               </div>
             </button>
-            <div class="hl-row-icon-divider"></div>
+            <div class="hl-row-icon-divider" style="width:2.5px;height:38px;background:var(--cat-color);opacity:0.95;margin:0 10px;border-radius:3px;flex-shrink:0;"></div>
 
             <!-- 2. Center: Name on Top, Remaining/Budget on Bottom with Progress Bar -->
             <div class="hl-row-main-info">
@@ -914,11 +914,11 @@
             <article class="home-design-card hl-card-l3 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
               <div class="hl-card-l3-inner">
                 <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
-                  <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+                  <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;width:48px;height:48px;min-width:48px;border-radius:15px;font-size:1.45rem;">
                     <i class="fa-solid fa-microphone"></i>
                   </div>
                 </button>
-                <div class="hl-card-l3-divider"></div>
+                <div class="hl-card-l3-divider" style="width:2.5px;height:44px;background:#8b5cf6;opacity:0.95;margin:0 8px;border-radius:3px;flex-shrink:0;"></div>
                 <div class="hl-card-l3-text">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
                     <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية</strong>
@@ -940,11 +940,11 @@
           <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
             <div class="hl-card-l3-inner">
               <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:48px;height:48px;min-width:48px;border-radius:15px;font-size:1.45rem;">
                   <i class="${s.cat.iconClass}"></i>
                 </div>
               </button>
-              <div class="hl-card-l3-divider"></div>
+              <div class="hl-card-l3-divider" style="width:2.5px;height:44px;background:var(--cat-color);opacity:0.95;margin:0 8px;border-radius:3px;flex-shrink:0;"></div>
               <div class="hl-card-l3-text">
                 <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
                   <strong class="hl-card-l3-name">${catDisplayName}</strong>
@@ -1056,11 +1056,11 @@
     const centerY = Math.floor(arenaH / 2);
     const centerX = Math.floor(containerW / 2);
 
-    const satSize = 86; // تكبير قطر كبسولات البنود المدارية إلى 86px لتكون واضحة وجذابة
-    const satHalf = Math.floor(satSize / 2); // 43px
-    const maxRadiusByW = Math.floor((containerW - satSize - 16) / 2);
-    const maxRadiusByH = Math.floor((arenaH - satSize - 16) / 2);
-    const radius = Math.max(132, Math.min(148, maxRadiusByW, maxRadiusByH));
+    const satSize = 98; // تكبير قطر كبسولات البنود المدارية إلى 98px لتكون بارزة ومقروءة بوضوح
+    const satHalf = Math.floor(satSize / 2); // 49px
+    const maxRadiusByW = Math.floor((containerW - satSize - 12) / 2);
+    const maxRadiusByH = Math.floor((arenaH - satSize - 12) / 2);
+    const radius = Math.max(136, Math.min(156, maxRadiusByW, maxRadiusByH));
 
     const isLight = isThemeLight();
 
@@ -1093,12 +1093,15 @@
         <div class="cat-satellite hl-l5-satellite"
              style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
           <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.55rem; line-height:1; margin-bottom:2px;"></i>
-            <span style="font-size:0.70rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:72px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
+            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.75rem; line-height:1; margin-bottom:2px;"></i>
+            <span style="font-size:0.76rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:82px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
           </button>
-          <div class="hl-sat-divider" style="width:44px; height:1.5px; background:${cat.color}; opacity:${hasSpent ? '0.85' : '0.5'}; margin:3px 0; border-radius:1px;"></div>
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.68rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; letter-spacing:-0.2px;">${amtText}</span>
+          <div class="hl-sat-divider" style="width:52px; height:2px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:3px auto; border-radius:2px; display:block !important;"></div>
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;line-height:1;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.75rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; display:inline-block;">${amtText}</span>
+          </button>
+        </div>
+      `;; color:${amtColor}; direction:ltr; unicode-bidi:isolate; letter-spacing:-0.2px;">${amtText}</span>
           </button>
         </div>
       `;
@@ -1259,7 +1262,7 @@
 
           <!-- 2. موضع تسجيل المصروف: الأيقونة الدائرية المتوهجة -->
           <button type="button" class="sensor-icon-circle-btn" data-action="quick-add" data-cat-id="${catId}" title="تسجيل مصروف جديد في ${cat.name}">
-            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.2px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33;">
+            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.4px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33; width:44px; height:44px; font-size:1.35rem;">
               <i class="${cat.iconClass}"></i>
             </div>
           </button>
@@ -1267,8 +1270,8 @@
           <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
           <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
             <span class="sensor-title">${cat.name}</span>
-            <div class="sensor-divider"></div>
-            <span class="sensor-val" style="color:${amtColor}; direction:ltr;">${amtText}</span>
+            <div class="sensor-divider" style="width:84%; height:2.2px; background:${cat.color} !important; opacity:0.95; margin:4px 0; border-radius:2px; display:block !important;"></div>
+            <span class="sensor-val" style="color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
             <div class="sensor-bar">
               <div class="sensor-bar-fill" style="width: ${barFillWidth}%; background: ${cat.color}; box-shadow: ${barFillWidth > 0 ? '0 0 6px ' + cat.color + 'aa' : 'none'};"></div>
             </div>
@@ -1333,16 +1336,16 @@
 
       return `
         <div class="diamond-wrapper hl-l8-item">
-          <div class="hl-dia-card" style="width:94px; height:94px; background:${diaBg}; border:${diaBorder}; border-radius:22px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
-            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:112px; gap:1px;">
-              <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
-                <div style="color:${cat.color}; font-size:1.30rem;"><i class="${cat.iconClass}"></i></div>
-                <span style="font-size:0.70rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+          <div class="hl-dia-card" style="width:106px; height:106px; background:${diaBg}; border:${diaBorder}; border-radius:24px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
+            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:126px; gap:2px;">
+              <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
+                <div style="color:${cat.color}; font-size:1.45rem; margin-bottom:2px;"><i class="${cat.iconClass}"></i></div>
+                <span style="font-size:0.75rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:108px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
               </button>
-              <div class="hl-dia-divider" style="width:58px; height:1.6px; background:${cat.color}; opacity:${hasSpent ? '0.85' : '0.5'}; margin:3px 0; border-radius:1px;"></div>
-              <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="عرض حركات ${cat.name}">
-                <span style="font-size:0.72rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
-                <span style="font-size:0.58rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 4px;">${pct}%</span>
+              <div class="hl-dia-divider" style="width:68px; height:2px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:4px 0; border-radius:2px; display:block !important;"></div>
+              <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
+                <span style="font-size:0.76rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
+                <span style="font-size:0.60rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 5px;">${pct}%</span>
               </button>
             </div>
           </div>
