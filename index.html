@@ -17496,34 +17496,34 @@ body.light-theme .market-buy-price {
         </div>
 
         <!-- أدوات سريعة متناسقة ومريحة: المحفظة النشطة بحجم موسع + زر العملة المطور -->
-        <div class="executive-quick-tools-strip" style="margin: 2px 6px 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; width: calc(100% - 12px); box-sizing: border-box;">
+        <div class="executive-quick-tools-strip" style="margin: 2px 4px 8px; display: flex; align-items: center; justify-content: space-between; gap: 4px; width: calc(100% - 8px); box-sizing: border-box;">
           
-          <!-- 0. أقصى اليمين في RTL: زر تبديل أشكال شاشة المصروفات (قرص الأنماط الدائري بالأقطار بدون ذيل) -->
-          <button type="button" class="tool-pill-action" id="btnHomeDesign" title="تبديل شكل الشاشة" style="width: 44px; height: 44px; min-width: 44px; max-width: 44px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; border: none; background: transparent; flex-shrink: 0;">
+          <!-- 0. أقصى اليمين في RTL: زر تبديل أشكال شاشة المصروفات -->
+          <button type="button" class="tool-pill-action" id="btnHomeDesign" title="تبديل شكل الشاشة" style="width: 38px; height: 38px; min-width: 38px; max-width: 38px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; border: none; background: transparent; flex-shrink: 0;">
             <span class="home-dial-wrapper" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"></span>
           </button>
 
           <!-- 1. زر فتح شاشة الذهب والعملات المباشرة -->
-          <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="toggleGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);">
-            <i class="fa-solid fa-coins" style="color: #fbbf24;"></i>
+          <button type="button" class="tool-pill-action gold-pill" id="btnOpenGold" onclick="toggleGoldDrawer()" title="أسعار الذهب والعملات اليوم" style="height: 36px; padding: 0 7px; border-radius: 10px; font-size: 0.74rem; font-weight: 850; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; border: 1.2px solid rgba(245, 158, 11, 0.5); background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.14)); color: #fbbf24; flex-shrink: 0;">
+            <i class="fa-solid fa-coins" style="color: #fbbf24; font-size: 0.75rem;"></i>
             <span>الذهب</span>
           </button>
 
-          <!-- 2. الوسط (Center): كلاستر المحفظة الموسع + زر تبديل العملة -->
-          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 0; height: 38px; display: flex; align-items: center; gap: 6px; padding: 0 8px; border-radius: 12px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15); box-sizing: border-box;">
-            <i class="fa-solid fa-wallet" style="color: #38bdf8; font-size: 0.95rem; flex-shrink: 0;"></i>
-            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: clamp(0.74rem, 2.2vw, 0.88rem); font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
+          <!-- 2. الوسط (Center): كلاستر المحفظة الموسع -->
+          <div class="wallet-select-cluster" id="walletSelectCluster" title="تحديد المحفظة النشطة" style="flex: 1 1 auto; min-width: 95px; height: 36px; display: flex; align-items: center; gap: 4px; padding: 0 6px; border-radius: 10px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.95)); border: 1.5px solid rgba(56, 189, 248, 0.5); box-sizing: border-box;">
+            <i class="fa-solid fa-wallet" style="color: #38bdf8; font-size: 0.82rem; flex-shrink: 0;"></i>
+            <select class="wallet-dropdown-compact" id="activeWalletSelect" title="المحفظة النشطة" style="flex: 1 1 auto; width: 100%; min-width: 0; background: transparent; border: none; color: #38bdf8; font-weight: 900; font-size: 0.76rem; font-family: inherit; outline: none; cursor: pointer; direction: rtl; white-space: nowrap;"></select>
           </div>
 
           <!-- 3. زر الملخص الشامل السريع -->
-          <button type="button" class="tool-pill-action summary-pill" id="btnOpenSummaryQuick" onclick="toggleSummaryDrawer()" title="عرض ملخص العمليات الشامل" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 850; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.12)); color: #38bdf8; flex-shrink: 0; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);">
-            <i class="fa-solid fa-chart-pie" style="color: #38bdf8;"></i>
+          <button type="button" class="tool-pill-action summary-pill" id="btnOpenSummaryQuick" onclick="toggleSummaryDrawer()" title="عرض ملخص العمليات الشامل" style="height: 36px; padding: 0 7px; border-radius: 10px; font-size: 0.74rem; font-weight: 850; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.45); background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(14, 165, 233, 0.12)); color: #38bdf8; flex-shrink: 0;">
+            <i class="fa-solid fa-chart-pie" style="color: #38bdf8; font-size: 0.75rem;"></i>
             <span>الملخص</span>
           </button>
 
-          <!-- 4. أقصى يسار الشاشة (Far Left in RTL): زر تبديل العملة (EGP / SAR / USD / عيار 21) -->
-          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 38px; padding: 0 9px; border-radius: 12px; font-size: 0.78rem; font-weight: 800; display: flex; align-items: center; gap: 4px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0; margin-inline-start: auto;">
-            <i class="fa-solid fa-right-left"></i>
+          <!-- 4. أقصى يسار الشاشة (Far Left in RTL): زر تبديل العملة -->
+          <div class="currency-pill-btn" id="btnToggleCurrency" onclick="toggleCurrency()" title="تبديل عملة العرض (EGP / SAR / USD / عيار 21)" style="height: 36px; padding: 0 7px; border-radius: 10px; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 3px; cursor: pointer; border: 1.2px solid rgba(56, 189, 248, 0.5); background: rgba(30, 41, 59, 0.85); color: #38bdf8; flex-shrink: 0; margin-inline-start: auto;">
+            <i class="fa-solid fa-right-left" style="font-size: 0.72rem;"></i>
             <span id="activeCurrencyText">EGP</span>
           </div>
 
