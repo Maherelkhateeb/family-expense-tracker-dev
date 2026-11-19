@@ -1,6 +1,6 @@
-/* =========================================================================
-   Family Expense Tracker Next - Unified Main Stylesheet
-   ========================================================================= */
+/* Unified App Main CSS extracted cleanly from working baseline */
+
+
     /* ==============================================================
        منع بحث جوجل المنبثق عند النقر وحفظ كلمات المرور (PWA Stabilization)
        ============================================================== */
@@ -98,6 +98,7 @@
       .kpi-master-grid-lux-6 {
         grid-template-columns: repeat(3, 1fr);
       }
+    }
 
     /* شاشة العمليات المتطورة (Revolut / Apple Wallet Ledger Feed) */
     .ops-feed-container {
@@ -309,6 +310,7 @@
         grid-template-columns: 85px 1fr 1fr 28px;
         gap: 4px;
       }
+    }
 
     :root {
       --primary: #10b981;
@@ -513,6 +515,8 @@
       color: #38bdf8 !important;
     }
 
+
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -558,6 +562,7 @@
         border-radius: 36px;
         border: 3px solid #334155;
       }
+    }
 
     /* الشريط العلوي */
     .app-header {
@@ -1108,7 +1113,7 @@
     .summary-card.exp .summary-num { color: var(--expense); }
 
     /* شبكة أيقونات Monefy المحيطة */
-
+    
     /* =========================================================================
        التصميم الفاخر المنسق لشبكة بنود المصاريف (Luxurious Expense Categories)
        ========================================================================= */
@@ -1124,6 +1129,7 @@
         grid-template-columns: repeat(3, 1fr);
         gap: 8px;
       }
+    }
 
     .cat-card {
       background: rgba(15, 23, 42, 0.72);
@@ -1229,6 +1235,7 @@
       background: rgba(56, 189, 248, 0.15);
       transform: scale(1.02);
     }
+
 
     .cat-btn {
       background: var(--bg-card-sub);
@@ -1393,8 +1400,8 @@
     }
 
     .tx-row.exp { border-right-color: var(--expense); }
-    .tx-row.inc {
-      border-right-color: var(--income);
+    .tx-row.inc { 
+      border-right-color: var(--income); 
       background: linear-gradient(90deg, rgba(16, 185, 129, 0.08), var(--bg-card-sub));
     }
 
@@ -1831,6 +1838,7 @@
       gap: 5px;
     }
 
+    
     /* ==============================================
        تصميم الآلة الحاسبة الجانبية الصغيرة
        ============================================== */
@@ -2171,7 +2179,7 @@
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-
+  
     /* زر سجل النشاطات وزر Google Drive في الشريط العلوي */
     .activity-log-btn {
       background: rgba(14, 165, 233, 0.15) !important;
@@ -2477,7 +2485,7 @@
       box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
       transition: all 0.2s;
     }
-
+  
     .header-email-pill {
       display: inline-flex;
       align-items: center;
@@ -2496,7 +2504,7 @@
       border-color: #38bdf8;
       color: #38bdf8;
     }
-
+  
     /* ورقة كشف الحساب المحاسبي للطباعة و PDF */
     #printableStatementSheet {
       display: none;
@@ -2578,7 +2586,7 @@
       .print-kpi-card.inc strong { color: #15803d; }
       .print-kpi-card.exp strong { color: #be123c; }
       .print-kpi-card.net strong { color: #0369a1; }
-
+      
       .print-ledger-table {
         width: 100%;
         border-collapse: collapse;
@@ -2609,7 +2617,7 @@
       .print-ledger-table .debit-val { color: #be123c; font-weight: 800; direction: ltr; }
       .print-ledger-table .credit-val { color: #15803d; font-weight: 800; direction: ltr; }
       .print-ledger-table .running-val { color: #0f172a; font-weight: 900; direction: ltr; }
-
+      
       .print-footer-audit {
         display: flex;
         justify-content: space-between;
@@ -2623,7 +2631,8 @@
         size: A4 portrait;
         margin: 10mm;
       }
-
+    }
+  
     /* الشريط العلوي المعاد هيكلته بتناسق وفخامة تامة */
     .app-header {
       background: linear-gradient(180deg, #131c2e 0%, #0c121e 100%);
@@ -2912,6 +2921,7 @@
       margin-top: 4px;
     }
 
+  
     /* أنماط لوحة التحاليل والشارتات المفصلة المعاد بناؤها بالكامل */
         /* زر الإغلاق الدائري الفخم والواضح جداً للوحة التحليلات والنوافذ */
     .btn-analytics-close {
@@ -2951,6 +2961,7 @@
       .kpi-master-grid-lux {
         grid-template-columns: repeat(4, 1fr);
       }
+    }
 
     .kpi-tag-count {
       font-size: 0.68rem;
@@ -3078,6 +3089,7 @@
       justify-content: space-between;
       align-items: center;
     }
+
 
 .analytics-master-dialog {
       max-width: 720px;
@@ -3250,6 +3262,7 @@
       transition: width 0.5s ease;
     }
 
+  
     /* أنماط واجهة تسجيل الدخول وإنشاء الحساب وتأكيد الإيميل */
     .auth-tab-bar {
       display: flex;
@@ -3308,6 +3321,7 @@
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
 
+  
     /* صور الأشخاص الواقعية المحسنة */
     .avatar-bubble {
       overflow: hidden !important;
@@ -3337,6 +3351,7 @@
       vertical-align: middle;
       border: 1px solid rgba(255,255,255,0.2);
     }
+    
 
     /* =========================================================================
        تحسينات العرض المتجاوب على الجوال أندرويد والكمبيوتر
@@ -3418,6 +3433,8 @@
         align-items: flex-end !important;
         padding: 0 !important;
       }
+    }
+
 
     /* =========================================================================
        تصميم لوحة التحليل المالي والرقابة المحاسبية الذكية الفاخرة (Master Executive Analytics)
@@ -3739,6 +3756,7 @@
       object-fit: cover;
       display: block;
     }
+
 
     /* =========================================================================
        التصميم الاحترافي متعدد الصفحات للجوال (Multi-Page Mobile Architecture)
@@ -4632,6 +4650,7 @@
       outline: 2px solid rgba(255, 255, 255, 0.35) !important;
     }
 
+
     /* شريط الفترات في أعلى صفحة المصاريف */
     .period-selector-top-strip {
       margin: 8px 12px 10px;
@@ -4671,6 +4690,7 @@
       color: #ffffff;
       box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45);
     }
+
 
     /* زر الضبط الموحد في الهيدر الرئيسي */
     .header-settings-btn {
@@ -5241,6 +5261,7 @@
       .categories-monefy-grid {
         grid-template-columns: repeat(3, 1fr) !important;
       }
+    }
     .cat-card {
       padding: 7px 3px 6px !important;
       border-radius: 14px !important;
@@ -5321,6 +5342,7 @@
       white-space: nowrap !important;
       text-align: center !important;
     }
+
 
     /* شريط الأدوات المالي الاحترافي أسفل اختيار التاريخ */
     .sub-period-tools-bar {
@@ -5436,6 +5458,7 @@
       border-color: #7dd3fc;
       color: #0369a1;
     }
+
 
     /* ==============================================================
        أنماط الآلة الحاسبة الاحترافية العصرية (مطابقة للنموذج المطلوب)
@@ -5644,6 +5667,7 @@
       box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
     }
 
+
     /* =========================================================================
        نظام التجاوب الجوالي الشامل والمتقدم (Mobile Master Responsive Architecture)
        معالجة انعدام التمرير الأفقي تماماً (0px Horizontal Overflow) وتناسق الأرقام
@@ -5672,6 +5696,7 @@
         flex: 0 0 480px !important;
         width: 480px !important;
       }
+    }
 
     .app-header {
       width: 100% !important;
@@ -6054,6 +6079,7 @@
       min-width: 0 !important;
     }
 
+  
     /* =========================================================================
        تصميم الصفحة الأولى المتكامل بدون أي حاجة للتمرير الرأسي أو الأفقي
        (Zero-Scroll Single-View Architecture on Mobile)
@@ -6252,6 +6278,7 @@
       font-variant-numeric: tabular-nums !important;
     }
 
+
       /* شريط الإجراءات السريعة */
       .quick-actions-bar {
         padding: 0 8px 4px !important;
@@ -6350,7 +6377,9 @@
       .nav-tab-item.active i {
         transform: translateY(-2px) scale(1.15) !important;
       }
+    }
 
+  
     /* =========================================================================
        تنسيقات سجل الأرشيف والعمليات المتقدمة (Luxury Archive & Ledger Styling)
        ========================================================================= */
@@ -6450,6 +6479,7 @@
     .archive-amount.amt-inc { color: #10b981; }
     .archive-amount.amt-exp { color: #f43f5e; }
 
+  
     /* =========================================================================
        منتقي أفراد العائلة بالصور الحقيقية (Horizontal Avatar Reel)
        ========================================================================= */
@@ -6521,6 +6551,7 @@
       color: #38bdf8 !important;
     }
 
+  
     /* =========================================================================
        مقياس الخطوط المتناسق والمضغوط لجميع شاشات الجوال (Harmonious Mobile Scale)
        ========================================================================= */
@@ -6681,6 +6712,7 @@
       box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4) !important;
     }
 
+  
             /* =========================================================================
        محرك السمات وخلفيات التطبيق الحقيقية (Real Vibrant Multi-Color Themes Engine)
        تغيير لون خلفية شاشة التطبيق بالكامل وبشكل واضح وصريح وفخم
@@ -7465,6 +7497,7 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) !important;
     }
 
+
     /* منظومة أيقونات متناسقة راقية */
     [data-icon-theme="silver"] .nav-tab-item.active i,
     [data-icon-theme="silver"] .nav-tab-item.active .nav-tab-svg {
@@ -7877,6 +7910,7 @@
       border-color: #38bdf8 !important;
       box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35) !important;
     }
+  
 
     /* === MODERN FINTECH FONTS & LUXURY TYPOGRAPHY (v3.2.0) === */
     :root {
@@ -8483,6 +8517,7 @@
       color: #0284c7 !important;
     }
 
+  
     /* =========================================================================
        نظام التباين العالي الشامل للمظهر الفاتح (Master Light Theme System)
        ========================================================================= */
@@ -8899,13 +8934,13 @@
     .flow-title.outflow-color { color: #f87171 !important; }
     body.light-theme .flow-title.outflow-color { color: #b91c1c !important; }
 
-    .flow-amount {
-      font-weight: 900 !important;
-      font-variant-numeric: tabular-nums !important;
-      direction: ltr !important;
+    .flow-amount { 
+      font-weight: 900 !important; 
+      font-variant-numeric: tabular-nums !important; 
+      direction: ltr !important; 
       text-align: left !important;
       unicode-bidi: isolate !important;
-      font-size: clamp(0.72rem, 2.1vw, 0.85rem) !important;
+      font-size: clamp(0.72rem, 2.1vw, 0.85rem) !important; 
       line-height: 1.1 !important;
       letter-spacing: -0.2px !important;
       white-space: nowrap !important;
@@ -9005,6 +9040,7 @@
       color: #0284c7 !important;
     }
 
+
     /* تحسينات فائقة التباين للوضع الفاتح في نافذة الضبط */
     body.light-theme #settingsModal .settings-action-card,
     body.light-theme #settingsModal .app-card-panel {
@@ -9029,6 +9065,7 @@
       background: #f8fafc !important;
       border-bottom-color: #e2e8f0 !important;
     }
+
 
     /* ==========================================================
        Enhanced Commitments & Multi-Budget Styling
@@ -9128,6 +9165,7 @@
       box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
     }
 
+
     /* [Cleaned] Duplicate legacy dark card-style block removed to allow clean light theme cards */
     /* =========================================================================
        تحسين عرض نافذة تدقيق الرصيد الفعلي للشاشات والجوالات الذكية (Mobile Responsive)
@@ -9201,11 +9239,14 @@
       #auditLedgerTableContainer table {
         min-width: 620px !important;
       }
+    }
+
+
 
     /* =========================================================================
        منظومة أنماط وألوان الأيقونات الفاخرة (Comprehensive Icon Palettes)
        ========================================================================= */
-
+    
     /* =========================================================================
        نمط أزرار باليتات الأيقونات في مركز الضبط
        ========================================================================= */
@@ -9452,6 +9493,7 @@
     .fa, .fas, .far, .fal, .fad, .fab, .fa-solid, .fa-regular, .fa-brands, i[class*="fa-"] {
       font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
     }
+
 
     #taskDateTimePickerModal { z-index: 2000050 !important; }
 
@@ -9932,6 +9974,7 @@
       color: #ffffff !important;
     }
 
+  
     /* =========================================================================
        قمرة القيادة المالية وقسم الالتزامات التنفيذي المطور v5.3.89
        ========================================================================= */
@@ -10356,6 +10399,7 @@
       flex-direction: column !important;
     }
 
+  
     /* =========================================================================
        إصلاح جذري وشامل لألوان وتباين الكروت في كافة الأوضاع (فاتح / فيسبوك / داكن) v5.3.89
        ========================================================================= */
@@ -10518,6 +10562,7 @@
       border-color: #ced0d4 !important;
       color: #050505 !important;
     }
+
 
     /* =========================================================================
        شاشة الضبط بكامل طول وعرض الشاشة (Full Screen Settings View) v5.3.89
@@ -10897,6 +10942,7 @@
       border-color: #0284c7 !important;
     }
 
+
 /* =====================================================================
    FULL HEIGHT SETTINGS MODAL (بطول شاشة الهاتف بالكامل 100dvh)
    ===================================================================== */
@@ -10958,6 +11004,7 @@
   width: 100% !important;
   box-sizing: border-box !important;
 }
+
 
 /* =====================================================================
    HARMONIZED LIGHT THEME & ZERO BLACK CARDS FOR ANALYTICS (viewAnalytics)
@@ -11027,6 +11074,7 @@ body.light-theme .analytics-date-range-trigger {
   border: 1.5px solid #cbd5e1 !important;
 }
 
+
 /* =========================================================================
    6-ITEM BOTTOM NAVIGATION BAR TUNING (ضبط شريط التنقل السفلي السداسي)
    ========================================================================= */
@@ -11062,6 +11110,7 @@ body.light-theme .analytics-date-range-trigger {
   font-size: 1.15rem !important;
 }
 
+
 /* =========================================================================
    LIVE CATEGORY BUDGET CEILINGS & PULSE ANIMATION (سقوف الإنفاق الذكية والحية)
    ========================================================================= */
@@ -11075,6 +11124,7 @@ body.light-theme .analytics-date-range-trigger {
   100% {
     box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   }
+}
 
 .cat-card.budget-pulse-alert {
   animation: budgetPulseGlow 2s infinite ease-in-out !important;
@@ -11121,6 +11171,7 @@ body.light-theme .cat-budget-progress-track {
   direction: rtl;
   letter-spacing: -0.2px;
 }
+
 
     /* =========================================================================
        تخصيص المظهر الفاتح الشامل لشاشة المهام والمخطط والتقويم اليومي (Tasks Light Theme)
@@ -11410,6 +11461,7 @@ body.light-theme .cat-budget-progress-track {
       color: #475569 !important;
     }
 
+  
     /* =========================================================================
        جذر معالجة الألوان في الوضع الفاتح (Light Mode Master Contrast Fix) v5.3.89
        ========================================================================= */
@@ -11465,7 +11517,8 @@ body.light-theme .cat-budget-progress-track {
       color: #0f172a !important;
     }
 
-/* --- Sub-section: KPI & Categorization Styles --- */
+
+
     /* حاوية المحتوى الرئيسي وصفحة المصاريف لضمان عدم اختفاء أي جزء أسفل الشريط إطلاقاً */
     /* حاوية المحتوى الرئيسي وصفحة المصاريف لضمان عدم اختفاء أي جزء وملء مساحة الشاشة هندسياً دون فراغات */
     .app-scroll-body {
@@ -11825,7 +11878,7 @@ body.light-theme .cat-budget-progress-track {
       line-height: 1.2 !important;
       white-space: nowrap !important;
     }
-
+  
     /* تثبيت شريط أقسام التحليل ومنع أي اختفاء نهائياً */
     .analytics-section-nav {
       position: static !important;
@@ -11869,6 +11922,8 @@ body.light-theme .cat-budget-progress-track {
       box-shadow: 0 3px 12px rgba(2, 132, 199, 0.5) !important;
       font-weight: 900 !important;
     }
+
+  
 
     /* ==============================================================
        المظهر الفاتح الشامل المتناسق هندسياً وفائق الوضوح (v3.2.0)
@@ -12102,7 +12157,7 @@ body.light-theme .cat-budget-progress-track {
     body.light-theme .nav-tab-item.active svg {
       stroke: #0284c7 !important;
     }
-
+  
     /* ==============================================================
        الهوية البصرية الفاخرة (Executive FinTech Obsidian & Neon Palette v3.3.0)
        تثبيت هندسي صارم لشبكة المصاريف وأبعاد الكروت بدون أي تغيير عند تبديل المظهر
@@ -12209,6 +12264,8 @@ body.light-theme .cat-budget-progress-track {
     html[data-font-size="large"], body[data-font-size="large"] { font-size: 15.5px !important; --app-font-scale: 1.10 !important; }
     html[data-font-size="xlarge"], body[data-font-size="xlarge"] { font-size: 17px !important; --app-font-scale: 1.20 !important; }
     html[data-font-size="huge"], body[data-font-size="huge"] { font-size: 18.5px !important; --app-font-scale: 1.30 !important; }
+
+
 
     /* تكيف شبكة المصروفات */
     .categories-monefy-grid, #catGrid {
@@ -12520,6 +12577,7 @@ body.light-theme .cat-budget-progress-track {
         width: 36px !important;
         height: 36px !important;
       }
+    }
 
     /* 2. الشاشات الطويلة (Tall Screens: Android 915px+, height >= 860px) */
     @media (min-height: 860px) {
@@ -12527,6 +12585,7 @@ body.light-theme .cat-budget-progress-track {
         gap: 8px !important;
         margin: 4px 6px 8px !important;
       }
+    }
 
     /* 3. الشاشات العريضة (Tablets, iPads & Desktops: width >= 500px) */
     @media (min-width: 500px) {
@@ -12535,10 +12594,12 @@ body.light-theme .cat-budget-progress-track {
         border-radius: 28px !important;
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
       }
+    }
     @media (min-width: 768px) {
       .mobile-frame {
         max-width: min(580px, 92vw) !important;
       }
+    }
 
     /* كروت المؤشرات الثلاثية الأكبر والأكثر بروزاً ووضوحاً (Three KPI Master Cards) */
     .kpi-three-strip {
@@ -12663,6 +12724,7 @@ body.light-theme .cat-budget-progress-track {
     body.light-theme .kpi-three-card.card-balance .kpi-three-value {
       color: #0284c7 !important;
     }
+
 
     /* ================================================================
        Executive Commitments & Debts KPI Cockpit (كروت الالتزامات والديون الفاخرة)
@@ -12914,6 +12976,9 @@ body.light-theme .cat-budget-progress-track {
       color: #64748b !important;
     }
 
+
+    
+    
     /* خلفيات قمرة القيادة المالية المنسجمة 100% مع كافة سمات التطبيق الـ 9 */
     body.light-theme .kpi-master-wealth-cockpit,
     body.light-theme #topKpiThreeStrip,
@@ -14000,6 +14065,9 @@ body.light-theme .cat-budget-progress-track {
       min-width: 0 !important;
     }
 
+  
+
+
     /* =========================================================================
        أنماط الأدوات الجديدة v4.9.5: الدرج، الإشعارات، كروت الثيمات الفاخرة
        ========================================================================= */
@@ -14159,6 +14227,7 @@ body.light-theme .cat-budget-progress-track {
       color: #0f172a !important;
     }
 
+
     /* حماية صارمة لمنع تمدد شعار العائلة أو خروج إطار التطبيق عن الشاشة */
     body {
       overflow-x: hidden !important;
@@ -14199,6 +14268,7 @@ body.light-theme .cat-budget-progress-track {
       border-radius: 12px !important;
       display: block !important;
     }
+
 
     /* حماية صارمة لمنع تمدد القوائم الجانبية المغلقة لتفادي أي تمدد أفقي في المتصفح */
     .side-drawer-panel:not(.open) { display: none !important; }
@@ -14559,6 +14629,9 @@ body.light-theme .cat-budget-progress-track {
     .subtask-row-item.done {
       opacity: 0.72 !important;
     }
+  
+
+
     /* توحيد قراءة المبالغ في لوحة الصفحة الرئيسية مع عزل الأرقام عن اتجاه النص العربي */
     #viewExpenses .cockpit-hero-value,
     #viewExpenses .flow-amount,
@@ -14685,6 +14758,10 @@ body.light-theme .cat-budget-progress-track {
       position: relative !important;
       top: 0 !important;
     }
+    }
+  
+
+
     body[data-app-theme="facebook"] {
       --primary: #0866ff !important;
       --primary-dark: #075ce5 !important;
@@ -15125,6 +15202,8 @@ body.light-theme .cat-budget-progress-track {
       #settingsModal .theme-color-palette {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
       }
+    }
+
 
     /* light-theme cockpit card-style harmony: keep dashboard surfaces aligned with light and Facebook themes. */
     html[data-app-theme="light"][data-card-style="glass"] body.light-theme .kpi-master-wealth-cockpit,
@@ -15194,7 +15273,13 @@ body.light-theme .cat-budget-progress-track {
     html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .cockpit-divider { background: linear-gradient(180deg, transparent, #d6e2f1 30%, #d6e2f1 70%, transparent) !important; }
     html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme .kpi-master-wealth-cockpit, html[data-app-theme="facebook"][data-card-style="clear"] body.light-theme #topKpiThreeStrip { background: linear-gradient(135deg, #ffffff 0%, #f7faff 100%) !important; border: 1px solid #dbe5f1 !important; border-radius: 12px !important; box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 
+  
+
+
     /* Replaced with authoritative gold-market.css (v4.0 Antigravity) */
+  
+
+
     :root {
       --picker-accent: #6d5ce7;
       --picker-accent-strong: #5948c8;
@@ -15406,6 +15491,9 @@ body.light-theme .cat-budget-progress-track {
       background: rgba(244, 63, 94, 0.10) !important;
       border-color: rgba(244, 63, 94, 0.34) !important;
     }
+  
+
+
     #summaryLeftDrawer.summary-rebuilt-drawer {
       width: 100vw !important;
       max-width: 100vw !important;
@@ -15547,6 +15635,9 @@ body.light-theme .cat-budget-progress-track {
       .summary-member-btn { font-size: .57rem; }
       .summary-date-range-values { gap: 4px; font-size: .56rem; }
     }
+  
+
+
     :root { --appearance-accent-text:#7dd3fc; --appearance-swatch:#0f2d55; --appearance-card-bg:#17243a; --appearance-icon-surface:#24334b; }
     body:not(.light-theme) {
       --appearance-panel:#111b2c; --appearance-panel-soft:#17243a; --appearance-text:#f8fafc;
@@ -15730,7 +15821,7 @@ body.light-theme .cat-budget-progress-track {
       #settingsSec_appearance .theme-pill-option { font-size:.66rem !important; padding-inline:6px !important; }
       #settingsSec_appearance .settings-live-preview-value { font-size:.64rem; }
     }
-
+  
 /* =========================================================================
    تنسيقات الشاشة الكاملة للمهام بالوضع الفاتح لمنع سواد الكروت
    ========================================================================= */
@@ -15804,13 +15895,18 @@ body.light-theme #tasksFullScreenModal input#tasksSearchInput {
   color: #0f172a !important;
 }
 
-/* --- Sub-section: Project Budgets & Visual Harmony --- */
+
+
+
 .project-budget-field[hidden], .project-budget-note[hidden] { display: none !important; }
 .project-budget-field { margin-bottom: 12px; }
 .project-budget-field label { display: block; font-weight: 800; margin-bottom: 4px; }
 .project-budget-field small, .project-budget-status { font-size: .76rem; }
 .project-budget-create{width:100%;padding:12px;margin-bottom:12px;border:1px solid #0ea5e9;border-radius:12px;background:#0369a1;color:white;font:inherit;font-weight:800;display:flex;justify-content:center;align-items:center}
 .project-budget-analysis{padding:12px;margin-bottom:14px;border:1px solid #64748b55;border-radius:14px;color:inherit}.project-budget-analysis h3{font-size:1rem;margin:0 0 6px}.project-budget-analysis p,.project-budget-note{font-size:.75rem;opacity:.85;margin:6px 0 12px}.project-budget-result{padding:12px;margin-top:10px;border:1px solid #10b98166;border-radius:12px}.project-budget-result.over{border-color:#f87171}.project-budget-result header{display:flex;justify-content:space-between;gap:8px}.project-budget-result strong,.project-budget-result small{overflow-wrap:anywhere}.project-budget-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0;text-align:center;font-size:.73rem}.project-budget-metrics b{display:block;overflow-wrap:anywhere;font-size:.85rem;margin-top:5px}.project-budget-result progress{width:100%;height:8px;accent-color:#10b981}.project-budget-result.over progress{accent-color:#ef4444}
+
+
+
 
 /* =========================================================================
    Universal Anti-Black-Card Contrast Harmonization Engine (v5.3.89)
@@ -16065,6 +16161,9 @@ body.light-theme .analytics-date-range-trigger {
       --ledger-credit: #34d399 !important;
       --ledger-debit: #f43f5e !important;
     }
+  
+
+
   /* =====================================================================
      [v5.3.89] Fixes: Cockpit Flow Pills No-Clip, Modal Stacking & Card Contrast
      ===================================================================== */
@@ -16223,6 +16322,9 @@ body.light-theme .analytics-date-range-trigger {
     color: #b45309 !important;
     border: 1.2px solid rgba(217, 119, 6, 0.4) !important;
   }
+
+
+
     /* ==============================================================
        Master Overhaul v5.3.89: High-Contrast Light & Facebook Theme
        ============================================================== */
@@ -16332,6 +16434,10 @@ body.light-theme .analytics-date-range-trigger {
       border-color: #cbd5e1 !important;
       color: #334155 !important;
     }
+
+
+
+
 
 /* =========================================================================
    Summary Hierarchical Project & Bi-Directional Member Analysis (v5.3.89)
@@ -16464,6 +16570,9 @@ body.light-theme .summary-matrix-table tr.total-row td {
   color: #b45309 !important;
 }
 
+
+
+
 /* =========================================================================
    V5.3.83: Fullscreen Gold & FX Screen & Persistent Theme Background Overrides
    ========================================================================= */
@@ -16564,6 +16673,9 @@ body[data-app-theme="slate"], html[data-app-theme="slate"] body {
 body.light-theme[data-app-theme="slate"], html[data-app-theme="slate"] body.light-theme {
   background: radial-gradient(circle at 50% 0%, #f1f5f9 0%, #f8fafc 50%, #ffffff 100%) !important;
 }
+
+
+
 /* =========================================================================
    V5.3.84: Unified Layout Compact Optimization & Light Theme Contrast Fixes
    ========================================================================= */
@@ -16580,6 +16692,9 @@ html[data-color-mode="light"] body .chart-format-switcher-strip .btn-export-tool
   color: #475569 !important;
   background: transparent !important;
 }
+
+
+
 /* =========================================================================
    V5.3.85: Left Screen Edge Handle & Summary Fullscreen Toggle Docking
    ========================================================================= */
@@ -16599,6 +16714,9 @@ html[data-color-mode="light"] body .chart-format-switcher-strip .btn-export-tool
   border-radius: 0 12px 12px 0 !important;
   background: linear-gradient(135deg, #0284c7, #0369a1) !important;
 }
+
+
+
 /* =========================================================================
    V5.3.86: Gold & Currency Cards Typography & Formatting Luxury Tuning
    ========================================================================= */
@@ -16653,6 +16771,9 @@ body.light-theme .market-buy-price {
   font-size: 0.68rem !important;
   color: #94a3b8 !important;
 }
+
+
+
 /* =========================================================================
    V5.3.87: Compact Cockpit Strip at the Bottom & Ultra-Crisp Mobile Formatting
    ========================================================================= */
@@ -16691,7 +16812,18 @@ body.light-theme .market-buy-price {
   text-overflow: ellipsis !important;
 }
 
-/* --- Sub-section: Modals & Overlays --- */
+
+
+    /* Anti-FOUC rules applied synchronously before first paint */
+    html.has-alt-home-layout #catGrid { display: none !important; visibility: hidden !important; pointer-events: none !important; }
+    html.has-alt-home-layout #homeInterfaces { display: block !important; }
+    html:not(.has-alt-home-layout) #catGrid { display: grid !important; }
+    html:not(.has-alt-home-layout) #homeInterfaces { display: none !important; }
+    html.light-theme, html.light-theme body { background-color: #f8fafc !important; color: #0f172a !important; }
+    html:not(.light-theme), html:not(.light-theme) body { background-color: #090d16 !important; }
+  
+
+
         .btn-audit-mini {
           height: 27px !important;
           padding: 2px 9px !important;
@@ -16753,8 +16885,9 @@ body.light-theme .market-buy-price {
           border-radius: 3px;
           border: 1px solid rgba(56, 189, 248, 0.6);
         }
+      
 
-/* --- Sub-section: Fullscreen Settings Overrides --- */
+
 #settingsModal,
 #settingsModal.open,
 #settingsModal.modal-overlay,
