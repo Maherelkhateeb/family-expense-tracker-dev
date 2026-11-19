@@ -36,19 +36,19 @@
 #viewBudgets #cmpPeriodsFilterBox .cmp-month-custom-range[hidden],#viewBudgets #cmpPeriodChart [hidden]{display:none !important;}
 #viewBudgets #cmpPeriodChart #cmpSummary {margin:0}
 #viewBudgets #cmpPeriodChart #cmpSummary .cmp-unified-summary {
- display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;direction:rtl;}
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) !important;gap:5px !important;direction:rtl;}
 #viewBudgets #cmpSummary .cmp-unified-kpi {
- border:1px solid var(--uc-border);border-radius:11px;min-width:0;
- background:color-mix(in srgb,var(--bg-card,#fff) 86%,transparent);padding:9px 10px;
- display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;}
-#viewBudgets #cmpSummary .cmp-unified-kpi small {font-size:12px;line-height:1.3;color:var(--uc-muted);font-weight:800}
-#viewBudgets #cmpSummary .cmp-unified-kpi strong {display:block;max-width:100%;font-size:16px;
- font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:inherit;}
+ border:1px solid var(--uc-border, rgba(255,255,255,0.1));border-radius:8px !important;min-width:0;
+ background:color-mix(in srgb,var(--bg-card,#fff) 86%,transparent);padding:4px 5px !important;
+ display:flex;flex-direction:column;align-items:center !important;text-align:center !important;justify-content:center;gap:1px !important;min-height:44px !important;}
+#viewBudgets #cmpSummary .cmp-unified-kpi small {font-size:10px !important;line-height:1.15 !important;color:var(--uc-muted,#94a3b8);font-weight:800;white-space:nowrap !important;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+#viewBudgets #cmpSummary .cmp-unified-kpi strong {display:block;max-width:100%;font-size:13px !important;line-height:1.2 !important;
+ font-variant-numeric:tabular-nums;overflow-wrap:anywhere;color:inherit;font-weight:900;}
 #viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="red"] strong{color:#DC2626;}
 #viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="green"] strong{color:#16A34A;}
 #viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="blue"] strong{color:#0D9488;}
 #viewBudgets #cmpSummary .cmp-unified-kpi[data-tone="slate"] strong{color:inherit;}
-#viewBudgets #cmpSummary .cmp-difference-hint{margin:7px 3px 0;font-size:11px;line-height:1.5;color:var(--uc-muted)}
+#viewBudgets #cmpSummary .cmp-difference-hint{margin:4px 3px 0;font-size:10px;line-height:1.3;color:var(--uc-muted)}
 #viewBudgets #cmpPeriodChart .cmp-view-tools {display:flex !important;align-items:center;
  justify-content:space-between;gap:8px;flex-wrap:wrap;max-width:100%;padding:0;margin:0;}
 #viewBudgets #cmpPeriodChart .cmp-period-modes {display:flex;gap:5px;min-width:0;max-width:100%;
@@ -181,8 +181,8 @@
 #viewBudgets #cmpPeriodChart .cmp-view-tools[hidden]{display:none !important}
 
 
-/* 17 Nov 2026 — one phone-first financial oversight, no duplicated dashboards. */
-#viewBudgets #panelBudgetComparisons{display:block!important}
+/* Tab display for panelBudgetComparisons is governed dynamically by switchBudgetSubTab */
+#viewBudgets #panelBudgetComparisons[style*="display: none"]{display:none !important}
 #viewBudgets #cmpPeriodChart{padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;overflow:visible!important;width:100%!important;max-width:100%!important;min-width:0!important}
 /* Preserve original charts, date-range controls and historical comparison workspace. */
 #viewBudgets #cmpAuditApp,
@@ -399,30 +399,25 @@
   font-size: 11px; line-height: 1.35; font-weight: 700; color: var(--uc-muted, #94a3b8);
 }
 #viewBudgets #cmpProjSummary .cmp-unified-summary {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; direction: rtl;
-}
-@media (min-width: 780px) {
-  #viewBudgets #cmpProjSummary .cmp-unified-summary {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 5px !important; direction: rtl;
 }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi {
-  border: 1px solid var(--uc-border, rgba(255,255,255,0.1)); border-radius: 11px; min-width: 0;
-  background: color-mix(in srgb, var(--bg-card, #fff) 86%, transparent); padding: 9px 10px;
-  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px;
+  border: 1px solid var(--uc-border, rgba(255,255,255,0.1)); border-radius: 8px !important; min-width: 0;
+  background: color-mix(in srgb, var(--bg-card, #fff) 86%, transparent); padding: 4px 5px !important;
+  display: flex; flex-direction: column; align-items: center !important; text-align: center !important; justify-content: center; gap: 1px !important; min-height: 44px !important;
 }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi small {
-  font-size: 12px; line-height: 1.3; color: var(--uc-muted, #94a3b8); font-weight: 800;
+  font-size: 10px !important; line-height: 1.15 !important; color: var(--uc-muted, #94a3b8); font-weight: 800; white-space: nowrap !important; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi strong {
-  display: block; max-width: 100%; font-size: 16px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: inherit;
+  display: block; max-width: 100%; font-size: 13px !important; line-height: 1.2 !important; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; color: inherit; font-weight: 900;
 }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi[data-tone="red"] strong { color: #DC2626; }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi[data-tone="green"] strong { color: #16A34A; }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi[data-tone="blue"] strong { color: #0D9488; }
 #viewBudgets #cmpProjSummary .cmp-unified-kpi[data-tone="slate"] strong { color: inherit; }
 #viewBudgets #cmpProjSummary .cmp-difference-hint {
-  margin: 7px 3px 0; font-size: 11px; line-height: 1.5; color: var(--uc-muted, #94a3b8);
+  margin: 4px 3px 0; font-size: 10px; line-height: 1.3; color: var(--uc-muted, #94a3b8);
 }
 #viewBudgets #cmpProjPeriodChart .cmp-view-tools {
   display: flex !important; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; max-width: 100%; padding: 0; margin: 0;

@@ -1725,25 +1725,25 @@
            ========================================================== -->
       <div class="page-view" id="viewBudgets" style="display: none;">
         <!-- الهيدر الاستراتيجي المستقل لصفحة الميزانيات -->
-        <div class="expected-top-hero" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.98)); border: 1.2px solid rgba(16, 185, 129, 0.35); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 7px;">
-              <div style="width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; color: #34d399; flex-shrink: 0;">
+        <div class="expected-top-hero budget-top-hero" id="budgetTopHero" style="border-radius: 16px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: nowrap; gap: 6px; width: 100%;">
+            <div style="display: flex; align-items: center; gap: 7px; min-width: 0;">
+              <div style="width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.45); display: flex; align-items: center; justify-content: center; font-size: 0.90rem; color: #34d399; flex-shrink: 0;">
                 <i class="fa-solid fa-chart-pie"></i>
               </div>
-              <h2 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 4px;">
-                <span>مؤشرات الموازنات والرقابة المالية</span>
+              <h2 style="font-size: 0.90rem; font-weight: 900; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                <span id="budgetHeroTitle">الموازنات والرقابة</span>
               </h2>
             </div>
-            <!-- أزرار الإجراءات السريعة المصغرة للميزانيات (توفير المساحة) -->
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="min-height: 28px; height: auto; font-size: 0.72rem; padding: 4px 10px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); white-space: nowrap !important; flex-shrink: 0; line-height: 1.2;">
+            <!-- أزرار الإجراءات السريعة المصغرة للميزانيات (مصفوفة في نفس السطر على اليسار بدون نزول لسطر جديد) -->
+            <div style="display: flex; align-items: center; gap: 4px; flex-shrink: 0;">
+              <button type="button" onclick="openNewBudgetPlanModal()" class="btn-wallet-action-pill" style="min-height: 28px; height: auto; font-size: 0.70rem; padding: 4px 9px; background: linear-gradient(135deg, #10b981, #059669); border: 1px solid rgba(52, 211, 153, 0.45); color: #fff; font-weight: 900; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); white-space: nowrap !important; flex-shrink: 0; line-height: 1.2;">
                 <i class="fa-solid fa-plus" style="font-size: 0.65rem;"></i> <span style="white-space: nowrap !important;">خطة جديدة</span>
               </button>
-              <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 26px; font-size: 0.68rem; padding: 0 7px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-weight: 850; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px;" title="تصدير الموازنة إلى إكسيل (RTL)">
+              <button type="button" onclick="BudgetAuditEngine.exportBudgetToExcel()" class="btn-wallet-action-pill" style="height: 28px; font-size: 0.68rem; padding: 0 7px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #10b981; font-weight: 850; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;" title="تصدير الموازنة إلى إكسيل (RTL)">
                 <i class="fa-solid fa-file-excel" style="font-size: 0.68rem;"></i> <span>تصدير</span>
               </button>
-              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 26px; width: 28px; padding: 0; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); color: #94a3b8; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;" title="ملاحظات الميزانيات">
+              <button type="button" onclick="openNotesModal()" class="btn-wallet-action-pill" style="height: 28px; width: 28px; padding: 0; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #94a3b8; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;" title="ملاحظات الميزانيات">
                 <i class="fa-solid fa-book-open" style="font-size: 0.68rem;"></i>
               </button>
             </div>
@@ -1755,14 +1755,14 @@
           <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); white-space: nowrap;">
             <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
-          <button type="button" id="btnBudgetSubAudit" onclick="switchBudgetSubTab('audit')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;" title="الرقابة والتدقيق الجنائي">
-            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <span>الرقابة</span>
-          </button>
           <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
             <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>ميزان السيولة</span>
           </button>
           <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
+          </button>
+          <button type="button" id="btnBudgetSubAudit" onclick="switchBudgetSubTab('audit')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;" title="الرقابة والتدقيق الجنائي">
+            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <span>الرقابة</span>
           </button>
         </div>
 

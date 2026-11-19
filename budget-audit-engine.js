@@ -2091,7 +2091,7 @@ const BudgetCompareEngine = (() => {
     `;
 
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
-      '<div class="bs-grid">'+chartDeckHtml+table+'</div></div>';
+      '<div class="bs-grid">'+table+chartDeckHtml+'</div></div>';
   }
 
   // Five additional views generated for the compact chart deck

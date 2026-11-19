@@ -445,12 +445,15 @@
       const tabsContainer = document.getElementById('auditDeckTabs');
       if (!tabsContainer) return;
 
+      const isLight = document.body.classList.contains('light-theme');
       let html = '';
       PILLARS.forEach(p => {
         const isActive = (p.id === currentPillar);
         const bgStyle = isActive
-          ? `background: linear-gradient(135deg, ${p.themeColor}, #b91c1c); color: #fff; box-shadow: 0 2px 10px ${p.themeColor}55; border: 1.2px solid #fff;`
-          : `background: rgba(15, 23, 42, 0.7); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.12);`;
+          ? `background: linear-gradient(135deg, ${p.themeColor}, #b91c1c); color: #fff; box-shadow: 0 2px 10px ${p.themeColor}55; border: 1.2px solid ${p.themeColor};`
+          : (isLight
+            ? `background: #ffffff; color: #475569; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(0,0,0,0.05);`
+            : `background: rgba(15, 23, 42, 0.7); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.12);`);
 
         html += `
           <button type="button" 
@@ -479,27 +482,38 @@
       }
       stage.style.display = 'block';
 
+      const isLight = document.body.classList.contains('light-theme');
       const pillar = PILLARS.find(p => p.id === currentPillar) || PILLARS[0];
       const metrics = computeMetrics();
 
+      const stageBg = isLight ? '#ffffff' : 'rgba(15, 23, 42, 0.65)';
+      const stageBorder = isLight ? (pillar.borderColor || '#e2e8f0') : pillar.borderColor;
+      const stageShadow = isLight ? '0 4px 16px rgba(0,0,0,0.06)' : '0 4px 18px rgba(0,0,0,0.35)';
+      const titleColor = isLight ? '#0f172a' : '#f8fafc';
+      const subColor = isLight ? '#64748b' : '#94a3b8';
+      const borderDiv = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+      const badgeBg = isLight ? '#f1f5f9' : 'rgba(255,255,255,0.06)';
+      const badgeColor = isLight ? '#334155' : '#cbd5e1';
+      const badgeBorder = isLight ? '#cbd5e1' : 'rgba(255,255,255,0.12)';
+
       let html = `
-        <div class="pillar-stage-wrapper" style="background: rgba(15, 23, 42, 0.65); border: 1px solid ${pillar.borderColor}; border-radius: 14px; padding: 14px; margin-top: 4px; box-shadow: 0 4px 18px rgba(0,0,0,0.35);">
+        <div class="pillar-stage-wrapper" style="background: ${stageBg}; border: 1px solid ${stageBorder}; border-radius: 14px; padding: 14px; margin-top: 4px; box-shadow: ${stageShadow};">
           
           <!-- بطاقة عنوان المحور المميزة -->
-          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 10px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid ${borderDiv}; padding-bottom: 10px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 9px;">
               <div style="width: 36px; height: 36px; border-radius: 10px; background: ${pillar.accentBg}; border: 1px solid ${pillar.borderColor}; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; color: ${pillar.themeColor};">
                 <i class="${pillar.icon}"></i>
               </div>
               <div>
-                <h4 style="margin: 0; font-size: 0.94rem; font-weight: 900; color: #f8fafc;">
+                <h4 style="margin: 0; font-size: 0.94rem; font-weight: 900; color: ${titleColor};">
                   المحور ${pillar.id}: ${pillar.title}
                 </h4>
-                <p style="margin: 2px 0 0; font-size: 0.68rem; color: #94a3b8;">${pillar.subtitle}</p>
+                <p style="margin: 2px 0 0; font-size: 0.68rem; color: ${subColor};">${pillar.subtitle}</p>
               </div>
             </div>
             <div>
-              <span style="font-size: 0.68rem; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.12); font-weight: 850;">
+              <span style="font-size: 0.68rem; padding: 3px 8px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; font-weight: 850;">
                 ${pillar.questions.length} معايير تدقيق
               </span>
             </div>
@@ -515,11 +529,21 @@
         const formattedVal = (q.unit === 'ج.م' || q.unit === 'SAR')
           ? `<strong style="color: ${pillar.themeColor}; font-size: 1.05rem;">-${Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${q.unit}</strong>`
           : (q.unit === '%' || q.unit === 'x' || q.unit === 'أشهر')
-          ? `<strong style="color: #38bdf8; font-size: 1.05rem;">${val} ${q.unit}</strong>`
+          ? `<strong style="color: #0284c7; font-size: 1.05rem;">${val} ${q.unit}</strong>`
           : `<strong style="color: #10b981; font-size: 1.05rem;">${val} ${q.unit}</strong>`;
 
+        const cardBg = isLight ? '#f8fafc' : 'rgba(30, 41, 59, 0.7)';
+        const cardBorder = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+        const qTitleColor = isLight ? '#0f172a' : '#f8fafc';
+        const qDescColor = isLight ? '#475569' : '#94a3b8';
+        const formulaBarBg = isLight ? '#f1f5f9' : 'rgba(15, 23, 42, 0.8)';
+        const formulaBarBorder = isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.12)';
+        const formulaCodeBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+        const formulaCodeColor = isLight ? '#0369a1' : '#38bdf8';
+        const formulaTextColor = isLight ? '#334155' : '#cbd5e1';
+
         html += `
-          <div class="audit-question-card" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+          <div class="audit-question-card" style="background: ${cardBg}; border: 1px solid ${cardBorder}; border-radius: 12px; padding: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease;">
             
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
               <div style="flex: 1; min-width: 200px;">
@@ -527,11 +551,11 @@
                   <span style="font-size: 0.68rem; font-weight: 900; background: ${pillar.themeColor}; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
                     ${q.qNum}
                   </span>
-                  <h5 style="margin: 0; font-size: 0.85rem; font-weight: 850; color: #f8fafc; line-height: 1.35;">
+                  <h5 style="margin: 0; font-size: 0.85rem; font-weight: 850; color: ${qTitleColor}; line-height: 1.35;">
                     ${q.title}
                   </h5>
                 </div>
-                <div style="font-size: 0.66rem; color: #94a3b8; line-height: 1.4; padding-right: 26px;">
+                <div style="font-size: 0.66rem; color: ${qDescColor}; line-height: 1.4; padding-right: 26px;">
                   ${q.desc}
                 </div>
               </div>
@@ -546,14 +570,14 @@
             </div>
 
             <!-- شريط المعادلة المحاسبية وعتبة الإنذار -->
-            <div style="background: rgba(15, 23, 42, 0.8); border: 1px dashed rgba(255, 255, 255, 0.12); border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: #cbd5e1; flex-wrap: wrap; gap: 6px;">
+            <div class="audit-formula-box" style="background: ${formulaBarBg}; border: 1px dashed ${formulaBarBorder}; border-radius: 8px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.65rem; color: ${formulaTextColor}; flex-wrap: wrap; gap: 6px;">
               <div style="display: flex; align-items: center; gap: 5px;">
-                <span style="color: #fbbf24; font-weight: 900;">📐 المعادلة:</span>
-                <code style="background: rgba(255, 255, 255, 0.08); padding: 1px 6px; border-radius: 4px; font-family: monospace; color: #38bdf8; font-size: 0.64rem;">${q.formula}</code>
+                <span style="color: #d97706; font-weight: 900;">📐 المعادلة:</span>
+                <code style="background: ${formulaCodeBg}; padding: 1px 6px; border-radius: 4px; font-family: monospace; color: ${formulaCodeColor}; font-size: 0.64rem;">${q.formula}</code>
               </div>
               <div style="display: flex; align-items: center; gap: 4px;">
-                <span style="color: #94a3b8;">🎯 عتبة الأمان:</span>
-                <strong style="color: #34d399;">${q.threshold}</strong>
+                <span style="color: ${subColor};">🎯 عتبة الأمان:</span>
+                <strong style="color: #10b981;">${q.threshold}</strong>
               </div>
             </div>
 
@@ -565,18 +589,18 @@
           </div>
 
           <!-- شريط الإجراءات والتدقيق الفوري -->
-          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px solid ${borderDiv}; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div style="display: flex; align-items: center; gap: 5px;">
               <button type="button" 
                       onclick="BudgetAuditOversightEngine.prevPillar()" 
                       class="btn-wallet-action-pill" 
-                      style="height: 28px; padding: 0 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; font-size: 0.70rem; border-radius: 7px; cursor: pointer;">
+                      style="height: 28px; padding: 0 10px; background: ${badgeBg}; border: 1px solid ${badgeBorder}; color: ${badgeColor}; font-size: 0.70rem; border-radius: 7px; cursor: pointer;">
                 <i class="fa-solid fa-chevron-right"></i> المحور السابق
               </button>
               <button type="button" 
                       onclick="BudgetAuditOversightEngine.nextPillar()" 
                       class="btn-wallet-action-pill" 
-                      style="height: 28px; padding: 0 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; font-size: 0.70rem; border-radius: 7px; cursor: pointer;">
+                      style="height: 28px; padding: 0 10px; background: ${badgeBg}; border: 1px solid ${badgeBorder}; color: ${badgeColor}; font-size: 0.70rem; border-radius: 7px; cursor: pointer;">
                 المحور التالي <i class="fa-solid fa-chevron-left"></i>
               </button>
             </div>
