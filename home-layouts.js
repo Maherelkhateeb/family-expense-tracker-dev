@@ -288,32 +288,33 @@
 
     switch (currentLayout) {
       case 1: { // 1 column, 10 rows (9 categories + voice)
-        gap = 3;
-        cardH = Math.floor((availableH - (9 * gap) - 6) / 10);
-        cardH = Math.max(42, Math.min(50, cardH));
+        gap = Math.max(3, Math.min(6, Math.floor((availableH - (10 * 46)) / 9)));
+        cardH = Math.floor((availableH - (9 * gap) - 4) / 10);
+        cardH = Math.max(44, Math.min(60, cardH));
         break;
       }
       case 2: { // Hero analytics + 2 columns, 5 rows
-        gap = 4;
-        const heroH = Math.max(62, Math.min(76, Math.floor(availableH * 0.17)));
+        gap = 5;
+        const heroH = Math.max(64, Math.min(78, Math.floor(availableH * 0.17)));
         const remainingForGrid = availableH - heroH - (4 * gap) - 6;
         cardH = Math.floor(remainingForGrid / 5);
-        cardH = Math.max(70, Math.min(96, cardH));
+        cardH = Math.max(72, Math.min(104, cardH));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
       case 3: { // 2 columns, 5 rows (10 cards)
-        gap = 4;
+        gap = 5;
         cardH = Math.floor((availableH - (4 * gap) - 4) / 5);
-        cardH = Math.max(74, Math.min(106, cardH));
+        cardH = Math.max(76, Math.min(115, cardH));
         break;
       }
       case 4: { // 3 columns, 3 rows + 1 voice banner
-        gap = 4;
-        const voiceStripH = 42;
-        const availableForCards = availableH - voiceStripH - gap - 4;
-        cardH = Math.floor((availableForCards - (2 * gap)) / 3);
-        cardH = Math.max(82, Math.min(124, cardH));
+        gap = 5;
+        const voiceStripH = Math.max(46, Math.min(52, Math.floor(availableH * 0.10)));
+        const availableForCards = availableH - voiceStripH - (3 * gap) - 4;
+        cardH = Math.floor(availableForCards / 3);
+        cardH = Math.max(96, Math.min(155, cardH));
+        container.style.setProperty('--dynamic-home-voice-height', `${voiceStripH}px`);
         break;
       }
       case 5: // Radial Cockpit
@@ -321,16 +322,16 @@
       case 7: // HUD Sensor Tiles
       case 8: // Diamond Crystals
       default: {
-        const voiceBarH = 42;
-        const arenaH = Math.max(260, Math.min(460, availableH - voiceBarH - gap - 4));
+        const voiceBarH = 44;
+        const arenaH = Math.max(300, Math.min(500, availableH - voiceBarH - gap - 4));
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
       }
       case 9: { // Spectrum Equalizer with Member Chart
         const voiceBarH = 42;
-        const memberChartH = 108;
-        const arenaH = Math.max(150, Math.min(240, availableH - memberChartH - voiceBarH - (gap * 2)));
+        const memberChartH = 92;
+        const arenaH = Math.max(160, Math.min(240, availableH - memberChartH - voiceBarH - (gap * 2)));
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
@@ -1132,10 +1133,10 @@
     const arenaH = Math.max(260, Math.min(460, availableH - voiceBarH - 8));
     const centerY = Math.floor(arenaH / 2);
 
-    const satSize = 80; // قطر كبسولات البنود المدارية
-    const satHalf = 40;
+    const satSize = 84; // قطر كبسولات البنود المدارية
+    const satHalf = 42;
     const maxRadiusByH = Math.floor((arenaH - satSize - 12) / 2);
-    const radius = Math.max(110, Math.min(136, maxRadiusByH));
+    const radius = Math.max(115, Math.min(145, maxRadiusByH));
 
     const isLight = isThemeLight();
 
@@ -1238,12 +1239,12 @@
     const container = document.getElementById('homeInterfaces');
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 400) : 400;
     const voiceBarH = 42;
-    const arenaH = Math.max(260, Math.min(440, availableH - voiceBarH - 8));
+    const arenaH = Math.max(340, Math.min(480, availableH - voiceBarH - 8));
 
-    // أعمدة متموضعة بدقة حول نقطة المنتصف 50% لمنع الانحياز لليسار نهائياً
-    // عرض الخلية 112px، الإزاحات الأفقية: يسار -176px، وسط -56px، يمين +64px
-    const colOffsets = [-176, -56, 64];
-    const rowTops = [6, 102, 198];
+    // أعمدة متموضعة بدقة حول نقطة المنتصف 50% مع تكبير الخلايا وتوسيعها لتملأ الشاشة
+    // عرض الخلية 118px، الإزاحات الأفقية: يسار -183px، وسط -59px، يمين +65px
+    const colOffsets = [-183, -59, 65];
+    const rowTops = [8, 126, 244];
 
     const cellsHtml = catKeys.map((catId, idx) => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#10b981', iconClass: 'fa-solid fa-cube', pastelBg: '#ecfdf5' };
@@ -1264,18 +1265,18 @@
       const trackBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)';
 
       return `
-        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:calc(50% + ${leftOffset}px); top:${topPos}px; width:112px; height:96px;">
-          <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
-            <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
+        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:calc(50% + ${leftOffset}px); top:${topPos}px; width:118px; height:108px;">
+          <svg class="hex-svg" viewBox="0 0 118 108" style="position:absolute; width:100%; height:100%; pointer-events:none;">
+            <polygon points="59,3 115,29 115,79 59,105 3,79 3,29" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 10px ${cat.color}55);" />
           </svg>
-          <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:2px;">
+          <div style="position:relative; z-index:2; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:4px; gap:3px;">
             <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="تسجيل سريع في ${cat.name}">
-              <div style="color:${cat.color}; font-size:1.10rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
-              <span style="font-size:0.68rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:86px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+              <div style="color:${cat.color}; font-size:1.25rem; margin-top:-2px;"><i class="${cat.iconClass}"></i></div>
+              <span style="font-size:0.74rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
             </button>
             <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
-              <span style="font-size:0.72rem; font-weight:900; color:${amtColor}; direction:ltr;">${amtText}</span>
-              <div style="width:34px; height:3px; background:${trackBg}; border-radius:2px; overflow:hidden;">
+              <span style="font-size:0.78rem; font-weight:950; color:${amtColor}; direction:ltr;">${amtText}</span>
+              <div style="width:42px; height:3.5px; background:${trackBg}; border-radius:2px; overflow:hidden;">
                 <div style="width:${hasSpent ? pct : 0}%; height:100%; background:${cat.color}; border-radius:2px;"></div>
               </div>
             </button>
@@ -1306,7 +1307,7 @@
     return `
       <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;max-width:460px;margin:0 auto;align-items:center;">
         <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:${arenaH}px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-          <div style="position:relative; width:100%; height:306px; margin:0 auto;">${cellsHtml}</div>
+          <div style="position:relative; width:100%; height:360px; margin:0 auto;">${cellsHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1414,8 +1415,8 @@
 
       return `
         <div class="diamond-wrapper hl-l8-item">
-          <div class="hl-dia-card" style="width:94px; height:94px; background:${diaBg}; border:${diaBorder}; border-radius:22px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
-            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:112px; gap:1px;">
+          <div class="hl-dia-card" style="width:102px; height:102px; background:${diaBg}; border:${diaBorder}; border-radius:24px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
+            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:120px; gap:2px;">
               <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
                 <div style="color:${cat.color}; font-size:1.30rem;"><i class="${cat.iconClass}"></i></div>
                 <span style="font-size:0.70rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
@@ -1510,10 +1511,10 @@
         <div class="hl-l9-member-chart-box">
           <div class="hl-l9-chart-title-strip">
             <div style="display:flex; align-items:center; gap:6px;">
-              <i class="fa-solid fa-users-viewfinder" style="color:#38bdf8; font-size:0.85rem;"></i>
-              <span style="font-size:0.74rem; font-weight:850; color:#f8fafc;">توزيع المصروفات حسب أفراد الأسرة</span>
+              <i class="fa-solid fa-users-viewfinder" style="color:${isLight ? '#0284c7' : '#38bdf8'}; font-size:0.85rem;"></i>
+              <span style="font-size:0.74rem; font-weight:850; color:${isLight ? '#0f172a' : '#f8fafc'};">توزيع المصروفات حسب أفراد الأسرة</span>
             </div>
-            <span style="font-size:0.62rem; color:#38bdf8; font-weight:700;">انقر على أي فرد لعرض عملياته</span>
+            <span style="font-size:0.62rem; color:${isLight ? '#0284c7' : '#38bdf8'}; font-weight:700;">انقر على أي فرد لعرض عملياته</span>
           </div>
           <div class="hl-l9-member-grid">
             ${memberPills}
@@ -1548,13 +1549,13 @@
 
       return `
         <div class="eq-column hl-l9-col">
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.62rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; white-space:nowrap;">${amtText}</span>
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;margin-bottom:3px;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.64rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; white-space:nowrap; display:block;">${amtText}</span>
           </button>
           <button type="button" data-action="view-operations" data-cat-id="${catId}" class="hl-l9-track-btn" style="background:${trackBg}; border:${trackBorder};" title="عرض حركات ${cat.name} (${pct}%)">
             ${barFillHtml}
           </button>
-          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="تسجيل سريع في ${cat.name}">
+          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:3px;" title="تسجيل سريع في ${cat.name}">
             <div style="width:26px; height:26px; border-radius:8px; ${badgeStyle} display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
               <i class="${cat.iconClass}"></i>
             </div>
@@ -1597,11 +1598,11 @@
       <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%; max-width:460px; margin:0 auto; align-items:center;">
         ${memberChartHtml}
         <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:4px 10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:5px 10px; margin-bottom:8px;">
             <span style="font-size:0.72rem; font-weight:800; color:${headerColor}; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
             <span style="font-size:0.65rem; color:${subColor};">انقر الأيقونة للإدخال، والعمود لعرض الحركات</span>
           </div>
-          <div class="hl-l9-bars-wrap" style="background:${barsWrapBg}; border:${barsWrapBorder};">
+          <div class="hl-l9-bars-wrap" style="background:${barsWrapBg}; border:${barsWrapBorder}; padding:8px 4px 6px; margin:0;">
             ${columnsHtml}
           </div>
         </div>
