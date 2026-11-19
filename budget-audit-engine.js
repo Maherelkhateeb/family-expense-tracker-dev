@@ -2817,6 +2817,39 @@ const ProjectCompareEngine = (() => {
   let _sortMode = 'spend'; // 'spend', 'delta', 'name'
   let _chartDough = null, _chartGrouped = null, _chartMembers = null, _chartSCurve = null;
 
+  // حالة منصة الرسوم البيانية التفاعلية المدمجة للمشاريع (1–8)
+  let activeProjChartTab = 1;
+  let isProjChartDeckCollapsed = false;
+
+  const PROJ_CHARTS_DECK_META = [
+    { id: 1, name: 'الهيكل WBS', fullName: '1. هيكل تكاليف المشروع حسب البنود (WBS)', icon: 'fa-chart-pie', tip: 'توزيع مصروفات المشروع الحقيقية على حزم العمل' },
+    { id: 2, name: 'المقارنة', fullName: '2. مقارنة المعتمد بالفعلي لكل بند (Grouped Bar)', icon: 'fa-chart-column', tip: 'مقارنة مباشرة بين التكلفة المعتمدة والمنصرف الفعلي' },
+    { id: 3, name: 'الشلال', fullName: '3. شلال الفروقات وتدرج التكاليف (Waterfall)', icon: 'fa-water', tip: 'شلال انتقال مالي من سقف الميزانية إلى صافي التكلفة الحالية' },
+    { id: 4, name: 'الانحراف', fullName: '4. أعمدة الانحراف والوفورات الموقعة', icon: 'fa-arrows-left-right-to-line', tip: 'تحديد دقيق لحجم واتجاه انحراف كل بند' },
+    { id: 5, name: 'الرصاصة', fullName: '5. مخطط الرصاصة لاستنفاد الميزانية', icon: 'fa-bullseye', tip: 'قياس نسبة استهلاك سقف الميزانية مقارنة بالحد 100%' },
+    { id: 6, name: 'التراكم S-Curve', fullName: '6. مسار الصرف التراكمي للمشروع (S-Curve)', icon: 'fa-chart-line', tip: 'المنحنى التراكمي الزمني لتدفق مصروفات المشروع' },
+    { id: 7, name: 'الأفراد', fullName: '7. مساهمات أفراد العائلة في المشروع', icon: 'fa-users', tip: 'توزيع المبالغ المنصرفة حسب من سدد التكلفة' },
+    { id: 8, name: 'المكدس 100%', fullName: '8. التوزيع النسبي لحصص بنود المشروع (100% Stacked)', icon: 'fa-layer-group', tip: 'الوزن النسبي والمئوي لكل بند من إجمالي الموازنة' }
+  ];
+
+  function selectProjChartTab(chartNum) {
+    activeProjChartTab = Math.max(1, Math.min(8, parseInt(chartNum, 10) || 1));
+    isProjChartDeckCollapsed = false;
+    render();
+  }
+
+  function toggleProjChartDeck() {
+    isProjChartDeckCollapsed = !isProjChartDeckCollapsed;
+    const stage = document.getElementById('cmpProjDeckStage');
+    const btnIcon = document.getElementById('cmpProjDeckToggleIcon');
+    const btnLabel = document.getElementById('cmpProjDeckToggleLabel');
+    if (stage) stage.classList.toggle('is-collapsed', isProjChartDeckCollapsed);
+    if (btnIcon && btnLabel) {
+      btnIcon.className = isProjChartDeckCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+      btnLabel.textContent = isProjChartDeckCollapsed ? 'عرض الرسم' : 'طي الرسم';
+    }
+  }
+
   function pad(n) { return String(n).padStart(2, '0'); }
   function formatDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
 
@@ -3627,7 +3660,9 @@ const ProjectCompareEngine = (() => {
     onReferenceChange,
     switchMode,
     onSortChange,
-    closeAndArchiveProject
+    closeAndArchiveProject,
+    selectProjChartTab,
+    toggleProjChartDeck
   };
 })();
 
