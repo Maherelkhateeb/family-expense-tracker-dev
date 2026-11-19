@@ -21,6 +21,9 @@
   <!-- Early CSS Customization Restorer to prevent FOUS -->
   <!-- Early CSS Customization & Visual Harmony Engine -->
   <script src="./app-early.js?v=20261119"></script>
+  <!-- High-Capacity IndexedDB & Google Drive Cloud Sync Engines -->
+  <script src="./indexeddb-engine.js?v=20261119"></script>
+  <script src="./drive-sync-engine.js?v=20261119"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- المكتبات: SheetJS للإكسيل و Chart.js للشارتات التوضيحية -->
@@ -41,6 +44,7 @@
   <script src="./family-alerts.js?v=202611181705"></script>
   <script src="./family-budget-comparison.js?v=202611181705"></script>
   <script src="./budget-audit-engine.js?v=202611181835"></script>
+  <script src="./budget-audit-oversight.js?v=202611191100"></script>
   <link rel="stylesheet" href="./comparison-unified.css?v=202611181835">
   <link rel="stylesheet" href="./family-alerts.css?v=202611181705">
 <style>
@@ -1747,14 +1751,17 @@
         </div>
 
         <!-- شريط تبويب داخلي منسق لقسم الميزانيات -->
-        <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 6px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 12px;">
-          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);">
+        <div class="budgets-sub-tab-strip" id="budgetsSubTabStrip" style="display: flex; gap: 6px; background: rgba(15, 23, 42, 0.85); padding: 5px; border-radius: 12px; border: 1px solid rgba(56, 189, 248, 0.25); margin-bottom: 12px; overflow-x: auto;">
+          <button type="button" id="btnBudgetSubCurrent" onclick="switchBudgetSubTab('current')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: linear-gradient(135deg, #10b981, #059669); color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35); white-space: nowrap;">
             <i class="fa-solid fa-calendar-check"></i> <span>موازنة الشهر</span>
           </button>
-          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+          <button type="button" id="btnBudgetSubAudit" onclick="switchBudgetSubTab('audit')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;" title="الرقابة والتدقيق الجنائي">
+            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <span>الرقابة</span>
+          </button>
+          <button type="button" id="btnBudgetSubComparisons" onclick="switchBudgetSubTab('comparisons')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
             <i class="fa-solid fa-scale-balanced" style="color: #fbbf24;"></i> <span>ميزان السيولة</span>
           </button>
-          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; padding: 9px 5px; border-radius: 9px; font-size: 0.76rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+          <button type="button" id="btnBudgetSubProjects" onclick="switchBudgetSubTab('projects')" style="flex: 1; min-width: 78px; padding: 9px 5px; border-radius: 9px; font-size: 0.74rem; font-weight: 900; background: transparent; color: #94a3b8; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
             <i class="fa-solid fa-trowel-bricks" style="color: #38bdf8;"></i> <span>المشاريع</span>
           </button>
         </div>
@@ -2010,6 +2017,49 @@
           </div> <!-- إغلاق panelBudgetArchiveMonthly -->
 
 </div> <!-- إغلاق panelMonthlyBudget -->
+
+        <!-- ==========================================================
+             لوحة الرقابة والتدقيق المالي الذكي (panelBudgetAudit)
+             ========================================================== -->
+        <div id="panelBudgetAudit" class="app-card-panel" style="display: none; background: rgba(30, 41, 59, 0.7); border: 1.2px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
+          <!-- رأس لوحة الرقابة -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(185, 28, 28, 0.15)); border: 1px solid rgba(239, 68, 68, 0.45); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; color: #f87171;">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <div>
+                <h3 style="font-size: 0.95rem; font-weight: 900; color: #f8fafc; margin: 0; display: flex; align-items: center; gap: 6px;">
+                  <span>منظومة الرقابة المالية والتدقيق الجنائي</span>
+                  <span style="font-size: 0.65rem; background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.35); padding: 1px 7px; border-radius: 999px; font-weight: 850;">6 محاور • 20 معياراً</span>
+                </h3>
+                <p style="font-size: 0.68rem; color: #94a3b8; margin: 2px 0 0;">كشف الهدر، حماية التدفقات، وتدقيق العمليات وسلوك الإنفاق</p>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button type="button" onclick="if(window.BudgetAuditOversightEngine) BudgetAuditOversightEngine.render();" class="btn-wallet-action-pill" style="height: 28px; font-size: 0.70rem; padding: 0 10px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; font-weight: 850; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="إعادة تشغيل التدقيق الحسابي">
+                <i class="fa-solid fa-arrows-rotate"></i> <span>إعادة تدقيق</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط الرقابة المدمج: اختيار المحور 1 - 6 مع زر الطي والفتح في نفس المكان -->
+          <div class="audit-deck-toolbar" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 12px; padding: 6px 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap;">
+            <!-- شريط الأرقام 1 إلى 6 -->
+            <div class="audit-deck-tabs" id="auditDeckTabs" role="tablist" aria-label="محاور الرقابة المالية الستة" style="display: flex; gap: 4px; overflow-x: auto; flex: 1; min-width: 240px; padding: 2px 0;">
+              <!-- تُنشأ أزرار 1 إلى 6 ديناميكياً بواسطة المحرك -->
+            </div>
+            <!-- زر طي / فتح المحور في نفس الموضع -->
+            <button type="button" id="btnToggleAuditDeck" onclick="BudgetAuditOversightEngine.toggleDeck()" class="btn-deck-toggle" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; font-size: 0.70rem; font-weight: 900; padding: 5px 11px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; transition: all 0.2s ease;">
+              <span id="txtToggleAuditDeck">🔼 طي المحور</span>
+            </button>
+          </div>
+
+          <!-- مسرح المحور النشط (Single-Stage Deck) -->
+          <div id="auditDeckStage" style="display: block; transition: max-height 0.3s ease, opacity 0.3s ease;">
+            <!-- المحتوى الداخلي للمحور المختار يُرسم هنا -->
+          </div>
+        </div>
 
         <!-- ==========================================================
              2. لوحة موازنات المشاريع المستقلة (panelProjectBudgets)
@@ -3177,7 +3227,7 @@
       </div>
     </div>
 
-    <div class="modal-overlay modal-overlay-custom" id="googleDriveSyncModal">
+    <div class="modal-overlay modal-overlay-custom" id="driveSyncModal">
       <div class="modal-content-card" style="max-width: 480px; border-radius: 20px; padding: 16px 18px;">
         
         <!-- الرأس -->
@@ -3191,7 +3241,7 @@
               
             </div>
           </div>
-          <button class="btn-close-drawer" onclick="closeModal('googleDriveSyncModal')">&times;</button>
+          <button class="btn-close-drawer" onclick="closeModal('driveSyncModal')">&times;</button>
         </div>
 
         <!-- كارت الحالة السحابية اللحظية والموازنة الرياضية -->
@@ -3333,60 +3383,6 @@
     <!-- ==============================================================
          نافذة Google Drive والتشغيل المستقل بدون إنترنت (Drive & Offline Modal)
          ============================================================== -->
-    <div class="modal-overlay modal-overlay-custom" id="driveSyncModal">
-      <div class="modal-dialog-card drive-modal-dialog">
-        <div class="activity-modal-header" style="background: rgba(34, 197, 94, 0.1);">
-          <div class="activity-header-info">
-            <i class="fa-brands fa-google-drive" style="color: #22c55e; font-size: 1.4rem;"></i>
-            <div>
-              <div class="activity-header-title">المزامنة عبر Google Drive والعمل أوفلاين</div>
-              
-            </div>
-          </div>
-          <button class="modal-close-btn" onclick="closeModal('driveSyncModal')">&times;</button>
-        </div>
-
-        <div style="padding: 16px 20px; overflow-y: auto; max-height: 75vh;">
-          <!-- بطاقة 1: حفظ نسخة على Google Drive -->
-          <div class="drive-section-card">
-            <div class="drive-card-title">
-              <i class="fa-solid fa-cloud-arrow-up" style="color: #22c55e;"></i>
-              <span>1. حفظ نسخة احتياطية على Google Drive</span>
-            </div>
-
-            <button class="drive-action-btn-green" onclick="backupToGoogleDrive()">
-              <i class="fa-brands fa-google-drive"></i>
-              <span>حفظ ومزامنة فورية على Google Drive</span>
-            </button>
-          </div>
-
-          <!-- بطاقة 2: استرجاع نسخة من Google Drive -->
-          <div class="drive-section-card">
-            <div class="drive-card-title">
-              <i class="fa-solid fa-cloud-arrow-down" style="color: #38bdf8;"></i>
-              <span>2. استرجاع بياناتك من Google Drive</span>
-            </div>
-
-            <input type="file" id="inpDriveFile" accept=".json" style="display: none;" onchange="handleRestoreDriveFile(event)">
-            <button class="drive-action-btn-blue" onclick="document.getElementById('inpDriveFile').click()">
-              <i class="fa-solid fa-folder-open"></i>
-              <span>اختيار ملف النسخة واسترجاعها الآن</span>
-            </button>
-          </div>
-
-          <!-- بطاقة 3: التشغيل الأوفلاين الدائم كبرنامج هاتف أصلي -->
-          <div class="drive-section-card">
-            <div class="drive-card-title">
-              <i class="fa-solid fa-mobile-screen-button" style="color: #a855f7;"></i>
-              <span>3. العمل الدائم على الجوال بدون إنترنت وبدون GitHub</span>
-            </div>
-
-            <button class="drive-action-btn-purple" onclick="downloadOfflineAppHtml()">
-              <i class="fa-solid fa-download"></i>
-              <span>تحميل ملف التطبيق الكامل للتشغيل المستقل (Offline File)</span>
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 

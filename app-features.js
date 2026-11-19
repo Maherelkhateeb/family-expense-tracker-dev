@@ -3209,16 +3209,18 @@ window.addBudgetItem = addBudgetItemToCurrentPlan;
       activeBudgetSubTab = tab;
       window.activeBudgetSubTab = tab;
       const bCurr = document.getElementById('btnBudgetSubCurrent');
+      const bAudit = document.getElementById('btnBudgetSubAudit');
       const bProj = document.getElementById('btnBudgetSubProjects');
       const bComp = document.getElementById('btnBudgetSubComparisons');
       const bHist = document.getElementById('btnBudgetSubHistory');
 
       const secCurr = document.getElementById('panelMonthlyBudget');
+      const secAudit = document.getElementById('panelBudgetAudit');
       const secProj = document.getElementById('panelProjectBudgets');
       const secComp = document.getElementById('panelBudgetComparisons');
       const secHist = document.getElementById('panelBudgetHistory');
 
-      [bCurr, bProj, bComp, bHist].forEach(b => {
+      [bCurr, bAudit, bProj, bComp, bHist].forEach(b => {
         if (b) {
           b.classList.remove('active');
           b.setAttribute('aria-pressed', 'false');
@@ -3227,11 +3229,23 @@ window.addBudgetItem = addBudgetItemToCurrentPlan;
           b.style.boxShadow = 'none';
         }
       });
-      [secCurr, secProj, secComp, secHist].forEach(s => {
+      [secCurr, secAudit, secProj, secComp, secHist].forEach(s => {
         if (s) s.style.display = 'none';
       });
 
-      if (tab === 'projects') {
+      if (tab === 'audit') {
+        if (bAudit) {
+          bAudit.classList.add('active');
+          bAudit.setAttribute('aria-pressed', 'true');
+          bAudit.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+          bAudit.style.color = '#fff';
+          bAudit.style.boxShadow = '0 2px 8px rgba(239, 68, 68, 0.35)';
+        }
+        if (secAudit) secAudit.style.display = 'block';
+        if (window.BudgetAuditOversightEngine && typeof BudgetAuditOversightEngine.render === 'function') {
+          BudgetAuditOversightEngine.render();
+        }
+      } else if (tab === 'projects') {
         if (bProj) {
           bProj.classList.add('active');
           bProj.setAttribute('aria-pressed', 'true');
