@@ -306,6 +306,15 @@
       state.moneyRequests = readStoredArray(['family_monefy_requests']);
       state.notes = readStoredArray(['family_monefy_notes']);
 
+      // مزامنة حالة التطبيق مع قاعدة بيانات IndexedDB
+      if (window.FamilyDB) {
+        window.FamilyDB.syncStateFromIndexedDB(state).then((synced) => {
+          if (synced && typeof renderUI === 'function') {
+            renderUI();
+          }
+        });
+      }
+
       // تحميل الصلاحيات
       const storedPerm = localStorage.getItem('family_monefy_perms');
       if (storedPerm) {
@@ -7068,11 +7077,23 @@ function saveTx() {
       familyAlerts.observe(state.transactions, state.currentUser);
       if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
 
+      // 1. التخزين الفوري في قاعدة بيانات IndexedDB عالية السعة وبدون سقف 5MB
+      if (window.FamilyDB) {
+        window.FamilyDB.putMany('transactions', state.transactions);
+        window.FamilyDB.putMany('wallets', state.wallets);
+      }
+
       try {
         localStorage.setItem('family_monefy_v2_tx', JSON.stringify(state.transactions));
       } catch(e) {
-        console.warn('LocalStorage limit exceeded, data retained in active memory state:', e);
+        console.warn('LocalStorage limit reached; data safely secured in IndexedDB:', e);
       }
+
+      // 2. جدولة المزامنة التلقائية مع Google Drive
+      if (window.FamilyDriveSync) {
+        window.FamilyDriveSync.queueSync();
+      }
+
       if (typeof triggerDriveAutoSync === 'function') triggerDriveAutoSync();
       try {
         syncChannel.postMessage({

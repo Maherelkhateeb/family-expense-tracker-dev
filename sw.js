@@ -1,8 +1,10 @@
 // Service Worker for Family Expense Tracker (Offline First & PWA)
-const CACHE_NAME = 'family-expense-v6.7.4-decoupled-20261119';
+const CACHE_NAME = 'family-expense-v6.7.5-sync-indexeddb-20261119';
 const STATIC_ASSETS = [
   './',
   './index.html',
+  './indexeddb-engine.js?v=20261119',
+  './drive-sync-engine.js?v=20261119',
   './app-main.css?v=20261119',
   './app-early.js?v=20261119',
   './app-core.js?v=20261119',

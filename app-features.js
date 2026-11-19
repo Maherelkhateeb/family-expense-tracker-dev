@@ -258,6 +258,11 @@
         showToast('🔄 جاري التحديث الشامل: فحص النسخة + موازنة الحسابات + تحديث أسعار الذهب...', 'info', 3000);
       }
 
+      // المزامنة الفورية الذكية مع Google Drive و IndexedDB
+      if (window.FamilyDriveSync) {
+        window.FamilyDriveSync.executeSync(isManual);
+      }
+
       try {
         // 1. فحص النسخة الجديدة وتحديث كاش المتصفح (PWA Cache & App Update)
         let remoteBuild = null;
@@ -6957,19 +6962,23 @@ window.handleAddNewTask = handleAddNewTask;
 
 // 8. GOOGLE DRIVE SYNC & BACKUPS
 async function executeGoogleDriveSync(isManual = false) {
-  try {
-    const payload = {
-      version: 'v5.3.89',
-      timestamp: new Date().toISOString(),
-      state: state
-    };
-    localStorage.setItem('family_monefy_drive_backup', JSON.stringify(payload));
-    localStorage.setItem('last_master_sync_time', new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }));
-    if (isManual && typeof showToast === 'function') {
-      showToast('تمت مزامنة البيانات السحابية و Google Drive بنجاح ✓', 'success');
+  if (window.FamilyDriveSync) {
+    window.FamilyDriveSync.executeSync(isManual);
+  } else {
+    try {
+      const payload = {
+        version: 'v6.7.4',
+        timestamp: new Date().toISOString(),
+        state: state
+      };
+      localStorage.setItem('family_monefy_drive_backup', JSON.stringify(payload));
+      localStorage.setItem('last_master_sync_time', new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }));
+      if (isManual && typeof showToast === 'function') {
+        showToast('تمت مزامنة البيانات السحابية و Google Drive بنجاح ✓', 'success');
+      }
+    } catch(e) {
+      console.warn('Google Drive sync notice:', e);
     }
-  } catch(e) {
-    console.warn('Google Drive sync notice:', e);
   }
 }
 window.executeGoogleDriveSync = executeGoogleDriveSync;
