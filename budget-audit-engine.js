@@ -2178,7 +2178,7 @@ const BudgetCompareEngine = (() => {
     `;
 
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
-      '<div class="bs-grid">'+table+chartDeckHtml+'</div></div>';
+      '<div class="bs-grid">'+chartDeckHtml+'</div></div>';
   }
 
   // Five additional views generated for the compact chart deck
@@ -2905,11 +2905,11 @@ const ProjectCompareEngine = (() => {
   let _activeProject = '';
   let _actualPeriod = 'all'; // Default: total project lifetime
   let _referencePeriod = 'plan'; // Default: approved project plan
-  let _viewMode = 'table'; // 'table', 'paired', 'change', 'charts'
+  let _viewMode = 'charts'; // Default to unified charts deck
   let _sortMode = 'spend'; // 'spend', 'delta', 'name'
   let _chartDough = null, _chartGrouped = null, _chartMembers = null, _chartSCurve = null;
 
-  // حالة منصة الرسوم البيانية التفاعلية المدمجة للمشاريع (1–9)
+  // حالة منصة الرسوم البيانية التفاعلية المدمجة للمشاريع (1–11)
   let activeProjChartTab = 1;
   let isProjChartDeckCollapsed = false;
   let _currentProjChartsMap = {};
@@ -2921,14 +2921,16 @@ const ProjectCompareEngine = (() => {
     { id: 3, name: 'الشلال', fullName: '3. شلال الفروقات وتدرج التكاليف (Waterfall)', icon: 'fa-water', tip: 'شلال انتقال مالي من سقف الميزانية إلى صافي التكلفة الحالية' },
     { id: 4, name: 'الانحراف', fullName: '4. أعمدة الانحراف والوفورات الموقعة', icon: 'fa-arrows-left-right-to-line', tip: 'تحديد دقيق لحجم واتجاه انحراف كل بند' },
     { id: 5, name: 'الرصاصة', fullName: '5. مخطط الرصاصة لاستنفاد الميزانية', icon: 'fa-bullseye', tip: 'قياس نسبة استهلاك سقف الميزانية مقارنة بالحد 100%' },
-    { id: 6, name: 'التراكم S-Curve', fullName: '6. مسار الصرف التراكمي للمشروع (S-Curve)', icon: 'fa-chart-line', tip: 'المنحنى التراكمي الزمني لتدفق مصروفات المشروع' },
+    { id: 6, name: 'التراكم S', fullName: '6. مسار الصرف التراكمي للمشروع (S-Curve)', icon: 'fa-chart-line', tip: 'المنحنى التراكمي الزمني لتدفق مصروفات المشروع' },
     { id: 7, name: 'الأفراد', fullName: '7. مساهمات أفراد العائلة في المشروع', icon: 'fa-users', tip: 'توزيع المبالغ المنصرفة حسب من سدد التكلفة' },
-    { id: 8, name: 'المكدس 100%', fullName: '8. التوزيع النسبي لحصص بنود المشروع (100% Stacked)', icon: 'fa-layer-group', tip: 'الوزن النسبي والمئوي لكل بند من إجمالي الموازنة' },
-    { id: 9, name: 'فروق البنود', fullName: '9. الفروق حسب بنود المشروع', icon: 'fa-scale-balanced', tip: 'مقارنة تفصيلية لفروق المعتمد والفعلي لكل بند في المشروع بالكروت المدمجة' }
+    { id: 8, name: 'المكدس %', fullName: '8. التوزيع النسبي لحصص بنود المشروع (100% Stacked)', icon: 'fa-layer-group', tip: 'الوزن النسبي والمئوي لكل بند من إجمالي الموازنة' },
+    { id: 9, name: 'فروق البنود', fullName: '9. الفروق حسب بنود المشروع', icon: 'fa-scale-balanced', tip: 'مقارنة تفصيلية لفروق المعتمد والفعلي لكل بند في المشروع بالكروت المدمجة' },
+    { id: 10, name: 'الأعمدة', fullName: '10. أعمدة المقارنة المزدوجة (المعتمد vs الفعلي)', icon: 'fa-chart-column', tip: 'أعمدة المقارنة المزدوجة الأفقية بين المعتمد والفعلي لكل بند' },
+    { id: 11, name: 'التغيّر', fullName: '11. انحراف وتغير البنود عن المعتمد', icon: 'fa-arrows-split-up-and-left', tip: 'انحراف وتغير بنود المشروع ونسب الوفر أو التجاوز' }
   ];
 
   function selectProjChartTab(chartNum) {
-    activeProjChartTab = Math.max(1, Math.min(9, parseInt(chartNum, 10) || 1));
+    activeProjChartTab = Math.max(1, Math.min(11, parseInt(chartNum, 10) || 1));
     isProjChartDeckCollapsed = false;
     renderActiveProjChartOnly();
   }
@@ -3008,7 +3010,20 @@ const ProjectCompareEngine = (() => {
   }
 
   function switchMode(mode) {
-    _viewMode = mode;
+    if (mode === 'paired') {
+      _viewMode = 'charts';
+      activeProjChartTab = 10;
+      isProjChartDeckCollapsed = false;
+    } else if (mode === 'change') {
+      _viewMode = 'charts';
+      activeProjChartTab = 11;
+      isProjChartDeckCollapsed = false;
+    } else {
+      _viewMode = mode;
+      if (mode === 'charts') {
+        isProjChartDeckCollapsed = false;
+      }
+    }
     const strip = document.getElementById('cmpProjModes');
     if (strip) {
       strip.querySelectorAll('button[data-proj-mode]').forEach(btn => {
@@ -3017,11 +3032,8 @@ const ProjectCompareEngine = (() => {
         btn.setAttribute('aria-pressed', String(active));
       });
     }
-    if (mode === 'charts') {
-      isProjChartDeckCollapsed = false;
-    }
     render();
-    if (mode === 'charts') {
+    if (_viewMode === 'charts') {
       const deck = document.getElementById('cmpProjChartsDeck');
       if (deck) {
         const stage = document.getElementById('cmpProjDeckStage');
@@ -3676,6 +3688,78 @@ const ProjectCompareEngine = (() => {
         </section>
       `;
 
+      const chart10Html = `
+        <section class="bs-panel bs-full" style="background: rgba(15,23,42,0.7); border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 0.85rem; font-weight: 850; color: #38bdf8; margin: 0;"><i class="fa-solid fa-chart-column"></i> 10. أعمدة المقارنة المزدوجة (المعتمد vs الفعلي)</h3>
+            <div style="display: flex; gap: 12px; font-size: 0.72rem;">
+              <span style="display: flex; align-items: center; gap: 4px; color: #fbbf24;"><i style="display:inline-block;width:10px;height:10px;background:#fbbf24;border-radius:2px;"></i> المعتمد</span>
+              <span style="display: flex; align-items: center; gap: 4px; color: #38bdf8;"><i style="display:inline-block;width:10px;height:10px;background:#38bdf8;border-radius:2px;"></i> الفعلي</span>
+            </div>
+          </div>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+            ${wbsRows.map((r, idx) => {
+              const actPct = (r.actAmt / maxVal) * 100;
+              const estPct = (r.estAmt / maxVal) * 100;
+              return `
+                <li style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 850; margin-bottom: 4px;">
+                    <span style="color: #f8fafc;"><span style="color: #38bdf8; margin-left: 4px;">#${idx+1}</span> ${r.name}</span>
+                    <div style="display: flex; gap: 10px; font-size: 0.72rem; direction: ltr;">
+                      <span style="color: #38bdf8; font-weight: 900;">فعلي: ${formatVal(r.actAmt)}</span>
+                      <span style="color: #fbbf24; font-weight: 900;">معتمد: ${formatVal(r.estAmt)}</span>
+                    </div>
+                  </div>
+                  <div style="height: 16px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 2px;">
+                    <div style="width: ${Math.min(100, estPct)}%; height: 5px; background: #fbbf24; border-radius: 2px;" title="المعتمد: ${formatVal(r.estAmt)}"></div>
+                    <div style="width: ${Math.min(100, actPct)}%; height: 5px; background: #38bdf8; border-radius: 2px;" title="الفعلي: ${formatVal(r.actAmt)}"></div>
+                  </div>
+                </li>
+              `;
+            }).join('')}
+          </ul>
+          ${chartExplanation("مقارنة شريطية أفقية بين المنصرف الفعلي والميزانية المعتمدة لكل بند من بنود المشروع.", "الشريط الذهبي يمثل التكلفة المعتمدة في دراسة المشروع والشريط السماوي يمثل الصرف الفعلي الحقيقي.")}
+        </section>
+      `;
+
+      const chart11Html = `
+        <section class="bs-panel bs-full" style="background: rgba(15,23,42,0.7); border: 1px solid var(--uc-border, rgba(255,255,255,0.08)); border-radius: 12px; padding: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 0.85rem; font-weight: 850; color: #38bdf8; margin: 0;"><i class="fa-solid fa-arrows-split-up-and-left"></i> 11. انحراف وتغير البنود عن المعتمد</h3>
+            <div style="display: flex; gap: 12px; font-size: 0.72rem;">
+              <span style="display: flex; align-items: center; gap: 4px; color: #10b981;"><i style="display:inline-block;width:10px;height:10px;background:#10b981;border-radius:2px;"></i> وفر متبقي (+)</span>
+              <span style="display: flex; align-items: center; gap: 4px; color: #ef4444;"><i style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:2px;"></i> تجاوز سقف (-)</span>
+            </div>
+          </div>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            ${wbsRows.map((r, idx) => {
+              const isOver = r.diff < 0;
+              const widthPct = (Math.abs(r.diff) / maxDelta) * 100;
+              const barColor = isOver ? '#ef4444' : '#10b981';
+              const bg = isOver ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.15)';
+              return `
+                <li style="background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 8px 10px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span style="font-size: 0.78rem; font-weight: 850; color: #f8fafc;"><span style="color: #38bdf8; margin-left: 4px;">#${idx+1}</span> ${r.name}</span>
+                    <span style="font-size: 0.74rem; font-weight: 950; color: ${barColor}; direction: ltr; padding: 2px 6px; border-radius: 5px; background: ${bg};">
+                      ${r.diff > 0 ? '+' : ''}${formatVal(r.diff)}
+                    </span>
+                  </div>
+                  <div style="height: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; overflow: hidden;">
+                    <div style="width: ${Math.min(100, widthPct)}%; height: 100%; background: ${barColor}; border-radius: 4px;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: #94a3b8; margin-top: 4px; direction: ltr;">
+                    <span>الفعلي: ${formatVal(r.actAmt)}</span>
+                    <span>المعتمد: ${formatVal(r.estAmt)}</span>
+                  </div>
+                </li>
+              `;
+            }).join('')}
+          </ul>
+          ${chartExplanation("قياس اتجاه ومقدار انحراف كل بند عن السقف التقديري المعتمد للمشروع.", "الأشرطة الخضراء تعني وفراً متبقياً في البند، والأشرطة الحمراء تعني تجاوزاً وسحبًا إضافياً من الميزانية.")}
+        </section>
+      `;
+
       _currentProjChartsMap = {
         1: chart1Html,
         2: chart2Html,
@@ -3685,7 +3769,9 @@ const ProjectCompareEngine = (() => {
         6: chart6Html,
         7: chart7Html,
         8: chart8Html,
-        9: chart9Html
+        9: chart9Html,
+        10: chart10Html,
+        11: chart11Html
       };
       _wbsRowsCached = wbsRows;
       _memberActualsCached = memberActuals;
@@ -3729,17 +3815,17 @@ const ProjectCompareEngine = (() => {
       `;
 
       let mainHtml = '';
-      if (_viewMode === 'paired') {
+      if (_viewMode === 'charts') {
+        mainHtml = chartDeckHtml;
+      } else if (_viewMode === 'paired') {
         mainHtml = pairedHtml;
       } else if (_viewMode === 'change') {
         mainHtml = changeHtml;
-      } else if (_viewMode === 'charts') {
-        mainHtml = '';
       } else {
         mainHtml = tableHtml;
       }
 
-      container.innerHTML = mainHtml + chartDeckHtml;
+      container.innerHTML = mainHtml;
       renderProjectCharts(wbsRows, memberActuals, allProjTxs, approvedBudget);
     }
 
