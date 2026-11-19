@@ -1319,6 +1319,7 @@
      ========================================================================= */
   function renderLayout7SensorTiles(totals, budgets, currSymbol, isGold) {
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
+    const isLight = isThemeLight();
 
     const tilesHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#38bdf8', iconClass: 'fa-solid fa-shapes', rgb: '56,189,248', pastelBg: '#f0f9ff' };
@@ -1326,32 +1327,47 @@
       const budget = budgets[catId] || 1500;
       const hasSpent = spent > 0;
       const pct = (hasSpent && budget > 0) ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
-      const ledColor = hasSpent ? (pct > 90 ? '#ef4444' : (pct > 65 ? '#f59e0b' : '#10b981')) : '#334155';
-      const amtColor = hasSpent ? '#fca5a5' : '#64748b';
+      const ledColor = hasSpent ? (pct > 90 ? '#ef4444' : (pct > 65 ? '#f59e0b' : '#10b981')) : (isLight ? '#94a3b8' : '#334155');
+      
+      // ألوان واضحة ومشبعة غير باهتة:
+      const amtColor = hasSpent ? (isLight ? '#b91c1c' : '#f87171') : (isLight ? '#334155' : '#64748b');
       const amtText = hasSpent ? `-${formatMoney(spent)}` : '0';
       const barFillWidth = (hasSpent && pct > 0) ? Math.min(pct, 100) : 0;
 
+      // دائرة الأيقونة: في الوضع الفاتح تدرج غني مشبع بألوان التصنيف الفاقعة
+      const iconCircleStyle = isLight
+        ? `background: linear-gradient(135deg, ${cat.color}, ${cat.color}dd) !important; color: #ffffff !important; border: 1.5px solid ${cat.color} !important; box-shadow: 0 3px 8px ${cat.color}55 !important;`
+        : `background: ${cat.color}22 !important; color: ${cat.color} !important; border: 1.2px solid ${cat.color}55 !important; box-shadow: 0 0 10px ${cat.color}33 !important;`;
+
+      const tileBorder = isLight ? `2px solid ${cat.color}` : `1.8px solid ${cat.color}`;
+      const tileBg = isLight
+        ? `linear-gradient(150deg, #ffffff 0%, ${cat.pastelBg || '#f8fafc'} 100%)`
+        : `linear-gradient(160deg, rgba(${cat.rgb || '56,189,248'}, 0.24) 0%, rgba(20, 30, 48, 0.92) 50%, rgba(10, 18, 30, 0.98) 100%)`;
+      const tileShadow = isLight
+        ? `0 4px 14px rgba(0,0,0,0.06), 0 0 10px rgba(${cat.rgb || '56,189,248'}, 0.18)`
+        : `0 4px 16px rgba(0, 0, 0, 0.45), 0 0 12px rgba(${cat.rgb || '56,189,248'}, 0.30)`;
+
       return `
-        <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color}; --tile-color-pastel: ${cat.pastelBg || '#ffffff'}; --cat-rgb: ${cat.rgb || '56,189,248'};">
+        <div class="sensor-tile hl-l7-tile" style="--tile-color: ${cat.color}; --tile-color-pastel: ${cat.pastelBg || '#ffffff'}; --cat-rgb: ${cat.rgb || '56,189,248'}; background: ${tileBg} !important; border: ${tileBorder} !important; box-shadow: ${tileShadow} !important;">
           <!-- 1. شريط الحساس العلوي: لمبة LED + النسبة المئوية -->
           <div class="sensor-tile-top" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض حركات ${cat.name} (${pct}%)">
-            <span class="sensor-pct" style="color:${hasSpent ? '#94a3b8' : '#64748b'};">${pct}%</span>
+            <span class="sensor-pct" style="color:${isLight ? '#334155' : (hasSpent ? '#94a3b8' : '#64748b')}; font-weight:900 !important;">${pct}%</span>
             <span class="sensor-dot" style="background: ${ledColor}; box-shadow: ${hasSpent ? '0 0 7px ' + ledColor : 'none'};"></span>
           </div>
 
           <!-- 2. موضع تسجيل المصروف: الأيقونة الدائرية المتوهجة -->
           <button type="button" class="sensor-icon-circle-btn" data-action="quick-add" data-cat-id="${catId}" title="تسجيل مصروف جديد في ${cat.name}">
-            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.2px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33;">
+            <div class="sensor-icon-circle" style="${iconCircleStyle}">
               <i class="${cat.iconClass}"></i>
             </div>
           </button>
 
           <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
           <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
-            <span class="sensor-title">${cat.name}</span>
-            <div class="sensor-divider" style="width:80%; height:2.2px; background:${cat.color} !important; opacity:0.95; margin:4px auto; border-radius:2px; display:block !important;"></div>
-            <span class="sensor-val" style="color:${amtColor}; direction:ltr;">${amtText}</span>
-            <div class="sensor-bar">
+            <span class="sensor-title" style="color:${isLight ? '#0f172a' : '#f8fafc'}; font-weight:900 !important;">${cat.name}</span>
+            <div class="sensor-divider" style="width:80%; height:2.4px; background:${cat.color} !important; opacity:1 !important; margin:3px auto; border-radius:2px; display:block !important;"></div>
+            <span class="sensor-val" style="color:${amtColor} !important; direction:ltr; font-weight:950 !important;">${amtText}</span>
+            <div class="sensor-bar" style="background:${isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.12)'};">
               <div class="sensor-bar-fill" style="width: ${barFillWidth}%; background: ${cat.color}; box-shadow: ${barFillWidth > 0 ? '0 0 6px ' + cat.color + 'aa' : 'none'};"></div>
             </div>
           </div>
@@ -1359,15 +1375,19 @@
       `;
     }).join('');
 
+    const voiceBtnBg = isLight ? 'linear-gradient(135deg, rgba(2,132,199,0.12) 0%, rgba(99,102,241,0.16) 100%)' : 'linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%)';
+    const voiceBorder = isLight ? '#0284c7' : '#38bdf8';
+    const voiceTextColor = isLight ? '#0369a1' : '#e0f2fe';
+
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceTextColor};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
-            <span style="font-size:0.75rem;font-weight:850;color:#f8fafc;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
+            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
+            <span style="font-size:0.75rem;font-weight:850;color:${isLight ? '#0f172a' : '#f8fafc'};">إضافة صوتية للمصروفات (HUD Telemetry)</span>
           </div>
           <div style="width:100px;display:flex;align-items:center;">
-            ${getAudioWaveHtml('#38bdf8')}
+            ${getAudioWaveHtml(voiceBorder)}
           </div>
           <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#38bdf8;"></i>
         </button>
@@ -1549,17 +1569,19 @@
 
       return `
         <div class="eq-column hl-l9-col">
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;margin-bottom:3px;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.64rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; white-space:nowrap; display:block;">${amtText}</span>
-          </button>
+          <div style="height:18px; display:flex; align-items:center; justify-content:center; margin-bottom:2px;">
+            <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:inline-block;" title="عرض حركات ${cat.name}">
+              <span style="font-size:0.62rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; white-space:nowrap; display:block;">${amtText}</span>
+            </button>
+          </div>
           <button type="button" data-action="view-operations" data-cat-id="${catId}" class="hl-l9-track-btn" style="background:${trackBg}; border:${trackBorder};" title="عرض حركات ${cat.name} (${pct}%)">
             ${barFillHtml}
           </button>
-          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:3px;" title="تسجيل سريع في ${cat.name}">
+          <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:2px;" title="تسجيل سريع في ${cat.name}">
             <div style="width:26px; height:26px; border-radius:8px; ${badgeStyle} display:flex; align-items:center; justify-content:center; font-size:0.80rem;">
               <i class="${cat.iconClass}"></i>
             </div>
-            <span style="font-size:0.62rem; font-weight:850; color:${nameColor}; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
+            <span style="font-size:0.60rem; font-weight:850; color:${nameColor}; white-space:nowrap; text-align:center;">${cat.name.split(' ')[0]}</span>
             <span style="font-size:0.56rem; font-weight:900; color:${hasSpent ? cat.color : (isLight ? '#94a3b8' : '#64748b')};">${pct}%</span>
           </button>
         </div>
@@ -1571,11 +1593,11 @@
     const voiceText = isLight ? '#0369a1' : '#e0f2fe';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 4px;width:100%;box-sizing:border-box;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:38px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
-            <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Spectrum Audio)</span>
+            <i class="fa-solid fa-microphone" style="font-size:0.90rem;color:${voiceBorder};"></i>
+            <span style="font-size:0.72rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Spectrum Audio)</span>
           </div>
           <div style="width:100px;display:flex;align-items:center;">
             ${getAudioWaveHtml(voiceBorder)}
@@ -1595,14 +1617,14 @@
     const barsWrapBorder = isLight ? '1px solid #e2e8f0' : '1px solid rgba(56, 189, 248, 0.15)';
 
     return `
-      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%; max-width:460px; margin:0 auto; align-items:center;">
+      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%; max-width:460px; margin:0 auto; align-items:center; gap:4px; box-sizing:border-box;">
         ${memberChartHtml}
-        <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:5px 10px; margin-bottom:8px;">
-            <span style="font-size:0.72rem; font-weight:800; color:${headerColor}; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
-            <span style="font-size:0.65rem; color:${subColor};">انقر الأيقونة للإدخال، والعمود لعرض الحركات</span>
-          </div>
-          <div class="hl-l9-bars-wrap" style="background:${barsWrapBg}; border:${barsWrapBorder}; padding:8px 4px 6px; margin:0;">
+        <div class="hl-l9-header-strip" style="width:100%; display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:10px; padding:4px 10px; box-sizing:border-box; margin:0;">
+          <span style="font-size:0.70rem; font-weight:850; color:${headerColor}; display:flex; align-items:center; gap:5px;"><i class="fa-solid fa-chart-simple"></i> مدرج التردد المالي</span>
+          <span style="font-size:0.62rem; color:${subColor};">انقر الأيقونة للإدخال، والعمود لعرض الحركات</span>
+        </div>
+        <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:14px; padding:4px 6px; width:100%; box-sizing:border-box;">
+          <div class="hl-l9-bars-wrap" style="background:${barsWrapBg}; border:${barsWrapBorder}; padding:6px 4px 4px; margin:0; width:100%; box-sizing:border-box;">
             ${columnsHtml}
           </div>
         </div>
