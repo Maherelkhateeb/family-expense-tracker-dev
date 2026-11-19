@@ -275,8 +275,8 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v6.7.1';
-    var APP_BUILD_ID = 202611191010;
+    var APP_VERSION = 'v6.7.3';
+    var APP_BUILD_ID = 202611191035;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
@@ -28311,7 +28311,10 @@ showToast(`👤 تم تصفية العرض على: ${memberDisplayName}`);
       renderUI();
       
       filterOperationsList();
-      showToast(`✅ تم حفظ ${currentModalType === 'income' ? 'الدخل' : 'المصروف'} بنجاح: ${amount} ج.م`);
+      const opTypeName = currentModalType === 'income' ? 'إثبات دخل' : 'مصروف';
+      const catOrLabel = (newTx.label && newTx.label !== 'مصروف' && newTx.label !== 'دخل') ? newTx.label : (typeof getCategoryName === 'function' ? getCategoryName(newTx.category) : newTx.category);
+      const currSym = (state.currency === 'SAR') ? 'ر.س' : (state.currency === 'GOLD21' ? 'جرام' : 'ج.م');
+      showToast(`✅ تم تسجيل عملية ${opTypeName} (${catOrLabel}) بقيمة ${formatMoney(amount)} ${currSym} بنجاح`, 'success', 4500);
     }
 
     function deleteTx(id) {
@@ -29642,7 +29645,9 @@ function saveTx() {
       });
 
       renderRequestsList();
-      showToast(`💌 تم إرسال طلب المصروف بنجاح (${formatMoney(amount)}) وتوزيعه بالكامل!`);
+      const currSym = (state.currency === 'SAR') ? 'ر.س' : (state.currency === 'GOLD21' ? 'جرام' : 'ج.م');
+      const reqReason = reason || member || 'طلب مالي';
+      showToast(`💌 تم تسجيل عملية طلب أموال (${reqReason}) بقيمة ${formatMoney(amount)} ${currSym} بنجاح`, 'success', 4500);
       triggerDriveAutoSync();
     }
 
@@ -29976,7 +29981,12 @@ function saveTx() {
       playNotificationChime();
       renderExpectedList();
       switchExpectedTab('list');
-      showToast(`📌 تم تسجيل الالتزام (${formatMoney(amount)}) بنجاح! ✨`);
+      const currSym = (state.currency === 'SAR') ? 'ر.س' : (state.currency === 'GOLD21' ? 'جرام' : 'ج.م');
+      let expTypeName = 'التزام مالي';
+      if (type === 'debt_on_us') expTypeName = 'إثبات دين علينا';
+      else if (type === 'debt_for_us') expTypeName = 'إثبات دين لنا طرف';
+      else if (type === 'upcoming_bill') expTypeName = 'فاتورة';
+      showToast(`📌 تم تسجيل عملية ${expTypeName} (${title}) بقيمة ${formatMoney(amount)} ${currSym} بنجاح ✨`, 'success', 4500);
       triggerDriveAutoSync();
     }
 
@@ -38780,7 +38790,7 @@ function handleQuickTaskAdd() {
     updateTasksProductivityKPIs();
     hideUnifiedTaskCreator();
     const subtaskSummary = draftSubtasks.length === 1 ? ' مع خطوة فرعية' : draftSubtasks.length === 2 ? ' مع خطوتين فرعيتين' : draftSubtasks.length ? ` مع ${draftSubtasks.length} خطوات فرعية` : '';
-    if (typeof showToast === 'function') showToast(`تمت إضافة المهمة${subtaskSummary} ✓`);
+    if (typeof showToast === 'function') showToast(`🎯 تم تسجيل مهمة (${newTask.title})${subtaskSummary} بنجاح ✓`, 'success', 4500);
     return true;
   } catch (error) {
     console.error('Error creating task:', error);
@@ -40844,7 +40854,10 @@ function executeWalletTransfer() {
   if (typeof renderUI === 'function') renderUI();
 
   if (typeof closeModal === 'function') closeModal('walletTransferModal');
-  if (typeof showToast === 'function') showToast('تم التحويل بين المحافظ بنجاح ✓', 'success');
+  const currSym = (state.currency === 'SAR') ? 'ر.س' : (state.currency === 'GOLD21' ? 'جرام' : 'ج.م');
+  const fromName = typeof getWalletName === 'function' ? getWalletName(from) : from;
+  const toName = typeof getWalletName === 'function' ? getWalletName(to) : to;
+  if (typeof showToast === 'function') showToast(`💼 تم تسجيل عملية تحويل أموال من (${fromName}) إلى (${toName}) بقيمة ${formatMoney(amount)} ${currSym} بنجاح ✓`, 'success', 4500);
 }
 window.executeWalletTransfer = executeWalletTransfer;
 
@@ -41109,7 +41122,7 @@ function createTaskFromDateTimeForm(titleId, target) {
   renderTasksProList();
   updateTasksProductivityKPIs();
   if (target === 'drawer') closeModal('newTaskDrawerModal');
-  if (typeof showToast === 'function') showToast('تمت إضافة المهمة بنجاح ✓');
+  if (typeof showToast === 'function') showToast(`🎯 تم تسجيل مهمة (${task.title}) بنجاح ✓`, 'success', 4500);
   return true;
 }
 
@@ -41596,9 +41609,11 @@ function handleSaveDirectIncome() {
   if (typeof auditAndRecomputeAllWalletBalances === 'function') auditAndRecomputeAllWalletBalances();
   if (typeof renderUI === 'function') renderUI();
   if (typeof renderIncomeHistoryList === 'function') renderIncomeHistoryList();
+  const currSym = (state.currency === 'SAR') ? 'ر.س' : (state.currency === 'GOLD21' ? 'جرام' : 'ج.م');
+  const incDesc = tx.label || 'دخل مباشر';
   if (descriptionInput) descriptionInput.value = '';
   if (amountInput) amountInput.value = '';
-  if (typeof showToast === 'function') showToast('تم تسجيل الدخل بنجاح ✓', 'success');
+  if (typeof showToast === 'function') showToast(`✅ تم تسجيل عملية إثبات دخل (${incDesc}) بقيمة ${formatMoney(amount)} ${currSym} بنجاح ✓`, 'success', 4500);
 }
 window.handleSaveDirectIncome = handleSaveDirectIncome;
 
@@ -43333,7 +43348,10 @@ body.light-theme #settingsModal .antigravity-confirm-btn {
         <div class="voice-wave-bar"></div>
       </div>
     </div>
-    <div id="voiceLiveText" style="font-size:0.82rem;font-weight:800;color:#f8fafc;line-height:1.4;">تفضل بالحديث...</div>
+    <div class="voice-ai-orb-wrap">
+      <div id="voiceAiOrb" class="voice-ai-orb"></div>
+    </div>
+    <div id="voiceLiveText" style="font-size:0.82rem;font-weight:800;color:#f8fafc;line-height:1.4;text-align:center;">تفضل بالحديث...</div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;border-top:1px solid rgba(255,255,255,0.08);padding-top:4px;">
       <span style="font-size:0.65rem;color:#94a3b8;">توقف تلقائياً عند انتهاء الكلام</span>
       <button type="button" onclick="VoiceAssistantEngine.openManualDictationModal()" style="background:none;border:none;color:#38bdf8;font-size:0.68rem;font-weight:800;cursor:pointer;padding:0;">

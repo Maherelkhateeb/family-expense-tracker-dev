@@ -1,20 +1,21 @@
 /**
  * ============================================================================
- * Family Expense Tracker - Voice Assistant Engine (v6.3.0 Ultra Pro)
+ * Family Expense Tracker - Voice Assistant Engine (v6.4.0 Ultra Pro AI)
  * ============================================================================
- * World-Class Local Arabic Voice NLP Speech-to-Transaction Suite:
- * - Real-time Web Audio API Microphone Visualizer (AnalyserNode decibel feedback)
- * - Synthesized Audio Earcons & Haptic Audio Feedback (start, success, cancel chimes)
- * - Multi-dialect Arabic NLP (Egyptian, Saudi, Levantine & Modern Standard)
- * - Intelligent spoken colloquial numbers ("ألف ونص", "ميتين وعشرة", "تلات تلاف وميتين")
- * - 150+ spoken Arabic keywords across 9 core expense categories
- * - Relative Date Parsing ("أمس", "امبارح", "أول أمس", "النهاردة")
- * - Multi-Expense Split Sentence Recognition ("صرفت 50 قهوة و100 غدا")
- * - Smart Silence Detection with auto-finish after speaking completes
- * - Live Category Budget Impact Analysis (Safe / Warning / Exceeded preview)
- * - Interactive Luxury Drawer: Quick Category, Wallet, Member & Date Chips
- * - Optional Spoken Voice Feedback (SpeechSynthesis TTS in Arabic)
- * - Manual Smart Text Fallback for offline or noisy environments
+ * World-Class Voice Financial AI Companion:
+ * 1. Real-Time Web Audio API Microphone Visualizer & Animated Reactive AI Orb
+ * 2. Synthesized Audio Earcons & Haptic Audio Feedback (start, victory chord, dismiss)
+ * 3. Smart Spoken Math Engine ("3 كيلو لحمة الكيلو بـ 400" = 1200, "فاتورة 600 بالنص" = 300)
+ * 4. Voice Financial Inquiries ("صرفت كام النهاردة؟", "متبقي كام في ميزانية الطعام؟", "رصيدي كام؟")
+ * 5. Voice Navigation & Control Commands ("افتح التقارير", "غير الشكل", "الوضع الليلي")
+ * 6. Multi-dialect Arabic NLP (Egyptian, Saudi, Levantine & Modern Standard)
+ * 7. Relative Date Parsing ("أمس", "امبارح", "أول أمس", "النهاردة")
+ * 8. Multi-Expense Split Sentence Recognition ("صرفت 50 قهوة و100 غدا")
+ * 9. Smart Silence Detection with auto-finish after speaking completes
+ * 10. Live Category Budget Impact Analysis (Safe / Warning / Exceeded preview)
+ * 11. Interactive Luxury Drawer: Quick Category, Wallet, Member & Date Chips
+ * 12. Spoken Voice Feedback (SpeechSynthesis TTS in natural Arabic)
+ * 13. Manual Smart Text Fallback for offline or noisy environments
  * ============================================================================
  */
 const VoiceAssistantEngine = (() => {
@@ -30,6 +31,7 @@ const VoiceAssistantEngine = (() => {
   let _recordingSeconds = 0;
   let _currentParsed = null;
   let _currentMulti = null;
+  let _currentInquiry = null;
 
   // Web Audio Context & Analyser
   let _audioCtx = null;
@@ -68,7 +70,6 @@ const VoiceAssistantEngine = (() => {
       gain.connect(ctx.destination);
 
       if (type === 'start') {
-        // Melodic start chime (D5 -> A5)
         osc.type = 'sine';
         osc.frequency.setValueAtTime(587.33, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
@@ -78,7 +79,6 @@ const VoiceAssistantEngine = (() => {
         osc.start(now);
         osc.stop(now + 0.2);
       } else if (type === 'success') {
-        // Major chord victory chime (C5 -> E5 -> G5)
         osc.type = 'sine';
         osc.frequency.setValueAtTime(523.25, now);
         osc.frequency.setValueAtTime(659.25, now + 0.07);
@@ -89,7 +89,6 @@ const VoiceAssistantEngine = (() => {
         osc.start(now);
         osc.stop(now + 0.3);
       } else if (type === 'cancel') {
-        // Soft low dismiss tone
         osc.type = 'sine';
         osc.frequency.setValueAtTime(440, now);
         osc.frequency.exponentialRampToValueAtTime(293.66, now + 0.12);
@@ -102,7 +101,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     2. Real-Time Web Audio Microphone Analyser (Live Dynamic Audio Wave)
+     2. Real-Time Web Audio Microphone Analyser & Reactive AI Orb
      -------------------------------------------------------------------------- */
   async function startAudioVisualizer() {
     try {
@@ -116,20 +115,36 @@ const VoiceAssistantEngine = (() => {
       source.connect(_analyser);
 
       const bars = document.querySelectorAll('#voiceLiveOverlay .voice-wave-bar');
-      if (!bars.length) return;
+      const orb = document.getElementById('voiceAiOrb');
       const dataArray = new Uint8Array(_analyser.frequencyBinCount);
 
       function updateBars() {
         if (!_isListening || !_analyser) return;
         _analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
         for (let i = 0; i < 5; i++) {
           const val = dataArray[i * 2 + 1] || 0;
+          sum += val;
           const h = Math.max(5, Math.min(26, Math.floor((val / 255) * 26)));
           if (bars[i]) {
             bars[i].style.height = h + 'px';
             bars[i].style.background = val > 120 ? '#10b981' : (val > 60 ? '#38bdf8' : '#64748b');
           }
         }
+
+        // Reactive AI Orb scaling and glow
+        if (orb) {
+          const avg = sum / 5;
+          const scale = 0.95 + (avg / 255) * 0.45;
+          orb.style.transform = `scale(${scale.toFixed(2)})`;
+          if (avg > 90) {
+            orb.style.boxShadow = '0 0 28px rgba(16, 185, 129, 0.8), 0 0 44px rgba(56, 189, 248, 0.6)';
+          } else {
+            orb.style.boxShadow = '0 0 16px rgba(56, 189, 248, 0.5), 0 0 28px rgba(139, 92, 246, 0.3)';
+          }
+        }
+
         _animFrameId = requestAnimationFrame(updateBars);
       }
       updateBars();
@@ -148,6 +163,11 @@ const VoiceAssistantEngine = (() => {
       b.style.height = '6px';
       b.style.background = '#38bdf8';
     });
+    const orb = document.getElementById('voiceAiOrb');
+    if (orb) {
+      orb.style.transform = 'scale(1)';
+      orb.style.boxShadow = '0 0 16px rgba(56, 189, 248, 0.5)';
+    }
   }
 
   /* --------------------------------------------------------------------------
@@ -241,7 +261,49 @@ const VoiceAssistantEngine = (() => {
     'ميتين ونص': 250, 'مائتين ونصف': 250
   };
 
+  /* --------------------------------------------------------------------------
+     5. Smart Spoken Math Calculation Engine
+     e.g., "3 كيلو لحمة الكيلو بـ 400" = 1200, "10 لتر بنزين اللتر بـ 15" = 150,
+           "فاتورة كهرباء 600 جنيه بالنص" = 300
+     -------------------------------------------------------------------------- */
+  function parseSpokenMath(text) {
+    const s = normalizeArabic(text);
+
+    // Multiplication: Quantity + item + unit price keyword + price
+    const mMult = s.match(/(\d+(?:\.\d+)?)\s*([^\d]+?)\s*(?:الكيلو|اللتر|الواحده|الواحدة|العلبه|العلبة|الحبه|الحبة|سعر الواحد|سعر الكيلو|سعر اللتر|ب)\s*(?:ب)?\s*(\d+(?:\.\d+)?)/);
+    if (mMult) {
+      const qty = parseFloat(mMult[1]);
+      const unitPrice = parseFloat(mMult[3]);
+      if (qty >= 1 && qty <= 1000 && unitPrice > 0) {
+        const total = qty * unitPrice;
+        return {
+          amount: total,
+          formula: `${qty} × ${unitPrice} = ${total.toLocaleString()}`
+        };
+      }
+    }
+
+    // Split / Half division
+    const mDiv = s.match(/(\d+(?:\.\d+)?)\s*(?:جنيه|ريال)?\s*(?:بالنص|علي اتنين|على اتنين|علي 2|على 2)/);
+    if (mDiv) {
+      const total = parseFloat(mDiv[1]);
+      if (total > 0) {
+        const half = total / 2;
+        return {
+          amount: half,
+          formula: `${total.toLocaleString()} ÷ 2 = ${half.toLocaleString()}`
+        };
+      }
+    }
+
+    return null;
+  }
+
   function parseArabicAmount(text) {
+    // Check math calculation first
+    const mathResult = parseSpokenMath(text);
+    if (mathResult) return mathResult.amount;
+
     const norm = normalizeArabic(text);
     if (!norm) return 0;
 
@@ -336,7 +398,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     5. Category Vocabulary (150+ spoken Arabic terms)
+     6. Category Vocabulary (150+ spoken Arabic terms)
      -------------------------------------------------------------------------- */
   const CATEGORY_VOCABULARY = {
     food: [
@@ -422,7 +484,214 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     6. Relative Date Parser ("أمس", "امبارح", "أول أمس", "النهاردة")
+     7. Voice Financial Inquiries & Siri Assistant Answers
+     e.g., "صرفت كام النهاردة؟", "متبقي كام في ميزانية الطعام؟", "رصيدي كام؟"
+     -------------------------------------------------------------------------- */
+  function evaluateFinancialQuery(rawText) {
+    const norm = normalizeArabic(rawText);
+    const appState = window.state || null;
+    if (!appState) return null;
+
+    const currSymbol = (appState.currency === 'SAR') ? 'ر.س' : 'ج.م';
+    const currName = (appState.currency === 'SAR') ? 'ريال' : 'جنيه';
+    const now = new Date();
+    const todayStr = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-');
+    const curMonthPrefix = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0')].join('-');
+
+    // 1. Gold Query
+    if (/(?:جرام\s*ذهب|غرام\s*ذهب|ذهب|الذهب)/.test(norm) && /(?:معايا|عندي|رصيد|كام)/.test(norm)) {
+      const goldAmt = (appState.goldWallet && appState.goldWallet.balanceGrams) || 0;
+      const goldVal = (appState.goldWallet && appState.goldWallet.estimatedValue) || (goldAmt * 3800);
+      return {
+        type: 'query',
+        queryTitle: 'رصيد واستثمار الذهب',
+        mainVal: `${goldAmt.toFixed(2)} جرام`,
+        subText: `القيمة التقديرية الحالية: ${goldVal.toLocaleString()} ${currSymbol}`,
+        speechText: `رصيدك من الذهب يبلغ ${goldAmt.toFixed(1)} جرام، بقيمة تقديرية ${Math.round(goldVal).toLocaleString()} ${currName}`,
+        items: [
+          { label: 'الوزن بالجرامات', val: `${goldAmt.toFixed(2)} جم` },
+          { label: 'القيمة بالسوق', val: `${goldVal.toLocaleString()} ${currSymbol}` }
+        ]
+      };
+    }
+
+    // 2. Spent Today Query
+    if (/(?:صرفت|دفعت|صرفنا)\s*كام\s*(?:النهارده|النهاردة|اليوم)|كم\s*صرفت\s*اليوم/.test(norm)) {
+      let todayTotal = 0;
+      const catBreakdown = {};
+      if (Array.isArray(appState.transactions)) {
+        for (const t of appState.transactions) {
+          if (t.type === 'expense' && t.date === todayStr) {
+            const amt = Number(t.amount || 0);
+            todayTotal += amt;
+            catBreakdown[t.category] = (catBreakdown[t.category] || 0) + amt;
+          }
+        }
+      }
+
+      const items = Object.keys(catBreakdown).map(catId => {
+        const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(catId, 'expense') : null;
+        return { label: catObj ? catObj.name : catId, val: `${catBreakdown[catId].toLocaleString()} ${currSymbol}` };
+      });
+
+      return {
+        type: 'query',
+        queryTitle: 'إجمالي مصروفات اليوم',
+        mainVal: `${todayTotal.toLocaleString()} ${currSymbol}`,
+        subText: items.length ? `تم الصرف في ${items.length} بنود مختلفة اليوم` : 'لم يتم تسجيل أي مصروفات اليوم بعد',
+        speechText: todayTotal > 0
+          ? `إجمالي مصروفاتك اليوم يبلغ ${todayTotal.toLocaleString()} ${currName}`
+          : `لم تسجل أي مصروفات حتى الآن اليوم`,
+        items: items
+      };
+    }
+
+    // 3. Spent This Month Query
+    if (/(?:صرفت|دفعت|صرفنا|إجمالي|اجمالي)\s*كام\s*(?:الشهر|هذا الشهر|في الشهر)|مصاريف\s*الشهر/.test(norm)) {
+      let monthTotal = 0;
+      if (Array.isArray(appState.transactions)) {
+        for (const t of appState.transactions) {
+          if (t.type === 'expense' && t.date && t.date.startsWith(curMonthPrefix)) {
+            monthTotal += Number(t.amount || 0);
+          }
+        }
+      }
+
+      let totalBudget = 0;
+      if (appState.budgets) {
+        for (const k in appState.budgets) totalBudget += Number(appState.budgets[k] || 0);
+      }
+      const rem = totalBudget - monthTotal;
+
+      return {
+        type: 'query',
+        queryTitle: 'إجمالي مصروفات هذا الشهر',
+        mainVal: `${monthTotal.toLocaleString()} ${currSymbol}`,
+        subText: totalBudget > 0 ? `المتبقي في الميزانية العامة: ${Math.max(0, rem).toLocaleString()} ${currSymbol}` : 'لا توجد ميزانية معتمدة',
+        speechText: `إجمالي مصروفاتك هذا الشهر حتى الآن ${monthTotal.toLocaleString()} ${currName}${rem > 0 ? `، والمتبقي في الميزانية ${rem.toLocaleString()} ${currName}` : ''}`,
+        items: [
+          { label: 'المنصرف الفعلي', val: `${monthTotal.toLocaleString()} ${currSymbol}` },
+          { label: 'الميزانية المعتمدة', val: `${totalBudget.toLocaleString()} ${currSymbol}` },
+          { label: 'المتبقي الإجمالي', val: `${rem.toLocaleString()} ${currSymbol}` }
+        ]
+      };
+    }
+
+    // 4. Category Budget Query
+    if (/(?:متبقي|باقي|فاضل)\s*كام\s*(?:في\s*ميزانية|في\s*ميزانيه|من\s*الميزانية|في\s*الميزانيه)\s*([^\s?]+)/.test(norm) ||
+        /(?:ميزانية|ميزانيه)\s*([^\s?]+)/.test(norm)) {
+      const catId = detectCategory(norm);
+      const catObj = (typeof getCategoryObj === 'function') ? getCategoryObj(catId, 'expense') : null;
+      const catBudget = (appState.budgets && Number(appState.budgets[catId])) || 0;
+
+      let catSpent = 0;
+      if (Array.isArray(appState.transactions)) {
+        for (const t of appState.transactions) {
+          if (t.type === 'expense' && t.category === catId && t.date && t.date.startsWith(curMonthPrefix)) {
+            catSpent += Number(t.amount || 0);
+          }
+        }
+      }
+      const rem = catBudget - catSpent;
+      const catName = catObj ? catObj.name : 'البند';
+
+      return {
+        type: 'query',
+        queryTitle: `ميزانية ${catName}`,
+        mainVal: `${rem.toLocaleString()} ${currSymbol}`,
+        subText: rem < 0 ? '⚠️ تجاوزت الميزانية المحددة' : `تم صرف %${catBudget > 0 ? Math.round((catSpent / catBudget) * 100) : 0} من الميزانية`,
+        speechText: `المتبقي في ميزانية ${catName} هو ${rem.toLocaleString()} ${currName}، من أصل ميزانية ${catBudget.toLocaleString()} ${currName}`,
+        items: [
+          { label: 'المتبقي', val: `${rem.toLocaleString()} ${currSymbol}` },
+          { label: 'المنصرف الفعلي', val: `${catSpent.toLocaleString()} ${currSymbol}` },
+          { label: 'الميزانية المعتمدة', val: `${catBudget.toLocaleString()} ${currSymbol}` }
+        ]
+      };
+    }
+
+    // 5. Total Wallet Balance Query
+    if (/(?:معايا|رصيدي|الرصيد|معنا|معانا)\s*كام|رصيد\s*المحفظة|الرصيد\s*الحالي/.test(norm)) {
+      let totalBal = 0;
+      if (Array.isArray(appState.wallets)) {
+        for (const w of appState.wallets) totalBal += Number(w.balance || 0);
+      }
+      return {
+        type: 'query',
+        queryTitle: 'الرصيد الإجمالي بالمحافظ',
+        mainVal: `${totalBal.toLocaleString()} ${currSymbol}`,
+        subText: `السيولة المتاحة عبر ${appState.wallets ? appState.wallets.length : 1} محافظ`,
+        speechText: `رصيدك الإجمالي المتاح في المحافظ يبلغ ${totalBal.toLocaleString()} ${currName}`,
+        items: (appState.wallets || []).map(w => ({ label: w.name, val: `${Number(w.balance || 0).toLocaleString()} ${currSymbol}` }))
+      };
+    }
+
+    return null;
+  }
+
+  /* --------------------------------------------------------------------------
+     8. Voice Navigation & Control Commands
+     e.g., "افتح التقارير", "افتح الالتزامات", "المقارنات", "غير الشكل", "الوضع الليلي"
+     -------------------------------------------------------------------------- */
+  function executeVoiceCommand(rawText) {
+    const norm = normalizeArabic(rawText);
+
+    if (/(?:افتح|عرض|وريني|هات)?\s*(?:التقارير|التحليلات|الإحصائيات|الاحصائيات)/.test(norm) && !/كام|ميزانية/.test(norm)) {
+      if (typeof switchAppPage === 'function') switchAppPage('analytics');
+      else if (typeof switchTab === 'function') switchTab('operations');
+      speakConfirmation('تم فتح شاشة التقارير والتحليلات');
+      if (typeof showToast === 'function') showToast('📊 تم الانتقال إلى شاشة التقارير والتحليلات', 'success');
+      return true;
+    }
+
+    if (/(?:افتح|عرض|وريني|هات)?\s*(?:الالتزامات|الديون|الفواتير\s*القادمة|المستحقات)/.test(norm) && !/كام/.test(norm)) {
+      if (typeof switchAppPage === 'function') switchAppPage('expected');
+      speakConfirmation('تم فتح شاشة الالتزامات والديون');
+      if (typeof showToast === 'function') showToast('📅 تم الانتقال إلى شاشة الالتزامات', 'success');
+      return true;
+    }
+
+    if (/(?:افتح|عرض|وريني|هات)?\s*(?:المقارنات|مقارنة\s*الموازنة)/.test(norm)) {
+      if (window.BudgetCompareEngine && typeof window.BudgetCompareEngine.render === 'function') {
+        window.BudgetCompareEngine.render();
+      }
+      speakConfirmation('تم فتح لوحة المقارنات المتقدمة');
+      if (typeof showToast === 'function') showToast('📈 تم فتح لوحة المقارنات', 'success');
+      return true;
+    }
+
+    if (/(?:غير|بدل|التالي|اللي بعده)\s*(?:الشكل|التصميم|الواجهة|الواجهه)/.test(norm)) {
+      const btn = document.getElementById('btnHomeDesign');
+      if (btn) btn.click();
+      speakConfirmation('تم تبديل واجهة التطبيق إلى الشكل التالي');
+      if (typeof showToast === 'function') showToast('🎨 تم التبديل للشكل التالي بنجاح', 'success');
+      return true;
+    }
+
+    if (/(?:الوضع|السمة|المظهر)\s*(?:الليلي|الداكن|الاسود|المظلم)/.test(norm)) {
+      if (!document.body.classList.contains('dark-theme')) {
+        const tBtn = document.getElementById('btnThemeToggle');
+        if (tBtn) tBtn.click();
+      }
+      speakConfirmation('تم تفعيل الوضع الليلي الداكن');
+      if (typeof showToast === 'function') showToast('🌙 تم تفعيل الوضع الداكن', 'success');
+      return true;
+    }
+
+    if (/(?:الوضع|السمة|المظهر)\s*(?:النهاري|الفاتح|الابيض)/.test(norm)) {
+      if (document.body.classList.contains('dark-theme')) {
+        const tBtn = document.getElementById('btnThemeToggle');
+        if (tBtn) tBtn.click();
+      }
+      speakConfirmation('تم تفعيل الوضع النهاري الفاتح');
+      if (typeof showToast === 'function') showToast('☀️ تم تفعيل الوضع الفاتح', 'success');
+      return true;
+    }
+
+    return false;
+  }
+
+  /* --------------------------------------------------------------------------
+     9. Relative Date Parser ("أمس", "امبارح", "أول أمس", "النهاردة")
      -------------------------------------------------------------------------- */
   function parseRelativeDate(text) {
     const norm = normalizeArabic(text);
@@ -449,7 +718,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     7. Clean Concise Label Generator
+     10. Clean Concise Label Generator
      -------------------------------------------------------------------------- */
   function cleanSpokenLabel(raw, categoryId) {
     let s = String(raw || '').trim();
@@ -470,7 +739,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     8. Live Category Budget Impact Analysis
+     11. Live Category Budget Impact Analysis
      -------------------------------------------------------------------------- */
   function getCategoryBudgetImpact(catId, newAmount) {
     const appState = window.state || null;
@@ -506,17 +775,19 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     9. Master Spoken Parser (Single & Multi-Split Sentence Support)
+     12. Master Spoken Parser (Single, Multi-Split & Math Detection)
      -------------------------------------------------------------------------- */
   function parseSinglePhrase(raw) {
     const norm = normalizeArabic(raw);
     const appState = window.state || null;
     const dateInfo = parseRelativeDate(raw);
+    const mathResult = parseSpokenMath(raw);
 
     const result = {
       rawText: String(raw || '').trim(),
       type: 'expense',
-      amount: parseArabicAmount(raw),
+      amount: mathResult ? mathResult.amount : parseArabicAmount(raw),
+      calcFormula: mathResult ? mathResult.formula : null,
       category: 'other',
       label: '',
       date: dateInfo.iso,
@@ -590,7 +861,8 @@ const VoiceAssistantEngine = (() => {
 
   function parseSpokenText(raw) {
     const text = String(raw || '').trim();
-    // Check if phrase contains multiple split expenses (e.g. "صرفت 50 جنيه قهوة و100 جنيه غدا")
+
+    // Check if phrase contains multiple split expenses
     const splitParts = text.split(/\s+و(?=\d|\b(?:ميه|ميتين|الف|خمسميه|خمسين|عشرين|تلاتين|اربعين|ستين|سبعين|تمانين|تسعين|نص|ربع)\b)/i);
 
     if (splitParts.length > 1) {
@@ -606,7 +878,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     10. SpeechRecognition Engine & Silence Timer
+     13. SpeechRecognition Engine & Silence Timer
      -------------------------------------------------------------------------- */
   function resetListeningUi() {
     _isListening = false;
@@ -661,7 +933,7 @@ const VoiceAssistantEngine = (() => {
       });
 
       const textEl = document.getElementById('voiceLiveText');
-      if (textEl) textEl.textContent = 'تحدث الآن... (مثال: صرفت ميتين جنيه سوبرماركت)';
+      if (textEl) textEl.textContent = 'تحدث الآن... (سجل مصروفاً أو اسأل عن ميزانيتك)';
 
       _recordingTimer = setInterval(() => {
         _recordingSeconds++;
@@ -762,6 +1034,24 @@ const VoiceAssistantEngine = (() => {
     const text = String(rawText || '').trim();
     if (!text) return;
 
+    // Check A: Navigation Voice Command
+    const executedCmd = executeVoiceCommand(text);
+    if (executedCmd) {
+      playEarcon('success');
+      return;
+    }
+
+    // Check B: Financial Inquiry / Question (Siri for Money)
+    const inquiry = evaluateFinancialQuery(text);
+    if (inquiry) {
+      playEarcon('success');
+      _currentInquiry = inquiry;
+      openInquiryDrawer(inquiry);
+      speakConfirmation(inquiry.speechText);
+      return;
+    }
+
+    // Check C: Standard or Multi Transaction
     playEarcon('success');
     const fab = document.getElementById('btnVoiceAssistantFab');
     if (fab) fab.classList.add('is-processing');
@@ -774,14 +1064,51 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     11. Interactive Confirmation Drawer
+     14. Financial Inquiry Answer Drawer
+     -------------------------------------------------------------------------- */
+  function openInquiryDrawer(inq) {
+    const drawer = document.getElementById('voiceConfirmDrawer');
+    const backdrop = document.getElementById('voiceDrawerBackdrop');
+    if (!drawer || !backdrop) return;
+
+    const itemsHtml = inq.items ? inq.items.map(it => `
+      <div class="voice-inquiry-item">
+        <span>${it.label}:</span>
+        <strong>${it.val}</strong>
+      </div>
+    `).join('') : '';
+
+    const bodyEl = document.getElementById('voiceConfirmDrawerBody');
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <div class="voice-inquiry-result">
+          <div class="voice-inquiry-header">
+            <span class="voice-inquiry-badge"><i class="fa-solid fa-brain"></i> ${inq.queryTitle}</span>
+            <button type="button" onclick="VoiceAssistantEngine.toggleVoiceTts()"
+              style="background:none;border:none;cursor:pointer;font-size:1.05rem;color:${_speechVoiceEnabled ? '#10b981' : '#94a3b8'};padding:4px;"
+              title="${_speechVoiceEnabled ? 'الصوت مفعل' : 'الصوت معطل'}">
+              <i class="fa-solid ${_speechVoiceEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>
+            </button>
+          </div>
+          <div class="voice-inquiry-main-val">${inq.mainVal}</div>
+          <div class="voice-inquiry-sub">${inq.subText}</div>
+          ${itemsHtml ? `<div class="voice-inquiry-breakdown">${itemsHtml}</div>` : ''}
+        </div>
+      `;
+    }
+
+    backdrop.classList.add('open');
+    drawer.classList.add('open');
+  }
+
+  /* --------------------------------------------------------------------------
+     15. Transaction Confirmation Drawer
      -------------------------------------------------------------------------- */
   function openConfirmDrawer(p) {
     const drawer = document.getElementById('voiceConfirmDrawer');
     const backdrop = document.getElementById('voiceDrawerBackdrop');
     if (!drawer || !backdrop) return;
 
-    // Type Badge config
     let badgeHtml = '';
     let signPrefix = '- ';
     let amountColor = '#ef4444';
@@ -879,6 +1206,11 @@ const VoiceAssistantEngine = (() => {
       `;
     }
 
+    // Math formula badge
+    const mathBadgeHtml = p.calcFormula ? `
+      <div class="voice-calc-badge"><i class="fa-solid fa-calculator"></i> عملية حسابية: ${p.calcFormula}</div>
+    ` : '';
+
     // Multi-Item Split Preview
     let multiPreviewHtml = '';
     if (_currentMulti && _currentMulti.length > 1) {
@@ -912,6 +1244,7 @@ const VoiceAssistantEngine = (() => {
             <div>
               <div style="font-size:0.70rem;color:#94a3b8;font-weight:700;">المساعد الصوتي الذكي</div>
               <div style="margin-top:2px;">${badgeHtml}</div>
+              ${mathBadgeHtml}
             </div>
             <button type="button" id="voiceTtsToggleBtn" onclick="VoiceAssistantEngine.toggleVoiceTts()"
               style="background:none;border:none;cursor:pointer;font-size:1.05rem;color:${_speechVoiceEnabled ? '#10b981' : '#94a3b8'};padding:4px;"
@@ -1006,6 +1339,7 @@ const VoiceAssistantEngine = (() => {
       localStorage.setItem('family_monefy_voice_tts', String(_speechVoiceEnabled));
     } catch (e) {}
     if (_currentParsed) openConfirmDrawer(_currentParsed);
+    else if (_currentInquiry) openInquiryDrawer(_currentInquiry);
     if (typeof showToast === 'function') {
       showToast(_speechVoiceEnabled ? 'تم تفعيل الرد الصوتي ✓' : 'تم تعطيل الرد الصوتي');
     }
@@ -1030,10 +1364,11 @@ const VoiceAssistantEngine = (() => {
     if (backdrop) backdrop.classList.remove('open');
     _currentParsed = null;
     _currentMulti = null;
+    _currentInquiry = null;
   }
 
   /* --------------------------------------------------------------------------
-     12. Commit Transaction (Single or Batch Multi-Split)
+     16. Commit Transaction (Single or Batch Multi-Split)
      -------------------------------------------------------------------------- */
   function commitTransaction() {
     const p = _currentParsed;
@@ -1053,7 +1388,6 @@ const VoiceAssistantEngine = (() => {
     }
 
     try {
-      // If multi-split detected, commit all items in sequence
       const itemsToSave = (_currentMulti && _currentMulti.length > 1) ? _currentMulti : [p];
 
       for (const item of itemsToSave) {
@@ -1100,17 +1434,17 @@ const VoiceAssistantEngine = (() => {
 
       if (typeof renderUI === 'function') renderUI();
 
-      // Audio and voice feedback
       playEarcon('success');
       const currSymbol = (appState.currency === 'SAR') ? 'ريال' : 'جنيه';
       speakConfirmation(`تم تسجيل ${p.amount} ${currSymbol} في ${p.label}`);
 
       closeConfirmDrawer();
       if (typeof showToast === 'function') {
+        const currSym = (appState.currency === 'SAR') ? 'ر.س' : (appState.currency === 'GOLD21' ? 'جرام' : 'ج.م');
         const msg = itemsToSave.length > 1
-          ? `تم اعتماد ${itemsToSave.length} عمليات صوتية مركبة بنجاح ✓`
-          : `تم تسجيل العملية الصوتية بنجاح ✓`;
-        showToast(msg, 'success', 3500);
+          ? `✅ تم تسجيل ${itemsToSave.length} عمليات صوتية بقيمة إجمالية ${typeof formatMoney === 'function' ? formatMoney(itemsToSave.reduce((s, it) => s + (Number(it.amount)||0), 0)) : ''} ${currSym} بنجاح ✓`
+          : `✅ تم تسجيل عملية ${p.type === 'income' ? 'إثبات دخل' : 'مصروف'} (${p.label}) بقيمة ${typeof formatMoney === 'function' ? formatMoney(p.amount) : p.amount} ${currSym} بنجاح ✓`;
+        showToast(msg, 'success', 4500);
       }
     } catch (err) {
       console.error('[Voice] Save error', err);
@@ -1119,7 +1453,7 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     13. Open Native Full Modal for Deep Editing
+     17. Open Native Full Modal for Deep Editing
      -------------------------------------------------------------------------- */
   function openInModalForEdit() {
     if (!_currentParsed) return;
@@ -1161,10 +1495,10 @@ const VoiceAssistantEngine = (() => {
   }
 
   /* --------------------------------------------------------------------------
-     14. Smart Manual Dictation / Quick-Typing Fallback Modal
+     18. Smart Manual Dictation / Quick-Typing Fallback Modal
      -------------------------------------------------------------------------- */
   function openManualDictationModal() {
-    const text = prompt('اكتب ما تريد تسجيله وسيقوم الذكاء الاصطناعي باستخراج البند والمبلغ فوراً:\n(مثال: صرفت ميتين جنيه بنزين من فودافون كاش)');
+    const text = prompt('اكتب ما تريد تسجيله أو السؤال عنه:\n(مثال: صرفت ميتين جنيه بنزين من فودافون كاش أو صرفت كام النهاردة؟)');
     if (text && text.trim()) {
       handleSpokenResult(text.trim());
     }

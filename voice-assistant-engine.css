@@ -293,3 +293,143 @@ body.light-theme .voice-multi-item-card {
   border-color: #e2e8f0;
 }
 
+/* ==========================================================================
+   Voice Assistant Engine v6.4 AI Orb & Financial Inquiry Styling
+   ========================================================================== */
+.voice-ai-orb-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px auto;
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.voice-ai-orb {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #38bdf8 0%, #8b5cf6 50%, #10b981 100%);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6), inset 0 0 12px rgba(255, 255, 255, 0.4);
+  animation: voiceOrbPulse 2.2s infinite ease-in-out;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+@keyframes voiceOrbPulse {
+  0%, 100% {
+    transform: scale(0.96);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.5), 0 0 28px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.7), 0 0 36px rgba(56, 189, 248, 0.5);
+  }
+}
+
+.voice-calc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.68rem;
+  font-weight: 850;
+  color: #fbbf24;
+  margin-top: 3px;
+}
+
+/* Financial Inquiry Answer Card */
+.voice-inquiry-result {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.voice-inquiry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.voice-inquiry-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: #38bdf8;
+}
+
+.voice-inquiry-main-val {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #f8fafc;
+  line-height: 1.2;
+  margin: 4px 0;
+  font-family: var(--font-numbers, system-ui);
+  direction: ltr;
+  text-align: right;
+}
+
+.voice-inquiry-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.voice-inquiry-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 8px;
+  margin-top: 6px;
+}
+
+.voice-inquiry-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  color: #cbd5e1;
+}
+
+.voice-inquiry-item strong {
+  color: #f8fafc;
+  font-family: var(--font-numbers, system-ui);
+}
+
+body.light-theme .voice-inquiry-result {
+  background: #ffffff !important;
+  border-color: rgba(2, 132, 199, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-theme .voice-inquiry-main-val {
+  color: #0f172a !important;
+}
+
+body.light-theme .voice-inquiry-sub {
+  color: #475569 !important;
+}
+
+body.light-theme .voice-inquiry-item {
+  color: #334155 !important;
+}
+
+body.light-theme .voice-inquiry-item strong {
+  color: #0f172a !important;
+}
+
+
