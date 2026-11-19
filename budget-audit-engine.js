@@ -1394,6 +1394,65 @@ const BudgetCompareEngine = (() => {
     house: 1000, daily: 950, health: 850, clothes: 650, other: 450
   };
 
+  // حالة منصة الرسوم البيانية التفاعلية المدمجة (1–8)
+  let activeChartTab = 1;
+  let isChartDeckCollapsed = false;
+  let _currentChartsMap = {};
+
+  const CHARTS_DECK_META = [
+    { id: 1, name: 'الأعمدة', fullName: '1. الأعمدة المتجاورة', icon: 'fa-chart-column', tip: 'مقارنة الصرف الفعلي مع التقديري بنداً ببند' },
+    { id: 2, name: 'الشلال', fullName: '2. شلال الفروقات', icon: 'fa-waterfall', tip: 'مسار تراكمي يوضح كيف تحولت الموازنة إلى الفعلي' },
+    { id: 3, name: 'الانحراف', fullName: '3. أعمدة الانحراف', icon: 'fa-arrows-left-right', tip: 'تحديد دقيق لحجم واتجاه انحراف كل بند عن الخط المخطط' },
+    { id: 4, name: 'الرصاصة', fullName: '4. مخطط الرصاصة: الفعلي والمرجع', icon: 'fa-bullseye', tip: 'قياس نسبة استهلاك سقف الميزانية مقارنة بالحد 100%' },
+    { id: 5, name: 'التراكم', fullName: '5. التراكم عبر الفترات المختارة', icon: 'fa-chart-line', tip: 'تتبع وتيرة الصرف التراكمي ومقارنته بالمسار المستهدف' },
+    { id: 6, name: 'الحرارية', fullName: '6. الخريطة الحرارية للفترتين', icon: 'fa-table-cells', tip: 'مصفوفة بصرية لتقييم انحرافات كل بند عبر الفترات' },
+    { id: 7, name: 'المكدس', fullName: '7. المكدس النسبي 100%', icon: 'fa-bars-progress', tip: 'توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق 100%' },
+    { id: 8, name: 'الميل', fullName: '8. مخطط الميل والاتجاه', icon: 'fa-arrow-trend-up', tip: 'مخطط اتجاهي يوضح صعود أو هبوط تكلفة كل بند' }
+  ];
+
+  function selectChartTab(chartNum) {
+    activeChartTab = Math.max(1, Math.min(8, parseInt(chartNum, 10) || 1));
+    isChartDeckCollapsed = false;
+    renderActiveChartOnly();
+  }
+
+  function renderActiveChartOnly() {
+    const stage = document.getElementById('cmpDeckStage');
+    const title = document.getElementById('cmpActiveChartTitle');
+    const icon = document.querySelector('#cmpChartsDeck .cmp-deck-title i');
+    const tabs = document.querySelectorAll('.cmp-deck-tab');
+    if (stage && _currentChartsMap && _currentChartsMap[activeChartTab]) {
+      stage.innerHTML = _currentChartsMap[activeChartTab];
+      stage.classList.remove('is-collapsed');
+    }
+    const meta = CHARTS_DECK_META[activeChartTab - 1];
+    if (title && meta) title.textContent = meta.fullName;
+    if (icon && meta) icon.className = 'fa-solid ' + meta.icon;
+    tabs.forEach((tab, idx) => {
+      const isActive = (idx + 1 === activeChartTab);
+      tab.classList.toggle('active', isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
+    const btnIcon = document.getElementById('cmpDeckToggleIcon');
+    const btnLabel = document.getElementById('cmpDeckToggleLabel');
+    if (btnIcon && btnLabel) {
+      btnIcon.className = 'fa-solid fa-chevron-up';
+      btnLabel.textContent = 'طي الرسم';
+    }
+  }
+
+  function toggleChartDeck() {
+    isChartDeckCollapsed = !isChartDeckCollapsed;
+    const stage = document.getElementById('cmpDeckStage');
+    const btnIcon = document.getElementById('cmpDeckToggleIcon');
+    const btnLabel = document.getElementById('cmpDeckToggleLabel');
+    if (stage) stage.classList.toggle('is-collapsed', isChartDeckCollapsed);
+    if (btnIcon && btnLabel) {
+      btnIcon.className = isChartDeckCollapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+      btnLabel.textContent = isChartDeckCollapsed ? 'عرض الرسم' : 'طي الرسم';
+    }
+  }
+
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function formatDateStr(d) {
@@ -1979,19 +2038,59 @@ const BudgetCompareEngine = (() => {
     }).join('');
     const stats='<div class="bs-statline"><div><small>إجمالي التقديري</small><strong>'+fmt(est)+'</strong></div><div><small>إجمالي الفعلي</small><strong>'+fmt(actual)+'</strong></div>'+
       '<div><small>الفرق الكلي</small><strong class="'+tone(variance)+'">'+signed(variance)+'</strong></div><div><small>نسبة الانحراف</small><strong class="'+tone(variance)+'">'+pct(totalPct)+'</strong></div></div>';
+    const chart1Html = '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div><p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p>'+ chartExplanation("مقارنة مباشرة بين مبالغ الصرف الفعلي والموازنة التقديرية (أو الفترة المرجعية) لكل بند جنبًا إلى جنب.", "العمود الأزرق الفاتح يمثل التقديري والعمود الأخضر المزرق يمثل الفعلي؛ الرقم أعلى كل زوج يوضح صافي الفرق (الموجب وفر والسالب تجاوز).") +'</section>';
+    const chart2Html = '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div><p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p>'+ chartExplanation("مسار تراكمي يوضح كيف تحولت الموازنة التقديرية إلى الصرف الفعلي الإجمالي عبر تأثير كل بند.", "يبدأ بعمود التقديري؛ الأعمدة الحمراء تمثل مبالغ التجاوز الخصمية والأعمدة الخضراء تمثل الوفورات حتى نصل لعمود الفعلي النهائي.") +'</section>';
+    const chart3Html = '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+ chartExplanation("تحديد دقيق لحجم واتجاه انحراف كل بند عن خط الميزانية المخطط مرتبًا تنازليًا.", "الخط الرأسي هو نقطة الصفر؛ الأشرطة الحمراء المتجهة لليمين تعني تجاوزًا والأشرطة الخضراء المتجهة لليسار تعني وفرًا وادخارًا.") +'</section>';
+
+    const advancedCharts = buildBudgetReferenceAdvancedCharts(sorted, totals, range, opts);
+    _currentChartsMap = {
+      1: chart1Html,
+      2: chart2Html,
+      3: chart3Html,
+      ...advancedCharts
+    };
+
+    const activeMeta = CHARTS_DECK_META[activeChartTab - 1] || CHARTS_DECK_META[0];
+    const chartDeckHtml = `
+      <section class="cmp-charts-deck bs-full" id="cmpChartsDeck">
+        <div class="cmp-deck-header">
+          <div class="cmp-deck-title">
+            <i class="fa-solid ${activeMeta.icon}"></i>
+            <span id="cmpActiveChartTitle">${activeMeta.fullName}</span>
+          </div>
+          <button type="button" class="cmp-deck-collapse-btn" onclick="BudgetCompareEngine.toggleChartDeck()" title="طي أو توسيع عرض الرسم البياني">
+            <i id="cmpDeckToggleIcon" class="fa-solid ${isChartDeckCollapsed ? 'fa-chevron-down' : 'fa-chevron-up'}"></i>
+            <span id="cmpDeckToggleLabel">${isChartDeckCollapsed ? 'عرض الرسم' : 'طي الرسم'}</span>
+          </button>
+        </div>
+        <div class="cmp-deck-tabs-strip" role="tablist" aria-label="اختيار الرسم البياني">
+          ${CHARTS_DECK_META.map(m => {
+            const isActive = (m.id === activeChartTab);
+            return `
+              <button type="button" 
+                      role="tab" 
+                      class="cmp-deck-tab ${isActive ? 'active' : ''}" 
+                      aria-selected="${isActive}" 
+                      onclick="BudgetCompareEngine.selectChartTab(${m.id})" 
+                      title="${m.tip}">
+                <span class="cmp-tab-num">${m.id}</span>
+                <span class="cmp-tab-name">${m.name}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+        <div class="cmp-deck-stage ${isChartDeckCollapsed ? 'is-collapsed' : ''}" id="cmpDeckStage">
+          ${_currentChartsMap[activeChartTab] || ''}
+        </div>
+      </section>
+    `;
+
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
-      '<div class="bs-grid">'+table+
-      '<section class="bs-panel bs-full" id="cmpUnifiedColumns"><h3>1. الأعمدة المتجاورة</h3><div class="bs-legend"><span><i style="background:'+palette.estimated+'"></i> '+safe(referenceLabel)+'</span><span><i style="background:'+palette.actual+'"></i> '+safe(actualLabel)+'</span></div><div class="bs-plot-window" tabindex="0" aria-label="مخطط أعمدة قابل للسحب">'+columnSvg+'</div>'+'<p class="bs-note">القيم أعلى كل بند هي الفروق الموقعة. المحور يبدأ من الصفر.</p>'+ chartExplanation("مقارنة مباشرة بين مبالغ الصرف الفعلي والموازنة التقديرية (أو الفترة المرجعية) لكل بند جنبًا إلى جنب.", "العمود الأزرق الفاتح يمثل التقديري والعمود الأخضر المزرق يمثل الفعلي؛ الرقم أعلى كل زوج يوضح صافي الفرق (الموجب وفر والسالب تجاوز).") +'</section>'+
-      '<section class="bs-panel bs-full" id="cmpUnifiedWaterfall"><h3>2. شلال الفروقات</h3><div class="bs-plot-window" tabindex="0" aria-label="شلال قابل للسحب">'+waterfall+'</div>'+'<p class="bs-note">يبدأ محور القيمة المعروض من '+fmt(floor)+' ج.م، لتوضيح الفروق الصغيرة. البنود بلا تغير تظل في الجدول.</p>'+ chartExplanation("مسار تراكمي يوضح كيف تحولت الموازنة التقديرية إلى الصرف الفعلي الإجمالي عبر تأثير كل بند.", "يبدأ بعمود التقديري؛ الأعمدة الحمراء تمثل مبالغ التجاوز الخصمية والأعمدة الخضراء تمثل الوفورات حتى نصل لعمود الفعلي النهائي.") +'</section>'+
-      '<section class="bs-panel bs-full" id="cmpUnifiedVariance"><h3>3. أعمدة الانحراف</h3><p class="bs-note">التجاوز إلى اليمين، والتوفير إلى اليسار؛ الترتيب حسب قيمة الانحراف.</p>'+variancesHtml+ chartExplanation("تحديد دقيق لحجم واتجاه انحراف كل بند عن خط الميزانية المخطط مرتبًا تنازليًا.", "الخط الرأسي هو نقطة الصفر؛ الأشرطة الحمراء المتجهة لليمين تعني تجاوزًا والأشرطة الخضراء المتجهة لليسار تعني وفرًا وادخارًا.") +'</section>'+
-      '<details class="bs-more" id="cmpUnifiedAdvancedCharts" '+(expanded?'open':'')+'><summary>عرض الرسوم الخمسة الإضافية (4–8)</summary><div class="bs-more-grid"></div></details></div></div>';
-    renderBudgetReferenceAdvancedCharts(content,sorted,totals,range,opts);
+      '<div class="bs-grid">'+table+chartDeckHtml+'</div></div>';
   }
 
-  // Five additional views use the same registered budget and actual transactions.
-  function renderBudgetReferenceAdvancedCharts(content,rows,totals,range,opts={}) {
-    const grid=content.querySelector('.bs-more-grid')||content.querySelector('.bs-grid');
-    if(!grid)return;
+  // Five additional views generated for the compact chart deck
+  function buildBudgetReferenceAdvancedCharts(rows,totals,range,opts={}) {
     const numberFmt=new Intl.NumberFormat('en-US',{maximumFractionDigits:0});
     const cash=value=>numberFmt.format(Math.round(value/100));
     const text=value=>escapeHtml(String(value));
@@ -2032,7 +2131,7 @@ const BudgetCompareEngine = (() => {
         '@media(max-width:600px){.budget-spec .bs-heat-desktop{display:none}.budget-spec .bs-heat-mobile{display:block}.budget-spec .bs-bullet-row{grid-template-columns:minmax(70px,1fr) minmax(0,1.6fr) auto;gap:4px}.budget-spec .bs-stack-key{gap:4px}.budget-spec .bs-slope-row{grid-template-columns:minmax(90px,1fr) minmax(0,1.35fr)}}'
       ].join('\n');document.head.append(style);
     }
-    // 4. Bullet chart: common ratio scale, with the exact 100% target.
+    // 4. Bullet chart
     const topRatio=Math.max(0,...sorted.map(r=>r.b>0?r.a/r.b*100:0));
     const axisMax=Math.max(200,Math.ceil(topRatio/50)*50);
     const bullet=sorted.map(row=>{
@@ -2042,8 +2141,9 @@ const BudgetCompareEngine = (() => {
         '<strong dir="ltr">'+(row.b?pct(row.a,row.b):'—')+'</strong></div>';
     }).join('');
     const bulletLegend='<p class="bs-note">الخط الرأسي عند 100% هو المرجع المحدد، والشريط الأزرق يمثل الفعلي. المقياس من 0% إلى '+axisMax+'%.</p>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+chartExplanation("مؤشر رقابي يقيس نسبة استهلاك سقف الميزانية لكل بند مقارنة بالحد الأقصى (100%).", "الخط الرأسي عند 100% يمثل السقف المحدد، والشريط الأزرق يعبر عن الفعلي؛ تخطي الشريط للخط يعني تجاوز المخصص المالي.")+'</section>');
-    // Six aligned relative slices from the ACTUAL selected period and reference.
+    const chart4Html = '<section class="bs-panel"><h3>4. مخطط الرصاصة: الفعلي والمرجع</h3>'+bullet+bulletLegend+chartExplanation("مؤشر رقابي يقيس نسبة استهلاك سقف الميزانية لكل بند مقارنة بالحد الأقصى (100%).", "الخط الرأسي عند 100% يمثل السقف المحدد، والشريط الأزرق يعبر عن الفعلي؛ تخطي الشريط للخط يعني تجاوز المخصص المالي.")+'</section>';
+
+    // 5. Cumulative
     const baseRange=opts.baseline||range;
     const n=Math.min(6,dateDiffDays(range.from,range.to),dateDiffDays(baseRange.from,baseRange.to));
     const divide=(period,count)=>{
@@ -2075,13 +2175,11 @@ const BudgetCompareEngine = (() => {
       const label=period.from===period.to?period.from.slice(5):(period.from.slice(5)+'–'+period.to.slice(5));
       return {key:label,actual:a,estimated:b,sumA:sum(a),sumB:sum(b)};
     });
-    // Correct only sub-cent proration drift in summary totals.
     if(monthly.length){
       const last=monthly[monthly.length-1];
       last.sumA+=(totals.a||0)-monthly.reduce((v,m)=>v+m.sumA,0);
       last.sumB+=(totals.b||0)-monthly.reduce((v,m)=>v+m.sumB,0);
     }
-    // 5. Cumulative: one vertical scale beginning at zero; gaps use red/green fills.
     const cumA=[],cumB=[];let runningA=0,runningB=0;
     monthly.forEach(m=>{runningA+=m.sumA;runningB+=m.sumB;cumA.push(runningA);cumB.push(runningB)});
     const top=Math.max(1,...cumA,...cumB),width=620,height=245;
@@ -2099,8 +2197,9 @@ const BudgetCompareEngine = (() => {
       '<polyline points="'+points(cumA)+'" fill="none" stroke="#0D9488" stroke-width="2"/>';
     monthly.forEach((m,i)=>{cum+='<text x="'+x(i)+'" y="215" text-anchor="middle">'+text(i+1)+'</text>';});
     cum+='</svg><div class="bs-cumulative-legend"><span>المرجع: <bdi dir="ltr">'+cash(runningB)+'</bdi></span><span>الفعلي: <bdi dir="ltr">'+cash(runningA)+'</bdi></span><span>الفجوة: <bdi dir="ltr">'+signed(runningA-runningB)+'</bdi></span></div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+chartExplanation("تتبع وتيرة الصرف التراكمي خطوة بخطوة ومقارنته بالمسار المستهدف طوال المدة.", "الخط المتقطع هو المرجع والخط المتصل هو الفعلي؛ المساحة الخضراء بينهما وفر والمساحة الحمراء تعني تسارع الإنفاق فوق المخطط.")+'</section>');
-    // 6. Diverging heatmap; color and numeric sign together.
+    const chart5Html = '<section class="bs-panel"><h3>5. التراكم عبر الفترات المختارة</h3>'+cum+chartExplanation("تتبع وتيرة الصرف التراكمي خطوة بخطوة ومقارنته بالمسار المستهدف طوال المدة.", "الخط المتقطع هو المرجع والخط المتصل هو الفعلي؛ المساحة الخضراء بينهما وفر والمساحة الحمراء تعني تسارع الإنفاق فوق المخطط.")+'</section>';
+
+    // 6. Diverging heatmap
     const heat=(row,month)=>{
       const a=month.actual.get(row.id)||0,b=month.estimated.get(row.id)||0;
       const v=b?(a-b)/b*100:null,abs=Math.abs(v||0);
@@ -2117,9 +2216,10 @@ const BudgetCompareEngine = (() => {
     heatGrid+='</div><div class="bs-heat-mobile">'+monthly.map(m=>'<div class="bs-heat-month"><strong dir="ltr">'+text(m.key)+'</strong><div class="bs-heat-month-list">'+
       sorted.map(row=>{const h=heat(row,m);return '<div class="bs-heat-month-item" style="'+h.style+'">'+text(row.name)+' <bdi dir="ltr">'+h.label+'</bdi></div>'}).join('')+
       '</div></div>').join('')+'</div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للفترتين</h3>'+heatGrid+
-      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p>'+chartExplanation("مصفوفة بصرية لتقييم انحرافات كل بند عبر الفترات لاكتشاف البنود المتكررة في العجز أو الوفر.", "اللون الأحمر يعني تجاوزًا والأخضر وفرًا؛ ودرجة تركيز اللون تعبر عن شدة الانحراف بالنسبة المئوية.")+'</section>');
-    // 7. Largest-remainder integer allocation guarantees both stacks sum to 100.
+    const chart6Html = '<section class="bs-panel bs-full"><h3>6. الخريطة الحرارية للفترتين</h3>'+heatGrid+
+      '<p class="bs-note">الأحمر للتجاوز، الأخضر للتوفير، والرمادي للصفر أو البند غير المخطط. شدة اللون تعكس حجم الانحراف.</p>'+chartExplanation("مصفوفة بصرية لتقييم انحرافات كل بند عبر الفترات لاكتشاف البنود المتكررة في العجز أو الوفر.", "اللون الأحمر يعني تجاوزًا والأخضر وفرًا؛ ودرجة تركيز اللون تعبر عن شدة الانحراف بالنسبة المئوية.")+'</section>';
+
+    // 7. Stacked 100%
     function apportion(values){
       const total=values.reduce((s,v)=>s+v,0);if(!total)return values.map(()=>0);
       const shares=values.map(v=>v/total*100),whole=shares.map(Math.floor);
@@ -2131,10 +2231,10 @@ const BudgetCompareEngine = (() => {
     const partsEst=apportion(sorted.map(r=>r.b||0)),partsAct=apportion(sorted.map(r=>r.a||0));
     const bar=(values,label)=>'<div><div class="bs-stack-label"><strong>'+label+'</strong><span dir="ltr">'+values.join(' / ')+'%</span></div><div class="bs-stack" role="img" aria-label="'+label+' وحصص البنود" dir="ltr">'+
       values.map((v,i)=>'<div title="'+text(sorted[i].name)+' '+v+'%" style="width:'+v+'%;background:'+color(sorted[i].id)+'"></div>').join('')+'</div></div>';
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
-      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">'+sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')+
-      '</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p>'+chartExplanation("توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق (100%) لمقارنة الأولويات المخططة بالفعلية.", "الشريط الأول يمثل التقديري والثاني الفعلي؛ اتساع أو ضيق حصة البند بين الشريطين يوضح تغير نمط الصرف بطريقة أكبر باقي.")+'</section>');
-    // 8. Slope: both sides share one numeric scale, one segment per category.
+    const chart7Html = '<section class="bs-panel"><h3>7. المكدس النسبي 100%</h3><div class="bs-stacked-bars">'+bar(partsEst,'التقديري')+
+      bar(partsAct,'الفعلي')+'</div><div class="bs-stack-key">${sorted.map((r,i)=>'<span><i style="background:'+color(r.id)+'"></i> '+text(r.name)+': <bdi dir="ltr">'+partsEst[i]+'% / '+partsAct[i]+'%</bdi></span>').join('')}</div><p class="bs-note">النسب صحيحة ومجموع كل شريط 100% بطريقة أكبر باقي.</p>'+chartExplanation("توزيع حصص البنود كنسبة مئوية من إجمالي الإنفاق (100%) لمقارنة الأولويات المخططة بالفعلية.", "الشريط الأول يمثل التقديري والثاني الفعلي؛ اتساع أو ضيق حصة البند بين الشريطين يوضح تغير نمط الصرف بطريقة أكبر باقي.")+'</section>';
+
+    // 8. Slope
     const slopeMax=Math.max(1,...sorted.flatMap(r=>[r.a,r.b||0]));
     const slope=sorted.map(row=>{
       const y1=25-(row.b||0)/slopeMax*18,y2=25-row.a/slopeMax*18,stroke=row.diff>0?'#DC2626':row.diff<0?'#16A34A':'#2563EB';
@@ -2142,8 +2242,10 @@ const BudgetCompareEngine = (() => {
       '<div class="bs-slope-amounts"><bdi dir="ltr">'+cash(row.b||0)+'</bdi><bdi dir="ltr">'+cash(row.a)+'</bdi></div>'+
       '<div class="bs-slope-visual"><svg viewBox="0 0 180 30" role="img" aria-label="'+text(row.name)+' من '+cash(row.b||0)+' إلى '+cash(row.a)+'"><line x1="7" y1="'+y1+'" x2="173" y2="'+y2+'" stroke="'+stroke+'" stroke-width="2"/><circle cx="7" cy="'+y1+'" r="3" fill="'+stroke+'"/><circle cx="173" cy="'+y2+'" r="3" fill="'+stroke+'"/></svg></div></div></div>';
     }).join('');
-    grid.insertAdjacentHTML('beforeend','<section class="bs-panel"><h3>8. مخطط الميل</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
-      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p>'+chartExplanation("مخطط اتجاهي يوضح سرعة وزاوية صعود أو هبوط تكلفة كل بند بين الفترتين بمقياس موحد.", "الخط الصاعد بالأحمر يعني زيادة في التكلفة والخط الهابط بالأخضر يعني انخفاضًا وترشيدًا بالجنيه المصري.")+'</section>');
+    const chart8Html = '<section class="bs-panel"><h3>8. مخطط الميل</h3><div class="bs-slope-amounts"><strong>التقديري</strong><strong>الفعلي</strong></div>'+
+      slope+'<p class="bs-note">جميع البنود بمقياس واحد، والأحمر للارتفاع والأخضر للانخفاض. المبالغ بالجنيه المصري.</p>'+chartExplanation("مخطط اتجاهي يوضح سرعة وزاوية صعود أو هبوط تكلفة كل بند بين الفترتين بمقياس موحد.", "الخط الصاعد بالأحمر يعني زيادة في التكلفة والخط الهابط بالأخضر يعني انخفاضًا وترشيدًا بالجنيه المصري.")+'</section>';
+
+    return { 4: chart4Html, 5: chart5Html, 6: chart6Html, 7: chart7Html, 8: chart8Html };
   }
 
 
@@ -2383,7 +2485,8 @@ const BudgetCompareEngine = (() => {
   return {
     render, showAllCharts, renderReferenceInto, onActualPeriodChange, getNavigationRange, selectReference, recordSampleOperations, usePrimaryDates,
     toggleDemo, openSampleOperations, renderSampleOperations, returnFromSampleOperations,
-    showAllSampleOperations, showMoreSampleOperations
+    showAllSampleOperations, showMoreSampleOperations,
+    selectChartTab, toggleChartDeck
   };
 })();
 window.BudgetCompareEngine = BudgetCompareEngine;

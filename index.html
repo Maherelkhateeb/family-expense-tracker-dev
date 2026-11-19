@@ -275,14 +275,60 @@
     }
 
     var currentEditTxReceiptDataUri = null;
-    var APP_VERSION = 'v6.6.2';
-    var APP_BUILD_ID = 202611181705;
+    var APP_VERSION = 'v6.6.5';
+    var APP_BUILD_ID = 202611190950;
     window.APP_VERSION = APP_VERSION;
     window.APP_BUILD_ID = APP_BUILD_ID;
     (function() {
       try {
-        var t = localStorage.getItem('family_monefy_theme') || 'navy';
-        document.documentElement.setAttribute('data-app-theme', t);
+        // 1. Color Mode & Theme (Light vs Dark) - Zero Theme FOUC
+        var savedTheme = localStorage.getItem('family_monefy_theme') || 'navy';
+        var savedMode = localStorage.getItem('family_monefy_color_mode') || localStorage.getItem('app_theme');
+        if (!savedMode) {
+          savedMode = (['light', 'facebook'].includes(savedTheme)) ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-color-mode', savedMode);
+        document.documentElement.setAttribute('data-app-theme', savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        if (savedMode === 'light') {
+          document.documentElement.classList.add('light-theme');
+        } else {
+          document.documentElement.classList.remove('light-theme');
+        }
+
+        // Apply theme variables immediately to prevent color flash
+        var palettes = {
+          navy: { dark: '#7dd3fc', light: '#075985', swatch: '#0f2d55' },
+          emerald: { dark: '#6ee7b7', light: '#047857', swatch: '#047857' },
+          purple: { dark: '#d8b4fe', light: '#6b21a8', swatch: '#7e22ce' },
+          rose: { dark: '#fda4af', light: '#9f1239', swatch: '#be123c' },
+          ocean: { dark: '#67e8f9', light: '#0e7490', swatch: '#0e7490' },
+          gold: { dark: '#fcd34d', light: '#854d0e', swatch: '#a16207' },
+          slate: { dark: '#cbd5e1', light: '#475569', swatch: '#475569' },
+          midnight: { dark: '#a5b4fc', light: '#3730a3', swatch: '#4338ca' },
+          facebook: { dark: '#1877f2', light: '#1877f2', swatch: '#1877f2' }
+        };
+        var pal = palettes[savedTheme] || palettes.navy;
+        var acc = (savedMode === 'light') ? pal.light : pal.dark;
+        document.documentElement.style.setProperty('--primary', acc);
+        document.documentElement.style.setProperty('--primary-color', acc);
+        document.documentElement.style.setProperty('--accent', acc);
+        document.documentElement.style.setProperty('--primary-glow', pal.swatch + '66');
+        document.documentElement.style.setProperty('--theme-accent', acc);
+        document.documentElement.style.setProperty('--theme-swatch', pal.swatch);
+
+        // 2. Saved Home Layout (0 to 9) - Zero Layout FOUC
+        var savedLayout = localStorage.getItem('family_expense_home_design_v2');
+        var layoutNum = (savedLayout !== null && savedLayout !== '') ? parseInt(savedLayout, 10) : 1;
+        if (isNaN(layoutNum) || layoutNum < 0 || layoutNum > 9) layoutNum = 1;
+        document.documentElement.setAttribute('data-home-layout', String(layoutNum));
+        if (layoutNum > 0) {
+          document.documentElement.classList.add('has-alt-home-layout');
+        } else {
+          document.documentElement.classList.remove('has-alt-home-layout');
+        }
+
+        // 3. Icons, Fonts & Styles
         var it = localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
         document.documentElement.setAttribute('data-icon-theme', it);
         var fs = localStorage.getItem('family_expense_font_size') || 'medium';
@@ -17152,8 +17198,35 @@ body.light-theme .market-buy-price {
   text-overflow: ellipsis !important;
 }
 </style>
+
+  <style id="criticalStartupFoucPrevention">
+    /* Anti-FOUC rules applied synchronously before first paint */
+    html.has-alt-home-layout #catGrid { display: none !important; visibility: hidden !important; pointer-events: none !important; }
+    html.has-alt-home-layout #homeInterfaces { display: block !important; }
+    html:not(.has-alt-home-layout) #catGrid { display: grid !important; }
+    html:not(.has-alt-home-layout) #homeInterfaces { display: none !important; }
+    html.light-theme, html.light-theme body { background-color: #f8fafc !important; color: #0f172a !important; }
+    html:not(.light-theme), html:not(.light-theme) body { background-color: #090d16 !important; }
+  </style>
+
 </head>
 <body>
+  <script>
+    (function() {
+      try {
+        var m = document.documentElement.getAttribute('data-color-mode') || 'dark';
+        var t = document.documentElement.getAttribute('data-app-theme') || 'navy';
+        var l = document.documentElement.getAttribute('data-home-layout') || '1';
+        document.body.setAttribute('data-color-mode', m);
+        document.body.setAttribute('data-app-theme', t);
+        document.body.setAttribute('data-theme', t);
+        document.body.setAttribute('data-home-layout', l);
+        if (m === 'light') document.body.classList.add('light-theme');
+        document.body.classList.add('theme-' + t);
+        if (l !== '0') document.body.classList.add('has-alt-home-layout');
+      } catch(e) {}
+    })();
+  </script>
   <!-- مقبضا الشاشات الجانبية العائمان (يمين ويسار) v5.3.89 - مباشر تحت body -->
   <div class="side-screen-edge-handle left-handle" id="leftScreenEdgeHandle" onclick="toggleSummaryDrawer()" title="الشاشة الجانبية: ملخص العمليات">
     <i class="fa-solid fa-chevron-right"></i>
@@ -21453,10 +21526,12 @@ body.light-theme .market-buy-price {
         button.setAttribute('aria-pressed', selected ? 'true' : 'false');
       });
       updateAppearanceAccent();
-      const currentIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
-      setAppIconTheme(currentIconTheme, false);
-      setAppTheme(state.appTheme || localStorage.getItem('family_monefy_theme') || 'navy', false);
-      updateAppearancePreview();
+      if (!isInitializingApp) {
+        const currentIconTheme = state.iconTheme || localStorage.getItem('family_monefy_icon_theme') || 'vibrant';
+        setAppIconTheme(currentIconTheme, false);
+        setAppTheme(state.appTheme || localStorage.getItem('family_monefy_theme') || 'navy', false);
+        updateAppearancePreview();
+      }
       if (persist) {
         try {
           localStorage.setItem('family_monefy_color_mode', target);
@@ -21626,7 +21701,9 @@ body.light-theme .market-buy-price {
     let analyticsChartInstance = null;
     let currentModalType = 'expense';
 
-        function initApp() {
+        var isInitializingApp = false;
+    function initApp() {
+      isInitializingApp = true;
       // استعادة شعار العائلة المفضل
       try {
         const savedEmblem = localStorage.getItem('family_monefy_emblem') || 1;
@@ -21893,11 +21970,12 @@ body.light-theme .market-buy-price {
       try { if (typeof initMemberPhotoPickers === 'function') initMemberPhotoPickers(); } catch(e) { console.error('Member pickers error:', e); }
       try { initUserEmailAuth(); } catch(e) { console.error('Email auth error:', e); }
       try { initActivityLog(); } catch(e) { console.error('Activity log error:', e); }
-      try { initTheme(); } catch(e) { console.error('Theme init error:', e); }
+      // initTheme already initialized in initApp config pass
       try { initDonutChart(); } catch(e) { console.error('Donut init error:', e); }
       try { initAnalyticsChart(); } catch(e) { console.error('Analytics init error:', e); }
       try { updateUserAndDefaultDisplay(); } catch(e) { console.error('User display error:', e); }
       try { auditAndRecomputeAllWalletBalances(); } catch(e) { console.warn('Wallet balance audit notice:', e); }
+      isInitializingApp = false;
       try { renderUI(); } catch(e) { console.error('Render UI error:', e); }
       try { fetchTradingViewRates(); } catch(e) { console.error('TradingView error:', e); }
       try { if (typeof initMonthlyBudgetUI === 'function') initMonthlyBudgetUI(); } catch(e) {}
@@ -26324,6 +26402,27 @@ function generateRichDemoTransactions() {
     window.checkCategoryBudgetCeilingTrigger = checkCategoryBudgetCeilingTrigger;
 
 function renderCategoriesGrid(filtered) {
+      const activeHomeLayout = (window.HomeLayouts && typeof window.HomeLayouts.getLayout === 'function')
+        ? window.HomeLayouts.getLayout()
+        : (parseInt(localStorage.getItem('family_expense_home_design_v2'), 10) || 1);
+
+      if (activeHomeLayout > 0) {
+        const grid = document.getElementById('catGrid');
+        if (grid) {
+          grid.hidden = true;
+          grid.style.setProperty('display', 'none', 'important');
+        }
+        const container = document.getElementById('homeInterfaces');
+        if (container) {
+          container.hidden = false;
+          container.style.setProperty('display', 'block', 'important');
+        }
+        if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
+          window.HomeLayouts.render(filtered);
+        }
+        return;
+      }
+
       const grid = document.getElementById('catGrid');
       if (!grid) return;
 
@@ -30769,12 +30868,14 @@ function switchSettingsTab(tabName) {
       updateAppearancePreview();
 
       // v5.3.89: Immediate live re-render on theme change
-      if (typeof renderUI === 'function') renderUI();
-      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
-        renderCategoriesGrid(getFilteredTransactions());
+      if (!isInitializingApp) {
+        if (typeof renderUI === 'function') renderUI();
+        if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+          renderCategoriesGrid(getFilteredTransactions());
+        }
+        if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
+        if (typeof updateThemeCheckDots === 'function') updateThemeCheckDots();
       }
-      if (typeof updateAnalyticsChart === 'function') updateAnalyticsChart();
-      if (typeof updateThemeCheckDots === 'function') updateThemeCheckDots();
     }
 
     
@@ -30827,7 +30928,7 @@ function switchSettingsTab(tabName) {
       updateAppearancePreview();
 
       // v5.3.89: Live re-render categories grid on icon theme change
-      if (typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
+      if (!isInitializingApp && typeof renderCategoriesGrid === 'function' && typeof getFilteredTransactions === 'function') {
         renderCategoriesGrid(getFilteredTransactions());
       }
     }
