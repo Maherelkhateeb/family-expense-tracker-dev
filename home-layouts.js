@@ -237,100 +237,171 @@
     const header = document.querySelector('.app-header');
     const period = document.querySelector('.period-selector-top-strip') || document.querySelector('.period-filter-container');
     const balance = document.getElementById('topKpiThreeStrip') || document.getElementById('mainBalanceCard');
+    const scrollBody = document.querySelector('.app-scroll-body');
+    const viewExp = document.getElementById('viewExpenses');
+
+    // Strict zero-scroll lock on expenses view when alternative layout is active
+    const isExpensesActive = viewExp && (viewExp.classList.contains('active') || viewExp.style.display !== 'none');
+
+    if (currentLayout !== 0 && isExpensesActive) {
+      document.body.classList.add('view-expenses-active');
+      if (scrollBody) {
+        scrollBody.scrollTop = 0;
+        scrollBody.style.setProperty('overflow-y', 'hidden', 'important');
+        scrollBody.style.setProperty('padding-bottom', '0px', 'important');
+      }
+      if (viewExp) {
+        viewExp.scrollTop = 0;
+        viewExp.style.setProperty('overflow-y', 'hidden', 'important');
+        viewExp.style.setProperty('padding-bottom', '0px', 'important');
+      }
+      container.scrollTop = 0;
+      container.style.setProperty('overflow-y', 'hidden', 'important');
+    } else {
+      document.body.classList.remove('view-expenses-active');
+      if (scrollBody) {
+        scrollBody.style.removeProperty('overflow-y');
+        scrollBody.style.removeProperty('padding-bottom');
+      }
+    }
 
     const vv = window.visualViewport;
     const viewportW = (vv ? vv.width : window.innerWidth) || document.documentElement.clientWidth || 390;
     const viewportH = (vv ? vv.height : window.innerHeight) || document.documentElement.clientHeight || 800;
 
     const navRect = bottomNav ? bottomNav.getBoundingClientRect() : null;
-    const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 64);
+    const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 62);
 
     let containerTop = 0;
-    if (container && container.offsetParent !== null) {
+    if (tools && tools.offsetParent !== null) {
+      containerTop = tools.getBoundingClientRect().bottom + 2;
+    } else if (container && container.offsetParent !== null) {
       containerTop = container.getBoundingClientRect().top;
     }
 
-    if (containerTop <= 40 || containerTop > 320) {
-      const hH = header ? header.offsetHeight : 52;
-      const pH = period ? period.offsetHeight : 44;
-      const bH = balance ? balance.offsetHeight : 84;
-      const tH = tools ? tools.offsetHeight : 42;
-      containerTop = hH + pH + bH + tH + 6;
+    if (containerTop <= 40 || containerTop > 340) {
+      const hH = header ? header.offsetHeight : 50;
+      const pH = period ? period.offsetHeight : 36;
+      const bH = balance ? balance.offsetHeight : 78;
+      const tH = tools ? tools.offsetHeight : 38;
+      containerTop = hH + pH + bH + tH + 4;
     }
 
-    const availableH = Math.max(340, Math.floor(bottomLimit - containerTop - 6));
+    // Exact net vertical space strictly available above bottom navigation dock
+    const availableH = Math.max(230, Math.floor(bottomLimit - containerTop - 16));
 
-    let widthScale = 1.0;
-    if (viewportW < 365) {
-      widthScale = 0.88;
-    } else if (viewportW < 385) {
-      widthScale = 0.94;
-    } else if (viewportW < 415) {
-      widthScale = 0.98;
-    } else {
-      widthScale = 1.00;
+    // Proportional responsive scaling factors
+    const widthScale = Math.min(1.05, Math.max(0.80, viewportW / 390));
+    const heightScale = Math.min(1.10, Math.max(0.70, availableH / 440));
+    const responsiveFontScale = (widthScale * 0.40 + heightScale * 0.60);
+
+    const docEl = document.documentElement;
+    const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
+    const fontScales = {
+      micro: 0.82,
+      small: 0.90,
+      medium: 1.00,
+      large: 1.08,
+      xlarge: 1.16,
+      huge: 1.25
+    };
+    const baseScale = fontScales[fontMode] || 1.00;
+    const finalFontScale = (baseScale * responsiveFontScale).toFixed(3);
+    container.style.setProperty('--dynamic-home-font-scale', String(finalFontScale));
+
+    const fontFamily = docEl.getAttribute('data-font-family') || localStorage.getItem('family_expense_font_family') || 'inherit';
+    if (fontFamily && fontFamily !== 'inherit') {
+      container.style.setProperty('--dynamic-home-font-family', fontFamily);
     }
 
-    let iconSize = Math.round(36 * widthScale);
-    iconSize = Math.max(30, Math.min(38, iconSize));
-    container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
-
-    let cardH = 72;
-    let gap = 6;
-
-    if (viewportH < 720) {
-      gap = 4;
-    } else if (viewportH < 800) {
-      gap = 5;
-    } else {
-      gap = 6;
-    }
+    let cardH = 68;
+    let gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
+    let iconSize = Math.max(24, Math.min(36, Math.round(34 * Math.min(widthScale, heightScale))));
 
     switch (currentLayout) {
       case 1: { // 1 column, 10 rows (9 categories + voice)
-        gap = viewportH < 720 ? 3 : 4;
-        cardH = Math.floor((availableH - (9 * gap) - 6) / 10);
-        cardH = Math.max(44, Math.min(54, cardH));
+        gap = availableH < 380 ? 2 : (availableH < 450 ? 3 : 4);
+        cardH = Math.floor((availableH - (9 * gap) - 4) / 10);
+        cardH = Math.max(28, Math.min(50, cardH));
+        iconSize = Math.max(22, Math.min(32, cardH - 6));
         break;
       }
       case 2: { // Hero analytics + 2 columns, 5 rows
-        gap = viewportH < 720 ? 4 : 5;
-        const heroH = Math.max(80, Math.min(98, Math.floor(availableH * 0.22)));
-        const remainingForGrid = availableH - heroH - 6 - gap;
+        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
+        const heroH = Math.max(56, Math.min(84, Math.floor(availableH * 0.19)));
+        const remainingForGrid = availableH - heroH - 4 - gap;
         cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
-        cardH = Math.max(58, Math.min(74, cardH));
+        cardH = Math.max(44, Math.min(70, cardH));
+        iconSize = Math.max(24, Math.min(34, cardH - 18));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
       case 3: { // 2 columns, 5 rows (10 cards)
-        gap = viewportH < 720 ? 4 : 6;
-        cardH = Math.floor((availableH - (4 * gap) - 8) / 5);
-        cardH = Math.max(68, Math.min(104, cardH));
+        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
+        cardH = Math.floor((availableH - (4 * gap) - 4) / 5);
+        cardH = Math.max(56, Math.min(92, cardH));
+        iconSize = Math.max(26, Math.min(36, Math.floor(cardH * 0.42)));
         break;
       }
-      case 4: { // 3 columns, 3 rows (9 category cards) + 1 bottom full-width voice banner
-        gap = viewportH < 720 ? 4 : (viewportH < 800 ? 5 : 6);
-        const voiceStripH = 44;
-        const availableForCards = availableH - voiceStripH - gap - 4;
-        cardH = Math.floor((availableForCards - (2 * gap)) / 3);
-        cardH = Math.max(98, Math.min(156, cardH));
+      case 4: { // 3 columns, 3 rows (9 category cards) + 1 bottom voice banner
+        gap = availableH < 380 ? 3 : (availableH < 450 ? 4 : 5);
+        const voiceStripH = Math.max(32, Math.min(40, Math.floor(availableH * 0.095)));
+        const remainingForCards = availableH - voiceStripH - gap - 4;
+        cardH = Math.floor((remainingForCards - (2 * gap)) / 3);
+        cardH = Math.max(76, Math.min(132, cardH));
+        iconSize = Math.max(26, Math.min(36, Math.floor(cardH * 0.32)));
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceStripH}px`);
         break;
       }
-      case 5: // Radial Cockpit
-      case 6: // Honeycomb Hive
-      case 7: // HUD Sensor Tiles
-      case 8: // Diamond Crystals
-      default: {
-        const voiceBarH = 44;
-        const arenaH = Math.max(340, Math.min(520, availableH - voiceBarH - gap));
+      case 5: { // Radial Cockpit
+        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
+        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
+        const satSize = Math.max(46, Math.min(68, Math.floor(arenaH * 0.165)));
+        const maxRadius = Math.floor((Math.min(viewportW, arenaH) - satSize - 14) / 2);
+        const radius = Math.max(86, Math.min(138, maxRadius));
+        const hubSize = Math.max(64, Math.min(94, Math.floor(arenaH * 0.23)));
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
+        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
+        container.style.setProperty('--dynamic-home-sat-size', `${satSize}px`);
+        container.style.setProperty('--dynamic-home-orbit-r', `${radius}px`);
+        container.style.setProperty('--dynamic-home-hub-size', `${hubSize}px`);
+        cardH = Math.floor(availableH);
+        break;
+      }
+      case 6: { // Honeycomb Hive
+        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
+        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
+        const hexH = Math.max(56, Math.min(88, Math.floor((arenaH - 8) / 3.05)));
+        const hexW = Math.round(hexH * 1.08);
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
+        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
+        container.style.setProperty('--dynamic-home-hex-h', `${hexH}px`);
+        container.style.setProperty('--dynamic-home-hex-w', `${hexW}px`);
+        cardH = Math.floor(availableH);
+        break;
+      }
+      case 7: { // HUD Sensor Tiles
+        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
+        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
+        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
+        cardH = Math.floor((arenaH - (2 * gap)) / 3);
+        break;
+      }
+      case 8: { // Diamond Crystals
+        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
+        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
       }
       case 9: { // Spectrum Equalizer with Member Chart
-        const voiceBarH = 44;
-        const memberChartH = 100;
-        const arenaH = Math.max(190, Math.min(300, availableH - memberChartH - voiceBarH - (gap * 2)));
+        const voiceBarH = Math.max(30, Math.min(38, Math.floor(availableH * 0.08)));
+        const memberChartH = Math.max(46, Math.min(62, Math.floor(availableH * 0.17)));
+        const arenaH = Math.max(180, availableH - memberChartH - voiceBarH - (gap * 2) - 4);
+        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
+        container.style.setProperty('--dynamic-home-member-h', `${memberChartH}px`);
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
@@ -340,25 +411,7 @@
     container.style.setProperty('--dynamic-home-card-height', `${cardH}px`);
     container.style.setProperty('--dynamic-home-gap', `${gap}px`);
     container.style.setProperty('--dynamic-home-available-h', `${availableH}px`);
-
-    const docEl = document.documentElement;
-    const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
-    const fontScales = {
-      micro: 0.82,
-      small: 0.90,
-      medium: 1.00,
-      large: 1.10,
-      xlarge: 1.20,
-      huge: 1.30
-    };
-    const baseScale = fontScales[fontMode] || 1.00;
-    const finalFontScale = (baseScale * widthScale).toFixed(3);
-    container.style.setProperty('--dynamic-home-font-scale', String(finalFontScale));
-
-    const fontFamily = docEl.getAttribute('data-font-family') || localStorage.getItem('family_expense_font_family') || 'inherit';
-    if (fontFamily && fontFamily !== 'inherit') {
-      container.style.setProperty('--dynamic-home-font-family', fontFamily);
-    }
+    container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
   }
 
   function isThemeLight() {
@@ -713,11 +766,11 @@
           <div class="hl-row-l1-content">
             <!-- 1. Right: Category Icon -->
             <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:48px;height:48px;min-width:48px;border-radius:50%;font-size:1.45rem;">
+              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:var(--dynamic-home-icon-size, 32px);height:var(--dynamic-home-icon-size, 32px);min-width:var(--dynamic-home-icon-size, 32px);border-radius:50%;font-size:calc(var(--dynamic-home-icon-size, 32px) * 0.48);">
                 <i class="${s.cat.iconClass}"></i>
               </div>
             </button>
-            <div class="hl-row-icon-divider" style="width:2.5px;height:38px;background:var(--cat-color);opacity:0.95;margin:0 10px;border-radius:3px;flex-shrink:0;"></div>
+            <div class="hl-row-icon-divider" style="width:2px;height:calc(var(--dynamic-home-icon-size, 32px) * 0.82);background:var(--cat-color);opacity:0.95;margin:0 6px;border-radius:2px;flex-shrink:0;"></div>
 
             <!-- 2. Center: Name on Top, Remaining/Budget on Bottom with Progress Bar -->
             <div class="hl-row-main-info">
@@ -1052,15 +1105,23 @@
     const container = document.getElementById('homeInterfaces');
     const containerW = (container && container.clientWidth > 100) ? container.clientWidth : (window.innerWidth || 390);
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const arenaH = Math.max(380, Math.min(520, availableH - 52));
+    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
+      : Math.max(240, availableH - 46);
+    const satSize = container && container.style.getPropertyValue('--dynamic-home-sat-size')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-sat-size'), 10)
+      : Math.max(46, Math.min(68, Math.floor(arenaH * 0.165)));
+    const radius = container && container.style.getPropertyValue('--dynamic-home-orbit-r')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-orbit-r'), 10)
+      : Math.max(86, Math.min(138, Math.floor((Math.min(containerW, arenaH) - satSize - 14) / 2)));
+    const hubSize = container && container.style.getPropertyValue('--dynamic-home-hub-size')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-hub-size'), 10)
+      : Math.max(64, Math.min(94, Math.floor(arenaH * 0.23)));
+
     const centerY = Math.floor(arenaH / 2);
     const centerX = Math.floor(containerW / 2);
-
-    const satSize = 98; // تكبير قطر كبسولات البنود المدارية إلى 98px لتكون بارزة ومقروءة بوضوح
-    const satHalf = Math.floor(satSize / 2); // 49px
-    const maxRadiusByW = Math.floor((containerW - satSize - 12) / 2);
-    const maxRadiusByH = Math.floor((arenaH - satSize - 12) / 2);
-    const radius = Math.max(136, Math.min(156, maxRadiusByW, maxRadiusByH));
+    const satHalf = Math.floor(satSize / 2);
+    const hubHalf = Math.floor(hubSize / 2);
 
     const isLight = isThemeLight();
 
@@ -1101,9 +1162,6 @@
             <span style="font-size:0.75rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; display:inline-block;">${amtText}</span>
           </button>
         </div>
-      `;; color:${amtColor}; direction:ltr; unicode-bidi:isolate; letter-spacing:-0.2px;">${amtText}</span>
-          </button>
-        </div>
       `;
     }).join('');
 
@@ -1123,7 +1181,7 @@
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:1rem;color:${voiceBorder};"></i>
             <span style="font-size:0.75rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1141,7 +1199,7 @@
         <div class="radial-arena hl-l5-arena" style="position:relative; width:100%; height:${arenaH}px; margin:0 auto; overflow:hidden;">
           <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
           
-          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 58}px; left:${centerX - 58}px; width:116px; height:116px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
+          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - hubHalf}px; left:${centerX - hubHalf}px; width:${hubSize}px; height:${hubSize}px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
             <span style="font-size:0.62rem; font-weight:800; color:${hubTitleColor}; background:${hubTitleBg}; padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
             <button type="button" data-action="view-operations" data-cat-id="all" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض جميع العمليات">
               <span style="font-size:0.98rem; font-weight:900; color:${hubSpentColor}; direction:ltr; display:block;">-${formatMoney(totalSpentAll)}</span>
@@ -1164,10 +1222,32 @@
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
     const isLight = isThemeLight();
 
+    const container = document.getElementById('homeInterfaces');
+    const containerW = (container && container.clientWidth > 100) ? container.clientWidth : (window.innerWidth || 390);
+    const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
+    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
+      : Math.max(240, availableH - 46);
+    const hexH = container && container.style.getPropertyValue('--dynamic-home-hex-h')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-hex-h'), 10)
+      : Math.max(56, Math.min(88, Math.floor((arenaH - 8) / 3.05)));
+    const hexW = Math.round(hexH * 1.08);
+
+    const colW = Math.floor((containerW - 24) / 3);
+    const rowStep = Math.floor((arenaH - hexH) / 2);
+
     const positions = [
-      [14, 8], [138, 8], [262, 8],
-      [14, 110], [138, 110], [262, 110],
-      [14, 212], [138, 212], [262, 212]
+      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 0)],
+      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 0)],
+      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 0)],
+
+      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 1)],
+      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 1)],
+      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 1)],
+
+      [Math.round((colW - hexW)/2 + colW * 0), Math.round(rowStep * 2)],
+      [Math.round((colW - hexW)/2 + colW * 1), Math.round(rowStep * 2)],
+      [Math.round((colW - hexW)/2 + colW * 2), Math.round(rowStep * 2)]
     ];
 
     const cellsHtml = catKeys.map((catId, idx) => {
@@ -1186,7 +1266,7 @@
       const trackBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)';
 
       return `
-        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px;">
+        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:${hexW}px; height:${hexH}px;">
           <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
             <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
           </svg>
@@ -1212,7 +1292,7 @@
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1228,7 +1308,7 @@
     return `
       <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;">
         <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 360px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
-          <div style="position:relative; width:390px; height:320px;">${cellsHtml}</div>
+          <div style="position:relative; width:100%; height:100%; max-width:${containerW}px;">${cellsHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1282,7 +1362,7 @@
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
             <span style="font-size:0.75rem;font-weight:850;color:#f8fafc;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
@@ -1314,6 +1394,14 @@
     const catKeys = ['bills', 'daily', 'food', 'health', 'house', 'transport', 'other', 'education', 'clothes'];
     const isLight = isThemeLight();
 
+    const container = document.getElementById('homeInterfaces');
+    const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
+    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
+      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
+      : Math.max(230, availableH - 46);
+    const diaSize = Math.max(52, Math.min(78, Math.floor(arenaH / 4.45)));
+    const contentW = Math.round(diaSize * 1.18);
+
     const diamondsHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#ec4899', iconClass: 'fa-solid fa-gem', pastelBg: '#fdf2f8' };
       const spent = totals[catId] || 0;
@@ -1336,13 +1424,13 @@
 
       return `
         <div class="diamond-wrapper hl-l8-item">
-          <div class="hl-dia-card" style="width:106px; height:106px; background:${diaBg}; border:${diaBorder}; border-radius:24px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
-            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:126px; gap:2px;">
+          <div class="hl-dia-card" style="width:${diaSize}px; height:${diaSize}px; background:${diaBg}; border:${diaBorder}; border-radius:calc(${diaSize}px * 0.22); transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
+            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:${contentW}px; gap:1px;">
               <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-                <div style="color:${cat.color}; font-size:1.45rem; margin-bottom:2px;"><i class="${cat.iconClass}"></i></div>
+                <div style="color:${cat.color}; font-size:calc(${diaSize}px * 0.32); margin-bottom:1px;"><i class="${cat.iconClass}"></i></div>
                 <span style="font-size:0.75rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:108px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
               </button>
-              <div class="hl-dia-divider" style="width:68px; height:2px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:4px 0; border-radius:2px; display:block !important;"></div>
+              <div class="hl-dia-divider" style="width:calc(${diaSize}px * 0.65); height:1.8px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:4px 0; border-radius:2px; display:block !important;"></div>
               <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
                 <span style="font-size:0.76rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
                 <span style="font-size:0.60rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 5px;">${pct}%</span>
@@ -1359,7 +1447,7 @@
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 6px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Crystal Voice)</span>
@@ -1493,7 +1581,7 @@
 
     const voiceBarHtml = `
       <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Spectrum Audio)</span>
@@ -1886,6 +1974,17 @@
         }
       });
       themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-color-mode'] });
+    }
+
+    // 5. Observer on viewExpenses to toggle zero-scroll lock on navigation
+    if (typeof MutationObserver !== 'undefined') {
+      const viewExp = document.getElementById('viewExpenses');
+      if (viewExp) {
+        const expObserver = new MutationObserver(() => {
+          measureAndApplyDynamicLayout();
+        });
+        expObserver.observe(viewExp, { attributes: true, attributeFilter: ['class', 'style'] });
+      }
     }
   }
 

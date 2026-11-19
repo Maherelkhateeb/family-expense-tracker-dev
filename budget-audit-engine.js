@@ -1606,8 +1606,13 @@ const BudgetCompareEngine = (() => {
   }
 
   function readSampleOperations() {
-    const stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
-    if (!stored || Array.isArray(stored) || typeof stored !== 'object') throw new Error('Invalid sample ledger');
+    let stored = {};
+    try {
+      stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
+    } catch(e) {
+      stored = {};
+    }
+    if (!stored || Array.isArray(stored) || typeof stored !== 'object') return {};
     return stored;
   }
 
@@ -2086,7 +2091,7 @@ const BudgetCompareEngine = (() => {
     `;
 
     content.innerHTML='<div class="budget-spec" data-cmp-reference="'+safe(opts.reference||'plan')+'"><p class="bs-intro">مقارنة '+safe(actualLabel)+' مع '+safe(referenceLabel)+' · '+safe(range.from)+' إلى '+safe(range.to)+'</p>'+stats+
-      '<div class="bs-grid">'+chartDeckHtml+table+'</div></div>';
+      '<div class="bs-grid">'+table+chartDeckHtml+'</div></div>';
   }
 
   // Five additional views generated for the compact chart deck

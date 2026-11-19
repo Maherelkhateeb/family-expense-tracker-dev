@@ -1,0 +1,297 @@
+/* End-to-end regression for navigation, alerts and tasks, in disposable browser profiles.
+ * Never points to a user's browser or modifies a real finance database.
+ */
+'use strict';
+const {chromium}=require('playwright');
+const assert=require('node:assert/strict');
+const URL=process.env.APP_URL || 'http://127.0.0.1:8765/';
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ try{
+  for(const width of [360,1365]){
+   const ctx=await browser.newContext({viewport:{width,height:850},locale:'ar-EG',serviceWorkers:'block'});
+   const page=await ctx.newPage();
+   const errors=[];
+   page.on('pageerror',e=>errors.push(e.message));
+   const resp=await page.goto(URL+'?qa_e2e=1',{waitUntil:'domcontentloaded',timeout:60000});
+   assert.ok(resp?.ok(),'Application HTTP status');
+   await page.waitForFunction(()=>typeof renderUI==='function' &&
+     typeof switchAppPage==='function' && typeof familyAlerts==='object' &&
+     typeof openTasksFullScreenModal==='function' &&
+     typeof getTodoTasks==='function',null,{timeout:30000});
+
+   // Navigate via genuine navigation buttons, not simply by invoking renderers.
+   const navs=['navTabExpenses','navTabOperations','navTabRequests','navTabExpected','navTabBudgets'];
+   for(const id of navs){
+     const node=page.locator('#'+id);
+     assert.equal(await node.count(),1,'Missing navigation button '+id);
+     await node.click({timeout:10000});
+     await page.waitForTimeout(75);
+   }
+   console.log('NAVIGATION_OK '+width+' '+navs.join(','));
+
+   const alerts=await page.evaluate(()=>{
+     const keys=['family_alerts_store_v2','family_alerts_read_v2'];
+     keys.forEach(k=>localStorage.removeItem(k));
+     state.transactions=[]; state.expectedExpenses=[];
+     familyAlerts.observe([],null,true);
+     const tx={id:'qa-e2e-notify',date:'2026-11-17',time:'15:34',
+       author:'اية',member:'اية',type:'expense',category:'daily',
+       amount:100,label:'مصروف يومى',walletId:state.wallets?.[0]?.id||'cash',
+       createdAt:'2026-11-17T12:34:00.000Z'};
+     state.transactions=[tx];
+     familyAlerts.observe(state.transactions,'اية');
+     const load=()=>JSON.parse(localStorage.getItem('family_alerts_store_v2')||'[]');
+     const added=load().find(a=>a.txId===tx.id && a.kind==='expense');
+     tx.amount=150;
+     familyAlerts.observe(state.transactions,'اية');
+     const edited=load().find(a=>a.txId===tx.id && a.kind==='edit');
+     state.transactions=[];
+     familyAlerts.observe(state.transactions,'اية');
+     const deleted=load().find(a=>a.txId===tx.id && a.kind==='delete');
+     familyAlerts.created('request',{id:'qa-request',member:'اية',amount:550,reason:'احتياج'});
+     familyAlerts.created('budget',{id:'qa-budget',month:'2026-11'});
+     familyAlerts.created('task',{id:'qa-task',title:'تجربة التنبيهات',assignedMember:'ماهر'});
+     const before=load();
+     familyAlerts.mark(added?.id);
+     const read=JSON.parse(localStorage.getItem('family_alerts_read_v2')||'[]').includes(added?.id);
+     familyAlerts.toggleRead(added?.id);
+     const unread=!JSON.parse(localStorage.getItem('family_alerts_read_v2')||'[]').includes(added?.id);
+     familyAlerts.open();
+     const rendered=document.querySelectorAll('#notificationsListContainer .family-alert').length;
+     if(typeof closeModal==='function')closeModal('notificationsModal');
+     localStorage.setItem('__qa_keep','preserved');
+     return {
+       added:!!added,edited:!!edited,deleted:!!deleted,read,unread,
+       body:added?.body||'',modifiedBody:edited?.body||'',
+       kinds:[...new Set(before.map(a=>a.kind))],
+       alerts:before.length,rendered
+     };
+   });
+   console.log('ALERT_QA '+width+' '+JSON.stringify(alerts));
+   for(const k of ['added','edited','deleted','read','unread'])assert.equal(alerts[k],true,'Alert regression '+k);
+   assert.ok(alerts.body.includes('١٠٠')&&alerts.body.includes('٣:٣٤'),
+     'Alert amount or timestamp missing: '+alerts.body);
+   assert.ok(alerts.modifiedBody.includes('١٥٠'),'Edited amount not reflected');
+   for(const k of ['expense','edit','delete','request','budget','task']) assert.ok(alerts.kinds.includes(k),'Missing kind '+k);
+   assert.ok(alerts.alerts>=6 && alerts.rendered>=6,'Alert list did not render every event');
+
+   await page.evaluate(()=>{
+     openTasksFullScreenModal();
+     if(typeof switchTasksViewMode==='function')switchTasksViewMode('list');
+   });
+   // The creator is intentionally collapsed until the user presses Add Task.
+   await page.locator('#btnHeroAddTaskBar').click({timeout:10000});
+   await page.locator('#tasksUnifiedCreatorCard').waitFor({state:'visible',timeout:10000});
+   const taskDiag=await page.evaluate(()=>{
+     const title=document.getElementById('quickTaskTitleInput');
+     const parents=[];let el=title;
+     for(let i=0;i<8&&el;i++,el=el.parentElement){
+       const cs=getComputedStyle(el),rect=el.getBoundingClientRect();
+       parents.push({id:el.id,cls:String(el.className).slice(0,80),
+         display:cs.display,visibility:cs.visibility,hidden:el.hidden,
+         width:Math.round(rect.width),height:Math.round(rect.height)});
+     }
+     return {parents,activeModal:document.querySelector('.modal.active')?.id||'',
+       taskModal:document.getElementById('tasksFullScreenModal')?.className||''};
+   });
+   console.log('TASK_VISIBILITY_DIAGNOSTIC '+width+' '+JSON.stringify(taskDiag));
+   const title=page.locator('#quickTaskTitleInput');
+   assert.equal(await title.count(),1,'Quick task creator missing');
+   await title.fill('تجربة QA شاملة '+width);
+   // Dates and times are selected through the visible preset chips.
+   // The underlying date/time inputs are intentionally hidden.
+   const datePreset=page.locator('#inlineDatePresetGroup [data-preset="tomorrow"]');
+   if(await datePreset.count()) await datePreset.click();
+   const timePreset=page.locator('#inlineTimePresetGroup [data-time="17:00"]');
+   if(await timePreset.count()) await timePreset.click();
+   const member=page.locator('#inlineTaskMemberGroup [data-member="ماهر"]');
+   if(await member.count())await member.click();
+   const submit=page.locator('#btnSubmitUnifiedTask');
+   assert.equal(await submit.count(),1,'Unified task submit button missing');
+   await submit.click();
+   await page.waitForFunction(name=>getTodoTasks().some(t=>t.title===name),
+      'تجربة QA شاملة '+width,{timeout:15000});
+   const taskBefore=await page.evaluate(name=>({
+     found:getTodoTasks().some(t=>t.title===name),
+     stored:localStorage.getItem('family_monefy_tasks')?.includes(name)||false
+   }),'تجربة QA شاملة '+width);
+   assert.ok(taskBefore.found && taskBefore.stored,'Task not saved through actual UI');
+   await page.reload({waitUntil:'domcontentloaded',timeout:60000});
+   await page.waitForFunction(()=>typeof getTodoTasks==='function',null,{timeout:20000});
+   const persisted=await page.evaluate(name=>({
+     task:getTodoTasks().some(t=>t.title===name),
+     sentinel:localStorage.getItem('__qa_keep'),
+     alerts:JSON.parse(localStorage.getItem('family_alerts_store_v2')||'[]').length,
+     width:document.documentElement.scrollWidth,
+     viewport:innerWidth
+   }),'تجربة QA شاملة '+width);
+   console.log('TASK_AND_PERSIST '+width+' '+JSON.stringify({taskBefore,persisted}));
+   assert.equal(persisted.task,true,'Task lost on reload');
+   assert.equal(persisted.sentinel,'preserved','Other local storage was corrupted');
+   assert.ok(persisted.alerts>=6,'Alerts lost on reload');
+   assert.ok(persisted.width<=persisted.viewport+4,'Horizontal page overflow after reload');
+   // Deleting every task must remain an empty list; demo tasks must not respawn.
+   const emptyCount=await page.evaluate(()=>{
+     const previous=localStorage.getItem('family_monefy_tasks');
+     localStorage.setItem('family_monefy_tasks','[]');
+     const result=getTodoTasks().length;
+     if(previous===null)localStorage.removeItem('family_monefy_tasks');
+     else localStorage.setItem('family_monefy_tasks',previous);
+     return result;
+   });
+   assert.equal(emptyCount,0,'Deleted tasks were silently re-seeded');
+   const requestLayout=await page.evaluate(()=>{
+     const before=state.moneyRequests;
+     const memberFilter=state.currentMemberFilter;
+     const filter=window.currentRequestStatusFilter;
+     state.currentMemberFilter='الكل';
+     window.currentRequestStatusFilter='all';
+     state.moneyRequests=[
+       {id:'layout-req-1',status:'pending',serialNo:'REQ-2026-0001',member:'مريم',reason:'طلب مصروف بعنوان طويل للتأكد من التفاف النص على الجوال',amount:350,date:'2026-11-14',timestamp:'',allocations:[{category:'food',member:'مريم',amount:250},{category:'daily',member:'محمد',amount:100}]},
+       {id:'layout-req-2',status:'approved',member:'محمد',reason:'طلب سابق',amount:300,date:'2026-11-14',timestamp:'2026-11-12',allocations:[]}
+     ];
+     switchAppPage('requests',true);
+     switchRequestMainSection('requests');
+     switchRequestSubTab('list');
+     const cards=[...document.querySelectorAll('.request-card')];
+     const [first,second]=cards;
+     const actions=[...first.querySelectorAll('.request-card-actions button')];
+     const row=actions.map(el=>el.getBoundingClientRect());
+     const wrap=first.getBoundingClientRect();
+     let clickedId='';
+     const prompt=window.prompt;
+     try {
+       window.prompt=message=>{clickedId=message.match(/REQ-2026-0001/)?.[0]||'';return null;};
+       first.querySelector('[data-action="edit"]').click();
+     } finally {
+       window.prompt=prompt;
+     }
+     const out={count:cards.length,allocations:first.querySelectorAll('.request-card-allocations li').length,
+       emptyDate:first.querySelectorAll('.request-card-dates > span').length,
+       presentDate:second.querySelectorAll('.request-card-dates > span').length,
+       statuses:cards.map(card=>card.querySelector('.request-card-status').dataset.status),
+       actions:actions.map(button=>button.dataset.action),clickedId,
+       fits:row.every(rect=>rect.left>=wrap.left&&rect.right<=wrap.right&&rect.width>0&&rect.height===row[0].height),
+       notes:[...document.querySelectorAll('#opsSubViewArchive button')].filter(el=>el.getAttribute('onclick')?.includes("filterArchiveType('notes'")).length};
+     state.moneyRequests=before;
+     state.currentMemberFilter=memberFilter;
+     window.currentRequestStatusFilter=filter;
+     renderRequestsList();
+     return out;
+   });
+   assert.deepEqual(requestLayout,{count:2,allocations:2,emptyDate:1,presentDate:2,
+     statuses:['pending','approved'],actions:['approve','edit','reject'],clickedId:'REQ-2026-0001',fits:true,notes:1});
+
+   await page.locator('#navTabOperations').click();
+   const fixture = await page.evaluate(() => {
+     switchOperationsSubTab('registered');
+     state.period = 'custom';
+     state.customDateRange = {from:'2024-01-01',to:'2024-02-29'};
+     state.currentWalletId = 'all';
+     state.transactions = [
+       ...Array.from({length:41}, (_, i) => ({
+         id:'expense-mode-' + i, type:'expense', date:'2024-02-29', category:'food',
+         time: i === 0 ? '٢:٠٥ م' : '11:00 AM', amount:100, label:i === 0 ? 'بند اختبار التقويم' : 'مصروف آخر'
+       })),
+       {id:'earlier-expense',type:'expense',date:'2024-01-01',category:'daily',time:'10:00',amount:75},
+       {id:'income-mode',type:'income',date:'2024-02-29',category:'salary',time:'15:00',amount:950}
+     ];
+     opsTypeFilterState = 'income';
+     return {dayTotal:formatMoney(4100),previousTotal:formatMoney(75),emptyTotal:formatMoney(0)};
+   });
+   const timeline = page.locator('#btnOpsModeTimeline');
+   const calendar = page.locator('#btnOpsModeCalendar');
+   await timeline.click({timeout:10000});
+   assert.equal(await timeline.getAttribute('aria-pressed'),'true');
+   const item = page.locator('.ops-timeline-item');
+   const firstDay = page.locator('.ops-timeline-day[data-date="2024-02-29"]');
+   assert.equal(await firstDay.locator('header bdi').textContent(),fixture.dayTotal);
+   assert.equal(await item.count(),40);
+   await item.first().locator('summary').click();
+   assert.equal(await item.first().locator('.ops-timeline-details strong').textContent(),'بند اختبار التقويم');
+   await page.getByRole('button',{name:/عرض المزيد من العمليات/}).click();
+   assert.equal(await item.count(),42);
+   assert.equal(await item.first().locator('.ops-timeline-time bdi').textContent(),'2:05 م');
+
+   await calendar.click();
+   assert.equal(await calendar.getAttribute('aria-pressed'),'true');
+   const current = page.locator('[data-calendar-date="2024-01-01"]');
+   assert.equal(await current.locator('bdi').textContent(),fixture.previousTotal);
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   const leapDay = page.locator('[data-calendar-date="2024-02-29"]');
+   await leapDay.click();
+   assert.equal(await leapDay.getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('.ops-calendar-day').count(),29);
+   assert.equal(await leapDay.locator('bdi').textContent(),fixture.dayTotal);
+   assert.equal(await page.locator('.ops-calendar-month-total bdi').textContent(),fixture.dayTotal);
+   assert.equal(await item.count(),40);
+   await page.getByRole('button',{name:/عرض المزيد من العمليات/}).click();
+   assert.equal(await item.count(),41);
+   await page.locator('[data-calendar-date="2024-02-28"]').click();
+   assert.ok(await page.locator('.ops-calendar-empty').isVisible(),'Blank day should open empty details');
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   assert.equal(await page.locator('.ops-calendar-day').count(),31,'Empty month should remain navigable');
+   assert.equal(await page.locator('.ops-calendar-month-total bdi').textContent(),fixture.emptyTotal);
+   await page.getByRole('button',{name:'الشهر السابق'}).click();
+   const filteredTotal = await page.evaluate(() => {
+     document.getElementById('opsSearchInput').value = 'بند اختبار التقويم';
+     filterOperationsList();
+     return formatMoney(100);
+   });
+   assert.equal(await leapDay.locator('bdi').textContent(),filteredTotal);
+   await leapDay.click();
+   assert.equal(await item.count(),1);
+   const fits = await page.locator('.ops-calendar-grid').evaluate(grid => {
+     const row = grid.getBoundingClientRect();
+     const weekdays = [...grid.querySelectorAll('.ops-calendar-weekday')];
+     return grid.scrollWidth <= grid.clientWidth &&
+       weekdays[0].getBoundingClientRect().right > weekdays[6].getBoundingClientRect().right &&
+       [...grid.querySelectorAll('button')].every(button => {
+         const rect = button.getBoundingClientRect();
+         return rect.left >= row.left && rect.right <= row.right && rect.width > 0;
+       });
+   });
+   assert.ok(fits,'Calendar must fit seven columns in RTL');
+   await page.evaluate(() => {
+     document.getElementById('opsSearchInput').value = '';
+     filterOperationsList();
+   });
+   const trend = page.locator('#btnOpsModeMonthTrend');
+   await trend.click();
+   assert.equal(await trend.getAttribute('aria-pressed'),'true');
+   const graph = page.locator('.ops-month-trend');
+   const points = graph.locator('.ops-month-trend-point');
+   assert.equal(await points.count(),29,'The trend should preserve the calendar month');
+   const firstPoint = points.first();
+   const lastPoint = points.last();
+   assert.ok(Number(await firstPoint.locator('circle').getAttribute('cy')) >
+     Number(await lastPoint.locator('circle').getAttribute('cy')),'Positive spending must plot above zero');
+   assert.equal(await lastPoint.getAttribute('aria-pressed'),'true');
+   assert.equal(await graph.locator('.ops-month-trend-label text').textContent(),fixture.dayTotal);
+   assert.equal(await page.locator('.ops-month-trend-detail bdi').textContent(),fixture.dayTotal);
+   await lastPoint.press('ArrowLeft');
+   assert.equal(await points.nth(27).getAttribute('aria-pressed'),'true');
+   assert.equal(await page.locator('.ops-month-trend-detail bdi').textContent(),fixture.emptyTotal);
+   await lastPoint.locator('circle').click();
+   assert.equal(await item.count(),40,'Selecting a point should show that day’s expenses');
+   await page.getByRole('button',{name:'الشهر التالي'}).click();
+   assert.equal(await points.count(),31);
+   assert.ok(await page.locator('.ops-calendar-empty').isVisible());
+   await page.getByRole('button',{name:'الشهر السابق'}).click();
+   const graphFits = await graph.evaluate(el => {
+     const rect = el.getBoundingClientRect();
+     const host = el.parentElement.getBoundingClientRect();
+     return rect.width > 0 && rect.height > 0 && rect.left >= host.left && rect.right <= host.right;
+   });
+   assert.ok(graphFits,'The monthly chart should fit the panel at the tested viewport');
+   await page.locator('#btnOpsModeDaily').click();
+   assert.equal(await page.evaluate(() => getRegisteredOperations().map(tx => tx.id).join(',')), 'income-mode',
+     'Returning to daily mode should preserve the original filter');
+
+   assert.deepEqual(errors,[],'Uncaught JS exceptions '+JSON.stringify(errors));
+   await ctx.close();
+  }
+  console.log('PASS end-to-end nav/alerts create-edit-delete/read/task creation/persistence/mobile-desktop');
+ }finally{await browser.close();}
+})().catch(e=>{console.error('END_TO_END_QA_FAILED',e.stack||e);process.exitCode=1});

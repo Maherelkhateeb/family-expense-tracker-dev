@@ -2395,3 +2395,150 @@ body.light-theme #cmpPeriodChart {
 #cmpPeriodChartContent :is(.cmp-column-values,.cmp-change-values) :is(.cmp-period-value,.cmp-plain-value) {
   font-size: inherit;
 }
+
+/* ==========================================================================
+   Light Mode Overrides for Budget & Audit (Fix Dark Screens Issue)
+   ========================================================================== */
+body.light-theme .budget-top-hero {
+  background: #ffffff !important;
+  border: 1.2px solid rgba(16, 185, 129, 0.45) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme #budgetHeroTitle {
+  color: #0f172a !important;
+}
+body.light-theme .budgets-sub-tab-strip {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .budgets-sub-tab-strip button:not(.active) {
+  color: #475569 !important;
+}
+body.light-theme #panelBudgetAudit {
+  background: #ffffff !important;
+  border: 1.2px solid rgba(239, 68, 68, 0.35) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
+}
+body.light-theme #panelBudgetAudit h3,
+body.light-theme #panelBudgetAudit h4,
+body.light-theme #panelBudgetAudit h5 {
+  color: #0f172a !important;
+}
+body.light-theme #panelBudgetAudit p {
+  color: #64748b !important;
+}
+body.light-theme .audit-deck-toolbar {
+  background: #f8fafc !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+body.light-theme .pillar-stage-wrapper {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05) !important;
+}
+body.light-theme .audit-question-card {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
+}
+body.light-theme .audit-question-card h5 {
+  color: #0f172a !important;
+}
+body.light-theme .audit-formula-box {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+body.light-theme .audit-formula-box code {
+  background: #e2e8f0 !important;
+  color: #0284c7 !important;
+}
+body.light-theme .audit-pill-btn:not(.active) {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme #btnToggleAuditDeck {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+body.light-theme #cmpPeriodChart {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.light-theme #cmpPeriodChartTitle {
+  color: #0f172a !important;
+}
+body.light-theme #cmpPeriodsFilterBox select {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme #cmpPeriodChart .cmp-range-preview {
+  background: #f8fafc !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme #cmpSummary .cmp-unified-kpi,
+body.light-theme #cmpProjSummary .cmp-unified-kpi {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
+  color: #0f172a !important;
+}
+body.light-theme .budget-spec {
+  color: #0f172a !important;
+}
+body.light-theme .budget-spec .bs-panel {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+body.light-theme .budget-spec .bs-panel h3 {
+  color: #0f172a !important;
+}
+body.light-theme .budget-spec .bs-table th {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .budget-spec .bs-table td {
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+body.light-theme .budget-spec .bs-table tfoot th,
+body.light-theme .budget-spec .bs-table tfoot td {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme .budget-spec .bs-row-card {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.light-theme .cmp-charts-deck {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+body.light-theme .cmp-deck-header {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.light-theme .cmp-deck-tab:not(.active) {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+body.light-theme #panelProjectBudgets {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+body.light-theme #panelBudgetComparisons {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}

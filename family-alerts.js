@@ -898,3 +898,7 @@ const familyAlerts = (() => {
     normalizePersonName
   };
 })();
+
+if (typeof window !== 'undefined') {
+  window.familyAlerts = familyAlerts;
+}

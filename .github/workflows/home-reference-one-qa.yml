@@ -1,0 +1,55 @@
+name: First reference home - mobile screenshots and actions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - home-reference-one.css
+      - home-mobile-fit.css
+      - home-dynamic-layout-engine.js
+      - scripts/test-home-reference-one.cjs
+      - scripts/test-home-layouts.cjs
+      - scripts/test-home-font-responsiveness.cjs
+      - scripts/test-home-short-viewport.cjs
+      - .github/workflows/home-reference-one-qa.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  first-reference-phone:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install phone test browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Serve local app
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/home-reference-server.log 2>&1 &
+      - name: Test RTL mobile reference, quick expense and drilldown
+        env:
+          APP_URL: http://127.0.0.1:8765/
+        run: |
+          mkdir -p screenshots
+          node scripts/test-home-font-responsiveness.cjs
+          node scripts/test-home-short-viewport.cjs
+          node scripts/test-home-reference-one.cjs
+          node scripts/test-home-layouts.cjs
+      - name: Store reference screen shots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-home-reference-phone-screenshots
+          path: |
+            screenshots/home-reference-one-*.png
+            screenshots/home-layout-*.png
+            screenshots/home-reference-one-short-*.png
+          if-no-files-found: ignore
