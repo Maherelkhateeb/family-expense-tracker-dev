@@ -1606,8 +1606,13 @@ const BudgetCompareEngine = (() => {
   }
 
   function readSampleOperations() {
-    const stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
-    if (!stored || Array.isArray(stored) || typeof stored !== 'object') throw new Error('Invalid sample ledger');
+    let stored = {};
+    try {
+      stored = JSON.parse(localStorage.getItem(sampleLedgerKey) || '{}');
+    } catch(e) {
+      stored = {};
+    }
+    if (!stored || Array.isArray(stored) || typeof stored !== 'object') return {};
     return stored;
   }
 

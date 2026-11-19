@@ -2808,6 +2808,7 @@ function switchCategoryChartFormat(format, btnEl) {
     window.cloneCurrentBudgetPlan = cloneCurrentBudgetPlan;
     window.deleteCurrentBudgetPlan = deleteCurrentBudgetPlan;
     window.addBudgetItemToCurrentPlan = addBudgetItemToCurrentPlan;
+window.addBudgetItem = addBudgetItemToCurrentPlan;
     window.deleteBudgetItem = deleteBudgetItem;
     window.editBudgetItemAmount = editBudgetItemAmount;
     window.toggleBudgetItemMember = toggleBudgetItemMember;
