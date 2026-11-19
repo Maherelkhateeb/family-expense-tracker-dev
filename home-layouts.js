@@ -237,163 +237,100 @@
     const header = document.querySelector('.app-header');
     const period = document.querySelector('.period-selector-top-strip') || document.querySelector('.period-filter-container');
     const balance = document.getElementById('topKpiThreeStrip') || document.getElementById('mainBalanceCard');
-    const scrollBody = document.querySelector('.app-scroll-body');
-    const viewExp = document.getElementById('viewExpenses');
-
-    // Expenses view configuration when alternative layout is active
-    const isExpensesActive = viewExp && (viewExp.classList.contains('active') || viewExp.style.display !== 'none');
-
-    if (currentLayout !== 0 && isExpensesActive) {
-      document.body.classList.add('view-expenses-active');
-      if (scrollBody) {
-        scrollBody.style.setProperty('overflow-y', 'auto', 'important');
-        scrollBody.style.setProperty('padding-bottom', '76px', 'important');
-      }
-      if (viewExp) {
-        viewExp.style.setProperty('overflow-y', 'auto', 'important');
-        viewExp.style.setProperty('padding-bottom', '76px', 'important');
-      }
-      container.style.setProperty('overflow-y', 'auto', 'important');
-    } else {
-      document.body.classList.remove('view-expenses-active');
-      if (scrollBody) {
-        scrollBody.style.removeProperty('overflow-y');
-        scrollBody.style.removeProperty('padding-bottom');
-      }
-    }
 
     const vv = window.visualViewport;
     const viewportW = (vv ? vv.width : window.innerWidth) || document.documentElement.clientWidth || 390;
     const viewportH = (vv ? vv.height : window.innerHeight) || document.documentElement.clientHeight || 800;
 
     const navRect = bottomNav ? bottomNav.getBoundingClientRect() : null;
-    const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 62);
+    const bottomLimit = (navRect && navRect.top > 200) ? navRect.top : (viewportH - 64);
 
     let containerTop = 0;
-    if (tools && tools.offsetParent !== null) {
-      containerTop = tools.getBoundingClientRect().bottom + 2;
-    } else if (container && container.offsetParent !== null) {
+    if (container && container.offsetParent !== null) {
       containerTop = container.getBoundingClientRect().top;
     }
 
-    if (containerTop <= 40 || containerTop > 340) {
-      const hH = header ? header.offsetHeight : 50;
-      const pH = period ? period.offsetHeight : 36;
-      const bH = balance ? balance.offsetHeight : 78;
-      const tH = tools ? tools.offsetHeight : 38;
-      containerTop = hH + pH + bH + tH + 4;
+    if (containerTop <= 40 || containerTop > 320) {
+      const hH = header ? header.offsetHeight : 52;
+      const pH = period ? period.offsetHeight : 44;
+      const bH = balance ? balance.offsetHeight : 84;
+      const tH = tools ? tools.offsetHeight : 42;
+      containerTop = hH + pH + bH + tH + 6;
     }
 
-    // Exact net vertical space strictly available above bottom navigation dock
-    const availableH = Math.max(230, Math.floor(bottomLimit - containerTop - 16));
+    const availableH = Math.max(340, Math.floor(bottomLimit - containerTop - 6));
 
-    // Proportional responsive scaling factors
-    const widthScale = Math.min(1.05, Math.max(0.80, viewportW / 390));
-    const heightScale = Math.min(1.10, Math.max(0.70, availableH / 440));
-    const responsiveFontScale = (widthScale * 0.40 + heightScale * 0.60);
-
-    const docEl = document.documentElement;
-    const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
-    const fontScales = {
-      micro: 0.82,
-      small: 0.90,
-      medium: 1.00,
-      large: 1.08,
-      xlarge: 1.16,
-      huge: 1.25
-    };
-    const baseScale = fontScales[fontMode] || 1.00;
-    const finalFontScale = (baseScale * responsiveFontScale).toFixed(3);
-    container.style.setProperty('--dynamic-home-font-scale', String(finalFontScale));
-
-    const fontFamily = docEl.getAttribute('data-font-family') || localStorage.getItem('family_expense_font_family') || 'inherit';
-    if (fontFamily && fontFamily !== 'inherit') {
-      container.style.setProperty('--dynamic-home-font-family', fontFamily);
+    let widthScale = 1.0;
+    if (viewportW < 365) {
+      widthScale = 0.88;
+    } else if (viewportW < 385) {
+      widthScale = 0.94;
+    } else if (viewportW < 415) {
+      widthScale = 0.98;
+    } else {
+      widthScale = 1.00;
     }
 
-    let cardH = 68;
-    let gap = availableH < 380 ? 4 : 6;
-    let iconSize = 44;
+    let iconSize = Math.round(36 * widthScale);
+    iconSize = Math.max(30, Math.min(38, iconSize));
+    container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
+
+    let cardH = 72;
+    let gap = 6;
+
+    if (viewportH < 720) {
+      gap = 4;
+    } else if (viewportH < 800) {
+      gap = 5;
+    } else {
+      gap = 6;
+    }
 
     switch (currentLayout) {
-      case 1: { // 1 column, 10 rows (9 categories + voice) - Large icons & prominent divider
-        gap = 5;
-        cardH = 54;
-        iconSize = 44;
+      case 1: { // 1 column, 10 rows (9 categories + voice)
+        gap = viewportH < 720 ? 3 : 4;
+        cardH = Math.floor((availableH - (9 * gap) - 6) / 10);
+        cardH = Math.max(44, Math.min(54, cardH));
         break;
       }
-      case 2: { // Hero analytics + 2 columns, 5 rows - Large icons & prominent divider
-        gap = 6;
-        const heroH = Math.max(68, Math.min(88, Math.floor(availableH * 0.19)));
-        cardH = 74;
-        iconSize = 44;
+      case 2: { // Hero analytics + 2 columns, 5 rows
+        gap = viewportH < 720 ? 4 : 5;
+        const heroH = Math.max(80, Math.min(98, Math.floor(availableH * 0.22)));
+        const remainingForGrid = availableH - heroH - 6 - gap;
+        cardH = Math.floor((remainingForGrid - (4 * gap)) / 5);
+        cardH = Math.max(58, Math.min(74, cardH));
         container.style.setProperty('--dynamic-home-hero-height', `${heroH}px`);
         break;
       }
-      case 3: { // 2 columns, 5 rows (10 cards) - Large icons & prominent divider
-        gap = 6;
-        cardH = 74;
-        iconSize = 44;
+      case 3: { // 2 columns, 5 rows (10 cards)
+        gap = viewportH < 720 ? 4 : 6;
+        cardH = Math.floor((availableH - (4 * gap) - 8) / 5);
+        cardH = Math.max(68, Math.min(104, cardH));
         break;
       }
-      case 4: { // 3 columns, 3 rows (9 category cards) + 1 bottom voice banner
-        gap = 6;
-        const voiceStripH = Math.max(34, Math.min(42, Math.floor(availableH * 0.095)));
-        cardH = Math.max(88, Math.min(136, Math.floor((availableH - voiceStripH - 16) / 3)));
-        iconSize = 42;
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceStripH}px`);
+      case 4: { // 3 columns, 3 rows (9 category cards) + 1 bottom full-width voice banner
+        gap = viewportH < 720 ? 4 : (viewportH < 800 ? 5 : 6);
+        const voiceStripH = 44;
+        const availableForCards = availableH - voiceStripH - gap - 4;
+        cardH = Math.floor((availableForCards - (2 * gap)) / 3);
+        cardH = Math.max(98, Math.min(156, cardH));
         break;
       }
-      case 5: { // Radial Cockpit - Large satellites & distinct divider
-        const voiceBarH = 38;
-        const arenaH = Math.max(380, availableH - voiceBarH - gap - 4);
-        const satSize = Math.max(76, Math.min(88, Math.floor(arenaH * 0.20)));
-        const maxRadius = Math.floor((Math.min(viewportW, arenaH) - satSize - 10) / 2);
-        const radius = Math.max(105, Math.min(145, maxRadius));
-        const hubSize = Math.max(90, Math.min(110, Math.floor(arenaH * 0.26)));
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
-        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
-        container.style.setProperty('--dynamic-home-sat-size', `${satSize}px`);
-        container.style.setProperty('--dynamic-home-orbit-r', `${radius}px`);
-        container.style.setProperty('--dynamic-home-hub-size', `${hubSize}px`);
-        cardH = Math.floor(availableH);
-        break;
-      }
-      case 6: { // Honeycomb Hive
-        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
-        const arenaH = Math.max(340, availableH - voiceBarH - gap - 4);
-        const hexH = Math.max(64, Math.min(92, Math.floor((arenaH - 8) / 3.05)));
-        const hexW = Math.round(hexH * 1.08);
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
-        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
-        container.style.setProperty('--dynamic-home-hex-h', `${hexH}px`);
-        container.style.setProperty('--dynamic-home-hex-w', `${hexW}px`);
-        cardH = Math.floor(availableH);
-        break;
-      }
-      case 7: { // HUD Sensor Tiles - Large tiles & prominent divider
-        const voiceBarH = 38;
-        const arenaH = Math.max(390, availableH - voiceBarH - gap - 4);
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
-        container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
-        cardH = Math.floor((arenaH - (2 * gap)) / 3);
-        iconSize = 44;
-        break;
-      }
-      case 8: { // Diamond Crystals
-        const voiceBarH = Math.max(32, Math.min(40, Math.floor(availableH * 0.09)));
-        const arenaH = Math.max(240, availableH - voiceBarH - gap - 4);
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
+      case 5: // Radial Cockpit
+      case 6: // Honeycomb Hive
+      case 7: // HUD Sensor Tiles
+      case 8: // Diamond Crystals
+      default: {
+        const voiceBarH = 44;
+        const arenaH = Math.max(340, Math.min(520, availableH - voiceBarH - gap));
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
       }
       case 9: { // Spectrum Equalizer with Member Chart
-        const voiceBarH = Math.max(30, Math.min(38, Math.floor(availableH * 0.08)));
-        const memberChartH = Math.max(46, Math.min(62, Math.floor(availableH * 0.17)));
-        const arenaH = Math.max(180, availableH - memberChartH - voiceBarH - (gap * 2) - 4);
-        container.style.setProperty('--dynamic-home-voice-h', `${voiceBarH}px`);
-        container.style.setProperty('--dynamic-home-member-h', `${memberChartH}px`);
+        const voiceBarH = 44;
+        const memberChartH = 100;
+        const arenaH = Math.max(190, Math.min(300, availableH - memberChartH - voiceBarH - (gap * 2)));
         container.style.setProperty('--dynamic-home-arena-h', `${arenaH}px`);
         cardH = Math.floor(availableH);
         break;
@@ -403,7 +340,25 @@
     container.style.setProperty('--dynamic-home-card-height', `${cardH}px`);
     container.style.setProperty('--dynamic-home-gap', `${gap}px`);
     container.style.setProperty('--dynamic-home-available-h', `${availableH}px`);
-    container.style.setProperty('--dynamic-home-icon-size', `${iconSize}px`);
+
+    const docEl = document.documentElement;
+    const fontMode = docEl.getAttribute('data-font-size') || localStorage.getItem('family_expense_font_size') || 'medium';
+    const fontScales = {
+      micro: 0.82,
+      small: 0.90,
+      medium: 1.00,
+      large: 1.10,
+      xlarge: 1.20,
+      huge: 1.30
+    };
+    const baseScale = fontScales[fontMode] || 1.00;
+    const finalFontScale = (baseScale * widthScale).toFixed(3);
+    container.style.setProperty('--dynamic-home-font-scale', String(finalFontScale));
+
+    const fontFamily = docEl.getAttribute('data-font-family') || localStorage.getItem('family_expense_font_family') || 'inherit';
+    if (fontFamily && fontFamily !== 'inherit') {
+      container.style.setProperty('--dynamic-home-font-family', fontFamily);
+    }
   }
 
   function isThemeLight() {
@@ -756,44 +711,43 @@
       return `
         <article class="home-design-card hl-row-l1" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
           <div class="hl-row-l1-content">
-            <!-- 1. Right: Category Icon -->
-            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-              <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:var(--dynamic-home-icon-size, 32px);height:var(--dynamic-home-icon-size, 32px);min-width:var(--dynamic-home-icon-size, 32px);border-radius:50%;font-size:calc(var(--dynamic-home-icon-size, 32px) * 0.48);">
-                <i class="${s.cat.iconClass}"></i>
+            <div class="hl-row-l1-right">
+              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-icon-btn" title="تسجيل سريع في ${catDisplayName}">
+                <div class="hl-row-l1-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+                  <i class="${s.cat.iconClass}"></i>
+                </div>
+              </button>
+              <div class="hl-row-icon-divider" style="width:2.5px; height:38px; background:var(--cat-color); opacity:0.95; margin:0 10px; border-radius:3px; flex-shrink:0; display:block !important;"></div>
+              <div class="hl-row-name-amt">
+                <button type="button" data-action="quick-add" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="تسجيل سريع في ${catDisplayName}">
+                  <strong class="hl-row-l1-name">${catDisplayName}</strong>
+                </button>
+                <button type="button" data-action="view-operations" data-cat-id="${id}" style="background:none;border:none;padding:0;text-align:right;cursor:pointer;" title="عرض حركات ${catDisplayName}">
+                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                    <span class="hl-amt-curr">${currSymbol}</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="hl-row-divider"></div>
+
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-mid-btn" title="عرض حركات ${catDisplayName}">
+              <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol}</div>
+              <div class="hl-row-bud-line">الميزانية: ${s.budValStr} ${currSymbol}</div>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
               </div>
             </button>
-            <div class="hl-row-icon-divider" style="width:2px;height:calc(var(--dynamic-home-icon-size, 32px) * 0.82);background:var(--cat-color);opacity:0.95;margin:0 6px;border-radius:2px;flex-shrink:0;"></div>
 
-            <!-- 2. Center: Name on Top, Remaining/Budget on Bottom with Progress Bar -->
-            <div class="hl-row-main-info">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-row-title-btn" title="تسجيل سريع في ${catDisplayName}">
-                <strong class="hl-row-l1-name">${catDisplayName}</strong>
-              </button>
-              <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-subline-btn" title="عرض حركات ${catDisplayName}">
-                <div class="hl-row-rem-line">المتبقي: ${s.remValStr} ${currSymbol} · الميزانية: ${s.budValStr}</div>
-                <div class="hl-progress-track">
-                  <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                </div>
-              </button>
-            </div>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};border:none;cursor:pointer;" title="نسبة المتبقي - انقر لعرض العمليات">
+              %${s.remainingPct}
+            </button>
 
-            <!-- 3. Left: Spent Amount on Top, Percentage Badge + Chevron on Bottom -->
-            <div class="hl-row-left-cluster">
-              <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-amt-btn" title="عرض حركات ${catDisplayName}">
-                <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                  <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                  <span class="hl-amt-curr">${currSymbol}</span>
-                </div>
-              </button>
-              <div class="hl-row-actions-cluster">
-                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-l1-badge" style="background:${s.pct >= 100 ? '#fee2e2' : '#dcfce7'};color:${s.pct >= 100 ? '#b91c1c' : '#15803d'};" title="نسبة المتبقي - انقر لعرض العمليات">
-                  %${s.remainingPct}
-                </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-              </div>
-            </div>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-row-chevron-btn" aria-label="عرض العمليات">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
           </div>
         </article>
       `;
@@ -803,21 +757,28 @@
     const voiceRowHtml = `
       <article class="home-design-card hl-row-l1 hl-voice-row" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
         <div class="hl-row-l1-content">
-          <button type="button" data-action="voice-record" class="hl-row-icon-btn">
-            <div class="hl-row-l1-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
-              <i class="fa-solid fa-microphone"></i>
-            </div>
-          </button>
-          <div class="hl-row-icon-divider"></div>
-          <div class="hl-row-main-info">
-            <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
-            <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.62rem;font-weight:700;">اضغط للتحدث الذكي مع المساعد المالي</small>
-          </div>
-          <div class="hl-row-left-cluster">
-            <button type="button" data-action="voice-record" class="hl-voice-waves-btn" style="background:none;border:none;padding:0;cursor:pointer;">
-              ${getAudioWaveHtml('#8b5cf6')}
+          <div class="hl-row-l1-right">
+            <button type="button" data-action="voice-record" class="hl-row-icon-btn">
+              <div class="hl-row-l1-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
+                <i class="fa-solid fa-microphone"></i>
+              </div>
             </button>
+            <div class="hl-row-icon-divider" style="width:2.5px; height:38px; background:var(--cat-color); opacity:0.95; margin:0 10px; border-radius:3px; flex-shrink:0; display:block !important;"></div>
+            <div class="hl-row-name-amt">
+              <strong class="hl-row-l1-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
+              <small class="hl-voice-sub" style="color:#7c3aed;font-size:0.65rem;font-weight:700;">اضغط للتحدث الذكي</small>
+            </div>
           </div>
+
+          <div class="hl-row-divider"></div>
+
+          <button type="button" data-action="voice-record" class="hl-row-mid-btn hl-voice-waves-btn">
+            ${getAudioWaveHtml('#8b5cf6')}
+          </button>
+
+          <button type="button" data-action="voice-record" class="hl-row-chevron-btn" aria-label="بدء التسجيل الصوتي">
+            <i class="fa-solid fa-chevron-left" style="color:#7c3aed;"></i>
+          </button>
         </div>
       </article>
     `;
@@ -841,6 +802,31 @@
     const overallPct = totalBudget > 0 ? Math.round((totalExpense / totalBudget) * 100) : 0;
     const remainingBudget = Math.max(0, totalBudget - totalExpense);
 
+    const top3 = spentCategories.slice(0, 3);
+    const top3Html = top3.length > 0 ? top3.map(item => {
+      const pct = totalExpense > 0 ? Math.round((item.spent / totalExpense) * 100) : 0;
+      return `
+        <div class="hl-top3-item" data-action="view-operations" data-cat-id="${item.id}" style="cursor:pointer;" title="عرض حركات ${item.cat.name}">
+          <div class="hl-top3-cat">
+            <i class="${item.cat.iconClass}" style="color:${item.cat.color};"></i>
+            <span>${item.cat.name}</span>
+          </div>
+          <div class="hl-top3-bar-wrap">
+            <div class="hl-top3-bar-track">
+              <div class="hl-top3-bar-fill" style="width:${pct}%;background:${item.cat.color};"></div>
+            </div>
+            <strong style="color:${item.cat.color};">%${pct}</strong>
+          </div>
+        </div>
+      `;
+    }).join('') : '<div style="color:#94a3b8;font-size:0.72rem;text-align:center;">لا توجد مصروفات مسجلة بعد</div>';
+
+    // 10 Cards in 2 Columns matching Image (Asymmetric with Outer Icons & Dividers):
+    // Row 1: Right = daily (مصروف يومي), Left = food (طعام ومشتريات)
+    // Row 2: Right = bills (فواتير والتزامات), Left = house (مستلزمات منزل)
+    // Row 3: Right = education (تعليم ودروس), Left = transport (مواصلات وبنزين)
+    // Row 4: Right = health (صحة وعلاج), Left = clothes (ملابس وأحذية)
+    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
     const pairs = [
       ['daily', 'food'],
       ['bills', 'house'],
@@ -850,20 +836,20 @@
     ];
 
     const cardsHtml = pairs.map(([rightId, leftId]) => {
-      function renderOneCard(id) {
+      function renderOneCard(id, side) {
         if (id === 'voice') {
           return `
-            <article class="home-design-card hl-card-l2 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
-              <div class="hl-card-l2-inner">
+            <article class="home-design-card hl-card-l2 hl-voice-card hl-card-l2-${side}-col" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l2-inner hl-card-l2-inner-${side}">
                 <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
-                  <div class="hl-card-l2-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:10px;">
+                  <div class="hl-card-l2-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;border-radius:13px;">
                     <i class="fa-solid fa-microphone"></i>
                   </div>
                 </button>
                 <div class="hl-card-l2-divider"></div>
                 <div class="hl-card-l2-right">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
-                    <strong class="hl-card-l2-name" style="color:#6d28d9;">إضافة صوتية</strong>
+                    <strong class="hl-card-l2-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
                   </button>
                   <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
                     ${getAudioWaveHtml('#8b5cf6')}
@@ -878,36 +864,49 @@
         const sign = s.hasSpent ? '- ' : '';
         const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
-        return `
-          <article class="home-design-card hl-card-l2" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-            <div class="hl-card-l2-inner">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-                <div class="hl-card-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '10px'};">
-                  <i class="${s.cat.iconClass}"></i>
-                </div>
-              </button>
-              <div class="hl-card-l2-divider"></div>
-              <div class="hl-card-l2-right">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
-                  <strong class="hl-card-l2-name">${catDisplayName}</strong>
-                </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
-                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                    <span class="hl-amt-curr">${currSymbol}</span>
-                  </div>
-                  <div class="hl-progress-track">
-                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                  </div>
-                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-                </button>
+        const iconBtnHtml = `
+          <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+            <div class="hl-card-l2-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};border-radius:${s.cat.iconShape === 'circle' ? '50%' : '13px'};">
+              <i class="${s.cat.iconClass}"></i>
+            </div>
+          </button>
+        `;
+
+        const dividerHtml = `<div class="hl-card-l2-divider"></div>`;
+
+        const textClusterHtml = `
+          <div class="hl-card-l2-right">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
+              <strong class="hl-card-l2-name">${catDisplayName}</strong>
+            </button>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
+              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                <span class="hl-amt-curr">${currSymbol}</span>
               </div>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+              </div>
+              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+            </button>
+          </div>
+        `;
+
+        // Side-aware layout: Outer icon, vertical divider, text towards center
+        const innerContent = side === 'right'
+          ? (iconBtnHtml + dividerHtml + textClusterHtml)
+          : (textClusterHtml + dividerHtml + iconBtnHtml);
+
+        return `
+          <article class="home-design-card hl-card-l2 hl-card-l2-${side}-col" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l2-inner hl-card-l2-inner-${side}">
+              ${innerContent}
             </div>
           </article>
         `;
       }
 
-      return renderOneCard(rightId) + renderOneCard(leftId);
+      return renderOneCard(rightId, 'right') + renderOneCard(leftId, 'left');
     }).join('');
 
     return `
@@ -930,11 +929,14 @@
             <div style="color:#b91c1c;">المصروف : <strong>${totalExpense.toLocaleString()} ${currSymbol}</strong></div>
             <div style="color:#15803d;">المتبقي : <strong>${remainingBudget.toLocaleString()} ${currSymbol}</strong></div>
           </div>
+
+          <div class="hl-top3-box">
+            <div class="hl-top3-title"><i class="fa-solid fa-chart-simple"></i>أعلى 3 بنود صرفاً</div>
+            ${top3Html}
+          </div>
         </section>
 
-        <div class="home-design-grid hl-grid-layout-2">
-          ${cardsHtml}
-        </div>
+        <div class="home-design-grid hl-grid-layout-2">${cardsHtml}</div>
       </div>
     `;
   }
@@ -944,6 +946,12 @@
      Card 10 (Row 5, Right) = إضافة صوتية للمصروفات
      ========================================================================= */
   function renderLayout3Asymmetric(totals, budgets, currSymbol, isGold) {
+    // 10 Cards in 2 Columns matching Image (Asymmetric with Outer Icons & Dividers):
+    // Row 1: Right = daily (مصروف يومي), Left = food (طعام ومشتريات)
+    // Row 2: Right = bills (فواتير والتزامات), Left = house (مستلزمات منزل)
+    // Row 3: Right = education (تعليم ودروس), Left = transport (مواصلات وبنزين)
+    // Row 4: Right = health (صحة وعلاج), Left = clothes (ملابس وأحذية)
+    // Row 5: Right = voice (إضافة صوتية), Left = other (أخرى ومشتريات)
     const pairs = [
       ['daily', 'food'],
       ['bills', 'house'],
@@ -953,20 +961,20 @@
     ];
 
     const cardsHtml = pairs.map(([rightId, leftId]) => {
-      function renderOneCard(id) {
+      function renderOneCard(id, side) {
         if (id === 'voice') {
           return `
-            <article class="home-design-card hl-card-l3 hl-voice-card" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
-              <div class="hl-card-l3-inner">
+            <article class="home-design-card hl-card-l3 hl-voice-card hl-card-l3-right-col" data-action="voice-record" style="--cat-color:#8b5cf6; --cat-rgb:139,92,246; --cat-pastel-bg:#f5f3ff; --cat-pastel-border:#c084fc;">
+              <div class="hl-card-l3-inner hl-card-l3-inner-right">
                 <button type="button" data-action="voice-record" class="hl-cat-icon-btn">
-                  <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;width:48px;height:48px;min-width:48px;border-radius:15px;font-size:1.45rem;">
+                  <div class="hl-card-l3-icon hl-voice-l3-icon" style="background:linear-gradient(135deg, #8b5cf6, #7c3aed);color:#ffffff;">
                     <i class="fa-solid fa-microphone"></i>
                   </div>
                 </button>
-                <div class="hl-card-l3-divider" style="width:2.5px;height:44px;background:#8b5cf6;opacity:0.95;margin:0 8px;border-radius:3px;flex-shrink:0;"></div>
+                <div class="hl-card-l3-divider"></div>
                 <div class="hl-card-l3-text">
                   <button type="button" data-action="voice-record" class="hl-cat-head-btn">
-                    <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية</strong>
+                    <strong class="hl-card-l3-name" style="color:#6d28d9;">إضافة صوتية للمصروفات</strong>
                   </button>
                   <button type="button" data-action="voice-record" class="hl-cat-amt-btn hl-voice-waves-box">
                     ${getAudioWaveHtml('#8b5cf6')}
@@ -981,36 +989,50 @@
         const sign = s.hasSpent ? '- ' : '';
         const catDisplayName = (id === 'other' && s.cat.altName) ? s.cat.altName : s.cat.name;
 
-        return `
-          <article class="home-design-card hl-card-l3" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
-            <div class="hl-card-l3-inner">
-              <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn" title="تسجيل سريع في ${catDisplayName}">
-                <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};width:48px;height:48px;min-width:48px;border-radius:15px;font-size:1.45rem;">
-                  <i class="${s.cat.iconClass}"></i>
-                </div>
-              </button>
-              <div class="hl-card-l3-divider" style="width:2.5px;height:44px;background:var(--cat-color);opacity:0.95;margin:0 8px;border-radius:3px;flex-shrink:0;"></div>
-              <div class="hl-card-l3-text">
-                <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
-                  <strong class="hl-card-l3-name">${catDisplayName}</strong>
-                </button>
-                <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
-                  <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
-                    <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
-                    <span class="hl-amt-curr">${currSymbol}</span>
-                  </div>
-                  <div class="hl-progress-track">
-                    <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
-                  </div>
-                  <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
-                </button>
+        const iconBtnHtml = `
+          <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-icon-btn">
+            <div class="hl-card-l3-icon" style="background:${s.cat.iconBg};color:${s.cat.iconColor};">
+              <i class="${s.cat.iconClass}"></i>
+            </div>
+          </button>
+        `;
+
+        const dividerHtml = `<div class="hl-card-l3-divider"></div>`;
+
+        const textClusterHtml = `
+          <div class="hl-card-l3-text">
+            <button type="button" data-action="quick-add" data-cat-id="${id}" class="hl-cat-head-btn" title="تسجيل سريع في ${catDisplayName}">
+              <strong class="hl-card-l3-name">${catDisplayName}</strong>
+            </button>
+            <button type="button" data-action="view-operations" data-cat-id="${id}" class="hl-cat-amt-btn" title="عرض حركات ${catDisplayName}">
+              <div class="hl-amount-cluster ${s.hasSpent ? 'spent' : 'zero'}">
+                <span class="hl-amt-num" style="direction:ltr;unicode-bidi:isolate;">${sign}${s.spentStr}</span>
+                <span class="hl-amt-curr">${currSymbol}</span>
               </div>
+              <div class="hl-progress-track">
+                <div class="hl-progress-fill" style="width:${Math.min(s.pct, 100)}%;background:${s.statusColor};"></div>
+              </div>
+              <small class="hl-budget-info" style="color:${s.statusColor};">${s.budgetText}</small>
+            </button>
+          </div>
+        `;
+
+        // Right side: Icon on right, divider, text on left (in RTL)
+        // Left side: Text on right, divider, Icon on left (in RTL)
+        const innerContent = side === 'right'
+          ? (iconBtnHtml + dividerHtml + textClusterHtml)
+          : (textClusterHtml + dividerHtml + iconBtnHtml);
+
+        return `
+          <article class="home-design-card hl-card-l3 hl-card-l3-${side}-col" data-ref-category="${id}" style="--cat-color:${s.cat.color}; --cat-rgb:${s.cat.rgb}; --cat-pastel-bg:${s.cat.pastelBg}; --cat-pastel-border:${s.cat.pastelBorder};">
+            <div class="hl-card-l3-inner hl-card-l3-inner-${side}">
+              ${innerContent}
             </div>
           </article>
         `;
       }
 
-      return renderOneCard(rightId) + renderOneCard(leftId);
+      return renderOneCard(rightId, 'right') + renderOneCard(leftId, 'left');
     }).join('');
 
     return `<div class="home-design-grid hl-grid-layout-3">${cardsHtml}</div>`;
@@ -1097,23 +1119,15 @@
     const container = document.getElementById('homeInterfaces');
     const containerW = (container && container.clientWidth > 100) ? container.clientWidth : (window.innerWidth || 390);
     const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const arenaH = container && container.style.getPropertyValue('--dynamic-home-arena-h')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-arena-h'), 10)
-      : Math.max(240, availableH - 46);
-    const satSize = container && container.style.getPropertyValue('--dynamic-home-sat-size')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-sat-size'), 10)
-      : Math.max(46, Math.min(68, Math.floor(arenaH * 0.165)));
-    const radius = container && container.style.getPropertyValue('--dynamic-home-orbit-r')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-orbit-r'), 10)
-      : Math.max(86, Math.min(138, Math.floor((Math.min(containerW, arenaH) - satSize - 14) / 2)));
-    const hubSize = container && container.style.getPropertyValue('--dynamic-home-hub-size')
-      ? parseInt(container.style.getPropertyValue('--dynamic-home-hub-size'), 10)
-      : Math.max(64, Math.min(94, Math.floor(arenaH * 0.23)));
-
+    const arenaH = Math.max(380, Math.min(520, availableH - 52));
     const centerY = Math.floor(arenaH / 2);
     const centerX = Math.floor(containerW / 2);
-    const satHalf = Math.floor(satSize / 2);
-    const hubHalf = Math.floor(hubSize / 2);
+
+    const satSize = 86; // تكبير قطر كبسولات البنود المدارية إلى 86px لتكون واضحة وجذابة
+    const satHalf = Math.floor(satSize / 2); // 43px
+    const maxRadiusByW = Math.floor((containerW - satSize - 16) / 2);
+    const maxRadiusByH = Math.floor((arenaH - satSize - 16) / 2);
+    const radius = Math.max(132, Math.min(148, maxRadiusByW, maxRadiusByH));
 
     const isLight = isThemeLight();
 
@@ -1146,12 +1160,12 @@
         <div class="cat-satellite hl-l5-satellite"
              style="position:absolute; width:${satSize}px; height:${satSize}px; border-radius:50%; background:${satBg}; border:2.4px solid ${satBorder}; left:${x}px; top:${y}px; box-shadow:${shadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:5; transition:transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;">
           <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.75rem; line-height:1; margin-bottom:2px;"></i>
-            <span style="font-size:0.76rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:82px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
+            <i class="${cat.iconClass}" style="color:${cat.color}; font-size:1.55rem; line-height:1; margin-bottom:2px;"></i>
+            <span style="font-size:0.70rem; font-weight:850; color:${textColor}; line-height:1.1; margin-bottom:1px; white-space:nowrap; max-width:72px; overflow:hidden; text-overflow:ellipsis;">${cat.name.split(' ')[0]}</span>
           </button>
-          <div class="hl-sat-divider" style="width:52px; height:2px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:3px auto; border-radius:2px; display:block !important;"></div>
-          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;line-height:1;" title="عرض حركات ${cat.name}">
-            <span style="font-size:0.75rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; display:inline-block;">${amtText}</span>
+          <div class="hl-sat-divider" style="width:48px; height:2px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:3px auto; border-radius:2px; display:block !important;"></div>
+          <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض حركات ${cat.name}">
+            <span style="font-size:0.68rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate; letter-spacing:-0.2px;">${amtText}</span>
           </button>
         </div>
       `;
@@ -1172,8 +1186,8 @@
     const voiceWaveColor = isLight ? '#8b5cf6' : '#c084fc';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 8px;flex-shrink:0;position:relative;z-index:10;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:1rem;color:${voiceBorder};"></i>
             <span style="font-size:0.75rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1187,11 +1201,11 @@
     `;
 
     return `
-      <div class="hl-layout-5-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:space-between;box-sizing:border-box;">
+      <div class="hl-layout-5-wrapper" style="display:flex;flex-direction:column;width:100%;">
         <div class="radial-arena hl-l5-arena" style="position:relative; width:100%; height:${arenaH}px; margin:0 auto; overflow:hidden;">
           <div style="position:absolute; top:${centerY - radius}px; left:${centerX - radius}px; width:${radius * 2}px; height:${radius * 2}px; border-radius:50%; border:1.5px dashed rgba(56, 189, 248, 0.28); pointer-events:none;"></div>
           
-          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - hubHalf}px; left:${centerX - hubHalf}px; width:${hubSize}px; height:${hubSize}px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
+          <div class="central-hub hl-l5-hub" style="position:absolute; top:${centerY - 58}px; left:${centerX - 58}px; width:116px; height:116px; border-radius:50%; background:${hubBg}; border:${hubBorder}; box-shadow:${hubShadow}; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; z-index:10;">
             <span style="font-size:0.62rem; font-weight:800; color:${hubTitleColor}; background:${hubTitleBg}; padding:1px 6px; border-radius:10px;">إجمالي المصروفات</span>
             <button type="button" data-action="view-operations" data-cat-id="all" style="background:none;border:none;padding:0;cursor:pointer;" title="عرض جميع العمليات">
               <span style="font-size:0.98rem; font-weight:900; color:${hubSpentColor}; direction:ltr; display:block;">-${formatMoney(totalSpentAll)}</span>
@@ -1214,34 +1228,10 @@
     const catKeys = ['food', 'daily', 'bills', 'transport', 'house', 'health', 'clothes', 'education', 'other'];
     const isLight = isThemeLight();
 
-    const container = document.getElementById('homeInterfaces');
-    const containerW = (container && container.clientWidth > 100) ? container.clientWidth : (window.innerWidth || 390);
-    const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    
-    // Voice bar parameters & board limits
-    const voiceBarH = 40;
-    const maxBoardH = Math.max(220, Math.min(320, availableH - voiceBarH - 12));
-    const hexH = Math.max(58, Math.min(76, Math.floor((maxBoardH - 16) / 2.85)));
-    const hexW = Math.round(hexH * 1.08);
-
-    const colW = Math.floor((containerW - 24) / 3);
-    // Tight natural row step - hexagons nest closely without void gaps!
-    const rowStep = Math.round(hexH * 0.88);
-    const clusterH = rowStep * 2 + hexH;
-    const topOffset = Math.max(2, Math.floor((maxBoardH - clusterH) / 2));
-
     const positions = [
-      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 0)],
-      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 0)],
-      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 0)],
-
-      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 1)],
-      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 1)],
-      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 1)],
-
-      [Math.round((colW - hexW)/2 + colW * 0), topOffset + Math.round(rowStep * 2)],
-      [Math.round((colW - hexW)/2 + colW * 1), topOffset + Math.round(rowStep * 2)],
-      [Math.round((colW - hexW)/2 + colW * 2), topOffset + Math.round(rowStep * 2)]
+      [14, 8], [138, 8], [262, 8],
+      [14, 110], [138, 110], [262, 110],
+      [14, 212], [138, 212], [262, 212]
     ];
 
     const cellsHtml = catKeys.map((catId, idx) => {
@@ -1260,7 +1250,7 @@
       const trackBg = isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.15)';
 
       return `
-        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:${hexW}px; height:${hexH}px;">
+        <div class="hex-hive-card hl-l6-card" style="position:absolute; left:${px}px; top:${py}px; width:114px; height:100px;">
           <svg class="hex-svg" viewBox="0 0 116 104" style="position:absolute; width:100%; height:100%; pointer-events:none;">
             <polygon points="58,3 113,27 113,77 58,101 3,77 3,27" fill="${polyFill}" stroke="${polyStroke}" stroke-width="${isLight ? 2.2 : 1.8}" style="filter: drop-shadow(0 2px 8px ${cat.color}55);" />
           </svg>
@@ -1285,8 +1275,8 @@
     const voiceText = isLight ? '#065f46' : '#d1fae5';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 8px;flex-shrink:0;position:relative;z-index:10;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 38px);border-radius:10px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 8px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.6px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات</span>
@@ -1300,9 +1290,9 @@
     `;
 
     return `
-      <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:space-between;box-sizing:border-box;">
-        <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:${clusterH + 8}px; min-height:${clusterH + 8}px; max-height:${maxBoardH}px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-          <div style="position:relative; width:100%; height:100%; max-width:${containerW}px;">${cellsHtml}</div>
+      <div class="hl-layout-6-wrapper" style="display:flex;flex-direction:column;width:100%;">
+        <div class="honeycomb-board hl-l6-board" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 360px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
+          <div style="position:relative; width:390px; height:320px;">${cellsHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
@@ -1336,7 +1326,7 @@
 
           <!-- 2. موضع تسجيل المصروف: الأيقونة الدائرية المتوهجة -->
           <button type="button" class="sensor-icon-circle-btn" data-action="quick-add" data-cat-id="${catId}" title="تسجيل مصروف جديد في ${cat.name}">
-            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.4px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33; width:44px; height:44px; font-size:1.35rem;">
+            <div class="sensor-icon-circle" style="background: ${cat.color}22; color: ${cat.color}; border: 1.2px solid ${cat.color}55; box-shadow: 0 0 10px ${cat.color}33;">
               <i class="${cat.iconClass}"></i>
             </div>
           </button>
@@ -1344,8 +1334,8 @@
           <!-- 3. موضع استعراض العمليات: اسم البند + المبلغ الرقمي + شريط القياس -->
           <div class="sensor-tile-bottom-btn" data-action="view-operations" data-cat-id="${catId}" data-cat-name="${cat.name}" title="عرض جميع حركات ${cat.name}">
             <span class="sensor-title">${cat.name}</span>
-            <div class="sensor-divider" style="width:84%; height:2.2px; background:${cat.color} !important; opacity:0.95; margin:4px 0; border-radius:2px; display:block !important;"></div>
-            <span class="sensor-val" style="color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
+            <div class="sensor-divider" style="width:80%; height:2.2px; background:${cat.color} !important; opacity:0.95; margin:4px auto; border-radius:2px; display:block !important;"></div>
+            <span class="sensor-val" style="color:${amtColor}; direction:ltr;">${amtText}</span>
             <div class="sensor-bar">
               <div class="sensor-bar-fill" style="width: ${barFillWidth}%; background: ${cat.color}; box-shadow: ${barFillWidth > 0 ? '0 0 6px ' + cat.color + 'aa' : 'none'};"></div>
             </div>
@@ -1355,8 +1345,8 @@
     }).join('');
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 4px;flex-shrink:0;position:relative;z-index:10;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:44px;border-radius:12px;background:linear-gradient(135deg, rgba(56,189,248,0.15) 0%, rgba(139,92,246,0.2) 100%);border:1.4px solid #38bdf8;color:#e0f2fe;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:#38bdf8;"></i>
             <span style="font-size:0.75rem;font-weight:850;color:#f8fafc;">إضافة صوتية للمصروفات (HUD Telemetry)</span>
@@ -1370,7 +1360,7 @@
     `;
 
     return `
-      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box; align-items:center;">
+      <div class="hl-layout-7-wrapper" style="display:flex; flex-direction:column; width:100%; align-items:center;">
         <div class="sensor-arena hl-l7-arena">
           <div class="sensor-grid">
             ${tilesHtml}
@@ -1387,13 +1377,6 @@
   function renderLayout8Diamonds(totals, budgets, currSymbol, isGold) {
     const catKeys = ['bills', 'daily', 'food', 'health', 'house', 'transport', 'other', 'education', 'clothes'];
     const isLight = isThemeLight();
-
-    const container = document.getElementById('homeInterfaces');
-    const availableH = container ? (parseInt(container.style.getPropertyValue('--dynamic-home-available-h'), 10) || 440) : 440;
-    const voiceBarH = 40;
-    const maxArenaH = Math.max(220, Math.min(320, availableH - voiceBarH - 12));
-    const diaSize = Math.max(52, Math.min(72, Math.floor((maxArenaH - 24) / 3.8)));
-    const contentW = Math.round(diaSize * 1.18);
 
     const diamondsHtml = catKeys.map(catId => {
       const cat = CATEGORIES[catId] || { name: catId, color: '#ec4899', iconClass: 'fa-solid fa-gem', pastelBg: '#fdf2f8' };
@@ -1417,16 +1400,16 @@
 
       return `
         <div class="diamond-wrapper hl-l8-item">
-          <div class="hl-dia-card" style="width:${diaSize}px; height:${diaSize}px; background:${diaBg}; border:${diaBorder}; border-radius:calc(${diaSize}px * 0.22); transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
-            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:${contentW}px; gap:1px;">
-              <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;line-height:1;" title="تسجيل سريع في ${cat.name}">
-                <div style="color:${cat.color}; font-size:calc(${diaSize}px * 0.32); margin-bottom:1px;"><i class="${cat.iconClass}"></i></div>
-                <span style="font-size:0.75rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:108px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
+          <div class="hl-dia-card" style="width:94px; height:94px; background:${diaBg}; border:${diaBorder}; border-radius:22px; transform:rotate(45deg); box-shadow:${shadow}; display:flex; align-items:center; justify-content:center;">
+            <div class="hl-dia-content" style="transform:rotate(-45deg); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; width:112px; gap:1px;">
+              <button type="button" data-action="quick-add" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;" title="تسجيل سريع في ${cat.name}">
+                <div style="color:${cat.color}; font-size:1.30rem;"><i class="${cat.iconClass}"></i></div>
+                <span style="font-size:0.70rem; font-weight:850; color:${nameColor}; white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis;">${cat.name}</span>
               </button>
-              <div class="hl-dia-divider" style="width:calc(${diaSize}px * 0.65); height:1.8px; background:${cat.color} !important; opacity:${hasSpent ? '0.95' : '0.6'}; margin:4px 0; border-radius:2px; display:block !important;"></div>
-              <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;" title="عرض حركات ${cat.name}">
-                <span style="font-size:0.76rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
-                <span style="font-size:0.60rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 5px;">${pct}%</span>
+              <div class="hl-dia-divider" style="width:58px; height:1.6px; background:${cat.color}; opacity:${hasSpent ? '0.85' : '0.5'}; margin:3px 0; border-radius:1px;"></div>
+              <button type="button" data-action="view-operations" data-cat-id="${catId}" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;" title="عرض حركات ${cat.name}">
+                <span style="font-size:0.72rem; font-weight:950; color:${amtColor}; direction:ltr; unicode-bidi:isolate;">${amtText}</span>
+                <span style="font-size:0.58rem; font-weight:900; color:${badgeColor}; background:${badgeBg}; border:1px solid ${hasSpent ? cat.color + '55' : 'transparent'}; border-radius:8px; padding:0 4px;">${pct}%</span>
               </button>
             </div>
           </div>
@@ -1439,8 +1422,8 @@
     const voiceText = isLight ? '#9d174d' : '#fbcfe8';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 6px;flex-shrink:0;position:relative;z-index:10;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 38px);border-radius:10px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 6px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.5px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Crystal Voice)</span>
@@ -1454,14 +1437,13 @@
     `;
 
     return `
-      <div class="hl-layout-8-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box;">
-        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:auto; min-height:220px; max-height:${maxArenaH}px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+      <div class="hl-layout-8-wrapper" style="display:flex; flex-direction:column; width:100%;">
+        <div class="diamond-arena hl-l8-arena" style="position:relative; width:100%; height:var(--dynamic-home-arena-h, 380px); display:flex; align-items:center; justify-content:center; overflow:hidden;">
           <div class="hl-l8-grid">${diamondsHtml}</div>
         </div>
         ${voiceBarHtml}
       </div>
     `;
-  }
   }
 
   /* =========================================================================
@@ -1574,8 +1556,8 @@
     const voiceText = isLight ? '#0369a1' : '#e0f2fe';
 
     const voiceBarHtml = `
-      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:4px;padding:0 4px;flex-shrink:0;position:relative;z-index:10;">
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:var(--dynamic-home-voice-h, 36px);border-radius:10px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
+      <div class="hl-integrated-bottom-voice" data-action="voice-record" style="margin-top:6px;padding:0 4px;">
+        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:${voiceBtnBg};border:1.4px solid ${voiceBorder};color:${voiceText};display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i class="fa-solid fa-microphone" style="font-size:0.95rem;color:${voiceBorder};"></i>
             <span style="font-size:0.74rem;font-weight:850;color:${voiceText};">إضافة صوتية للمصروفات (Spectrum Audio)</span>
@@ -1598,7 +1580,7 @@
     const barsWrapBorder = isLight ? '1px solid #e2e8f0' : '1px solid rgba(56, 189, 248, 0.15)';
 
     return `
-      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%; height:100%; justify-content:space-between; box-sizing:border-box;">
+      <div class="hl-layout-9-wrapper" style="display:flex; flex-direction:column; width:100%;">
         ${memberChartHtml}
         <div class="equalizer-arena hl-l9-arena" style="background:${arenaBg}; border:${arenaBorder}; border-radius:16px; padding:6px 6px;">
           <div style="display:flex; justify-content:space-between; align-items:center; background:${headerBg}; border:${headerBorder}; border-radius:12px; padding:4px 10px;">
@@ -1649,7 +1631,6 @@
       originalGrid.hidden = !isOriginal;
       if (isOriginal) {
         originalGrid.style.removeProperty('display');
-        originalGrid.style.setProperty('display', 'grid', 'important');
       } else {
         originalGrid.style.setProperty('display', 'none', 'important');
       }
@@ -1657,11 +1638,6 @@
 
     if (container) {
       container.hidden = isOriginal;
-      if (isOriginal) {
-        container.style.setProperty('display', 'none', 'important');
-      } else {
-        container.style.removeProperty('display');
-      }
       container.dataset.design = String(currentLayout);
     }
 
@@ -1673,51 +1649,9 @@
     document.body.classList.toggle('has-alt-home-layout', !isOriginal);
     document.body.dataset.homeLayout = String(currentLayout);
 
-    ensureLayout0VoiceStrip();
     updateDesignButtonDial();
     ensureSideHandlesVisible();
     measureAndApplyDynamicLayout();
-  }
-
-  function ensureLayout0VoiceStrip() {
-    let voiceStrip = document.getElementById('catGridVoiceStrip');
-    const isOriginal = (currentLayout === 0);
-    if (!voiceStrip && isOriginal) {
-      const grid = document.getElementById('catGrid');
-      if (!grid || !grid.parentNode) return;
-      voiceStrip = document.createElement('div');
-      voiceStrip.id = 'catGridVoiceStrip';
-      voiceStrip.className = 'hl-integrated-bottom-voice hl-layout0-voice-strip';
-      voiceStrip.setAttribute('data-action', 'voice-record');
-      voiceStrip.style.cssText = 'width:100%;margin-top:8px;padding:0 2px;box-sizing:border-box;flex-shrink:0;';
-      voiceStrip.innerHTML = `
-        <button type="button" data-action="voice-record" class="hl-integrated-voice-btn" style="width:100%;height:42px;border-radius:12px;background:linear-gradient(135deg, rgba(139,92,246,0.14) 0%, rgba(124,58,237,0.22) 100%) !important;border:1.6px solid #8b5cf6 !important;color:#6d28d9 !important;display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;box-sizing:border-box;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <i class="fa-solid fa-microphone" style="font-size:1rem;color:#8b5cf6;"></i>
-            <span style="font-size:0.76rem;font-weight:850;color:#6d28d9;">إضافة صوتية للمصروفات</span>
-          </div>
-          <div style="width:100px;display:flex;align-items:center;">
-            ${getAudioWaveHtml('#8b5cf6')}
-          </div>
-          <i class="fa-solid fa-chevron-left" style="font-size:0.75rem;color:#8b5cf6;"></i>
-        </button>
-      `;
-      voiceStrip.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (root.VoiceAssistantEngine && typeof root.VoiceAssistantEngine.toggleListening === 'function') {
-          root.VoiceAssistantEngine.toggleListening();
-        } else {
-          const fab = document.getElementById('btnVoiceAssistantFab');
-          if (fab) fab.click();
-        }
-      };
-      grid.parentNode.insertBefore(voiceStrip, grid.nextSibling);
-    }
-    if (voiceStrip) {
-      voiceStrip.hidden = !isOriginal;
-      voiceStrip.style.display = isOriginal ? 'block' : 'none';
-    }
   }
 
   function render(filtered) {
@@ -1729,20 +1663,6 @@
 
     if (currentLayout === 0) {
       container.hidden = true;
-      container.style.setProperty('display', 'none', 'important');
-      const originalGrid = document.getElementById('catGrid');
-      if (originalGrid) {
-        originalGrid.hidden = false;
-        originalGrid.style.removeProperty('display');
-        originalGrid.style.setProperty('display', 'grid', 'important');
-      }
-      const dataToRender = filtered || cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
-      if (typeof root.renderCategoriesGrid === 'function') {
-        root.renderCategoriesGrid(dataToRender);
-      } else if (typeof root.renderUI === 'function') {
-        root.renderUI();
-      }
-      ensureLayout0VoiceStrip();
       return;
     }
 
@@ -1818,23 +1738,7 @@
     } catch (e) {}
 
     updateUiForActiveLayout();
-    if (next === 0) {
-      const originalGrid = document.getElementById('catGrid');
-      if (originalGrid) {
-        originalGrid.hidden = false;
-        originalGrid.style.removeProperty('display');
-        originalGrid.style.setProperty('display', 'grid', 'important');
-      }
-      const dataToRender = cachedFiltered || (typeof root.getFilteredTransactions === 'function' ? root.getFilteredTransactions() : (root.state && root.state.transactions ? root.state.transactions : []));
-      if (typeof root.renderCategoriesGrid === 'function') {
-        root.renderCategoriesGrid(dataToRender);
-      } else if (typeof root.renderUI === 'function') {
-        root.renderUI();
-      }
-      ensureLayout0VoiceStrip();
-    } else {
-      render(cachedFiltered);
-    }
+    render(cachedFiltered);
 
     const meta = LAYOUT_META[next];
     if (typeof root.showToast === 'function') {
@@ -2046,17 +1950,6 @@
         }
       });
       themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class', 'data-color-mode'] });
-    }
-
-    // 5. Observer on viewExpenses to toggle zero-scroll lock on navigation
-    if (typeof MutationObserver !== 'undefined') {
-      const viewExp = document.getElementById('viewExpenses');
-      if (viewExp) {
-        const expObserver = new MutationObserver(() => {
-          measureAndApplyDynamicLayout();
-        });
-        expObserver.observe(viewExp, { attributes: true, attributeFilter: ['class', 'style'] });
-      }
     }
   }
 

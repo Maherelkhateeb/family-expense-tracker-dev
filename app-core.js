@@ -4920,39 +4920,43 @@ function generateRichDemoTransactions() {
     window.renderUI = renderUI;
     window.getFilteredTransactions = getFilteredTransactions;
 
+    let isRenderingCategoryGrid = false;
     function renderCategoriesGrid(filtered) {
-      const activeHomeLayout = (window.HomeLayouts && typeof window.HomeLayouts.getLayout === 'function')
-        ? window.HomeLayouts.getLayout()
-        : (parseInt(localStorage.getItem('family_expense_home_design_v2'), 10) || 1);
+      if (isRenderingCategoryGrid) return;
+      isRenderingCategoryGrid = true;
+      try {
+        const activeHomeLayout = (window.HomeLayouts && typeof window.HomeLayouts.getLayout === 'function')
+          ? window.HomeLayouts.getLayout()
+          : (parseInt(localStorage.getItem('family_expense_home_design_v2'), 10) || 0);
 
-      if (activeHomeLayout > 0) {
-        const grid = document.getElementById('catGrid');
-        if (grid) {
-          grid.hidden = true;
-          grid.style.setProperty('display', 'none', 'important');
+        if (activeHomeLayout > 0) {
+          const grid = document.getElementById('catGrid');
+          if (grid) {
+            grid.hidden = true;
+            grid.style.setProperty('display', 'none', 'important');
+          }
+          const container = document.getElementById('homeInterfaces');
+          if (container) {
+            container.hidden = false;
+            container.style.removeProperty('display');
+          }
+          if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
+            window.HomeLayouts.render(filtered);
+          }
+          return;
         }
+
+        const grid = document.getElementById('catGrid');
+        if (!grid) return;
+        grid.hidden = false;
+        grid.style.removeProperty('display');
+        grid.style.setProperty('display', 'grid', 'important');
+
         const container = document.getElementById('homeInterfaces');
         if (container) {
-          container.hidden = false;
-          container.style.setProperty('display', 'block', 'important');
+          container.hidden = true;
+          container.style.setProperty('display', 'none', 'important');
         }
-        if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
-          window.HomeLayouts.render(filtered);
-        }
-        return;
-      }
-
-      const grid = document.getElementById('catGrid');
-      if (!grid) return;
-      grid.hidden = false;
-      grid.style.removeProperty('display');
-      grid.style.setProperty('display', 'grid', 'important');
-
-      const container = document.getElementById('homeInterfaces');
-      if (container) {
-        container.hidden = true;
-        container.style.setProperty('display', 'none', 'important');
-      }
 
       const catTotals = {};
       (filtered || []).forEach(t => {
@@ -5359,8 +5363,14 @@ function generateRichDemoTransactions() {
           }
         });
       }
-      if (window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
-        window.HomeLayouts.render(filtered);
+        const activeHomeLayoutNow = (window.HomeLayouts && typeof window.HomeLayouts.getLayout === 'function')
+          ? window.HomeLayouts.getLayout()
+          : (parseInt(localStorage.getItem('family_expense_home_design_v2'), 10) || 0);
+        if (activeHomeLayoutNow > 0 && window.HomeLayouts && typeof window.HomeLayouts.render === 'function') {
+          window.HomeLayouts.render(filtered);
+        }
+      } finally {
+        isRenderingCategoryGrid = false;
       }
     }
 
