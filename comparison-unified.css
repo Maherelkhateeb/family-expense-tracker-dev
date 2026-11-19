@@ -569,6 +569,189 @@ body.light-theme .variance-table-lux tr:hover td {
   background: rgba(2, 132, 199, 0.05) !important;
 }
 
+/* =========================================================================
+   منصة الرسوم البيانية التفاعلية المدمجة (Compact Chart Deck 1–8)
+   ========================================================================= */
+
+/* 1. الحاوية العامة للمنصة */
+.cmp-charts-deck {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 10px 0 !important;
+  border-radius: 14px !important;
+  border: 1.2px solid var(--uc-border, rgba(56, 189, 248, 0.25)) !important;
+  background: color-mix(in srgb, var(--bg-card, #0f172a) 95%, transparent) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  transition: all 0.25s ease !important;
+}
+
+body.light-theme .cmp-charts-deck {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 2. شريط رأس المنصة */
+.cmp-deck-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  background: color-mix(in srgb, var(--bg-card, #1e293b) 90%, transparent) !important;
+  border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.08)) !important;
+}
+
+body.light-theme .cmp-deck-header {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.cmp-deck-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  color: #38bdf8 !important;
+}
+
+body.light-theme .cmp-deck-title {
+  color: #0284c7 !important;
+}
+
+.cmp-deck-collapse-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #38bdf8 !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+body.light-theme .cmp-deck-collapse-btn {
+  background: rgba(2, 132, 199, 0.1) !important;
+  border-color: rgba(2, 132, 199, 0.25) !important;
+  color: #0284c7 !important;
+}
+
+.cmp-deck-collapse-btn:hover {
+  background: rgba(56, 189, 248, 0.22) !important;
+}
+
+/* 3. شريط أزرار الاختيار المرقم (1–8) */
+.cmp-deck-tabs-strip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 8px 10px !important;
+  background: color-mix(in srgb, var(--bg-card, #0f172a) 80%, transparent) !important;
+  border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.06)) !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+body.light-theme .cmp-deck-tabs-strip {
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.cmp-deck-tabs-strip::-webkit-scrollbar {
+  display: none !important;
+}
+
+.cmp-deck-tab {
+  flex: 1 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 6px 11px !important;
+  border-radius: 9px !important;
+  background: rgba(30, 41, 59, 0.75) !important;
+  border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  font-size: 0.73rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.18s ease !important;
+}
+
+body.light-theme .cmp-deck-tab {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+.cmp-deck-tab:hover {
+  color: #f8fafc !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.cmp-tab-num {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  font-size: 0.65rem !important;
+  font-weight: 900 !important;
+}
+
+.cmp-deck-tab.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45) !important;
+}
+
+.cmp-deck-tab.active .cmp-tab-num {
+  background: #ffffff !important;
+  color: #0369a1 !important;
+}
+
+/* 4. مسرح العرض الواحد والمحدد */
+.cmp-deck-stage {
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-height: 520px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.25s ease !important;
+}
+
+/* حالة الطي: اختفاء ناعم دون أي مساحة ميتة */
+.cmp-deck-stage.is-collapsed {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* بطاقة الشرح والتفسير أسفل الرسم النشط */
+.cmp-deck-stage .chart-explanation-box {
+  margin-top: 10px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  background: rgba(30, 41, 59, 0.5) !important;
+  border: 1px dashed rgba(56, 189, 248, 0.3) !important;
+  font-size: 0.70rem !important;
+  line-height: 1.4 !important;
+}
+
 /* ==========================================================
    Responsive Zero-Scroll Variance Table
    ========================================================== */
@@ -607,4 +790,240 @@ body.light-theme .variance-table-lux td {
 }
 body.light-theme .variance-table-lux tr:hover td {
   background: rgba(2, 132, 199, 0.05) !important;
+}
+
+/* =========================================================================
+   منصة الرسوم البيانية التفاعلية المدمجة (Compact Chart Deck 1–8)
+   ========================================================================= */
+
+/* 1. الحاوية العامة للمنصة */
+.cmp-charts-deck {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 10px 0 !important;
+  border-radius: 14px !important;
+  border: 1.2px solid var(--uc-border, rgba(56, 189, 248, 0.25)) !important;
+  background: color-mix(in srgb, var(--bg-card, #0f172a) 95%, transparent) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  transition: all 0.25s ease !important;
+}
+
+body.light-theme .cmp-charts-deck {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 2. شريط رأس المنصة */
+.cmp-deck-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 12px !important;
+  background: color-mix(in srgb, var(--bg-card, #1e293b) 90%, transparent) !important;
+  border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.08)) !important;
+}
+
+body.light-theme .cmp-deck-header {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.cmp-deck-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  color: #38bdf8 !important;
+}
+
+body.light-theme .cmp-deck-title {
+  color: #0284c7 !important;
+}
+
+.cmp-deck-collapse-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4px 10px !important;
+  border-radius: 8px !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #38bdf8 !important;
+  font-size: 0.72rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+body.light-theme .cmp-deck-collapse-btn {
+  background: rgba(2, 132, 199, 0.1) !important;
+  border-color: rgba(2, 132, 199, 0.25) !important;
+  color: #0284c7 !important;
+}
+
+.cmp-deck-collapse-btn:hover {
+  background: rgba(56, 189, 248, 0.22) !important;
+}
+
+/* 3. شريط أزرار الاختيار المرقم (1–8) */
+.cmp-deck-tabs-strip {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 8px 10px !important;
+  background: color-mix(in srgb, var(--bg-card, #0f172a) 80%, transparent) !important;
+  border-bottom: 1px solid var(--uc-border, rgba(255, 255, 255, 0.06)) !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+}
+
+body.light-theme .cmp-deck-tabs-strip {
+  background: #f1f5f9 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.cmp-deck-tabs-strip::-webkit-scrollbar {
+  display: none !important;
+}
+
+.cmp-deck-tab {
+  flex: 1 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  padding: 6px 11px !important;
+  border-radius: 9px !important;
+  background: rgba(30, 41, 59, 0.75) !important;
+  border: 1.2px solid rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  font-size: 0.73rem !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: all 0.18s ease !important;
+}
+
+body.light-theme .cmp-deck-tab {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+.cmp-deck-tab:hover {
+  color: #f8fafc !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.cmp-tab-num {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  font-size: 0.65rem !important;
+  font-weight: 900 !important;
+}
+
+.cmp-deck-tab.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.45) !important;
+}
+
+.cmp-deck-tab.active .cmp-tab-num {
+  background: #ffffff !important;
+  color: #0369a1 !important;
+}
+
+/* 4. مسرح العرض الواحد والمحدد */
+.cmp-deck-stage {
+  padding: 12px !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-height: 520px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, padding 0.25s ease !important;
+}
+
+/* حالة الطي: اختفاء ناعم دون أي مساحة ميتة */
+.cmp-deck-stage.is-collapsed {
+  max-height: 0 !important;
+  opacity: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* بطاقة الشرح والتفسير أسفل الرسم النشط */
+.cmp-deck-stage .chart-explanation-box {
+  margin-top: 10px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  background: rgba(30, 41, 59, 0.5) !important;
+  border: 1px dashed rgba(56, 189, 248, 0.3) !important;
+  font-size: 0.70rem !important;
+  line-height: 1.4 !important;
+}
+
+
+/* High contrast and zero horizontal scroll on variance tables */
+.variance-table-lux th {
+  background: #0f172a !important;
+  color: #38bdf8 !important;
+  font-weight: 900 !important;
+  border-bottom: 2px solid rgba(56, 189, 248, 0.4) !important;
+}
+.variance-table-lux td {
+  color: #f8fafc !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.variance-table-lux th:first-child,
+.variance-table-lux td:first-child {
+  text-align: right !important;
+  padding-right: 8px !important;
+  width: 32% !important;
+  min-width: 95px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+body.light-theme .variance-table-lux th {
+  background: #f1f5f9 !important;
+  color: #0284c7 !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+body.light-theme .variance-table-lux td {
+  color: #0f172a !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Zero horizontal scrollbar on dimension tabs */
+.cmp-dimension-tabs-lux,
+#viewBudgets #cmpPeriodChart .cmp-dimension-tabs-lux,
+.cmp-dimension-tabs-wrap {
+  display: flex !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+}
+.cmp-dimension-tabs-lux button,
+#viewBudgets #cmpPeriodChart .cmp-dimension-tabs-lux button {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  padding: 6px 3px !important;
+  font-size: 0.72rem !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+  justify-content: center !important;
 }
