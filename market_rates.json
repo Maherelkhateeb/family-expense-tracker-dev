@@ -2,12 +2,12 @@
   "schemaVersion": 2,
   "fxUpdatedAt": null,
   "goldUpdatedAt": null,
-  "globalGoldUpdatedAt": "2026-11-20T09:05:35+00:00",
-  "updatedAt": "2026-11-20T09:05:46.594727+00:00",
-  "checkedAt": "2026-11-20T09:05:46.594727+00:00",
+  "globalGoldUpdatedAt": "2026-11-20T17:58:06+00:00",
+  "updatedAt": "2026-11-20T17:58:06.941055+00:00",
+  "checkedAt": "2026-11-20T17:58:06.941055+00:00",
   "sourceTimeNote": "وقت التحقق منفصل عن وقت السعر؛ الوقت غير المعلن من المصدر يظل غير معلن",
-  "lastUpdateHuman": "2026-11-20 11:05 AM بتوقيت القاهرة",
-  "lastCheckedHuman": "2026-11-20 11:05 AM بتوقيت القاهرة",
+  "lastUpdateHuman": "2026-11-20 07:58 PM بتوقيت القاهرة",
+  "lastCheckedHuman": "2026-11-20 07:58 PM بتوقيت القاهرة",
   "provider": "Ta3weem / بنك مصر / مركز المعلومات IDSC",
   "rateMode": "official",
   "fxProvider": "Ta3weem / بنك مصر",
@@ -26,15 +26,15 @@
       "name": "ريال سعودي",
       "buy": 14.25,
       "sell": 14.35,
-      "chg": "0%",
+      "chg": "0.003%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "EUR": {
       "code": "EUR",
       "name": "يورو أوروبي",
-      "buy": 58.91,
-      "sell": 59.31,
-      "chg": "0%",
+      "buy": 58.94,
+      "sell": 59.2,
+      "chg": "0.182%",
       "bank": "بنك مصر (مباشر تعويم)"
     },
     "AED": {
@@ -89,6 +89,6 @@
       "source": "مركز المعلومات IDSC / الصاغة",
       "sourceUpdatedAt": null
     },
-    "goldOunceUSD": 3579.42
+    "goldOunceUSD": 3529.57
   }
 }
